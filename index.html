@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systems Architecture Portfolio</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/flexsearch/dist/flexsearch.bundle.js"></script>
+</head>
+<body>
+
+    <!-- Unified Master Control Header -->
+    <header class="portfolio-header">
+        
+        <!-- Left: Branding & Logo -->
+        <div class="header-brand">
+            <!-- Logo → main site (deployed). -->
+            <a href="https://jeffw5.github.io/Website/index.html" target="_top" aria-label="Go to main site" class="logo-link">
+                <div class="logo-wrapper">
+                    <img src="assets/logo.png" alt="Company Logo" class="brand-logo"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='inline';">
+                    <span class="logo-fallback">VEG</span>
+                </div>
+            </a>
+            <!-- Search moved here (replaces the "Portfolio" text) -->
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search capabilities..." autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Center: Unified site menu (centered like the main site nav).
+             id="graph-widget-container" retained for any code (graph.js /
+             search highlighting) that looks the container up by id. -->
+        <nav class="header-navigation site-menu" id="graph-widget-container">
+            <a class="site-nav-link" href="https://jeffw5.github.io/Website/about.html" target="_top">About</a>
+            <a class="site-nav-link" href="https://jeffw5.github.io/Website/frameworks.html" target="_top">Frameworks</a>
+            <a class="site-nav-link" href="https://jeffw5.github.io/Website/services.html" target="_top">Services</a>
+            <a class="site-nav-link active" href="index.html">Portfolio</a>
+            <a class="site-nav-link" href="https://jeffw5.github.io/blog/" target="_top">Blog</a>
+            <a class="site-nav-cta" href="https://jeffw5.github.io/Website/avatar.html" target="_top">Ask Jeffrey ›</a>
+        </nav>
+
+        <!-- Right: Gallery controls -->
+        <div class="header-controls">
+            <button id="back-to-gallery" class="btn-secondary hidden">← Back to Gallery</button>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="graph-widget-container">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+    </header>
+
+    <!-- Full-Width Display Stage -->
+    <main class="portfolio-container">
+
+        <!-- Default View: Grid Gallery -->
+        <div id="gallery-view" class="view-panel">
+            <div class="stage-header">
+                <h2>Functional Demonstrations</h2>
+                <p>Live architectural models built for organizational transformation. Select an industry node or use search to filter.</p>
+            </div>
+            <div class="card-grid" id="project-card-grid">
+                <!-- Cards injected dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- Active View: Full-Screen Dashboard Frame -->
+        <div id="demo-view" class="view-panel hidden">
+            <div class="iframe-wrapper">
+                <!--
+                  NO sandbox attribute.
+                  The sandbox was blocking PDF rendering and HTML display.
+                  All content is Jeffrey's own files on the same origin.
+                -->
+                <iframe id="demo-iframe" src="" frameborder="0"
+                        style="width:100%;height:100%;display:block;border:none">
+                </iframe>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="assets/js/search.js"></script>
+    <script src="assets/js/graph.js"></script>
+    <script>
+    /* ── Navigation stack ────────────────────────────────────────────────────
+       Tracks URLs to return to when the user clicks "← Back".
+       Empty stack → return to gallery.
+       One entry  → return to demo index.
+    ──────────────────────────────────────────────────────────────────────── */
+
+    var _navStack = [];
+
+    /* Called by nav-rail buttons and project card clicks */
+    function loadDemo(path) {
+      _navStack = [];
+      _showIframe(path);
+      _updateBack('← Back to Gallery', false);
+      var _searchC = document.querySelector('.search-container');
+      if (_searchC) _searchC.classList.add('hidden');
+    }
+
+    /* Called by the postMessage listener below.
+       PDF, HTML, and other files load here — inside the same iframe. */
+    function _loadFile(absoluteSrc, returnSrc) {
+      _navStack.push(returnSrc);
+      _showIframe(absoluteSrc);
+      _updateBack('← Back to Demo', false);
+    }
+
+    function _showIframe(src) {
+      document.getElementById('gallery-view').classList.add('hidden');
+      document.getElementById('demo-view').classList.remove('hidden');
+      document.getElementById('demo-iframe').src = src;
+    }
+
+    function _updateBack(label, hide) {
+      var btn = document.getElementById('back-to-gallery');
+      if (!btn) return;
+      btn.textContent = label;
+      btn.classList.toggle('hidden', !!hide);
+    }
+
+    /* ── postMessage listener ────────────────────────────────────────────────
+       Demo pages send: { type:'VEG_LOAD_FILE', src:'…', returnSrc:'…' }
+       This is the ONLY reliable way to call parent code from a sandboxed iframe.
+    ──────────────────────────────────────────────────────────────────────── */
+
+    window.addEventListener('message', function (e) {
+      /* Accept messages only from the same origin (jeffw5.github.io) */
+      if (e.origin !== window.location.origin) return;
+      if (!e.data || e.data.type !== 'VEG_LOAD_FILE') return;
+      _loadFile(e.data.src, e.data.returnSrc);
+    });
+
+    /* ── Back button ─────────────────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+      var backBtn = document.getElementById('back-to-gallery');
+      if (!backBtn) return;
+      backBtn.addEventListener('click', function () {
+        if (_navStack.length > 0) {
+          _showIframe(_navStack.pop());
+          _updateBack(_navStack.length > 0 ? '← Back to Demo' : '← Back to Gallery', false);
+        } else {
+          document.getElementById('demo-iframe').src = 'about:blank';
+          document.getElementById('demo-view').classList.add('hidden');
+          document.getElementById('gallery-view').classList.remove('hidden');
+          _updateBack('', true);
+          var _searchC = document.querySelector('.search-container');
+          if (_searchC) _searchC.classList.remove('hidden');
+        }
+      });
+    });
+    /* ── Mobile menu fold-down ───────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+      var navToggle = document.getElementById('navToggle');
+      var siteMenu = document.querySelector('.header-navigation.site-menu');
+      if (!navToggle || !siteMenu) return;
+      navToggle.addEventListener('click', function () {
+        var open = navToggle.classList.toggle('open');
+        siteMenu.classList.toggle('open', open);
+        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // Close the menu after a link is tapped
+      siteMenu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          navToggle.classList.remove('open');
+          siteMenu.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    });
+    </script>
+</body>
+</html>
