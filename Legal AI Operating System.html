@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal AI Operating System — From Pilot Failure to Governed Advantage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1F3A; --navy2:#12305A; --navy-soft:#1C3A63;
+  --gold:#C8A951; --gold-hi:#E4C572;
+  --ice:#EDF2F8; --ice2:#F6F9FC; --surface:#FFFFFF;
+  --ink:#20344B; --muted:#5E7188; --hair:#D8E1EC;
+  --go:#2E7D5B; --go-bg:#E6F1EC; --go-hair:#B7D8C6;
+  --rev:#B8842B; --rev-bg:#F7EEDD; --rev-hair:#E6D2A6;
+  --nogo:#B23A3A; --nogo-bg:#F7E7E6; --nogo-hair:#E6BDBD;
+  --crit:#8E1F1F; --crit-bg:#F3DCDB;
+  --design:#2E6E8E; --run:#8A6D1F; --both:#7A5AA6;
+  --design-bg:#DCEEF6; --design-line:#AFD5E4;
+  --run-bg:#F7EAD2; --run-line:#E3CB93;
+  --both-bg:#EAE1F5; --both-line:#CBB6E6;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --disp:'Space Grotesk',var(--serif);
+  --sans:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--ice);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-weight:600}
+.wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+button{font-family:inherit}
+
+/* ---- header ---- */
+header.top{background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;border-bottom:3px solid var(--gold)}
+header.top .inner{display:flex;align-items:center;gap:18px;padding:16px 22px;flex-wrap:wrap;max-width:1240px;margin:0 auto}
+.brandmark{width:36px;height:36px;flex:0 0 auto}
+.brandtext .k{font-family:var(--disp);font-size:19px;font-weight:600;letter-spacing:-.01em}
+.brandtext .s{font-size:11.5px;color:#9db4d4;letter-spacing:.07em;text-transform:uppercase;margin-top:2px}
+.spacer{flex:1}
+.gauge-wrap{display:flex;align-items:center;gap:12px}
+.gauge-wrap .lab{text-align:right}
+.gauge-wrap .lab .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#9db4d4}
+.gauge-wrap .lab .v{font-family:var(--disp);font-size:19px;font-weight:700;color:var(--gold-hi)}
+
+nav.tabs{position:sticky;top:0;z-index:40;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
+.tabs-in{max-width:1240px;margin:0 auto;padding:0 14px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs-in::-webkit-scrollbar{display:none}
+.tabbtn{flex:none;background:none;border:0;color:#9db4d4;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:14px 16px;position:relative;white-space:nowrap;transition:color .2s}
+.tabbtn .num{color:#5c749a;margin-right:7px}
+.tabbtn:hover{color:#fff}
+.tabbtn[aria-selected="true"]{color:#fff}
+.tabbtn[aria-selected="true"]::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;background:var(--gold)}
+
+main{padding:30px 0 70px}
+section.view{display:none}
+section.view.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--rev);display:flex;align-items:center;gap:9px;margin:0 0 12px}
+.eyebrow::before{content:"";width:20px;height:1px;background:var(--rev)}
+h2.vh{font-family:var(--serif);font-weight:600;font-size:clamp(24px,3.4vw,36px);line-height:1.15;letter-spacing:-.01em;margin:0 0 12px}
+h2.vh em{font-style:normal;color:var(--navy2);border-bottom:3px solid var(--gold)}
+h3.sub{font-family:var(--serif);font-weight:600;font-size:20px;margin:36px 0 6px}
+.lead{color:var(--muted);font-size:15px;max-width:82ch;margin:0 0 22px}
+
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 20px}
+.card h3{font-family:var(--serif);font-size:16px;margin-bottom:6px}
+.card h4{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--navy2);margin:12px 0 6px}
+.card p{margin:6px 0;font-size:13.5px;color:var(--ink)}
+.card .hint{font-size:12px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* stat cards */
+.stat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:17px 16px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.stat .n{font-family:var(--disp);font-weight:700;font-size:27px;color:var(--navy)}
+.stat .l{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+.stat.bad::before{background:var(--nogo)}
+.stat.good::before{background:var(--go)}
+.stat.warn::before{background:var(--rev)}
+
+.pillnote{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:5px;margin-bottom:8px}
+.pn-go{background:var(--go-bg);color:var(--go)}.pn-rev{background:var(--rev-bg);color:var(--rev)}.pn-nogo{background:var(--nogo-bg);color:var(--nogo)}
+
+/* framework source cards */
+.srccard{border:1px solid var(--hair);border-radius:var(--radius);padding:16px 18px;background:var(--surface);border-top:3px solid var(--navy2)}
+.srccard .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-hi);background:var(--navy);display:inline-block;padding:3px 8px;border-radius:5px;margin-bottom:8px}
+.srccard h4{font-family:var(--serif);font-size:15px;margin:0 0 6px;color:var(--navy)}
+.srccard p{font-size:13px;color:var(--muted);margin:0}
+
+.callout{border-left:3px solid var(--gold);background:var(--ice2);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:13.5px}
+.callout b{color:var(--navy2)}
+.callout.risk{border-left-color:var(--nogo);background:var(--nogo-bg)}
+.callout.mobility{border-left-color:var(--rev);background:var(--rev-bg)}
+
+/* ================= VALUE POINTS (tab 1) ================= */
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:8px}
+@media(max-width:980px){.vgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}}
+.vpcard{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 18px 16px;position:relative;display:flex;flex-direction:column;gap:7px}
+.vpcard .vptags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.vptag{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.vptag.disc{background:var(--navy);color:var(--gold-hi)}
+.vptag.gov{background:var(--ice2);color:var(--navy2);border:1px solid var(--hair)}
+.vpcard h4{font-family:var(--serif);font-size:15.5px;margin:2px 0 1px;padding-right:64px;line-height:1.25}
+.vpcard p{font-size:12.8px;color:var(--muted);margin:0}
+.vp-thread{position:absolute;top:16px;right:16px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+.vp-thread.automation{background:var(--go-bg);color:var(--go)}
+.vp-thread.judgment{background:var(--rev-bg);color:var(--rev)}
+.vp-thread.both{background:#EDE7F4;color:#7A5AA6}
+.chain-diagram{width:100%;max-width:540px;margin:2px auto 0;display:block}
+.cnode{cursor:pointer}
+.cnode circle{fill:var(--surface);stroke:var(--hair);stroke-width:2;transition:fill .2s,stroke .2s}
+.cnode:hover circle{stroke:var(--navy-soft)}
+.cnode.sel circle{fill:var(--navy);stroke:var(--navy)}
+.cnode text{font-family:var(--serif);font-weight:600;font-size:13.5px;fill:var(--navy);text-anchor:middle;transition:fill .2s}
+.cnode.sel text{fill:#fff}
+.cnode .cidx{font-family:var(--mono);font-size:9px;fill:var(--muted);text-anchor:middle}
+.cnode.sel .cidx{fill:var(--gold-hi)}
+.chain-cap{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:10px}
+.chain-drill{margin-top:10px;padding-top:10px;border-top:1px dashed var(--hair)}
+
+/* shared small detail-panel typography (chain node / risk item / ladder example / agent body) */
+.vp-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--rev);margin-bottom:4px}
+#chainDetail h3{font-family:var(--serif);font-size:20px;margin-bottom:4px}
+.mini-h{font-family:var(--serif);font-weight:600;font-size:15.5px;margin:2px 0 8px}
+.vp-desc{font-size:13.5px;color:var(--ink);margin-bottom:12px}
+.vp-badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:10px}
+.vp-badge.automation{background:var(--go-bg);color:var(--go)}
+.vp-badge.judgment{background:var(--rev-bg);color:var(--rev)}
+.vp-badge.both{background:#EDE7F4;color:#7A5AA6}
+.vp-pairrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.vp-pairbtn{font-family:var(--mono);font-size:11px;color:var(--navy2);background:var(--ice2);border:1px solid var(--hair);border-radius:6px;padding:6px 10px;cursor:pointer}
+.vp-pairbtn:hover{border-color:var(--navy-soft)}
+.vp-pairbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.vp-archlink{font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--navy);border:0;border-radius:999px;padding:8px 14px;cursor:pointer;margin-top:12px;display:inline-flex;align-items:center;gap:6px}
+.vp-archlink:hover{background:var(--navy2)}
+
+footer{border-top:1px solid var(--hair);color:var(--muted);font-size:12px;padding:22px 0 60px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* ================= ARCHITECTURE TAB ================= */
+.arch-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start}
+@media(max-width:980px){.arch-wrap{grid-template-columns:1fr}}
+.bandlist{display:flex;flex-direction:column;gap:10px}
+.aband{border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);padding:12px 14px}
+.aband .bl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:flex;justify-content:space-between}
+.aband.foundation{background:linear-gradient(180deg,#fff,var(--ice2));border-color:var(--navy-soft)}
+.achips{display:flex;flex-wrap:wrap;gap:7px}
+.achip{position:relative;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink);background:var(--ice2);border:1px solid var(--hair);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:left;transition:.15s}
+.achip small{display:block;font-weight:400;font-size:10.5px;color:var(--muted);margin-top:2px}
+.achip:hover{border-color:var(--navy-soft);transform:translateY(-1px)}
+.achip.pd-design{background:var(--design-bg);border-color:var(--design-line)}
+.achip.pd-run{background:var(--run-bg);border-color:var(--run-line)}
+.achip.pd-both{background:var(--both-bg);border-color:var(--both-line)}
+.achip.sel{border-color:var(--navy2);box-shadow:0 0 0 1px var(--navy2),0 6px 18px -10px var(--navy2)}
+#archDetail{position:sticky;top:70px}
+#archDetail .dlayer{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--rev);margin-bottom:4px}
+#archDetail h3{font-family:var(--serif);font-size:21px;margin-bottom:8px}
+#archDetail .role{font-size:13.5px;color:var(--ink);margin-bottom:12px}
+#archDetail .legalnote{background:var(--ice2);border-radius:8px;padding:11px 13px;font-size:13px;margin-bottom:10px;border-left:3px solid var(--navy2)}
+#archDetail .legalnote b{color:var(--navy2);display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tagx{font-family:var(--mono);font-size:10.5px;color:var(--muted);background:var(--ice2);border:1px solid var(--hair);border-radius:6px;padding:4px 8px}
+.legend{display:flex;gap:16px;font-family:var(--mono);font-size:11px;color:var(--muted);flex-wrap:wrap;margin:10px 0 4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* ================= CONSOLE TAB ================= */
+.appetite{display:inline-flex;gap:4px;background:var(--ice2);padding:4px;border-radius:999px;border:1px solid var(--hair)}
+.appetite button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.appetite button[aria-pressed="true"]{background:var(--navy);color:#fff;font-weight:600}
+.pf-table{width:100%;border-collapse:separate;border-spacing:0 6px}
+.pf-table th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:0 10px 4px}
+.pf-row{background:var(--surface);cursor:pointer}
+.pf-row td{padding:12px 10px;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.pf-row td:first-child{border-left:1px solid var(--hair);border-radius:8px 0 0 8px}
+.pf-row td:last-child{border-right:1px solid var(--hair);border-radius:0 8px 8px 0}
+.pf-row:hover{background:var(--ice2)}
+.pf-row.active{outline:2px solid var(--navy2)}
+.pname{font-weight:600;font-size:14px}
+.pmeta{font-size:11.5px;color:var(--muted)}
+.verdict-chip{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:6px;display:inline-block}
+.vc-go{background:var(--go-bg);color:var(--go)}.vc-rev{background:var(--rev-bg);color:var(--rev)}.vc-nogo{background:var(--nogo-bg);color:var(--nogo)}
+.ratiobar{height:8px;background:var(--ice);border-radius:999px;overflow:hidden;border:1px solid var(--hair);width:140px}
+.ratiobar>span{display:block;height:100%}
+.hardbanner{background:var(--nogo-bg);border:1px solid var(--nogo-hair);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;color:var(--nogo);font-size:13.5px}
+.phasecards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+@media(max-width:900px){.phasecards{grid-template-columns:1fr 1fr}}
+.pcard{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:14px}
+.pcard .pcname{font-family:var(--serif);font-size:15px}
+.pcard .pctier{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:5px;display:inline-block;margin-top:6px}
+.pcard .pcbar{height:6px;background:var(--ice);border-radius:999px;overflow:hidden;border:1px solid var(--hair);margin-top:9px}
+.pcard .pcbar>span{display:block;height:100%}
+.pcard .arts{margin-top:9px;display:flex;flex-direction:column;gap:5px}
+.artrow{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;gap:8px}
+.artrow .an{color:var(--ink)}
+.artrow .an .crit{color:var(--nogo);font-weight:700;font-size:9.5px;margin-left:4px}
+.artrow .av{font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.floor-flag{display:inline-block;margin-left:8px;font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--rev);background:var(--rev-bg);border:1px solid var(--rev-hair);border-radius:5px;padding:1px 6px;vertical-align:middle}
+.appetite-hint{font-size:12px;color:var(--muted);margin:0 0 16px;max-width:78ch}
+
+/* ================= RISK TAB ================= */
+.riskgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:22px}
+@media(max-width:900px){.riskgrid{grid-template-columns:1fr}}
+svg .lab{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+svg .val{font-family:var(--mono);font-size:10px;fill:var(--ink)}
+.risk-register td{font-size:12.5px}
+.risk-register .rmono{font-family:var(--mono)}
+.regchip{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:5px;white-space:nowrap}
+.lrung{cursor:pointer}
+.lrung rect{transition:opacity .15s}
+.cbar{display:flex;height:14px;border-radius:7px;overflow:hidden;border:1px solid var(--hair);background:var(--ice);margin:10px 0 8px}
+.cbar-seg{display:block;height:100%}
+.agent-head{cursor:pointer}
+.agent-titles{flex:1;min-width:0}
+.agent-toggle{font-size:18px;color:var(--gold);transition:transform .2s;flex:0 0 auto;line-height:1}
+.agent.open .agent-toggle{transform:rotate(45deg)}
+.agent-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.agent.open .agent-detail{max-height:560px}
+.agent-detail-in{padding:12px 16px 15px}
+.agent-math{font-family:var(--mono);font-size:11px;line-height:1.65;color:var(--muted);background:var(--ice2);border-radius:8px;padding:9px 11px;margin-bottom:10px}
+.agent-math b{color:var(--ink)}
+.agent-subreg{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.agent-subitem{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;padding:7px 10px;border:1px solid var(--hair);border-radius:7px;background:var(--surface)}
+.agent{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+.agent-head{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--hair)}
+.agent-badge{width:32px;height:32px;border-radius:9px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;flex:0 0 auto}
+.agent-name{font-family:var(--serif);font-size:15.5px}
+.agent-lens{font-size:11.5px;color:var(--muted)}
+.agent-body{padding:4px 16px 13px}
+.finding{border-top:1px solid var(--ice);padding:10px 0}
+.finding:first-child{border-top:0}
+.eband{font-size:10.5px;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:5px;text-transform:uppercase;margin-right:8px}
+.finding-t{font-size:13.5px;font-weight:600;display:inline}
+.finding-d{font-size:12.5px;color:var(--muted);margin-top:3px}
+
+/* ================= ROADMAP TAB ================= */
+.h-rail{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.h-btn{flex:1;min-width:180px;text-align:left;cursor:pointer;border:1px solid var(--hair);background:var(--surface);border-radius:var(--radius);padding:13px 15px;transition:.2s;color:inherit}
+.h-btn:hover{border-color:var(--navy-soft);transform:translateY(-2px)}
+.h-btn[aria-pressed="true"]{border-color:var(--navy2);background:linear-gradient(180deg,#fff,var(--ice2));box-shadow:0 8px 20px -16px var(--navy2)}
+.h-btn .hz{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--rev);text-transform:uppercase}
+.h-btn .ht{font-family:var(--serif);font-weight:600;font-size:15px;margin:5px 0 4px}
+.h-btn .hf{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.timeline{height:5px;border-radius:5px;background:var(--hair);position:relative;margin:6px 0 24px;overflow:hidden}
+.timeline .fill{position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--navy2),var(--gold));transition:width .5s ease}
+.road-detail{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+@media(max-width:900px){.road-detail{grid-template-columns:1fr}}
+.moves{list-style:none;margin:0;padding:0}
+.moves li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--hair)}
+.moves li:last-child{border-bottom:0}
+.moves .ix{font-family:var(--mono);font-size:11px;color:var(--rev);padding-top:2px;min-width:24px}
+.moves .mt{font-weight:600;font-size:13.5px;font-family:var(--serif)}
+.moves .md{font-size:12.5px;color:var(--muted);margin-top:2px}
+.exit{border-radius:var(--radius);border:1px solid var(--go-hair);background:var(--go-bg);padding:15px}
+.exit .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--go);margin-bottom:9px}
+.exit .out{font-size:13px;color:var(--ink);margin:6px 0}
+.kpi-row{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+.kpi{flex:1;min-width:100px}
+.kpi .v{font-family:var(--disp);font-weight:700;font-size:19px;color:var(--navy)}
+.kpi .l{font-size:10.5px;color:var(--muted);font-family:var(--mono);margin-top:3px}
+
+@media print{nav.tabs,.appetite{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="inner">
+  <svg class="brandmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#C8A951" stroke-width="1.5"/><path d="M20 7 L31 26 H9 Z" fill="none" stroke="#C8A951" stroke-width="1.5"/><circle cx="20" cy="21" r="3.5" fill="#C8A951"/></svg>
+  <div class="brandtext"><div class="k">Legal AI Operating System</div><div class="s">Holonic Semantic Architecture · PLM Lifecycle Console · Enterprise Transformation Roadmaps</div></div>
+  <div class="spacer"></div>
+  <div class="gauge-wrap">
+    <div class="lab"><div class="k">Portfolio Adoption Maturity</div><div class="v" id="matVal">38%</div></div>
+    <svg width="46" height="46" viewBox="0 0 46 46">
+      <circle cx="23" cy="23" r="19" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="5"/>
+      <circle id="matArc" cx="23" cy="23" r="19" fill="none" stroke="#C8A951" stroke-width="5" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="74" transform="rotate(-90 23 23)"/>
+    </svg>
+  </div>
+</div></header>
+
+<nav class="tabs"><div class="tabs-in" id="tabbar"></div></nav>
+
+<main><div class="wrap">
+
+  <!-- ============ 1. VALUE POINTS ============ -->
+  <section class="view active" id="v-inflect">
+    <p class="eyebrow">Engineering discipline + architected governance — 2026</p>
+    <h2 class="vh">Engineering Trust &amp; Assurance</h2>
+    <p class="lead">Roughly four in five generative-AI pilots fail to reach production value — and the cause is almost never the model. It's missing data foundations, absent leadership commitment, and tools bolted onto old workflows. What follows pairs named engineering disciplines with the architected governance mechanisms already built into HSGA 3.0 and the PLM console — together they are what make autonomous automation safe to delegate and attorney judgment trustworthy to rely on.</p>
+
+    <h3 class="sub">From discipline to delegated trust</h3>
+    <p class="lead">Six stages reinforce each other in a continuous loop, not a one-way pipeline — value earned funds further engineering discipline. Click a node to see what it means for a legal organization; for the first three, drill into the specific disciplines, governance mechanisms and autonomy behaviors behind it, each tied back to a real layer in § Architecture.</p>
+
+    <div class="card" id="chainDiagramWrap" style="text-align:center"></div>
+    <div class="card" id="chainDetail" style="margin-top:14px"></div>
+
+    <div class="callout risk"><b>On professional judgment —</b> the architecture treats every AI action as advisory until it clears a governance gate (§ Architecture) and a human-oversight checkpoint (§ Console). The goal is judgment <em>augmentation</em>, with the escalation ladder in § Risk making it visible exactly where a human decided, not the model.</div>
+    <div class="callout mobility"><b>On lateral mobility —</b> because the knowledge substrate is a holonic ontology of matters, parties, precedent and rules — not a vendor's private prompt library — an attorney's judgment patterns and playbooks are portable across firms in principle, even when the underlying AI tooling isn't. See the Horizon 3 callout in § Roadmap.</div>
+  </section>
+
+  <!-- ============ 2. ARCHITECTURE ============ -->
+  <section class="view" id="v-arch">
+    <p class="eyebrow">Holonic Semantic Architecture, applied to legal</p>
+    <h2 class="vh">A deterministic substrate under every agentic action</h2>
+    <p class="lead">Every layer below is HSGA 3.0 re-grounded in legal concepts: matters instead of generic processes, professional-conduct rules instead of generic policy, privilege and ethical walls instead of generic access control. Click any component for how it behaves at design time (built once, governed) versus run time (executes live, on a matter).</p>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--design)"></i>design-time — built &amp; governed once</span>
+      <span><i class="dot" style="background:var(--run)"></i>run-time — executes live on a matter</span>
+      <span><i class="dot" style="background:linear-gradient(135deg,var(--design),var(--run))"></i>both</span>
+    </div>
+
+    <div class="arch-wrap">
+      <div class="bandlist" id="bandlist"></div>
+      <div class="card" id="archDetail"></div>
+    </div>
+  </section>
+
+  <!-- ============ 3. CONSOLE ============ -->
+  <section class="view" id="v-console">
+    <p class="eyebrow">PLM Dashboard, reframed as adoption governance</p>
+    <h2 class="vh">Every AI initiative earns its Go — nothing ships on hope</h2>
+    <p class="lead">The same lifecycle-console logic that gates engineering maturity now gates legal AI initiatives: Discover → Define → Design → Develop → Deploy → Run, scored against target maturity per discipline. A critical artifact scored at zero — like a missing human-oversight checkpoint — is a hard No-Go, regardless of how promising the pilot looks. Every initiative also carries its own risk appetite, because a routine NDA-review tool and a litigation-strategy agent should not clear the same bar.</p>
+
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
+      <span class="hint" style="font-size:12.5px;color:var(--muted)">Portfolio risk-appetite floor</span>
+      <div class="appetite" id="appetiteToggle"></div>
+    </div>
+    <p class="appetite-hint">This sets the <b>minimum</b> bar every initiative must clear — maturity, and evidence coverage — on top of its own appetite. It can only tighten an initiative's bar, never loosen it below what the initiative itself requires. Switch to <b>Conservative</b> and watch initiatives flip from Go to Review below.</p>
+
+    <table class="pf-table">
+      <thead><tr><th>Initiative</th><th>Owner</th><th>Maturity</th><th>Coverage</th><th>Verdict</th></tr></thead>
+      <tbody id="pfBody"></tbody>
+    </table>
+
+    <div id="hardGateBanner"></div>
+    <h3 class="sub" id="projDetailTitle">—</h3>
+    <p class="lead" id="projDetailLede"></p>
+    <div class="phasecards" id="phaseCards"></div>
+  </section>
+
+  <!-- ============ 4. RISK ============ -->
+  <section class="view" id="v-risk">
+    <p class="eyebrow">Risk metrology, applied to malpractice &amp; compliance exposure</p>
+    <h2 class="vh">Likelihood × impact, from prompt to precedent</h2>
+    <p class="lead">Every open gap between an initiative's target and assessed maturity is scored as a risk, the same way the PLM console scores engineering risk: likelihood (L) from how far off target and whether it's even been assessed, impact (I) from criticality, release-facing phase and discipline, exposure E = L × I, banded low / moderate / high / critical. The escalation ladder and gauge below are computed live from every initiative's actual gaps — not fixed numbers.</p>
+
+    <div class="legend" style="margin:2px 0 18px">
+      <span><i class="dot" style="background:var(--go)"></i>Low · E&lt;5</span>
+      <span><i class="dot" style="background:var(--rev)"></i>Moderate · E 5–9</span>
+      <span><i class="dot" style="background:var(--nogo)"></i>High · E 10–15</span>
+      <span><i class="dot" style="background:var(--crit)"></i>Critical · E≥16</span>
+    </div>
+
+    <div class="riskgrid">
+      <div class="card">
+        <h3>Escalation ladder</h3>
+        <p class="hint">defects (low/moderate exposure) → issues (high exposure) → incidents (critical exposure) · click a rung for a worked example</p>
+        <div id="ch-ladder"></div>
+        <div id="ladderExample" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--hair)"></div>
+      </div>
+      <div class="card">
+        <h3>Non-compliance / malpractice risk</h3>
+        <p class="hint">portfolio-average exposure across every open gap · zones mirror the register's L×I bands</p>
+        <div id="ch-gauge"></div>
+        <div id="gaugeRead"></div>
+      </div>
+    </div>
+
+    <h3 class="sub">Portfolio risk register</h3>
+    <p class="lead">The highest-exposure gates across every initiative, ranked by E = L × I — the same register logic that drives the PLM console's audit and Go/No-Go views. Click any row for how its score was built.</p>
+    <div class="card" id="riskRegister"></div>
+    <div class="card" id="riskItemDetail" style="margin-top:12px"></div>
+
+    <h3 class="sub">Discipline-lens risk agents</h3>
+    <p class="lead">Deterministic advisors, one per risk lens — the legal-domain equivalent of the PLM console's discipline agents. Posture is computed live from every initiative's scores against target. Click an agent to walk through its math and the specific gates behind it.</p>
+    <div id="agentList"></div>
+  </section>
+
+  <!-- ============ 5. ROADMAP ============ -->
+  <section class="view" id="v-roadmap">
+    <p class="eyebrow">Enterprise transformation pattern, applied to legal</p>
+    <h2 class="vh">Four horizons from foundation to a new practice model</h2>
+    <p class="lead">The same horizon structure used for The Hartford's underwriting transformation and Gulfstream's digital-factory roadmap, sequenced for a legal organization — whether a corporate legal department (already moving) or a law firm (closing the gap under competitive pressure).</p>
+
+    <div class="h-rail" id="horizonRail"></div>
+    <div class="timeline"><div class="fill" id="hFill"></div></div>
+    <div class="road-detail" id="horizonDetail"></div>
+
+    <div class="callout mobility" style="margin-top:24px"><b>Attorney mobility, solved at the substrate —</b> because Horizon 0 stands up a portable semantic layer (matters, precedent, playbooks modeled as an ontology, not locked inside one vendor's assistant), a lateral attorney's judgment patterns and client playbooks travel with them conceptually, even before any new firm's specific tooling is learned. Firms that skip Horizon 0 recreate the mobility problem inside their own AI stack.</div>
+  </section>
+
+</div></main>
+
+<footer><div class="wrap">
+  <span>Synthesizes: Holonic Semantic Architecture (HSGA 3.0) · PLM Lifecycle Console · enterprise AI transformation roadmaps (The Hartford, Gulfstream, Baxter R&amp;D) — reframed for legal strategy, risk management &amp; 2026 AI adoption.</span>
+  <span>Illustrative data throughout — wire to your matter-management, DMS and pilot-tracking systems for live values.</span>
+</div></footer>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   TAB NAVIGATION
+===================================================================== */
+const TABS=[
+  {id:"v-inflect",label:"Value Points"},
+  {id:"v-arch",label:"Operating Architecture"},
+  {id:"v-console",label:"Adoption Console"},
+  {id:"v-risk",label:"Risk Ladder"},
+  {id:"v-roadmap",label:"Transformation Roadmap"},
+];
+function buildTabs(){
+  document.getElementById("tabbar").innerHTML=TABS.map((t,i)=>
+    `<button class="tabbtn" role="tab" aria-selected="${i===0}" data-id="${t.id}"><span class="num">0${i+1}</span>${t.label}</button>`
+  ).join("");
+  document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.id)));
+}
+function showTab(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));
+  document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected",b.dataset.id===id));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* =====================================================================
+   SVG HELPER
+===================================================================== */
+function svg(w,h,inner){return `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img">${inner}</svg>`;}
+
+/* =====================================================================
+   2. ARCHITECTURE — layers grounded in legal concepts
+===================================================================== */
+const BANDS=[
+  {key:"emergent",label:"Client- &amp; attorney-facing surface",items:["convai","agents"]},
+  {key:"loop",label:"Cognitive loop — matter lifecycle",items:["intake","understand","research","decide","act","measure"]},
+  {key:"bridge",label:"Grounding bridge",items:["rag2","ctxeng"]},
+  {key:"gate",label:"Governance membrane",items:["gateway","breaker"]},
+  {key:"sub",label:"Deterministic knowledge substrate",items:["ontology","domains","kb","walls"],foundation:true},
+  {key:"control",label:"Control plane",items:["risk","change","sockets"]},
+];
+const C={
+  convai:{n:"Legal Conversational AI",s:"attorney &amp; client surface",layer:"Emergent surface",phase:"both",
+    role:"The chat/co-pilot surface attorneys and clients interact with. Every answer is grounded in the matter record and firm precedent — never raw model memory.",
+    legal:"Prevents the single most common malpractice pattern in 2026 filings: a fabricated citation the model 'remembered' instead of retrieved.",
+    tags:[["grounded by","Precedent RAG"],["scoped by","Ethical walls"]]},
+  agents:{n:"Agentic legal workflows",s:"drafting · research · discovery",layer:"Emergent surface",phase:"run",
+    role:"Autonomous agents that draft, triage discovery, and compile research — composing steps nobody scripted turn-by-turn.",
+    legal:"This is where 'agentic AI automation' actually lives, per the research brief — and exactly where the circuit breaker below has to hold.",
+    tags:[["bounded by","AI Circuit Breaker"],["composes","Matter workflows"]]},
+  intake:{n:"Matter intake",s:"acquire the facts",layer:"Cognitive loop · 1",phase:"both",
+    role:"Capture the client's facts, documents and objective — the seed of everything downstream.",
+    legal:"Design time: what a well-formed intake requires. Run time: live client/document ingestion, conflicts-checked before anything else runs.",
+    tags:[["feeds","Understand"]]},
+  understand:{n:"Ground in matter + law",s:"semantic grounding",layer:"Cognitive loop · 2",phase:"both",
+    role:"Link the intake to the legal ontology — parties, obligations, jurisdiction, applicable rules and precedent.",
+    legal:"This is the step generic AI tools skip; it's why an ungrounded assistant will confidently cite the wrong jurisdiction's rule.",
+    tags:[["uses","Precedent RAG"],["links to","Legal ontology"]]},
+  research:{n:"Research &amp; reason",s:"retrieve, analyze",layer:"Cognitive loop · 3",phase:"both",
+    role:"Retrieve controlling authority and firm work product; reason over the grounded facts.",
+    legal:"Context engineering (below) curates exactly the precedent and prior work the matter is entitled to see — respecting ethical walls.",
+    tags:[["uses","Matter context engineering"]]},
+  decide:{n:"Decide the recommended action",s:"choose",layer:"Cognitive loop · 4",phase:"run",
+    role:"The agent proposes a course of action — a clause, a filing position, a next step.",
+    legal:"A recommendation, not a decision of record. The circuit breaker checks preconditions before it can be presented as ready to act on.",
+    tags:[["gated by","AI Circuit Breaker"]]},
+  act:{n:"Act — draft, file, advise",s:"execute (gated)",layer:"Cognitive loop · 5",phase:"run",
+    role:"The recommendation becomes a draft, a filing, or client-facing advice.",
+    legal:"Anything client- or court-facing is postcondition-checked: human sign-off required before an action leaves the gate.",
+    tags:[["gated by","Governance gateway"]]},
+  measure:{n:"Measure outcome &amp; escalation",s:"quantify, feed back",layer:"Cognitive loop · 6",phase:"both",
+    role:"Track whether the output held up — in review, with the client, or in court — and close the learning loop.",
+    legal:"Gate failures become defects; unreviewed failures become incidents. This is the source data for the § Risk ladder.",
+    tags:[["feeds","Risk metrology"]]},
+  rag2:{n:"Precedent RAG",s:"retrieval over your own work product",layer:"Grounding bridge",phase:"both",
+    role:"Graph-aware retrieval over the firm's or department's own matters, precedent and playbooks — not the open web.",
+    legal:"The difference between an assistant that 'sounds right' and one that cites your actual controlling authority.",
+    tags:[["retrieves from","Firm/client knowledge base"]]},
+  ctxeng:{n:"Matter context engineering",s:"curates the window, respects walls",layer:"Grounding bridge",phase:"both",
+    role:"Assembles exactly the instructions, precedent and prior work each step needs — and nothing a persona isn't cleared to see.",
+    legal:"This is where ethical walls and privilege boundaries are enforced technically, not just by policy memo.",
+    tags:[["respects","Ethical walls &amp; persona model"]]},
+  gateway:{n:"Ethics &amp; Compliance Gateway",s:"design-time front door",layer:"Governance membrane",phase:"design",
+    role:"Every new AI workflow is elaborated into requirements — bar rules, UPL boundaries, malpractice exposure — before it can go live.",
+    legal:"The single control that stops 'we bought a tool' from becoming 'we shipped a workflow.' No workflow bypasses this gate.",
+    tags:[["produces","Guardrail requirements"],["fed by","Practitioner sockets"]]},
+  breaker:{n:"AI Circuit Breaker",s:"bounds every decide/act",layer:"Governance membrane",phase:"run",
+    role:"Pre/post-condition checks on every recommendation and action; halts or routes to human review below a confidence threshold.",
+    legal:"Scored by MTBH — mean turns between hallucination. This is the number that should appear in every malpractice-insurance renewal conversation.",
+    tags:[["metric","MTBH"],["guards","Decide/Act"]]},
+  ontology:{n:"Legal ontology",s:"matters · parties · obligations",layer:"Substrate · scaffold",phase:"both",
+    role:"The carving primitives: matter, party, role, obligation, event, document, jurisdiction — modeled once, reused everywhere.",
+    legal:"Keeps 'a filing deadline' and 'the fact that triggered it' from ever being blurred by the model — the BFO discipline underneath HSGA.",
+    tags:[["anchors","Practice domain models"]]},
+  domains:{n:"Practice domain models",s:"contracts · litigation · IP · corporate",layer:"Substrate · domain",phase:"both",
+    role:"The practice-area vocabulary — clause types, cause-of-action elements, deal structures — imported and version-pinned per jurisdiction.",
+    legal:"Service inputs/outputs are typed against real practice-area classes, so a contracts agent can't silently drift into litigation advice.",
+    tags:[["typed by","Workflows"]]},
+  kb:{n:"Firm/client knowledge base",s:"precedent · work product · playbooks",layer:"Substrate · knowledge",phase:"both",
+    role:"The governed source of truth: precedent, prior matters, negotiation playbooks — read-only at run time, updated only through review.",
+    legal:"This is the 'data foundation' the research names as the top predictor of pilots that succeed.",
+    tags:[["served by","Precedent RAG"]]},
+  walls:{n:"Ethical walls &amp; persona model",s:"who can see what",layer:"Substrate · persona",phase:"both",
+    role:"Party / role / persona model determining which matters, clients and documents each agent or attorney can access.",
+    legal:"Conflicts and privilege enforced as a technical boundary, not just a policy — the precondition for trusting agentic automation at all.",
+    tags:[["scopes","Context window"]]},
+  risk:{n:"Risk metrology",s:"defect → issue → incident",layer:"Control plane",phase:"both",
+    role:"The measurement system underlying § Risk Ladder — MTBD/MTBI/MTBInc/MTBH and a single non-compliance risk score.",
+    legal:"Turns 'is our AI safe' from a feeling into a tracked metric a GC or managing partner can report upward.",
+    tags:[["metric","MTBH"]]},
+  change:{n:"Change &amp; audit management",s:"demand → requirements → rollout → audit",layer:"Control plane",phase:"both",
+    role:"The loop wrapping the whole lifecycle: new-use-case demand, requirements engineering, rollout management, audit.",
+    legal:"Every new AI use case enters through demand management — no shadow deployments outside the gate.",
+    tags:[["front","Demand intake"],["back","Audit"]]},
+  sockets:{n:"Practitioner sockets",s:"where partners &amp; GCs plug in",layer:"Control plane",phase:"design",
+    role:"Where partners, general counsel and compliance contribute review criteria, best-practice methods and sign-off artifacts.",
+    legal:"This is the leadership-commitment lever made concrete: a named human owns each discipline's bar for 'good enough to ship.'",
+    tags:[["sockets","Discipline · Method · Sign-off"]]},
+};
+let archSel="kb";
+function chipHTML(id){
+  const c=C[id];
+  return `<button class="achip pd-${c.phase}" data-id="${id}">${c.n}<small>${c.s}</small></button>`;
+}
+function buildArch(){
+  document.getElementById("bandlist").innerHTML=BANDS.map(b=>
+    `<div class="aband ${b.foundation?"foundation":""}"><div class="bl"><span>${b.label}</span></div>
+      <div class="achips">${b.items.map(chipHTML).join("")}</div></div>`
+  ).join("");
+  document.querySelectorAll(".achip").forEach(b=>b.addEventListener("click",()=>{archSel=b.dataset.id;renderArchDetail();markArchSel();}));
+  markArchSel();
+  renderArchDetail();
+}
+function markArchSel(){document.querySelectorAll(".achip").forEach(b=>b.classList.toggle("sel",b.dataset.id===archSel));}
+function renderArchDetail(){
+  const c=C[archSel];
+  const tagHTML=c.tags.map(t=>`<span class="tagx"><b>${t[0]}:</b> ${t[1]}</span>`).join("");
+  document.getElementById("archDetail").innerHTML=`
+    <div class="dlayer">${c.layer}</div>
+    <h3>${c.n}</h3>
+    <p class="role">${c.role}</p>
+    <div class="legalnote"><b>Legal application</b>${c.legal}</div>
+    <div class="tagrow">${tagHTML}</div>`;
+}
+function jumpToArch(key){archSel=key;renderArchDetail();markArchSel();showTab("v-arch");}
+
+/* =====================================================================
+   1a. TRUST FLYWHEEL — interactive node diagram
+   Nodes 0-2 (discipline/governance/autonomy) drill into VP pairs below;
+   VP archKeys tie straight back to a component in C (§ Architecture).
+===================================================================== */
+const CHAIN=[
+  {key:"discipline",label:"Discipline",facet:"disc",n:"Engineering discipline",s:"requirements · data · systems · quality · security",
+    d:"Six named disciplines — requirements, knowledge &amp; data, systems, quality, business architecture, and security/access engineering — each contribute one testable practice to how an autonomous legal workflow gets built."},
+  {key:"governance",label:"Governance",facet:"gov",n:"Architected governance",s:"gateway · circuit breaker · risk metrology · sockets",
+    d:"Each discipline is operationalized as a real governance mechanism: an Ethics &amp; Compliance Gateway, an AI Circuit Breaker, Risk Metrology, and Practitioner Sockets — every one a clickable layer in § Architecture, not a policy document."},
+  {key:"autonomy",label:"Autonomy",facet:"auto",n:"Bounded autonomy",s:"agentic action, gated by precondition",
+    d:"Every autonomous decide/act step is checked against explicit preconditions before it executes and postconditions before it's considered complete — autonomy that halts itself when it isn't sure, instead of executing blind."},
+  {key:"judgment",label:"Judgment",n:"Amplified judgment",s:"attorney decides, AI proposes",
+    d:"The system proposes; a named human decides. This is the architecture's direct answer to concerns about independent professional judgment — automation expands what an attorney can review, it doesn't replace what they decide."},
+  {key:"trust",label:"Trust",n:"Measured trust",s:"MTBH · escalation ladder",
+    d:"Trust isn't asserted, it's measured: MTBH (mean turns between hallucination) and the defect → issue → incident escalation ladder in § Risk turn confidence into a number a GC or managing partner can track over time."},
+  {key:"value",label:"Value",n:"Business value",s:"time saved · risk reduced · revenue",
+    d:"Realized maturity converts to value the way it does in the PLM business-impact model: capability uplift → process efficiency → client value → revenue and risk reduction — and it funds the next round of engineering discipline, closing the loop."},
+];
+const VP=[
+  {archKey:"gateway",thread:"automation",
+    disc:{n:"Requirements Engineering",d:"UPL boundaries and bar-rule obligations are elaborated into explicit, testable requirements before any workflow can draft, file or advise — the same discipline that turns a vague ask into a verifiable spec."},
+    gov:{n:"Ethics &amp; Compliance Gateway",d:"Every new AI workflow is elaborated into requirements — bar rules, UPL boundaries, malpractice exposure — before it can go live. No workflow bypasses this gate."},
+    auto:{n:"Authority gated before launch",d:"An agent doesn't decide what it's allowed to do — that's fixed at design time, by a named human, before the workflow ever touches a matter."}},
+  {archKey:"kb",thread:"automation",
+    disc:{n:"Knowledge &amp; Data Engineering",d:"Precedent, work product and playbooks are indexed and governed as the retrieval source of truth — the data foundation the research names as the top predictor of a pilot that survives."},
+    gov:{n:"Deterministic Knowledge Substrate",d:"The governed source of truth: precedent, prior matters, negotiation playbooks — read-only at run time, updated only through review."},
+    auto:{n:"Reasoning grounded in your matters",d:"Every retrieval is grounded in your own ontology of matters, parties, obligations and precedent — never open-web recall."}},
+  {archKey:"breaker",thread:"automation",
+    disc:{n:"Systems Engineering",d:"Pre/post-condition contracts are specified for every decide/act step — the same discipline used to bound any autonomous system before it's trusted with a live environment."},
+    gov:{n:"AI Circuit Breaker",d:"Pre/post-condition checks on every recommendation and action; halts or routes to human review below a confidence threshold."},
+    auto:{n:"Halts and routes below threshold",d:"\"Trust the AI\" becomes a measured number — MTBH, mean turns between hallucination — not a hope."}},
+  {archKey:"risk",thread:"judgment",
+    disc:{n:"Quality Engineering",d:"Design controls, inspections and defect discipline are applied to AI output the same way they're applied to any engineered deliverable."},
+    gov:{n:"Risk Metrology",d:"The measurement system: MTBD / MTBI / MTBInc / MTBH and a single non-compliance risk score — one escalation ladder from defect to incident."},
+    auto:{n:"Defects caught before incidents",d:"A flawed clause caught in red-teaming is cheap; the same flaw reaching a client unreviewed is a malpractice incident. The ladder decides which one happens."}},
+  {archKey:"sockets",thread:"judgment",
+    disc:{n:"Business &amp; Enterprise Architecture",d:"Capability, value-stream and process ownership mapped the same way an enterprise architect maps who owns a system boundary."},
+    gov:{n:"Practitioner Sockets",d:"Where partners, general counsel and compliance contribute review criteria, best-practice methods and sign-off artifacts."},
+    auto:{n:"Named ownership of the acceptance bar",d:"Leadership commitment becomes structural: a specific human owns each discipline's bar for \"good enough to ship,\" not an abstract policy."}},
+  {archKey:"walls",thread:"both",
+    disc:{n:"Security &amp; Access Engineering",d:"Role, persona and visibility boundaries are modeled and enforced as a technical scope on every context window, not just asserted in a policy document."},
+    gov:{n:"Ethical Walls &amp; Persona Model",d:"Party / role / persona model determining which matters, clients and documents each agent or attorney can access."},
+    auto:{n:"Privilege enforced by construction",d:"Confidentiality and ethical-wall boundaries are enforced as a technical scoping rule on every agent's context window — the precondition for trusting agentic automation with client matters at all."}},
+];
+let chainSel="discipline", drillIdx=null;
+
+function chainDiagram(){
+  const cx=270,cy=180,R=132,nr=44,n=CHAIN.length;
+  const pos=CHAIN.map((c,i)=>{const ang=(-90+i*(360/n))*Math.PI/180;return{x:cx+R*Math.cos(ang),y:cy+R*Math.sin(ang)};});
+  let edges="";
+  for(let i=0;i<n;i++){
+    const a=pos[i],b=pos[(i+1)%n];
+    const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy),ux=dx/dist,uy=dy/dist;
+    const sx=a.x+ux*(nr+2),sy=a.y+uy*(nr+2),ex=b.x-ux*(nr+12),ey=b.y-uy*(nr+12);
+    edges+=`<path class="cedge" data-touch="${CHAIN[i].key},${CHAIN[(i+1)%n].key}" d="M ${sx.toFixed(1)} ${sy.toFixed(1)} L ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="#D8E1EC" stroke-width="2" fill="none" marker-end="url(#arrow-normal)"/>`;
+  }
+  let nodes="";
+  CHAIN.forEach((c,i)=>{
+    const p=pos[i];
+    nodes+=`<g class="cnode" data-key="${c.key}" tabindex="0" role="button" aria-label="${c.n}">
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${nr}"/>
+      <text class="cidx" x="${p.x.toFixed(1)}" y="${(p.y-10).toFixed(1)}">0${i+1}</text>
+      <text x="${p.x.toFixed(1)}" y="${(p.y+9).toFixed(1)}">${c.label}</text>
+    </g>`;
+  });
+  return `<svg class="chain-diagram" viewBox="0 0 540 360" role="img" aria-label="Engineering trust flywheel — six reinforcing stages">
+    <defs>
+      <marker id="arrow-normal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D8E1EC"/></marker>
+      <marker id="arrow-hi" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C8A951"/></marker>
+    </defs>
+    <g>${edges}</g><g>${nodes}</g>
+  </svg>`;
+}
+function buildChain(){
+  document.getElementById("chainDiagramWrap").innerHTML=chainDiagram();
+  document.querySelectorAll(".cnode").forEach(g=>g.addEventListener("click",()=>selectChain(g.dataset.key)));
+  selectChain(chainSel);
+}
+function selectChain(key){chainSel=key;drillIdx=null;markChainSel();renderChainDetail();}
+function markChainSel(){
+  document.querySelectorAll(".cnode").forEach(g=>g.classList.toggle("sel",g.dataset.key===chainSel));
+  document.querySelectorAll(".cedge").forEach(e=>{
+    const hi=e.dataset.touch.split(",").includes(chainSel);
+    e.setAttribute("stroke",hi?"#C8A951":"#D8E1EC");
+    e.setAttribute("stroke-width",hi?"3":"2");
+    e.setAttribute("marker-end",hi?"url(#arrow-hi)":"url(#arrow-normal)");
+  });
+}
+function renderChainDetail(){
+  const c=CHAIN.find(x=>x.key===chainSel), idx=CHAIN.indexOf(c);
+  let drillHTML="";
+  if(c.facet){
+    const pills=VP.map((v,i)=>`<button class="vp-pairbtn ${drillIdx===i?'on':''}" data-idx="${i}">${v[c.facet].n}</button>`).join("");
+    drillHTML=`<div class="vp-pairrow"><span style="font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-right:2px">Explore the six:</span>${pills}</div>`;
+    if(drillIdx!=null){
+      const v=VP[drillIdx],f=v[c.facet];
+      drillHTML+=`<div class="chain-drill">
+        <span class="vp-badge ${v.thread}">${v.thread==="both"?"automation + judgment":v.thread}</span>
+        <p class="vp-desc">${f.d}</p>
+        <button class="vp-archlink" data-key="${v.archKey}">View this layer in Architecture →</button>
+      </div>`;
+    }
+  }
+  document.getElementById("chainDetail").innerHTML=`
+    <div class="vp-eyebrow">Node 0${idx+1} of ${CHAIN.length}</div>
+    <h3>${c.n}</h3>
+    <span class="chain-cap">${c.s}</span>
+    <p class="vp-desc">${c.d}</p>
+    ${drillHTML}`;
+  document.querySelectorAll("#chainDetail .vp-pairbtn").forEach(b=>b.addEventListener("click",()=>{
+    const i=+b.dataset.idx;drillIdx=(drillIdx===i)?null:i;renderChainDetail();
+  }));
+  const link=document.querySelector("#chainDetail .vp-archlink");
+  if(link)link.addEventListener("click",e=>jumpToArch(e.currentTarget.dataset.key));
+}
+
+/* =====================================================================
+   3. CONSOLE — adoption maturity / go-no-go
+===================================================================== */
+const PHASES=[
+ {key:"discover",name:"Discover",groups:[
+   {label:"Leadership &amp; Sponsorship",arts:[{n:"Executive sponsor named",b:3},{n:"Value hypothesis documented",b:3},{n:"Risk appetite set",b:3,c:true}]}]},
+ {key:"define",name:"Define",groups:[
+   {label:"Data Foundations",arts:[{n:"Matter / work-product inventory",b:3},{n:"Data quality baseline",b:3},{n:"Access &amp; privilege mapping",b:3,c:true}]},
+   {label:"Ethics &amp; Professional Responsibility",arts:[{n:"UPL boundary defined",b:3,c:true},{n:"Bar-rule requirements mapped",b:3},{n:"Human-oversight checkpoint defined",b:3,c:true}]}]},
+ {key:"design",name:"Design",groups:[
+   {label:"Guardrail Architecture",arts:[{n:"Circuit-breaker conditions specified",b:3,c:true},{n:"Escalation ladder defined",b:3},{n:"MTBH confidence threshold set",b:3}]},
+   {label:"Workflow Redesign",arts:[{n:"Process redesigned, not bolted on",b:3,c:true},{n:"Role &amp; handoff map",b:3}]}]},
+ {key:"develop",name:"Develop",groups:[
+   {label:"Build &amp; Integration",arts:[{n:"Precedent RAG indexed",b:3},{n:"Ethical-wall enforcement built",b:3,c:true},{n:"Audit logging wired",b:3}]},
+   {label:"Testing &amp; Red-Team",arts:[{n:"Hallucination red-team",b:3,c:true},{n:"Bias &amp; fairness testing",b:3}]}]},
+ {key:"deploy",name:"Deploy",groups:[
+   {label:"Pilot Governance",arts:[{n:"Human-in-loop review live",b:3,c:true},{n:"Pilot cohort trained",b:3},{n:"Client disclosure protocol",b:3}]}]},
+ {key:"run",name:"Run",groups:[
+   {label:"Outcome Measurement",arts:[{n:"ROI / time-savings tracked",b:3},{n:"MTBH trend monitored",b:3},{n:"Continuous audit cadence",b:3,c:true}]}]},
+];
+PHASES.forEach(p=>p.groups.forEach((g,gi)=>g.arts.forEach((a,ai)=>{a.id=p.key+"."+gi+"."+ai;})));
+
+function scoreByName(phaseKey,name){const p=PHASES.find(x=>x.key===phaseKey);for(const g of p.groups)for(const a of g.arts)if(a.n.startsWith(name))return a.id;return null;}
+function seed(list){const o={};list.forEach(([ph,nm,v])=>{const id=scoreByName(ph,nm);if(id)o[id]=v;});return o;}
+
+const PROJECTS=[
+ {id:"contract",name:"Contract Review Copilot",owner:"Corporate Legal · fast mover",appetite:"lenient",
+   scores:seed([["discover","Executive sponsor",3],["discover","Value hypothesis",3],["discover","Risk appetite",3],
+    ["define","Matter / work-product",3],["define","Data quality",3],["define","Access",3],
+    ["define","UPL boundary",3],["define","Bar-rule",2],["define","Human-oversight",3],
+    ["design","Circuit-breaker",3],["design","Escalation ladder",3],["design","MTBH confidence",3],
+    ["design","Process redesigned",3],["design","Role",2],
+    ["develop","Precedent RAG",3],["develop","Ethical-wall",3],["develop","Audit logging",2],
+    ["develop","Hallucination red-team",3],["develop","Bias",2],
+    ["deploy","Human-in-loop review",3],["deploy","Pilot cohort",3],["deploy","Client disclosure",2],
+    ["run","ROI",2],["run","MTBH trend",2],["run","Continuous audit",1]])},
+ {id:"research",name:"Associate Research Assistant",owner:"Law Firm · closing the gap",appetite:"balanced",
+   scores:seed([["discover","Executive sponsor",2],["discover","Value hypothesis",2],["discover","Risk appetite",1],
+    ["define","Matter / work-product",2],["define","Data quality",1],["define","Access",2],
+    ["define","UPL boundary",2],["define","Bar-rule",2],["define","Human-oversight",2],
+    ["design","Circuit-breaker",1],["design","Escalation ladder",1],["design","MTBH confidence",0],
+    ["design","Process redesigned",1],["design","Role",1],
+    ["develop","Precedent RAG",1],["develop","Ethical-wall",1],["develop","Audit logging",0],
+    ["develop","Hallucination red-team",0],["develop","Bias",0]])},
+ {id:"ediscovery",name:"E-Discovery Triage Agent",owner:"Corporate Legal · fast mover",appetite:"balanced",
+   scores:seed([["discover","Executive sponsor",3],["discover","Value hypothesis",3],["discover","Risk appetite",3],
+    ["define","Matter / work-product",3],["define","Data quality",3],["define","Access",3],
+    ["define","UPL boundary",3],["define","Bar-rule",3],["define","Human-oversight",3],
+    ["design","Circuit-breaker",3],["design","Escalation ladder",3],["design","MTBH confidence",2],
+    ["design","Process redesigned",3],["design","Role",3],
+    ["develop","Precedent RAG",2],["develop","Ethical-wall",3],["develop","Audit logging",3],
+    ["develop","Hallucination red-team",3],["develop","Bias",2],
+    ["deploy","Human-in-loop review",3],["deploy","Pilot cohort",2],["deploy","Client disclosure",2],
+    ["run","ROI",3],["run","MTBH trend",2],["run","Continuous audit",2]])},
+ {id:"intake",name:"Client Intake Chatbot",owner:"Law Firm · early stage",appetite:"conservative",
+   scores:seed([["discover","Executive sponsor",1],["discover","Value hypothesis",2],["discover","Risk appetite",1],
+    ["define","Matter / work-product",1],["define","Data quality",1],["define","Access",1],
+    ["define","UPL boundary",0],["define","Bar-rule",1],["define","Human-oversight",0]])},
+ {id:"mobility",name:"Lateral Knowledge Transfer Layer",owner:"Cross-firm infrastructure",appetite:"balanced",
+   scores:seed([["discover","Executive sponsor",2],["discover","Value hypothesis",3],["discover","Risk appetite",2],
+    ["define","Matter / work-product",2],["define","Data quality",1],["define","Access",2]])},
+];
+
+const APPETITES={
+  conservative:{hi:.90,lo:.60,cov:.80,label:"Conservative"},
+  balanced:{hi:.85,lo:.50,cov:.60,label:"Balanced"},
+  lenient:{hi:.75,lo:.40,cov:.50,label:"Lenient"},
+};
+let portfolioAppetite="balanced";
+
+function pstats(p,proj){let sumB=0,sumA=0,hard=[],gradeable=0,scored=0;
+  p.groups.forEach(g=>g.arts.forEach(art=>{if(art.b!=null){const a0=proj.scores[art.id];const a=(a0==null?0:a0);
+    sumB+=art.b;sumA+=a;gradeable++;if(a0!=null)scored++;if(art.c&&art.b>0&&a0===0)hard.push({art,group:g});}}));
+  return{sumB,sumA,hard,gradeable,scored,ratio:(sumB>0?sumA/sumB:null),cov:(gradeable>0?scored/gradeable:0)};}
+function overallOf(proj){let sumB=0,sumA=0,hard=[],gradeable=0,scored=0;
+  PHASES.forEach(p=>{const s=pstats(p,proj);sumB+=s.sumB;sumA+=s.sumA;gradeable+=s.gradeable;scored+=s.scored;s.hard.forEach(h=>hard.push(h));});
+  return{sumB,sumA,hard,gradeable,scored,ratio:(sumB>0?sumA/sumB:0),cov:(gradeable>0?scored/gradeable:0)};}
+
+// The portfolio appetite is a FLOOR: it can only raise the bar an initiative must
+// clear (maturity + evidence coverage), never lower it below the initiative's own
+// intrinsic risk tolerance. This is what makes the toggle actually move verdicts.
+function effectiveAppetiteFor(pr){
+  const own=APPETITES[pr.appetite],floor=APPETITES[portfolioAppetite];
+  const hi=Math.max(own.hi,floor.hi),lo=Math.max(own.lo,floor.lo),cov=Math.max(own.cov,floor.cov);
+  const tightened=hi>own.hi||lo>own.lo||cov>own.cov;
+  return{hi,lo,cov,tightened,ownLabel:own.label,floorLabel:floor.label};
+}
+function tier(r,A){if(r==null)return"muted";if(r>=A.hi)return"go";if(r>=A.lo)return"rev";return"nogo";}
+function tierColor(t){return t==="go"?"var(--go)":t==="rev"?"var(--rev)":t==="nogo"?"var(--nogo)":"var(--muted)";}
+function verdict(o,A){
+  if(o.hard.length>0)return{tag:"NO-GO",cls:"nogo",reason:o.hard.length+" critical gate"+(o.hard.length>1?"s":"")+" scored zero — mandatory remediation before proceeding."};
+  if(o.ratio<A.lo)return{tag:"NO-GO",cls:"nogo",reason:"Maturity "+(o.ratio*100).toFixed(0)+"% is below the "+(A.lo*100).toFixed(0)+"% floor for the applied appetite."};
+  if(o.ratio>=A.hi&&o.cov>=A.cov)return{tag:"GO",cls:"go",reason:"Maturity clears "+(A.hi*100).toFixed(0)+"% and "+(o.cov*100).toFixed(0)+"% of gates carry evidence."};
+  if(o.cov<A.cov)return{tag:"REVIEW",cls:"rev",reason:"Only "+(o.cov*100).toFixed(0)+"% of applicable gates are scored — below the "+(A.cov*100).toFixed(0)+"% evidence bar for this appetite. Too little evidence to auto-approve."};
+  return{tag:"REVIEW",cls:"rev",reason:"Maturity "+(o.ratio*100).toFixed(0)+"% is between review and go — partner/GC spot-check required."};}
+
+let activeProject="contract";
+function buildAppetiteToggle(){
+  document.getElementById("appetiteToggle").innerHTML=Object.entries(APPETITES).map(([k,a])=>
+    `<button data-k="${k}" aria-pressed="${k===portfolioAppetite}">${a.label}</button>`).join("");
+  document.querySelectorAll("#appetiteToggle button").forEach(b=>b.addEventListener("click",()=>{
+    portfolioAppetite=b.dataset.k;
+    document.querySelectorAll("#appetiteToggle button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.k===portfolioAppetite));
+    renderPortfolio();renderProjectDetail();
+  }));
+}
+function renderPortfolio(){
+  document.getElementById("pfBody").innerHTML=PROJECTS.map(pr=>{
+    const o=overallOf(pr);const A=effectiveAppetiteFor(pr);const v=verdict(o,A);const t=tier(o.ratio,A);
+    const pct=Math.round((o.ratio||0)*100);const covPct=Math.round((o.cov||0)*100);
+    const covOk=o.cov>=A.cov;
+    return `<tr class="pf-row ${pr.id===activeProject?'active':''}" data-id="${pr.id}">
+      <td><div class="pname">${pr.name}</div>${A.tightened?'<span class="floor-flag">floor applied</span>':''}</td>
+      <td><span class="pmeta">${pr.owner}</span></td>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="ratiobar"><span style="width:${pct}%;background:${tierColor(t)}"></span></div><span class="pmeta">${pct}%</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="ratiobar"><span style="width:${covPct}%;background:${covOk?'var(--go)':'var(--rev)'}"></span></div><span class="pmeta">${covPct}%</span></div></td>
+      <td><span class="verdict-chip vc-${v.cls}">${v.tag}</span></td>
+    </tr>`;
+  }).join("");
+  document.querySelectorAll(".pf-row").forEach(r=>r.addEventListener("click",()=>{activeProject=r.dataset.id;renderPortfolio();renderProjectDetail();}));
+}
+function renderProjectDetail(){
+  const pr=PROJECTS.find(p=>p.id===activeProject);
+  const o=overallOf(pr);const A=effectiveAppetiteFor(pr);const v=verdict(o,A);
+  document.getElementById("projDetailTitle").innerHTML=pr.name;
+  const floorNote=A.tightened
+    ? `Portfolio floor (<b>${A.floorLabel}</b>) overrides this initiative's own ${A.ownLabel.toLowerCase()} default — the bar is raised to ${(A.hi*100).toFixed(0)}% maturity and ${(A.cov*100).toFixed(0)}% evidence coverage.`
+    : `Evaluated at its own ${A.ownLabel.toLowerCase()} appetite — the portfolio floor is looser here, so it doesn't apply.`;
+  document.getElementById("projDetailLede").innerHTML=`<span class="verdict-chip vc-${v.cls}">${v.tag}</span> &nbsp; ${v.reason}<br><span style="font-size:12.5px;color:var(--muted)">${floorNote} &nbsp;·&nbsp; coverage: <b>${Math.round((o.cov||0)*100)}%</b></span>`;
+  const banner=document.getElementById("hardGateBanner");
+  if(o.hard.length){
+    banner.innerHTML=`<div class="hardbanner"><b>Hard gate tripped:</b> ${o.hard.map(h=>h.art.n).join(", ")} — this is the console's technical answer to "independent professional judgment": a workflow cannot go live without a named human-oversight checkpoint.</div>`;
+  } else banner.innerHTML="";
+  document.getElementById("phaseCards").innerHTML=PHASES.map(p=>{
+    const s=pstats(p,pr);const t=tier(s.ratio,A);const pct=s.ratio==null?0:Math.round(s.ratio*100);const covPct=Math.round((s.cov||0)*100);
+    const arts=p.groups.flatMap(g=>g.arts.map(a=>{
+      const raw=pr.scores[a.id];const has=raw!=null;const val=has?raw:null;
+      const col=!has?"var(--muted)":val>=a.b?"var(--go)":val===0?"var(--nogo)":"var(--rev)";
+      const bg=!has?"var(--ice)":val>=a.b?"var(--go-bg)":val===0?"var(--nogo-bg)":"var(--rev-bg)";
+      const label=!has?"no data":val+"/"+a.b;
+      return `<div class="artrow"><span class="an">${a.n}${a.c?'<span class="crit">CRITICAL</span>':''}</span><span class="av" style="color:${col};background:${bg}">${label}</span></div>`;
+    })).join("");
+    return `<div class="pcard"><div class="pcname">${p.name}</div>
+      <span class="pctier" style="color:${tierColor(t)};background:${t==='go'?'var(--go-bg)':t==='rev'?'var(--rev-bg)':t==='nogo'?'var(--nogo-bg)':'var(--ice)'}">${s.sumB?pct+'% maturity · '+covPct+'% scored':'not scored'}</span>
+      <div class="pcbar"><span style="width:${pct}%;background:${tierColor(t)}"></span></div>
+      <div class="arts">${arts}</div></div>`;
+  }).join("");
+}
+
+/* =====================================================================
+   4. RISK — likelihood × impact modeling, mirroring the PLM risk engine
+===================================================================== */
+function phaseWeight(p){return(p.key==="deploy"||p.key==="run")?1:0;}
+function discWeight(g){return/Ethics|Guardrail|Pilot Governance|Outcome Measurement/.test(g.label)?1:0;}
+function regBandOf(E){return E>=16?"critical":E>=10?"high":E>=5?"moderate":"low";}
+function regColor(b){return b==="critical"?"var(--crit)":b==="high"?"var(--nogo)":b==="moderate"?"var(--rev)":"var(--go)";}
+function regBg(b){return b==="critical"?"var(--crit-bg)":b==="high"?"var(--nogo-bg)":b==="moderate"?"var(--rev-bg)":"var(--go-bg)";}
+function regLabel(b){return b.charAt(0).toUpperCase()+b.slice(1);}
+function impactTextLegal(art){
+  const n=art.n.toLowerCase();
+  if(/upl boundary|bar-rule|human-oversight/.test(n))return"an unauthorized-practice or bar-discipline exposure reaches a client with no one accountable for catching it";
+  if(/circuit-breaker|escalation ladder|mtbh confidence/.test(n))return"a hallucinated or unchecked AI output ships with no safety net in place";
+  if(/process redesigned|role/.test(n))return"the tool gets adopted but the old failure-prone workflow survives underneath it";
+  if(/precedent rag|ethical-wall|audit logging/.test(n))return"privilege or confidentiality boundaries are not technically enforced";
+  if(/red-team|bias/.test(n))return"hallucination or bias patterns ship to production undetected";
+  if(/human-in-loop|pilot cohort|client disclosure/.test(n))return"a client-facing output goes out without the review the firm promised";
+  if(/roi|mtbh trend|continuous audit/.test(n))return"the initiative drifts out of governance after launch, unmonitored";
+  if(/executive sponsor|value hypothesis|risk appetite/.test(n))return"no one is accountable if the initiative goes wrong";
+  if(/matter|work-product|data quality|access/.test(n))return"AI reasoning is built on ungoverned or inaccessible data";
+  return"confidence in the output is reduced";
+}
+function risksFor(proj){
+  const risks=[];
+  PHASES.forEach(p=>p.groups.forEach(g=>g.arts.forEach(art=>{
+    if(art.b==null||art.b===0)return;
+    const a=proj.scores[art.id];const assessed=a!=null;const av=assessed?a:0;const gap=art.b-av;
+    if(assessed&&gap<=0)return;
+    const L=assessed?Math.min(5,gap+2):Math.max(3,Math.min(5,art.b+1));
+    const I=Math.min(5,(art.c?4:2)+phaseWeight(p)+discWeight(g));
+    const E=L*I,band=regBandOf(E);
+    risks.push({project:proj.name,projectId:proj.id,art,group:g,phase:p,gap:Math.max(0,gap),assessed,L,I,E,band,impact:impactTextLegal(art)});
+  })));
+  risks.sort((x,y)=>y.E-x.E);
+  return risks;
+}
+function portfolioRisks(){let all=[];PROJECTS.forEach(pr=>{all=all.concat(risksFor(pr));});all.sort((x,y)=>y.E-x.E);return all;}
+function portfolioRiskScore(){const risks=portfolioRisks();return risks.length?risks.reduce((s,r)=>s+r.E,0)/(risks.length*25):0;}
+function jumpToConsole(projectId){activeProject=projectId;renderPortfolio();renderProjectDetail();showTab("v-console");}
+
+/* ---- escalation ladder + worked example ---- */
+const LADDER_BANDS={defects:["low","moderate"],issues:["high"],incidents:["critical"]};
+const LADDER_META={
+  defects:{title:"Defect",rung:"caught in design-time review or red-teaming — before the workflow ever ran on a real matter",next:"an issue, once it survives review and reaches run time"},
+  issues:{title:"Issue",rung:"caught by an attorney or reviewer before it reached a client",next:"an incident, once it reaches a client, filing or court unreviewed"},
+  incidents:{title:"Incident",rung:"reached a client, filing or court without adequate review",next:null,
+    cost:"malpractice and bar-discipline exposure — the outcome every rung below exists to prevent"},
+};
+let ladderSel="defects";
+function ladderChart(){
+  const risks=portfolioRisks();
+  const counts={low:0,moderate:0,high:0,critical:0};risks.forEach(r=>counts[r.band]++);
+  const LADDER=[
+    ["defects","Defects",counts.low+counts.moderate,"var(--go)"],
+    ["issues","Issues",counts.high,"var(--rev)"],
+    ["incidents","Incidents",counts.critical,"var(--nogo)"],
+  ];
+  const W=380,H=150,pad=84,top=18,bh=28,gap=14;
+  const max=Math.max(1,...LADDER.map(l=>l[2]));
+  let bars=LADDER.map((l,i)=>{
+    const y=top+i*(bh+gap);
+    const w=Math.max(6,(l[2]/max)*(W-pad-30));
+    const sel=l[0]===ladderSel;
+    return `<g class="lrung" data-band="${l[0]}" tabindex="0" role="button" aria-label="${l[1]}, ${l[2]} items">
+      <text class="lab" x="0" y="${y+bh/2}" dominant-baseline="middle">${l[1]}</text>
+      <rect x="${pad}" y="${y}" width="${w}" height="${bh}" rx="5" fill="${l[3]}" opacity="${sel?1:.65}" stroke="${sel?"var(--navy)":"none"}" stroke-width="2"/>
+      <text class="val" x="${pad+w+8}" y="${y+bh/2}" dominant-baseline="middle">${l[2]}</text>
+    </g>`;
+  }).join("");
+  return svg(W,H,bars);
+}
+function buildLadder(){
+  document.getElementById("ch-ladder").innerHTML=ladderChart();
+  document.querySelectorAll(".lrung").forEach(g=>g.addEventListener("click",()=>{ladderSel=g.dataset.band;buildLadder();renderLadderExample();}));
+}
+function renderLadderExample(){
+  const items=portfolioRisks().filter(r=>LADDER_BANDS[ladderSel].includes(r.band));
+  const meta=LADDER_META[ladderSel];
+  const ex=items[0];
+  const box=document.getElementById("ladderExample");
+  if(!ex){box.innerHTML=`<p class="hint" style="margin:0">No items currently sit at this rung.</p>`;return;}
+  box.innerHTML=`
+    <div class="vp-eyebrow">${meta.title} · worked example</div>
+    <div class="mini-h">${ex.project} — ${ex.art.n}</div>
+    <p class="vp-desc"><b>At this rung:</b> ${meta.rung}. Exposure E=${ex.E} (L=${ex.L} × I=${ex.I}) because ${ex.impact}.</p>
+    <p class="vp-desc" style="margin-bottom:10px">${meta.next?`<b>Left unaddressed, it becomes:</b> ${meta.next}.`:`<b>This is the top rung:</b> ${meta.cost}.`}</p>
+    <button class="vp-archlink" data-id="${ex.projectId}">View ${ex.project} in Console →</button>`;
+  const btn=box.querySelector(".vp-archlink");
+  if(btn)btn.addEventListener("click",e=>jumpToConsole(e.currentTarget.dataset.id));
+}
+
+/* ---- non-compliance gauge, banded + composition breakdown ---- */
+function gaugeChart(){
+  const val=portfolioRiskScore();
+  const W=380,H=160,cx=W/2,cy=126,r=88,sw=20;
+  function pt(a){return[cx+r*Math.cos(a),cy-r*Math.sin(a)];}
+  function arc(a0,a1,col,width){const[x0,y0]=pt(a0),[x1,y1]=pt(a1);
+    return `<path d="M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)}" fill="none" stroke="${col}" stroke-width="${width}" stroke-linecap="butt"/>`;}
+  const zones=[[0,.20,"var(--go)"],[.20,.45,"var(--rev)"],[.45,.70,"var(--nogo)"],[.70,1,"var(--crit)"]];
+  const start=Math.PI;
+  const zoneArcs=zones.map(([a,b,col])=>arc(start-a*Math.PI,start-b*Math.PI,col,sw)).join("");
+  const aVal=start-Math.min(1,val)*Math.PI;
+  const[nx,ny]=pt(aVal);
+  const needle=`<line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="var(--ink)" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="6" fill="var(--ink)"/>`;
+  const txt=`<text x="${cx}" y="${cy-30}" text-anchor="middle" font-family="var(--disp)" font-size="34" font-weight="700" fill="var(--ink)">${val.toFixed(2)}</text>
+    <text x="${cx}" y="${cy-12}" text-anchor="middle" class="lab">risk score · 0–1</text>
+    <text class="lab" x="${cx-r-6}" y="${cy+16}" text-anchor="start">low</text>
+    <text class="lab" x="${cx+r+6}" y="${cy+16}" text-anchor="end">critical</text>`;
+  return svg(W,H,zoneArcs+needle+txt);
+}
+function renderGaugeRead(){
+  const risks=portfolioRisks();
+  const counts={low:0,moderate:0,high:0,critical:0};risks.forEach(r=>counts[r.band]++);
+  const total=risks.length||1;
+  const val=portfolioRiskScore();
+  const zone=val<.20?"low":val<.45?"moderate":val<.70?"high":"critical";
+  const pct=k=>Math.round((counts[k]/total)*100);
+  const seg=k=>`<span class="cbar-seg" style="width:${pct(k)}%;background:${regColor(k)}" title="${regLabel(k)}: ${counts[k]} (${pct(k)}%)"></span>`;
+  document.getElementById("gaugeRead").innerHTML=`
+    <span class="regchip" style="color:${regColor(zone)};background:${regBg(zone)}">${regLabel(zone)} exposure</span>
+    <p class="vp-desc" style="margin:8px 0">In plain terms: of ${total} open gaps portfolio-wide, ${pct("critical")}% sit at critical exposure and ${pct("high")}% at high — together, that's what pushes the score into the ${zone} band.</p>
+    <div class="cbar">${seg("low")}${seg("moderate")}${seg("high")}${seg("critical")}</div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--go)"></i>Low ${counts.low}</span>
+      <span><i class="dot" style="background:var(--rev)"></i>Moderate ${counts.moderate}</span>
+      <span><i class="dot" style="background:var(--nogo)"></i>High ${counts.high}</span>
+      <span><i class="dot" style="background:var(--crit)"></i>Critical ${counts.critical}</span>
+    </div>`;
+}
+
+/* ---- portfolio risk register, clickable ---- */
+let regRisks=[],regSel=0;
+function renderRiskRegister(){
+  regRisks=portfolioRisks().slice(0,10);
+  const rows=regRisks.map((r,i)=>`<tr class="pf-row ${i===regSel?"active":""}" data-idx="${i}">
+      <td><span class="pname" style="font-size:13px">${r.project}</span></td>
+      <td>${r.art.n}${r.art.c?' <span class="crit">CRITICAL</span>':''}</td>
+      <td><span class="pmeta">${r.phase.name}</span></td>
+      <td class="rmono" style="text-align:center">${r.L}</td>
+      <td class="rmono" style="text-align:center">${r.I}</td>
+      <td class="rmono" style="text-align:center"><b>${r.E}</b></td>
+      <td><span class="regchip" style="color:${regColor(r.band)};background:${regBg(r.band)}">${regLabel(r.band)}</span></td>
+    </tr>`).join("");
+  document.getElementById("riskRegister").innerHTML=regRisks.length?`
+    <table class="pf-table risk-register">
+      <thead><tr><th>Initiative</th><th>Gate</th><th>Phase</th><th>L</th><th>I</th><th>Exposure</th><th>Band</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`:`<p class="hint">No open gaps — every scored gate is at or above target.</p>`;
+  document.querySelectorAll("#riskRegister .pf-row").forEach(tr=>tr.addEventListener("click",()=>{regSel=+tr.dataset.idx;renderRiskRegister();renderRiskDetail();}));
+  renderRiskDetail();
+}
+function renderRiskDetail(){
+  const box=document.getElementById("riskItemDetail");
+  if(!regRisks.length){box.innerHTML="";return;}
+  const r=regRisks[regSel];
+  const likeExplain=r.assessed
+    ? `assessed at ${r.art.b-r.gap}/${r.art.b}, a gap of ${r.gap} → likelihood = min(5, gap+2) = <b>${r.L}</b>`
+    : `no evidence recorded yet → likelihood defaults to max(3, min(5, target+1)) = <b>${r.L}</b> — unassessed is treated as risky, not risk-free`;
+  const impactParts=[r.art.c?"+4 critical gate":"+2 standard gate"];
+  if(phaseWeight(r.phase))impactParts.push(`+1 release-facing phase (${r.phase.name})`);
+  if(discWeight(r.group))impactParts.push(`+1 high-stakes discipline (${r.group.label})`);
+  box.innerHTML=`
+    <div class="vp-eyebrow">Risk register · item ${regSel+1} of ${regRisks.length}</div>
+    <div class="mini-h">${r.art.n}${r.art.c?' <span class="crit">CRITICAL</span>':""}</div>
+    <span class="chain-cap">${r.project} · ${r.phase.name} · ${r.group.label}</span>
+    <div class="agent-math">
+      L (likelihood) = <b>${r.L}</b>/5 — ${likeExplain}<br>
+      I (impact) = <b>${r.I}</b>/5 — ${impactParts.join(", ")}, capped at 5<br>
+      E = L × I = <b>${r.E}</b> → <span class="regchip" style="color:${regColor(r.band)};background:${regBg(r.band)}">${regLabel(r.band)}</span>
+    </div>
+    <p class="vp-desc">If unmitigated: ${r.impact}.</p>
+    <button class="vp-archlink" data-id="${r.projectId}">View ${r.project} in Console →</button>`;
+  const btn=box.querySelector(".vp-archlink");
+  if(btn)btn.addEventListener("click",e=>jumpToConsole(e.currentTarget.dataset.id));
+}
+
+/* ---- discipline-lens agents, clickable / expandable ---- */
+function agentPosture(matchFn){
+  let sumB=0,sumA=0;
+  PROJECTS.forEach(pr=>PHASES.forEach(p=>p.groups.forEach(g=>{
+    if(!matchFn(g.label))return;
+    g.arts.forEach(art=>{if(art.b!=null){sumB+=art.b;const a=pr.scores[art.id];sumA+=(a==null?0:a);}});
+  })));
+  return sumB>0?sumA/sumB:null;
+}
+function agentDrawsFrom(matchFn){
+  const seen=new Set();
+  PHASES.forEach(p=>p.groups.forEach(g=>{if(matchFn(g.label))seen.add(p.name+" → "+g.label);}));
+  return[...seen];
+}
+const AGENTS=[
+  {glyph:"E",name:"Ethics &amp; Professional Responsibility",lens:"UPL boundaries, human-oversight checkpoints, bar-rule conformance.",
+    match:l=>/Ethics/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — below the safe line. At least one initiative has zero human-oversight coverage — the exact scenario the research flags under "independent professional judgment."`:`Portfolio posture ${Math.round(post*100)}% — holding. Keep human-oversight checkpoints current as new workflows launch.`},
+  {glyph:"D",name:"Data &amp; Knowledge Governance",lens:"Data quality, access mapping, semantic grounding.",
+    match:l=>/Data Foundations/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — ungoverned retrieval quietly erodes every downstream answer, the single biggest predictor of a stalled pilot per the research.`:`Portfolio posture ${Math.round(post*100)}% — data foundations are holding across active initiatives.`},
+  {glyph:"S",name:"Systems &amp; Guardrail Engineering",lens:"Circuit-breaker conditions, escalation ladder, workflow redesign.",
+    match:l=>/Guardrail Architecture|Workflow Redesign/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — several initiatives haven't specified circuit-breaker preconditions yet; autonomy without a guardrail is autonomy without trust.`:`Portfolio posture ${Math.round(post*100)}% — bounded-autonomy guardrails are specified across most initiatives.`},
+  {glyph:"Q",name:"Quality &amp; Red-Team Engineering",lens:"Build integrity, hallucination red-teaming, bias testing.",
+    match:l=>/Build &amp; Integration|Testing &amp; Red-Team/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — red-teaming coverage is thin; hallucination and bias patterns can still ship to production undetected.`:`Portfolio posture ${Math.round(post*100)}% — build and red-team discipline are on track.`},
+  {glyph:"P",name:"Pilot &amp; Deployment Governance",lens:"Human-in-loop review, cohort training, client disclosure.",
+    match:l=>/Pilot Governance/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — pilots are launching ahead of the human-in-loop review they need.`:`Portfolio posture ${Math.round(post*100)}% — deployment governance is keeping pace with pilot launches.`},
+  {glyph:"R",name:"Client Value &amp; ROI",lens:"Outcome measurement, MTBH trend, continuous audit.",
+    match:l=>/Outcome Measurement/.test(l),
+    guide:post=>post<0.6?`Portfolio posture ${Math.round(post*100)}% — initiatives that do reach Run aren't yet tracked with the rigor the business case needs.`:`Portfolio posture ${Math.round(post*100)}% — value is being measured, not just assumed.`},
+];
+function renderAgents(){
+  document.getElementById("agentList").innerHTML=AGENTS.map((a,i)=>{
+    const post=agentPosture(a.match);
+    const band=post==null?"e-rev":post<0.4?"e-nogo":post<0.7?"e-rev":"e-go";
+    const bandTxt=post==null?"watch":band==="e-nogo"?"high risk":band==="e-rev"?"watch":"on track";
+    return `<div class="agent" data-i="${i}">
+      <div class="agent-head" data-i="${i}">
+        <div class="agent-badge">${a.glyph}</div>
+        <div class="agent-titles"><div class="agent-name">${a.name} <span style="font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted)">${post==null?"":"· "+Math.round(post*100)+"%"}</span></div><div class="agent-lens">${a.lens}</div></div>
+        <span class="eband" style="color:${bandColor(band)};background:${bandBg(band)}">${bandTxt}</span>
+        <span class="agent-toggle">+</span>
+      </div>
+      <div class="agent-detail"><div class="agent-detail-in" id="agentBody${i}"></div></div>
+    </div>`;
+  }).join("");
+  document.querySelectorAll(".agent-head").forEach(h=>h.addEventListener("click",()=>{
+    const item=document.querySelector(`.agent[data-i="${h.dataset.i}"]`);
+    const opening=!item.classList.contains("open");
+    item.classList.toggle("open");
+    if(opening)renderAgentBody(+h.dataset.i);
+  }));
+  // open the first agent by default so the pattern is discoverable
+  const first=document.querySelector('.agent[data-i="0"]');
+  if(first){first.classList.add("open");renderAgentBody(0);}
+}
+function renderAgentBody(i){
+  const a=AGENTS[i];
+  const post=agentPosture(a.match);
+  const draws=agentDrawsFrom(a.match);
+  const items=portfolioRisks().filter(r=>a.match(r.group.label)).slice(0,4);
+  const subHTML=items.length
+    ? items.map(r=>`<div class="agent-subitem"><span>${r.project} — ${r.art.n}</span><span class="regchip" style="color:${regColor(r.band)};background:${regBg(r.band)}">${regLabel(r.band)}</span></div>`).join("")
+    : `<p class="hint" style="margin:0">No open gaps in this lens right now.</p>`;
+  document.getElementById("agentBody"+i).innerHTML=`
+    <div class="agent-math">Draws from: ${draws.join(" · ")}<br>Posture: ${post==null?"not yet scored":Math.round(post*100)+"% of target points scored across all initiatives"}</div>
+    <p class="vp-desc">${post==null?"No initiative has scored this discipline yet.":a.guide(post)}</p>
+    <div class="vp-eyebrow" style="margin-top:2px">Highest-exposure gates in this lens</div>
+    <div class="agent-subreg">${subHTML}</div>`;
+}
+function bandColor(b){return b==="e-nogo"?"var(--nogo)":b==="e-rev"?"var(--rev)":"var(--go)";}
+function bandBg(b){return b==="e-nogo"?"var(--nogo-bg)":b==="e-rev"?"var(--rev-bg)":"var(--go-bg)";}
+
+/* =====================================================================
+   5. ROADMAP — horizons
+===================================================================== */
+const HORIZONS=[
+  {k:"h0",z:"H0 · 0–6mo",t:"Foundation",fill:20,
+    moves:[
+      ["Stand up the legal ontology","Matters, parties, obligations, precedent modeled once — the HSGA substrate."],
+      ["Deploy the Ethics &amp; Compliance Gateway","No AI workflow reaches attorneys or clients without clearing bar-rule and UPL review."],
+      ["Name an executive sponsor per practice group","The leadership-commitment lever the research identifies as decisive."],
+      ["Baseline data quality across matter management &amp; DMS","Closes the data-foundation gap before any pilot launches."],
+    ],
+    exit:["Ontology live and queried by at least one pilot","Gateway operational with documented sign-off criteria","One named sponsor per practice group"],
+    kpis:[["100%","practice groups with a sponsor"],["1","ontology live"],["0","ungated pilots"]]},
+  {k:"h1",z:"H1 · 6–12mo",t:"Contained Pilots",fill:48,
+    moves:[
+      ["Launch high-volume, low-risk workflows first","NDA review, discovery triage, research memos — corporate legal moves here first, per the adoption-speed gap."],
+      ["Human-in-the-loop on every client- or court-facing output","Judgment stays with the attorney; the agent proposes."],
+      ["Track MTBH from day one","Trust becomes a number, not a feeling, before scale-up is considered."],
+      ["Validate the ROI hypothesis with real time-savings data","Converts the value case from a pitch to evidence."],
+    ],
+    exit:["MTBH trust metric above the appetite threshold for each pilot","ROI case validated with real data, not projections","Zero unreviewed client-facing incidents"],
+    kpis:[["3–5","contained pilots live"],["≥85%","MTBH conformance target"],["0","unreviewed incidents"]]},
+  {k:"h2",z:"H2 · 12–24mo",t:"Scaled Agentic Workflows",fill:74,
+    moves:[
+      ["Embed agentic automation across the matter lifecycle","Intake through drafting through review, governed end-to-end by the circuit breaker."],
+      ["Law firms close the adoption gap under competitive pressure","The research's central tension resolves here — laggards catch up or lose matters."],
+      ["Formalize the audit cadence","Continuous, not point-in-time — matches the control-plane design."],
+      ["Extend practitioner sockets to every discipline","Partners and GCs own the bar for their own domain."],
+    ],
+    exit:["Majority of eligible workflows on-platform","Audit cadence running on a fixed schedule","Practitioner sign-off embedded, not ad hoc"],
+    kpis:[["60%+","eligible workflows automated"],["Quarterly","audit cadence"],["1","sponsor per discipline"]]},
+  {k:"h3",z:"H3 · 24mo+",t:"Transformed Practice",fill:96,
+    moves:[
+      ["Shift to judgment-augmentation as the operating model","AI expands what attorneys can review, not what replaces their judgment."],
+      ["Introduce new service &amp; pricing models enabled by the throughput gain","Where the revenue growth the research cites actually shows up."],
+      ["Make the semantic layer portable across the firm's relationships","Directly addresses lateral-mobility friction — see callout below."],
+      ["Report AI risk metrics alongside financial metrics at the leadership level","Governance graduates from a project concern to a standing agenda item."],
+    ],
+    exit:["New pricing/service model live in at least one practice group","Portable knowledge layer referenced in lateral-hire onboarding","AI risk metrics on the standing leadership dashboard"],
+    kpis:[["1+","new service model live"],["100%","laterals onboarded via the ontology"],["Board-level","risk reporting cadence"]]},
+];
+let activeHorizon="h0";
+function buildHorizonRail(){
+  document.getElementById("horizonRail").innerHTML=HORIZONS.map(h=>
+    `<button class="h-btn" data-k="${h.k}" aria-pressed="${h.k===activeHorizon}"><div class="hz">${h.z}</div><div class="ht">${h.t}</div><div class="hf">${h.moves.length} moves · ${h.exit.length} exit criteria</div></button>`
+  ).join("");
+  document.querySelectorAll(".h-btn").forEach(b=>b.addEventListener("click",()=>{activeHorizon=b.dataset.k;renderHorizon();}));
+}
+function renderHorizon(){
+  document.querySelectorAll(".h-btn").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===activeHorizon));
+  const h=HORIZONS.find(x=>x.k===activeHorizon);
+  document.getElementById("hFill").style.width=h.fill+"%";
+  document.getElementById("horizonDetail").innerHTML=`
+    <div class="card"><h3 style="font-family:var(--serif);font-size:19px;margin-bottom:10px">${h.t} — key moves</h3>
+      <ul class="moves">${h.moves.map((m,i)=>`<li><span class="ix">0${i+1}</span><div><div class="mt">${m[0]}</div><div class="md">${m[1]}</div></div></li>`).join("")}</ul>
+    </div>
+    <div>
+      <div class="exit"><div class="lab">Exit criteria</div>${h.exit.map(e=>`<div class="out">✓ ${e}</div>`).join("")}
+        <div class="kpi-row">${h.kpis.map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div></div>`).join("")}</div>
+      </div>
+    </div>`;
+}
+
+/* =====================================================================
+   INIT
+===================================================================== */
+buildTabs();
+buildArch();
+buildChain();
+buildAppetiteToggle();
+renderPortfolio();
+renderProjectDetail();
+buildLadder();
+renderLadderExample();
+document.getElementById("ch-gauge").innerHTML=gaugeChart();
+renderGaugeRead();
+renderRiskRegister();
+renderAgents();
+buildHorizonRail();
+renderHorizon();
+</script>
+</body>
+</html>
