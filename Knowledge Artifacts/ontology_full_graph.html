@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Ontology — Full Graph</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap');
+:root {
+  --bg:#070c14; --panel:#0c1220; --panel2:#111a2a; --panel3:#172035;
+  --border:#1d2c42; --border2:#253650; --text:#bfccdf; --text2:#6a85a8; --text3:#35506e;
+  --sans:'Outfit',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;display:flex;height:100vh;overflow:hidden}
+
+/* ─── SIDEBAR ─── */
+#sidebar{width:260px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-eyebrow{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.sb-title{font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+.sb-sub{font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:3px}
+.sb-scroll{flex:1;overflow-y:auto;padding-bottom:20px}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.stats-row{display:flex;border-bottom:1px solid var(--border)}
+.stat{flex:1;padding:9px 4px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:var(--mono);font-size:15px;font-weight:500;color:#fff;display:block}
+.stat-l{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.sb-search{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sb-search input{width:100%;background:var(--panel2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:3px;outline:none}
+.sb-search input:focus{border-color:#4f91ff}
+.sb-search input::placeholder{color:var(--text3)}
+.section-head{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;cursor:pointer;user-select:none}
+.section-head:hover .sh-label{color:var(--text)}
+.sh-label{font-family:var(--mono);font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);flex:1}
+.sh-line{flex:1;height:1px;background:var(--border)}
+.sh-arrow{font-size:10px;color:var(--text3);transition:transform .2s}
+.sh-arrow.open{transform:rotate(90deg)}
+.onto-list{padding:0 10px 6px;display:flex;flex-direction:column;gap:3px}
+.onto-row{display:flex;align-items:center;gap:7px;padding:4px 6px;border-radius:3px;cursor:pointer;transition:background .12s}
+.onto-row:hover{background:var(--panel2)}
+.onto-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 5px currentColor}
+.onto-label{font-size:11px;color:var(--text);flex:1}
+.onto-cnt{font-family:var(--mono);font-size:8px;color:var(--text3);background:var(--panel3);padding:1px 5px;border-radius:2px}
+.onto-check{width:13px;height:13px;border-radius:2px;border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.onto-check.on{background:#4f91ff;border-color:#4f91ff}
+.onto-check.on::after{content:'✓';font-size:8px;color:#fff;font-weight:700}
+.edge-sec{padding:0 10px 6px}
+.edge-row{display:flex;align-items:center;gap:7px;padding:3px 6px;border-radius:3px;cursor:pointer}
+.edge-row:hover{background:var(--panel2)}
+.edge-line{height:2px;width:22px;flex-shrink:0;border-radius:1px}
+.edge-label{font-size:10px;color:var(--text2);flex:1}
+.edge-cnt{font-family:var(--mono);font-size:8px;padding:1px 4px;border-radius:2px;border:1px solid currentColor}
+.layout-row{display:flex;gap:5px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.lay-btn{flex:1;background:var(--panel2);border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:8px;padding:5px 3px;border-radius:2px;cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:.05em;transition:all .15s}
+.lay-btn:hover{color:#fff;border-color:#4f91ff}
+.lay-btn.active{background:#4f91ff;border-color:#4f91ff;color:#fff}
+.sel-all-row{display:flex;gap:5px;padding:5px 12px}
+.sel-btn{flex:1;font-family:var(--mono);font-size:8px;padding:4px;border-radius:2px;border:1px solid var(--border2);background:var(--panel2);color:var(--text2);cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:.05em}
+.sel-btn:hover{color:#fff;border-color:var(--text3)}
+
+/* ─── CANVAS ─── */
+#main{flex:1;position:relative;overflow:hidden;background:radial-gradient(ellipse at 35% 25%,#0d1a2e 0%,var(--bg) 65%)}
+#canvas{width:100%;height:100%}
+
+/* ─── INFO PANEL ─── */
+#info{position:absolute;top:14px;right:14px;width:250px;background:rgba(11,18,30,.97);border:1px solid var(--border2);border-radius:7px;overflow:hidden;transform:translateX(280px);transition:transform .22s;backdrop-filter:blur(14px);z-index:30}
+#info.open{transform:translateX(0)}
+.ip-head{padding:11px 13px 9px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.ip-badge{font-family:var(--mono);font-size:7px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:2px 6px;border-radius:2px;display:inline-block;margin-bottom:3px}
+.ip-name{font-size:13px;font-weight:700;color:#fff;line-height:1.2}
+.ip-x{cursor:pointer;color:var(--text3);font-size:14px;line-height:1;margin-left:auto;flex-shrink:0}
+.ip-x:hover{color:var(--text)}
+.ip-body{padding:10px 13px}
+.ip-row{display:flex;gap:6px;margin-bottom:7px;font-size:11px}
+.ip-k{font-family:var(--mono);font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;width:54px;flex-shrink:0;padding-top:1px}
+.ip-v{color:var(--text);line-height:1.4}
+.ip-uri{font-family:var(--mono);font-size:7px;color:var(--text3);word-break:break-all}
+.ip-conns{border-top:1px solid var(--border);padding:9px 13px 11px}
+.ip-conn-hd{font-family:var(--mono);font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.ip-conn{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:10px}
+.ip-rel{font-family:var(--mono);font-size:7px;color:var(--text3);background:var(--panel2);padding:1px 4px;border-radius:2px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+
+/* ─── TOOLBAR ─── */
+#toolbar{position:absolute;bottom:16px;right:16px;display:flex;flex-direction:column;gap:4px;z-index:10}
+.tb{width:34px;height:34px;background:rgba(11,18,30,.9);border:1px solid var(--border2);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:15px;transition:all .15s;backdrop-filter:blur(8px)}
+.tb:hover{color:#fff;border-color:#4f91ff;background:#4f91ff}
+.watermark{position:absolute;bottom:12px;left:12px;font-family:var(--mono);font-size:7px;color:var(--text3);pointer-events:none;line-height:1.6}
+
+/* ─── TOOLTIP ─── */
+#tooltip{position:absolute;background:rgba(7,12,20,.95);border:1px solid var(--border2);border-radius:4px;padding:6px 10px;font-size:10px;color:var(--text);pointer-events:none;opacity:0;transition:opacity .15s;z-index:40;white-space:nowrap;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-head">
+    <div class="sb-eyebrow">Enterprise Ontology Stack</div>
+    <div class="sb-title">Full Graph Explorer</div>
+    <div class="sb-sub">21 ontologies &amp; taxonomies · Jeffrey Wallk, Sherri Anderson</div>
+  </div>
+  <div class="sb-scroll">
+
+    <div class="stats-row">
+      <div class="stat"><span class="stat-n" id="sn">213</span><span class="stat-l">Nodes</span></div>
+      <div class="stat"><span class="stat-n" id="se">312</span><span class="stat-l">Edges</span></div>
+      <div class="stat"><span class="stat-n" id="so">19</span><span class="stat-l">Ontos</span></div>
+    </div>
+
+    <div class="sb-search"><input id="srch" type="text" placeholder="Search classes…" oninput="doSearch(this.value)"></div>
+
+    <div class="layout-row">
+      <button class="lay-btn active" id="lb-force" onclick="setLayout('force')">⊕ Force</button>
+      <button class="lay-btn" id="lb-radial" onclick="setLayout('radial')">◎ Radial</button>
+      <button class="lay-btn" id="lb-cluster" onclick="setLayout('cluster')">⬡ Cluster</button>
+    </div>
+
+    <div class="sel-all-row">
+      <button class="sel-btn" onclick="selectAll(true)">Select All</button>
+      <button class="sel-btn" onclick="selectAll(false)">Deselect All</button>
+    </div>
+
+    <!-- CORE TAXONOMIES -->
+    <div class="section-head" onclick="toggleSection('tax')">
+      <span class="sh-label">Core Taxonomies</span>
+      <span class="sh-line"></span>
+      <span class="sh-arrow open" id="arr-tax">›</span>
+    </div>
+    <div id="sec-tax" class="onto-list"></div>
+
+    <!-- CORE ONTOLOGIES -->
+    <div class="section-head" onclick="toggleSection('core')">
+      <span class="sh-label">Core Ontologies</span>
+      <span class="sh-line"></span>
+      <span class="sh-arrow open" id="arr-core">›</span>
+    </div>
+    <div id="sec-core" class="onto-list"></div>
+
+    <!-- DOMAIN ONTOLOGIES -->
+    <div class="section-head" onclick="toggleSection('domain')">
+      <span class="sh-label">Domain Ontologies</span>
+      <span class="sh-line"></span>
+      <span class="sh-arrow open" id="arr-domain">›</span>
+    </div>
+    <div id="sec-domain" class="onto-list"></div>
+
+    <!-- EDGE TYPES -->
+    <div class="section-head" onclick="toggleSection('edges')">
+      <span class="sh-label">Relationships</span>
+      <span class="sh-line"></span>
+      <span class="sh-arrow open" id="arr-edges">›</span>
+    </div>
+    <div id="sec-edges" class="edge-sec"></div>
+
+  </div>
+</div>
+
+<div id="main">
+  <svg id="canvas"></svg>
+  <div id="info">
+    <div class="ip-head">
+      <div style="flex:1">
+        <div class="ip-badge" id="ip-badge">—</div>
+        <div class="ip-name" id="ip-name">—</div>
+      </div>
+      <div class="ip-x" onclick="closeInfo()">✕</div>
+    </div>
+    <div class="ip-body">
+      <div class="ip-row"><span class="ip-k">Ontology</span><span class="ip-v" id="ip-onto">—</span></div>
+      <div class="ip-row"><span class="ip-k">Level</span><span class="ip-v" id="ip-level">—</span></div>
+      <div class="ip-row"><span class="ip-k">URI</span><span class="ip-uri" id="ip-uri">—</span></div>
+    </div>
+    <div class="ip-conns">
+      <div class="ip-conn-hd">Connections</div>
+      <div id="ip-conn-list"></div>
+    </div>
+  </div>
+  <div id="toolbar">
+    <div class="tb" onclick="zoomIn()">+</div>
+    <div class="tb" onclick="zoomOut()">−</div>
+    <div class="tb" onclick="resetZoom()">⊙</div>
+    <div class="tb" onclick="reheat()">⚡</div>
+  </div>
+  <div class="watermark">Verizon Enterprise Ontology Stack v1.0<br>Core + Domain + Taxonomy · 21 files · DRAFT</div>
+  <div id="tooltip"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  ONTOLOGY METADATA
+// ══════════════════════════════════════════════════════════════════
+const ONTOS = {
+  // Core Taxonomies
+  lifecycle:    {label:'Lifecycle',          group:'tax',    color:'#f97316', pos:[0.18,0.82]},
+  party:        {label:'Party',              group:'tax',    color:'#0ea5e9', pos:[0.38,0.82]},
+  process:      {label:'Process',            group:'tax',    color:'#10b981', pos:[0.58,0.82]},
+  persona:      {label:'Persona',            group:'tax',    color:'#a78bfa', pos:[0.78,0.82]},
+  // Core Ontologies
+  asset:        {label:'Asset',              group:'core',   color:'#06b6d4', pos:[0.18,0.14]},
+  capability:   {label:'Capability',         group:'core',   color:'#14b8a6', pos:[0.38,0.14]},
+  event:        {label:'Event',              group:'core',   color:'#f43f5e', pos:[0.58,0.14]},
+  requirements: {label:'Requirements',       group:'core',   color:'#c084fc', pos:[0.78,0.14]},
+  // Domain Ontologies
+  finance:      {label:'Finance',            group:'domain', color:'#4ade80', pos:[0.06,0.32]},
+  facilities:   {label:'Facilities',         group:'domain', color:'#a3e635', pos:[0.06,0.55]},
+  governance:   {label:'Governance',         group:'domain', color:'#60a5fa', pos:[0.22,0.50]},
+  hr:           {label:'Human Resources',    group:'domain', color:'#fbbf24', pos:[0.38,0.50]},
+  it:           {label:'IT',                 group:'domain', color:'#818cf8', pos:[0.52,0.50]},
+  legal:        {label:'Legal',              group:'domain', color:'#f472b6', pos:[0.66,0.37]},
+  marketing:    {label:'Marketing',          group:'domain', color:'#fb923c', pos:[0.80,0.26]},
+  procurement:  {label:'Procurement',        group:'domain', color:'#facc15', pos:[0.90,0.45]},
+  sales:        {label:'Sales',              group:'domain', color:'#f87171', pos:[0.90,0.65]},
+  security:     {label:'Security',           group:'domain', color:'#dc2626', pos:[0.78,0.70]},
+  supplychain:  {label:'Supply Chain',       group:'domain', color:'#7c3aed', pos:[0.64,0.68]},
+};
+
+// ══════════════════════════════════════════════════════════════════
+//  NODES  {id, label, onto, level}
+//  level: 0=root class, 1=direct subclass, 2=L2, 3=L3+
+// ══════════════════════════════════════════════════════════════════
+const RAW_NODES = [
+// ── Lifecycle ──
+{id:'lc_Lifecycle',   label:'Lifecycle',    onto:'lifecycle',  level:0},
+{id:'lc_DesignTime',  label:'Design Time',  onto:'lifecycle',  level:1},
+{id:'lc_RunTime',     label:'Run Time',     onto:'lifecycle',  level:1},
+{id:'lc_Retire',      label:'Retire',       onto:'lifecycle',  level:1},
+{id:'lc_Inventory',   label:'Inventory',    onto:'lifecycle',  level:1},
+{id:'lc_Acquire',     label:'Acquire',      onto:'lifecycle',  level:1},
+{id:'lc_Build',       label:'Build',        onto:'lifecycle',  level:2},
+{id:'lc_Buy',         label:'Buy',          onto:'lifecycle',  level:2},
+{id:'lc_Design',      label:'Design',       onto:'lifecycle',  level:3},
+{id:'lc_Develop',     label:'Develop',      onto:'lifecycle',  level:3},
+{id:'lc_Discover',    label:'Discover',     onto:'lifecycle',  level:3},
+{id:'lc_Define',      label:'Define',       onto:'lifecycle',  level:3},
+{id:'lc_Deliver',     label:'Deliver',      onto:'lifecycle',  level:3},
+{id:'lc_Deploy',      label:'Deploy',       onto:'lifecycle',  level:2},
+{id:'lc_Execute',     label:'Execute',      onto:'lifecycle',  level:2},
+{id:'lc_Support',     label:'Support',      onto:'lifecycle',  level:2},
+{id:'lc_Improve',     label:'Improve',      onto:'lifecycle',  level:3},
+{id:'lc_Destroy',     label:'Destroy',      onto:'lifecycle',  level:2},
+{id:'lc_Remove',      label:'Remove',       onto:'lifecycle',  level:2},
+{id:'lc_Publish',     label:'Publish',      onto:'lifecycle',  level:2},
+{id:'lc_Warehouse',   label:'Warehouse',    onto:'lifecycle',  level:2},
+
+// ── Party ──
+{id:'pty_Party',          label:'Party',            onto:'party',  level:0},
+{id:'pty_Person',         label:'Person',           onto:'party',  level:1},
+{id:'pty_Vendor',         label:'Vendor',           onto:'party',  level:1},
+{id:'pty_Organization',   label:'Organization',     onto:'party',  level:1},
+{id:'pty_Verizon',        label:'Verizon',          onto:'party',  level:2},
+{id:'pty_BusinessUnit',   label:'Business Unit',    onto:'party',  level:3},
+{id:'pty_VBG',            label:'Verizon Business', onto:'party',  level:3},
+{id:'pty_VCG',            label:'Verizon Consumer', onto:'party',  level:3},
+{id:'pty_VGS',            label:'Verizon Global Svcs',onto:'party',level:3},
+{id:'pty_CorporateSvcs',  label:'Corp Services',    onto:'party',  level:3},
+{id:'pty_FinanceUnit',    label:'Finance Unit',     onto:'party',  level:3},
+{id:'pty_HRUnit',         label:'HR Unit',          onto:'party',  level:3},
+{id:'pty_CommercialUnit', label:'Commercial Unit',  onto:'party',  level:3},
+
+// ── Process ──
+{id:'prc_Process',        label:'Process',          onto:'process',  level:0},
+{id:'prc_Observation',    label:'Observation',      onto:'process',  level:1},
+{id:'prc_ProcessStep',    label:'Process Step',     onto:'process',  level:1},
+{id:'prc_Measurement',    label:'Measurement',      onto:'process',  level:1},
+{id:'prc_Inputs',         label:'Inputs',           onto:'process',  level:2},
+{id:'prc_Outputs',        label:'Outputs',          onto:'process',  level:2},
+{id:'prc_Customer',       label:'Customer',         onto:'process',  level:2},
+{id:'prc_Supplier',       label:'Supplier',         onto:'process',  level:2},
+{id:'prc_ProcessAction',  label:'Process Action',   onto:'process',  level:2},
+{id:'prc_DiscreteAction', label:'Discrete Action',  onto:'process',  level:3},
+{id:'prc_DecisionAction', label:'Decision Action',  onto:'process',  level:3},
+{id:'prc_Approval',       label:'Approval',         onto:'process',  level:3},
+
+// ── Persona ──
+{id:'psn_Persona',        label:'Persona',              onto:'persona',  level:0},
+{id:'psn_PersonaData',    label:'Persona Data',         onto:'persona',  level:1},
+{id:'psn_UserBehavior',   label:'User Behavior Data',   onto:'persona',  level:1},
+{id:'psn_PriorHistory',   label:'Prior History Data',   onto:'persona',  level:1},
+{id:'psn_ProfileData',    label:'Profile Data',         onto:'persona',  level:1},
+{id:'psn_PersonaType',    label:'Persona Type',         onto:'persona',  level:2},
+{id:'psn_AnalyticEng',    label:'Analytic Eng Persona', onto:'persona',  level:3},
+{id:'psn_DataEng',        label:'Data Eng Persona',     onto:'persona',  level:3},
+{id:'psn_KnowledgeEng',   label:'Knowledge Eng Persona',onto:'persona',  level:3},
+{id:'psn_DevicePlatform', label:'Device & Platform',    onto:'persona',  level:2},
+{id:'psn_EngagementMet',  label:'Engagement Metric',    onto:'persona',  level:2},
+{id:'psn_EventTracking',  label:'Event Tracking',       onto:'persona',  level:2},
+{id:'psn_BrowsingHistory',label:'Browsing History',     onto:'persona',  level:2},
+{id:'psn_Demographics',   label:'Demographics',         onto:'persona',  level:2},
+{id:'psn_Industry',       label:'Persona Industry',     onto:'persona',  level:2},
+{id:'psn_PersonaName',    label:'Persona Name',         onto:'persona',  level:2},
+{id:'psn_PersonaLocation',label:'Persona Location',     onto:'persona',  level:2},
+
+// ── Asset ──
+{id:'ast_Asset',          label:'Asset',                onto:'asset',  level:0},
+{id:'ast_DigitalAsset',   label:'Digital Asset',        onto:'asset',  level:1},
+{id:'ast_PhysicalAsset',  label:'Physical Asset',       onto:'asset',  level:1},
+{id:'ast_BiologicalAsset',label:'Biological Asset',     onto:'asset',  level:1},
+{id:'ast_Analytics',      label:'Analytics',            onto:'asset',  level:2},
+{id:'ast_Artifact',       label:'Artifact',             onto:'asset',  level:2},
+{id:'ast_AutonomousAgent',label:'Autonomous Agent',     onto:'asset',  level:2},
+{id:'ast_AnalyticProduct',label:'Analytic Product',     onto:'asset',  level:3},
+{id:'ast_AIAgent',        label:'AI Agent',             onto:'asset',  level:3},
+{id:'ast_BusinessSpec',   label:'Business Spec',        onto:'asset',  level:3},
+{id:'ast_DataEngineering',label:'Data Engineering',     onto:'asset',  level:3},
+{id:'ast_DesignSpec',     label:'Design Spec',          onto:'asset',  level:3},
+{id:'ast_KnowledgeEng',   label:'Knowledge Engineering',onto:'asset',  level:3},
+{id:'ast_SolutionArch',   label:'Solution Architecture',onto:'asset',  level:3},
+{id:'ast_SLA',            label:'Service Level Agmt',   onto:'asset',  level:3},
+{id:'ast_ValueMap',       label:'Value Map',            onto:'asset',  level:3},
+
+// ── Capability ──
+{id:'cap_Capability',     label:'Capability',           onto:'capability',  level:0},
+{id:'cap_BizCapability',  label:'Business Capability',  onto:'capability',  level:1},
+{id:'cap_FuncCapability', label:'Functional Capability',onto:'capability',  level:1},
+{id:'cap_TechCapability', label:'Technical Capability', onto:'capability',  level:1},
+{id:'cap_BizMarketplace', label:'Business Marketplace', onto:'capability',  level:2},
+{id:'cap_BillingAcct',    label:'Billing & Accounting', onto:'capability',  level:2},
+{id:'cap_CRM',            label:'CRM',                  onto:'capability',  level:2},
+{id:'cap_AIML',           label:'AI & Machine Learning',onto:'capability',  level:2},
+{id:'cap_BI',             label:'Business Intelligence',onto:'capability',  level:2},
+{id:'cap_DataArch',       label:'Data Architecture',    onto:'capability',  level:2},
+{id:'cap_DataCatalog',    label:'Data Catalog',         onto:'capability',  level:2},
+{id:'cap_DataMgmt',       label:'Data Management',      onto:'capability',  level:2},
+{id:'cap_DataDiscovery',  label:'Data Discovery',       onto:'capability',  level:2},
+{id:'cap_DataFabric',     label:'Data Fabric',          onto:'capability',  level:2},
+{id:'cap_Integration',    label:'Integration',          onto:'capability',  level:2},
+{id:'cap_StorageMgmt',    label:'Storage Management',   onto:'capability',  level:2},
+{id:'cap_DataDict',       label:'Data Dictionary',      onto:'capability',  level:3},
+{id:'cap_DataIntegration',label:'Data Integration',     onto:'capability',  level:3},
+{id:'cap_DataLake',       label:'Data Lake Mgmt',       onto:'capability',  level:3},
+{id:'cap_CloudLakehouse', label:'Cloud Data Lakehouse', onto:'capability',  level:3},
+
+// ── Event ──
+{id:'evt_Event',          label:'Event',                onto:'event',  level:0},
+{id:'evt_EventState',     label:'Event State',          onto:'event',  level:1},
+{id:'evt_Trigger',        label:'Trigger',              onto:'event',  level:1},
+
+// ── Requirements ──
+{id:'req_Requirements',   label:'Requirements',         onto:'requirements',  level:0},
+{id:'req_Job',            label:'Job',                  onto:'requirements',  level:1},
+{id:'req_Journey',        label:'Journey',              onto:'requirements',  level:1},
+{id:'req_Requirement',    label:'Requirement',          onto:'requirements',  level:1},
+{id:'req_Feature',        label:'Feature',              onto:'requirements',  level:1},
+{id:'req_Outcome',        label:'Outcome',              onto:'requirements',  level:1},
+{id:'req_FunctionalJob',  label:'Functional Job',       onto:'requirements',  level:2},
+{id:'req_EmotionalJob',   label:'Emotional Job',        onto:'requirements',  level:2},
+{id:'req_JourneyStep',    label:'Journey Step',         onto:'requirements',  level:2},
+{id:'req_JobStep',        label:'Job Step',             onto:'requirements',  level:2},
+{id:'req_Need',           label:'Need',                 onto:'requirements',  level:2},
+{id:'req_JobExecutor',    label:'Job Executor',         onto:'requirements',  level:3},
+{id:'req_Specification',  label:'Specification',        onto:'requirements',  level:2},
+{id:'req_FunctionalFeat', label:'Functional Feature',   onto:'requirements',  level:2},
+
+// ── Finance ──
+{id:'fin_Finance',        label:'Finance',              onto:'finance',  level:0},
+{id:'fin_FinancialOps',   label:'Financial Operations', onto:'finance',  level:1},
+{id:'fin_Treasury',       label:'Treasury',             onto:'finance',  level:1},
+{id:'fin_FinRiskMgmt',    label:'Financial Risk Mgmt',  onto:'finance',  level:1},
+{id:'fin_FinAnalysis',    label:'Financial Analysis',   onto:'finance',  level:1},
+{id:'fin_Accounting',     label:'Accounting',           onto:'finance',  level:2},
+{id:'fin_WorkingCapital', label:'Working Capital Mgmt', onto:'finance',  level:2},
+{id:'fin_Budgeting',      label:'Budgeting',            onto:'finance',  level:2},
+{id:'fin_FinInstRelMgmt', label:'Fin Institution Rels', onto:'finance',  level:2},
+{id:'fin_OperationalRisk',label:'Operational Risk',     onto:'finance',  level:2},
+{id:'fin_StatementAnaly', label:'Statement Analysis',   onto:'finance',  level:2},
+{id:'fin_AP',             label:'Accounts Payable',     onto:'finance',  level:3},
+{id:'fin_AR',             label:'Accounts Receivable',  onto:'finance',  level:3},
+{id:'fin_Billing',        label:'Billing',              onto:'finance',  level:3},
+{id:'fin_AssetMgmt',      label:'Asset Management',     onto:'finance',  level:3},
+{id:'fin_Audit',          label:'Audit',                onto:'finance',  level:3},
+{id:'fin_BalanceSheet',   label:'Balance Sheet',        onto:'finance',  level:3},
+{id:'fin_Banking',        label:'Banking',              onto:'finance',  level:3},
+{id:'fin_Valuation',      label:'Valuation',            onto:'finance',  level:3},
+{id:'fin_Bonds',          label:'Bonds',                onto:'finance',  level:3},
+
+// ── Facilities ──
+{id:'fac_Facilities',     label:'Facilities',           onto:'facilities',  level:0},
+{id:'fac_EnergyType',     label:'Energy Type',          onto:'facilities',  level:1},
+{id:'fac_BASNetwork',     label:'Building Automation Network',onto:'facilities',level:1},
+{id:'fac_EnergySource',   label:'Energy Source',        onto:'facilities',  level:1},
+{id:'fac_UsefulEnergy',   label:'Useful Energy',        onto:'facilities',  level:2},
+{id:'fac_FinalEnergy',    label:'Final Energy',         onto:'facilities',  level:2},
+{id:'fac_Wired',          label:'Wired',                onto:'facilities',  level:2},
+{id:'fac_Wireless',       label:'Wireless',             onto:'facilities',  level:2},
+{id:'fac_SecondaryEnergy',label:'Secondary Energy Src', onto:'facilities',  level:2},
+{id:'fac_RealEstate',     label:'Real Estate',          onto:'facilities',  level:1},
+
+// ── Governance ──
+{id:'gov_Governance',     label:'Governance',           onto:'governance',  level:0},
+{id:'gov_DataGovActivities',label:'Data Gov Activities',onto:'governance',  level:1},
+{id:'gov_PreventativeCtrl',label:'Preventative Controls',onto:'governance', level:1},
+{id:'gov_DetectiveCtrl',  label:'Detective Controls',   onto:'governance',  level:1},
+{id:'gov_OnboardingMgmt', label:'Onboarding Mgmt',      onto:'governance',  level:1},
+{id:'gov_DataGovTools',   label:'Data Gov Tools',       onto:'governance',  level:1},
+{id:'gov_DataGovPolicy',  label:'Data Gov Policy',      onto:'governance',  level:1},
+{id:'gov_GovPlanningAct', label:'Gov Planning Activity',onto:'governance',  level:2},
+{id:'gov_AccessMgmt',     label:'Access Management',    onto:'governance',  level:2},
+{id:'gov_MonitoringService',label:'Monitoring Service', onto:'governance',  level:2},
+{id:'gov_SysPerfMgmt',    label:'Sys Performance Mgmt', onto:'governance',  level:2},
+{id:'gov_DataCertification',label:'Data Certification', onto:'governance',  level:2},
+{id:'gov_BusinessGlossary',label:'Business Glossary',   onto:'governance',  level:2},
+{id:'gov_BusinessPolicy', label:'Business Policy',      onto:'governance',  level:2},
+{id:'gov_ScorecardMetrics',label:'Scorecard Metrics',   onto:'governance',  level:2},
+{id:'gov_AIProdCert',     label:'AI Products Cert',     onto:'governance',  level:3},
+{id:'gov_AssetInventory', label:'Asset Inventory Onboarding',onto:'governance',level:3},
+{id:'gov_AccessException',label:'Access Exception Monitoring',onto:'governance',level:3},
+
+// ── Human Resources ──
+{id:'hr_HumanResource',   label:'Human Resource',       onto:'hr',  level:0},
+{id:'hr_TimeAttendance',  label:'Time & Attendance',    onto:'hr',  level:1},
+{id:'hr_Payroll',         label:'Payroll',              onto:'hr',  level:1},
+{id:'hr_BenefitsAdmin',   label:'Benefits Administration',onto:'hr',level:1},
+{id:'hr_CompensationMgmt',label:'Compensation Mgmt',    onto:'hr',  level:1},
+{id:'hr_TalentAcquisition',label:'Talent Acquisition',  onto:'hr',  level:1},
+{id:'hr_EmployeeDev',     label:'Employee Development', onto:'hr',  level:1},
+{id:'hr_HRStrategy',      label:'HR Strategy',          onto:'hr',  level:1},
+{id:'hr_TalentMgmt',      label:'Talent Management',    onto:'hr',  level:1},
+{id:'hr_Absences',        label:'Absences',             onto:'hr',  level:2},
+{id:'hr_BenefitContrib',  label:'Benefit Contributions',onto:'hr',  level:2},
+{id:'hr_BenefitsEnroll',  label:'Benefits Enrollment',  onto:'hr',  level:2},
+{id:'hr_BonusPrograms',   label:'Bonus Programs',       onto:'hr',  level:2},
+{id:'hr_CandidateMgmt',   label:'Candidate Management', onto:'hr',  level:2},
+{id:'hr_CareerDev',       label:'Career Development',   onto:'hr',  level:2},
+{id:'hr_OrgDev',          label:'Organizational Dev',   onto:'hr',  level:2},
+{id:'hr_OrgCulture',      label:'Org Culture',          onto:'hr',  level:3},
+{id:'hr_ChangeManagement',label:'Change Management',    onto:'hr',  level:3},
+{id:'hr_Competencies',    label:'Competencies',         onto:'hr',  level:2},
+
+// ── Information Technology ──
+{id:'it_IT',              label:'Information Technology',onto:'it', level:0},
+{id:'it_CSI',             label:'Continual Svc Improvement',onto:'it',level:1},
+{id:'it_ServiceOperation',label:'Service Operation',    onto:'it',  level:1},
+{id:'it_ServiceTransition',label:'Service Transition',  onto:'it',  level:1},
+{id:'it_ServiceDesign',   label:'Service Design',       onto:'it',  level:1},
+{id:'it_360Learning',     label:'360 Learning',         onto:'it',  level:2},
+{id:'it_CSIServiceMgmt',  label:'CSI Service Mgmt',     onto:'it',  level:2},
+{id:'it_AccessMgmt',      label:'Access Management',    onto:'it',  level:2},
+{id:'it_AppDevMgmt',      label:'App & Dev Management', onto:'it',  level:2},
+{id:'it_AppLifecycle',    label:'App Lifecycle Mgmt',   onto:'it',  level:3},
+{id:'it_ServiceAssetConf',label:'Service Asset & Config Mgmt',onto:'it',level:2},
+{id:'it_AvailabilityMgmt',label:'Availability Mgmt',    onto:'it',  level:2},
+{id:'it_ServiceCatalog',  label:'Service Catalog Mgmt', onto:'it',  level:2},
+{id:'it_CapacityMgmt',    label:'Capacity Management',  onto:'it',  level:2},
+{id:'it_ServiceLevelMgmt',label:'Service Level Mgmt',   onto:'it',  level:2},
+{id:'it_BizContinuity',   label:'Business Continuity Mgmt',onto:'it',level:3},
+
+// ── Legal ──
+{id:'leg_Legal',          label:'Legal',                onto:'legal',  level:0},
+{id:'leg_DisputeRes',     label:'Dispute Resolution',   onto:'legal',  level:1},
+{id:'leg_LitigationMgmt', label:'Litigation Management',onto:'legal',  level:1},
+{id:'leg_LegalResearch',  label:'Legal Research & Analysis',onto:'legal',level:1},
+{id:'leg_RegCompliance',  label:'Regulatory Compliance',onto:'legal',  level:1},
+{id:'leg_ContractMgmt',   label:'Contract Management',  onto:'legal',  level:1},
+{id:'leg_CorporateLaw',   label:'Corporate Law',        onto:'legal',  level:1},
+{id:'leg_ArbitrationProc',label:'Arbitration Process',  onto:'legal',  level:2},
+{id:'leg_CaseAssessment', label:'Case Assessment',      onto:'legal',  level:2},
+{id:'leg_CaseLawResearch',label:'Case Law Research',    onto:'legal',  level:2},
+{id:'leg_PrivacyData',    label:'Privacy & Data Protection',onto:'legal',level:2},
+{id:'leg_ComplianceAudit',label:'Compliance Audit',     onto:'legal',  level:2},
+{id:'leg_ComplianceMon',  label:'Compliance Monitoring',onto:'legal',  level:2},
+{id:'leg_ContractCompl',  label:'Contract Compliance',  onto:'legal',  level:2},
+{id:'leg_ContractDrafting',label:'Contract Drafting',   onto:'legal',  level:2},
+{id:'leg_CorporateGov',   label:'Corporate Governance', onto:'legal',  level:2},
+
+// ── Marketing ──
+{id:'mkt_Marketing',      label:'Marketing',            onto:'marketing',  level:0},
+{id:'mkt_ABM',            label:'Account-Based Marketing',onto:'marketing',level:1},
+{id:'mkt_PerfMarketing',  label:'Performance Marketing',onto:'marketing',  level:1},
+{id:'mkt_MarketingComms', label:'Marketing Communications',onto:'marketing',level:1},
+{id:'mkt_BrandMgmt',      label:'Brand Management',     onto:'marketing',  level:1},
+{id:'mkt_MarketingInsights',label:'Marketing Insights Analysis',onto:'marketing',level:1},
+{id:'mkt_CampaignMgmt',   label:'Campaign Management',  onto:'marketing',  level:1},
+{id:'mkt_AccountSelection',label:'Account Selection',   onto:'marketing',  level:2},
+{id:'mkt_AffiliateMarketing',label:'Affiliate Marketing',onto:'marketing', level:2},
+{id:'mkt_MassCommunication',label:'Mass Communication Mgmt',onto:'marketing',level:2},
+{id:'mkt_Advertising',    label:'Advertising',          onto:'marketing',  level:3},
+{id:'mkt_BrandAwareness', label:'Brand Awareness',      onto:'marketing',  level:2},
+{id:'mkt_BrandEquity',    label:'Brand Equity',         onto:'marketing',  level:2},
+{id:'mkt_BrandIdentity',  label:'Brand Identity',       onto:'marketing',  level:2},
+{id:'mkt_BrandPositioning',label:'Brand Positioning',   onto:'marketing',  level:2},
+{id:'mkt_MarketingAnalysis',label:'Marketing Analysis', onto:'marketing',  level:2},
+{id:'mkt_CampaignExecution',label:'Campaign Execution', onto:'marketing',  level:2},
+{id:'mkt_CampaignPlanning',label:'Campaign Planning',   onto:'marketing',  level:2},
+
+// ── Procurement ──
+{id:'pro_Procurement',    label:'Procurement',          onto:'procurement',  level:0},
+{id:'pro_SourcingMgmt',   label:'Sourcing Management',  onto:'procurement',  level:1},
+{id:'pro_ContractMgmt',   label:'Contract Management',  onto:'procurement',  level:1},
+{id:'pro_PurchaseMgmt',   label:'Purchase Management',  onto:'procurement',  level:1},
+{id:'pro_AgileSourcing',  label:'Agile Sourcing',       onto:'procurement',  level:2},
+{id:'pro_SupplierRelMgmt',label:'Supplier Rel Mgmt',    onto:'procurement',  level:2},
+{id:'pro_EthicalSourcing',label:'Ethical Sourcing',     onto:'procurement',  level:2},
+{id:'pro_ContractCompl',  label:'Contract Compliance Monitoring',onto:'procurement',level:2},
+{id:'pro_ContractOrig',   label:'Contract Origination', onto:'procurement',  level:2},
+{id:'pro_ContractRenew',  label:'Contract Renewals',    onto:'procurement',  level:2},
+{id:'pro_OrderMgmt',      label:'Order Management',     onto:'procurement',  level:2},
+{id:'pro_OrderDelivery',  label:'Order Delivery',       onto:'procurement',  level:3},
+{id:'pro_OrderInvoicing', label:'Order Invoicing',      onto:'procurement',  level:3},
+
+// ── Sales ──
+{id:'sal_Sales',          label:'Sales',                onto:'sales',  level:0},
+{id:'sal_TransferOwnership',label:'Transfer Ownership', onto:'sales',  level:1},
+{id:'sal_SalesProcess',   label:'Sales Process',        onto:'sales',  level:1},
+{id:'sal_SalesStrategy',  label:'Sales Strategy',       onto:'sales',  level:1},
+{id:'sal_CRM',            label:'Customer Relationship Mgmt',onto:'sales',level:1},
+{id:'sal_SalesChannels',  label:'Sales Channels',       onto:'sales',  level:1},
+{id:'sal_TransferMethod', label:'Transfer Method',      onto:'sales',  level:2},
+{id:'sal_LegalDoc',       label:'Legal Documentation',  onto:'sales',  level:2},
+{id:'sal_ClosingProcess', label:'Closing Process',      onto:'sales',  level:2},
+{id:'sal_ClosingSales',   label:'Closing Sales',        onto:'sales',  level:2},
+{id:'sal_LeadGeneration', label:'Lead Generation',      onto:'sales',  level:2},
+{id:'sal_CompIntelligence',label:'Competitive Intelligence',onto:'sales',level:2},
+{id:'sal_CustSegmentation',label:'Customer Segmentation',onto:'sales', level:2},
+{id:'sal_CustAccountMgmt',label:'Customer Account Mgmt',onto:'sales',  level:2},
+{id:'sal_CustAcquisition',label:'Customer Acquisition', onto:'sales',  level:2},
+{id:'sal_CustLifecycle',  label:'Customer Lifecycle Mgmt',onto:'sales',level:2},
+{id:'sal_DirectSales',    label:'Direct Sales',         onto:'sales',  level:2},
+{id:'sal_DistribSales',   label:'Distribution Sales',   onto:'sales',  level:2},
+
+// ── Security ──
+{id:'sec_Security',       label:'Security',             onto:'security',  level:0},
+{id:'sec_Countermeasures',label:'Countermeasures',      onto:'security',  level:1},
+{id:'sec_SecurityTools',  label:'Security Tools',       onto:'security',  level:1},
+{id:'sec_SecurityProcs',  label:'Security Processes',   onto:'security',  level:1},
+{id:'sec_ProtectedAssets',label:'Protected Assets',     onto:'security',  level:1},
+{id:'sec_RiskResponse',   label:'Risk Response',        onto:'security',  level:1},
+{id:'sec_Agent',          label:'Agent',                onto:'security',  level:1},
+{id:'sec_SecurityControls',label:'Security Controls',   onto:'security',  level:2},
+{id:'sec_AttackMgmt',     label:'Attack Management',    onto:'security',  level:2},
+{id:'sec_UserAccountMgmt',label:'User Account Mgmt',    onto:'security',  level:2},
+{id:'sec_SecurityReqs',   label:'Security Requirements',onto:'security',  level:2},
+{id:'sec_Antivirus',      label:'Antivirus Software',   onto:'security',  level:2},
+{id:'sec_Authentication', label:'Authentication',       onto:'security',  level:2},
+{id:'sec_Authorization',  label:'Authorization',        onto:'security',  level:2},
+{id:'sec_Systems',        label:'Systems',              onto:'security',  level:2},
+{id:'sec_PhysicalAssets', label:'Physical Assets',      onto:'security',  level:2},
+{id:'sec_DisasterRecovery',label:'Disaster Recovery',   onto:'security',  level:2},
+{id:'sec_Confidentiality',label:'Confidentiality',      onto:'security',  level:3},
+{id:'sec_BizContinuity',  label:'Business Continuity',  onto:'security',  level:3},
+
+// ── Supply Chain ──
+{id:'sc_SupplyChain',     label:'Supply Chain',         onto:'supplychain',  level:0},
+{id:'sc_Planning',        label:'Planning',             onto:'supplychain',  level:1},
+{id:'sc_InventoryMgmt',   label:'Inventory Management', onto:'supplychain',  level:1},
+{id:'sc_Manufacturing',   label:'Manufacturing',        onto:'supplychain',  level:1},
+{id:'sc_LogisticsMgmt',   label:'Logistics Management', onto:'supplychain',  level:1},
+{id:'sc_Source',          label:'Source',               onto:'supplychain',  level:1},
+{id:'sc_Make',            label:'Make',                 onto:'supplychain',  level:1},
+{id:'sc_Deliver',         label:'Deliver',              onto:'supplychain',  level:1},
+{id:'sc_DemandForecasting',label:'Demand Forecasting',  onto:'supplychain',  level:2},
+{id:'sc_InventoryPlanning',label:'Inventory Planning',  onto:'supplychain',  level:2},
+{id:'sc_EquipmentMgmt',   label:'Equipment Management', onto:'supplychain',  level:2},
+{id:'sc_InventoryLocation',label:'Inventory Location',  onto:'supplychain',  level:2},
+{id:'sc_InventoryTracking',label:'Inventory Tracking',  onto:'supplychain',  level:2},
+{id:'sc_TransportationMgmt',label:'Transportation Mgmt',onto:'supplychain',  level:2},
+{id:'sc_DistributionMgmt',label:'Distribution Mgmt',   onto:'supplychain',  level:2},
+{id:'sc_FleetMgmt',       label:'Fleet Management',     onto:'supplychain',  level:3},
+{id:'sc_FreightTracking', label:'Freight Tracking',     onto:'supplychain',  level:3},
+{id:'sc_Acquire',         label:'Acquire',              onto:'supplychain',  level:2},
+{id:'sc_Enrich',          label:'Enrich',               onto:'supplychain',  level:2},
+];
+
+// ══════════════════════════════════════════════════════════════════
+//  EDGES  {s,t,type}
+// ══════════════════════════════════════════════════════════════════
+const RAW_EDGES = [
+// Lifecycle hierarchy
+{s:'lc_DesignTime',s:'lc_Lifecycle',type:'subClassOf'},{s:'lc_RunTime',t:'lc_Lifecycle',type:'subClassOf'},
+{s:'lc_Retire',t:'lc_Lifecycle',type:'subClassOf'},{s:'lc_Inventory',t:'lc_Lifecycle',type:'subClassOf'},
+{s:'lc_Acquire',t:'lc_Lifecycle',type:'subClassOf'},{s:'lc_Build',t:'lc_DesignTime',type:'subClassOf'},
+{s:'lc_Buy',t:'lc_DesignTime',type:'subClassOf'},{s:'lc_Design',t:'lc_Build',type:'subClassOf'},
+{s:'lc_Develop',t:'lc_Build',type:'subClassOf'},{s:'lc_Discover',t:'lc_Build',type:'subClassOf'},
+{s:'lc_Define',t:'lc_Build',type:'subClassOf'},{s:'lc_Deliver',t:'lc_Build',type:'subClassOf'},
+{s:'lc_Deploy',t:'lc_RunTime',type:'subClassOf'},{s:'lc_Execute',t:'lc_RunTime',type:'subClassOf'},
+{s:'lc_Support',t:'lc_RunTime',type:'subClassOf'},{s:'lc_Improve',t:'lc_Support',type:'subClassOf'},
+{s:'lc_Destroy',t:'lc_Retire',type:'subClassOf'},{s:'lc_Remove',t:'lc_Retire',type:'subClassOf'},
+{s:'lc_Publish',t:'lc_Inventory',type:'subClassOf'},{s:'lc_Warehouse',t:'lc_Inventory',type:'subClassOf'},
+
+// Party hierarchy
+{s:'pty_Person',t:'pty_Party',type:'subClassOf'},{s:'pty_Vendor',t:'pty_Party',type:'subClassOf'},
+{s:'pty_Organization',t:'pty_Party',type:'subClassOf'},{s:'pty_Verizon',t:'pty_Organization',type:'subClassOf'},
+{s:'pty_BusinessUnit',t:'pty_Verizon',type:'subClassOf'},{s:'pty_VBG',t:'pty_BusinessUnit',type:'subClassOf'},
+{s:'pty_VCG',t:'pty_BusinessUnit',type:'subClassOf'},{s:'pty_VGS',t:'pty_Verizon',type:'subClassOf'},
+{s:'pty_CorporateSvcs',t:'pty_Verizon',type:'subClassOf'},{s:'pty_FinanceUnit',t:'pty_CorporateSvcs',type:'subClassOf'},
+{s:'pty_HRUnit',t:'pty_CorporateSvcs',type:'subClassOf'},{s:'pty_CommercialUnit',t:'pty_Verizon',type:'subClassOf'},
+
+// Process hierarchy
+{s:'prc_Observation',t:'prc_Process',type:'subClassOf'},{s:'prc_ProcessStep',t:'prc_Process',type:'subClassOf'},
+{s:'prc_Measurement',t:'prc_Process',type:'subClassOf'},{s:'prc_Inputs',t:'prc_ProcessStep',type:'subClassOf'},
+{s:'prc_Outputs',t:'prc_ProcessStep',type:'subClassOf'},{s:'prc_Customer',t:'prc_ProcessStep',type:'subClassOf'},
+{s:'prc_Supplier',t:'prc_ProcessStep',type:'subClassOf'},{s:'prc_ProcessAction',t:'prc_ProcessStep',type:'subClassOf'},
+{s:'prc_DiscreteAction',t:'prc_ProcessAction',type:'subClassOf'},{s:'prc_DecisionAction',t:'prc_ProcessAction',type:'subClassOf'},
+{s:'prc_Approval',t:'prc_Outputs',type:'subClassOf'},
+
+// Persona hierarchy
+{s:'psn_PersonaData',t:'psn_Persona',type:'subClassOf'},{s:'psn_UserBehavior',t:'psn_Persona',type:'subClassOf'},
+{s:'psn_PriorHistory',t:'psn_Persona',type:'subClassOf'},{s:'psn_ProfileData',t:'psn_Persona',type:'subClassOf'},
+{s:'psn_PersonaType',t:'psn_PersonaData',type:'subClassOf'},{s:'psn_AnalyticEng',t:'psn_PersonaType',type:'subClassOf'},
+{s:'psn_DataEng',t:'psn_PersonaType',type:'subClassOf'},{s:'psn_KnowledgeEng',t:'psn_PersonaType',type:'subClassOf'},
+{s:'psn_DevicePlatform',t:'psn_UserBehavior',type:'subClassOf'},{s:'psn_EngagementMet',t:'psn_UserBehavior',type:'subClassOf'},
+{s:'psn_EventTracking',t:'psn_UserBehavior',type:'subClassOf'},{s:'psn_BrowsingHistory',t:'psn_PriorHistory',type:'subClassOf'},
+{s:'psn_Demographics',t:'psn_PersonaData',type:'subClassOf'},{s:'psn_Industry',t:'psn_PersonaData',type:'subClassOf'},
+{s:'psn_PersonaName',t:'psn_ProfileData',type:'subClassOf'},{s:'psn_PersonaLocation',t:'psn_ProfileData',type:'subClassOf'},
+
+// Asset hierarchy
+{s:'ast_DigitalAsset',t:'ast_Asset',type:'subClassOf'},{s:'ast_PhysicalAsset',t:'ast_Asset',type:'subClassOf'},
+{s:'ast_BiologicalAsset',t:'ast_Asset',type:'subClassOf'},{s:'ast_Analytics',t:'ast_DigitalAsset',type:'subClassOf'},
+{s:'ast_Artifact',t:'ast_DigitalAsset',type:'subClassOf'},{s:'ast_AutonomousAgent',t:'ast_DigitalAsset',type:'subClassOf'},
+{s:'ast_AnalyticProduct',t:'ast_Analytics',type:'subClassOf'},{s:'ast_AIAgent',t:'ast_AutonomousAgent',type:'subClassOf'},
+{s:'ast_BusinessSpec',t:'ast_Artifact',type:'subClassOf'},{s:'ast_DataEngineering',t:'ast_Artifact',type:'subClassOf'},
+{s:'ast_DesignSpec',t:'ast_Artifact',type:'subClassOf'},{s:'ast_KnowledgeEng',t:'ast_Artifact',type:'subClassOf'},
+{s:'ast_SolutionArch',t:'ast_Artifact',type:'subClassOf'},{s:'ast_SLA',t:'ast_Artifact',type:'subClassOf'},
+{s:'ast_ValueMap',t:'ast_Artifact',type:'subClassOf'},
+
+// Capability hierarchy
+{s:'cap_BizCapability',t:'cap_Capability',type:'subClassOf'},{s:'cap_FuncCapability',t:'cap_Capability',type:'subClassOf'},
+{s:'cap_TechCapability',t:'cap_Capability',type:'subClassOf'},{s:'cap_BizMarketplace',t:'cap_BizCapability',type:'subClassOf'},
+{s:'cap_BillingAcct',t:'cap_FuncCapability',type:'subClassOf'},{s:'cap_CRM',t:'cap_FuncCapability',type:'subClassOf'},
+{s:'cap_AIML',t:'cap_TechCapability',type:'subClassOf'},{s:'cap_BI',t:'cap_TechCapability',type:'subClassOf'},
+{s:'cap_DataArch',t:'cap_TechCapability',type:'subClassOf'},{s:'cap_DataCatalog',t:'cap_TechCapability',type:'subClassOf'},
+{s:'cap_DataMgmt',t:'cap_TechCapability',type:'subClassOf'},{s:'cap_DataDiscovery',t:'cap_TechCapability',type:'subClassOf'},
+{s:'cap_DataFabric',t:'cap_TechCapability',type:'subClassOf'},{s:'cap_Integration',t:'cap_TechCapability',type:'subClassOf'},
+{s:'cap_StorageMgmt',t:'cap_TechCapability',type:'subClassOf'},{s:'cap_DataDict',t:'cap_DataMgmt',type:'subClassOf'},
+{s:'cap_DataIntegration',t:'cap_Integration',type:'subClassOf'},{s:'cap_DataLake',t:'cap_StorageMgmt',type:'subClassOf'},
+{s:'cap_CloudLakehouse',t:'cap_DataLake',type:'subClassOf'},
+
+// Event hierarchy
+{s:'evt_EventState',t:'evt_Event',type:'subClassOf'},{s:'evt_Trigger',t:'evt_Event',type:'subClassOf'},
+
+// Requirements hierarchy
+{s:'req_Job',t:'req_Requirements',type:'subClassOf'},{s:'req_Journey',t:'req_Requirements',type:'subClassOf'},
+{s:'req_Requirement',t:'req_Requirements',type:'subClassOf'},{s:'req_Feature',t:'req_Requirements',type:'subClassOf'},
+{s:'req_Outcome',t:'req_Requirements',type:'subClassOf'},{s:'req_FunctionalJob',t:'req_Job',type:'subClassOf'},
+{s:'req_EmotionalJob',t:'req_Job',type:'subClassOf'},{s:'req_JourneyStep',t:'req_Journey',type:'subClassOf'},
+{s:'req_JobStep',t:'req_Job',type:'subClassOf'},{s:'req_Need',t:'req_Requirement',type:'subClassOf'},
+{s:'req_JobExecutor',t:'req_Need',type:'subClassOf'},{s:'req_Specification',t:'req_Requirement',type:'subClassOf'},
+{s:'req_FunctionalFeat',t:'req_Feature',type:'subClassOf'},
+
+// Finance hierarchy
+{s:'fin_FinancialOps',t:'fin_Finance',type:'subClassOf'},{s:'fin_Treasury',t:'fin_Finance',type:'subClassOf'},
+{s:'fin_FinRiskMgmt',t:'fin_Finance',type:'subClassOf'},{s:'fin_FinAnalysis',t:'fin_Finance',type:'subClassOf'},
+{s:'fin_Accounting',t:'fin_FinancialOps',type:'subClassOf'},{s:'fin_WorkingCapital',t:'fin_FinancialOps',type:'subClassOf'},
+{s:'fin_Budgeting',t:'fin_FinancialOps',type:'subClassOf'},{s:'fin_FinInstRelMgmt',t:'fin_Treasury',type:'subClassOf'},
+{s:'fin_OperationalRisk',t:'fin_FinRiskMgmt',type:'subClassOf'},{s:'fin_StatementAnaly',t:'fin_FinAnalysis',type:'subClassOf'},
+{s:'fin_AP',t:'fin_WorkingCapital',type:'subClassOf'},{s:'fin_AR',t:'fin_WorkingCapital',type:'subClassOf'},
+{s:'fin_Billing',t:'fin_AR',type:'subClassOf'},{s:'fin_AssetMgmt',t:'fin_Accounting',type:'subClassOf'},
+{s:'fin_Audit',t:'fin_OperationalRisk',type:'subClassOf'},{s:'fin_BalanceSheet',t:'fin_StatementAnaly',type:'subClassOf'},
+{s:'fin_Banking',t:'fin_FinInstRelMgmt',type:'subClassOf'},{s:'fin_Valuation',t:'fin_FinInstRelMgmt',type:'subClassOf'},
+{s:'fin_Bonds',t:'fin_FinInstRelMgmt',type:'subClassOf'},
+
+// Facilities hierarchy
+{s:'fac_EnergyType',t:'fac_Facilities',type:'subClassOf'},{s:'fac_BASNetwork',t:'fac_Facilities',type:'subClassOf'},
+{s:'fac_EnergySource',t:'fac_Facilities',type:'subClassOf'},{s:'fac_RealEstate',t:'fac_Facilities',type:'subClassOf'},
+{s:'fac_UsefulEnergy',t:'fac_EnergyType',type:'subClassOf'},{s:'fac_FinalEnergy',t:'fac_EnergyType',type:'subClassOf'},
+{s:'fac_Wired',t:'fac_BASNetwork',type:'subClassOf'},{s:'fac_Wireless',t:'fac_BASNetwork',type:'subClassOf'},
+{s:'fac_SecondaryEnergy',t:'fac_EnergySource',type:'subClassOf'},
+
+// Governance hierarchy
+{s:'gov_DataGovActivities',t:'gov_Governance',type:'subClassOf'},{s:'gov_PreventativeCtrl',t:'gov_Governance',type:'subClassOf'},
+{s:'gov_DetectiveCtrl',t:'gov_Governance',type:'subClassOf'},{s:'gov_OnboardingMgmt',t:'gov_Governance',type:'subClassOf'},
+{s:'gov_DataGovTools',t:'gov_Governance',type:'subClassOf'},{s:'gov_DataGovPolicy',t:'gov_Governance',type:'subClassOf'},
+{s:'gov_GovPlanningAct',t:'gov_DataGovActivities',type:'subClassOf'},{s:'gov_AccessMgmt',t:'gov_PreventativeCtrl',type:'subClassOf'},
+{s:'gov_MonitoringService',t:'gov_DetectiveCtrl',type:'subClassOf'},{s:'gov_SysPerfMgmt',t:'gov_DetectiveCtrl',type:'subClassOf'},
+{s:'gov_DataCertification',t:'gov_OnboardingMgmt',type:'subClassOf'},{s:'gov_BusinessGlossary',t:'gov_DataGovTools',type:'subClassOf'},
+{s:'gov_BusinessPolicy',t:'gov_DataGovPolicy',type:'subClassOf'},{s:'gov_ScorecardMetrics',t:'gov_DataGovActivities',type:'subClassOf'},
+{s:'gov_AIProdCert',t:'gov_DataCertification',type:'subClassOf'},{s:'gov_AssetInventory',t:'gov_AccessMgmt',type:'subClassOf'},
+{s:'gov_AccessException',t:'gov_MonitoringService',type:'subClassOf'},
+
+// HR hierarchy
+{s:'hr_TimeAttendance',t:'hr_HumanResource',type:'subClassOf'},{s:'hr_Payroll',t:'hr_HumanResource',type:'subClassOf'},
+{s:'hr_BenefitsAdmin',t:'hr_HumanResource',type:'subClassOf'},{s:'hr_CompensationMgmt',t:'hr_HumanResource',type:'subClassOf'},
+{s:'hr_TalentAcquisition',t:'hr_HumanResource',type:'subClassOf'},{s:'hr_EmployeeDev',t:'hr_HumanResource',type:'subClassOf'},
+{s:'hr_HRStrategy',t:'hr_HumanResource',type:'subClassOf'},{s:'hr_TalentMgmt',t:'hr_HumanResource',type:'subClassOf'},
+{s:'hr_Absences',t:'hr_TimeAttendance',type:'subClassOf'},{s:'hr_BenefitContrib',t:'hr_Payroll',type:'subClassOf'},
+{s:'hr_BenefitsEnroll',t:'hr_BenefitsAdmin',type:'subClassOf'},{s:'hr_BonusPrograms',t:'hr_CompensationMgmt',type:'subClassOf'},
+{s:'hr_CandidateMgmt',t:'hr_TalentAcquisition',type:'subClassOf'},{s:'hr_CareerDev',t:'hr_EmployeeDev',type:'subClassOf'},
+{s:'hr_OrgDev',t:'hr_HRStrategy',type:'subClassOf'},{s:'hr_OrgCulture',t:'hr_OrgDev',type:'subClassOf'},
+{s:'hr_ChangeManagement',t:'hr_OrgDev',type:'subClassOf'},{s:'hr_Competencies',t:'hr_TalentMgmt',type:'subClassOf'},
+
+// IT hierarchy
+{s:'it_CSI',t:'it_IT',type:'subClassOf'},{s:'it_ServiceOperation',t:'it_IT',type:'subClassOf'},
+{s:'it_ServiceTransition',t:'it_IT',type:'subClassOf'},{s:'it_ServiceDesign',t:'it_IT',type:'subClassOf'},
+{s:'it_360Learning',t:'it_CSI',type:'subClassOf'},{s:'it_CSIServiceMgmt',t:'it_CSI',type:'subClassOf'},
+{s:'it_AccessMgmt',t:'it_ServiceOperation',type:'subClassOf'},{s:'it_AppDevMgmt',t:'it_ServiceTransition',type:'subClassOf'},
+{s:'it_AppLifecycle',t:'it_AppDevMgmt',type:'subClassOf'},{s:'it_ServiceAssetConf',t:'it_ServiceTransition',type:'subClassOf'},
+{s:'it_AvailabilityMgmt',t:'it_ServiceDesign',type:'subClassOf'},{s:'it_ServiceCatalog',t:'it_ServiceDesign',type:'subClassOf'},
+{s:'it_CapacityMgmt',t:'it_ServiceDesign',type:'subClassOf'},{s:'it_ServiceLevelMgmt',t:'it_ServiceDesign',type:'subClassOf'},
+{s:'it_BizContinuity',t:'it_CSIServiceMgmt',type:'subClassOf'},
+
+// Legal hierarchy
+{s:'leg_DisputeRes',t:'leg_Legal',type:'subClassOf'},{s:'leg_LitigationMgmt',t:'leg_Legal',type:'subClassOf'},
+{s:'leg_LegalResearch',t:'leg_Legal',type:'subClassOf'},{s:'leg_RegCompliance',t:'leg_Legal',type:'subClassOf'},
+{s:'leg_ContractMgmt',t:'leg_Legal',type:'subClassOf'},{s:'leg_CorporateLaw',t:'leg_Legal',type:'subClassOf'},
+{s:'leg_ArbitrationProc',t:'leg_DisputeRes',type:'subClassOf'},{s:'leg_CaseAssessment',t:'leg_LitigationMgmt',type:'subClassOf'},
+{s:'leg_CaseLawResearch',t:'leg_LegalResearch',type:'subClassOf'},{s:'leg_PrivacyData',t:'leg_LegalResearch',type:'subClassOf'},
+{s:'leg_ComplianceAudit',t:'leg_RegCompliance',type:'subClassOf'},{s:'leg_ComplianceMon',t:'leg_RegCompliance',type:'subClassOf'},
+{s:'leg_ContractCompl',t:'leg_ContractMgmt',type:'subClassOf'},{s:'leg_ContractDrafting',t:'leg_ContractMgmt',type:'subClassOf'},
+{s:'leg_CorporateGov',t:'leg_CorporateLaw',type:'subClassOf'},
+
+// Marketing hierarchy
+{s:'mkt_ABM',t:'mkt_Marketing',type:'subClassOf'},{s:'mkt_PerfMarketing',t:'mkt_Marketing',type:'subClassOf'},
+{s:'mkt_MarketingComms',t:'mkt_Marketing',type:'subClassOf'},{s:'mkt_BrandMgmt',t:'mkt_Marketing',type:'subClassOf'},
+{s:'mkt_MarketingInsights',t:'mkt_Marketing',type:'subClassOf'},{s:'mkt_CampaignMgmt',t:'mkt_Marketing',type:'subClassOf'},
+{s:'mkt_AccountSelection',t:'mkt_ABM',type:'subClassOf'},{s:'mkt_AffiliateMarketing',t:'mkt_PerfMarketing',type:'subClassOf'},
+{s:'mkt_MassCommunication',t:'mkt_MarketingComms',type:'subClassOf'},{s:'mkt_Advertising',t:'mkt_MassCommunication',type:'subClassOf'},
+{s:'mkt_BrandAwareness',t:'mkt_BrandMgmt',type:'subClassOf'},{s:'mkt_BrandEquity',t:'mkt_BrandMgmt',type:'subClassOf'},
+{s:'mkt_BrandIdentity',t:'mkt_BrandMgmt',type:'subClassOf'},{s:'mkt_BrandPositioning',t:'mkt_BrandMgmt',type:'subClassOf'},
+{s:'mkt_MarketingAnalysis',t:'mkt_MarketingInsights',type:'subClassOf'},{s:'mkt_CampaignExecution',t:'mkt_CampaignMgmt',type:'subClassOf'},
+{s:'mkt_CampaignPlanning',t:'mkt_CampaignMgmt',type:'subClassOf'},
+
+// Procurement hierarchy
+{s:'pro_SourcingMgmt',t:'pro_Procurement',type:'subClassOf'},{s:'pro_ContractMgmt',t:'pro_Procurement',type:'subClassOf'},
+{s:'pro_PurchaseMgmt',t:'pro_Procurement',type:'subClassOf'},{s:'pro_AgileSourcing',t:'pro_SourcingMgmt',type:'subClassOf'},
+{s:'pro_SupplierRelMgmt',t:'pro_SourcingMgmt',type:'subClassOf'},{s:'pro_EthicalSourcing',t:'pro_SourcingMgmt',type:'subClassOf'},
+{s:'pro_ContractCompl',t:'pro_ContractMgmt',type:'subClassOf'},{s:'pro_ContractOrig',t:'pro_ContractMgmt',type:'subClassOf'},
+{s:'pro_ContractRenew',t:'pro_ContractMgmt',type:'subClassOf'},{s:'pro_OrderMgmt',t:'pro_PurchaseMgmt',type:'subClassOf'},
+{s:'pro_OrderDelivery',t:'pro_OrderMgmt',type:'subClassOf'},{s:'pro_OrderInvoicing',t:'pro_OrderMgmt',type:'subClassOf'},
+
+// Sales hierarchy
+{s:'sal_TransferOwnership',t:'sal_Sales',type:'subClassOf'},{s:'sal_SalesProcess',t:'sal_Sales',type:'subClassOf'},
+{s:'sal_SalesStrategy',t:'sal_Sales',type:'subClassOf'},{s:'sal_CRM',t:'sal_Sales',type:'subClassOf'},
+{s:'sal_SalesChannels',t:'sal_Sales',type:'subClassOf'},{s:'sal_TransferMethod',t:'sal_TransferOwnership',type:'subClassOf'},
+{s:'sal_LegalDoc',t:'sal_TransferOwnership',type:'subClassOf'},{s:'sal_ClosingProcess',t:'sal_TransferOwnership',type:'subClassOf'},
+{s:'sal_ClosingSales',t:'sal_SalesProcess',type:'subClassOf'},{s:'sal_LeadGeneration',t:'sal_SalesProcess',type:'subClassOf'},
+{s:'sal_CompIntelligence',t:'sal_SalesStrategy',type:'subClassOf'},{s:'sal_CustSegmentation',t:'sal_SalesStrategy',type:'subClassOf'},
+{s:'sal_CustAccountMgmt',t:'sal_CRM',type:'subClassOf'},{s:'sal_CustAcquisition',t:'sal_CRM',type:'subClassOf'},
+{s:'sal_CustLifecycle',t:'sal_CRM',type:'subClassOf'},{s:'sal_DirectSales',t:'sal_SalesChannels',type:'subClassOf'},
+{s:'sal_DistribSales',t:'sal_SalesChannels',type:'subClassOf'},
+
+// Security hierarchy
+{s:'sec_Countermeasures',t:'sec_Security',type:'subClassOf'},{s:'sec_SecurityTools',t:'sec_Security',type:'subClassOf'},
+{s:'sec_SecurityProcs',t:'sec_Security',type:'subClassOf'},{s:'sec_ProtectedAssets',t:'sec_Security',type:'subClassOf'},
+{s:'sec_RiskResponse',t:'sec_Security',type:'subClassOf'},{s:'sec_Agent',t:'sec_Security',type:'subClassOf'},
+{s:'sec_SecurityControls',t:'sec_Countermeasures',type:'subClassOf'},{s:'sec_AttackMgmt',t:'sec_Countermeasures',type:'subClassOf'},
+{s:'sec_UserAccountMgmt',t:'sec_Countermeasures',type:'subClassOf'},{s:'sec_SecurityReqs',t:'sec_Countermeasures',type:'subClassOf'},
+{s:'sec_Antivirus',t:'sec_SecurityTools',type:'subClassOf'},{s:'sec_Authentication',t:'sec_SecurityProcs',type:'subClassOf'},
+{s:'sec_Authorization',t:'sec_SecurityProcs',type:'subClassOf'},{s:'sec_Systems',t:'sec_ProtectedAssets',type:'subClassOf'},
+{s:'sec_PhysicalAssets',t:'sec_ProtectedAssets',type:'subClassOf'},{s:'sec_DisasterRecovery',t:'sec_RiskResponse',type:'subClassOf'},
+{s:'sec_Confidentiality',t:'sec_SecurityReqs',type:'subClassOf'},{s:'sec_BizContinuity',t:'sec_DisasterRecovery',type:'subClassOf'},
+
+// Supply Chain hierarchy
+{s:'sc_Planning',t:'sc_SupplyChain',type:'subClassOf'},{s:'sc_InventoryMgmt',t:'sc_SupplyChain',type:'subClassOf'},
+{s:'sc_Manufacturing',t:'sc_SupplyChain',type:'subClassOf'},{s:'sc_LogisticsMgmt',t:'sc_SupplyChain',type:'subClassOf'},
+{s:'sc_Source',t:'lc_Lifecycle',type:'subClassOf'},{s:'sc_Make',t:'lc_Lifecycle',type:'subClassOf'},
+{s:'sc_Deliver',t:'lc_Lifecycle',type:'subClassOf'},{s:'sc_DemandForecasting',t:'sc_Planning',type:'subClassOf'},
+{s:'sc_InventoryPlanning',t:'sc_Planning',type:'subClassOf'},{s:'sc_EquipmentMgmt',t:'sc_InventoryMgmt',type:'subClassOf'},
+{s:'sc_InventoryLocation',t:'sc_InventoryMgmt',type:'subClassOf'},{s:'sc_InventoryTracking',t:'sc_InventoryMgmt',type:'subClassOf'},
+{s:'sc_TransportationMgmt',t:'sc_LogisticsMgmt',type:'subClassOf'},{s:'sc_DistributionMgmt',t:'sc_LogisticsMgmt',type:'subClassOf'},
+{s:'sc_FleetMgmt',t:'sc_TransportationMgmt',type:'subClassOf'},{s:'sc_FreightTracking',t:'sc_TransportationMgmt',type:'subClassOf'},
+{s:'sc_Acquire',t:'sc_Source',type:'subClassOf'},{s:'sc_Enrich',t:'sc_Make',type:'subClassOf'},
+
+// ═══ CROSS-ONTOLOGY EDGES (SHACL-derived + semantic) ═══
+// Event → process, location, time
+{s:'evt_Event',t:'prc_Process',type:'generates'},{s:'evt_Event',t:'evt_EventState',type:'has'},
+{s:'evt_Trigger',t:'evt_Event',type:'initiates'},
+// Requirements → Persona
+{s:'req_JobExecutor',t:'psn_Persona',type:'hasRelated'},{s:'req_JobExecutor',t:'req_Job',type:'performs'},
+{s:'req_JobExecutor',t:'req_Outcome',type:'enables'},{s:'req_Job',t:'req_Journey',type:'is'},
+// Persona → Role (via Party)
+{s:'pty_Party',t:'psn_Persona',type:'assignedTo'},{s:'pty_Party',t:'ast_BiologicalAsset',type:'typeOf'},
+// Process cross-connects
+{s:'prc_Process',t:'ast_DigitalAsset',type:'modifies'},{s:'prc_Process',t:'ast_PhysicalAsset',type:'modifies'},
+// Capability cross-connects
+{s:'cap_AIML',t:'ast_AIAgent',type:'enables'},{s:'cap_DataMgmt',t:'ast_DigitalAsset',type:'manages'},
+{s:'gov_DataCertification',t:'ast_DigitalAsset',type:'governs'},{s:'gov_BusinessGlossary',t:'ast_Artifact',type:'documents'},
+// Governance → IT alignment
+{s:'gov_Governance',t:'it_IT',type:'governs'},{s:'gov_Governance',t:'cap_DataMgmt',type:'governs'},
+{s:'gov_ScorecardMetrics',t:'fin_FinAnalysis',type:'related'},{s:'gov_AccessMgmt',t:'sec_Authentication',type:'related'},
+// Finance → Procurement
+{s:'fin_AP',t:'pro_ContractMgmt',type:'related'},{s:'fin_Billing',t:'sal_SalesProcess',type:'related'},
+// Legal governance
+{s:'leg_CorporateGov',t:'gov_BusinessPolicy',type:'related'},{s:'leg_ContractMgmt',t:'pro_ContractMgmt',type:'related'},
+{s:'leg_RegCompliance',t:'gov_GovPlanningAct',type:'related'},
+// Supply chain lifecycle
+{s:'sc_Source',t:'pro_SourcingMgmt',type:'related'},{s:'sc_InventoryMgmt',t:'fac_Facilities',type:'related'},
+// HR → Finance
+{s:'hr_Payroll',t:'fin_FinancialOps',type:'related'},{s:'hr_CompensationMgmt',t:'fin_Budgeting',type:'related'},
+// Security → IT
+{s:'sec_Security',t:'it_IT',type:'related'},{s:'sec_DisasterRecovery',t:'it_CSIServiceMgmt',type:'related'},
+{s:'sec_Authentication',t:'it_AccessMgmt',type:'related'},
+// Marketing → Sales
+{s:'mkt_CampaignMgmt',t:'sal_SalesStrategy',type:'related'},{s:'mkt_ABM',t:'sal_CRM',type:'related'},
+// Requirements → Capability
+{s:'req_FunctionalJob',t:'cap_FuncCapability',type:'enables'},
+// Asset type usage
+{s:'ast_Artifact',t:'gov_DataGovTools',type:'related'},{s:'ast_Analytics',t:'cap_BI',type:'related'},
+];
+
+// ── Fix edges that were missing 't' due to copy error ──
+// (lc_DesignTime line had s/s instead of s/t - fix in place)
+RAW_EDGES[0] = {s:'lc_DesignTime',t:'lc_Lifecycle',type:'subClassOf'};
+
+// ══════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════
+const activeOntos = new Set(Object.keys(ONTOS));
+const activeEdgeTypes = new Set(['subClassOf','generates','has','initiates','hasRelated','performs','enables','assignedTo','typeOf','modifies','manages','governs','documents','related']);
+let searchQ = '', currentLayout = 'force';
+let svg, sim, zoomB, linkSel, nodeSel, labelSel;
+const nodeMap = {};
+RAW_NODES.forEach(n => nodeMap[n.id] = n);
+
+// ══════════════════════════════════════════════════════════════════
+//  BUILD SIDEBAR
+// ══════════════════════════════════════════════════════════════════
+function buildSidebar() {
+  const groups = {tax:'sec-tax', core:'sec-core', domain:'sec-domain'};
+  const counts = {};
+  RAW_NODES.forEach(n => counts[n.onto] = (counts[n.onto]||0)+1);
+
+  Object.entries(groups).forEach(([grp, secId]) => {
+    const el = document.getElementById(secId);
+    el.innerHTML = '';
+    Object.entries(ONTOS).filter(([,v])=>v.group===grp).forEach(([key,meta])=>{
+      const row = document.createElement('div');
+      row.className='onto-row';
+      row.id='row-'+key;
+      row.innerHTML=`<div class="onto-dot" style="background:${meta.color};color:${meta.color}"></div>
+        <span class="onto-label">${meta.label}</span>
+        <span class="onto-cnt">${counts[key]||0}</span>
+        <div class="onto-check on" id="oc-${key}"></div>`;
+      row.onclick=()=>toggleOnto(key);
+      el.appendChild(row);
+    });
+  });
+
+  // Edge types
+  const edgeSec = document.getElementById('sec-edges');
+  const edgeDefs = [
+    {type:'subClassOf', color:'#4f91ff', dash:false, label:'subClassOf (hierarchy)'},
+    {type:'related',    color:'#22c55e', dash:true,  label:'skos:related (semantic)'},
+    {type:'enables',    color:'#14b8a6', dash:false, label:'enables / performs'},
+    {type:'governs',    color:'#60a5fa', dash:true,  label:'governs / manages'},
+    {type:'generates',  color:'#f43f5e', dash:false, label:'generates / has'},
+    {type:'modifies',   color:'#f59e0b', dash:false, label:'modifies / documents'},
+    {type:'assignedTo', color:'#a78bfa', dash:false, label:'assignedTo / typeOf'},
+    {type:'hasRelated', color:'#fb923c', dash:true,  label:'hasRelated / cross-ref'},
+  ];
+  edgeSec.innerHTML = '';
+  edgeDefs.forEach(e=>{
+    const row = document.createElement('div');
+    row.className='edge-row';
+    row.innerHTML=`<div class="edge-line${e.dash?' ':''}${e.dash?'edge-dashed':''}" style="background:${e.dash?'transparent':e.color};${e.dash?`border-top:2px dashed ${e.color}`:''};width:22px;height:2px;flex-shrink:0"></div>
+      <span class="edge-label">${e.label}</span>
+      <div class="onto-check on" id="ec-${e.type}" style="margin-left:auto"></div>`;
+    row.onclick=()=>toggleEdge(e.type);
+    edgeSec.appendChild(row);
+  });
+}
+
+function toggleSection(id) {
+  const el = document.getElementById('sec-'+id);
+  const arr = document.getElementById('arr-'+id);
+  if(el.style.display==='none'){el.style.display='';arr.classList.add('open');}
+  else{el.style.display='none';arr.classList.remove('open');}
+}
+
+function toggleOnto(key) {
+  if(activeOntos.has(key)) activeOntos.delete(key); else activeOntos.add(key);
+  const el = document.getElementById('oc-'+key);
+  if(el) { if(activeOntos.has(key)) el.classList.add('on'); else el.classList.remove('on'); }
+  applyVisibility();
+}
+
+const EDGE_FAMILY = {generates:'generates',has:'generates',initiates:'generates',
+  hasRelated:'hasRelated',performs:'hasRelated',is:'hasRelated',
+  enables:'enables',manages:'governs',governs:'governs',documents:'governs',
+  modifies:'modifies',assignedTo:'assignedTo',typeOf:'assignedTo',related:'related'};
+
+function toggleEdge(type) {
+  if(activeEdgeTypes.has(type)) activeEdgeTypes.delete(type); else activeEdgeTypes.add(type);
+  const el = document.getElementById('ec-'+type);
+  if(el) { if(activeEdgeTypes.has(type)) el.classList.add('on'); else el.classList.remove('on'); }
+  applyVisibility();
+}
+
+function selectAll(on) {
+  Object.keys(ONTOS).forEach(k=>{
+    if(on) activeOntos.add(k); else activeOntos.delete(k);
+    const el=document.getElementById('oc-'+k);
+    if(el){if(on)el.classList.add('on');else el.classList.remove('on');}
+  });
+  applyVisibility();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  VISIBILITY
+// ══════════════════════════════════════════════════════════════════
+function isNodeVisible(d) {
+  if(!activeOntos.has(d.onto)) return false;
+  if(searchQ){const q=searchQ.toLowerCase();return d.label.toLowerCase().includes(q)||d.id.toLowerCase().includes(q);}
+  return true;
+}
+
+function isEdgeVisible(e) {
+  const s=e.source.id||e.source, t=e.target.id||e.target;
+  const sn=nodeMap[s], tn=nodeMap[t];
+  if(!sn||!tn||!isNodeVisible(sn)||!isNodeVisible(tn)) return false;
+  const fam=EDGE_FAMILY[e.type]||e.type;
+  return activeEdgeTypes.has(fam)||activeEdgeTypes.has(e.type);
+}
+
+function applyVisibility() {
+  if(!nodeSel) return;
+  nodeSel.attr('opacity', d => isNodeVisible(d)?1:0.04);
+  labelSel.attr('opacity', d => isNodeVisible(d) && (d.level<=2||searchQ)?1:0);
+  linkSel.attr('opacity', e => isEdgeVisible(e)?0.65:0);
+  const vn=RAW_NODES.filter(isNodeVisible).length;
+  const ve=window._links ? window._links.filter(e=>isEdgeVisible(e)).length : 0;
+  document.getElementById('sn').textContent=vn;
+  document.getElementById('se').textContent=ve;
+  document.getElementById('so').textContent=activeOntos.size;
+}
+
+function doSearch(q) {
+  searchQ=q.trim();
+  applyVisibility();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  GRAPH INIT
+// ══════════════════════════════════════════════════════════════════
+function init() {
+  const cvs = document.getElementById('canvas');
+  const W = cvs.clientWidth, H = cvs.clientHeight;
+
+  const svgEl = d3.select('#canvas');
+  svgEl.selectAll('*').remove();
+
+  // Defs
+  const defs = svgEl.append('defs');
+
+  // Arrow markers per color
+  const arrowColors = {
+    subClassOf:'#4f91ff', related:'#22c55e', enables:'#14b8a6', governs:'#60a5fa',
+    generates:'#f43f5e', modifies:'#f59e0b', assignedTo:'#a78bfa', hasRelated:'#fb923c',
+  };
+  Object.entries(arrowColors).forEach(([type,color])=>{
+    defs.append('marker').attr('id','arr-'+type)
+      .attr('viewBox','0 -4 8 8').attr('refX',7).attr('refY',0)
+      .attr('markerWidth',4).attr('markerHeight',4).attr('orient','auto')
+      .append('path').attr('d','M0,-4L8,0L0,4').attr('fill',color).attr('opacity',0.8);
+  });
+
+  // Glow filter
+  const glowF=defs.append('filter').attr('id','glow').attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+  glowF.append('feGaussianBlur').attr('stdDeviation','3').attr('result','blur');
+  const fm=glowF.append('feMerge');fm.append('feMergeNode').attr('in','blur');fm.append('feMergeNode').attr('in','SourceGraphic');
+
+  svg = svgEl;
+  const g = svg.append('g').attr('class','zoom-g');
+
+  // Background grid
+  const bgG=g.append('g').attr('class','bg');
+  for(let x=-W;x<W*2;x+=50) bgG.append('line').attr('x1',x).attr('y1',-H).attr('x2',x).attr('y2',H*2).attr('stroke','#0e1825').attr('stroke-width',.4);
+  for(let y=-H;y<H*2;y+=50) bgG.append('line').attr('x1',-W).attr('y1',y).attr('x2',W*2).attr('y2',y).attr('stroke','#0e1825').attr('stroke-width',.4);
+
+  // Cluster halos (subtle)
+  const haloG = g.append('g').attr('class','halos');
+  Object.entries(ONTOS).forEach(([key,meta])=>{
+    const [fx,fy]=meta.pos;
+    haloG.append('circle')
+      .attr('cx',W*fx).attr('cy',H*fy).attr('r',80)
+      .attr('fill',meta.color+'08').attr('stroke',meta.color+'18').attr('stroke-width',1)
+      .attr('stroke-dasharray','4,4');
+    haloG.append('text')
+      .attr('x',W*fx).attr('y',H*fy-86)
+      .attr('text-anchor','middle').attr('fill',meta.color+'50')
+      .attr('font-size',8).attr('font-family','Outfit,sans-serif').attr('font-weight',600)
+      .attr('letter-spacing','.08em').text(meta.label.toUpperCase());
+  });
+
+  // Nodes + edges data
+  const nodes = RAW_NODES.map(d=>({...d}));
+  const nodeById = {};
+  nodes.forEach(n=>nodeById[n.id]=n);
+
+  // Filter and resolve edges
+  const links = RAW_EDGES
+    .filter(e=>nodeById[e.s]&&nodeById[e.t])
+    .map(e=>({source:e.s, target:e.t, type:e.type}));
+  window._links = links;
+
+  // Link layer
+  const linkG = g.append('g').attr('class','link-g');
+  linkSel = linkG.selectAll('line').data(links).join('line')
+    .attr('stroke', e => {
+      const fam = EDGE_FAMILY[e.type]||e.type;
+      return arrowColors[fam]||arrowColors[e.type]||'#3b5a8a';
+    })
+    .attr('stroke-width', e => e.type==='subClassOf'?1.6:1)
+    .attr('stroke-dasharray', e => ['related','governs','hasRelated'].some(t=>t===(EDGE_FAMILY[e.type]||e.type))?'4,3':null)
+    .attr('marker-end', e => {
+      const fam=EDGE_FAMILY[e.type]||e.type;
+      return `url(#arr-${fam})`;
+    })
+    .attr('opacity', 0.65);
+
+  // Node layer
+  const nodeG = g.append('g').attr('class','node-g');
+  nodeSel = nodeG.selectAll('g.nd').data(nodes).join('g').attr('class','nd')
+    .attr('cursor','pointer')
+    .call(d3.drag().on('start',ds).on('drag',dd).on('end',de))
+    .on('click',(ev,d)=>{ev.stopPropagation();showInfo(d,nodes,links);})
+    .on('mouseover',(ev,d)=>{
+      const tooltip=document.getElementById('tooltip');
+      tooltip.textContent=d.label;
+      tooltip.style.opacity=1;
+      tooltip.style.left=(ev.pageX+12)+'px';
+      tooltip.style.top=(ev.pageY-8)+'px';
+      linkSel.attr('stroke-opacity',e=>{
+        const sid=e.source.id||e.source,tid=e.target.id||e.target;
+        return(sid===d.id||tid===d.id)?1:0.1;
+      });
+      nodeSel.attr('opacity',n=>n.id===d.id||links.some(e=>{const s=e.source.id||e.source,t=e.target.id||e.target;return(s===d.id&&t===n.id)||(t===d.id&&s===n.id);})?1:0.15);
+    })
+    .on('mousemove',ev=>{
+      const tt=document.getElementById('tooltip');
+      tt.style.left=(ev.pageX+12)+'px';tt.style.top=(ev.pageY-8)+'px';
+    })
+    .on('mouseout',()=>{
+      document.getElementById('tooltip').style.opacity=0;
+      linkSel.attr('stroke-opacity',null);
+      applyVisibility();
+    });
+
+  // Draw shapes
+  nodeSel.each(function(d){
+    const el=d3.select(this);
+    const color=ONTOS[d.onto]?.color||'#7090b8';
+    const r=d.level===0?24:d.level===1?16:d.level===2?11:8;
+
+    if(d.level===0){
+      // Hexagon for roots
+      const pts=d3.range(6).map(i=>{const a=Math.PI/180*(60*i-30);return[r*Math.cos(a),r*Math.sin(a)].join(',');}).join(' ');
+      el.append('polygon').attr('points',pts).attr('fill',color+'20').attr('stroke',color).attr('stroke-width',2).attr('filter','url(#glow)');
+      el.append('polygon').attr('points',d3.range(6).map(i=>{const a=Math.PI/180*(60*i-30);return[(r*1.35)*Math.cos(a),(r*1.35)*Math.sin(a)].join(',');}).join(' ')).attr('fill','none').attr('stroke',color+'25').attr('stroke-width',0.8);
+    } else if(d.level===1){
+      el.append('circle').attr('r',r).attr('fill',color+'20').attr('stroke',color).attr('stroke-width',1.8).attr('filter','url(#glow)');
+      el.append('circle').attr('r',r*0.5).attr('fill',color+'30').attr('stroke',color).attr('stroke-width',0.7).attr('opacity',0.5);
+    } else if(d.level===2){
+      el.append('circle').attr('r',r).attr('fill',color+'18').attr('stroke',color).attr('stroke-width',1.2);
+    } else {
+      el.append('circle').attr('r',r).attr('fill',color+'12').attr('stroke',color+'80').attr('stroke-width',0.8);
+    }
+  });
+
+  // Labels
+  labelSel = nodeG.selectAll('text.lbl').data(nodes).join('text').attr('class','lbl')
+    .attr('text-anchor','middle')
+    .attr('dominant-baseline','auto')
+    .attr('font-family','Outfit,sans-serif')
+    .attr('font-size',d=>d.level===0?10:d.level===1?8.5:7.5)
+    .attr('font-weight',d=>d.level<=1?'600':'400')
+    .attr('fill',d=>ONTOS[d.onto]?.color||'#7090b8')
+    .attr('pointer-events','none')
+    .attr('dy',d=>(d.level===0?24:d.level===1?16:d.level===2?11:8)+9)
+    .text(d=>d.label)
+    .attr('opacity',d=>d.level<=2?1:0);
+
+  // Zoom
+  zoomB = d3.zoom().scaleExtent([0.08,5])
+    .on('zoom',ev=>g.attr('transform',ev.transform));
+  svg.call(zoomB);
+  svg.on('click',()=>closeInfo());
+
+  // Simulation
+  sim = d3.forceSimulation(nodes)
+    .force('link',d3.forceLink(links).id(d=>d.id).distance(e=>e.type==='subClassOf'?55:95).strength(e=>e.type==='subClassOf'?.5:.2))
+    .force('charge',d3.forceManyBody().strength(d=>d.level===0?-500:d.level===1?-300:d.level>=3?-80:-160))
+    .force('center',d3.forceCenter(W/2,H/2))
+    .force('collision',d3.forceCollide(d=>(d.level===0?24:d.level===1?16:d.level===2?11:8)+10))
+    .force('x',d3.forceX(d=>{const o=ONTOS[d.onto];return o?W*o.pos[0]:W/2;}).strength(0.1))
+    .force('y',d3.forceY(d=>{const o=ONTOS[d.onto];return o?H*o.pos[1]:H/2;}).strength(0.1))
+    .on('tick',tick);
+
+  function tick(){
+    linkSel.attr('x1',e=>e.source.x).attr('y1',e=>e.source.y)
+      .attr('x2',e=>{const dx=e.target.x-e.source.x,dy=e.target.y-e.source.y,dist=Math.sqrt(dx*dx+dy*dy)||1,r=(e.target.level===0?24:e.target.level===1?16:e.target.level===2?11:8)+5;return e.target.x-(dx/dist)*r;})
+      .attr('y2',e=>{const dx=e.target.x-e.source.x,dy=e.target.y-e.source.y,dist=Math.sqrt(dx*dx+dy*dy)||1,r=(e.target.level===0?24:e.target.level===1?16:e.target.level===2?11:8)+5;return e.target.y-(dy/dist)*r;});
+    nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`);
+    labelSel.attr('x',d=>d.x).attr('y',d=>d.y);
+  }
+
+  window._nodes=nodes;
+  applyVisibility();
+  setTimeout(()=>{
+    const t=d3.zoomIdentity.translate(W/2,H/2).scale(0.72).translate(-W/2,-H/2);
+    svg.transition().duration(800).call(zoomB.transform,t);
+  },1500);
+}
+
+function ds(ev,d){if(!ev.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;}
+function dd(ev,d){d.fx=ev.x;d.fy=ev.y;}
+function de(ev,d){if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}
+
+// ══════════════════════════════════════════════════════════════════
+//  LAYOUT MODES
+// ══════════════════════════════════════════════════════════════════
+function setLayout(mode) {
+  currentLayout=mode;
+  document.querySelectorAll('.lay-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('lb-'+mode).classList.add('active');
+  const W=document.getElementById('canvas').clientWidth, H=document.getElementById('canvas').clientHeight;
+  const nodes=window._nodes; if(!nodes)return;
+
+  if(mode==='force'){
+    nodes.forEach(d=>{d.fx=null;d.fy=null;});
+    sim.force('x',d3.forceX(d=>{const o=ONTOS[d.onto];return o?W*o.pos[0]:W/2;}).strength(.1))
+       .force('y',d3.forceY(d=>{const o=ONTOS[d.onto];return o?H*o.pos[1]:H/2;}).strength(.1));
+    sim.alpha(.5).restart();
+  }
+  if(mode==='radial'){
+    const rings={0:0,1:140,2:250,3:340};
+    const byLevel={};
+    nodes.forEach(d=>{if(!byLevel[d.level])byLevel[d.level]=[];byLevel[d.level].push(d);});
+    Object.entries(byLevel).forEach(([lv,ns])=>{
+      ns.forEach((d,i)=>{
+        const a=(2*Math.PI*i/ns.length)-Math.PI/2;
+        const r=rings[lv]||380;
+        d.fx=W/2+r*Math.cos(a); d.fy=H/2+r*Math.sin(a);
+      });
+    });
+    sim.alpha(.5).restart();
+    setTimeout(()=>{nodes.forEach(d=>{d.fx=null;d.fy=null;});sim.alpha(.1).restart();},1800);
+  }
+  if(mode==='cluster'){
+    Object.entries(ONTOS).forEach(([key,meta])=>{
+      const ons=nodes.filter(d=>d.onto===key);
+      const cx=W*meta.pos[0], cy=H*meta.pos[1];
+      ons.forEach((d,i)=>{
+        const a=(2*Math.PI*i/ons.length);
+        const radius=d.level===0?0:d.level===1?40:d.level===2?75:105;
+        d.fx=cx+(radius||0)*Math.cos(a); d.fy=cy+(radius||0)*Math.sin(a);
+      });
+    });
+    sim.alpha(.6).restart();
+    setTimeout(()=>{nodes.forEach(d=>{d.fx=null;d.fy=null;});sim.alpha(.15).restart();},2200);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  INFO PANEL
+// ══════════════════════════════════════════════════════════════════
+function showInfo(d,nodes,links){
+  const color=ONTOS[d.onto]?.color||'#7090b8';
+  const badge=document.getElementById('ip-badge');
+  badge.textContent=ONTOS[d.onto]?.label||d.onto;
+  badge.style.background=color+'22'; badge.style.color=color; badge.style.border=`1px solid ${color}44`;
+  document.getElementById('ip-name').textContent=d.label;
+  document.getElementById('ip-onto').textContent=(ONTOS[d.onto]?.group||'').toUpperCase()+' — '+d.onto;
+  document.getElementById('ip-level').textContent=d.level===0?'Root Class':`Level ${d.level}`;
+  document.getElementById('ip-uri').textContent=`ontologies.verizon.com/${d.onto}/${d.id.replace(/^[a-z]+_/,'')}`;
+  const conns=[];
+  links.forEach(e=>{
+    const s=e.source.id||e.source, t=e.target.id||e.target;
+    if(s===d.id){const tn=nodes.find(n=>n.id===t);if(tn)conns.push({dir:'→',rel:e.type,name:tn.label});}
+    else if(t===d.id){const sn=nodes.find(n=>n.id===s);if(sn)conns.push({dir:'←',rel:e.type,name:sn.label});}
+  });
+  const cl=document.getElementById('ip-conn-list');
+  cl.innerHTML=conns.slice(0,12).map(c=>`<div class="ip-conn"><span style="color:var(--text3);font-family:var(--mono);font-size:8px">${c.dir}</span><span class="ip-rel">${c.rel}</span><span style="font-size:10px;color:var(--text)">${c.name}</span></div>`).join('');
+  if(conns.length>12)cl.innerHTML+=`<div style="font-size:8px;color:var(--text3);font-family:var(--mono);margin-top:4px">+${conns.length-12} more</div>`;
+  if(!conns.length)cl.innerHTML='<div style="font-size:9px;color:var(--text3)">No visible connections</div>';
+  document.getElementById('info').classList.add('open');
+}
+function closeInfo(){ document.getElementById('info').classList.remove('open'); }
+
+// ══════════════════════════════════════════════════════════════════
+//  ZOOM CONTROLS
+// ══════════════════════════════════════════════════════════════════
+function zoomIn(){ svg.transition().call(zoomB.scaleBy,1.5); }
+function zoomOut(){ svg.transition().call(zoomB.scaleBy,.67); }
+function resetZoom(){
+  const W=document.getElementById('canvas').clientWidth, H=document.getElementById('canvas').clientHeight;
+  svg.transition().duration(700).call(zoomB.transform,d3.zoomIdentity.translate(W/2,H/2).scale(.72).translate(-W/2,-H/2));
+}
+function reheat(){ if(sim) sim.alpha(.5).restart(); }
+
+// ══════════════════════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{ buildSidebar(); init(); });
+window.addEventListener('resize',()=>{ init(); });
+</script>
+</body>
+</html>

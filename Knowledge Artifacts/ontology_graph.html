@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taxonomy | Reference | Domain — Interactive Ontology Graph</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+  --bg:      #060a10;
+  --panel:   #0b1019;
+  --panel2:  #111827;
+  --border:  #1e2d42;
+  --border2: #243447;
+  --text:    #c5d3e8;
+  --text2:   #7090b8;
+  --text3:   #3d5a7a;
+  --mono:    'JetBrains Mono', monospace;
+  --sans:    'Syne', sans-serif;
+
+  /* branch palette */
+  --root:       #e2e8f0;
+  --corp:       #4f91ff;
+  --commercial: #f59e0b;
+  --network:    #22c55e;
+  --supply:     #a855f7;
+  --core:       #14b8a6;
+
+  /* domain sub-colors */
+  --compliance: #38bdf8;
+  --facilities: #818cf8;
+  --finance:    #34d399;
+  --hr:         #fb923c;
+  --legal:      #f472b6;
+  --procurement:#facc15;
+  --security:   #f87171;
+  --it:         #67e8f9;
+  --custsup:    #fcd34d;
+  --marketing:  #fb7185;
+  --sales:      #f97316;
+  --logistics:  #c084fc;
+  --govern:     #7dd3fc;
+  --risk:       #fca5a5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ══ SIDEBAR ══ */
+#sidebar {
+  width: 272px;
+  flex-shrink: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+
+.sidebar-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+}
+
+.sidebar-ver {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0 16px;
+}
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* search */
+.search-wrap {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-input {
+  width: 100%;
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  outline: none;
+}
+.search-input::placeholder { color: var(--text3); }
+.search-input:focus { border-color: var(--corp); }
+
+/* stats bar */
+.stats-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-item {
+  flex: 1;
+  padding: 9px 6px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  display: block;
+}
+.stat-lbl {
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+/* section headers */
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 8px;
+}
+.sec-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.sec-line { flex: 1; height: 1px; background: var(--border); }
+
+/* layout toggle */
+.layout-btns {
+  display: flex;
+  gap: 5px;
+  padding: 0 14px 10px;
+}
+.lay-btn {
+  flex: 1;
+  background: var(--panel2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 5px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  transition: all .15s;
+}
+.lay-btn:hover { color: #fff; border-color: var(--corp); }
+.lay-btn.active { background: var(--corp); border-color: var(--corp); color: #fff; }
+
+/* filter groups */
+.filter-group { padding: 0 14px 4px; }
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 4px 6px;
+  margin: 0 -6px;
+  transition: background .12s;
+}
+.filter-row:hover { background: var(--panel2); }
+
+.f-dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.f-check {
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .12s;
+  margin-left: auto;
+}
+.f-check.checked { background: var(--corp); border-color: var(--corp); }
+.f-check.checked::after { content: '✓'; font-size: 9px; color: #fff; font-weight: 700; }
+
+.f-label { font-size: 11px; color: var(--text); flex: 1; }
+.f-count {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  background: var(--panel2);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* edge filter toggles */
+.edge-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  margin: 0 -6px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background .12s;
+}
+.edge-toggle:hover { background: var(--panel2); }
+
+.e-line {
+  width: 24px;
+  height: 2px;
+  flex-shrink: 0;
+  border-radius: 1px;
+}
+.e-dashed { background: repeating-linear-gradient(90deg, currentColor 0, currentColor 4px, transparent 4px, transparent 8px); }
+
+.e-label { font-size: 11px; color: var(--text2); flex: 1; }
+.e-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  border: 1px solid currentColor;
+}
+
+/* legend */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.leg-shape {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.leg-label { font-size: 10px; color: var(--text2); }
+
+/* ══ MAIN CANVAS ══ */
+#main {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 40% 30%, #0d1a2a 0%, var(--bg) 70%);
+}
+
+#canvas { width: 100%; height: 100%; }
+
+/* ══ INFO PANEL ══ */
+#info-panel {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 260px;
+  background: rgba(11,16,25,.96);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  overflow: hidden;
+  transform: translateX(300px);
+  transition: transform .25s ease;
+  backdrop-filter: blur(12px);
+  z-index: 20;
+}
+#info-panel.open { transform: translateX(0); }
+
+.ip-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.ip-close {
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+.ip-close:hover { color: var(--text); }
+.ip-type-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.ip-name { font-size: 15px; font-weight: 700; color: #fff; }
+.ip-body { padding: 12px 14px; }
+.ip-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+.ip-key {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  width: 60px;
+  flex-shrink: 0;
+}
+.ip-val { color: var(--text); font-size: 11px; line-height: 1.4; }
+.ip-uri {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  word-break: break-all;
+}
+
+.ip-connections { border-top: 1px solid var(--border); padding: 10px 14px 12px; }
+.ip-conn-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+.ip-conn-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+.ip-conn-rel {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  background: var(--panel2);
+  padding: 1px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ip-conn-node { color: var(--text); }
+
+/* ══ TOOLBAR ══ */
+#toolbar {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 10;
+}
+.tool-btn {
+  width: 36px; height: 36px;
+  background: rgba(11,16,25,.9);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 16px;
+  transition: all .15s;
+  backdrop-filter: blur(8px);
+}
+.tool-btn:hover { color: #fff; border-color: var(--corp); background: var(--corp); }
+
+/* ══ WATERMARK ══ */
+.watermark {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  pointer-events: none;
+}
+
+/* SVG styles */
+.node-group { cursor: pointer; }
+.node-circle {
+  transition: filter .2s;
+}
+.node-group:hover .node-circle {
+  filter: brightness(1.3);
+}
+
+.link { stroke-opacity: 0.7; }
+.link-subClassOf { stroke: #3b5a8a; stroke-width: 1.5; }
+.link-isMemberOf { stroke: #4a3a6a; stroke-width: 1.2; stroke-dasharray: 5,3; }
+.link-related    { stroke: #2a4a3a; stroke-width: 1; stroke-dasharray: 2,4; }
+.link-enables    { stroke: #1a5a5a; stroke-width: 1.5; }
+.link-modifies   { stroke: #5a4a1a; stroke-width: 1.2; }
+.link-assignedTo { stroke: #5a2a4a; stroke-width: 1.2; }
+.link-guides     { stroke: #1a3a5a; stroke-width: 1.2; stroke-dasharray: 6,2; }
+.link-initiates  { stroke: #3a2a5a; stroke-width: 1.2; }
+.link-typeOf     { stroke: #2a5a2a; stroke-width: 1.2; }
+.link-occurs     { stroke: #5a3a1a; stroke-width: 1.2; }
+.link-generates  { stroke: #1a4a5a; stroke-width: 1.2; }
+.link-hasA       { stroke: #4a1a5a; stroke-width: 1.2; }
+.link-enabled    { stroke: #1a5a4a; stroke-width: 1.2; }
+
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Ontology Graph Explorer</div>
+    <div class="sidebar-name">Taxonomy · Reference · Domain</div>
+    <div class="sidebar-ver">+ Ontology Core Domain v1.0 &nbsp;|&nbsp; DRAFT</div>
+  </div>
+
+  <div class="sidebar-scroll">
+
+    <div class="search-wrap">
+      <input class="search-input" id="searchBox" type="text" placeholder="Search nodes…" oninput="doSearch(this.value)">
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-num" id="visNodes">40</span><span class="stat-lbl">Nodes</span></div>
+      <div class="stat-item"><span class="stat-num" id="visEdges">64</span><span class="stat-lbl">Edges</span></div>
+      <div class="stat-item"><span class="stat-num" id="visBranches">6</span><span class="stat-lbl">Branches</span></div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="sec-head"><span class="sec-title">Layout</span><span class="sec-line"></span></div>
+    <div class="layout-btns">
+      <button class="lay-btn active" id="btn-force" onclick="setLayout('force')">⊕ Force</button>
+      <button class="lay-btn" id="btn-radial" onclick="setLayout('radial')">◎ Radial</button>
+      <button class="lay-btn" id="btn-tree" onclick="setLayout('tree')">⊢ Tree</button>
+    </div>
+
+    <!-- BRANCH FILTERS -->
+    <div class="sec-head"><span class="sec-title">Branches</span><span class="sec-line"></span></div>
+    <div class="filter-group" id="branch-filters">
+      <div class="filter-row" onclick="toggleBranch('root')">
+        <div class="f-dot" style="background:var(--root);color:var(--root)"></div>
+        <span class="f-label">Domain Root</span>
+        <span class="f-count">1</span>
+        <div class="f-check checked" id="fc-root"></div>
+      </div>
+      <div class="filter-row" onclick="toggleBranch('corporate')">
+        <div class="f-dot" style="background:var(--corp);color:var(--corp)"></div>
+        <span class="f-label">Corporate</span>
+        <span class="f-count">14</span>
+        <div class="f-check checked" id="fc-corporate"></div>
+      </div>
+      <div class="filter-row" onclick="toggleBranch('commercial')">
+        <div class="f-dot" style="background:var(--commercial);color:var(--commercial)"></div>
+        <span class="f-label">Commercial</span>
+        <span class="f-count">6</span>
+        <div class="f-check checked" id="fc-commercial"></div>
+      </div>
+      <div class="filter-row" onclick="toggleBranch('network')">
+        <div class="f-dot" style="background:var(--network);color:var(--network)"></div>
+        <span class="f-label">Network</span>
+        <span class="f-count">1</span>
+        <div class="f-check checked" id="fc-network"></div>
+      </div>
+      <div class="filter-row" onclick="toggleBranch('supply')">
+        <div class="f-dot" style="background:var(--supply);color:var(--supply)"></div>
+        <span class="f-label">Supply Chain</span>
+        <span class="f-count">3</span>
+        <div class="f-check checked" id="fc-supply"></div>
+      </div>
+      <div class="filter-row" onclick="toggleBranch('core')">
+        <div class="f-dot" style="background:var(--core);color:var(--core)"></div>
+        <span class="f-label">Core Ontology</span>
+        <span class="f-count">15</span>
+        <div class="f-check checked" id="fc-core"></div>
+      </div>
+    </div>
+
+    <!-- RELATIONSHIP FILTERS -->
+    <div class="sec-head"><span class="sec-title">Relationships</span><span class="sec-line"></span></div>
+    <div class="filter-group">
+
+      <div class="edge-toggle" onclick="toggleEdge('subClassOf')">
+        <div class="e-line" style="background:#3b5a8a;color:#3b5a8a"></div>
+        <span class="e-label">subClassOf</span>
+        <span class="e-badge" style="color:#4f91ff;border-color:#4f91ff">22</span>
+        <div class="f-check checked" id="ec-subClassOf"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('isMemberOf')">
+        <div class="e-line e-dashed" style="color:#4a3a6a;width:24px"></div>
+        <span class="e-label">isMemberOf</span>
+        <span class="e-badge" style="color:#a855f7;border-color:#a855f7">20</span>
+        <div class="f-check checked" id="ec-isMemberOf"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('related')">
+        <div class="e-line e-dashed" style="color:#2a4a3a;width:24px"></div>
+        <span class="e-label">skos:related</span>
+        <span class="e-badge" style="color:#22c55e;border-color:#22c55e">6</span>
+        <div class="f-check checked" id="ec-related"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('enables')">
+        <div class="e-line" style="background:#1a5a5a;color:#1a5a5a"></div>
+        <span class="e-label">enables</span>
+        <span class="e-badge" style="color:#14b8a6;border-color:#14b8a6">3</span>
+        <div class="f-check checked" id="ec-enables"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('modifies')">
+        <div class="e-line" style="background:#5a4a1a;color:#5a4a1a"></div>
+        <span class="e-label">modifies/creates</span>
+        <span class="e-badge" style="color:#f59e0b;border-color:#f59e0b">4</span>
+        <div class="f-check checked" id="ec-modifies"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('assignedTo')">
+        <div class="e-line" style="background:#5a2a4a;color:#5a2a4a"></div>
+        <span class="e-label">assignedTo/typeOf</span>
+        <span class="e-badge" style="color:#f472b6;border-color:#f472b6">3</span>
+        <div class="f-check checked" id="ec-assignedTo"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('guides')">
+        <div class="e-line e-dashed" style="color:#1a3a5a;width:24px"></div>
+        <span class="e-label">guides/constrains</span>
+        <span class="e-badge" style="color:#38bdf8;border-color:#38bdf8">2</span>
+        <div class="f-check checked" id="ec-guides"></div>
+      </div>
+
+      <div class="edge-toggle" onclick="toggleEdge('initiates')">
+        <div class="e-line" style="background:#3a2a5a;color:#3a2a5a"></div>
+        <span class="e-label">initiates/occurs</span>
+        <span class="e-badge" style="color:#c084fc;border-color:#c084fc">3</span>
+        <div class="f-check checked" id="ec-initiates"></div>
+      </div>
+
+    </div>
+
+    <!-- NODE LEGEND -->
+    <div class="sec-head"><span class="sec-title">Node Types</span><span class="sec-line"></span></div>
+    <div class="filter-group" style="padding-bottom:8px;">
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><polygon points="10,2 18,6 18,14 10,18 2,14 2,6" fill="none" stroke="#e2e8f0" stroke-width="2"/></svg></div>
+        <span class="leg-label">Root Domain</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="none" stroke="#4f91ff" stroke-width="2.5"/></svg></div>
+        <span class="leg-label">L1 Branch</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><circle cx="10" cy="10" r="7" fill="none" stroke="#7090b8" stroke-width="1.5"/></svg></div>
+        <span class="leg-label">L2 Sub-Domain</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="none" stroke="#3d5a7a" stroke-width="1.2"/></svg></div>
+        <span class="leg-label">L3 Leaf Class</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><rect x="3" y="3" width="14" height="14" rx="3" fill="none" stroke="#14b8a6" stroke-width="1.8"/></svg></div>
+        <span class="leg-label">Core Entity</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-shape"><svg width="20" height="20"><polygon points="10,3 17,10 10,17 3,10" fill="none" stroke="#7090b8" stroke-width="1.5" stroke-dasharray="3,1.5"/></svg></div>
+        <span class="leg-label">External Ref</span>
+      </div>
+    </div>
+
+  </div><!-- /sidebar-scroll -->
+</div><!-- /sidebar -->
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+  <svg id="canvas"></svg>
+
+  <!-- Info Panel -->
+  <div id="info-panel">
+    <div class="ip-header">
+      <div>
+        <div class="ip-type-badge" id="ip-badge">Taxonomy</div>
+        <div class="ip-name" id="ip-name">Node Name</div>
+      </div>
+      <div class="ip-close" onclick="closeInfo()">✕</div>
+    </div>
+    <div class="ip-body">
+      <div class="ip-row">
+        <span class="ip-key">Branch</span>
+        <span class="ip-val" id="ip-branch">—</span>
+      </div>
+      <div class="ip-row">
+        <span class="ip-key">Level</span>
+        <span class="ip-val" id="ip-level">—</span>
+      </div>
+      <div class="ip-row">
+        <span class="ip-key">Type</span>
+        <span class="ip-val" id="ip-type">—</span>
+      </div>
+      <div class="ip-row">
+        <span class="ip-key">Source</span>
+        <span class="ip-val ip-uri" id="ip-uri">—</span>
+      </div>
+    </div>
+    <div class="ip-connections">
+      <div class="ip-conn-title">Connections</div>
+      <div id="ip-conns"></div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div id="toolbar">
+    <div class="tool-btn" onclick="zoomIn()" title="Zoom In">+</div>
+    <div class="tool-btn" onclick="zoomOut()" title="Zoom Out">−</div>
+    <div class="tool-btn" onclick="resetZoom()" title="Reset">⊙</div>
+    <div class="tool-btn" onclick="reHeat()" title="Reheat simulation">⚡</div>
+  </div>
+
+  <div class="watermark">Taxonomy | Reference | Domain + Core Domain Ontology v1.0 &nbsp;|&nbsp; Jeffrey Wallk, Sherri Anderson</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA  — parsed from both TTL files
+// ══════════════════════════════════════════════
+const RAW_NODES = [
+  // ── ROOT ──
+  { id:'Domain', label:'Domain', level:0, branch:'root', cat:'taxonomy',
+    uri:'taxonomy-reference-domain/Domain', desc:'Root classification of all business domains.' },
+
+  // ── L1 BRANCHES ──
+  { id:'Corporate',    label:'Corporate',    level:1, branch:'corporate',   cat:'taxonomy',
+    uri:'taxonomy-reference-domain/Corporate', desc:'Internal enterprise functions: finance, legal, HR, IT, compliance, security, facilities, procurement.' },
+  { id:'Commercial',   label:'Commercial',   level:1, branch:'commercial',  cat:'taxonomy',
+    uri:'taxonomy-reference-domain/Commercial', desc:'Customer-facing and revenue-generating operations: sales, marketing, customer support.' },
+  { id:'Network',      label:'Network',      level:1, branch:'network',     cat:'taxonomy',
+    uri:'taxonomy-reference-domain/Network', desc:'Telecommunications and network infrastructure operations.' },
+  { id:'SupplyChain',  label:'Supply Chain', level:1, branch:'supply',      cat:'taxonomy',
+    uri:'taxonomy-reference-domain/SupplyChain', desc:'End-to-end supply chain management including logistics and fleet operations.' },
+
+  // ── L2 CORPORATE ──
+  { id:'Compliance',   label:'Compliance',   level:2, branch:'corporate',   cat:'taxonomy', color:'var(--compliance)',
+    uri:'taxonomy-reference-domain/Compliance', desc:'Regulatory compliance and policy adherence governance.' },
+  { id:'Facilities',   label:'Facilities',   level:2, branch:'corporate',   cat:'taxonomy', color:'var(--facilities)',
+    uri:'taxonomy-reference-domain/Facilities', desc:'Physical infrastructure, real estate, and workplace management.' },
+  { id:'Finance',      label:'Finance',      level:2, branch:'corporate',   cat:'taxonomy', color:'var(--finance)',
+    uri:'taxonomy-reference-domain/Finance', desc:'Financial planning, accounting, treasury, and reporting.' },
+  { id:'HumanResource',label:'Human Resource',level:2, branch:'corporate',  cat:'taxonomy', color:'var(--hr)',
+    uri:'taxonomy-reference-domain/HumanResource', desc:'Talent acquisition, workforce management, and employee relations.' },
+  { id:'Legal',        label:'Legal',        level:2, branch:'corporate',   cat:'taxonomy', color:'var(--legal)',
+    uri:'taxonomy-reference-domain/Legal', desc:'Legal affairs, contracts, intellectual property, and regulatory counsel.' },
+  { id:'Procurement',  label:'Procurement',  level:2, branch:'corporate',   cat:'taxonomy', color:'var(--procurement)',
+    uri:'taxonomy-reference-domain/Procurement', desc:'Vendor management, sourcing, and purchasing operations.' },
+  { id:'Security',     label:'Security',     level:2, branch:'corporate',   cat:'taxonomy', color:'var(--security)',
+    uri:'taxonomy-reference-domain/Security', desc:'Cybersecurity, physical security, and risk management.' },
+  { id:'IT',           label:'Information Technology', level:2, branch:'corporate', cat:'taxonomy', color:'var(--it)',
+    uri:'taxonomy-reference-domain/InformationTechnology', desc:'IT infrastructure, applications, and digital services.' },
+
+  // ── L2 COMMERCIAL ──
+  { id:'CustomerSupport', label:'Customer Support', level:2, branch:'commercial', cat:'taxonomy', color:'var(--custsup)',
+    uri:'taxonomy-reference-domain/CustomerSupport', desc:'Post-sale customer service and support operations.' },
+  { id:'Marketing',    label:'Marketing',    level:2, branch:'commercial',  cat:'taxonomy', color:'var(--marketing)',
+    uri:'taxonomy-reference-domain/Marketing', desc:'Brand management, campaigns, and market intelligence.' },
+  { id:'Sales',        label:'Sales',        level:2, branch:'commercial',  cat:'taxonomy', color:'var(--sales)',
+    uri:'taxonomy-reference-domain/Sales', desc:'Revenue generation, account management, and channel sales.' },
+
+  // ── L2 SUPPLY ──
+  { id:'Logistics',    label:'Logistics',    level:2, branch:'supply',      cat:'taxonomy', color:'var(--logistics)',
+    uri:'taxonomy-reference-domain/Logistics', desc:'Transportation, warehousing, and distribution management.' },
+
+  // ── L3 CORPORATE ──
+  { id:'Governance',   label:'Governance',   level:3, branch:'corporate',   cat:'taxonomy', color:'var(--govern)',
+    uri:'taxonomy-reference-domain/Governance', desc:'Enterprise governance frameworks, policies, and oversight structures.' },
+  { id:'RealEstate',   label:'Real Estate',  level:3, branch:'corporate',   cat:'taxonomy', color:'var(--facilities)',
+    uri:'taxonomy-reference-domain/RealEstate', desc:'Property acquisition, leasing, and real estate portfolio management.' },
+  { id:'Risk',         label:'Risk',         level:3, branch:'corporate',   cat:'taxonomy', color:'var(--risk)',
+    uri:'taxonomy-reference-domain/Risk', desc:'Enterprise risk identification, assessment, and mitigation.' },
+
+  // ── L3 COMMERCIAL ──
+  { id:'RetailSales',  label:'Retail Sales', level:3, branch:'commercial',  cat:'taxonomy', color:'var(--sales)',
+    uri:'taxonomy-reference-domain/RetailSales', desc:'Direct-to-consumer retail channel sales and store operations.' },
+  { id:'SalesOps',     label:'Sales Operations', level:3, branch:'commercial', cat:'taxonomy', color:'var(--commercial)',
+    uri:'taxonomy-reference-domain/SalesOperations', desc:'Sales process efficiency, enablement, and performance analytics.' },
+
+  // ── L3 SUPPLY ──
+  { id:'FleetMgmt',   label:'Fleet Management', level:3, branch:'supply', cat:'taxonomy', color:'var(--supply)',
+    uri:'taxonomy-reference-domain/FleetManagement', desc:'Vehicle fleet lifecycle, telematics, and maintenance operations.' },
+
+  // ── CORE ONTOLOGY ENTITIES ──
+  { id:'Service',      label:'Service',      level:1, branch:'core', cat:'core',
+    uri:'ontology-core-services/Service', desc:'A bounded offering of capability delivered by a provider to a consumer through defined interfaces.' },
+  { id:'Process',      label:'Process',      level:1, branch:'core', cat:'core',
+    uri:'taxonomy-core-process/Process', desc:'An ordered sequence of activities transforming inputs into outputs within a bounded scope.' },
+  { id:'Events',       label:'Event',        level:1, branch:'core', cat:'core',
+    uri:'ontology-core-event/Event', desc:'A bounded occurrence in time during which a significant change of state takes place.' },
+  { id:'ValueStream',  label:'Value Stream', level:1, branch:'core', cat:'core',
+    uri:'core-taxonomy-value-stream/ValueStream', desc:'End-to-end sequence of activities delivering a defined outcome of value to a beneficiary.' },
+  { id:'Party',        label:'Party',        level:1, branch:'core', cat:'core',
+    uri:'common-core-ontology/Party', desc:'Any agent — individual, organization, or system — participating in a business or technical context.' },
+  { id:'Persona',      label:'Persona',      level:2, branch:'core', cat:'core',
+    uri:'core-taxonomy-persona/Persona', desc:'A named role pattern representing a class of user with shared goals, responsibilities, and context.' },
+  { id:'Rules',        label:'Rules',        level:1, branch:'core', cat:'core',
+    uri:'taxonomy-core-rules/Rules', desc:'Formal statements governing, guiding, or constraining process behavior or system operations.' },
+  { id:'DigitalAsset', label:'Digital Asset', level:2, branch:'core', cat:'core',
+    uri:'taxonomy-core-asset/DigitalAsset', desc:'A digital resource — data object, model, document — owned and governed within the enterprise.' },
+  { id:'PhysicalAsset',label:'Physical Asset', level:2, branch:'core', cat:'core',
+    uri:'taxonomy-core-asset/PhysicalAsset', desc:'A tangible resource with operational or financial value in the enterprise asset base.' },
+  { id:'BiologicalAsset',label:'Biological Asset', level:2, branch:'core', cat:'core',
+    uri:'taxonomy-core-asset/BiologicalAsset', desc:'A living entity recognized as a typed asset within the party-asset governance framework.' },
+  { id:'Location',     label:'Location',     level:2, branch:'core', cat:'core',
+    uri:'core-taxonomy-location/Location', desc:'A physical or virtual place where events occur or processes are executed.' },
+  { id:'TimeObj',      label:'Time',         level:2, branch:'core', cat:'core',
+    uri:'core-taxonomy-time/Time', desc:'A temporal reference — instant, interval, or duration — used to anchor events and process execution.' },
+  { id:'Capability',   label:'Capability',   level:2, branch:'core', cat:'core',
+    uri:'ontology-core-capability/Capability', desc:'An ability of a system or party to achieve a defined outcome under specified conditions.' },
+  { id:'Role',         label:'Role',         level:2, branch:'core', cat:'core',
+    uri:'core-taxonomy-role/Role', desc:'A named set of responsibilities and authorities assigned to a party in a given context.' },
+  { id:'Lifecycle',    label:'Lifecycle',    level:2, branch:'core', cat:'core',
+    uri:'taxonomy-core-lifecycle/Lifecycle', desc:'The time-phased sequence of stages governing an entity from creation to retirement.' },
+  { id:'Observation',  label:'Observation',  level:2, branch:'core', cat:'core',
+    uri:'taxonomy-core-process/Observation', desc:'A recorded datum or measurement generated by a process execution.' },
+
+  // ── SHACL EXTERNAL REFS ──
+  { id:'ext-compliance', label:'Core Compliance', level:99, branch:'ext', cat:'external',
+    uri:'taxonomy-core-compliance/Compliance', desc:'External: taxonomy-core-compliance domain class.' },
+  { id:'ext-facilities', label:'Domain Facilities', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-facilities/Facilities', desc:'External: facilities domain ontology class.' },
+  { id:'ext-finance',    label:'Domain Finance', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-finance/Finance', desc:'External: finance domain ontology class.' },
+  { id:'ext-hr',         label:'Domain HR', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-humanresource/HumanResource', desc:'External: human resource domain ontology class.' },
+  { id:'ext-legal',      label:'Domain Legal', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-legal/Legal', desc:'External: legal domain ontology class.' },
+  { id:'ext-procurement',label:'Domain Procurement', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-procurement/Procurement', desc:'External: procurement domain ontology class.' },
+  { id:'ext-it',         label:'Domain IT', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-informationtechnology/IT', desc:'External: information technology domain ontology class.' },
+  { id:'ext-custsup',    label:'Domain CustSup', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-sales/CustomerSupport', desc:'External: customer support class.' },
+  { id:'ext-marketing',  label:'Domain Marketing', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-marketing/Marketing', desc:'External: marketing domain ontology class.' },
+  { id:'ext-sales',      label:'Domain Sales', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-sales/Sales', desc:'External: sales domain ontology class.' },
+  { id:'ext-supplychain',label:'Domain SupplyChain', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-supplychain/SupplyChain', desc:'External: supply chain domain ontology class.' },
+  { id:'ext-network',    label:'Domain Network', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-network/Network', desc:'External: network domain ontology class.' },
+  { id:'ext-governance', label:'Domain Governance', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-governance/Governance', desc:'External: governance domain ontology class.' },
+  { id:'ext-security',   label:'Domain Security', level:99, branch:'ext', cat:'external',
+    uri:'ontology-domain-security/Security', desc:'External: security domain ontology class.' },
+];
+
+const RAW_LINKS = [
+  // ── subClassOf hierarchy ──
+  { s:'Corporate',    t:'Domain',      type:'subClassOf' },
+  { s:'Commercial',   t:'Domain',      type:'subClassOf' },
+  { s:'Network',      t:'Domain',      type:'subClassOf' },
+  { s:'SupplyChain',  t:'Domain',      type:'subClassOf' },
+  { s:'Compliance',   t:'Corporate',   type:'subClassOf' },
+  { s:'Facilities',   t:'Corporate',   type:'subClassOf' },
+  { s:'Finance',      t:'Corporate',   type:'subClassOf' },
+  { s:'HumanResource',t:'Corporate',   type:'subClassOf' },
+  { s:'Legal',        t:'Corporate',   type:'subClassOf' },
+  { s:'Procurement',  t:'Corporate',   type:'subClassOf' },
+  { s:'Security',     t:'Corporate',   type:'subClassOf' },
+  { s:'IT',           t:'Corporate',   type:'subClassOf' },
+  { s:'CustomerSupport',t:'Commercial',type:'subClassOf' },
+  { s:'Marketing',    t:'Commercial',  type:'subClassOf' },
+  { s:'Sales',        t:'Commercial',  type:'subClassOf' },
+  { s:'Logistics',    t:'SupplyChain', type:'subClassOf' },
+  { s:'Governance',   t:'Compliance',  type:'subClassOf' },
+  { s:'RealEstate',   t:'Facilities',  type:'subClassOf' },
+  { s:'Risk',         t:'Security',    type:'subClassOf' },
+  { s:'RetailSales',  t:'Sales',       type:'subClassOf' },
+  { s:'SalesOps',     t:'Sales',       type:'subClassOf' },
+  { s:'FleetMgmt',    t:'Logistics',   type:'subClassOf' },
+
+  // ── isMemberOf (taxonomy → domain ontology) ──
+  { s:'Compliance',   t:'ext-compliance', type:'isMemberOf' },
+  { s:'Facilities',   t:'ext-facilities', type:'isMemberOf' },
+  { s:'Finance',      t:'ext-finance',    type:'isMemberOf' },
+  { s:'HumanResource',t:'ext-hr',         type:'isMemberOf' },
+  { s:'Legal',        t:'ext-legal',      type:'isMemberOf' },
+  { s:'Procurement',  t:'ext-procurement',type:'isMemberOf' },
+  { s:'IT',           t:'ext-it',         type:'isMemberOf' },
+  { s:'CustomerSupport',t:'ext-custsup',  type:'isMemberOf' },
+  { s:'Marketing',    t:'ext-marketing',  type:'isMemberOf' },
+  { s:'Sales',        t:'ext-sales',      type:'isMemberOf' },
+  { s:'SupplyChain',  t:'ext-supplychain',type:'isMemberOf' },
+  { s:'Network',      t:'ext-network',    type:'isMemberOf' },
+  { s:'Governance',   t:'ext-governance', type:'isMemberOf' },
+  { s:'Security',     t:'ext-security',   type:'isMemberOf' },
+
+  // ── skos:related ──
+  { s:'Compliance',   t:'Governance',  type:'related' },
+  { s:'IT',           t:'Service',     type:'related' },
+  { s:'Network',      t:'Service',     type:'related' },
+  { s:'CustomerSupport',t:'Service',   type:'related' },
+
+  // ── Core Ontology: Service SHACL ──
+  { s:'Service',      t:'Persona',     type:'assignedTo' },
+  { s:'Service',      t:'Capability',  type:'enables' },
+  { s:'Service',      t:'Lifecycle',   type:'hasA' },
+  { s:'Service',      t:'ValueStream', type:'enables' },
+
+  // ── Core Ontology: Process SHACL ──
+  { s:'Process',      t:'DigitalAsset',  type:'modifies' },
+  { s:'Process',      t:'PhysicalAsset', type:'modifies' },
+  { s:'Process',      t:'Location',      type:'isMemberOf' },
+  { s:'Process',      t:'Service',       type:'enables' },
+  { s:'Process',      t:'DigitalAsset',  type:'modifies' },
+  { s:'Process',      t:'Observation',   type:'generates' },
+
+  // ── Core Ontology: Events SHACL ──
+  { s:'Events',       t:'Location',   type:'initiates' },
+  { s:'Events',       t:'TimeObj',    type:'occurs'    },
+  { s:'Events',       t:'Process',    type:'initiates' },
+
+  // ── Core Ontology: ValueStream SHACL ──
+  { s:'ValueStream',  t:'Service',    type:'enabled'   },
+
+  // ── Core Ontology: Party SHACL ──
+  { s:'Party',        t:'Persona',        type:'assignedTo' },
+  { s:'Party',        t:'BiologicalAsset',type:'typeOf'     },
+
+  // ── Core Ontology: Persona SHACL ──
+  { s:'Persona',      t:'Role',       type:'assignedTo' },
+
+  // ── Core Ontology: Rules SHACL ──
+  { s:'Rules',        t:'Process',    type:'guides'     },
+];
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const activeBranches = new Set(['root','corporate','commercial','network','supply','core','ext']);
+const activeEdgeTypes = new Set(['subClassOf','isMemberOf','related','enables','modifies','assignedTo','guides','initiates','occurs','generates','typeOf','hasA','enabled']);
+let searchQuery = '';
+let currentLayout = 'force';
+let simulation, svg, zoomBehavior, linkSel, nodeSel, labelSel;
+let transform = d3.zoomIdentity;
+
+// ══════════════════════════════════════════════
+//  COLOR MAP
+// ══════════════════════════════════════════════
+const BRANCH_COLOR = {
+  root:       '#e2e8f0',
+  corporate:  '#4f91ff',
+  commercial: '#f59e0b',
+  network:    '#22c55e',
+  supply:     '#a855f7',
+  core:       '#14b8a6',
+  ext:        '#475569',
+};
+
+const NODE_COLOR = {
+  Domain:        '#e2e8f0',
+  Corporate:     '#4f91ff',
+  Commercial:    '#f59e0b',
+  Network:       '#22c55e',
+  SupplyChain:   '#a855f7',
+  Compliance:    '#38bdf8',
+  Facilities:    '#818cf8',
+  Finance:       '#34d399',
+  HumanResource: '#fb923c',
+  Legal:         '#f472b6',
+  Procurement:   '#facc15',
+  Security:      '#f87171',
+  IT:            '#67e8f9',
+  CustomerSupport:'#fcd34d',
+  Marketing:     '#fb7185',
+  Sales:         '#f97316',
+  Logistics:     '#c084fc',
+  Governance:    '#7dd3fc',
+  RealEstate:    '#a5b4fc',
+  Risk:          '#fca5a5',
+  RetailSales:   '#fdba74',
+  SalesOps:      '#fde68a',
+  FleetMgmt:     '#d8b4fe',
+  Service:       '#14b8a6',
+  Process:       '#2dd4bf',
+  Events:        '#5eead4',
+  ValueStream:   '#0d9488',
+  Party:         '#0891b2',
+  Persona:       '#22d3ee',
+  Rules:         '#38bdf8',
+  DigitalAsset:  '#6366f1',
+  PhysicalAsset: '#818cf8',
+  BiologicalAsset:'#a5b4fc',
+  Location:      '#4ade80',
+  TimeObj:       '#86efac',
+  Capability:    '#facc15',
+  Role:          '#f59e0b',
+  Lifecycle:     '#fb923c',
+  Observation:   '#fda4af',
+};
+
+const EDGE_COLOR = {
+  subClassOf: '#4f7bbf',
+  isMemberOf: '#7c5abf',
+  related:    '#3a7a5a',
+  enables:    '#0d9488',
+  modifies:   '#b45309',
+  assignedTo: '#be185d',
+  guides:     '#1d4ed8',
+  initiates:  '#6d28d9',
+  occurs:     '#92400e',
+  generates:  '#0e7490',
+  typeOf:     '#166534',
+  hasA:       '#7e22ce',
+  enabled:    '#0f766e',
+};
+
+// ══════════════════════════════════════════════
+//  NODE SIZE
+// ══════════════════════════════════════════════
+function nodeRadius(d) {
+  if (d.level === 0) return 28;
+  if (d.level === 1) return 20;
+  if (d.level === 2) return 15;
+  if (d.level === 3) return 11;
+  if (d.level === 99) return 9; // external
+  return 14;
+}
+
+// ══════════════════════════════════════════════
+//  FILTERING
+// ══════════════════════════════════════════════
+function isNodeVisible(d) {
+  if (!activeBranches.has(d.branch)) return false;
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    return d.label.toLowerCase().includes(q) || d.id.toLowerCase().includes(q);
+  }
+  return true;
+}
+
+function isLinkVisible(l) {
+  const sn = RAW_NODES.find(n => n.id === l.s);
+  const tn = RAW_NODES.find(n => n.id === l.t);
+  if (!sn || !tn) return false;
+  if (!isNodeVisible(sn) || !isNodeVisible(tn)) return false;
+  const family = getLinkFamily(l.type);
+  return activeEdgeTypes.has(family);
+}
+
+function getLinkFamily(type) {
+  if (['modifies','creates'].includes(type)) return 'modifies';
+  if (['assignedTo','typeOf'].includes(type)) return 'assignedTo';
+  if (['guides','constrains'].includes(type)) return 'guides';
+  if (['initiates','occurs'].includes(type)) return 'initiates';
+  return type;
+}
+
+// ══════════════════════════════════════════════
+//  INIT SVG
+// ══════════════════════════════════════════════
+function init() {
+  const svgEl = document.getElementById('canvas');
+  const W = svgEl.clientWidth;
+  const H = svgEl.clientHeight;
+
+  svg = d3.select('#canvas');
+  svg.selectAll('*').remove();
+
+  // Defs: markers + filters
+  const defs = svg.append('defs');
+
+  // Arrow markers
+  const edgeTypes = Object.keys(EDGE_COLOR);
+  edgeTypes.forEach(type => {
+    defs.append('marker')
+      .attr('id', `arrow-${type}`)
+      .attr('viewBox', '0 -4 8 8')
+      .attr('refX', 8).attr('refY', 0)
+      .attr('markerWidth', 5).attr('markerHeight', 5)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-4L8,0L0,4')
+      .attr('fill', EDGE_COLOR[type])
+      .attr('opacity', 0.8);
+  });
+
+  // Glow filter
+  const glow = defs.append('filter').attr('id','glow').attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+  glow.append('feGaussianBlur').attr('stdDeviation','3').attr('result','coloredBlur');
+  const feMerge = glow.append('feMerge');
+  feMerge.append('feMergeNode').attr('in','coloredBlur');
+  feMerge.append('feMergeNode').attr('in','SourceGraphic');
+
+  // Strong glow for root
+  const glow2 = defs.append('filter').attr('id','glow2').attr('x','-100%').attr('y','-100%').attr('width','300%').attr('height','300%');
+  glow2.append('feGaussianBlur').attr('stdDeviation','6').attr('result','coloredBlur');
+  const feMerge2 = glow2.append('feMerge');
+  feMerge2.append('feMergeNode').attr('in','coloredBlur');
+  feMerge2.append('feMergeNode').attr('in','SourceGraphic');
+
+  // Background grid
+  const bgGroup = svg.append('g').attr('class','bg-grid');
+  const gridSize = 40;
+  for (let x = 0; x < W * 2; x += gridSize) {
+    bgGroup.append('line')
+      .attr('x1', x-W/2).attr('y1', -H).attr('x2', x-W/2).attr('y2', H*2)
+      .attr('stroke','#0e1825').attr('stroke-width', 0.5);
+  }
+  for (let y = 0; y < H * 2; y += gridSize) {
+    bgGroup.append('line')
+      .attr('x1', -W).attr('y1', y-H/2).attr('x2', W*2).attr('y2', y-H/2)
+      .attr('stroke','#0e1825').attr('stroke-width', 0.5);
+  }
+
+  // Zoom group
+  const g = svg.append('g').attr('class','zoom-group');
+
+  // Zoom behavior
+  zoomBehavior = d3.zoom()
+    .scaleExtent([0.15, 4])
+    .on('zoom', (event) => {
+      transform = event.transform;
+      g.attr('transform', event.transform);
+    });
+  svg.call(zoomBehavior);
+
+  // Close info on canvas click
+  svg.on('click', (event) => {
+    if (event.target === svgEl) closeInfo();
+  });
+
+  // Build data copies
+  const nodes = RAW_NODES.map(d => ({ ...d }));
+  const links = RAW_LINKS.map(l => ({ source: l.s, target: l.t, type: l.type }));
+
+  // Links layer
+  const linkGroup = g.append('g').attr('class','link-group');
+  linkSel = linkGroup.selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('class', d => `link link-${getLinkFamily(d.type)}`)
+    .attr('stroke', d => EDGE_COLOR[d.type] || EDGE_COLOR[getLinkFamily(d.type)] || '#3b5a8a')
+    .attr('stroke-width', d => d.type === 'subClassOf' ? 1.8 : 1.1)
+    .attr('stroke-dasharray', d => {
+      if (d.type === 'isMemberOf') return '5,3';
+      if (d.type === 'related') return '2,4';
+      if (d.type === 'guides') return '6,2';
+      return null;
+    })
+    .attr('marker-end', d => `url(#arrow-${d.type})`)
+    .attr('opacity', d => isLinkVisible({s:d.source.id||d.source, t:d.target.id||d.target, type:d.type}) ? 0.7 : 0);
+
+  // Nodes layer
+  const nodeGroup = g.append('g').attr('class','node-group-container');
+  nodeSel = nodeGroup.selectAll('g.node-group')
+    .data(nodes)
+    .join('g')
+    .attr('class', 'node-group')
+    .call(d3.drag()
+      .on('start', dragstart)
+      .on('drag',  dragged)
+      .on('end',   dragend))
+    .on('click', (event, d) => {
+      event.stopPropagation();
+      showInfo(d, nodes, links);
+    })
+    .on('mouseover', (event, d) => {
+      // Highlight connected edges
+      linkSel
+        .attr('stroke-opacity', l => {
+          const sid = l.source.id || l.source;
+          const tid = l.target.id || l.target;
+          return (sid === d.id || tid === d.id) ? 1.0 : 0.15;
+        })
+        .attr('stroke-width', l => {
+          const sid = l.source.id || l.source;
+          const tid = l.target.id || l.target;
+          return (sid === d.id || tid === d.id) ? 2.5 : (l.type === 'subClassOf' ? 1.8 : 1.1);
+        });
+      // Fade non-connected nodes
+      nodeSel.attr('opacity', n => {
+        if (n.id === d.id) return 1;
+        const connected = links.some(l => {
+          const sid = l.source.id || l.source;
+          const tid = l.target.id || l.target;
+          return (sid === d.id && tid === n.id) || (tid === d.id && sid === n.id);
+        });
+        return connected ? 1 : 0.25;
+      });
+    })
+    .on('mouseout', () => {
+      linkSel
+        .attr('stroke-opacity', d => isLinkVisible({s:d.source.id||d.source, t:d.target.id||d.target, type:d.type}) ? 0.7 : 0)
+        .attr('stroke-width', d => d.type === 'subClassOf' ? 1.8 : 1.1);
+      nodeSel.attr('opacity', d => isNodeVisible(d) ? 1 : 0.07);
+    });
+
+  // Draw node shapes
+  nodeSel.each(function(d) {
+    const el = d3.select(this);
+    const r = nodeRadius(d);
+    const color = NODE_COLOR[d.id] || BRANCH_COLOR[d.branch] || '#7090b8';
+    const dim = !isNodeVisible(d);
+
+    if (d.level === 0) {
+      // Hexagon for root
+      const pts = d3.range(6).map(i => {
+        const angle = (Math.PI / 180) * (60 * i - 30);
+        return [r * Math.cos(angle), r * Math.sin(angle)].join(',');
+      }).join(' ');
+      el.append('polygon')
+        .attr('points', pts)
+        .attr('fill', color + '22')
+        .attr('stroke', color)
+        .attr('stroke-width', 2.5)
+        .attr('filter', 'url(#glow2)');
+      el.append('polygon')
+        .attr('points', pts)
+        .attr('fill', 'none')
+        .attr('stroke', color)
+        .attr('stroke-width', 0.8)
+        .attr('transform', `scale(1.3)`)
+        .attr('opacity', 0.3);
+    } else if (d.cat === 'external') {
+      // Diamond for external refs
+      el.append('polygon')
+        .attr('points', `0,${-r} ${r},0 0,${r} ${-r},0`)
+        .attr('fill', color + '18')
+        .attr('stroke', color)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3,2');
+    } else if (d.cat === 'core') {
+      // Rounded rect for core entities
+      el.append('rect')
+        .attr('x', -r).attr('y', -r)
+        .attr('width', r*2).attr('height', r*2)
+        .attr('rx', 4).attr('ry', 4)
+        .attr('fill', color + '20')
+        .attr('stroke', color)
+        .attr('stroke-width', d.level === 1 ? 2 : 1.5)
+        .attr('filter', d.level === 1 ? 'url(#glow)' : null);
+    } else {
+      // Circle for taxonomy
+      el.append('circle')
+        .attr('r', r)
+        .attr('fill', color + '18')
+        .attr('stroke', color)
+        .attr('stroke-width', d.level === 1 ? 2.2 : d.level === 2 ? 1.6 : 1.2)
+        .attr('filter', d.level === 1 ? 'url(#glow)' : null);
+      // Inner ring for L1
+      if (d.level === 1) {
+        el.append('circle')
+          .attr('r', r * 0.55)
+          .attr('fill', color + '30')
+          .attr('stroke', color)
+          .attr('stroke-width', 0.8)
+          .attr('opacity', 0.5);
+      }
+    }
+
+    // Icon text
+    el.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
+      .attr('font-size', d.level === 0 ? 13 : d.level === 1 ? 9 : 7)
+      .attr('font-family', 'JetBrains Mono, monospace')
+      .attr('fill', color)
+      .attr('font-weight', '500')
+      .attr('pointer-events', 'none')
+      .text(getNodeIcon(d.id));
+  });
+
+  // Labels
+  labelSel = nodeGroup.selectAll('text.node-label')
+    .data(nodes)
+    .join('text')
+    .attr('class', 'node-label')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'auto')
+    .attr('font-family', 'Syne, sans-serif')
+    .attr('font-size', d => d.level === 0 ? 11 : d.level === 1 ? 9.5 : d.level === 99 ? 7.5 : 8.5)
+    .attr('font-weight', d => d.level <= 1 ? '700' : '500')
+    .attr('fill', d => {
+      const color = NODE_COLOR[d.id] || BRANCH_COLOR[d.branch] || '#7090b8';
+      return color;
+    })
+    .attr('pointer-events', 'none')
+    .attr('dy', d => nodeRadius(d) + (d.level === 0 ? 14 : 11))
+    .text(d => d.label)
+    .attr('opacity', d => isNodeVisible(d) ? 1 : 0.05);
+
+  // Simulation
+  simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+      if (d.type === 'subClassOf') return 80;
+      if (d.type === 'isMemberOf') return 100;
+      return 90;
+    }).strength(0.4))
+    .force('charge', d3.forceManyBody().strength(d => {
+      if (d.level === 0) return -600;
+      if (d.level === 1) return -400;
+      if (d.level === 99) return -150;
+      return -250;
+    }))
+    .force('center', d3.forceCenter(W / 2, H / 2))
+    .force('collision', d3.forceCollide(d => nodeRadius(d) + 18))
+    .force('x', d3.forceX(d => {
+      // Gentle branch clustering
+      if (d.branch === 'core') return W * 0.5;
+      if (d.branch === 'corporate') return W * 0.25;
+      if (d.branch === 'commercial') return W * 0.75;
+      if (d.branch === 'supply') return W * 0.6;
+      if (d.branch === 'network') return W * 0.4;
+      if (d.branch === 'ext') return W * 0.9;
+      return W * 0.5;
+    }).strength(0.06))
+    .on('tick', ticked);
+
+  function ticked() {
+    linkSel
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => {
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const r = nodeRadius(d.target) + 6;
+        return d.target.x - (dx/dist) * r;
+      })
+      .attr('y2', d => {
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const r = nodeRadius(d.target) + 6;
+        return d.target.y - (dy/dist) * r;
+      });
+
+    nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+    labelSel.attr('x', d => d.x).attr('y', d => d.y);
+  }
+
+  // Store nodes globally for info panel
+  window._nodes = nodes;
+  window._links = links;
+
+  // Initial visibility
+  applyVisibility();
+
+  // Center after a moment
+  setTimeout(() => resetZoom(), 1200);
+}
+
+function getNodeIcon(id) {
+  const icons = {
+    Domain:'⬡', Corporate:'⬟', Commercial:'◈', Network:'⌘', SupplyChain:'⌬',
+    Compliance:'✓', Facilities:'⊠', Finance:'$', HumanResource:'⊕', Legal:'⚖',
+    Procurement:'▣', Security:'⊞', IT:'⚙', CustomerSupport:'◎', Marketing:'◐',
+    Sales:'▲', Logistics:'▶', Governance:'⊛', RealEstate:'⊡', Risk:'⚠',
+    RetailSales:'▷', SalesOps:'⊗', FleetMgmt:'⊹',
+    Service:'⚡', Process:'↻', Events:'◆', ValueStream:'→', Party:'◉',
+    Persona:'◑', Rules:'≡', DigitalAsset:'⊟', PhysicalAsset:'⊞', BiologicalAsset:'⊕',
+    Location:'◎', TimeObj:'◷', Capability:'⚡', Role:'⊕', Lifecycle:'↺', Observation:'◉',
+  };
+  return icons[id] || '·';
+}
+
+// ══════════════════════════════════════════════
+//  DRAG
+// ══════════════════════════════════════════════
+function dragstart(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(event, d) {
+  d.fx = event.x; d.fy = event.y;
+}
+function dragend(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+// ══════════════════════════════════════════════
+//  VISIBILITY UPDATE
+// ══════════════════════════════════════════════
+function applyVisibility() {
+  if (!nodeSel) return;
+  nodeSel.attr('opacity', d => isNodeVisible(d) ? 1 : 0.05);
+  labelSel.attr('opacity', d => isNodeVisible(d) ? 1 : 0);
+  linkSel.attr('opacity', d => {
+    const visible = isLinkVisible({s:d.source.id||d.source, t:d.target.id||d.target, type:d.type});
+    return visible ? 0.7 : 0;
+  });
+
+  const vn = RAW_NODES.filter(isNodeVisible).length;
+  const ve = RAW_LINKS.filter(l => isLinkVisible(l)).length;
+  document.getElementById('visNodes').textContent = vn;
+  document.getElementById('visEdges').textContent = ve;
+  document.getElementById('visBranches').textContent = activeBranches.size - 1; // exclude 'ext'
+}
+
+// ══════════════════════════════════════════════
+//  FILTERS
+// ══════════════════════════════════════════════
+function toggleBranch(branch) {
+  if (activeBranches.has(branch)) activeBranches.delete(branch);
+  else activeBranches.add(branch);
+  // Also toggle ext when toggling any branch
+  const el = document.getElementById('fc-' + branch);
+  if (el) {
+    if (activeBranches.has(branch)) el.classList.add('checked');
+    else el.classList.remove('checked');
+  }
+  applyVisibility();
+}
+
+function toggleEdge(type) {
+  if (activeEdgeTypes.has(type)) activeEdgeTypes.delete(type);
+  else activeEdgeTypes.add(type);
+  const el = document.getElementById('ec-' + type);
+  if (el) {
+    if (activeEdgeTypes.has(type)) el.classList.add('checked');
+    else el.classList.remove('checked');
+  }
+  applyVisibility();
+}
+
+function doSearch(q) {
+  searchQuery = q.trim();
+  applyVisibility();
+  if (searchQuery) {
+    // Highlight matching nodes
+    simulation && simulation.alpha(0.1).restart();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  LAYOUT MODES
+// ══════════════════════════════════════════════
+function setLayout(mode) {
+  currentLayout = mode;
+  document.querySelectorAll('.lay-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + mode).classList.add('active');
+
+  if (!simulation || !window._nodes) return;
+  const W = document.getElementById('canvas').clientWidth;
+  const H = document.getElementById('canvas').clientHeight;
+  const nodes = window._nodes;
+
+  if (mode === 'force') {
+    nodes.forEach(d => { d.fx = null; d.fy = null; });
+    simulation
+      .force('x', d3.forceX(W/2).strength(0.02))
+      .force('y', d3.forceY(H/2).strength(0.02));
+    simulation.alpha(0.5).restart();
+  }
+
+  if (mode === 'radial') {
+    const cx = W/2, cy = H/2;
+    const radii = { 0:0, 1:160, 2:280, 3:380, 99:480 };
+    // Group by level
+    const byLevel = {};
+    nodes.forEach(d => {
+      if (!byLevel[d.level]) byLevel[d.level] = [];
+      byLevel[d.level].push(d);
+    });
+    Object.entries(byLevel).forEach(([level, ns]) => {
+      ns.forEach((d, i) => {
+        const angle = (2 * Math.PI * i / ns.length) - Math.PI/2;
+        const r = radii[level] || 350;
+        d.fx = cx + r * Math.cos(angle);
+        d.fy = cy + r * Math.sin(angle);
+      });
+    });
+    simulation.alpha(0.5).restart();
+    setTimeout(() => { nodes.forEach(d => { d.fx = null; d.fy = null; }); simulation.alpha(0.1).restart(); }, 1500);
+  }
+
+  if (mode === 'tree') {
+    const cx = W/2, topY = 60;
+    const layerH = 120;
+    const byLevel = {};
+    nodes.forEach(d => {
+      if (!byLevel[d.level]) byLevel[d.level] = [];
+      byLevel[d.level].push(d);
+    });
+    Object.entries(byLevel).forEach(([level, ns]) => {
+      const y = topY + parseInt(level) * layerH;
+      const spanW = Math.min(W - 100, ns.length * 100);
+      ns.forEach((d, i) => {
+        d.fx = cx - spanW/2 + (spanW / Math.max(ns.length - 1, 1)) * i;
+        d.fy = level == 99 ? topY + 6 * layerH : y;
+      });
+    });
+    simulation.alpha(0.5).restart();
+    setTimeout(() => { nodes.forEach(d => { d.fx = null; d.fy = null; }); simulation.alpha(0.1).restart(); }, 1800);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  INFO PANEL
+// ══════════════════════════════════════════════
+function showInfo(d, nodes, links) {
+  document.getElementById('ip-name').textContent = d.label;
+  document.getElementById('ip-branch').textContent = d.branch.charAt(0).toUpperCase() + d.branch.slice(1);
+  document.getElementById('ip-level').textContent = d.level === 99 ? 'External Reference' : `Level ${d.level}`;
+  document.getElementById('ip-type').textContent = d.cat === 'taxonomy' ? 'Taxonomy Class (owl:Class)' : d.cat === 'core' ? 'Core Ontology Entity' : 'External Domain Reference';
+  document.getElementById('ip-uri').textContent = d.uri;
+
+  const color = NODE_COLOR[d.id] || BRANCH_COLOR[d.branch] || '#7090b8';
+  const badge = document.getElementById('ip-badge');
+  badge.textContent = d.cat === 'taxonomy' ? 'Taxonomy' : d.cat === 'core' ? 'Core Ontology' : 'External Ref';
+  badge.style.background = color + '22';
+  badge.style.color = color;
+  badge.style.border = `1px solid ${color}44`;
+
+  // Connections
+  const conns = [];
+  links.forEach(l => {
+    const sid = l.source.id || l.source;
+    const tid = l.target.id || l.target;
+    if (sid === d.id) {
+      const tn = nodes.find(n => n.id === tid);
+      if (tn) conns.push({ rel: l.type, node: tn.label, dir: '→' });
+    } else if (tid === d.id) {
+      const sn = nodes.find(n => n.id === sid);
+      if (sn) conns.push({ rel: l.type, node: sn.label, dir: '←' });
+    }
+  });
+
+  const connsEl = document.getElementById('ip-conns');
+  connsEl.innerHTML = conns.slice(0,10).map(c => `
+    <div class="ip-conn-item">
+      <span style="color:var(--text3);font-size:9px;font-family:var(--mono)">${c.dir}</span>
+      <span class="ip-conn-rel">${c.rel}</span>
+      <span class="ip-conn-node">${c.node}</span>
+    </div>`).join('');
+
+  if (conns.length > 10) {
+    connsEl.innerHTML += `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:4px">+${conns.length-10} more</div>`;
+  }
+  if (conns.length === 0) {
+    connsEl.innerHTML = '<div style="font-size:10px;color:var(--text3)">No visible connections</div>';
+  }
+
+  document.getElementById('info-panel').classList.add('open');
+}
+
+function closeInfo() {
+  document.getElementById('info-panel').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+//  ZOOM CONTROLS
+// ══════════════════════════════════════════════
+function zoomIn()  { svg.transition().call(zoomBehavior.scaleBy, 1.4); }
+function zoomOut() { svg.transition().call(zoomBehavior.scaleBy, 0.7); }
+function resetZoom() {
+  const svgEl = document.getElementById('canvas');
+  const W = svgEl.clientWidth, H = svgEl.clientHeight;
+  svg.transition().duration(700)
+    .call(zoomBehavior.transform, d3.zoomIdentity.translate(W/2, H/2).scale(0.75).translate(-W/2, -H/2));
+}
+function reHeat() {
+  if (simulation) simulation.alpha(0.5).restart();
+}
+
+// ══════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════
+window.addEventListener('load', init);
+window.addEventListener('resize', init);
+</script>
+</body>
+</html>

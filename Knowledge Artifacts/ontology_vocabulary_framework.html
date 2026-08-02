@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ontology Vocabulary Framework — Core & SE Domain</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1e2a;
+    --bg4: #222636;
+    --border: #2a2f40;
+    --border2: #353c52;
+    --text: #c8cfe0;
+    --text2: #8892aa;
+    --text3: #5a6275;
+    --accent: #4f7cff;
+    --accent2: #7b5ea7;
+    --teal: #22b8a0;
+    --amber: #e8a030;
+    --rose: #e05c78;
+    --lime: #6dbb5e;
+    --sky: #38bdf8;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 20px;
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-badge {
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.01em;
+  }
+
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-input {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    width: 220px;
+    outline: none;
+  }
+
+  .search-input::placeholder { color: var(--text3); }
+  .search-input:focus { border-color: var(--accent); }
+
+  .clear-btn {
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--mono);
+  }
+  .clear-btn:hover { color: var(--text); border-color: var(--border2); background: var(--bg3); }
+
+  /* ─── TABS ─── */
+  .tabs {
+    display: flex;
+    gap: 0;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text3);
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: #fff; border-bottom-color: var(--accent); }
+
+  .tab-count {
+    display: inline-block;
+    background: var(--bg4);
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 6px;
+  }
+
+  .tab.active .tab-count { background: var(--accent); color: #fff; }
+
+  /* ─── PANELS ─── */
+  .panel { display: none; padding: 20px 28px 40px; }
+  .panel.active { display: block; }
+
+  /* ─── FILTER STRIP ─── */
+  .filter-strip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .filter-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .filter-chip:hover { background: var(--bg4); color: var(--text); }
+  .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ─── TERM GRID ─── */
+  .term-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 12px;
+  }
+
+  /* ─── TERM CARD ─── */
+  .term-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .term-card:hover { border-color: var(--border2); }
+  .term-card.hidden { display: none; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+
+  .term-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+
+  .term-id {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  .domain-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  .tag-core    { background: #1a2a1a; color: var(--lime); border: 1px solid #2d4a2d; }
+  .tag-se      { background: #1a1f35; color: var(--accent); border: 1px solid #253060; }
+  .tag-biz     { background: #2a1a10; color: var(--amber); border: 1px solid #4a3020; }
+  .tag-poly    { background: #2a1520; color: var(--rose); border: 1px solid #4a2535; }
+
+  .card-body { padding: 12px 14px; }
+
+  .def-text {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .skos-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+
+  .skos-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .skos-key {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    width: 58px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .skos-key.key-def    { color: var(--teal); }
+  .skos-key.key-brd    { color: var(--text3); }
+  .skos-key.key-nrw    { color: var(--lime); }
+  .skos-key.key-rel    { color: var(--sky); }
+  .skos-key.key-scope  { color: var(--amber); }
+  .skos-key.key-alt    { color: var(--accent2); }
+
+  .skos-val {
+    color: var(--text2);
+    font-size: 11px;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .skos-pill {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin: 1px 2px 1px 0;
+  }
+
+  /* ─── POLYMORPHIC VIEW ─── */
+  .poly-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .poly-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .poly-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .poly-term {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .poly-badge {
+    background: var(--rose);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .poly-contexts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0;
+  }
+
+  .poly-context {
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .poly-context:last-child { border-right: none; }
+
+  .context-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .ctx-general  { color: var(--teal); }
+  .ctx-se       { color: var(--accent); }
+  .ctx-biz      { color: var(--amber); }
+  .ctx-ai       { color: var(--accent2); }
+  .ctx-data     { color: var(--sky); }
+  .ctx-math     { color: var(--lime); }
+  .ctx-social   { color: var(--rose); }
+
+  .context-def {
+    font-size: 11.5px;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+
+  .context-anchor {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .anchor-chip {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+
+  .anchor-std  { border-color: #253060; color: var(--accent); background: #1a1f35; }
+  .anchor-body { border-color: #4a3020; color: var(--amber); background: #2a1a10; }
+  .anchor-note { border-color: #2d4a2d; color: var(--lime); background: #1a2a1a; }
+  .anchor-warn { border-color: #4a2535; color: var(--rose); background: #2a1520; }
+
+  /* ─── DECOMP VIEW (Decision Science) ─── */
+  .decomp-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .decomp-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .decomp-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .decomp-role {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    padding: 2px 8px;
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .decomp-body { padding: 14px 16px; }
+
+  .decomp-def {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .sub-disciplines {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 8px;
+  }
+
+  .subdiscipline {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  .sub-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+
+  .sub-def {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+    grid-column: 1/-1;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-title">
+      <div class="header-badge">SKOS Vocabulary Framework</div>
+      <div>
+        <h1>Ontology Core Domain — Vocabulary & Taxonomy Foundation</h1>
+        <div class="header-meta">Core Vocabulary → SE Discipline → Polymorphic Disambiguation → Decision Science Decomposition &nbsp;|&nbsp; SKOS-conformant &nbsp;|&nbsp; v1.0 DRAFT</div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input class="search-input" id="searchInput" type="text" placeholder="Search terms…" oninput="doSearch(this.value)">
+      <button class="clear-btn" onclick="clearSearch()">Clear</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('core')">Core Vocabulary <span class="tab-count" id="cnt-core">26</span></div>
+    <div class="tab" onclick="showTab('se')">Systems Engineering <span class="tab-count" id="cnt-se">20</span></div>
+    <div class="tab" onclick="showTab('poly')">Polymorphic Disambiguation <span class="tab-count" id="cnt-poly">10</span></div>
+    <div class="tab" onclick="showTab('ds')">Decision Science Decomposition</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TAB 1: CORE VOCABULARY ═══════════════════════ -->
+<div id="panel-core" class="panel active">
+
+  <div class="filter-strip">
+    <span class="filter-label">Category:</span>
+    <span class="filter-chip active" onclick="filterCore('all', this)">All</span>
+    <span class="filter-chip" onclick="filterCore('entity', this)">Identity & Classification</span>
+    <span class="filter-chip" onclick="filterCore('structure', this)">Structure & Constraint</span>
+    <span class="filter-chip" onclick="filterCore('temporal', this)">Temporal & Process</span>
+    <span class="filter-chip" onclick="filterCore('value', this)">Value & Service</span>
+    <span class="filter-chip" onclick="filterCore('semantic', this)">Semantic & Language</span>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Core Vocabulary</span>
+    <span class="section-line"></span>
+    <span class="section-count" id="core-visible-count">26 terms</span>
+  </div>
+
+  <div class="term-grid" id="core-grid">
+
+    <!-- IDENTITY & CLASSIFICATION -->
+    <div class="term-card" data-cat="entity" data-terms="entity thing object">
+      <div class="card-header">
+        <div><div class="term-name">Entity</div><div class="term-id">cv:Entity</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A uniquely identifiable thing — physical, digital, conceptual, or social — that exists independently and can be described by attributes and related to other entities. The most primitive unit of discourse in any knowledge system.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Thing</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Asset</span><span class="skos-pill">Party</span><span class="skos-pill">Event</span><span class="skos-pill">Location</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Object</span><span class="skos-pill">Resource</span><span class="skos-pill">Individual</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Domain-agnostic; applies in all contexts prior to domain specialization.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="entity" data-terms="property attribute quality characteristic">
+      <div class="card-header">
+        <div><div class="term-name">Property</div><div class="term-id">cv:Property</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An attribute, characteristic, or quality that describes or qualifies an entity. Properties are always relative to the entity they qualify and the context in which they are observed. Properties may be intrinsic (mass) or relational (ownership).</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Attribute</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DataProperty</span><span class="skos-pill">ObjectProperty</span><span class="skos-pill">AnnotationProperty</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Characteristic</span><span class="skos-pill">Quality</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Applies to all entities; context determines which properties are salient.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="entity" data-terms="relationship relation association link edge">
+      <div class="card-header">
+        <div><div class="term-name">Relationship</div><div class="term-id">cv:Relationship</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A directed or undirected association between two or more entities that carries semantic meaning about how they interact, depend upon, or constrain one another. Relationships are first-class citizens in any ontology — not mere connections.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Association</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Dependency</span><span class="skos-pill">Composition</span><span class="skos-pill">Aggregation</span><span class="skos-pill">Specialization</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Link</span><span class="skos-pill">Edge</span><span class="skos-pill">ObjectProperty</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="entity" data-terms="class type category set">
+      <div class="card-header">
+        <div><div class="term-name">Class</div><div class="term-id">cv:Class</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A named category that groups entities sharing common properties and behaviors. Classes define the type contract for their members. A class is not the same as a set: it carries extensional meaning (what members share) not just enumeration.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Type</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Subclass</span><span class="skos-pill">ConcreteClass</span><span class="skos-pill">AbstractClass</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Category</span><span class="skos-pill">owl:Class</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Not to be conflated with skos:Concept — a Class is an OWL construct; a Concept is a SKOS construct.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="entity" data-terms="instance individual member object record">
+      <div class="card-header">
+        <div><div class="term-name">Instance</div><div class="term-id">cv:Instance</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A specific, individually identified member of a class; a concrete realization of the type contract defined by that class. Instances are the facts — the asserted realities — of a knowledge base.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-alt">AltLabel</span><div class="skos-val"><span class="skos-pill">Individual</span><span class="skos-pill">Named Individual</span><span class="skos-pill">Object</span></div></div>
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Entity</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">owl:NamedIndividual</span><span class="skos-pill">Record</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="entity" data-terms="identifier id uri iri uuid key name">
+      <div class="card-header">
+        <div><div class="term-name">Identifier</div><div class="term-id">cv:Identifier</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A symbol, code, or combination of properties that uniquely distinguishes an entity within a defined scope. Identifiers must be stable, non-ambiguous, and scope-qualified. Global identifiability requires dereferenceable URIs.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Symbol</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">URI</span><span class="skos-pill">IRI</span><span class="skos-pill">UUID</span><span class="skos-pill">BusinessKey</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Scope of uniqueness must always be declared; local keys are not global identifiers.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC & LANGUAGE -->
+    <div class="term-card" data-cat="semantic" data-terms="concept notion idea abstract meaning">
+      <div class="card-header">
+        <div><div class="term-name">Concept</div><div class="term-id">cv:Concept</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An abstract unit of meaning — a mental or formal representation of a category of things — that is independent of any particular linguistic expression. In SKOS, a concept is the primary carrier of meaning in a controlled vocabulary, distinct from the terms (labels) used to denote it.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Idea</span><span class="skos-pill">skos:Concept</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DefinedConcept</span><span class="skos-pill">PrimitiveConcept</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Term</span><span class="skos-pill">Notion</span><span class="skos-pill">owl:Class</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">A concept is not a word; multiple terms may denote the same concept. Do not conflate with owl:Class.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="semantic" data-terms="term label descriptor token word vocabulary">
+      <div class="card-header">
+        <div><div class="term-name">Term</div><div class="term-id">cv:Term</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A linguistic expression within a controlled vocabulary or specialized domain that designates a concept. A term is context-bound: the same string may designate different concepts in different domains (polymorphism). SKOS tracks this via skos:prefLabel and skos:altLabel.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Label</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">prefLabel</span><span class="skos-pill">altLabel</span><span class="skos-pill">hiddenLabel</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Concept</span><span class="skos-pill">Descriptor</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Terms are language-specific; concepts are not. A vocabulary manages term-to-concept mappings.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="semantic" data-terms="definition meaning statement description">
+      <div class="card-header">
+        <div><div class="term-name">Definition</div><div class="term-id">cv:Definition</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formal, unambiguous statement of the meaning of a term within a specific scope, sufficient to distinguish it from all related terms. A good definition states genus (what broader category this belongs to) and differentia (what distinguishes it from siblings).</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Statement</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">NominalDefinition</span><span class="skos-pill">RealDefinition</span><span class="skos-pill">OperationalDefinition</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">skos:definition is a documentation property, not an axiom. Formal axioms (OWL) provide machine-checkable definitions.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="semantic" data-terms="scope boundary domain context applicability">
+      <div class="card-header">
+        <div><div class="term-name">Scope</div><div class="term-id">cv:Scope</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The bounded context within which a definition, rule, model, or assertion is intended to apply and is considered valid. Scope declarations prevent accidental cross-domain misapplication of terms that are polymorphic across disciplines.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Boundary</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DomainScope</span><span class="skos-pill">TemporalScope</span><span class="skos-pill">OrganizationalScope</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Context</span><span class="skos-pill">skos:scopeNote</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRUCTURE & CONSTRAINT -->
+    <div class="term-card" data-cat="structure" data-terms="taxonomy hierarchy classification broader narrower">
+      <div class="card-header">
+        <div><div class="term-name">Taxonomy</div><div class="term-id">cv:Taxonomy</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A hierarchical arrangement of concepts organized by skos:broader / skos:narrower relationships. Taxonomies support classification and navigation. Unlike an ontology, a taxonomy carries no inferential axioms and makes no existential commitments.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Classification Scheme</span><span class="skos-pill">KOS</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Polyhierarchy</span><span class="skos-pill">Monohierarchy</span><span class="skos-pill">Faceted Taxonomy</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Ontology</span><span class="skos-pill">Thesaurus</span><span class="skos-pill">skos:ConceptScheme</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">A taxonomy comes BEFORE an ontology in the development sequence. Do not conflate them.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="structure" data-terms="schema structure specification template type">
+      <div class="card-header">
+        <div><div class="term-name">Schema</div><div class="term-id">cv:Schema</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A structural definition specifying the permitted types, properties, relationships, and constraints for a class of data or knowledge representations. Schemas are validation instruments; ontologies are meaning instruments. Both are necessary; neither substitutes for the other.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Structure</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DataSchema</span><span class="skos-pill">OntologySchema</span><span class="skos-pill">SHACLShape</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Model</span><span class="skos-pill">Template</span><span class="skos-pill">Ontology</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="structure" data-terms="constraint restriction rule condition limit">
+      <div class="card-header">
+        <div><div class="term-name">Constraint</div><div class="term-id">cv:Constraint</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A rule or condition that restricts the permitted values, relationships, or behaviors within a model or system. Constraints encode design intent and business rules in a verifiable form. In SHACL, constraints are expressed as property shapes over RDF graphs.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Rule</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">IntegrityConstraint</span><span class="skos-pill">SHACLShape</span><span class="skos-pill">OWLRestriction</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Rule</span><span class="skos-pill">Condition</span><span class="skos-pill">Requirement</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="structure" data-terms="rule policy norm governance inference business">
+      <div class="card-header">
+        <div><div class="term-name">Rule</div><div class="term-id">cv:Rule</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formal statement that governs or guides behavior, inference, classification, or decision within a system or domain. Rules may be definitional (classify entities), derivation (infer new facts), or operational (govern actions). Rule type must be declared to prevent confusion.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">BusinessRule</span><span class="skos-pill">InferenceRule</span><span class="skos-pill">ValidationRule</span><span class="skos-pill">SWRLRule</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Policy</span><span class="skos-pill">Constraint</span><span class="skos-pill">Norm</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">BusinessRule ≠ InferenceRule ≠ ValidationRule. These are distinct subclasses with different operational semantics.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPORAL & PROCESS -->
+    <div class="term-card" data-cat="temporal" data-terms="event occurrence trigger signal change">
+      <div class="card-header">
+        <div><div class="term-name">Event</div><div class="term-id">cv:Event</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An occurrence — a bounded interval in time during which a change of state takes place — that is significant enough to be tracked, triggered upon, or responded to. Events are the fundamental unit of temporal discourse in process and event-driven architectures.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Occurrence</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">BusinessEvent</span><span class="skos-pill">SystemEvent</span><span class="skos-pill">DomainEvent</span><span class="skos-pill">LifecycleEvent</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Trigger</span><span class="skos-pill">Signal</span><span class="skos-pill">State Change</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="temporal" data-terms="state status condition configuration snapshot">
+      <div class="card-header">
+        <div><div class="term-name">State</div><div class="term-id">cv:State</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A configuration of an entity or system at a specific point in time, characterized by the values of its properties at that moment. States are the vertices in a state machine; events are the transitions between them.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Configuration</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">InitialState</span><span class="skos-pill">TerminalState</span><span class="skos-pill">IntermediateState</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Status</span><span class="skos-pill">Condition</span><span class="skos-pill">Phase</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="temporal" data-terms="process workflow procedure activity sequence">
+      <div class="card-header">
+        <div><div class="term-name">Process</div><div class="term-id">cv:Process</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An ordered, purposeful sequence of activities that transforms defined inputs into defined outputs within a bounded scope and under specified conditions. This is the domain-agnostic definition; see SE and Business domain for discipline-specific specializations.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Activity</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">BusinessProcess</span><span class="skos-pill">SEProcess</span><span class="skos-pill">ComputationalProcess</span><span class="skos-pill">ManufacturingProcess</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — domain specialization is mandatory. Never use bare "Process" in a domain ontology without qualification.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="temporal" data-terms="lifecycle stage phase maturity evolution">
+      <div class="card-header">
+        <div><div class="term-name">Lifecycle</div><div class="term-id">cv:Lifecycle</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The sequence of stages through which an entity — product, service, asset, or information object — passes from creation to retirement. A lifecycle defines temporal scope and gates that govern transitions. It is the temporal backbone of governance.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Temporal Structure</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">ProductLifecycle</span><span class="skos-pill">ServiceLifecycle</span><span class="skos-pill">DataLifecycle</span><span class="skos-pill">SELifecycle</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Phase</span><span class="skos-pill">Stage</span><span class="skos-pill">MaturityModel</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALUE & SERVICE -->
+    <div class="term-card" data-cat="value" data-terms="value benefit utility worth outcome">
+      <div class="card-header">
+        <div><div class="term-name">Value</div><div class="term-id">cv:Value</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The net benefit — functional, financial, experiential, or strategic — that an entity, service, or action delivers to a specific beneficiary within a specific context. Value is always relative: it requires a beneficiary, a frame of reference, and a point in time.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Benefit</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">EconomicValue</span><span class="skos-pill">FunctionalValue</span><span class="skos-pill">StrategicValue</span><span class="skos-pill">ExperientialValue</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Do not use as a data property value. Value is a concept requiring a beneficiary and context to be meaningful.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="value" data-terms="value stream flow pipeline end-to-end">
+      <div class="card-header">
+        <div><div class="term-name">Value Stream</div><div class="term-id">cv:ValueStream</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The end-to-end sequence of activities, decisions, and transformations that collectively deliver a specific outcome of value to a defined beneficiary. Derived from Lean thinking; the unit of analysis for identifying waste and accelerating delivery.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Process</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">PrimaryValueStream</span><span class="skos-pill">SupportingValueStream</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Workflow</span><span class="skos-pill">Pipeline</span><span class="skos-pill">KnowledgeValueStream</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="value" data-terms="service capability offering provider consumer interface">
+      <div class="card-header">
+        <div><div class="term-name">Service</div><div class="term-id">cv:Service</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A bounded offering of capability, delivered by a provider to a consumer through defined interfaces, producing a specified outcome. Services abstract implementation from consumption. This is the core definition; BusinessService and TechnicalService specialize it.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Capability</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">BusinessService</span><span class="skos-pill">TechnicalService</span><span class="skos-pill">CloudService</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — always qualify. A "Service" in business architecture is not the same as a microservice or an ITIL service.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="value" data-terms="asset resource physical digital intellectual property">
+      <div class="card-header">
+        <div><div class="term-name">Asset</div><div class="term-id">cv:Asset</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A resource — physical, digital, financial, or intellectual — owned or controlled by a party from which future economic or operational value is expected. Assets have lifecycles and provenance requirements distinct from those of data or information.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Resource</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">PhysicalAsset</span><span class="skos-pill">DigitalAsset</span><span class="skos-pill">IntellectualAsset</span><span class="skos-pill">FinancialAsset</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Resource</span><span class="skos-pill">Artifact</span><span class="skos-pill">Property</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="value" data-terms="role responsibility authority assignment position function">
+      <div class="card-header">
+        <div><div class="term-name">Role</div><div class="term-id">cv:Role</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A named set of responsibilities, authorities, and behaviors assigned to a party in relation to a process, service, or system. Roles are context-bound: the same party may hold multiple roles. A Role is not a Person — it is a pattern of authorized action.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Assignment</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">BusinessRole</span><span class="skos-pill">SystemRole</span><span class="skos-pill">ArchitecturalRole</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Party</span><span class="skos-pill">Persona</span><span class="skos-pill">Position</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="value" data-terms="party agent organization person actor stakeholder">
+      <div class="card-header">
+        <div><div class="term-name">Party</div><div class="term-id">cv:Party</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">Any agent — individual, organization, or system — that acts, is acted upon, or is recognized as a participant in a business, legal, or technical context. Party is the neutral root; Role characterizes how a party participates.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Agent</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Organization</span><span class="skos-pill">Person</span><span class="skos-pill">System</span><span class="skos-pill">Consortium</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Actor</span><span class="skos-pill">Stakeholder</span><span class="skos-pill">Persona</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="structure" data-terms="context situation environment condition parameter scope">
+      <div class="card-header">
+        <div><div class="term-name">Context</div><div class="term-id">cv:Context</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The combination of circumstances — time, location, actor, purpose, and prior state — that determines the applicability and interpretation of a term, assertion, or action. Context is what prevents a generic fact from being misapplied to the wrong situation.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Situation</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">OperationalContext</span><span class="skos-pill">SemanticContext</span><span class="skos-pill">BusinessContext</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — see Polymorphic Disambiguation tab for domain-specific definitions.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="structure" data-terms="provenance lineage source origin traceability history">
+      <div class="card-header">
+        <div><div class="term-name">Provenance</div><div class="term-id">cv:Provenance</div></div>
+        <span class="domain-tag tag-core">Core</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The documented chain of origin, custody, and transformation of an entity — data object, assertion, decision, or artefact — that establishes its trustworthiness and reproducibility. Provenance is the substrate of trust; without it, governance claims are unverifiable.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Lineage</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DataProvenance</span><span class="skos-pill">SETraceability</span><span class="skos-pill">LinkedDataPROV</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">W3C PROV-O</span><span class="skos-pill">DecisionTrace</span><span class="skos-pill">Audit</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — differs meaningfully between archival, data governance, and SE traceability contexts.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" id="core-no-results">No terms match your search.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TAB 2: SE VOCABULARY ═══════════════════════ -->
+<div id="panel-se" class="panel">
+
+  <div class="filter-strip">
+    <span class="filter-label">Domain:</span>
+    <span class="filter-chip active" onclick="filterSE('all', this)">All</span>
+    <span class="filter-chip" onclick="filterSE('system', this)">System Structure</span>
+    <span class="filter-chip" onclick="filterSE('requirements', this)">Requirements</span>
+    <span class="filter-chip" onclick="filterSE('process', this)">Lifecycle & Process</span>
+    <span class="filter-chip" onclick="filterSE('verification', this)">V&V</span>
+    <span class="filter-chip" onclick="filterSE('knowledge', this)">Knowledge & Models</span>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Systems Engineering Vocabulary — INCOSE-grounded, Discipline-Specific</span>
+    <span class="section-line"></span>
+    <span class="section-count" id="se-visible-count">20 terms</span>
+  </div>
+
+  <div class="term-grid" id="se-grid">
+
+    <div class="term-card" data-cat="system" data-terms="system integrated elements mission objectives">
+      <div class="card-header">
+        <div><div class="term-name">System</div><div class="term-id">se:System</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An integrated set of elements — people, processes, information, materials, technology — interacting in a structured way to achieve a defined set of mission objectives that cannot be achieved by any element alone. (Source: INCOSE SE Handbook)</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Entity</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">System-of-Systems</span><span class="skos-pill">Subsystem</span><span class="skos-pill">Component</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Assembly</span><span class="skos-pill">Configuration</span><span class="skos-pill">Platform</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">Requires defined boundary, mission context, and stakeholders. A "system" without these three is an assembly, not a system.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="system" data-terms="system of systems SoS federated networked independence">
+      <div class="card-header">
+        <div><div class="term-name">System-of-Systems</div><div class="term-id">se:SoS</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A configuration of interdependent systems in which each constituent system retains operational and managerial independence while collectively delivering capabilities unavailable from any single system. Governance across SoS boundaries requires special architectural attention.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">se:System</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">CollaborativeSoS</span><span class="skos-pill">DirectedSoS</span><span class="skos-pill">VirtualSoS</span><span class="skos-pill">AcknowledgedSoS</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Federation</span><span class="skos-pill">NetworkedSystem</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="system" data-terms="architecture ISO 42010 concepts properties relations principles">
+      <div class="card-header">
+        <div><div class="term-name">Architecture (SE)</div><div class="term-id">se:Architecture</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The fundamental concepts or properties of a system in its environment, embodied in its elements, relationships, and the principles governing its design and evolution. (ISO/IEC/IEEE 42010:2022). Architecture is not a diagram — it is the set of decisions and their rationale.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Schema</span><span class="skos-pill">Structure</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">LogicalArchitecture</span><span class="skos-pill">PhysicalArchitecture</span><span class="skos-pill">FunctionalArchitecture</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">ArchitecturalView</span><span class="skos-pill">Viewpoint</span><span class="skos-pill">Blueprint</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="system" data-terms="interface boundary shared coupling protocol external internal">
+      <div class="card-header">
+        <div><div class="term-name">Interface</div><div class="term-id">se:Interface</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A shared boundary between system elements — or between a system and its environment — across which information, energy, material, or control passes according to defined protocols or standards. Interfaces must be explicitly specified; assumed interfaces are a primary source of integration failure.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Relationship</span><span class="skos-pill">Boundary</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">InternalInterface</span><span class="skos-pill">ExternalInterface</span><span class="skos-pill">HumanSystemInterface</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Protocol</span><span class="skos-pill">ICD</span><span class="skos-pill">Coupling</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="requirements" data-terms="requirement need stakeholder specification measurable verifiable">
+      <div class="card-header">
+        <div><div class="term-name">Requirement (SE)</div><div class="term-id">se:Requirement</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formally documented statement that specifies — with measurable, verifiable precision — a condition or capability that a system or system element must possess to satisfy a stakeholder need, standard, or contract. Requirements are the primary accountability instrument in SE.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Constraint</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">StakeholderRequirement</span><span class="skos-pill">SystemRequirement</span><span class="skos-pill">DerivedRequirement</span><span class="skos-pill">InterfaceRequirement</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Need</span><span class="skos-pill">Specification</span><span class="skos-pill">Constraint</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">A requirement is NOT a need, a design solution, or a test condition. These are distinct artifacts with distinct governance implications.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="requirements" data-terms="function transformation input output behavior operation">
+      <div class="card-header">
+        <div><div class="term-name">Function (SE)</div><div class="term-id">se:Function</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A defined transformation that a system or element must perform — converting specified inputs to specified outputs — irrespective of the implementation means. Functions are the "what," not the "how." Function and behavior are distinct: function is required; behavior is the observed realization.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Capability</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">LeafFunction</span><span class="skos-pill">SystemFunction</span><span class="skos-pill">SubFunction</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Behavior</span><span class="skos-pill">Operation</span><span class="skos-pill">FunctionalRequirement</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="requirements" data-terms="stakeholder SE interest party acquirer user operator maintainer">
+      <div class="card-header">
+        <div><div class="term-name">Stakeholder (SE)</div><div class="term-id">se:Stakeholder</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">An individual, group, or organization that has an interest in, or is affected by, a system's capabilities, operation, or outcomes. In SE, stakeholders are formal roles with identifiable concerns, not generic "users." They drive requirements and acceptance criteria.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Party</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Acquirer</span><span class="skos-pill">Operator</span><span class="skos-pill">User</span><span class="skos-pill">Maintainer</span><span class="skos-pill">Regulator</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">cv:Party</span><span class="skos-pill">Actor</span><span class="skos-pill">Principal</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="requirements" data-terms="scenario operational sequence narrative actor use case">
+      <div class="card-header">
+        <div><div class="term-name">Scenario (SE)</div><div class="term-id">se:Scenario</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A bounded, narrative sequence of events and interactions involving one or more actors and a system, used to elicit requirements, validate behavior, or explore the operational environment. Scenarios are the bridge between stakeholder intent and verifiable system behavior.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">UseCase</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">OperationalScenario</span><span class="skos-pill">FailureScenario</span><span class="skos-pill">ConOps</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">StoryMap</span><span class="skos-pill">ModeOfOperation</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="verification" data-terms="verification evidence requirements test analysis inspection demonstration">
+      <div class="card-header">
+        <div><div class="term-name">Verification</div><div class="term-id">se:Verification</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The formal process of evaluating whether a system or element fulfills specified requirements using objective evidence — test, analysis, inspection, or demonstration. Verification answers: "Did we build the system right?" It is necessary but not sufficient; Validation is also required.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Evaluation</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">TestVerification</span><span class="skos-pill">AnalysisVerification</span><span class="skos-pill">DemonstrationVerification</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Validation</span><span class="skos-pill">Compliance</span><span class="skos-pill">Test</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="verification" data-terms="validation fitness intended use operational environment acceptance">
+      <div class="card-header">
+        <div><div class="term-name">Validation</div><div class="term-id">se:Validation</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The confirmation, through objective evidence, that a system fulfills its intended use and operational needs in the environment for which it was designed. Validation answers: "Did we build the right system?" It requires operational context, not just lab conditions.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Evaluation</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">OperationalValidation</span><span class="skos-pill">UserValidation</span><span class="skos-pill">SimulatedValidation</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Verification</span><span class="skos-pill">AcceptanceTesting</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="verification" data-terms="trade study alternatives decision analysis criteria constraints">
+      <div class="card-header">
+        <div><div class="term-name">Trade Study</div><div class="term-id">se:TradeStudy</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A structured decision-support analysis that evaluates candidate solutions against a defined, weighted set of criteria and constraints to identify the preferred alternative under specified conditions. Trade studies produce documented, auditable design decisions.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">DecisionAnalysis</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">SystemLevelTradeStudy</span><span class="skos-pill">ComponentTradeStudy</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">MCDA</span><span class="skos-pill">OptionAnalysis</span><span class="skos-pill">TradeOffAnalysis</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="verification" data-terms="hazard condition harm safety risk threat potential">
+      <div class="card-header">
+        <div><div class="term-name">Hazard</div><div class="term-id">se:Hazard</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A condition in which a system element or set of elements has the potential to cause harm to people, property, or the environment under defined conditions. A hazard is not an accident — it is a precondition. Risk is the probability-weighted consequence of a hazard.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Condition</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">SystemHazard</span><span class="skos-pill">SafetyHazard</span><span class="skos-pill">UCA</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Risk</span><span class="skos-pill">Threat</span><span class="skos-pill">STPA</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="process" data-terms="lifecycle concept development production utilization support retirement SE">
+      <div class="card-header">
+        <div><div class="term-name">Lifecycle (SE)</div><div class="term-id">se:Lifecycle</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The time-phased framework of stages — Concept, Development, Production, Utilization, Support, Retirement — governing the evolution of a system from inception through disposal. In SE, lifecycle stages have formal entry/exit criteria, baselines, and governance gates. (ISO/IEC/IEEE 15288)</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Lifecycle</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">ProgramLifecycle</span><span class="skos-pill">ProductLifecycle</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">MaturityGate</span><span class="skos-pill">Phase</span><span class="skos-pill">Milestone</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="process" data-terms="baseline configuration control snapshot agreed specification">
+      <div class="card-header">
+        <div><div class="term-name">Baseline</div><div class="term-id">se:Baseline</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formally reviewed and agreed-upon specification or product that serves as the basis for further development, change control, and traceability. Baselines freeze a configuration at a lifecycle gate, enabling controlled evolution. Nothing changes without baseline authorization.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:State</span><span class="skos-pill">ConfigurationItem</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">FunctionalBaseline</span><span class="skos-pill">AllocatedBaseline</span><span class="skos-pill">ProductBaseline</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Version</span><span class="skos-pill">Snapshot</span><span class="skos-pill">ConfigurationManagement</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="process" data-terms="behavior observable response stimulus conditions">
+      <div class="card-header">
+        <div><div class="term-name">Behavior</div><div class="term-id">se:Behavior</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The observable response or set of responses of a system to stimuli, under specified conditions, over time. Behavior is the empirical realization of function. It is time-ordered and context-dependent. Behavior specifications are the basis for test and simulation.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">StateTransition</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">StatefulBehavior</span><span class="skos-pill">StatelessBehavior</span><span class="skos-pill">EmergentBehavior</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">se:Function</span><span class="skos-pill">Response</span><span class="skos-pill">Performance</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="knowledge" data-terms="model abstraction representation bounded scope fidelity SE">
+      <div class="card-header">
+        <div><div class="term-name">Model (SE)</div><div class="term-id">se:Model</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A purposeful abstraction of a system, subsystem, or phenomenon that represents selected properties in a form amenable to analysis, simulation, or communication. Models are explicitly bounded in scope and fidelity. A model that claims to represent everything represents nothing usefully.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Representation</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">SimulationModel</span><span class="skos-pill">AnalyticalModel</span><span class="skos-pill">MBSEModel</span><span class="skos-pill">DigitalTwin</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — Model in SE is not the same as Model in data management, business architecture, or mathematics. See disambiguation tab.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="knowledge" data-terms="MBSE model-based systems engineering digital SysML methodology">
+      <div class="card-header">
+        <div><div class="term-name">MBSE</div><div class="term-id">se:MBSE</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formalized methodology applying systems engineering through an authoritative set of integrated digital models as the primary means of capturing and communicating system design information — replacing document-centric practices with a living, queryable model fabric. (INCOSE)</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">EngineeringPractice</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">SysML</span><span class="skos-pill">UAFProfile</span><span class="skos-pill">CapellaMethod</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">DigitalThread</span><span class="skos-pill">DigitalTwin</span><span class="skos-pill">CAD</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="knowledge" data-terms="ontology SE formal specification INCOSE OWL machine readable">
+      <div class="card-header">
+        <div><div class="term-name">Ontology (SE)</div><div class="term-id">se:Ontology</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">A formal, machine-readable specification of the concepts, entities, relationships, and axioms pertaining to a systems engineering domain, serving as the shared semantic layer for MBSE tools, data exchange, and cross-discipline integration. Not to be confused with the philosophical discipline of ontology.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">ControlledVocabulary</span><span class="skos-pill">cv:Schema</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">INCOSE_OWL</span><span class="skos-pill">SE_Ontology</span><span class="skos-pill">DomainOntology</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Taxonomy</span><span class="skos-pill">Schema</span><span class="skos-pill">owl:Ontology</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — See disambiguation tab for philosophical vs. data governance vs. AI/KG senses.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="knowledge" data-terms="knowledge SE structured validated lifecycle decisions artifacts">
+      <div class="card-header">
+        <div><div class="term-name">Knowledge (SE)</div><div class="term-id">se:Knowledge</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">Structured, validated understanding — encoded in models, specifications, and documentation — about a system's design intent, operational behavior, and constraints, sufficient to support engineering decisions, change impact analysis, and lifecycle management. SE knowledge is governed, versioned, and baselined.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">InformationAsset</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">DesignKnowledge</span><span class="skos-pill">OperationalKnowledge</span><span class="skos-pill">LessonsLearned</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">se:Model</span><span class="skos-pill">se:Baseline</span><span class="skos-pill">Provenance</span></div></div>
+          <div class="skos-row"><span class="skos-key key-scope">Scope</span><div class="skos-val">POLYMORPHIC — Not to be conflated with epistemological or KM senses. SE knowledge is engineering-purpose, not general human understanding.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="term-card" data-cat="process" data-terms="traceability requirements test evidence chain link">
+      <div class="card-header">
+        <div><div class="term-name">Traceability</div><div class="term-id">se:Traceability</div></div>
+        <span class="domain-tag tag-se">SE</span>
+      </div>
+      <div class="card-body">
+        <div class="def-text">The recorded chain of relationships connecting stakeholder needs, requirements, design decisions, implementation elements, and test evidence — enabling impact analysis, compliance demonstration, and lifecycle auditing. In SE, traceability is the operational face of provenance.</div>
+        <div class="skos-section">
+          <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">cv:Provenance</span></div></div>
+          <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">RequirementTraceability</span><span class="skos-pill">DesignTraceability</span><span class="skos-pill">TestTraceability</span></div></div>
+          <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">ChangeImpactAnalysis</span><span class="skos-pill">Compliance</span><span class="skos-pill">Audit</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" id="se-no-results">No terms match your search.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TAB 3: POLYMORPHIC ═══════════════════════ -->
+<div id="panel-poly" class="panel">
+
+  <div style="background:#1a1520;border:1px solid #4a2535;border-radius:6px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#c8a0b0;line-height:1.6;">
+    <span style="font-family:var(--mono);font-size:9px;color:var(--rose);font-weight:600;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;">⚠ POLYMORPHISM NOTICE</span>
+    Each term below carries distinct, non-interchangeable meanings across disciplines. Using one sense where another is intended introduces semantic errors that cascade through downstream models, ontologies, and governance decisions. These disambiguations are prerequisites for ontology construction — not post-hoc corrections.
+  </div>
+
+  <div class="poly-grid" id="poly-grid">
+
+    <!-- KNOWLEDGE -->
+    <div class="poly-card" data-terms="knowledge">
+      <div class="poly-header">
+        <span class="poly-term">Knowledge</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Epistemological (General)</div>
+          <div class="context-def">Justified, contextualized understanding that enables inference, prediction, and action. Richer than information because it carries structure, grounding (why trusted), and applicability scope.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Philosophy / Epistemology</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Systems Engineering</div>
+          <div class="context-def">Structured, validated understanding encoded in engineering artifacts — models, specs, baselines — sufficient to support design decisions and lifecycle management. Governed, versioned, and traceable.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">ISO/IEC/IEEE 15288</span><span class="anchor-chip anchor-std">INCOSE</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Enterprise KM</div>
+          <div class="context-def">Organizational assets — documented, procedural, or experiential — that enable workforce performance. Includes explicit (documented) and tacit (embodied in expertise) forms.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">KM Practice</span><span class="anchor-chip anchor-body">APQC</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">AI / ML</div>
+          <div class="context-def">Patterns, weights, and inference rules embedded in a trained model that generalize from training data to novel inputs. Statistical correlation, not justified belief.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-warn">Conflation Risk: High</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL -->
+    <div class="poly-card" data-terms="model">
+      <div class="poly-header">
+        <span class="poly-term">Model</span>
+        <span class="poly-badge">5 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">General</div>
+          <div class="context-def">Any purposeful abstraction of a real or conceptual system, retaining only the features relevant to a specific inquiry or purpose.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-note">Core definition</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Systems Engineering</div>
+          <div class="context-def">A bounded abstraction of a system's structure, function, or behavior amenable to analysis, simulation, or communication — with explicit scope and fidelity claims. (INCOSE, MBSE)</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">SysML / MBSE</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-math">Mathematical</div>
+          <div class="context-def">A formal structure — equations, probability distributions, or logical axioms — that describes the behavior of a phenomenon in a rigorous, testable form.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Decision Science</span><span class="anchor-chip anchor-body">Statistics</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Data / Schema</div>
+          <div class="context-def">A structural specification of permitted types, relationships, and constraints for a class of data — the "shape" of a data store or exchange format.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">OWL / SHACL / JSON Schema</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Business</div>
+          <div class="context-def">A conceptual representation of how an organization creates, delivers, and captures value — e.g., the Business Model Canvas. Strategic, not technical.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Business Architecture</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONTOLOGY -->
+    <div class="poly-card" data-terms="ontology">
+      <div class="poly-header">
+        <span class="poly-term">Ontology</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Philosophical</div>
+          <div class="context-def">The branch of metaphysics concerned with the nature, structure, and categories of being and existence. Foundational to epistemology. Not to be imported into engineering without qualification.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Philosophy</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Systems Engineering</div>
+          <div class="context-def">A formal, machine-readable specification of domain concepts, relationships, and axioms serving as the semantic integration layer for MBSE tools and cross-discipline data exchange.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">INCOSE / ISO 15926</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Data Governance</div>
+          <div class="context-def">A controlled schema governing the classification, relationships, and governance of data assets within an enterprise. The semantic contract for data interoperability.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Enterprise Architecture</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">AI / Knowledge Graph</div>
+          <div class="context-def">A semantic layer providing entity types and relationship axioms to ground knowledge representations, enabling reasoning and entity resolution at graph scale.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">OWL / RDF / KG</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCESS -->
+    <div class="poly-card" data-terms="process">
+      <div class="poly-header">
+        <span class="poly-term">Process</span>
+        <span class="poly-badge">5 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Core (Agnostic)</div>
+          <div class="context-def">An ordered, purposeful sequence of activities that transforms defined inputs into defined outputs within a bounded scope. Domain-agnostic root definition.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-note">cv:Process</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Business</div>
+          <div class="context-def">A repeatable set of coordinated activities that delivers a business outcome of value to a customer or stakeholder. Governed by the business capability that enables it. (BPMN, APQC PCF)</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">BPMN / APQC</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Systems Engineering</div>
+          <div class="context-def">A defined sequence of activities in the system lifecycle that produces specified outputs from specified inputs. Formally characterized by entry/exit criteria and performance measures. (ISO 15288)</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">ISO/IEC/IEEE 15288</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">Computational</div>
+          <div class="context-def">An executing instance of a program on a processor, managed by the operating system with memory, file handles, and thread state. Not a business process.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-warn">Conflation Risk: High in AI context</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-math">Manufacturing</div>
+          <div class="context-def">A sequence of physical operations that transforms raw materials or components into finished or intermediate products, characterized by machine operations, tolerances, and process parameters.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Industrial Engineering</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEXT -->
+    <div class="poly-card" data-terms="context">
+      <div class="poly-header">
+        <span class="poly-term">Context</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">General</div>
+          <div class="context-def">The combination of circumstances that determine the applicability and interpretation of an assertion, term, or action. Core definition — inherited by all specializations.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-note">cv:Context</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Technical / Metadata</div>
+          <div class="context-def">A structured set of parameters — time, actor, location, scope, purpose — attached as metadata to an assertion, event, or knowledge object that governs its interpretation and validity.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">JSON-LD / RDF</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Operational (SE)</div>
+          <div class="context-def">The operational environment, mission thread, and external constraints within which a system must perform, defining the envelope of valid system behavior and the conditions for validation.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">INCOSE / ConOps</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">AI / LLM</div>
+          <div class="context-def">The surrounding tokens or conversation history provided to a large language model that conditions the generation of a response. A computational input, not a semantic construct.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-warn">Conflation Risk: High</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROVENANCE -->
+    <div class="poly-card" data-terms="provenance">
+      <div class="poly-header">
+        <span class="poly-term">Provenance</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Archival / Library</div>
+          <div class="context-def">The documented chain of custody and ownership history of a physical or documentary artefact, establishing its authenticity and establishing authority of origin.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Archival Science</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Data Governance</div>
+          <div class="context-def">The recorded lineage of a dataset — source systems, transformation steps, responsible parties, and timestamps — that establishes trustworthiness and enables reproducibility. Formally encoded in W3C PROV-O.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">W3C PROV-O</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">SE Traceability</div>
+          <div class="context-def">The chain of relationships connecting stakeholder needs through requirements, design decisions, and test evidence — enabling impact analysis and compliance auditing across the system lifecycle.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">ISO 15288 / RDSG</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">AI / Decision Trace</div>
+          <div class="context-def">The recorded reasoning path behind an AI-generated output or autonomous decision — which facts, models, and rules produced the result — enabling human oversight and audit.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">RDSG / SHACL</span><span class="anchor-chip anchor-warn">Emerging Standard</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAPH -->
+    <div class="poly-card" data-terms="graph">
+      <div class="poly-header">
+        <span class="poly-term">Graph</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-math">Mathematical (Graph Theory)</div>
+          <div class="context-def">A set of vertices (nodes) and edges connecting pairs of vertices, studied for structural properties: connectivity, cycles, paths, centrality. The mathematical foundation, not the application.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Graph Theory / Mathematics</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Knowledge Graph</div>
+          <div class="context-def">A graph-structured knowledge base in which nodes are entities, edges are typed relationships, and the whole is grounded in an ontology. Supports inference, entity resolution, and semantic search.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">RDF / OWL / SPARQL</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Property Graph</div>
+          <div class="context-def">A labeled, directed graph where both nodes and edges carry arbitrary key-value properties. The native data model for graph databases (Neo4j, TigerGraph). Lacks formal semantic grounding.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Graph Databases</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">Computational Graph</div>
+          <div class="context-def">A directed acyclic graph (DAG) representing operations and their data dependencies, used in ML frameworks (TensorFlow, PyTorch) for automatic differentiation and execution planning.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">ML / Deep Learning</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMATION -->
+    <div class="poly-card" data-terms="information">
+      <div class="poly-header">
+        <span class="poly-term">Information</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-math">Information Theory (Shannon)</div>
+          <div class="context-def">A quantitative measure of uncertainty reduction, independent of meaning, expressed in bits. The probability that a signal disambiguates among possible states of a source.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Claude Shannon, 1948</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-general">DIKW Layer</div>
+          <div class="context-def">Data placed in a context sufficient to answer a "who, what, where, when, or how" question. Information contextualizes data but does not yet support inference.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-note">DIKW Pyramid</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Business</div>
+          <div class="context-def">Structured or unstructured content that supports situational awareness and decision-making by human actors within an organizational context. Meaning-carrying, audience-relative.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Business Architecture</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Systems Engineering</div>
+          <div class="context-def">A digital or physical representation of system properties, states, or relationships encoded for storage, transmission, or transformation between system elements.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">ISO 15288 / MBSE</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAXONOMY (poly) -->
+    <div class="poly-card" data-terms="taxonomy">
+      <div class="poly-header">
+        <span class="poly-term">Taxonomy</span>
+        <span class="poly-badge">3 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Biological Classification</div>
+          <div class="context-def">The science of naming, describing, and classifying organisms into hierarchical groups (kingdom, phylum, class, order, family, genus, species). Origin of the term; carries specific biological meaning.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Linnaeus / Biology</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-data">Controlled Vocabulary Hierarchy</div>
+          <div class="context-def">A skos:ConceptScheme organizing concepts in a broader/narrower hierarchy for the purpose of classification, navigation, and interoperability. The pre-ontology artifact in any semantic development sequence.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">SKOS / W3C</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-biz">Business Navigation Structure</div>
+          <div class="context-def">An organizational scheme used to categorize products, services, content, or capabilities for findability and governance. Often faceted or polyhierarchical in enterprise implementations.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Enterprise Architecture / KM</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DECISION -->
+    <div class="poly-card" data-terms="decision">
+      <div class="poly-header">
+        <span class="poly-term">Decision</span>
+        <span class="poly-badge">4 Distinct Senses</span>
+      </div>
+      <div class="poly-contexts">
+        <div class="poly-context">
+          <div class="context-label ctx-general">Cognitive Act</div>
+          <div class="context-def">A commitment to a course of action made by an agent in the face of uncertainty, based on available information and values. The unit of human judgment.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Cognitive Science</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-se">Engineering Artifact</div>
+          <div class="context-def">A formally documented choice between alternatives, supported by trade study evidence, with stated rationale, criteria, and stakeholder sign-off. Traceable and auditable. The governance record of a design decision.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-std">INCOSE / SE Handbook</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-math">Decision Theory</div>
+          <div class="context-def">An optimal selection from a set of alternatives based on a utility function and probability model. Prescriptive, not descriptive — how a rational agent should choose, not how humans do.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-body">Von Neumann / Savage</span></div>
+        </div>
+        <div class="poly-context">
+          <div class="context-label ctx-ai">Automated Decision</div>
+          <div class="context-def">An output of a rule engine, classifier, or ML model that selects an action from a state space. Not the same as human judgment — accountability and explainability requirements differ.</div>
+          <div class="context-anchor"><span class="anchor-chip anchor-warn">Governance: AI Act / RDSG</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /poly-grid -->
+</div>
+
+<!-- ═══════════════════════ TAB 4: DECISION SCIENCE ═══════════════════════ -->
+<div id="panel-ds" class="panel">
+
+  <div style="background:#1a2010;border:1px solid #3a5020;border-radius:6px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:#a0c080;line-height:1.6;">
+    <span style="font-family:var(--mono);font-size:9px;color:var(--lime);font-weight:600;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px;">DECOMPOSITION RATIONALE</span>
+    "Decision Science" as used in the source document is a conflation of a disciplinary umbrella with a set of distinct, non-interchangeable analytical frameworks. Before any of these frameworks can be instantiated as ontology classes or applied to domain engineering, they must be individually defined, scoped, and related. The following is a SKOS-conformant decomposition.
+  </div>
+
+  <div class="decomp-block">
+    <div class="decomp-header">
+      <span class="decomp-title">Decision Science</span>
+      <span class="decomp-role">Disciplinary Umbrella</span>
+    </div>
+    <div class="decomp-body">
+      <div class="decomp-def">The interdisciplinary domain that studies how decisions are made (descriptive), how they should be made (normative), and how decision-making can be improved through formal methods, behavioral understanding, and organizational design. It is the parent class — not a method itself. The following sub-disciplines are its narrower concepts in the SKOS hierarchy.</div>
+      <div class="skos-section" style="margin-top:10px;">
+        <div class="skos-row"><span class="skos-key key-brd">Broader</span><div class="skos-val"><span class="skos-pill">Applied Science</span><span class="skos-pill">Management Science</span></div></div>
+        <div class="skos-row"><span class="skos-key key-nrw">Narrower</span><div class="skos-val"><span class="skos-pill">Decision Analysis</span><span class="skos-pill">Behavioral Decision Theory</span><span class="skos-pill">Game Theory</span><span class="skos-pill">Operations Research</span><span class="skos-pill">Bayesian Inference</span><span class="skos-pill">MCDA</span><span class="skos-pill">Scenario Planning</span></div></div>
+        <div class="skos-row"><span class="skos-key key-rel">Related</span><div class="skos-val"><span class="skos-pill">Cognitive Science</span><span class="skos-pill">Statistics</span><span class="skos-pill">Economics</span><span class="skos-pill">Systems Engineering</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-disciplines">
+
+    <div class="subdiscipline">
+      <div class="sub-name">Decision Analysis</div>
+      <div class="sub-def">A structured methodology for evaluating alternatives under uncertainty using utility theory, probability assessment, and value-focused thinking. Produces a defensible, documented recommendation. Applied in: SE trade studies, project selection, risk management.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Behavioral Decision Theory</div>
+      <div class="sub-def">Empirical study of how humans actually make decisions — including cognitive biases, heuristics, framing effects, and loss aversion — diverging systematically from rational-actor models. Critical for requirements elicitation and human-system interface design.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Game Theory</div>
+      <div class="sub-def">Mathematical study of strategic interaction among rational agents whose outcomes depend on the choices of others. Applied in: multi-stakeholder negotiation, adversarial system design, mechanism design for incentive alignment.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Operations Research</div>
+      <div class="sub-def">Quantitative methods — linear programming, queuing theory, simulation, network optimization — for optimizing resource allocation, scheduling, and routing under constraints. Applied in: logistics, capacity planning, mission scheduling.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Bayesian Inference</div>
+      <div class="sub-def">A probabilistic framework for updating beliefs in light of evidence, using Bayes' theorem to combine prior knowledge with observed data. The formal basis for rational belief revision under uncertainty. Applied in: sensor fusion, reliability estimation, AI reasoning.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Multi-Criteria Decision Analysis (MCDA)</div>
+      <div class="sub-def">A framework for evaluating alternatives against multiple, potentially conflicting criteria using weighted scoring, outranking, or value functions. Applied in: system selection, architecture trade studies, strategic prioritization. Methods: AHP, TOPSIS, ELECTRE, MAVT.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Scenario Planning</div>
+      <div class="sub-def">A structured method for exploring multiple plausible futures by developing distinct narrative scenarios and testing the robustness of decisions against each. Not probabilistic — explores the space of possibilities. Applied in: strategic planning, ConOps development, wargaming.</div>
+    </div>
+
+    <div class="subdiscipline">
+      <div class="sub-name">Risk Analysis</div>
+      <div class="sub-def">Systematic identification, assessment, and prioritization of risks — probability-weighted consequences of hazards — followed by application of mitigation strategies. The intersection of Decision Science and Safety Engineering. Applied in: STPA, FMEA, program risk management.</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;">
+    <div class="section-header" style="margin-bottom:10px;">
+      <span class="section-title">SKOS Lineage for Decision Science</span>
+      <span class="section-line"></span>
+    </div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:2;">
+      <span style="color:var(--text3);">skos:broader</span> &nbsp;→&nbsp; <span style="color:var(--teal);">ManagementScience / AppliedScience</span><br>
+      <span style="color:var(--text3);">skos:narrower</span> &nbsp;→&nbsp; <span style="color:var(--lime);">DecisionAnalysis, BehavioralDecisionTheory, GameTheory, OperationsResearch, BayesianInference, MCDA, ScenarioPlanning, RiskAnalysis</span><br>
+      <span style="color:var(--text3);">skos:related</span> &nbsp;→&nbsp; <span style="color:var(--sky);">CognitiveScience, Statistics, Economics, SystemsEngineering, KnowledgeManagement</span><br>
+      <span style="color:var(--text3);">skos:scopeNote</span> &nbsp;→&nbsp; <span style="color:var(--amber);">"Decision Science is an umbrella discipline. Never instantiate it directly as a method; always specify the sub-discipline being applied and its applicability conditions within the domain context."</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── TAB SWITCHING ───
+  function showTab(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if (document.getElementById('searchInput').value) {
+      doSearch(document.getElementById('searchInput').value);
+    }
+  }
+
+  // ─── SEARCH ───
+  function doSearch(q) {
+    q = q.toLowerCase().trim();
+    const activePanel = document.querySelector('.panel.active');
+    const cards = activePanel.querySelectorAll('.term-card, .poly-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const terms = (card.dataset.terms || '') + ' ' + (card.querySelector('.term-name, .poly-term')?.textContent || '');
+      const defs = card.querySelector('.def-text, .context-def')?.textContent || '';
+      const all = (terms + ' ' + defs).toLowerCase();
+      if (!q || all.includes(q)) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Update counts
+    const panelId = activePanel.id.replace('panel-', '');
+    const countEl = document.getElementById(panelId + '-visible-count');
+    if (countEl) countEl.textContent = visible + ' terms';
+
+    // No results
+    const noRes = activePanel.querySelector('.no-results');
+    if (noRes) noRes.style.display = (visible === 0 ? 'block' : 'none');
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    doSearch('');
+  }
+
+  // ─── FILTER: CORE ───
+  function filterCore(cat, el) {
+    document.querySelectorAll('#panel-core .filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const cards = document.querySelectorAll('#core-grid .term-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const match = (cat === 'all') || (card.dataset.cat === cat);
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const termMatch = !q || ((card.dataset.terms || '') + card.querySelector('.def-text')?.textContent || '').toLowerCase().includes(q);
+      if (match && termMatch) { card.classList.remove('hidden'); visible++; }
+      else card.classList.add('hidden');
+    });
+    document.getElementById('core-visible-count').textContent = visible + ' terms';
+    document.getElementById('core-no-results').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ─── FILTER: SE ───
+  function filterSE(cat, el) {
+    document.querySelectorAll('#panel-se .filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const cards = document.querySelectorAll('#se-grid .term-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const match = (cat === 'all') || (card.dataset.cat === cat);
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const termMatch = !q || ((card.dataset.terms || '') + card.querySelector('.def-text')?.textContent || '').toLowerCase().includes(q);
+      if (match && termMatch) { card.classList.remove('hidden'); visible++; }
+      else card.classList.add('hidden');
+    });
+    document.getElementById('se-visible-count').textContent = visible + ' terms';
+    document.getElementById('se-no-results').style.display = visible === 0 ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
