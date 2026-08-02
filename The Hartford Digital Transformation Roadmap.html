@@ -90,6 +90,7 @@
   .spine-cap{font-family:var(--mono);font-size:11px;color:var(--violet);letter-spacing:.06em;margin-top:10px;text-transform:uppercase}
 
   .prov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .pair-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
   .pcard{border:1px solid var(--line);border-radius:13px;padding:16px;background:var(--panel);border-top:2px solid var(--pc,var(--brand));position:relative}
   .pcard .pk{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pc,var(--cyan))}
   .pcard .pt{font-family:var(--mech);font-weight:600;font-size:15px;margin:6px 0 8px}
@@ -353,7 +354,7 @@
   }
   @media(max-width:620px){
     .top-title{order:3;flex-basis:100%}.hero-stats{grid-template-columns:1fr}
-    .pillars,.plants,.domains,.matrix-wrap,.prov-grid,.sim-kpis,.drv{grid-template-columns:1fr}
+    .pillars,.plants,.domains,.matrix-wrap,.prov-grid,.sim-kpis,.drv,.pair-grid{grid-template-columns:1fr}
     .matrix-wrap{display:block}.mr{display:none}main{padding:26px 16px 60px}
     .invrow{grid-template-columns:1fr}
   }
@@ -469,6 +470,29 @@
         <div class="panel pad scroll-x"><table class="dtable" id="portTable"></table></div>
       </div>
     </div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--violet)"></span>Semantic layer buildout <span class="tagn">thin-slice roadmap</span></h3>
+    <p class="subhint">The semantic layer ships incrementally, one use-case-driven slice at a time — each slice is a complete vertical from business glossary to a live domain API, not a phase of an ontology built in isolation. Select a slice for its steps, workstreams and the efficiency it unlocks.</p>
+    <div class="road-rail" id="semRail"></div>
+    <div class="timeline"><div class="fill" id="semFill"></div></div>
+    <div class="road-detail">
+      <div class="panel pad">
+        <p class="panel-h"><span class="dot" style="color:var(--brand)"></span><span id="semSdTitle">Slice</span></p>
+        <ul class="moves" id="semMoves"></ul>
+        <div class="ws-wrap">
+          <p class="blk" style="color:var(--cyan)">Workstreams · deliverables · owner</p>
+          <div class="scroll-x"><table class="dtable" id="semWs"></table></div>
+        </div>
+      </div>
+      <div>
+        <div class="exit">
+          <div class="lab"><span>Slice outcome</span><span class="inv" id="semInv"></span></div>
+          <div class="out" id="semExit"></div>
+          <div class="kpi-row" id="semKpi"></div>
+        </div>
+        <div class="gatebox" id="semGate"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ARCHITECTURE -->
@@ -486,6 +510,44 @@
     <div class="panel pad scroll-x"><table class="dtable" id="archTable"></table></div>
 
     <div class="principles" id="principles"></div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--cyan)"></span>Semantic layer buildout <span class="tagn">top-down meets bottom-up</span></h3>
+    <p class="subhint">A pragmatic, incremental build — not a big-bang ontology project. Thin, use-case-driven slices ship end to end (business term → ontology → graph → API → persona value) starting with the domains carrying the most disparate terminology, while the core vocabulary stays small enough to actually govern.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div class="panel pad">
+        <p class="panel-h"><span class="dot" style="color:var(--mint)"></span>Top-down · unified business knowledge</p>
+        <ul class="moves" id="topdownSteps"></ul>
+      </div>
+      <div class="panel pad">
+        <p class="panel-h"><span class="dot" style="color:var(--brand)"></span>Bottom-up · unified data semantic layer</p>
+        <ul class="moves" id="bottomupSteps"></ul>
+      </div>
+    </div>
+    <div class="gatebox" style="margin-top:14px"><b>Where they meet →</b> Both tracks converge on one knowledge graph — business meaning validated from the top, source data verified from the bottom — so neither the ontology nor the graph drifts from the other.</div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--violet)"></span>Extensible domains <span class="tagn">starting with three thin slices</span></h3>
+    <p class="subhint">Each domain extends a small, shared core vocabulary (Policy, Coverage, Claim, Party, Customer) rather than modeling from scratch — proof the pattern scales is a later domain shipping faster than the first. Tap a card for scope, core classes and the competency question it proves.</p>
+    <div class="prov-grid" id="domainOnto"></div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--amber)"></span>Harmonizing disparate business terms <span class="tagn">one canonical meaning per concept</span></h3>
+    <p class="subhint">The same underlying concept goes by different names across Commercial, Personal, Specialty and Benefits — the ontology gives each one a single canonical definition and a formal relationship to its neighbors, instead of leaving five systems to define "coverage" five different ways.</p>
+    <div class="panel pad scroll-x"><table class="dtable" id="vocabTable"></table></div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--rose)"></span>Semantic governance <span class="tagn">the safeguard for consistent understanding</span></h3>
+    <p class="subhint">Rules, constraints and validation live in the graph itself — SHACL shapes, SWRL rules and OWL restrictions — so governance is enforced the moment data enters or is queried, not as a separate review process. This is what lets a human underwriter and an AI model trust the same graph: the same rules that keep the data internally consistent are the rules that keep an AI's inference from silently going wrong.</p>
+    <div class="panel pad scroll-x"><table class="dtable" id="govRules"></table></div>
+    <div class="exit" style="margin-top:14px">
+      <div class="lab"><span>Trustworthy inferencing, by construction</span></div>
+      <div class="out">Because SHACL shapes double as the access-control boundary (PII-tagged properties are only visible to authorized shapes), governance and access control aren't a bolt-on layer — they're properties of the graph itself, applied identically whether the query comes from an underwriter's dashboard or a GenAI retrieval call.</div>
+    </div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--cyan)"></span>Built for downstream teams <span class="tagn">query the graph without being a semantic expert</span></h3>
+    <p class="subhint">The graph's expressiveness stays available to the teams who need it directly; everyone else gets a normal developer experience.</p>
+    <div class="whynow" id="devAccess"></div>
+
+    <h3 class="sub"><span class="dot" style="color:var(--mint)"></span>Operational efficiency <span class="tagn">manual data assembly, before &amp; after</span></h3>
+    <p class="subhint">The value shows up first and most concretely in the two personas who spend the most time assembling context by hand today.</p>
+    <div class="pair-grid" id="personaValue"></div>
   </section>
 
   <!-- GOVERNANCE -->
@@ -687,7 +749,7 @@ const HORIZONS=[
 const roadRail=document.getElementById('roadRail');
 HORIZONS.forEach((h,i)=>{const b=document.createElement('button');b.className='h-btn';b.setAttribute('aria-pressed',i===0);
   b.innerHTML=`<div class="hz">${h.hz}</div><div class="ht">${h.ht}</div><div class="hf">${h.hf}</div>`;b.onclick=()=>selectHorizon(i);roadRail.appendChild(b);});
-function selectHorizon(i){const h=HORIZONS[i];document.querySelectorAll('.h-btn').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));
+function selectHorizon(i){const h=HORIZONS[i];document.querySelectorAll('#roadRail .h-btn').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));
   document.getElementById('roadFill').style.width=h.fill+'%';document.getElementById('rdTitle').textContent=h.hz+' · '+h.ht;
   document.getElementById('roadMoves').innerHTML=h.moves.map((m,k)=>`<li><div class="ix">M${k+1}</div><div><div class="mt">${m[0]} — ${m[1]}</div><div class="md">${m[2]}</div></div></li>`).join('');
   document.getElementById('roadWs').innerHTML=`<thead><tr><th>Workstream</th><th>Key deliverables</th><th>Owner</th></tr></thead><tbody>${h.ws.map(w=>`<tr><td><b>${w[0]}</b></td><td>${w[1]}</td><td>${w[2]}</td></tr>`).join('')}</tbody>`;
@@ -792,10 +854,8 @@ function selectLayer(i){const l=LAYERS[i];document.querySelectorAll('.layer').fo
     <div class="blk" style="color:${l.acc}">Key architecture decisions</div>
     <ul class="decs">${l.decs.map(x=>`<li>${x}</li>`).join('')}</ul>`;}
 selectLayer(2);
-/* stack at a glance table */
 const fnmap={L1:'Cloud infrastructure & legacy platform migration',L2:'Unified data integration, document ingestion & observability',L3:'Unified data management, semantic knowledge layer',L4:'ML/GenAI embedded in underwriting & claims, RAG & agentic workflows',L5:'Business-facing apps — underwriter/adjuster workspaces, conversational AI',L6:'Model risk · explainability · fairness · PII · lineage (ambient)'};
 document.getElementById('archTable').innerHTML=`<thead><tr><th>Layer</th><th>Name</th><th>Primary function</th><th>Key technologies</th><th>Phase</th></tr></thead><tbody>${LAYERS.slice().reverse().map(l=>`<tr><td class="num">${l.n.replace('L','')}${l.star?' ★':''}</td><td><b>${l.t}</b></td><td>${fnmap[l.n]}</td><td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${l.tech.slice(0,4).join(' · ')}</td><td class="wave">${l.phase}</td></tr>`).join('')}</tbody>`;
-/* principles */
 const PRINCIPLES=[
   ['Human-in-the-loop by design','AI handles repetitive administrative processing; human underwriters and adjusters retain ownership of complex context and high-touch customer needs. Autonomy is scoped to what the model has proven it can do reliably.'],
   ['Cloud-first, data-first','The AWS migration and data integration foundation come first, not as an afterthought — predictive AI is only as good as the enterprise data feeding it, so the pipeline is built before the model is scaled.'],
@@ -982,6 +1042,123 @@ function showProv(k,i){const s=SCENARIOS[k];const n=s.nodes[i];const pv=s.prov;
     <div class="xd-desc" style="margin-bottom:10px">${n.imp.h}</div>
     <div class="xmetrics">${n.imp.m.map(x=>`<div class="xm"><div class="xmv">${x[0]}</div><div class="xml">${x[1]}</div></div>`).join('')}</div>`;}
 loadScenario('planned');
+
+/* ---------------------------------------------------------------
+   SEMANTIC LAYER — top-down / bottom-up buildout (Architecture tab)
+--------------------------------------------------------------- */
+const TOPDOWN=[
+  ['Term discovery',"Business glossary sourced from the people who use the words","Underwriters, adjusters, actuaries and product SMEs contribute coverage, exclusion, endorsement and claim terms in their own language — not an abstract model imposed from above."],
+  ['Taxonomy & concept hierarchy',"Terms organized into a controlled, machine-usable hierarchy","Broader/narrower relationships (e.g., Endorsement as a subtype of Policy Modification) let reasoning generalize correctly."],
+  ['Domain ontology (OWL)',"Formal classes, properties and axioms expressed in OWL","e.g. Coverage hasExclusion Exclusion; Endorsement modifies Policy — modeled against real scenarios, not in the abstract."],
+  ['Competency question validation',"SMEs test the ontology with real questions it must answer",'e.g. "Which endorsements exclude flood coverage on this account?" — proven before the ontology is considered done.']
+];
+const BOTTOMUP=[
+  ['Source system profiling',"Legacy and AWS-migrated systems profiled for real shape & quality","Policy admin, billing and claims administration data profiled, including the OCR/document-extraction pipeline output."],
+  ['RDF mapping',"Source records mapped into RDF via declarative mappings","Database rows become graph triples without a wholesale data migration."],
+  ['Graph ingestion',"Mapped triples load into the enterprise knowledge graph","Incremental, system by system, alongside the existing lakehouse rather than replacing it."],
+  ['SHACL conformance validation',"Every record checked against SHACL shapes before it's trusted","Malformed or incomplete records are flagged and quarantined, not silently absorbed."]
+];
+document.getElementById('topdownSteps').innerHTML=TOPDOWN.map((m,k)=>`<li><div class="ix">T${k+1}</div><div><div class="mt">${m[0]} — ${m[1]}</div><div class="md">${m[2]}</div></div></li>`).join('');
+document.getElementById('bottomupSteps').innerHTML=BOTTOMUP.map((m,k)=>`<li><div class="ix">B${k+1}</div><div><div class="mt">${m[0]} — ${m[1]}</div><div class="md">${m[2]}</div></div></li>`).join('');
+
+/* domain ontologies */
+const DOMAINONTO=[
+  {c:'#3DDC97',k:'Domain 1 · Pilot',t:'Commercial Underwriting Risk',d:'Formalizes risk appetite, coverage structure, exclusions and endorsements for commercial accounts — the first thin slice because it carries the highest concentration of disparate terms across product lines.',tags:['Coverage · Exclusion · Endorsement','Risk appetite rules','Underwriter persona'],
+   detail:'Core classes: Policy, Coverage, Exclusion, Endorsement, RiskFactor, Account. Key relationships: Coverage hasExclusion Exclusion; Endorsement modifies Coverage; RiskFactor influences Coverage. Competency question proven: "What coverages on this account are excluded or modified, and by what?" — a lookup that used to span three systems.',impact:[['1st','Slice shipped'],['Highest','Term-disparity concentration'],['Reusable','Core vocabulary for every later domain']]},
+  {c:'#9C8CFF',k:'Domain 2 · Pilot',t:'Claims Interconnections',d:'Models how a claim relates to its policy, coverage, prior claims and related parties — surfacing connections that today live in separate systems and an adjuster\'s memory.',tags:['Claim · Coverage · Party','Prior-claim linkage','Adjuster persona'],
+   detail:'Core classes: Claim, Coverage, Party, Incident, Settlement. Key relationships: Claim invokesCoverage Coverage; Claim involvesParty Party; Claim relatedTo Claim (prior claims, shared party or peril). Competency question proven: "Has this party filed a related claim on any policy in the last 3 years?"',impact:[['2nd','Slice shipped'],['Cross-system','Relationship surfaced automatically'],['Minutes','Not hours, to answer a prior-claim question']]},
+  {c:'#E8A93D',k:'Domain 3 · Pilot',t:'360° View of Customer',d:'Unifies a customer\'s policies, claims, coverages and interactions across every product line into one queryable identity — the connective tissue between the first two domains.',tags:['Customer · Policy · Product line','Cross-line identity resolution','UW + adjuster + service'],
+   detail:'Core classes: Customer, Policy, Product, Interaction. Key relationships: Customer holds Policy; Policy coversUnder Product; Customer hasInteraction Interaction. Deliberately reuses Coverage and Claim from Domains 1 & 2 rather than duplicating them — proof the core vocabulary actually is reusable.',impact:[['3rd','Slice shipped'],['1','Customer identity across every line'],['Reused','Core vocabulary from Domains 1 & 2']]},
+  {c:'#1E56C7',k:'Pattern · Extensible',t:'Every future domain follows the same pattern',d:'Personal Lines, Specialty, Employee Benefits and any future domain onboard using the same core vocabulary and the same top-down/bottom-up methodology — not a bespoke model each time.',tags:['Core vocabulary reused','Same methodology','No bespoke re-modeling'],
+   detail:'New domains extend the core ontology (Policy, Coverage, Claim, Party, Customer) rather than redefining it — a Personal Auto ontology inherits Coverage and Exclusion from the core and adds only what\'s genuinely different (e.g., VehicleRiskFactor). This is what keeps the graph coherent as it scales instead of fragmenting into per-line silos again.',impact:[['Inherits','Core vocabulary, not rebuilt'],['Faster','Each subsequent domain ships quicker'],['Coherent','One graph, not per-line silos']]}
+];
+document.getElementById('domainOnto').innerHTML=DOMAINONTO.map((p,i)=>`<div class="pcard xbox" style="--pc:${p.c}" data-i="${i}" aria-expanded="false"><div class="pk">${p.k}</div><div class="pt">${p.t}</div><div class="pd">${p.d}</div><div class="ptags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div><div class="xhint">Core classes & competency question</div><div class="xdrawer" id="ontoDrawer-${i}"></div></div>`).join('');
+document.querySelectorAll('#domainOnto .pcard').forEach(el=>el.onclick=()=>toggleX(el,DOMAINONTO[+el.dataset.i],'ontoDrawer-'+el.dataset.i));
+
+/* vocabulary harmonization */
+const VOCAB=[
+  ['Coverage','A specific insuring agreement obligating payment for a defined peril or exposure.','"Coverage part" (Commercial) · "coverage type" (Personal) · "benefit" (Employee Benefits)','Coverage → hasExclusion → Exclusion'],
+  ['Exclusion','A condition or peril explicitly removed from a coverage\'s scope.','"Exclusion" (Commercial & Personal) · "limitation" (Benefits) · "carve-out" (Specialty)','Exclusion → excludesFrom → Coverage'],
+  ['Endorsement','A documented modification that changes a policy\'s coverage, terms or parties after issuance.','"Endorsement" (P&C) · "rider" (Benefits & Specialty) · "amendment" (legacy billing)','Endorsement → modifies → Coverage · Policy'],
+  ['Claim','A formal request for payment under a policy following a covered loss or event.','Consistent term across lines — but "loss" and "incident" used interchangeably upstream','Claim → invokesCoverage → Coverage'],
+  ['Policy','The governing contract binding coverage, terms, parties and pricing for a defined period.','"Account" often used loosely for Policy in Commercial upstream systems','Policy → coversUnder → Product'],
+  ['Party','Any person or organization with a role on a policy or claim.','"Insured," "policyholder," "claimant," "payee" depending on system of record','Party → hasRole → Policy · Claim']
+];
+document.getElementById('vocabTable').innerHTML=`<thead><tr><th>Canonical term</th><th>Definition</th><th>Product-line variants harmonized</th><th>Key relationship</th></tr></thead><tbody>${VOCAB.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="wave">${r[3]}</td></tr>`).join('')}</tbody>`;
+
+/* governance rules */
+const GOVRULES=[
+  ['SHACL shape','CommercialPolicyShape requires exactly one effectiveDate and at least one Coverage','Structural completeness — a policy record can\'t enter the graph without a bound coverage','Failing records held in quarantine, never exposed to downstream queries'],
+  ['SHACL shape','ClaimShape requires invokesCoverage to reference a Coverage active on the claim date','Referential & temporal integrity — a claim can\'t cite a coverage that wasn\'t in force','Failing claims flagged for adjuster review before auto-adjudication is permitted'],
+  ['SWRL rule','IF Endorsement modifies Coverage AND type="exclusion-add" THEN Coverage.status="restricted"','Inferred state — coverage status updates automatically when an endorsement narrows it','"Restricted" coverages route to human underwriter review, by policy not manual flag'],
+  ['OWL restriction','Exclusion is declared disjoint with Coverage','Logical consistency — prevents an exclusion from ever being treated as active coverage','Consistency checks run pre-publish; violations block a graph release'],
+  ['SHACL property shape','PII-tagged properties (ssn, dob) require sh:nodeKind restricted to authorized shapes','Data-level PII protection expressed as a graph constraint, not a separate policy doc','Access to PII-tagged nodes is scoped per role at query time — the shape is the boundary']
+];
+document.getElementById('govRules').innerHTML=`<thead><tr><th>Rule type</th><th>Example</th><th>What it enforces</th><th>Access-control tie-in</th></tr></thead><tbody>${GOVRULES.map(r=>`<tr><td><span class="badge b-integrate">${r[0]}</span></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</tbody>`;
+
+/* developer accessibility */
+const DEVACCESS=[
+  {tag:'Query without being a semantic expert',t:'Domain APIs sit in front of the graph',d:'Downstream engineering teams call REST/GraphQL endpoints scoped to their domain (e.g. GET /coverage/{policyId}/exclusions) — the SPARQL and ontology complexity stays behind the API.',
+   detail:'A claims-system engineer building a straight-through-processing feature doesn\'t need to know RDF or write SPARQL — they call a domain API that already encodes the competency questions the ontology was built to answer. The graph\'s expressiveness is available to the few teams who need it directly; everyone else gets a normal API.',impact:[['REST/GraphQL','Standard developer experience'],['SPARQL','Reserved for power users & AI retrieval'],['0','Ontology expertise required for consumers']]},
+  {tag:'Graph database as the query substrate',t:'A real graph database, not a simulation on relational tables',d:'The knowledge graph runs on a native graph/RDF store (e.g. Amazon Neptune, Stardog) so multi-hop relationship queries — the whole point of connecting Coverage, Claim and Party — run efficiently at production scale.',
+   detail:'Relational joins across five or six tables to answer "has this party filed a related claim" get slow and brittle fast. A native graph store makes that a natural, performant traversal — which is what makes the Claims Interconnections domain actually usable in a live adjuster workflow, not just a diagram.',impact:[['Multi-hop','Relationship queries at production speed'],['Native','RDF/graph store, not relational simulation'],['Scales','With the graph, not against it']]},
+  {tag:'AI retrieval grounded in the same graph',t:'RAG and agentic workflows query the graph, not a black box',d:'The GenAI models embedded in underwriting and claims retrieve grounded facts from the same governed knowledge graph — so an AI-generated answer and a human query return the same, consistent answer.',
+   detail:'This closes the loop with the AI governance model: because RAG retrieval and human queries hit the same SHACL-validated graph, an AI\'s answer about which coverages are excluded is provably grounded in the same trustworthy source a human underwriter would check — not a separately-trained approximation of it.',impact:[['Same source','Human queries & AI retrieval'],['Grounded','RAG answers traceable to graph facts'],['Consistent','No divergence between human & AI answers']]}
+];
+document.getElementById('devAccess').innerHTML=DEVACCESS.map((w,i)=>`<div class="why xbox" data-i="${i}" aria-expanded="false"><div class="tag">${w.tag}</div><div class="t">${w.t}</div><div class="d">${w.d}</div><div class="xhint">How it works</div><div class="xdrawer" id="devDrawer-${i}"></div></div>`).join('');
+document.querySelectorAll('#devAccess .why').forEach(el=>el.onclick=()=>toggleX(el,DEVACCESS[+el.dataset.i],'devDrawer-'+el.dataset.i));
+
+/* persona value */
+const PERSONAVALUE=[
+  {c:'#3DDC97',k:'Underwriter persona',t:'Commercial Underwriter',d:'Before: assembling a full risk picture for a renewal meant manually pulling data from the policy admin system, a separate exclusions spreadsheet, endorsement PDFs and a loss-run request to claims — often 45–60 minutes per account before underwriting judgment could even begin. After: a single graph query returns active coverages, exclusions, endorsement history and linked claims in one shot.',tags:['Policy admin · exclusions · endorsements · loss runs'],
+   detail:'Manual assembly time drops from a near-hour, multi-system exercise to a single query — the underwriter\'s time shifts from data hunting to the judgment call the role actually exists for, especially valuable on the complex, non-standard accounts that stay human-led.',impact:[['45–60 min','Manual assembly, before'],['<5 min','Graph-assisted assembly, after'],['Reallocated','Time shifts to underwriting judgment']]},
+  {c:'#9C8CFF',k:'Claims Adjuster persona',t:'Claims Adjuster',d:'Before: determining whether a claim connects to prior claims, related parties or applicable exclusions required searching multiple claim systems and, often, a phone call to a colleague who "remembered" a related case. After: Claims Interconnections surfaces related claims, parties and applicable coverage/exclusions automatically at intake.',tags:['Prior claims · related parties · coverage/exclusions'],
+   detail:'What used to depend on institutional memory becomes a fact the adjuster starts with — surfaced automatically at first notice of loss rather than discovered mid-investigation, which is what makes consistent, defensible claims decisions possible regardless of which adjuster is assigned.',impact:[['Manual search','Across multiple systems, before'],['Automatic','Surfaced at claim intake, after'],['Consistent','Not dependent on institutional memory']]}
+];
+document.getElementById('personaValue').innerHTML=PERSONAVALUE.map((p,i)=>`<div class="pcard xbox" style="--pc:${p.c}" data-i="${i}" aria-expanded="false"><div class="pk">${p.k}</div><div class="pt">${p.t}</div><div class="pd">${p.d}</div><div class="ptags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div><div class="xhint">Time impact</div><div class="xdrawer" id="personaDrawer-${i}"></div></div>`).join('');
+document.querySelectorAll('#personaValue .pcard').forEach(el=>el.onclick=()=>toggleX(el,PERSONAVALUE[+el.dataset.i],'personaDrawer-'+el.dataset.i));
+
+/* ---------------------------------------------------------------
+   SEMANTIC LAYER — thin-slice roadmap (Roadmap tab)
+--------------------------------------------------------------- */
+const SLICES=[
+  {hz:'Slice 1',ht:'Commercial Underwriting Risk',hf:'Weeks 1–8',fill:25,inv:'Pilot · ~8 wks',
+   moves:[['Term discovery',"Glossary workshop with underwriters & product SMEs","Coverage, exclusion, endorsement and risk-factor terms captured in underwriters' own language."],['Core + domain ontology draft',"OWL classes & relationships modeled","Policy, Coverage, Exclusion, Endorsement, RiskFactor formalized with SME-validated competency questions."],['Bottom-up mapping',"Policy admin & billing systems profiled and mapped to RDF","Source records mapped via declarative RDF mapping — no source system replaced."],['SHACL + API publish',"Validation shapes authored, domain API published","Malformed records quarantined; underwriters query coverage/exclusion in one call."]],
+   ws:[['Glossary workshop','Canonical term list validated by underwriting SMEs','Ontology Engineer + UW SME'],['Ontology draft','OWL model with competency questions proven','Ontology Engineer'],['Source mapping','RDF mapping for policy admin + billing (AWS-migrated) systems','Data Engineer'],['SHACL shapes','Structural & referential validation rules authored','Ontology Engineer'],['Domain API + pilot','REST/GraphQL endpoint live; piloted with one underwriting team','AI Hub / Platform Team']],
+   exit:"A live Commercial Underwriting Risk graph, queryable through a domain API, cutting manual risk-picture assembly from ~50 minutes to under 5 for the pilot team.",
+   gate:"Why this slice first → highest concentration of disparate terms across product lines, and the underwriter persona with the most measurable manual-assembly time to recover.",
+   kpi:[['Manual assembly','−85% (pilot)'],['Core vocabulary','Reusable'],['Ontology','SME-validated']]},
+  {hz:'Slice 2',ht:'Claims Interconnections',hf:'Weeks 6–14',fill:50,inv:'Pilot · ~8 wks',
+   moves:[['Term discovery',"Glossary workshop with adjusters & claims ops","Claim, incident, settlement and party terms captured, reusing Coverage from Slice 1."],['Ontology extension',"Claim, Party, Incident, Settlement classes added","Extends the core vocabulary rather than remodeling Coverage from scratch."],['Bottom-up mapping',"Claims administration data mapped to RDF","Historical and in-flight claims mapped, preserving lineage to source records."],['SHACL + API publish',"Referential/temporal validation; domain API published","Adjusters query related claims and parties automatically at intake."]],
+   ws:[['Glossary workshop','Claims terminology validated by adjusters','Ontology Engineer + Claims SME'],['Ontology extension','Claim/Party/Incident/Settlement classes added to core','Ontology Engineer'],['Source mapping','Claims administration RDF mapping','Data Engineer'],['SHACL shapes','Temporal & referential integrity rules','Ontology Engineer'],['Domain API + pilot','Related-claim & party lookup piloted with one claims team','AI Hub / Platform Team']],
+   exit:"A live Claims Interconnections graph surfacing related claims and parties automatically at first notice of loss, replacing manual multi-system search.",
+   gate:"Why this slice second → builds directly on the Coverage class from Slice 1, proving the core vocabulary is reusable before a third domain is attempted.",
+   kpi:[['Related-claim lookup','Minutes, not hours'],['Reused','Coverage class from Slice 1'],['Piloted','With one claims team']]},
+  {hz:'Slice 3',ht:'360° View of Customer',hf:'Weeks 12–20',fill:75,inv:'Pilot · ~8 wks',
+   moves:[['Term discovery',"Workshop spanning underwriting, claims & service","Customer, product-line and interaction terms harmonized across every line touching the same customer."],['Ontology extension',"Customer, Product, Interaction classes added","Deliberately built on Coverage and Claim from Slices 1–2, proving vocabulary reuse."],['Bottom-up mapping',"CRM, servicing and cross-line billing data mapped","Identity resolution links one customer across Personal, Commercial and Benefits records."],['SHACL + API publish',"Cross-line identity constraints validated; unified API published","One query returns a customer's full policy, claim and interaction history across every line."]],
+   ws:[['Glossary workshop','Customer & product-line terms harmonized cross-line','Ontology Engineer + cross-line SMEs'],['Ontology extension','Customer/Product/Interaction classes added to core','Ontology Engineer'],['Source mapping','CRM, servicing & cross-line billing RDF mapping','Data Engineer'],['SHACL shapes','Identity-resolution & cross-line consistency rules','Ontology Engineer'],['Domain API + pilot','Unified 360° API piloted with service & underwriting teams','AI Hub / Platform Team']],
+   exit:"A live 360° Customer graph unifying policy, claim and interaction history across every product line — the connective tissue proving the core vocabulary holds across the whole portfolio.",
+   gate:"Why this slice third → it can only be proven once Coverage (Slice 1) and Claim (Slice 2) already exist to connect to — sequencing, not arbitrary ordering.",
+   kpi:[['Cross-line view','1 query, every product line'],['Reused','Coverage & Claim classes from Slices 1–2'],['Proven','Core vocabulary holds at scale']]},
+  {hz:'Slice 4+',ht:'Extend — Personal, Specialty, Benefits',hf:'Ongoing',fill:100,inv:'Extend · ongoing',
+   moves:[['Repeat the pattern',"Each new line follows the same top-down/bottom-up method","No bespoke re-modeling — new domains extend the proven core vocabulary."],['Faster each time',"Later slices ship faster than earlier ones","Core classes (Policy, Coverage, Claim, Party, Customer) are already validated and reusable."],['Governance scales with it',"Every new domain inherits SHACL shapes & SWRL rules from the core","Governance doesn't get re-invented per line — it extends."],['AI grounding scales with it',"RAG and agentic workflows automatically gain the new domain's facts","No separate AI integration project per business line."]],
+   ws:[['Personal Lines extension','VehicleRiskFactor, HomeRiskFactor added to core Coverage','Ontology Engineer'],['Specialty extension','Bespoke risk classes added without touching core vocabulary','Ontology Engineer'],['Benefits extension','Plan, Enrollment, Beneficiary classes added','Ontology Engineer'],['Continuous governance','New SHACL shapes reviewed against the same governance framework','Model Risk Management Lead']],
+   exit:"A single enterprise knowledge graph spanning every business line, each domain added incrementally without disrupting the ones already live.",
+   gate:"Why this pattern holds → the core vocabulary was deliberately kept small in Slices 1–3, so every subsequent domain extends it instead of forking it.",
+   kpi:[['Pattern','Repeats, doesn\'t reinvent'],['Speed','Each slice ships faster than the last'],['Governance','Extends, never re-built']]}
+];
+const semRail=document.getElementById('semRail');
+SLICES.forEach((h,i)=>{const b=document.createElement('button');b.className='h-btn';b.setAttribute('aria-pressed',i===0);
+  b.innerHTML=`<div class="hz">${h.hz}</div><div class="ht">${h.ht}</div><div class="hf">${h.hf}</div>`;b.onclick=()=>selectSlice(i);semRail.appendChild(b);});
+function selectSlice(i){const h=SLICES[i];document.querySelectorAll('#semRail .h-btn').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));
+  document.getElementById('semFill').style.width=h.fill+'%';document.getElementById('semSdTitle').textContent=h.hz+' · '+h.ht;
+  document.getElementById('semMoves').innerHTML=h.moves.map((m,k)=>`<li><div class="ix">S${k+1}</div><div><div class="mt">${m[0]} — ${m[1]}</div><div class="md">${m[2]}</div></div></li>`).join('');
+  document.getElementById('semWs').innerHTML=`<thead><tr><th>Workstream</th><th>Key deliverables</th><th>Owner</th></tr></thead><tbody>${h.ws.map(w=>`<tr><td><b>${w[0]}</b></td><td>${w[1]}</td><td>${w[2]}</td></tr>`).join('')}</tbody>`;
+  document.getElementById('semInv').textContent=h.inv;
+  document.getElementById('semExit').textContent=h.exit;
+  document.getElementById('semKpi').innerHTML=h.kpi.map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div></div>`).join('');
+  document.getElementById('semGate').innerHTML=`<b>Sequencing rationale →</b> ${h.gate}`;}
+selectSlice(0);
 </script>
 </body>
 </html>
