@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,25 +8,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
+  :root, html[data-theme="dark"]{
     --ink:#0A1628;--ink-2:#0C1B30;--panel:#102138;--panel-2:#152A45;--panel-3:#1B3556;
     --brand:#2E6CFF;--cyan:#27D4EE;--amber:#FFB23E;--mint:#3DDC97;--violet:#9C8CFF;--rose:#FF6B8A;
-    --text:#EAF2FD;--muted:#92A8C8;--faint:#5E769A;
+    --text:#F3F8FF;--muted:#B2C4E2;--faint:#8A9FC4;--brand-text:#86b0ff;
     --line:rgba(126,166,216,.14);--line-2:rgba(126,166,216,.28);--glow:rgba(46,108,255,.35);
+    --hdr-a:rgba(10,22,40,.92);--hdr-b:rgba(10,22,40,.7);--nav-a:rgba(12,27,48,.96);--nav-b:rgba(12,27,48,.86);
+    --sel-bg:rgba(46,108,255,.4);--sel-fg:#fff;
+    --ring-eco-line:rgba(46,108,255,.30);--ring-eco-solid:rgba(46,108,255,.9);
+    --ring-ent-line:rgba(39,212,238,.34);--ring-ent-solid:rgba(39,212,238,.9);
+    --ring-site-line:rgba(156,140,255,.40);--ring-site-solid:rgba(156,140,255,.9);
+    --ring-ac-line:rgba(61,220,151,.5);--ring-ac-solid:rgba(61,220,151,.9);
+    --bg-wash-1:rgba(39,212,238,.06);--bg-wash-2:rgba(46,108,255,.08);
+    --cyan-vivid:#27D4EE;--mint-vivid:#3DDC97;
     --display:'Space Grotesk',sans-serif;--mech:'Chakra Petch',sans-serif;--body:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;--r:14px;
+  }
+  html[data-theme="light"]{
+    --ink:#F3F6FC;--ink-2:#FFFFFF;--panel:#FFFFFF;--panel-2:#F0F3F9;--panel-3:#E5EAF3;
+    --brand:#2A69FF;--cyan:#0B8092;--amber:#A96500;--mint:#188556;--violet:#7059FF;--rose:#EA0031;
+    --text:#101826;--muted:#45526A;--faint:#66748F;--brand-text:#1552D1;
+    --line:rgba(30,50,80,.14);--line-2:rgba(30,50,80,.26);--glow:rgba(46,108,255,.22);
+    --hdr-a:rgba(255,255,255,.92);--hdr-b:rgba(255,255,255,.72);--nav-a:rgba(248,250,253,.96);--nav-b:rgba(248,250,253,.86);
+    --sel-bg:rgba(42,105,255,.22);--sel-fg:#0A1628;
+    --ring-eco-line:rgba(42,105,255,.35);--ring-eco-solid:rgba(21,82,209,1);
+    --ring-ent-line:rgba(11,128,146,.4);--ring-ent-solid:rgba(11,128,146,1);
+    --ring-site-line:rgba(112,89,255,.4);--ring-site-solid:rgba(112,89,255,1);
+    --ring-ac-line:rgba(24,133,86,.45);--ring-ac-solid:rgba(24,133,86,1);
+    --bg-wash-1:rgba(11,128,146,.05);--bg-wash-2:rgba(42,105,255,.05);
+    --cyan-vivid:#27D4EE;--mint-vivid:#3DDC97;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;background:
-      radial-gradient(1200px 600px at 80% -10%, rgba(39,212,238,.06), transparent 60%),
-      radial-gradient(1000px 700px at -10% 10%, rgba(46,108,255,.08), transparent 55%),var(--ink);
-    color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5;}
-  ::selection{background:rgba(46,108,255,.4);color:#fff}
+      radial-gradient(1200px 600px at 80% -10%, var(--bg-wash-1), transparent 60%),
+      radial-gradient(1000px 700px at -10% 10%, var(--bg-wash-2), transparent 55%),var(--ink);
+    color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5;transition:background-color .25s ease,color .25s ease;}
+  ::selection{background:var(--sel-bg);color:var(--sel-fg)}
   a{color:inherit}
 
   header.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
-    background:linear-gradient(180deg, rgba(10,22,40,.92), rgba(10,22,40,.7));border-bottom:1px solid var(--line);}
+    background:linear-gradient(180deg, var(--hdr-a), var(--hdr-b));border-bottom:1px solid var(--line);transition:background .25s ease,border-color .25s ease;}
   .top-in{max-width:1280px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .theme-btn{flex:none;display:flex;align-items:center;gap:8px;cursor:pointer;border:1px solid var(--line-2);background:var(--panel-2);color:var(--text);border-radius:999px;padding:8px 14px 8px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;transition:.2s}
+  .theme-btn:hover{border-color:var(--cyan)}
+  .theme-btn svg{flex:none;width:15px;height:15px}
+  .theme-btn .sun{display:none}
+  html[data-theme="light"] .theme-btn .moon{display:none}
+  html[data-theme="light"] .theme-btn .sun{display:block}
   .mark{display:flex;align-items:center;gap:13px;min-width:0}
   .mark svg{flex:none}
   .mark .name{font-family:var(--mech);font-weight:700;letter-spacing:.16em;font-size:15px}
@@ -40,7 +68,7 @@
   .gauge .lab .v{font-family:var(--mech);font-size:20px;font-weight:700;line-height:1;color:var(--cyan)}
 
   nav.tabs{position:sticky;top:62px;z-index:39;border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,rgba(12,27,48,.96),rgba(12,27,48,.86));backdrop-filter:blur(10px)}
+    background:linear-gradient(180deg,var(--nav-a),var(--nav-b));backdrop-filter:blur(10px);transition:background .25s ease,border-color .25s ease}
   .tabs-in{max-width:1280px;margin:0 auto;padding:0 14px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
   .tabs-in::-webkit-scrollbar{display:none}
   .tab{flex:none;background:none;border:0;color:var(--muted);cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:14px 16px 12px;position:relative;white-space:nowrap;transition:color .2s}
@@ -131,7 +159,7 @@
   .b-m{background:rgba(255,178,62,.16);color:var(--amber)}
   .b-l{background:rgba(61,220,151,.16);color:var(--mint)}
   .b-keep{background:rgba(39,212,238,.14);color:var(--cyan)}
-  .b-integrate{background:rgba(46,108,255,.16);color:#86b0ff}
+  .b-integrate{background:rgba(46,108,255,.16);color:var(--brand-text)}
   .b-consolidate{background:rgba(156,140,255,.16);color:var(--violet)}
   .b-retire{background:rgba(255,107,138,.14);color:var(--rose)}
   .wave{font-family:var(--mono);font-size:10px;color:var(--faint)}
@@ -214,7 +242,7 @@
   .quad .qmore{font-size:12.5px;color:var(--text);margin-top:11px;display:none;border-top:1px dashed var(--line-2);padding-top:11px}
   .quad.open .qmore{display:block}
   .quad .qtag{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
-  .qtag.plan{background:rgba(46,108,255,.16);color:#86b0ff}
+  .qtag.plan{background:rgba(46,108,255,.16);color:var(--brand-text)}
   .qtag.emer{background:rgba(255,178,62,.16);color:var(--amber)}
   .qmetrics{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
   .qmetric .qmv{font-family:var(--mech);font-weight:700;font-size:16px;color:var(--cyan)}
@@ -272,7 +300,7 @@
   .sim-out{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--panel),var(--ink-2));padding:20px}
   .sim-out .soh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:wrap}
   .sim-out .sot{font-family:var(--display);font-weight:600;font-size:17px}
-  .run{cursor:pointer;border:0;border-radius:9px;padding:9px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#04122b;background:linear-gradient(90deg,var(--cyan),var(--mint));font-weight:600;transition:.2s}
+  .run{cursor:pointer;border:0;border-radius:9px;padding:9px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#04122b;background:linear-gradient(90deg,var(--cyan-vivid),var(--mint-vivid));font-weight:600;transition:.2s}
   .run:hover{filter:brightness(1.08)}
   .sim-narr{font-size:13px;color:var(--muted);margin:6px 0 16px}
   .sim-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -386,6 +414,11 @@
         <defs><linearGradient id="g2" x1="0" y1="0" x2="52" y2="52"><stop stop-color="#2E6CFF"/><stop offset="1" stop-color="#27D4EE"/></linearGradient></defs>
       </svg>
     </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to light background">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.6A9 9 0 1111.4 3a7 7 0 009.6 9.6z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.4 19.6l1.7-1.7M17.9 6.1l1.7-1.7"/></svg>
+      <span id="themeBtnLabel">Dark</span>
+    </button>
   </div>
 </header>
 
@@ -567,6 +600,12 @@
 </footer>
 
 <script>
+/* theme toggle — dark / light background */
+(function(){const root=document.documentElement,btn=document.getElementById('themeBtn'),lab=document.getElementById('themeBtnLabel');
+  function apply(t){root.setAttribute('data-theme',t);lab.textContent=t==='light'?'Light':'Dark';btn.setAttribute('aria-label','Switch to '+(t==='light'?'dark':'light')+' background');}
+  apply('dark');
+  btn.addEventListener('click',()=>{apply(root.getAttribute('data-theme')==='light'?'dark':'light');});})();
+
 const ARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 /* nav */
 const TABS=[["01","Vision","v-vision"],["02","Roadmap","v-roadmap"],["03","Architecture","v-arch"],["04","Governance","v-gov"],["05","Digital Twin","v-twin"],["06","Capabilities","v-cap"],["07","Traceability","v-trace"]];
@@ -584,16 +623,16 @@ TABS.forEach(([n,label,id],i)=>{const b=document.createElement('button');b.class
     val.textContent=Math.round(e*target);arc.style.strokeDashoffset=C-(C*e*target/100);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);})();
 
 /* hero art */
-(function(){const rings=[{r:148,c:'rgba(46,108,255,.30)',lab:'ECOSYSTEM'},{r:112,c:'rgba(39,212,238,.34)',lab:'ENTERPRISE'},{r:76,c:'rgba(156,140,255,.40)',lab:'SITE'},{r:42,c:'rgba(61,220,151,.5)',lab:'AIRCRAFT'}];
+(function(){const rings=[{r:148,v:'--ring-eco',lab:'ECOSYSTEM'},{r:112,v:'--ring-ent',lab:'ENTERPRISE'},{r:76,v:'--ring-site',lab:'SITE'},{r:42,v:'--ring-ac',lab:'AIRCRAFT'}];
   let svg=`<svg viewBox="0 0 360 332" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto"><defs>
-     <radialGradient id="core" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#27D4EE"/><stop offset="1" stop-color="#2E6CFF"/></radialGradient>
-     <linearGradient id="spine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C8CFF"/><stop offset="1" stop-color="#27D4EE"/></linearGradient></defs>`;
+     <radialGradient id="core" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="var(--cyan)"/><stop offset="1" stop-color="var(--brand)"/></radialGradient>
+     <linearGradient id="spine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--violet)"/><stop offset="1" stop-color="var(--cyan)"/></linearGradient></defs>`;
   const cx=180,cy=166;svg+=`<line x1="${cx}" y1="14" x2="${cx}" y2="318" stroke="url(#spine)" stroke-width="1.5" opacity=".5" stroke-dasharray="2 6"/>`;
-  rings.forEach((g,i)=>{svg+=`<circle cx="${cx}" cy="${cy}" r="${g.r}" fill="none" stroke="${g.c}" stroke-width="1.4"/>`;
-    svg+=`<text x="${cx}" y="${cy-g.r+15}" fill="${g.c.replace(/[\d.]+\)$/,'.9)')}" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2" text-anchor="middle">${g.lab}</text>`;
-    const ang=(-40+i*22)*Math.PI/180;svg+=`<circle cx="${cx+Math.cos(ang)*g.r}" cy="${cy+Math.sin(ang)*g.r}" r="3.4" fill="${g.c.replace(/[\d.]+\)$/,'1)')}"/>`;});
+  rings.forEach((g,i)=>{svg+=`<circle cx="${cx}" cy="${cy}" r="${g.r}" fill="none" stroke="var(${g.v}-line)" stroke-width="1.4"/>`;
+    svg+=`<text x="${cx}" y="${cy-g.r+15}" fill="var(${g.v}-solid)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2" text-anchor="middle">${g.lab}</text>`;
+    const ang=(-40+i*22)*Math.PI/180;svg+=`<circle cx="${cx+Math.cos(ang)*g.r}" cy="${cy+Math.sin(ang)*g.r}" r="3.4" fill="var(${g.v}-solid)"/>`;});
   svg+=`<circle cx="${cx}" cy="${cy}" r="15" fill="url(#core)"/><circle cx="${cx}" cy="${cy}" r="15" fill="none" stroke="#fff" stroke-opacity=".25"/><text x="${cx}" y="${cy+3}" fill="#fff" font-family="Chakra Petch,sans-serif" font-size="8" font-weight="700" text-anchor="middle">TWIN</text>`;
-  [{r:112,c:'#27D4EE',d:'7s'},{r:76,c:'#9C8CFF',d:'5.5s'},{r:42,c:'#FFB23E',d:'4s'}].forEach(t=>{svg+=`<circle r="3" fill="${t.c}"><animateMotion dur="${t.d}" repeatCount="indefinite" path="M ${cx} ${cy-t.r} A ${t.r} ${t.r} 0 1 1 ${cx-0.01} ${cy-t.r} Z"/></circle>`;});
+  [{r:112,c:'var(--cyan)',d:'7s'},{r:76,c:'var(--violet)',d:'5.5s'},{r:42,c:'var(--amber)',d:'4s'}].forEach(t=>{svg+=`<circle r="3" fill="${t.c}"><animateMotion dur="${t.d}" repeatCount="indefinite" path="M ${cx} ${cy-t.r} A ${t.r} ${t.r} 0 1 1 ${cx-0.01} ${cy-t.r} Z"/></circle>`;});
   svg+=`</svg>`;document.getElementById('heroArt').innerHTML=svg;})();
 
 /* ---------------- VISION — hero stats (clickable) ---------------- */
@@ -634,13 +673,13 @@ selectSpine(0);
 
 /* ---------------- VISION — architecture pattern grounding (clickable) ---------------- */
 const PROV=[
-  {c:'#3DDC97',k:'AS9100 / FAA Part 21',t:'Quality & Airworthiness',d:'Aerospace quality-management and production-certificate frameworks anchor every non-conformance, MRB and audit trail in the architecture.',tags:['Digital thread','Full lineage','Audit-ready'],
+  {c:'var(--mint)',k:'AS9100 / FAA Part 21',t:'Quality & Airworthiness',d:'Aerospace quality-management and production-certificate frameworks anchor every non-conformance, MRB and audit trail in the architecture.',tags:['Digital thread','Full lineage','Audit-ready'],
    detail:'AS9100 and FAA Part 21 require that every non-conformance, corrective action and configuration change be traceable and auditable. The architecture bakes this in at the data layer rather than bolting on reporting after the fact — every MRB disposition and quality event is a first-class, lineage-carrying record.',impact:[['40-60%','MRB cycle-time reduction target'],['Continuous','Compliance monitoring vs. periodic audit'],['0','Manual audit-trail reconstruction']]},
-  {c:'#27D4EE',k:'Digital Twin Consortium',t:'Twin Reference Pattern',d:'Multi-scale, multi-fidelity twin hierarchy — component through enterprise — grounded in industry-standard twin federation practice.',tags:['5-level hierarchy','Event sourcing','Federated sync'],
+  {c:'var(--cyan)',k:'Digital Twin Consortium',t:'Twin Reference Pattern',d:'Multi-scale, multi-fidelity twin hierarchy — component through enterprise — grounded in industry-standard twin federation practice.',tags:['5-level hierarchy','Event sourcing','Federated sync'],
    detail:'Rather than building one monolithic twin, the architecture follows the industry-standard five-level hierarchy (component → enterprise), each with its own update cadence, federating up through event sourcing so every level stays consistent without forcing everything to real time.',impact:[['5','Twin levels, one federation model'],['Immutable','Event-sourced history'],['Point-in-time','Reconstruction for audits']]},
-  {c:'#9C8CFF',k:'Industry 4.0 / RAMI 4.0',t:'Layered Reference Model',d:'Six functional layers plus a cross-cutting governance plane, mirroring the reference-architecture discipline used across regulated manufacturing.',tags:['Semantic layer','ISA-95','IT/OT convergence'],
+  {c:'var(--violet)',k:'Industry 4.0 / RAMI 4.0',t:'Layered Reference Model',d:'Six functional layers plus a cross-cutting governance plane, mirroring the reference-architecture discipline used across regulated manufacturing.',tags:['Semantic layer','ISA-95','IT/OT convergence'],
    detail:'The seven-layer stack (edge through applications, with governance cutting across all of them) follows the same separation-of-concerns discipline as RAMI 4.0 — each layer has a defined interface contract with its neighbors, so a change in one doesn’t ripple unpredictably through the rest.',impact:[['7','Layers, each independently upgradable'],['ISA-95','Canonical equipment/material model'],['Secure','Industrial DMZ at the IT/OT boundary']]},
-  {c:'#2E6CFF',k:'NIST AI RMF',t:'AI Risk & Governance',d:'Risk-tiered model classification, human-in-the-loop control and continuous monitoring — the same posture applied to every AI capability domain.',tags:['Model registry','Drift monitoring','Circuit breaker'],
+  {c:'var(--brand)',k:'NIST AI RMF',t:'AI Risk & Governance',d:'Risk-tiered model classification, human-in-the-loop control and continuous monitoring — the same posture applied to every AI capability domain.',tags:['Model registry','Drift monitoring','Circuit breaker'],
    detail:'Every AI model — from demand sensing to autonomous re-routing — is classified by risk tier before deployment, with human-in-the-loop required for the highest tiers. This is the same governance discipline that lets a safety-critical manufacturer adopt generative and autonomous AI without gambling on it.',impact:[['100%','Models risk-tiered pre-deployment'],['Continuous','Drift & performance monitoring'],['Bounded','Autonomy via circuit breaker']]}
 ];
 document.getElementById('provGrid').innerHTML=PROV.map((p,i)=>`<div class="pcard xbox" style="--pc:${p.c}" data-i="${i}" aria-expanded="false"><div class="pk">${p.k}</div><div class="pt">${p.t}</div><div class="pd">${p.d}</div><div class="ptags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div><div class="xhint">Why it matters</div><div class="xdrawer" id="provDrawer-${i}"></div></div>`).join('');
@@ -746,43 +785,43 @@ document.getElementById('portTable').innerHTML=`<thead><tr><th>System</th><th>Di
 
 /* ---------------- ARCHITECTURE ---------------- */
 const LAYERS=[
-  {n:'L1',t:'Edge & IoT',acc:'#3DDC97',phase:'Ph.1–2',
+  {n:'L1',t:'Edge & IoT',acc:'var(--mint)',phase:'Ph.1–2',
    d:'Real-time data acquisition and local processing at the source — sensors, PLCs, edge gateways and local ML inference on the shop floor.',
    inv:[['Sensors & machine vision','Sensing','Quality, presence, environment, safety'],['PLCs & controllers','Control','Cell and line-level automation'],['Edge gateways','Aggregation','Normalization & buffering at the facility perimeter'],['Local ML inference','Edge AI','Lightweight models on resource-constrained devices'],['Connected tooling','Instrumentation','Torque values, cycle counts, calibration status']],
    tech:['OPC UA','MQTT','Edge gateways','Quantized models','IoT sensors','PLC/DCS'],
    consider:'Edge-first deployment minimizes latency and keeps time-critical inspection and control loops operating during connectivity disruptions — essential for a safety-critical production environment.',
    decs:['Brownfield-first — connect existing lines before replacing them','Edge buffering for intermittent connectivity','OPC UA preferred, with adapters for legacy protocols']},
-  {n:'L2',t:'Integration & Connectivity',acc:'#27D4EE',phase:'Ph.1',
+  {n:'L2',t:'Integration & Connectivity',acc:'var(--cyan)',phase:'Ph.1',
    d:'Unified connectivity and data-flow orchestration — the event mesh, API gateway, data pipelines and protocol adapters that bridge every system.',
    inv:[['Event mesh','Streaming','Distributed messaging spanning cloud and edge'],['API gateway','Access','Centralized entry point, auth, rate limiting'],['Protocol adapters','Bridging','OPC UA / MQTT normalized into the event backbone'],['Event schema registry','Governance','Versioning and compatibility checking'],['Industrial DMZ','Security','Secure buffer between IT and OT networks']],
    tech:['Apache Kafka','CloudEvents','REST / OpenAPI','GraphQL','Avro / Protobuf','Industrial DMZ'],
    consider:'Event-driven, not request/response — this is what makes dynamic replanning and emergent response possible: every state change is a replayable event with full lineage.',
    decs:['Event-first integration pattern across all systems','Schema registry mandatory at every topic','Industrial DMZ with data diodes protects OT network integrity']},
-  {n:'L3',t:'Data Platform & Semantic Layer',acc:'#9C8CFF',phase:'Ph.1–2',star:true,
+  {n:'L3',t:'Data Platform & Semantic Layer',acc:'var(--violet)',phase:'Ph.1–2',star:true,
    d:'Unified data management and the semantic knowledge layer — the meaning model that makes every system mean the same thing before analytics or AI touch it.',
    inv:[['Data lake / lakehouse','Storage','Object storage with open table formats, ACID transactions'],['Enterprise ontology','Semantics ★','Formal representation of products, processes, resources, organizations'],['Knowledge graph','Semantic store','Graph database instantiating the ontology with enterprise data'],['Master data management','Governance','Golden records for customers, products, suppliers'],['Time series DB','Operational','High-frequency sensor and telemetry data']],
    tech:['Delta Lake','Apache Iceberg','Neo4j / Amazon Neptune','Data catalog','MDM platform','Time-series DB'],
    consider:'The semantic layer is the accelerator: ontology-mediated integration removes months of bespoke point-to-point mapping between ERP, MES, SCM and quality systems.',
    decs:['Semantic-first — every entity formally defined before AI consumes it','Lakehouse over separate lake/warehouse — one governed platform','Context engineering assembles relevant context dynamically for AI applications']},
-  {n:'L4',t:'AI/ML Services',acc:'#2E6CFF',phase:'Ph.3',
+  {n:'L4',t:'AI/ML Services',acc:'var(--brand)',phase:'Ph.3',
    d:'Intelligence and analytics capabilities across six domains — computer vision, predictive analytics, optimization, NLP, generative AI and reinforcement learning — all under risk-tiered governance.',
    inv:[['MLOps platform','Lifecycle','Feature store, model registry, training & serving infrastructure'],['Computer vision','Perception','Defect recognition, dimensional analysis, automated inspection'],['Predictive analytics','Forecasting','Demand sensing, equipment health, quality prediction'],['Optimization engines','Decisioning','Scheduling, routing, resource allocation'],['Generative AI','Assistance','Engineering assistants, report generation, self-hosted LLMs only']],
    tech:['MLflow / Kubeflow','SageMaker / Vertex AI','Self-hosted LLMs','Model registry','Feature store','Drift monitoring'],
    consider:'All AI systems operate within defined guardrails with human-in-the-loop for critical decisions — the AI Center of Excellence classifies every model by risk tier before it is deployed.',
    decs:['Self-hosted LLMs only — protect proprietary and export-controlled data','Every model risk-tiered with corresponding review requirements','Drift detection and automated retraining triggers are mandatory']},
-  {n:'L5',t:'Digital Twin',acc:'#27D4EE',phase:'Ph.2–4',
+  {n:'L5',t:'Digital Twin',acc:'var(--cyan)',phase:'Ph.2–4',
    d:'Virtual representation and simulation across five twin levels — component, asset, process, facility and enterprise — plus the aircraft product twin spanning its full lifecycle.',
    inv:[['Component & asset twins','Twin','Real-time to near-real-time state of parts and equipment'],['Process & facility twins','Twin','Manufacturing workflows, plant layout, material flow, utilities'],['Enterprise twin','Federation','Multi-facility operations and supply-network scenario analysis'],['Aircraft product twin','Lifecycle','Configuration → manufacturing → completion → operations'],['Simulation engine','What-if','Virtual test before committing to a change on the floor']],
    tech:['Azure Digital Twins','AWS IoT TwinMaker','Siemens Xcelerator','Event sourcing','Digital twin graph'],
    consider:'Twins maintain bidirectional connectivity with their physical counterparts, enabling both observation and actuation — not simple monitoring, but a living model the factory can act through.',
    decs:['Federated synchronization — enterprise twin holds the authoritative baseline','Event sourcing gives every twin an immutable, queryable history','Manufacturing systems of record take precedence within their domain']},
-  {n:'L6',t:'Governance Plane',acc:'#9C8CFF',gov:true,phase:'all phases',
+  {n:'L6',t:'Governance Plane',acc:'var(--violet)',gov:true,phase:'all phases',
    d:'A plane cutting through every layer — data, semantic, AI and regulatory/security governance, plus end-to-end lineage. Governance is an ambient property, not a step.',
    inv:[['Data governance','Domain','Catalog, ownership, quality, master data'],['Semantic governance','Domain','Ontology versioning, taxonomy stewardship'],['AI governance','Domain','Risk tiering, model cards, circuit breaker, autonomy phase'],['Regulatory & security governance','Domain','FAA/EASA compliance, zero-trust access, IEC 62443'],['Lineage service','Provenance','Every decision & action logged for audit']],
    tech:['Zero-trust IAM','Data catalog','Model registry','OpenLineage','FAA/EASA compliance tracking','IEC 62443'],
    consider:'Governance is enforced at every layer boundary, not bolted on at the end — automated policy enforcement through the semantic layer keeps compliance continuous rather than periodic.',
    decs:['Governance ambient across all layers, not a gate at the end','Full audit trail and lineage tracking for FAA/EASA compliance','AI promotion gated on reliability, not on a configuration flag']},
-  {n:'L7',t:'Applications',acc:'#27D4EE',phase:'Ph.1–5',
+  {n:'L7',t:'Applications',acc:'var(--cyan)',phase:'Ph.1–5',
    d:'Business function delivery — MES, SCM, MRO, Quality and Customer Support portals, where the architecture becomes action.',
    inv:[['MES','Execution','Shop-floor orchestration, digital work instructions, electronic traveler'],['SCM / Supply chain','Planning','Demand sensing, intelligent procurement, warehouse optimization'],['MRO & aftermarket','Service','Predictive maintenance, dynamic work scoping, MRB workflows'],['Quality','Assurance','Predictive quality, automated inspection, root cause analysis'],['Customer support','Experience','Omnichannel support, on-demand repair, self-service portal']],
    tech:['Siemens Opcenter','Rockwell Plex','SAP DMC','PTC ThingWorx','Landing AI / Cognex ViDi'],
@@ -818,13 +857,13 @@ document.getElementById('principles').innerHTML=PRINCIPLES.map(p=>`<div class="p
 
 /* ---------------- governance pillars + matrix ---------------- */
 const PILLARS=[
-  {c:'#27D4EE',t:'Data',ic:'M4 6c0-1.5 3.6-2.5 8-2.5s8 1 8 2.5-3.6 2.5-8 2.5-8-1-8-2.5zM4 6v12c0 1.5 3.6 2.5 8 2.5s8-1 8-2.5V6M4 12c0 1.5 3.6 2.5 8 2.5s8-1 8-2.5',li:['Data catalog & lineage','Master data management','Automated quality monitoring'],
+  {c:'var(--cyan)',t:'Data',ic:'M4 6c0-1.5 3.6-2.5 8-2.5s8 1 8 2.5-3.6 2.5-8 2.5-8-1-8-2.5zM4 6v12c0 1.5 3.6 2.5 8 2.5s8-1 8-2.5V6M4 12c0 1.5 3.6 2.5 8 2.5s8-1 8-2.5',li:['Data catalog & lineage','Master data management','Automated quality monitoring'],
    detail:'Every data asset — from a sensor reading to a customer record — has a named owner, a documented quality rule, and a lineage trail back to its source. Self-service analytics stays possible because the guardrails are automated, not a bottleneck of manual approvals.',impact:[['100%','Assets cataloged with owner'],['Automated','Quality monitoring & remediation'],['1','Golden record per key entity']]},
-  {c:'#9C8CFF',t:'Semantic',ic:'M12 3l3 5-3 5-3-5zM6 14l3 5h6l3-5M12 8v6',li:['Enterprise ontology stewardship','Knowledge-graph versioning','Semantic integration standards'],
+  {c:'var(--violet)',t:'Semantic',ic:'M12 3l3 5-3 5-3-5zM6 14l3 5h6l3-5M12 8v6',li:['Enterprise ontology stewardship','Knowledge-graph versioning','Semantic integration standards'],
    detail:'The ontology is a governed artifact, not a one-time diagram — every change is versioned, reviewed and rolled out through the same discipline as code, so "aircraft configuration" or "non-conformance" means exactly one thing everywhere it is used.',impact:[['Versioned','Every ontology change'],['0','Conflicting entity definitions'],['Faster','New-system onboarding via reuse']]},
-  {c:'#FFB23E',t:'AI',ic:'M12 4a4 4 0 014 4v1a3 3 0 010 6v1a4 4 0 01-8 0v-1a3 3 0 010-6V8a4 4 0 014-4zM9 11h6',li:['Risk-tiered model classification','Model cards & drift monitoring','Circuit-breaker & bounded autonomy'],
+  {c:'var(--amber)',t:'AI',ic:'M12 4a4 4 0 014 4v1a3 3 0 010 6v1a4 4 0 01-8 0v-1a3 3 0 010-6V8a4 4 0 014-4zM9 11h6',li:['Risk-tiered model classification','Model cards & drift monitoring','Circuit-breaker & bounded autonomy'],
    detail:'No model reaches production without a risk tier, a model card and a monitored autonomy phase. Higher-risk models (touching safety, quality disposition or flight-critical data) carry stricter review and narrower circuit-breaker envelopes than low-risk ones like demand forecasting.',impact:[['100%','Models risk-tiered before deploy'],['5','Governed autonomy phases'],['Auto','Drift-triggered retraining']]},
-  {c:'#3DDC97',t:'Regulatory & Security',ic:'M12 3l8 4v5c0 4.4-3.4 7.6-8 9-4.6-1.4-8-4.6-8-9V7z',li:['FAA / EASA compliance tracking','Zero-trust access control','IT/OT segmentation (IEC 62443)'],
+  {c:'var(--mint)',t:'Regulatory & Security',ic:'M12 3l8 4v5c0 4.4-3.4 7.6-8 9-4.6-1.4-8-4.6-8-9V7z',li:['FAA / EASA compliance tracking','Zero-trust access control','IT/OT segmentation (IEC 62443)'],
    detail:'Compliance tracking runs continuously against FAA/EASA requirements rather than as a periodic audit exercise, while zero-trust access and IT/OT segmentation (industrial DMZ, secure conduits) keep the shop floor secure as it becomes more connected.',impact:[['Continuous','Regulatory compliance monitoring'],['Zero-trust','Identity-governed access'],['Segmented','OT network via industrial DMZ']]}
 ];
 document.getElementById('pillars').innerHTML=PILLARS.map((p,i)=>`<div class="pillar xbox" style="--pc:${p.c}" data-i="${i}" aria-expanded="false"><div class="pi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${p.ic}"/></svg></div><h4>${p.t} governance</h4><ul>${p.li.map(x=>`<li>${x}</li>`).join('')}</ul><div class="xhint">Detail & impact</div><div class="xdrawer" id="pillarDrawer-${i}"></div></div>`).join('');
@@ -844,11 +883,11 @@ const tagLabel={plan:'Planned',emer:'Emergent'};
 
 /* phased AI learning */
 const PHASES=[
-  {p:'P0',t:'Observe',c:'#5E769A',mtbh:'establishing baseline',width:14,desc:'AI runs in shadow. It reads the twin and the live floor but takes no action — it is learning the plant and the aircraft it builds.',touch:'Read-only telemetry & twin state',cb:[20,20,20,15,10],why:'Build a reliability baseline and confirm the model sees the plant correctly before any voice.',gate:'Advance when the model reproduces known-good behaviour and a stable reliability baseline exists.'},
-  {p:'P1',t:'Advise',c:'#27D4EE',mtbh:'reliability ≥ baseline',width:34,desc:'AI recommends. Every suggestion arrives with provenance and the requirement it serves; a human decides.',touch:'Recommendations to humans only',cb:[55,55,45,40,35],why:'Calibrate trust on WHO and WHAT while a human still owns every outcome — including every quality and airworthiness call.',gate:'Advance when recommendation acceptance is high and the false-positive rate clears the AI governance threshold.'},
-  {p:'P2',t:'Assist',c:'#9C8CFF',mtbh:'reliability ≥ 2× baseline',width:55,desc:'AI acts — but only after explicit human approval per action. The human remains the policy enforcement point.',touch:'Human-approved actions, reversible',cb:[70,70,65,60,55],why:'Prove WHEN and WHERE control — right moment, right asset — under a human gate, for actions like automated replenishment.',gate:'Advance when approved actions execute cleanly and risk analysis covers all four decision modes for the action class.'},
-  {p:'P3',t:'Act-in-envelope',c:'#3DDC97',mtbh:'reliability ≥ 5× baseline',width:78,desc:'Bounded autonomy. The AI acts on its own inside a defined envelope — e.g. dynamic replanning — anything outside trips the circuit breaker.',touch:'Autonomous within a bounded envelope',cb:[85,85,80,80,75],why:'All five dimensions are governed; a safe fallback exists for any irreversible move, such as a quality hold.',gate:'Advance when in-envelope action holds zero unsafe control actions over the review window.'},
-  {p:'P4',t:'Self-govern',c:'#FFB23E',mtbh:'reliability ≥ 10× baseline',width:100,desc:'Supervised autonomy at scale. Agents operate under standing policy across the enterprise, with continuous post-hoc audit against FAA/EASA requirements.',touch:'Standing-policy autonomy across the enterprise',cb:[95,95,92,92,90],why:'WHY is fully closed: every action ties to intent and can be explained after the fact, in an audit if required.',gate:'Sustained only while reliability stays above gate and audit confirms intent-alignment; any breach demotes a phase.'}
+  {p:'P0',t:'Observe',c:'var(--faint)',mtbh:'establishing baseline',width:14,desc:'AI runs in shadow. It reads the twin and the live floor but takes no action — it is learning the plant and the aircraft it builds.',touch:'Read-only telemetry & twin state',cb:[20,20,20,15,10],why:'Build a reliability baseline and confirm the model sees the plant correctly before any voice.',gate:'Advance when the model reproduces known-good behaviour and a stable reliability baseline exists.'},
+  {p:'P1',t:'Advise',c:'var(--cyan)',mtbh:'reliability ≥ baseline',width:34,desc:'AI recommends. Every suggestion arrives with provenance and the requirement it serves; a human decides.',touch:'Recommendations to humans only',cb:[55,55,45,40,35],why:'Calibrate trust on WHO and WHAT while a human still owns every outcome — including every quality and airworthiness call.',gate:'Advance when recommendation acceptance is high and the false-positive rate clears the AI governance threshold.'},
+  {p:'P2',t:'Assist',c:'var(--violet)',mtbh:'reliability ≥ 2× baseline',width:55,desc:'AI acts — but only after explicit human approval per action. The human remains the policy enforcement point.',touch:'Human-approved actions, reversible',cb:[70,70,65,60,55],why:'Prove WHEN and WHERE control — right moment, right asset — under a human gate, for actions like automated replenishment.',gate:'Advance when approved actions execute cleanly and risk analysis covers all four decision modes for the action class.'},
+  {p:'P3',t:'Act-in-envelope',c:'var(--mint)',mtbh:'reliability ≥ 5× baseline',width:78,desc:'Bounded autonomy. The AI acts on its own inside a defined envelope — e.g. dynamic replanning — anything outside trips the circuit breaker.',touch:'Autonomous within a bounded envelope',cb:[85,85,80,80,75],why:'All five dimensions are governed; a safe fallback exists for any irreversible move, such as a quality hold.',gate:'Advance when in-envelope action holds zero unsafe control actions over the review window.'},
+  {p:'P4',t:'Self-govern',c:'var(--amber)',mtbh:'reliability ≥ 10× baseline',width:100,desc:'Supervised autonomy at scale. Agents operate under standing policy across the enterprise, with continuous post-hoc audit against FAA/EASA requirements.',touch:'Standing-policy autonomy across the enterprise',cb:[95,95,92,92,90],why:'WHY is fully closed: every action ties to intent and can be explained after the fact, in an audit if required.',gate:'Sustained only while reliability stays above gate and audit confirms intent-alignment; any breach demotes a phase.'}
 ];
 const CBLABELS=['WHO','WHAT','WHEN','WHERE','WHY'];
 const ladder=document.getElementById('ladder');
@@ -939,7 +978,7 @@ const DOMAINS=[
 const PROPNOTE={Agility:'How fast this domain re-plans and responds when conditions change.',Adaptability:'How readily it absorbs new configurations, sites and rules without rework.',Resiliency:'How well it holds service and safety through disruption — planned or emergent.'};
 function spark(seed,up){const pts=12;let v=40;const arr=[];for(let i=0;i<pts;i++){const drift=up?(i/pts)*34:-(i/pts)*30;const noise=((Math.sin(seed*9+i*1.7)+1)*5);v=40+drift+noise;arr.push(v);}
   const w=120,h=34,max=Math.max(...arr),min=Math.min(...arr),rng=max-min||1;const d=arr.map((y,i)=>`${(i/(pts-1))*w},${h-((y-min)/rng)*(h-6)-3}`).join(' ');
-  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${d}" fill="none" stroke="url(#sg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#2E6CFF"/><stop offset="1" stop-color="#27D4EE"/></linearGradient></defs></svg>`;}
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${d}" fill="none" stroke="url(#sg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="var(--brand)"/><stop offset="1" stop-color="var(--cyan)"/></linearGradient></defs></svg>`;}
 document.getElementById('domains').innerHTML=DOMAINS.map((d,di)=>
    `<div class="domain"><div class="dh"><div class="di"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${d.ic}"/></svg></div><div class="dn">${d.n}</div></div><div class="dd">${d.d}</div>
       <div class="props">${d.p.map((pr,pi)=>`<div class="prop" data-di="${di}" data-pi="${pi}" aria-pressed="false"><span class="pl">${pr[0]}</span><div class="track"><span class="cur" data-w="${pr[1]}"></span><span class="tgt" style="left:${pr[2]}%"></span></div><span class="pv">${pr[1]}→${pr[2]}</span></div>`).join('')}</div>
@@ -957,7 +996,7 @@ let domDone=false;function animateDomains(){if(domDone)return;domDone=true;docum
 
 /* traceability */
 const SCENARIOS={
-  planned:{k:'Planned · Machine',c:'#2E6CFF',title:'Predictive MRO work order',desc:'An aircraft component drifts toward a wear threshold identified through condition monitoring. The network anticipates the failure and schedules a repair before it grounds the aircraft.',
+  planned:{k:'Planned · Machine',c:'var(--brand)',title:'Predictive MRO work order',desc:'An aircraft component drifts toward a wear threshold identified through condition monitoring. The network anticipates the failure and schedules a repair before it grounds the aircraft.',
     nodes:[
       {ic:'sensor',t:'Aircraft telemetry',s:'L1 · edge',imp:{h:'Continuous condition data replaces calendar-based checks.',m:[['1Hz+','Sampling rate on monitored components'],['Zero','Manual log entry']]}},
       {ic:'edge',t:'Edge gateway',s:'L1 · capture',imp:{h:'Signal is buffered locally, so nothing is lost during a connectivity gap.',m:[['Buffered','Survives OT connectivity gaps'],['<1s','Local processing latency']]}},
@@ -968,7 +1007,7 @@ const SCENARIOS={
       {ic:'action',t:'MRO work order',s:'L7 · planned',imp:{h:'Downtime is avoided — work is scheduled at the next planned stop, not an emergency one.',m:[['1','AOG event avoided'],['Scheduled','At next planned maintenance stop']]}}
     ],
     prov:{w:['Predictive-maintenance model v2.1','Component RUL below threshold','14 days before projected failure','Tail number N-702GD · Indianapolis service center','Avoid an unplanned aircraft-on-ground event']}},
-  emergent:{k:'Emergent · Machine',c:'#FFB23E',title:'AOG dispatch — autonomous routing',desc:'An aircraft-on-ground event is reported. The network triages severity and routes parts and a technician within a governed envelope, with a human notified and able to override.',
+  emergent:{k:'Emergent · Machine',c:'var(--amber)',title:'AOG dispatch — autonomous routing',desc:'An aircraft-on-ground event is reported. The network triages severity and routes parts and a technician within a governed envelope, with a human notified and able to override.',
     nodes:[
       {ic:'sensor',t:'AOG report',s:'L1 · trigger',imp:{h:'The response clock starts the instant the event is captured as a structured record.',m:[['T+0','Response clock starts'],['Structured','Not a phone call — a traceable record']]}},
       {ic:'edge',t:'Field intake',s:'L1 · detect',imp:{h:'Severity is classified automatically at first contact, before a human triages it.',m:[['Automated','Initial severity classification'],['<1 min','Time to structured record']]}},
