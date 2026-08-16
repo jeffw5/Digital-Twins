@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zachary Welz — Work in Progress: A Collaboration Flyover</title>
+<style>
+  :root{
+    --bg:#f6f5f1; --surface:#ffffff; --border:#d8d6cc; --text:#232320; --text-2:#5f5e58; --text-3:#88867d;
+    --blue-50:#E6F1FB; --blue-600:#185FA5; --blue-800:#0C447C;
+    --amber-50:#FAEEDA; --amber-600:#854F0B; --amber-800:#633806;
+    --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+    --teal-50:#E1F5EE; --teal-600:#0F6E56; --teal-800:#085041;
+    --red-50:#FCEBEB; --red-600:#A32D2D; --red-800:#791F1F;
+    --coral-50:#FAECE7; --coral-600:#993C1D; --coral-800:#712B13;
+    --pink-50:#FBEAF0; --pink-600:#993556; --pink-800:#72243E;
+    --gray-50:#F1EFE8; --gray-600:#5F5E5A; --gray-800:#444441;
+    --green-50:#EAF3DE; --green-600:#3B6D11; --green-800:#27500A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#171715; --surface:#211f1c; --border:#3a382f; --text:#eeeee6; --text-2:#b9b7ac; --text-3:#8a887e;
+      --blue-50:#0C447C; --blue-600:#85B7EB; --blue-800:#E6F1FB;
+      --amber-50:#633806; --amber-600:#EF9F27; --amber-800:#FAEEDA;
+      --purple-50:#3C3489; --purple-600:#AFA9EC; --purple-800:#EEEDFE;
+      --teal-50:#085041; --teal-600:#5DCAA5; --teal-800:#E1F5EE;
+      --red-50:#791F1F; --red-600:#F09595; --red-800:#FCEBEB;
+      --coral-50:#712B13; --coral-600:#F0997B; --coral-800:#FAECE7;
+      --pink-50:#72243E; --pink-600:#ED93B1; --pink-800:#FBEAF0;
+      --gray-50:#444441; --gray-600:#B4B2A9; --gray-800:#F1EFE8;
+      --green-50:#27500A; --green-600:#97C459; --green-800:#EAF3DE;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;}
+  a{color:inherit;}
+  .poster{max-width:1360px;margin:0 auto;padding:40px 28px 80px;}
+  .hero{margin-bottom:28px;}
+  .hero h1{font-size:30px;font-weight:600;margin:0 0 6px;}
+  .hero .byline{font-size:14px;color:var(--text-2);margin:0 0 12px;}
+  .hero p{font-size:15px;color:var(--text-2);margin:0 0 10px;max-width:min(104ch,100%);}
+  /* Let the browser pick break points that avoid orphans and stranded short lines
+     instead of filling greedily. Ignored by older engines, which just wrap as before. */
+  p, li, td, .quote, .note, .chip span, .pstep{text-wrap:pretty;}
+  .hero .meta{font-size:12px;color:var(--text-3);margin-top:10px;}
+  .zone{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:4px 14px 14px 4px;padding:26px 30px;margin-bottom:28px;scroll-margin-top:64px;}
+  .zone-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+  .zone-head .tag{font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;padding:3px 9px;border-radius:20px;}
+  .zone h2{font-size:19px;font-weight:600;margin:0;}
+  .zone .sub{font-size:13.5px;line-height:1.6;color:var(--text-2);margin:6px 0 16px;max-width:min(104ch,100%);}
+  .subhead{font-size:13px;font-weight:600;color:var(--text);margin:20px 0 8px;text-transform:uppercase;letter-spacing:.03em;}
+  .subhead:first-of-type{margin-top:0;}
+  .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;}
+  .chip{padding:10px 12px;border-radius:10px;font-size:12.5px;border:1px solid var(--border);background:var(--bg);}
+  .chip b{display:block;font-size:12.5px;font-weight:600;margin-bottom:3px;}
+  .chip span{color:var(--text-2);font-size:12px;line-height:1.5;display:block;}
+  .chip .st{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;padding:1px 6px;border-radius:20px;margin-bottom:4px;border:1px solid var(--border);}
+  .st.pub{background:var(--green-50);color:var(--green-800);border-color:var(--green-600);}
+  .st.draft{background:var(--amber-50);color:var(--amber-800);border-color:var(--amber-600);}
+  .st.rc{background:var(--blue-50);color:var(--blue-800);border-color:var(--blue-600);}
+  .st.early{background:var(--gray-50);color:var(--gray-800);border-color:var(--gray-600);}
+  .pipeline{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;}
+  .pstep{flex:1 1 150px;min-width:140px;border-radius:10px;padding:10px 12px;font-size:12px;border:1px solid var(--border);}
+  .pstep b{display:block;font-size:12.5px;margin-bottom:3px;}
+  .arrow{align-self:center;color:var(--text-3);font-size:16px;padding:0 2px;flex:none;}
+  .arrow.wrap-full{flex-basis:100%;height:auto;width:100%;text-align:center;padding:6px 0;font-size:12.5px;}
+  .note{font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:880px){.two-col{grid-template-columns:1fr;}}
+  .subzone{border:1px dashed var(--border);border-radius:12px;padding:16px 18px;height:100%;}
+  .subzone h3{font-size:15px;font-weight:600;margin:0 0 4px;}
+  .subzone .sub{margin:0 0 12px;}
+  ul.tight{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-2);}
+  ul.tight li{margin-bottom:6px;}
+  ol.tight{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-2);}
+  ol.tight li{margin-bottom:6px;}
+  table.heat{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.55;margin-top:8px;}
+  table.heat th, table.heat td{border:1px solid var(--border);padding:11px 13px;text-align:left;vertical-align:top;}
+  table.heat th{background:var(--bg);font-weight:600;color:var(--text-2);font-size:11px;text-transform:uppercase;letter-spacing:.02em;}
+  table.heat td b{display:block;margin-bottom:5px;color:var(--text);}
+  table.heat tbody tr:nth-child(even) td{background:var(--bg);background:color-mix(in srgb,var(--bg) 55%,transparent);}
+  table.heat td:first-child{width:26%;}
+  table.heat td i{color:var(--text-3);}
+  @media (max-width:820px){
+    table.heat, table.heat tbody, table.heat tr, table.heat td{display:block;width:auto;}
+    table.heat thead{display:none;}
+    table.heat tr{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+    table.heat td{border:0;border-top:1px solid var(--border);}
+    table.heat tr td:first-child{border-top:0;width:auto;}
+  }
+
+  .jump{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;margin-bottom:18px;
+        background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .jump a{font-size:11.5px;text-decoration:none;padding:4px 10px;border-radius:20px;color:var(--text-2);border:1px solid transparent;}
+  .jump a:hover{color:var(--text);border-color:var(--border);background:var(--surface);}
+  .jump a .d{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:6px;vertical-align:middle;}
+  .quote{border-left:3px solid var(--border);padding:6px 0 6px 14px;font-size:12.5px;color:var(--text-2);font-style:italic;margin:12px 0;}
+  .footer{font-size:11.5px;color:var(--text-3);margin-top:10px;line-height:1.7;}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+  .links a{font-size:12.5px;text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text-2);}
+  .links a:hover{color:var(--text);border-color:var(--text-3);}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0 4px;}
+
+  /* Each colour class only sets three variables. Everything downstream reads them,
+     so a zone tints its own tag and any small element inside it without extra rules,
+     and a chip carrying its own colour class overrides them locally. */
+  .c-blue{--accent:var(--blue-600);--accent-strong:var(--blue-800);--accent-tint:var(--blue-50);}
+  .c-amber{--accent:var(--amber-600);--accent-strong:var(--amber-800);--accent-tint:var(--amber-50);}
+  .c-purple{--accent:var(--purple-600);--accent-strong:var(--purple-800);--accent-tint:var(--purple-50);}
+  .c-teal{--accent:var(--teal-600);--accent-strong:var(--teal-800);--accent-tint:var(--teal-50);}
+  .c-red{--accent:var(--red-600);--accent-strong:var(--red-800);--accent-tint:var(--red-50);}
+  .c-coral{--accent:var(--coral-600);--accent-strong:var(--coral-800);--accent-tint:var(--coral-50);}
+  .c-pink{--accent:var(--pink-600);--accent-strong:var(--pink-800);--accent-tint:var(--pink-50);}
+  .c-gray{--accent:var(--gray-600);--accent-strong:var(--gray-800);--accent-tint:var(--gray-50);}
+  .c-green{--accent:var(--green-600);--accent-strong:var(--green-800);--accent-tint:var(--green-50);}
+
+  /* Zones stay on the neutral card surface; colour lives in the left rule and the
+     heading only. This is the main readability change: no tint stacked on tint. */
+  .zone[class*="c-"]{border-left-color:var(--accent);}
+  .zone[class*="c-"] > .zone-head h2{color:var(--accent-strong);}
+  .zone-head .tag{background:var(--accent-tint);color:var(--accent-strong);}
+  .subzone h3{color:var(--accent-strong);}
+
+  /* Small elements may still carry a tint; that is where colour earns its keep. */
+  .chip[class*="c-"], .pstep[class*="c-"]{background:var(--accent-tint);border-color:var(--accent);}
+  .chip[class*="c-"] b, .pstep[class*="c-"] b{color:var(--accent-strong);}
+  .chip[class*="c-"] span{color:var(--accent-strong);}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="hero">
+    <h1>What I'm working on</h1>
+    <p class="byline">Zachary Welz, PhD — Knowledge Engineering Lead, Peerless Tech. · A flyover for potential collaborators</p>
+    <p>Three shipped software projects, two published papers, eleven drafts in the queue, and one preregistered experiment. What connects them: <b>engineering knowledge belongs in a governable graph substrate, and the hard part is what governs traversal over it.</b> The modeling tool is not where the value sits, and neither are the model weights.</p>
+    <p>My background is a PhD in nuclear engineering, where I applied machine learning to bridge numerical operating data with unstructured maintenance records. Reconciling instrument truth with human-written truth is still what I work on, now at a larger scale.</p>
+    <p>Two sections are aimed squarely at your reference topology: <b>decision policy as the engineered object</b>, and <b>what viral engineering looks like when the swarm is society</b>. The rest of the page is the work those two draw on.</p>
+    <div class="meta">Compiled from the paper repository (2 published, 11 staging drafts), the <code>holonic</code>, <code>specl</code>, and <code>g3-toolkit</code> repositories, and standing work with the INCOSE DEIX Ontology Working Group and the W3C Holon Graph Community Group — August 2026.</div>
+  </div>
+
+  <nav class="jump">
+    <a href="#spine"><span class="d" style="background:var(--gray-600)"></span>Spine</a>
+    <a href="#software"><span class="d" style="background:var(--teal-600)"></span>Software</a>
+    <a href="#holonic"><span class="d" style="background:var(--blue-600)"></span>Holonic architecture</a>
+    <a href="#decision"><span class="d" style="background:var(--green-600)"></span>Decision policy</a>
+    <a href="#thread"><span class="d" style="background:var(--purple-600)"></span>Digital thread</a>
+    <a href="#mbse"><span class="d" style="background:var(--coral-600)"></span>MBSE critique</a>
+    <a href="#rdf"><span class="d" style="background:var(--amber-600)"></span>RDF foundations</a>
+    <a href="#community"><span class="d" style="background:var(--gray-600)"></span>Community</a>
+    <a href="#viral"><span class="d" style="background:var(--red-600)"></span>Viral engineering</a>
+    <a href="#overlap"><span class="d" style="background:var(--pink-600)"></span>Overlap with yours</a>
+    <a href="#asks"><span class="d" style="background:var(--gray-600)"></span>Asks</a>
+  </nav>
+
+  <!-- SPINE -->
+  <div id="spine" class="zone c-gray">
+    <div class="zone-head"><span class="tag gray">Spine</span><h2>Four claims everything else rests on</h2></div>
+    <p class="sub">Everything below follows from one of these. I have written them as claims because I want them argued with.</p>
+    <div class="chip-grid">
+      <div class="chip"><b>1 · The substrate should be RDF, and RDF is already a hypergraph</b><span>Named graphs make graphs simultaneously containers and participants. Once you accept that, the RDF-vs-LPG debate dissolves into a tooling problem and the LPG becomes a validated projection inside the RDF system.</span></div>
+      <div class="chip"><b>2 · Composition needs a governed unit</b><span>Naive graph merge fails in production. The holon gives you four graphs: interior (what is true), boundary (what is permitted), projection (what outsiders see), context (where this belongs). That is enough structure to govern a federation instead of just describing one.</span></div>
+      <div class="chip"><b>3 · Validation is the contract, not the schema</b><span>SHACL shapes are executable semantic contracts at every boundary. Which is what lets you integrate as-is sources incrementally instead of waiting on a comprehensive enterprise ontology that never lands.</span></div>
+      <div class="chip"><b>4 · Intelligence lives in the traversal policy</b><span>Neither the graph alone nor the model alone accounts for it. If that is right, the policy can be externalized, instrumented, logged, and compared, and structure may substitute for parameter scale. That prediction is falsifiable, and I wrote the experiment down before running it.</span></div>
+    </div>
+    <p class="note">Claim 4 is the newest and the least defended. I will argue 1 through 3 confidently. For 4 I want data.</p>
+  </div>
+
+  <!-- SOFTWARE -->
+  <div id="software" class="zone c-teal">
+    <div class="zone-head"><span class="tag teal">Shipping</span><h2>Software — three projects, three layers</h2></div>
+    <p class="sub">All three are installable and public. They stack: <code>specl</code> governs how things get specified, <code>holonic</code> is the graph substrate, <code>g3-toolkit</code> is how a human sees it. None of them is finished.</p>
+
+    <div class="chip-grid">
+      <div class="chip c-teal">
+        <span class="st rc">v0.7.x → 0.8 · MIT · PyPI</span>
+        <b>holonic — holonic RDF graphs</b>
+        <span>Python client for building holonic knowledge graphs on Cagle's four-graph model. Every holon is an <i>IRI</i> whose named graphs live in a quad store — "the dataset IS the holarchy; Python methods are convenience, not architecture." Portals are RDF triples in boundary graphs, discovered by SPARQL and traversed by executing CONSTRUCT queries. Membrane validation runs SHACL over interior∪boundary. Ships an OWL 2 RL <code>cga:</code> vocabulary, rdflib and Fuseki backends behind a pluggable store protocol, and 13 example notebooks (12 run in-browser on JupyterLite).</span>
+      </div>
+      <div class="chip c-teal">
+        <span class="st rc">v1.0.0-rc.2 · Apache 2.0 · npm</span>
+        <b>g3-toolkit — graph visualization components</b>
+        <span>TypeScript/React monorepo: <code>@g3t/core</code> (Universal Graph Model over graphology, adapters for SPARQL/Cypher/Gremlin/REST, RDF→LPG projection pipeline, SHACL validation, diffing, undo/redo), <code>@g3t/react</code> (12 views incl. Cytoscape canvas, timeline, map, schema, SHACL browser, diff, matrix, Sankey; 15 controls), <code>@g3t/charts</code> (linked ECharts with two-way selection). It is a component library by design; the application shell is left to you. README code blocks typecheck in CI "so it cannot rot silently."</span>
+      </div>
+      <div class="chip c-teal">
+        <span class="st early">early · MIT · PyPI</span>
+        <b>specl — RDF-native, SHACL-validated specifications</b>
+        <span>"The durable source of truth that AI coding agents read before they write." Markdown spec → Turtle → SHACL validation, scoring, diffing, badges. Requirements carry stable IDs (<code>R1.2</code>, <code>US3</code>) so they diff mechanically. Two-tier severity: structural violations always fail; production-readiness warnings only gate once a spec declares <code>specl:status "production"</code>, so CI doesn't get rewired as a spec matures. Permanent w3id.org hash namespaces. It specifies itself.</span>
+      </div>
+    </div>
+    <div class="links">
+      <a href="https://github.com/zwelz3/holonic">github.com/zwelz3/holonic</a>
+      <a href="https://github.com/zwelz3/g3-toolkit">github.com/zwelz3/g3-toolkit</a>
+      <a href="https://github.com/zwelz3/specl">github.com/zwelz3/specl</a>
+    </div>
+    <p class="note">On maturity: <code>holonic</code> has had breaking changes across minor versions and carries an open audit-driven backlog (client decomposition, parameterized SPARQL, connection pooling, async stores, cross-registry federation). <code>g3-toolkit</code> adapters each cover a common response shape rather than a full protocol; no shapes parser, no reasoning, no canvas virtualization yet. <code>specl</code> is 19 commits old and defers traceability registries and domain extension patterns. I would rather say this up front than have a collaborator discover it in week two.</p>
+  </div>
+
+  <!-- PAPERS: HOLONIC -->
+  <div id="holonic" class="zone c-blue">
+    <div class="zone-head"><span class="tag blue">Theme A</span><h2>Holonic graph architecture</h2></div>
+    <p class="sub">The core theoretical line, and where the software comes from.</p>
+    <div class="chip-grid">
+      <div class="chip">
+        <span class="st pub">published · DOI minted · Jul 2026</span>
+        <b>Holonic Neural Networks</b>
+        <span><i>What I built, why it mostly failed, and why I still believe the idea is right.</i> A neural architecture treating structure and computation as the same object — a network that grows and prunes itself, whose connections carry contracts rather than scalars, modulated by something like arousal, and legible because the structure <i>is</i> a queryable knowledge graph. I built it on RDF, ran it end to end, and it broke instructively. The structural ideas hold; the learning story is where it falls down. I published the failure modes rather than sit on them.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · May 2026</span>
+        <b>Graph Composition Within the RDF Technologies Ecosystem: A Holonic Approach</b>
+        <span>Why naive union fails in production RDF — default-graph divergence, SERVICE variable scoping, and the band-aids people reach for — and how the four-graph holon with portal-mediated, SHACL-validated, PROV-tracked flows reframes federation as <i>governed composition</i>. <code>holonic</code> is the implementation of this paper.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Jul 2026 · preregistered</span>
+        <b>Structure Substitutes for Scale</b>
+        <span><i>Meta-problem solving, the trialogue, and knowledge-graph-mediated tool provisioning.</i> See the dedicated zone below — it's the piece I'd most like a collaborator on.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE EXPERIMENT -->
+  <div id="decision" class="zone c-green">
+    <div class="zone-head"><span class="tag green">Open experiment</span><h2>Structure Substitutes for Scale — decision policy as the engineered object</h2></div>
+    <p class="sub">The object this paper is about is a <b>traversal policy</b>: the decision logic at each node of a problem-solving process. Retrieve or reason. Reframe or persist. Delegate or dig deeper. Stop or continue. Skill is the tuning of that logic, and no tuning dominates all problems. If the difference between good and poor problem solvers is policy rather than hardware, then the policy can be externalized, instrumented, compared, and improved. Which makes this decision-support work before it is AI work.</p>
+    <p class="sub">It started from a narrow observation: agentic systems currently acquire tools by <i>injection</i>. Every connected capability is serialized into context, where it competes with the task for attention. Tool knowledge belongs in a governable structure outside the model, queried through a deliberately simple interface.</p>
+
+    <div class="subhead">1 · Decision rights, and who gets to estimate value</div>
+    <div class="pipeline">
+      <div class="pstep c-green"><b>Human</b>Authority and manager. Owns intent, sets direction, approves above a value-and-impact threshold, fields questions the system judges critical.</div>
+      <div class="arrow">→</div>
+      <div class="pstep c-green"><b>Orchestrator</b>Decomposes work and provisions capability by modulating edge weights over the tool graph, passing each subagent a <i>projection</i> containing only what its task requires.</div>
+      <div class="arrow">→</div>
+      <div class="pstep c-green"><b>Adversary</b>Malicious / contrarian / perspectival. Holds its <b>own</b> traversal weights and a <b>direct</b> escalation channel to the human.</div>
+    </div>
+    <div class="quote">The design creates a principal-agent problem and then has to answer for it. Someone has to estimate the value and impact of a decision in order to determine what reaches the human for approval, and <b>an orchestrator that self-estimates controls its own oversight</b>. The adversary therefore doubles as an escalation auditor, empowered to tattle. Its two independence requirements follow from the same reasoning: separate traversal weights over the shared graph, because an orchestrator that provisions its own critic can starve it, and an escalation path that bypasses the orchestrator entirely. "A red team provisioned by its target is a compliance exercise."</div>
+
+    <div class="subhead">2 · Decision tiering, and where it meets your multi-tier architecture</div>
+    <div class="chip-grid">
+      <div class="chip"><b>The threshold is the open question</b><span>My paper posits a value-and-impact threshold governing what escalates to the human, and then admits it does not say how to set it. Your Tier 1 / 2 / 3 decomposition (operational seconds-to-minutes, tactical hours-to-days, strategic weeks-to-quarters, each engaging different holonic levels) is a far more developed answer than anything in my draft.</span></div>
+      <div class="chip"><b>What I add to it</b><span>Tiering tells you what <i>should</i> escalate. It does not tell you whether escalation is happening honestly. The adversary is the auditor for the tiering itself — the component that notices when things stop being escalated, which is the failure mode a tier definition cannot catch on its own.</span></div>
+      <div class="chip"><b>Deontic norms are boundary graphs</b><span>Your LKIF obligation / permission / prohibition / violation / sanction library and my boundary graph ("what is permitted") are the same construct at different levels of formality. SHACL is one way to make the permission layer executable; a violation is a shape failure and a sanction is what the portal does about it. A clean, small integration point.</span></div>
+      <div class="chip"><b>Diversity as a decision asset</b><span>Effectiveness is always relative to a subset of problems, so a population's diversity of policies is a feature to preserve rather than noise to average away. Applied to decision support, this argues against convergence on a single approved method — the thing most governance programs drift toward by default.</span></div>
+    </div>
+
+    <div class="subhead">3 · The decision audit trail</div>
+    <p class="sub" style="margin-bottom:8px;">Decision nodes (query, ruminate, reframe, delegate, stop) are part of the design's logging requirements from the start, on the same footing as the results. The reasoning is an evidence bar the paper sets against itself:</p>
+    <div class="quote">A traversal policy that cannot be observed is an introspective story, and introspective stories are cheap.</div>
+    <p class="sub" style="margin-bottom:0;">This is also the input your human-factors instrumentation needs and does not currently have a source for. Trust calibration — acceptance rate against actual accuracy, bucketed by stated confidence — is not computable without a per-decision record of what was proposed, what was accepted, and what turned out to be true. The <code>holonic</code> provenance layer already records traversals and validations, which covers most of it.</p>
+
+    <div class="subhead">4 · Multi-criteria structure — dominance now, scalarization at decision time</div>
+    <div class="two-col">
+      <div class="subzone">
+        <h3>The rule</h3>
+        <ul class="tight">
+          <li>Where functionally equivalent capabilities differ on competing performance qualities, pruning resolves into <b>dominance</b>.</li>
+          <li>Dominated options can be down-weighted without knowing the task.</li>
+          <li>The <b>non-dominated set must be preserved</b>.</li>
+          <li>Scalarizing the frontier becomes task-time provisioning work rather than graph-time curation.</li>
+          <li>Exploring neglected non-dominated alternatives is a standing assignment for the adversary.</li>
+        </ul>
+      </div>
+      <div class="subzone">
+        <h3>Why it matters for decision support</h3>
+        <ul class="tight">
+          <li>A curated catalog that scalarizes early has already made the tradeoff on the decision-maker's behalf, and made it without knowing what the decision was.</li>
+          <li>Preserving the frontier keeps the tradeoff where the context lives. The weights arrive with the problem.</li>
+          <li>This is the same move as separating rule definition from rule execution in your compiled governance, applied to options instead of constraints.</li>
+          <li>It also gives "measuring the right value" a mechanism: you cannot measure the right value if the alternatives were collapsed into one before anyone stated an objective.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="subhead">5 · Declared versus enacted — evidence bounds on capability</div>
+    <p class="sub" style="margin-bottom:8px;">A tool's <b>declared</b> semantics (its self-description) and its <b>enacted</b> semantics (what the provenance corpus shows it doing) deserve distinct edge types, because their divergence is itself the signal. Auditing that divergence is another standing assignment for the adversary.</p>
+    <div class="pipeline">
+      <div class="pstep c-green"><b>Verifiable lower bound</b>Behaviors witnessed in the provenance record</div>
+      <div class="pstep c-green"><b>Unverifiable upper bound</b>Behaviors that cannot be ruled out</div>
+      <div class="pstep c-green"><b>Consequence</b>Opacity makes enacted intent <i>unprovable</i>, not <i>uninterpretable</i>. Schema structure, provenance, and relational context all carry evidence.</div>
+    </div>
+    <p class="note">For a decision process this is the gap between the documented procedure and the observed one, expressed so that it can be queried rather than discovered during an incident review.</p>
+
+    <div class="subhead">6 · The prediction, written down before running it</div>
+    <p class="sub" style="margin-bottom:8px;">Graph-mediated provisioning should <b>flatten the performance gap between frontier-scale and sub-billion-parameter models</b>. Measurement is decomposed into three layers so the effect can be located, not just detected:</p>
+    <div class="pipeline">
+      <div class="pstep c-green"><b>Layer 1</b>Tool discovery &amp; selection accuracy — where equalization is predicted to appear most strongly</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Layer 2</b>Argument construction validity</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Layer 3</b>End-to-end task success — partial effect predicted; a small model may select correctly and still fail multi-step execution</div>
+    </div>
+    <div class="chip-grid" style="margin-top:9px;">
+      <div class="chip"><b>Confound: context capacity</b><span>A reduced tool subset that fits the small model's window, separating "cannot fit" from "cannot reason over what fits." Both outcomes support the thesis by different mechanisms, and conflating them would be cheating.</span></div>
+      <div class="chip"><b>Confound: curation fairness</b><span>The in-context baseline gets equivalently well-organized descriptions, so the experiment measures structure and not effort.</span></div>
+      <div class="chip"><b>Confound: instrumentation parity</b><span>Decision nodes logged identically across all conditions, so traversal policies stay observable in every arm.</span></div>
+    </div>
+    <p class="sub" style="margin-top:12px;margin-bottom:0;"><b>Why the result matters for decision support specifically.</b> If structure substitutes for scale, governed decision support runs on models small enough to sit inside a sovereign boundary, at a cost and latency that make per-decision instrumentation affordable. The whole human-factors program — calibration tracking, confidence decomposition, workload matching — depends on being able to instrument every decision rather than a sampled few. Right now that is priced out at frontier-model rates. If the prediction holds, it stops being.</p>
+    <p class="note">Falsification conditions are stated in advance. Harness is private during development and will be released with results in a companion paper. Status: preregistered, not yet run.</p>
+
+    <div class="subhead">7 · The honest gap, and the best single place to collaborate</div>
+    <p class="sub" style="margin-bottom:8px;"><code>holonic</code> is the candidate realization: an MCP server is a holon, its interior holds full schemas, its boundary is where provisioning writes edge weights, its projections are literally what a subagent sees, its context holds registry membership, and portals give crystallized handlers a first-class primitive. But:</p>
+    <div class="quote">The four layers exist structurally, and there is <b>no dynamics layer</b>. Mutations are event-triggered rather than driven by a learning signal, and validation shapes validate rather than transform. The gap between a mutation <i>surface</i>, which exists (nine discrete operations over holons, layers, and portals), and a mutation <i>policy</i>, which does not, is the fundamental research I am proposing.</div>
+    <p class="note">This is also where <i>Holonic Neural Networks</i> failed. The negative result and the open problem turn out to be the same thing, which is why the postmortem was worth writing.</p>
+  </div>
+
+  <!-- PAPERS: DIGITAL THREAD -->
+  <div id="thread" class="zone c-purple">
+    <div class="zone-head"><span class="tag purple">Theme B</span><h2>Digital thread &amp; digital twin ontology</h2></div>
+    <p class="sub">Definitional work, taken up because the imprecision does real damage: if "thread" means both the atomic relationship and the whole web, then trust, authority, and coverage claims collapse into "everything is connected to everything."</p>
+    <div class="chip-grid">
+      <div class="chip">
+        <span class="st pub">marked published · Jul 2026</span>
+        <b>Exploring the ontological digital thread</b>
+        <span>Separates the <b>atomic</b> digital thread (a typed, addressable, provenance-bearing assertion between two information elements) from the <b>connected graph</b> those assertions form, and both from the pipelines, APIs, and workflows that merely <i>realize</i> them. Maps a working-group traceability example onto the distinction and proposes a cleaner cut. Shaped by discussions in the INCOSE DEIX Ontology Working Group on the digital thread and authoritative source of truth.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Feb 2026</span>
+        <b>Digital Twin as Artifact and Role</b>
+        <span>The digital twin doesn't need another definition; it needs a <i>structure</i>. Separates the persistent digital twin <b>artifact</b> (an information content entity) from the contextual digital twin <b>role</b> it bears when realized in a process, grounded in the Common Core Ontologies, with RDF worked examples covering LVC modes, coupling, and data-source binding.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Oct 2025</span>
+        <b>Federated, Zero-Trust Digital Engineering Data Interchange Using MCP and RDF</b>
+        <span>Mission engineering needs integration that respects data sovereignty. MCP as the federated discovery-and-negotiation control plane; SHACL shapes as executable semantic contracts at every boundary. Data owners keep sovereignty and classification control while consumers pre-validate fitness-for-purpose <i>without touching the underlying data</i>.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAPERS: MBSE -->
+  <div id="mbse" class="zone c-coral">
+    <div class="zone-head"><span class="tag coral">Theme C</span><h2>MBSE critique and what replaces it</h2></div>
+    <p class="sub">Five drafts making one escalating argument: the modeling tool is not the unit of value, the modeling language may not be either, and the institutional case is MBSE's strongest remaining defense.</p>
+    <div class="chip-grid">
+      <div class="chip">
+        <span class="st draft">draft · Jul 2026</span>
+        <b>Beyond Expensive Diagramming Software</b>
+        <span>The skeptics are right that DE too often reduces to replacing Visio with costlier diagramming software. But the industry picked the wrong unit of value. The endgame is <b>model-generated</b> engineering: traceability matrices become stored queries, ICDs and review packages become generated provenance-carrying views, compliance becomes SHACL validation output. Includes an accounting of the contractual, CM, and skills friction in the way.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · May 2026</span>
+        <b>Beyond Models as Code</b>
+        <span>SysML v2's textual turn is directionally sound but may not go far enough, and may be too late. General-purpose languages express system models with better tooling; LLMs handle translation between natural language, code, tests, and diagrams idempotently; RDF/OWL/SHACL subsume SysML's claim to shared semantics. The inversion is "code as models," and it dissolves MBSE as a distinct technical discipline.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Jan 2026 · needs citation audit</span>
+        <b>Against a Monolithic Cameo Ecosystem for MBSE</b>
+        <span>Feature breadth is not architectural fitness, and call-outs to Python/MATLAB/Excel are tactical integration, not an open digital thread. Proprietary metamodel lock-in, SysML v1's semantic-web incompatibility, integration-as-transformation brittleness, and long-lifecycle cost — with a federated open digital thread as the alternative and Cameo as one contributor, not the hub.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Nov 2025</span>
+        <b>Thoughts on UAF, RDF, and the Future of MBSE</b>
+        <span>The compatibility of UAF and RDF is <i>not implicit</i>. Diagnoses the design gap between UAF/UAFML's MOF-based closed-world metamodel paradigm and RDF's open-world one: identity, semantics, n-ary relations, implicit view context. Why UAF 1.2 models behave like legacy data silos, and where a combined approach still pays off.</span>
+      </div>
+      <div class="chip">
+        <span class="st draft">draft · Nov 2025 · Q&amp;A format</span>
+        <b>SysML v2, RDF, and an Open Digital Thread</b>
+        <span>Dividing responsibilities between MBSE and knowledge systems: RDF as the digital thread substrate while UML/SysML/UAF stay the authoritative modeling layer; the OSLC "shape gap" that makes SHACL the necessary validation layer; and the UK IES ontology's pivot away from IDEAS as precedent for INCOSE DEIX.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAPERS: RDF FOUNDATIONS -->
+  <div id="rdf" class="zone c-amber">
+    <div class="zone-head"><span class="tag amber">Theme D</span><h2>RDF foundations — two contrarian positions</h2></div>
+    <p class="sub">Two arguments against a prevailing consensus. Everything above depends on them holding up.</p>
+    <div class="two-col">
+      <div class="subzone">
+        <h3>The RDF vs. LPG Debate Is Quickly Becoming Irrelevant</h3>
+        <p class="sub"><span class="st draft">draft · Mar 2026</span></p>
+        <ul class="tight">
+          <li>Named graphs make RDF a hypergraph <i>in practice</i>: observations, classifications, projections, provenance, and SHACL contracts coexist as graphs that are simultaneously containers and participants.</li>
+          <li>The LPG structure Neo4j and NetworkX need becomes just another named graph — validated by shapes before projection.</li>
+          <li>The format debate dissolves into a tooling problem. <code>g3-toolkit</code>'s projection pipeline is the tooling answer.</li>
+        </ul>
+      </div>
+      <div class="subzone">
+        <h3>Why "Ontology First" Knowledge Systems Are Not Always Best</h3>
+        <p class="sub"><span class="st draft">draft · Oct 2025</span></p>
+        <ul class="tight">
+          <li>A comprehensive up-front enterprise ontology becomes a choke point. Federated incremental integration treats the ontology as a <b>bridge language</b> and SHACL as <b>validation instead of prescription</b>.</li>
+          <li>Worked end-to-end demo: an RDBMS/GraphQL source and a loose Excel source share an ontology yet <i>silently miss connections</i> until SHACL exposes the mismatch.</li>
+          <li>Includes a candid accounting of the federated approach's own downsides. References Netflix's Unified Data Architecture as a real-world federated precedent.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STANDARDS -->
+  <div id="community" class="zone c-gray">
+    <div class="zone-head"><span class="tag gray">Community</span><h2>Standards &amp; community involvement</h2></div>
+    <div class="chip-grid">
+      <div class="chip"><b>INCOSE DEIX Ontology Working Group</b><span>Digital thread and authoritative-source-of-truth discussions; the <i>ontological digital thread</i> note was written alongside them and maps a WG traceability example onto its proposed cut.</span></div>
+      <div class="chip"><b>W3C Holon Graph Community Group</b><span>Referenced in the tool-provisioning paper as the venue whose characteristics work may surface realizations of the holon architecture other than my own library.</span></div>
+      <div class="chip"><b>Publication practice</b><span>Papers site with per-paper PDF artifacts, Zenodo DOI minting, ORCID, JSON-LD / Google Scholar metadata, and an <code>llms.txt</code> index. Everything is CC-BY-4.0 by default; build code is MIT.</span></div>
+    </div>
+    <div class="links">
+      <a href="https://zwelz3.github.io/papers/">zwelz3.github.io/papers</a>
+      <a href="https://github.com/zwelz3">github.com/zwelz3</a>
+      <a href="https://orcid.org/0009-0008-0460-6188">ORCID 0009-0008-0460-6188</a>
+      <a href="https://www.linkedin.com/in/zachwelz">linkedin.com/in/zachwelz</a>
+    </div>
+  </div>
+
+  <!-- VIRAL ENGINEERING -->
+  <div id="viral" class="zone c-red">
+    <div class="zone-head"><span class="tag red">Societal scale</span><h2>Viral engineering — when the swarm is society</h2></div>
+    <p class="sub">Project AEGIS treats agent-swarm safety as epidemiology inside an enterprise, where you own both the execution plane and the control plane. The harder version of the problem is the same dynamics with no org chart: outputs from large-scale AI propagating through populations, institutions, and training corpora, where no single party has authority over the whole system and most participants have not agreed to be governed. I think the substrate work above bears more directly on that version than on the enterprise one. Here is the argument, and then its limits.</p>
+
+    <table class="heat">
+      <tbody>
+      <tr><th>Societal failure mode</th><th>Why it is a graph problem</th><th>What I have that bears on it</th></tr>
+      <tr>
+        <td><b>Propagation with no traceable origin</b>An AI output enters a document, gets cited, gets scraped, re-enters a model, and returns as apparent consensus. By then nobody can say where it started or who else is carrying it.</td>
+        <td>Over unmarked text, retraction is not a defined operation at all. Over a graph of typed, addressable, provenance-bearing assertions it is, because you can query what depends on the claim you just pulled.</td>
+        <td>The digital thread paper's central cut — atomic assertion, connected graph, and the machinery that merely realizes them — is what makes a coverage or retraction claim mean something. PROV-O provenance is already in <code>holonic</code>. <i>Limit: this needs marking at authoring time. Retrofitting provenance onto an unmarked corpus is unsolved and I have no route to it.</i></td>
+      </tr>
+      <tr>
+        <td><b>Corpus contamination</b>Machine output re-entering training data. Your poster already flags anti-collapse at the enterprise boundary; the marking has to survive leaving the enterprise, which is where it currently stops.</td>
+        <td>Named graphs let origin be asserted <i>about</i> content rather than embedded <i>in</i> it, and asserted by parties other than the author. Under the hypergraph reading, a claim about a corpus is itself a first-class graph: queryable, contestable, and attributable to whoever made it.</td>
+        <td>The RDF-as-hypergraph position plus named-graph provenance. <i>Limit: an assertion layer only works if institutions maintain it. That maintenance burden is organizational, and no format carries it for you.</i></td>
+      </tr>
+      <tr>
+        <td><b>Correlated failure from policy monoculture</b>If every institution's decision support runs the same few frontier models under the same traversal policy, their errors correlate. A population that shares a policy fails together and fails quietly, because each participant's confidence is reinforced by everyone else agreeing.</td>
+        <td>You cannot preserve diversity the system has no way to represent. The dominance rule — down-weight dominated options, preserve the non-dominated set, scalarize at decision time — is a systemic-risk control expressed as a graph policy rather than as a regulation.</td>
+        <td>The problem itself is well established. Kleinberg &amp; Raghavan (PNAS 2021) show convergence on a common algorithm can lower the collective quality of decisions even with no shock and no correlated failure; Bommasani et al. (NeurIPS 2022) find that shared components homogenize outcomes <i>without</i> degrading measured accuracy, so the correlation grows behind stable metrics. What I add is a different sharing surface — the traversal policy sitting above the model, which is not what those results measure — and an economic mechanism in place of a mandate: <b>structure substituting for scale is what makes diversity affordable.</b> If small models with good structure work, many differently-tuned systems become viable instead of everyone renting the same three. <i>Limit: strongest claim on this page, resting entirely on an experiment I have not run.</i></td>
+      </tr>
+      <tr>
+        <td><b>Institutional complacency</b>Your Week-52 table has an operator drifting to 70% oversight while reliability falls to 85% and the AI keeps improving. The same curve runs above the operator: a reviewer, an auditor, or a regulator that comes to rely on AI-generated evidence rubber-stamps at institutional scale, and the drift stays invisible because the evidence looks better than what it replaced.</td>
+        <td>Calibration at any scale needs a decision record: what was proposed, at what stated confidence, what was accepted, what turned out to be true. Above the individual, that record has to cross organizational boundaries, which makes it a federation problem as much as a statistics one.</td>
+        <td>The decision-node log from the zone above, and the federated interchange pattern for moving calibration evidence across a boundary without surrendering the underlying case data. <i>Limit: I have no human-subjects work. Your framework has the constructs and the thresholds. This half is yours and I would be the one learning.</i></td>
+      </tr>
+      <tr>
+        <td><b>Oversight capture</b>An auditor whose data access is granted by the audited party is structurally compromised regardless of anyone's intent.</td>
+        <td>Boundary graphs make "who may see what, granted by whom, revocable by whom" an inspectable artifact rather than a paragraph in a charter. "Could this overseer have been starved?" becomes a query with an answer.</td>
+        <td>The adversary's two independence requirements are institutional design principles that happen to be expressible in a graph. <i>Limit: expressing a property does not enforce it. Enforcement here is legal and organizational; the graph only makes the violation visible.</i></td>
+      </tr>
+      <tr>
+        <td><b>Containment across parties who will not share data</b>AEGIS assumes you own both planes. Society-scale containment involves counterparties outside your org chart, some adversarial, most unwilling to hand over a corpus or their telemetry.</td>
+        <td>SHACL shapes let a counterparty validate fitness-for-purpose without access to the underlying data. The shape travels and the data stays put, which is a public-health-style shared protocol with no central data authority.</td>
+        <td>The federated zero-trust interchange architecture: MCP as the discovery and negotiation control plane, SHACL as executable contract at every boundary. <i>Limit: draft-stage paper with no implementation behind it.</i></td>
+      </tr>
+      <tr>
+        <td><b>Self-modification with no governed mutation policy</b>A system with a mutation surface and no policy over that surface is the uncontrolled case by definition.</td>
+        <td>The mutation surface in <code>holonic</code> is nine discrete operations over holons, layers, and portals. Discreteness is the point: a structural change you can name is one you can gate, log, and reverse.</td>
+        <td>I built one of these and it failed, and the failure is published with a DOI. That is an argument for doing the mutation-policy research and a caution against putting structural self-modification into anything socially consequential before the policy exists.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="subhead">Your AEGIS metrics, computed on this substrate</div>
+    <div class="pipeline">
+      <div class="pstep c-red"><b>Fan-out rate — R<sub>f</sub></b>Distinct downstream agents reached per originating call, counted over the provenance graph</div>
+      <div class="pstep c-red"><b>Delegation loop density — D<sub>l</sub></b>Cycle detection over delegation edges recorded in context graphs</div>
+      <div class="pstep c-red"><b>Token amplification — A<sub>t</sub></b>Ratio of emitted to ingested volume along a traversal path</div>
+    </div>
+    <p class="note">All three are topological measures over a record of who invoked what. If traversals are recorded as RDF rather than as log lines, they become SPARQL queries over context graphs instead of a separate instrumentation build. This is the fastest thing to build on this page, and it depends on none of my unproven claims.</p>
+
+    <div class="subhead">What I am not claiming</div>
+    <ul class="tight">
+      <li><b>Nothing here is validated at population scale.</b> The largest thing I have actually run is a lab implementation that broke.</li>
+      <li><b>The epidemiological framing is borrowed, not derived.</b> Whether R<sub>f</sub> behaves like a reproduction number — whether it has a threshold, whether interventions move it predictably — is an empirical question I have not seen anyone answer.</li>
+      <li><b>The human-factors claims are extensions of your framework</b>, not results of mine. Fatigue scoring, trust calibration, competency decay, and production-pressure detection are your constructs; I am pointing at where a graph substrate would feed them, and no further.</li>
+      <li><b>Provenance-based control only constrains participants.</b> It does nothing about parties outside the scheme, which today is most of the internet. Anyone who tells you a metadata standard fixes societal AI harm is selling something.</li>
+      <li><b>The diversity argument depends on the unrun experiment.</b> If structure does not substitute for scale, the affordability claim collapses and monoculture is simply what the economics buy.</li>
+    </ul>
+
+    <div class="quote">The split is clean enough to state plainly: you have the human factors, the organizational design, and a deployment surface. I have the substrate, the provenance model, and one falsifiable claim about whether policy diversity is affordable. Neither half reaches the societal version of this problem alone.</div>
+  </div>
+
+  <!-- OVERLAP -->
+  <div id="overlap" class="zone c-pink">
+    <div class="zone-head"><span class="tag pink">Overlap</span><h2>Where this meets your HSGA reference topology</h2></div>
+    <p class="sub">Read against your <i>Holonic Semantic Governance Architecture — Reference Topology</i>. Your document is an enterprise architecture: it covers organizational design, staffing, ROI, and an operating model. Mine is a substrate-and-tooling program with falsifiable claims attached. The two fit together: you have the deployment surface and the organizational story, I have running code and negative results.</p>
+
+    <div class="subhead">Direct correspondences</div>
+    <table class="heat">
+      <tbody>
+      <tr><th>Your zone</th><th>My counterpart</th><th>What the overlap is actually worth</th></tr>
+      <tr>
+        <td><b>Mediation holon / SAML</b>Persistent mapping graph, six correspondence types, "insulation, not integration"</td>
+        <td><b><code>holonic</code> four-graph model</b>Interior / boundary / projection / context, portal traversal</td>
+        <td>Your mediation holon is doing what boundary + projection graphs do, described organizationally rather than mechanically. There is a shipped Python library and 13 notebooks behind mine. Your six correspondence types look like a portal typology waiting to be written down, which is something we could produce together.</td>
+      </tr>
+      <tr>
+        <td><b>Compiled semantic governance</b>SHACL/SWRL compiled outward to dbt / OPA-Rego / vector filters / agent guardrails, with URI links back to source invariants</td>
+        <td><b>SHACL as executable contract</b><i>Federated Zero-Trust Interchange</i> + <code>specl</code>'s two-tier severity and status-gated validation</td>
+        <td>Strongest overlap in the set. Same instinct — define once, enforce everywhere, keep the audit link home. Your version compiles across runtimes inside an enterprise; mine negotiates across organizational boundaries where the data owner never surrenders the data. Composable: yours is the intra-enterprise leg, mine the inter-org leg.</td>
+      </tr>
+      <tr>
+        <td><b>RDSG six-stage gateway</b>Ontology resolution → SHACL → SWRL → PEP → compiled AI directive, with a Simplex irreversibility boundary</td>
+        <td><b>MCP + SHACL negotiation control plane</b>Pre-validate fitness-for-purpose before access</td>
+        <td>Both put a validating gate at a boundary. Yours gates <i>action</i> (irreversibility, attestation, immutable log); mine gates <i>access and fitness</i>. They cover different failure modes and stack without conflict.</td>
+      </tr>
+      <tr>
+        <td><b>Agentic fabric + AI circuit breaker</b>Per-agent 5D scoring, SPC control charts, MTBH, holonic immune response, collective CB hierarchy</td>
+        <td><b>The trialogue</b>Orchestrator + independent adversary + human authority, with decision-node logging as a first-class requirement</td>
+        <td>This is where we differ most usefully. Yours measures the agent from outside, metrologically. Mine puts a structurally independent adversary inside the loop, with its own tool access and its own escalation channel, on the reasoning that a red team provisioned by its target is a compliance exercise. Each needs the other. Your scores need someone adversarial reading them, and my adversary needs your instrumentation to make its case.</td>
+      </tr>
+      <tr>
+        <td><b>L4 knowledge graph + data fabric</b>"The digital thread," federated SPARQL/GraphQL/Cypher</td>
+        <td><b>Ontological digital thread</b>Atomic assertion vs. connected graph vs. realizing machinery</td>
+        <td>I'd push back gently here: treating the digital thread as a <i>layer</i> conflates the three things my note separates. The distinction matters exactly when you want to make a coverage or authority claim about the thread — which your governance councils will eventually be asked to do.</td>
+      </tr>
+      <tr>
+        <td><b>L6 holon orchestration &amp; UI</b>HITL intervention, role-based dashboards, Tom Sawyer workbench</td>
+        <td><b><code>g3-toolkit</code></b>SHACL browser, diff view, provenance-aware projections, schema view, 15 controls</td>
+        <td>The easiest thing to act on. Your L6 is stated as a requirement; mine is an RC-stage component library with the SHACL and diff views already built. If you need a governance console, this is a shortcut.</td>
+      </tr>
+      <tr>
+        <td><b>PLM assessment platform + V-model as holarchy</b>Change impact via holonic graph instead of a maintained matrix</td>
+        <td><b>Beyond Expensive Diagramming Software</b> + <b>Digital Twin as Artifact and Role</b></td>
+        <td>Same claim — "traceability matrix → stored query / propagating graph" — arrived at independently. My twin artifact/role split (grounded in CCO) would give your PLM ingestion a cleaner target than "digital twin" as a bare label.</td>
+      </tr>
+      <tr>
+        <td><b>Decision governance &amp; measuring the right value</b>Tier 1 / 2 / 3 decision architecture, LKIF deontic norms applied to FP&amp;A and financial decisions</td>
+        <td><b>Traversal policy as decision policy</b>Decision rights in the trialogue, the value-and-impact threshold, per-decision logging</td>
+        <td>Your tiering answers what <i>should</i> escalate, and my draft posits a threshold then admits it cannot set one, so I would take yours outright. What I add is an auditor for the tiering (the failure mode a tier definition cannot catch is escalation quietly stopping) and the per-decision record without which calibration is not computable. Your deontic norm library and my boundary graph are the same construct at different levels of formality — the smallest well-defined integration on this page.</td>
+      </tr>
+      <tr>
+        <td><b>Viral engineering / Project AEGIS</b>Epidemiological framing, execution/control plane split, R<sub>f</sub> / D<sub>l</sub> / A<sub>t</sub>, immune-system mapping</td>
+        <td><b>The societal-scale zone above</b>Provenance, corpus contamination, monoculture risk, oversight capture</td>
+        <td>Yours is intra-enterprise with both planes under your control. Mine asks what survives when nobody owns the whole system and most participants never agreed to be governed. Your three topological metrics compute as SPARQL over a provenance graph once traversals are recorded as RDF, which is the fastest joint deliverable on this page. The monoculture argument is the part I would most want you to attack.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="subhead">Where we disagree, or where I'd want the argument</div>
+    <div class="chip-grid">
+      <div class="chip c-pink"><b>Canonical ontology as the rulebook</b><span>Your L5 is a canonical OWL/RDF skeleton authored top-down. I have a whole paper arguing that ontology-first becomes a choke point and that federated incremental integration — ontology as bridge language, SHACL as validation not prescription — gets further. Your mediation holon already concedes half of this. I think it concedes the interesting half and should be pushed further.</span></div>
+      <div class="chip c-pink"><b>The dynamics layer nobody has</b><span>Your architecture is fully specified structurally and, like mine, has no learning signal driving mutation. Your circuit breaker measures drift; it doesn't tell the graph how to change. I've already failed at this once in public (HNN) and can tell you specifically which approaches don't work.</span></div>
+      <div class="chip c-pink"><b>RDF vs. LPG in your stack</b><span>Your topology names SPARQL, Cypher, and Neo4j property graphs as peers at L4. My position is that the LPG is a projection <i>inside</i> the RDF system, validated by shapes before projection — which simplifies your federation story considerably and is what <code>g3-toolkit</code>'s projection pipeline implements.</span></div>
+      <div class="chip c-pink"><b>Aggregate trust scores</b><span>You already say "dimensional, never aggregate" for the trust metric, which I agree with. I'd extend it: a tool's <i>declared</i> semantics and its <i>enacted</i> semantics (what the provenance corpus shows it doing) deserve distinct edge types, because the divergence is itself the signal — with a verifiable lower bound (behaviors witnessed) and an unverifiable upper bound (behaviors not ruled out).</span></div>
+    </div>
+
+    <div class="subhead">What I'd bring that isn't in your topology at all</div>
+    <ul class="tight">
+      <li><b>Running code.</b> Three public repos, one on PyPI at 0.7.x, one at RC with CI-verified docs. Your reference architecture currently has no named implementation.</li>
+      <li><b>A published negative result.</b> The HNN postmortem is a DOI-minted account of a structural-learning architecture that didn't work, with the failure modes documented. Approaches that did not work are expensive to learn and almost never written up.</li>
+      <li><b>A preregistered, falsifiable experiment</b> with confound controls and stated failure conditions. It makes a different kind of claim than a reference topology does, and one that holds up under review.</li>
+      <li><b>Cross-organizational sovereignty.</b> Your governance is intra-enterprise. The MCP + SHACL zero-trust interchange work covers the case where the counterparty is not in your org chart and never will be.</li>
+      <li><b>Spec discipline as tooling.</b> <code>specl</code> makes requirement IDs, acceptance criteria, and status gates machine-checkable — directly usable for your KGCL change governance and your ARB packets.</li>
+    </ul>
+  </div>
+
+  <!-- ASKS -->
+  <div id="asks" class="zone c-gray">
+    <div class="zone-head"><span class="tag gray">Asks</span><h2>Concrete places to start</h2></div>
+    <p class="sub">Ordered by how quickly they'd produce something jointly citable.</p>
+    <ol class="tight">
+      <li><b>Compute R<sub>f</sub>, D<sub>l</sub>, and A<sub>t</sub> as SPARQL over a provenance graph.</b> Your AEGIS metrics are topological measures over a record of who invoked what. Record traversals as RDF and they stop being a separate instrumentation build. Days of work, no unproven claims involved, and it produces a figure.</li>
+      <li><b>A joint position piece on monoculture as systemic risk.</b> The problem is already documented from two directions: Kleinberg &amp; Raghavan (PNAS 2021) and Bommasani et al. (NeurIPS 2022) on the algorithmic side, and the FSB's 2024 financial-stability assessment, which names market correlation and provider concentration among its four AI vulnerability categories. Two gaps are open. The FSB's own 2025 monitoring report concedes that market correlations are close to untrackable with current instrumentation, which is a measurement problem a decision-log substrate speaks to directly. And the standing interventions are regulatory — mandate pluralization, cap outcome correlation — where the argument I want to make is economic: make diversity cheap enough that it does not need mandating. You have the organizational and human-factors half. This is the one I think matters most, and the one I most want you to try to break.</li>
+      <li><b>Run the experiment.</b> Section 6 of <i>Structure Substitutes for Scale</i> is preregistered and unexecuted. Frontier model over API, small model local, three metric layers, three confound controls. A second party on the harness would strengthen the result, and the paper's own evidence bar asks for an independent hand on the instrumentation.</li>
+      <li><b>The mutation policy.</b> The mutation <i>surface</i> exists in <code>holonic</code> (nine discrete operations over holons, layers, and portals). The <i>policy</i> — what drives mutation from a learning signal, and how discrete structure co-evolves with a continuous representation — does not exist, in my work or yours. This is the actual research.</li>
+      <li><b>Formalize a portal typology</b> from your six correspondence types. Small, well-scoped, useful to both of us, and it ends up in a spec instead of a slide.</li>
+      <li><b>Wire <code>g3-toolkit</code> into an L6 console</b> against a real governance dataset. Fastest path to a demo either of us can show.</li>
+      <li><b>Co-author on the DEIX side.</b> The digital thread note and the twin artifact/role paper are both aimed at working-group consumption; the MBSE critique set (five drafts) needs a second opinion before it goes out, and one of them needs a citation audit I'd rather not do alone.</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    Status labels are accurate as of this compile: 2 papers published (one with a minted Zenodo DOI), 11 in the staging queue at varying readiness — several need citation audits, figure replacement, or an attribution decision before publication, and I'd rather you see them as they are. Software versions are as published at time of writing. Anything here can be shared; the papers are CC-BY-4.0 and the repos are MIT / Apache 2.0. The one thing that is not public is the experiment harness, which will be released with its results.
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holonic Semantic Governance Architecture — Reference Topology</title>
+<style>
+  :root{
+    --bg:#f6f5f1; --surface:#ffffff; --border:#d8d6cc; --text:#232320; --text-2:#5f5e58; --text-3:#88867d;
+    --blue-50:#E6F1FB; --blue-600:#185FA5; --blue-800:#0C447C;
+    --amber-50:#FAEEDA; --amber-600:#854F0B; --amber-800:#633806;
+    --purple-50:#EEEDFE; --purple-600:#534AB7; --purple-800:#3C3489;
+    --teal-50:#E1F5EE; --teal-600:#0F6E56; --teal-800:#085041;
+    --red-50:#FCEBEB; --red-600:#A32D2D; --red-800:#791F1F;
+    --coral-50:#FAECE7; --coral-600:#993C1D; --coral-800:#712B13;
+    --pink-50:#FBEAF0; --pink-600:#993556; --pink-800:#72243E;
+    --gray-50:#F1EFE8; --gray-600:#5F5E5A; --gray-800:#444441;
+    --green-50:#EAF3DE; --green-600:#3B6D11; --green-800:#27500A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#171715; --surface:#211f1c; --border:#3a382f; --text:#eeeee6; --text-2:#b9b7ac; --text-3:#8a887e;
+      --blue-50:#0C447C; --blue-600:#85B7EB; --blue-800:#E6F1FB;
+      --amber-50:#633806; --amber-600:#EF9F27; --amber-800:#FAEEDA;
+      --purple-50:#3C3489; --purple-600:#AFA9EC; --purple-800:#EEEDFE;
+      --teal-50:#085041; --teal-600:#5DCAA5; --teal-800:#E1F5EE;
+      --red-50:#791F1F; --red-600:#F09595; --red-800:#FCEBEB;
+      --coral-50:#712B13; --coral-600:#F0997B; --coral-800:#FAECE7;
+      --pink-50:#72243E; --pink-600:#ED93B1; --pink-800:#FBEAF0;
+      --gray-50:#444441; --gray-600:#B4B2A9; --gray-800:#F1EFE8;
+      --green-50:#27500A; --green-600:#97C459; --green-800:#EAF3DE;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;}
+  .poster{max-width:1360px;margin:0 auto;padding:40px 28px 80px;}
+  .hero{margin-bottom:28px;}
+  .hero h1{font-size:30px;font-weight:600;margin:0 0 6px;}
+  .hero p{font-size:15px;color:var(--text-2);margin:0 0 4px;max-width:900px;}
+  .hero .meta{font-size:12px;color:var(--text-3);margin-top:10px;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:18px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-2);}
+  .dot{width:10px;height:10px;border-radius:3px;flex:none;}
+  .zone{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 26px;margin-bottom:22px;}
+  .zone-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+  .zone-head .tag{font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;padding:3px 9px;border-radius:20px;}
+  .zone h2{font-size:19px;font-weight:600;margin:0;}
+  .zone .sub{font-size:13px;color:var(--text-2);margin:6px 0 16px;max-width:920px;}
+  .subhead{font-size:13px;font-weight:600;color:var(--text);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.03em;}
+  .subhead:first-of-type{margin-top:0;}
+  .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:9px;}
+  .chip{padding:9px 12px;border-radius:10px;font-size:12.5px;border:1px solid var(--border);background:var(--bg);}
+  .chip b{display:block;font-size:12.5px;font-weight:600;margin-bottom:2px;}
+  .chip span{color:var(--text-2);font-size:11.5px;}
+  .pipeline{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;}
+  .pstep{flex:1 1 140px;min-width:132px;border-radius:10px;padding:10px 12px;font-size:12px;border:1px solid var(--border);}
+  .pstep b{display:block;font-size:12.5px;margin-bottom:3px;}
+  .arrow{align-self:center;color:var(--text-3);font-size:16px;padding:0 2px;flex:none;}
+  .arrow.wrap-full{flex-basis:100%;height:auto;width:100%;text-align:center;padding:6px 0;font-size:12.5px;}
+  .note{font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:880px){.two-col{grid-template-columns:1fr;}}
+  .subzone{border:1px dashed var(--border);border-radius:12px;padding:16px 18px;height:100%;}
+  .subzone h3{font-size:15px;font-weight:600;margin:0 0 4px;}
+  .subzone .sub{margin:0 0 12px;}
+  ul.tight{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-2);}
+  ul.tight li{margin-bottom:5px;}
+  ol.tight{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-2);}
+  ol.tight li{margin-bottom:5px;}
+  table.heat{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px;}
+  table.heat th, table.heat td{border:1px solid var(--border);padding:8px 9px;text-align:left;vertical-align:top;}
+  table.heat th{background:var(--bg);font-weight:600;color:var(--text-2);font-size:11px;text-transform:uppercase;letter-spacing:.02em;}
+  table.heat td b{display:block;margin-bottom:2px;}
+  .quote{border-left:3px solid var(--border);padding:6px 0 6px 14px;font-size:12.5px;color:var(--text-2);font-style:italic;margin:10px 0;}
+  .footer{font-size:11.5px;color:var(--text-3);margin-top:10px;line-height:1.7;}
+  .flow-caption{font-size:12px;color:var(--text-2);margin-top:10px;}
+
+  .c-blue{background:var(--blue-50);border-color:var(--blue-600);} .c-blue b, .c-blue h2, .c-blue h3{color:var(--blue-800);} .c-blue span, .c-blue .sub{color:var(--blue-600);}
+  .c-amber{background:var(--amber-50);border-color:var(--amber-600);} .c-amber b, .c-amber h2, .c-amber h3{color:var(--amber-800);} .c-amber span, .c-amber .sub{color:var(--amber-600);}
+  .c-purple{background:var(--purple-50);border-color:var(--purple-600);} .c-purple b, .c-purple h2, .c-purple h3{color:var(--purple-800);} .c-purple span, .c-purple .sub{color:var(--purple-600);}
+  .c-teal{background:var(--teal-50);border-color:var(--teal-600);} .c-teal b, .c-teal h2, .c-teal h3{color:var(--teal-800);} .c-teal span, .c-teal .sub{color:var(--teal-600);}
+  .c-red{background:var(--red-50);border-color:var(--red-600);} .c-red b, .c-red h2, .c-red h3{color:var(--red-800);} .c-red span, .c-red .sub{color:var(--red-600);}
+  .c-coral{background:var(--coral-50);border-color:var(--coral-600);} .c-coral b, .c-coral h2, .c-coral h3{color:var(--coral-800);} .c-coral span, .c-coral .sub{color:var(--coral-600);}
+  .c-pink{background:var(--pink-50);border-color:var(--pink-600);} .c-pink b, .c-pink h2, .c-pink h3{color:var(--pink-800);} .c-pink span, .c-pink .sub{color:var(--pink-600);}
+  .c-gray{background:var(--gray-50);border-color:var(--gray-600);} .c-gray b, .c-gray h2, .c-gray h3{color:var(--gray-800);} .c-gray span, .c-gray .sub{color:var(--gray-600);}
+  .c-green{background:var(--green-50);border-color:var(--green-600);} .c-green b{color:var(--green-800);} .c-green span{color:var(--green-600);}
+
+  .zone-head .tag.blue{background:var(--blue-50);color:var(--blue-800);}
+  .zone-head .tag.amber{background:var(--amber-50);color:var(--amber-800);}
+  .zone-head .tag.purple{background:var(--purple-50);color:var(--purple-800);}
+  .zone-head .tag.teal{background:var(--teal-50);color:var(--teal-800);}
+  .zone-head .tag.red{background:var(--red-50);color:var(--red-800);}
+  .zone-head .tag.coral{background:var(--coral-50);color:var(--coral-800);}
+  .zone-head .tag.pink{background:var(--pink-50);color:var(--pink-800);}
+  .zone-head .tag.gray{background:var(--gray-50);color:var(--gray-800);}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="hero">
+    <h1>Holonic semantic governance architecture</h1>
+    <p>Reference topology covering the enterprise holarchy, the three-tier semantic architecture, the RDSG requirements engineering gateway, the agentic fabric, the AI circuit breaker &amp; universal trust measurement, viral engineering / Project AEGIS, the PLM assessment platform, and decision governance &amp; measuring the right value.</p>
+    <div class="meta">Compiled from your Holonic Semantic Governance Architecture v4.2 (full reference diagram set, Sections 1–13), RDSG Addendum A, Semantic Gateway Architecture, Avatar 2.0 Lineage &amp; Gap Analysis, Human-AI Teaming Framework, PLM Assessment Scorecard, Avatar 2.0 PLM ingestion sample, Camping World PLM Compliance Agent Fleet Blueprint, AI Circuit Breaker (talking points), Viral Engineering AI CB Design, Viral Engineering Agentic Security Controls, Project AEGIS, and Kearney Intelligence Holarchy — August 2026.</div>
+    <div class="legend">
+      <div class="legend-item"><span class="dot" style="background:var(--blue-600)"></span>Semantic core &amp; RDSG gateway</div>
+      <div class="legend-item"><span class="dot" style="background:var(--amber-600)"></span>Agentic fabric</div>
+      <div class="legend-item"><span class="dot" style="background:var(--red-600)"></span>AI circuit breaker &amp; trust</div>
+      <div class="legend-item"><span class="dot" style="background:var(--coral-600)"></span>Viral engineering / AEGIS</div>
+      <div class="legend-item"><span class="dot" style="background:var(--green-600)"></span>Human-AI teaming framework</div>
+      <div class="legend-item"><span class="dot" style="background:var(--purple-600)"></span>Governance spine</div>
+      <div class="legend-item"><span class="dot" style="background:var(--teal-600)"></span>PLM assessment platform</div>
+      <div class="legend-item"><span class="dot" style="background:var(--pink-600)"></span>Decision &amp; value</div>
+      <div class="legend-item"><span class="dot" style="background:var(--gray-600)"></span>Enterprise holarchy</div>
+    </div>
+  </div>
+
+  <!-- ZONE: Enterprise Holarchy + Governance Spine -->
+  <div class="zone c-gray">
+    <div class="zone-head"><span class="tag gray">Apex</span><h2>Enterprise holarchy &amp; governance spine</h2></div>
+    <p class="sub">The holonic levels every other zone plugs into, the federated governance org that owns them, and the human-AI teaming cycle enforced at every layer boundary.</p>
+
+    <div class="subhead">Holonic levels</div>
+    <div class="chip-grid">
+      <div class="chip"><b>L1 — Knowledge holon</b><span>Vocabulary, taxonomy, ontology, schema, vector DB — SHACL/SWRL + ORSD/KGCL</span></div>
+      <div class="chip"><b>L2 — Domain holon</b><span>Component ontologies, domain agents, vector DBs, PEPs — sovereign domain governance</span></div>
+      <div class="chip"><b>Mediation holon (lateral)</b><span>SAML — persistent mapping graph insulating top-down from bottom-up</span></div>
+      <div class="chip"><b>L3 — Gateway holon</b><span>RDSG — six-stage requirement-grounded, STPA-governed traversal</span></div>
+      <div class="chip"><b>L4 — Enterprise holarchy</b><span>Federated governance, full service portfolio, continuous engineering loop</span></div>
+    </div>
+
+    <div class="subhead">Full seven-layer topology (Figure 8 — generalized reference model)</div>
+    <p class="sub" style="margin-bottom:8px;">Every layer boundary is a governance checkpoint, not a data hop — the L3 gateway holon enforces PEPs at every transition. The mediation holon (persistent mapping graph) sits laterally between L1–L3 (bottom-up) and L4–L5 (top-down); see Figures 5 &amp; 8.</p>
+    <div class="chip-grid">
+      <div class="chip"><b>L1 — Physical / operational holons</b><span>Ground truth of the enterprise — equipment, machines, distribution assets, instruments &amp; telemetry sources</span></div>
+      <div class="chip"><b>L2 — Digital twin &amp; connectivity</b><span>Semantic normalization of physical reality — IoT/OPC-UA adapters, batch ETL, event streaming</span></div>
+      <div class="chip"><b>L3 — PEP &amp; AI edge (gateway holon)</b><span>Structural governance enforcement — RDSG six-stage traversal, trust/safety boundary, compiled invariants</span></div>
+      <div class="chip"><b>L4 — Knowledge graph + data fabric</b><span>The digital thread — federated SPARQL/GraphQL/Cypher query, data lakehouse, streamed semantic mesh layer</span></div>
+      <div class="chip"><b>L5 — Semantic governance</b><span>The rulebook — canonical OWL/RDF ontology skeleton, SHACL constraint shapes, SWRL/symbolic rules, ORSD/KGCL change governance</span></div>
+      <div class="chip"><b>L6 — Holon orchestration &amp; UI</b><span>Human-AI teaming boundary — workflow/orchestration platform, HITL intervention &amp; approval, role-based dashboards</span></div>
+      <div class="chip"><b>L7 — Enterprise ecosystem</b><span>Consumers of governed intelligence — ERP/financial systems of record, PLM engineering change management, BI &amp; intelligence applications</span></div>
+    </div>
+
+    <div class="subhead">Federated governance org (three tiers)</div>
+    <div class="chip-grid">
+      <div class="chip"><b>Enterprise semantic governance council</b><span>L4 — strategic policy</span></div>
+      <div class="chip"><b>Domain governance teams</b><span>L2 — domain ontology &amp; data quality</span></div>
+      <div class="chip"><b>Semantic governance CoE</b><span>L1 + L3 + mediation holon — platform operations, DEV/STG/PRD lifecycle</span></div>
+    </div>
+
+    <div class="subhead">Four (+ decision) governance domains (Figure 9 — ambient band, run concurrently, converge at the governance layer)</div>
+    <div class="chip-grid">
+      <div class="chip c-purple"><b>Data governance</b><span>ISO 8000 eight quality dimensions → holonic invariant + circuit-breaker connection. Tooling: catalog, lineage graph, quality gate, MDM, access policy</span></div>
+      <div class="chip c-purple"><b>Semantic governance</b><span>DEV (construction) / STG (top-down ↔ bottom-up reconciliation, R2RML) / PRD (production). Tooling: ontology registry, SHACL validator, alignment map, change log</span></div>
+      <div class="chip c-purple"><b>Analytic governance</b><span>PEP — analytic quality enforcement: statistical validity, confidence intervals, reproducibility. Tooling: model registry, semantic layer, certification, FEAC</span></div>
+      <div class="chip c-purple"><b>AI / trust governance</b><span>LKIF deontic norms (obligation/permission/prohibition/violation/sanction); EU AI Act, NIST AI RMF. Tooling: trust circuit breaker, model card, risk scanner, audit log</span></div>
+      <div class="chip c-purple"><b>Decision governance</b><span>Multi-tier decision architecture + LKIF deontic norms applied to FP&amp;A / financial decisions (Section 6.3)</span></div>
+    </div>
+
+    <div class="subhead">Human-AI teaming framework — HITL governance spine</div>
+    <div class="pipeline">
+      <div class="pstep c-purple"><b>Observe</b></div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>Reason</b></div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>Propose</b></div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>HITL review</b></div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>Adapt</b></div>
+    </div>
+    <div class="quote">"Not six separate governance processes — the same Observe / Reason / Propose / HITL Review / Adapt cycle applied at six different points in the topology." (Figure 16 — applied at the semantic top-down, semantic bottom-up, mapping-graph, agentic, governance, and virtualization layers.)</div>
+    <p class="note">This is the abstract cycle. Its concrete, staffed implementation — fatigue scoring, trust calibration, competency maintenance, production-pressure detection — is its own zone below: "Human-AI teaming framework."</p>
+  </div>
+
+  <!-- ZONE: Three-Tier Semantic Architecture -->
+  <div class="zone c-blue">
+    <div class="zone-head"><span class="tag blue">Core</span><h2>Three-tier semantic architecture</h2></div>
+    <p class="sub">"The enterprise semantic stack has three tiers, not two." Top-down ontology and bottom-up implementation meet at a persistent mediation holon — this is also the V-model / digital-thread layer that replaces manual traceability matrices.</p>
+
+    <div class="subhead">Tier 1 — top-down (enterprise ontology)</div>
+    <div class="chip-grid">
+      <div class="chip"><b>L2 domain holons → L1 knowledge holons</b><span>Ontology, taxonomy, vocabulary, formal SHACL/SWRL invariants</span></div>
+      <div class="chip"><b>Personas</b><span>Enterprise governance council, domain architects, knowledge/data stewards, ontology engineers, SMEs, compliance/legal reviewers</span></div>
+    </div>
+
+    <div class="subhead">Mediation holon — semantic abstraction &amp; mediation layer (SAML)</div>
+    <p class="sub" style="margin-bottom:8px;">Figure 5: "Insulation, not integration — the mediation holon absorbs bottom-up churn so the top-down ontology never has to." Physical changes in any bottom-up system require only a mapping-graph update; point-to-point mappings between physical sources and the upper ontology are never created.</p>
+    <div class="chip-grid">
+      <div class="chip"><b>Mapping graph layer</b><span>Persistent, governed correspondence assertions across every bottom-up system (Section 4.2)</span></div>
+      <div class="chip"><b>Governance repository</b><span>Rule harmonization + rule projection agents, paired alongside the mapping graph (Section 4.4)</span></div>
+      <div class="chip"><b>Identity &amp; URI resolution registry</b><span>Mints the canonical enterprise entity ID</span></div>
+      <div class="chip"><b>Six correspondence types</b><span>Ontology↔3rd-party ontology · domain↔domain · domain↔operations · domain↔digital-asset schema · domain↔governance/invariants · domain↔RAG/AI</span></div>
+      <div class="chip"><b>Lifecycle</b><span>Proposed → confidence-scored → steward-reviewed → published as a KGCL-versioned assertion</span></div>
+    </div>
+
+    <div class="subhead">Tier 2 — bottom-up (physical implementation, Figure 5)</div>
+    <div class="chip-grid">
+      <div class="chip"><b>dbt / LookML</b><span>Transformation semantic layer, governed metric contracts</span></div>
+      <div class="chip"><b>Neo4j property graph</b><span>Operational graph representations, domain-local relationship modeling</span></div>
+      <div class="chip"><b>Vector DB / RAG / GraphRAG</b><span>Embedding &amp; similarity search, unstructured document grounding</span></div>
+      <div class="chip"><b>3rd-party ontologies</b><span>Industry-standard vocabularies, regulatory / interoperability alignment</span></div>
+      <div class="chip"><b>Data catalogs</b><span>Dataset discovery, sourced-truth lineage — kept current via lineage / drift signal</span></div>
+    </div>
+
+    <div class="subhead">Compiled semantic governance — SHACL/SWRL as single source of truth (Figure 6)</div>
+    <p class="sub" style="margin-bottom:8px;">Separates rule <i>definition</i> from rule <i>execution</i> so governance evaluation never becomes a graph-reasoning bottleneck at runtime. SHACL/SWRL are never bypassed as the system of record — they are compiled outward.</p>
+    <div class="pipeline">
+      <div class="pstep c-blue"><b>Definition time</b>Canonical SHACL / SWRL / symbolics — authored &amp; version-controlled by domain governance teams</div>
+      <div class="arrow wrap-full">↓</div>
+      <div class="pstep c-amber"><b>Rule harmonization engine</b>SPARQL conflict + dependency graph scan over the canonical rule set; enterprise council approval gate</div>
+      <div class="arrow wrap-full">↓</div>
+      <div class="pstep c-teal"><b>Rule projection agents</b>Compile canonical rules into target-native policy</div>
+    </div>
+    <div class="chip-grid" style="margin-top:9px;">
+      <div class="chip"><b>SQL / dbt</b><span>Pushdown checks, dbt tests, SQL CHECK constraints</span></div>
+      <div class="chip"><b>OPA / Rego</b><span>Security &amp; privacy, attribute-based policy decision points</span></div>
+      <div class="chip"><b>Vector / RAG</b><span>Filter constraints, RAG vector validation, GraphRAG grounding</span></div>
+      <div class="chip"><b>Agent / LLM</b><span>Context &amp; guardrails, system-prompt bounds, compiled AI directive</span></div>
+    </div>
+    <p class="note">Runtime: microsecond-latency enforcement — no graph reasoning at request time. Every compiled artifact retains a URI link back to its source SHACL/SWRL invariant for full audit traceability.</p>
+
+    <div class="subhead">SHACL-to-policy compilation pipeline (Figure 7)</div>
+    <p class="sub" style="margin-bottom:8px;">Every change to a canonical rule — from a KGCL change event, a scheduled harmonization run, or a manual CoE publish — passes through the same six-stage pipeline before it becomes enforceable policy.</p>
+    <div class="pipeline">
+      <div class="pstep c-teal"><b>1. Shape parser</b>Loads canonical shape</div><div class="arrow">→</div>
+      <div class="pstep c-teal"><b>2. Constraint extractor</b>SPARQL-normalized constraints</div><div class="arrow">→</div>
+      <div class="pstep c-amber"><b>3. Harmonization check</b>Conflict / dependency scan</div><div class="arrow">→</div>
+      <div class="pstep c-amber"><b>4. Target mapper</b>Matches to runtime engine</div><div class="arrow">→</div>
+      <div class="pstep c-blue"><b>5. Policy generator</b>Emits deployable artifact</div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>6. KGCL version + publish</b>Version-stamped, rollback-capable</div>
+    </div>
+    <p class="note">Compiled policy registry (dbt tests · OPA/Rego bundles · vector filter configs · agent guardrail schemas) is deployed behind the L3 RDSG gateway enforcement engine (steps 1–4).</p>
+
+    <div class="subhead">Governance layer (Figure 14) — rules, constraints &amp; logic</div>
+    <div class="pipeline">
+      <div class="pstep c-purple"><b>Formal invariants</b>SHACL / SWRL</div>
+      <div class="pstep c-purple"><b>Deontic norm library</b>Obligation / permission / prohibition</div>
+      <div class="pstep c-purple"><b>Structural contracts</b>PEP governance / KGCL change history</div>
+      <div class="arrow wrap-full">↓ rule harmonization engine ↓</div>
+      <div class="pstep c-blue"><b>L3 gateway enforcement</b></div>
+      <div class="pstep c-teal"><b>Virtualization layer</b></div>
+      <div class="pstep c-amber"><b>Agentic layer guardrails</b></div>
+      <div class="pstep c-gray"><b>Four governance domains</b></div>
+    </div>
+    <p class="note">"This is compiled semantic governance — rules are always defined once, in the graph layer, and harmonized centrally, but they are read, compiled, and enforced by every subsystem in this topology, never re-authored locally."</p>
+
+    <div class="subhead">Virtualization layer (Figure 15) — context engineering &amp; semantic optimization</div>
+    <div class="two-col" style="margin-bottom:0;">
+      <div class="subzone">
+        <h3>Context engineering</h3>
+        <ul class="tight">
+          <li>Requirement context bundle (RCB) assembly — WHO/WHAT/WHEN/WHERE/WHY relevancy dimensions</li>
+          <li>Persona &amp; session context binding — expiration, permission scope</li>
+          <li>Compiled AI directive assembly — governance outputs synthesized into a bounded content</li>
+        </ul>
+      </div>
+      <div class="subzone">
+        <h3>Semantic optimization for execution</h3>
+        <ul class="tight">
+          <li>Pre-compiled rule projections — dbt/SQL/OPA/Rego, vector filters</li>
+          <li>Tiered materialization — pre-validated sets vs. federated live queries</li>
+          <li>Query virtualization &amp; embedding / index caching</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Runtime delivery — microsecond-to-second latency, no graph reasoning at request time, MTBH-style trust score attached to every response. Consumed by the L3 gateway facade, L6 orchestration &amp; UI, and L7 enterprise ecosystem.</p>
+
+    <div class="subhead">V-model equivalent — digital thread as holarchy</div>
+    <p class="sub" style="margin-bottom:8px;">A single holon carries both ALM facets (code, requirements, sprints, test cases) and PLM facets (CAD, BOMs, tolerances). "Change impact analysis: manual traceability matrix updates → holonic impact graph propagates changes automatically."</p>
+    <table class="heat">
+      <tr><th>KSWG dimension</th><th>Static engineering (conventional)</th><th>Living holonic system</th></tr>
+      <tr><td><b>Fundamental state</b></td><td>Product designed, built, remains exactly as constructed</td><td>Assets understand their own purpose, environment, and performance data</td></tr>
+      <tr><td><b>Response mechanism</b></td><td>Relies on human intervention for maintenance, patching, adaptation</td><td>Systemic autonomy via Observe-Reason-Adapt; mediation holon absorbs drift automatically</td></tr>
+      <tr><td><b>Ultimate goal</b></td><td>Meeting baseline specs at the moment of deployment</td><td>Maintaining integrity &amp; function via MTBH monitoring, STPA/STAMP UCA coverage, graceful degradation</td></tr>
+    </table>
+  </div>
+
+  <!-- ZONE: RDSG Gateway -->
+  <div class="zone c-blue">
+    <div class="zone-head"><span class="tag blue">Gateway</span><h2>Requirements engineering semantic gateway (RDSG)</h2></div>
+    <p class="sub">The six-stage, STPA/STAMP-governed pipeline every request traverses before an AI agent or external system acts.</p>
+    <div class="pipeline">
+      <div class="pstep c-purple"><b>Stage 0</b>RCB assembly + UCA profile + safe-state index</div><div class="arrow">→</div>
+      <div class="pstep c-blue"><b>Step 1</b>Ontology resolution (entity grounding)</div><div class="arrow">→</div>
+      <div class="pstep c-blue"><b>Step 2</b>SHACL evaluation (static constraints)</div><div class="arrow">→</div>
+      <div class="pstep c-blue"><b>Step 3</b>SWRL rule execution (REQ / TMP / UCA)</div><div class="arrow">→</div>
+      <div class="pstep c-blue"><b>Step 4</b>PEP orchestration + reversibility PEP</div><div class="arrow">→</div>
+      <div class="pstep c-purple"><b>Step 5</b>CAD compilation (compiled AI directive)</div>
+      <div class="arrow wrap-full">↓</div>
+      <div class="pstep c-teal"><b>Service facade</b>Zone 4 — delivery gate, evaluates acceptance criteria</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Zone 5</b>AI agents + vector DBs</div><div class="arrow">→</div>
+      <div class="pstep c-amber"><b>Zone 6</b>Simplex action gateway — irreversibility boundary</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Response</b>To user / external systems</div>
+    </div>
+    <div class="flow-caption">Dashed feedback loop: service facade → back to step 1 on acceptance-criteria failure.</div>
+
+    <div class="subhead">Simplex five-step handshake (zone 6)</div>
+    <ol class="tight">
+      <li>Block and characterize</li>
+      <li>Route to authorized role</li>
+      <li>Confirm with attestation</li>
+      <li>Validate the token (identity / scope / freshness)</li>
+      <li>Execute and log immutably (append-only audit)</li>
+    </ol>
+  </div>
+
+  <!-- ZONE: Agentic Fabric -->
+  <div class="zone c-amber">
+    <div class="zone-head"><span class="tag amber">Fabric</span><h2>Agentic fabric</h2></div>
+    <p class="sub">"The virtual graph engine and agentic fabric enforce the compiled, target-native rules at microsecond latency." Every agent below runs the same Observe → Reason → Propose → HITL Review → Adapt loop.</p>
+    <div class="chip-grid">
+      <div class="chip"><b>Domain-specific mapping agent</b><span>WHERE dimension</span></div>
+      <div class="chip"><b>Contextual relevancy agent</b><span>WHY dimension</span></div>
+      <div class="chip"><b>Persona relevancy agent</b><span>WHO dimension</span></div>
+      <div class="chip"><b>Lineage ingestion agent</b><span>Keeps mapping graph current</span></div>
+      <div class="chip"><b>Mapping proposal agent</b><span>Drafts new mapping-graph assertions</span></div>
+      <div class="chip"><b>Rule harmonization engine</b><span>Reconciles invariants across domains</span></div>
+      <div class="chip"><b>Rule projection agent(s)</b><span>Compiles rules to target runtimes</span></div>
+      <div class="chip"><b>RAG grounding agent</b><span>Anchors retrieval to the mapping graph</span></div>
+      <div class="chip"><b>Domain reasoning agent</b><span>Executes domain-level inference</span></div>
+      <div class="chip"><b>Governance / compliance agent</b><span>Applies the five governance domains</span></div>
+      <div class="chip"><b>Trust / circuit-breaker agent</b><span>Runs MTBH scoring &amp; quarantine</span></div>
+    </div>
+  </div>
+
+  <!-- ZONE: Circuit Breaker + Viral Engineering -->
+  <div class="two-col">
+    <div class="zone c-red" style="margin-bottom:0;">
+      <div class="zone-head"><span class="tag red">Trust</span><h2>AI circuit breaker &amp; universal trust measurement</h2></div>
+      <p class="sub">"Converts AI governance from a compliance checkbox into a metrological measurement system."</p>
+      <div class="subhead">Five-layer architecture (per agent)</div>
+      <ul class="tight">
+        <li><b>L1</b> Reference standard — semantic policy envelope</li>
+        <li><b>L2</b> Measurement engine — 5D vector scoring &lt;10ms (semantic alignment, PII/IP proximity, manipulation intent, regulatory boundary, behavioral entropy)</li>
+        <li><b>L3</b> Statistical process control — SPC control charts, UCA detection (STPA/STAMP)</li>
+        <li><b>L4</b> Holonic immune response — quarantine / fallback / HITL / audit</li>
+        <li><b>L5</b> Provenance audit trail — PROV-O</li>
+      </ul>
+      <div class="subhead">Collective hierarchy</div>
+      <p class="sub" style="margin-bottom:8px;">Agent CB → domain cluster CB → enterprise orchestrator CB → HITL governance board, via a shared policy ontology, cross-agent correlation monitor, global trust budget, and an irreversibility consensus protocol.</p>
+      <div class="subhead">Universal trust metric (dimensional, never aggregate)</div>
+      <div class="chip-grid">
+        <div class="chip"><b>MTBH</b><span>Mean time between hallucinations — WHO/WHAT/WHEN/WHERE/WHY sub-metrics</span></div>
+        <div class="chip"><b>Value-drift coefficient</b><span>Distance between current objective and original human intent</span></div>
+        <div class="chip"><b>Intent delta</b><span>Discrepancy between logical task understanding and operational reality</span></div>
+      </div>
+      <p class="note">A trip = LKIF violation; strip/quarantine = LKIF sanction. Sanitized outputs are excluded from training data (anti-collapse).</p>
+    </div>
+
+    <div class="zone c-coral" style="margin-bottom:0;">
+      <div class="zone-head"><span class="tag coral">Immune system</span><h2>Viral engineering strategy — Project AEGIS</h2></div>
+      <p class="sub">Agent-swarm safety reframed as epidemiology: an artificial immune system for the agentic fabric.</p>
+      <div class="subhead">Execution vs. control plane</div>
+      <p class="sub" style="margin-bottom:8px;">Execution plane decoupled from an out-of-band control &amp; observability plane. Root signing keys held in HSM (non-exportable); control messages Ed25519-signed; verified by a two-stage proxy before reaching the LLM context.</p>
+      <div class="subhead">Breaker states &amp; topological metrics</div>
+      <div class="chip-grid">
+        <div class="chip"><b>Closed / open / half-open</b><span>Three-state breaker machine</span></div>
+        <div class="chip"><b>Fan-out rate</b><span>R_f</span></div>
+        <div class="chip"><b>Delegation loop density</b><span>D_l</span></div>
+        <div class="chip"><b>Token amplification</b><span>A_t</span></div>
+      </div>
+      <div class="subhead">Immune-system mapping</div>
+      <ul class="tight">
+        <li>Self/non-self recognition → SPIFFE/SPIRE + HSM</li>
+        <li>Innate immunity → sidecar proxy + OPA/Rego</li>
+        <li>Inflammatory / circuit response → topo-metric breakers</li>
+        <li>Humoral immunity → cryptographic semantic antibodies</li>
+        <li>Immune memory → vector store → ClickHouse → OPA bundle server ("vaccines")</li>
+      </ul>
+      <p class="note">Roadmap: ingestion &amp; identity → telemetry lake &amp; circuit breaker → semantic neutralization &amp; cross-cloud federation.</p>
+    </div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+  <!-- ZONE: Human-AI Teaming Framework -->
+  <div class="zone c-green">
+    <div class="zone-head"><span class="tag" style="background:var(--green-50);color:var(--green-800);">Trust — human side</span><h2>Human-AI teaming framework</h2></div>
+    <p class="sub">"We've built trustworthy AI through rigorous technical safeguards. This framework extends those same principles to the people who work with it." A parallel layer added to the semantic governance architecture, the AI circuit breaker, and the Tom Sawyer OPS Workbench — operationalizing the abstract HITL governance spine (Figure 16) above with real-time instrumentation of the humans in the loop.</p>
+
+    <div class="subhead">The automation paradox — why this exists</div>
+    <table class="heat">
+      <tr><th>Milestone</th><th>AI accuracy</th><th>Human oversight</th><th>System reliability</th></tr>
+      <tr><td><b>Week 1</b></td><td>65%</td><td>95%</td><td>95%</td></tr>
+      <tr><td><b>Week 52 — without this framework</b></td><td>92%</td><td>70% (rubber-stamping)</td><td>85% — <i>worse</i>, despite better AI</td></tr>
+      <tr><td><b>Week 52 — with this framework</b></td><td>92%</td><td>94%</td><td>99% — better AI, better system</td></tr>
+    </table>
+    <p class="note">Better automation alone makes human supervisors complacent — a pattern documented from Air France 447 to Three Mile Island to Knight Capital. Circuit breakers only shift the failure point unless the human who responds to a trip is also monitored, calibrated, and rested.</p>
+
+    <div class="subhead">Seven integrated capabilities</div>
+    <div class="chip-grid">
+      <div class="chip"><b>Real-time performance monitoring</b><span>Fatigue score = 30% session duration + 30% time-since-break + 20% accuracy degradation + 20% decision-speed increase. Mandatory 15-min break at 0.7; 6-hour session cap</span></div>
+      <div class="chip"><b>Trust calibration</b><span>Tracks acceptance-rate vs. actual-accuracy per confidence bucket. &lt;5% gap = calibrated · 5–15% = slight · &gt;15% = over/under-trust, triggers a personalized in-context warning</span></div>
+      <div class="chip"><b>Confidence explainability</b><span>Decomposes each AI score into string similarity, semantic similarity, structural alignment, historical precedent, domain usage — plus evidence, concerns, and an interactive validation checklist</span></div>
+      <div class="chip"><b>Cognitive workload management</b><span>0–1 cognitive capacity score matches task complexity to engineer state; no task assigned below capacity floor — take a break instead</span></div>
+      <div class="chip"><b>Competency maintenance</b><span>Unassisted mapping exercise every 14 days (60% correctness + 40% reasoning quality); knowledge quizzes every 30 days; conflict-resolution sims every 21 days; skill-degradation flag at −15% of baseline</span></div>
+      <div class="chip"><b>Production pressure detection</b><span>Individual + team pressure score from rushing, accuracy decline, alert overrides, burnout risk, off-hours work. &gt;0.7 = critical — halts non-critical work, cuts targets 30–50%, forces time off</span></div>
+      <div class="chip"><b>Enhanced interfaces</b><span>Trust-warning banners, confidence breakdowns, interactive validation checklists, and Tom Sawyer Workbench human-performance dashboards alongside the technical metrics</span></div>
+    </div>
+
+    <div class="subhead">How it integrates — data flow</div>
+    <div class="pipeline">
+      <div class="pstep c-green"><b>Session starts</b>Cognitive workload manager assesses state</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Task assigned</b>Matched to current capacity</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Interface</b>Confidence explanation + calibration warnings</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Decision recorded</b>Full context &amp; timing</div><div class="arrow">→</div>
+      <div class="pstep c-green"><b>Performance database</b>Trust, fatigue &amp; pressure metrics update; alerts fire; breaks enforced</div>
+    </div>
+    <p class="note">Extends the semantic governance architecture (human performance monitoring), the AI circuit breaker (human takeover protocols), the vector DB / context engine (confidence explainability), the service portfolio, the operating model, and the Tom Sawyer Workbench — without replacing any of them.</p>
+
+    <div class="subhead">Implementation — six phases over eight months</div>
+    <div class="pipeline">
+      <div class="pstep c-gray"><b>Mo 1–2</b>Foundation — performance DB, fatigue detection</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Mo 2–3</b>Trust calibration + confidence explainability</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Mo 3–4</b>Cognitive support — workload &amp; breaks</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Mo 4–6</b>Competency maintenance</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Mo 6–7</b>Organizational safeguards — pressure monitoring</div><div class="arrow">→</div>
+      <div class="pstep c-gray"><b>Mo 7–8</b>Full integration &amp; optimization</div>
+    </div>
+    <div class="chip-grid" style="margin-top:9px;">
+      <div class="chip"><b>Investment</b><span>$1.2M · 8 people over 8 months</span></div>
+      <div class="chip"><b>3-year value</b><span>$10–20M in prevented costs</span></div>
+      <div class="chip"><b>ROI</b><span>8×–17× · 4–8 month payback</span></div>
+    </div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+  <!-- ZONE: PLM Assessment Platform -->
+  <div class="zone c-teal">
+    <div class="zone-head"><span class="tag teal">Applied domain</span><h2>PLM assessment platform</h2></div>
+    <p class="sub">The circuit breaker / governance grammar above, applied to the product-lifecycle domain: score maturity, ingest evidence with agents, catalog the agents that do it, trace impact, and roll everything into a governed executive dashboard.</p>
+
+    <div class="subhead">1 · Assessment scorecard — six lifecycle phases</div>
+    <div class="chip-grid">
+      <div class="chip"><b>Discover</b><span>Design thinking — JTBD, persona mapping, future-state planning, impact analysis</span></div>
+      <div class="chip"><b>Define</b><span>Requirements engineering — business &amp; design specs, requirements mapping &amp; traceability</span></div>
+      <div class="chip"><b>Design</b><span>Outcome-driven design — Northstar value, solution architecture, ARB review &amp; remediation</span></div>
+      <div class="chip"><b>Develop</b><span>Data / knowledge / systems engineering — DCAM, taxonomy-to-RDF mapping, CI/CD</span></div>
+      <div class="chip"><b>Deliver</b><span>Operations management — release, security, data quality, policy, certification</span></div>
+      <div class="chip"><b>Run</b><span>Supply chain &amp; service-level management</span></div>
+    </div>
+
+    <div class="subhead">2 · PLM ingestion using agents — Avatar 2.0 pipeline</div>
+    <div class="pipeline">
+      <div class="pstep c-teal"><b>Sources</b>Jira Cloud + artifact library (Confluence/SharePoint)</div><div class="arrow">→</div>
+      <div class="pstep c-amber"><b>6 scoring agents</b>Discovery &amp; outcomes · requirements &amp; traceability · architecture &amp; design · verification &amp; safety · data &amp; knowledge governance · operations &amp; release</div><div class="arrow">→</div>
+      <div class="pstep c-teal"><b>Ingestion scoring</b>Project · phase · discipline · gap · evidence · confidence</div><div class="arrow">→</div>
+      <div class="pstep c-teal"><b>Portfolio summary</b>Maturity % per project × phase</div>
+    </div>
+    <p class="note">Circuit-breaker status: active — low-confidence rows (&lt;0.5) flagged for human review, then loaded into the console.</p>
+
+    <div class="subhead">3 · PLM skills catalog — compliance agent fleet</div>
+    <div class="pipeline">
+      <div class="pstep c-teal"><b>Phase scouts (9)</b>Discovery · requirements · design · data-eng · knowledge · systems-eng · ops-readiness · supply-chain · service-level</div><div class="arrow">→</div>
+      <div class="pstep c-amber"><b>Cross-cutting agents (6)</b>Compliance-aggregator · risk-translator · drift-detector · HITL-router · evidence-curator · capability-mapper</div><div class="arrow">→</div>
+      <div class="pstep c-teal"><b>Executive surfaces</b>Operating model dashboard · ARB packet · per-team scorecards · RAI council queue · go/no-go pack</div>
+    </div>
+
+    <div class="subhead">4 · PLM impact tracer &amp; traceability matrix</div>
+    <p class="sub" style="margin-bottom:0;">Requirements mapping &amp; traceability (define phase) plus the digital-thread-as-holarchy pattern from the semantic core: change impact propagates through the holonic graph instead of a manually maintained matrix.</p>
+
+    <div class="subhead">5 · PLM dashboard — governance, policy &amp; risk in the scorecard, via the agentic fabric</div>
+    <p class="sub" style="margin-bottom:8px;">The risk-translator agent maps every technical gap to three business risk dimensions, rolled into a 6×3 executive heatmap:</p>
+    <table class="heat">
+      <tr><th>Lifecycle phase</th><th>Business operations risk (COO)</th><th>Strategic capability risk (CTO / EA)</th><th>Business model pillar risk (CFO / CEO)</th></tr>
+      <tr><td><b>Discover</b></td><td>Unvalidated needs reach delivery</td><td>Wrong capability prioritized</td><td>Misaligned value proposition</td></tr>
+      <tr><td><b>Define</b></td><td>Gaps in traceability coverage</td><td>Architecture drift from strategy</td><td>SLE / OKR misalignment</td></tr>
+      <tr><td><b>Design</b></td><td>Unresolved ARB findings</td><td>Solution not interoperable / resilient</td><td>Northstar value not evidenced</td></tr>
+      <tr><td><b>Develop</b></td><td>Data / ontology quality gaps</td><td>Knowledge engineering debt</td><td>Delivery capacity risk</td></tr>
+      <tr><td><b>Deliver</b></td><td>Release / security / policy gaps</td><td>Certification not achieved</td><td>Operational cost exposure</td></tr>
+      <tr><td><b>Run</b></td><td>Service-level breach</td><td>Supply-chain fragility</td><td>Run-rate margin erosion</td></tr>
+    </table>
+    <p class="note">Human checkpoints: TDR → ARB · GA promotion → semantic governance council · RAI clearance → RAI council · go/no-go → release management board · business-model escalation → TSC / CEO. (Cell text is illustrative of the mapping pattern, not scored data — swap in real assessment output.)</p>
+  </div>
+
+  <!-- ZONE: Decision & Value -->
+  <div class="zone c-pink">
+    <div class="zone-head"><span class="tag pink">Measurement</span><h2>Decision modeling &amp; measurement — measuring the right value</h2></div>
+    <p class="sub">How decisions get tiered and governed, and where "the right value" is defined and checked (Northstar value sits in the PLM design phase above).</p>
+    <div class="chip-grid">
+      <div class="chip"><b>Tier 1 — operational</b><span>Seconds to minutes · engages L1/L2 holons</span></div>
+      <div class="chip"><b>Tier 2 — tactical</b><span>Hours to days · engages L2/L3 holons</span></div>
+      <div class="chip"><b>Tier 3 — strategic</b><span>Weeks to quarters · engages L4 enterprise holarchy</span></div>
+      <div class="chip"><b>LKIF deontic norms</b><span>Obligation / permission / prohibition / violation / sanction applied to decisions</span></div>
+    </div>
+    <p class="note">A dedicated "measuring value" deck and a standalone impact-tracer artifact exist in your drive but weren't opened for this pass — worth folding in on the next revision if you want the exact framing reproduced here.</p>
+  </div>
+
+  <div class="footer">
+    Zone colors match the quick-orientation diagram shown in chat. Some names are this session's best reconciliation across multiple document versions (e.g. MTBH is defined as both "mean time between hallucinations" and "mean time between harmful outputs" in different source docs — shown here as one dimensional metric family). Flag anything that should be renamed, split, or corrected and the next revision will fold it in.
+  </div>
+
+</div>
+</body>
+</html>
