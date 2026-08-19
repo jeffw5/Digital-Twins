@@ -1,0 +1,6929 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Community Immunity Project — Outbreak Surveillance Prototype</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-1: #fcfcfb; --surface-2: #f9f9f7; --card: #ffffff;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#898781;
+    --gridline:#e1e0d9; --baseline:#c3c2b7; --border: rgba(11,11,11,0.10);
+    --v-datacenter:#2a78d6; --v-pe:#eb6834; --v-austerity:#1baf7a;
+    --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-400:#3987e5; --seq-550:#1c5cab; --seq-700:#0d366b;
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#d03b3b;
+    --success-text:#006300;
+  }
+  [data-theme="dark"]{
+    color-scheme: dark;
+    --surface-1:#1a1a19; --surface-2:#0d0d0d; --card:#232322;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#898781;
+    --gridline:#2c2c2a; --baseline:#383835; --border: rgba(255,255,255,0.10);
+    --v-datacenter:#3987e5; --v-pe:#d95926; --v-austerity:#199e70;
+    --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-400:#3987e5; --seq-550:#1c5cab; --seq-700:#0d366b;
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
+    --success-text:#0ca30c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--surface-2);color:var(--text-primary);
+    font-family: system-ui,-apple-system,"Segoe UI",sans-serif;}
+  body{padding-bottom:60px;}
+  h1,h2,h3,h4{font-weight:700;margin:0 0 4px 0;}
+  p{margin:0;}
+  .app{max-width:1280px;margin:0 auto;padding:0 20px;}
+  header.top{position:sticky;top:0;z-index:40;background:var(--surface-1);border-bottom:1px solid var(--border);}
+  .top-inner{max-width:1280px;margin:0 auto;padding:14px 20px 0 20px;}
+  .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;flex-direction:column;gap:2px;}
+  .brand .kicker{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:700;}
+  .brand h1{font-size:20px;}
+  .brand .sub{font-size:12.5px;color:var(--text-secondary);}
+  .top-controls{display:flex;align-items:center;gap:10px;}
+  button.iconbtn{background:var(--card);border:1px solid var(--border);color:var(--text-primary);
+    border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer;font-weight:600;}
+  button.iconbtn:hover{background:var(--surface-2);}
+  nav.tabs{display:flex;gap:2px;margin-top:14px;overflow-x:auto;}
+  nav.tabs button{background:transparent;border:none;border-bottom:2.5px solid transparent;color:var(--text-secondary);
+    font-size:13px;font-weight:600;padding:10px 14px;cursor:pointer;white-space:nowrap;}
+  nav.tabs button.active{color:var(--text-primary);border-bottom-color:var(--seq-400);}
+  nav.tabs button:hover{color:var(--text-primary);}
+
+  .filterbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 0 14px 0;border-bottom:1px solid var(--border);margin-bottom:18px;}
+  .filter-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .filter-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700;margin-right:2px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:20px;border:1px solid var(--border);
+    background:var(--card);cursor:pointer;font-size:12.5px;font-weight:600;color:var(--text-secondary);user-select:none;}
+  .chip .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .chip.active{color:var(--text-primary);border-color:currentColor;background:var(--surface-1);}
+  .chip.off{opacity:.4;}
+  .range-wrap{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary);}
+  .range-wrap input[type=range]{width:130px;}
+  #monthLabel{font-variant-numeric:tabular-nums;font-weight:600;color:var(--text-primary);min-width:150px;}
+  button.reset{margin-left:auto;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;
+    color:var(--text-secondary);font-size:12px;cursor:pointer;font-weight:600;}
+  button.reset:hover{color:var(--text-primary);}
+
+  section.tabpanel{display:none;}
+  section.tabpanel.active{display:block;}
+
+  .kpirow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px;}
+  .stat-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .stat-tile .label{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-weight:700;margin-bottom:6px;}
+  .stat-tile .value{font-size:26px;font-weight:700;line-height:1.1;}
+  .stat-tile .delta{font-size:12px;color:var(--text-secondary);margin-top:4px;}
+  .stat-tile .delta.good{color:var(--success-text);}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:18px;}
+  .card h3{font-size:14.5px;}
+  .card .desc{font-size:12.5px;color:var(--text-secondary);margin-top:2px;margin-bottom:10px;}
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:900px){.grid-2{grid-template-columns:1fr;} .grid-3{grid-template-columns:1fr;}}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin-top:8px;}
+  .legend .item{display:flex;align-items:center;gap:6px;}
+  .legend .swatch{width:10px;height:10px;border-radius:50%;flex:none;}
+
+  .infobox{background:var(--surface-1);border:1px solid var(--border);border-left:3px solid var(--seq-400);
+    border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--text-secondary);line-height:1.5;}
+  .infobox.autoimmune{border-left-color:var(--status-warning);}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);
+    font-weight:700;padding:6px 10px;border-bottom:1px solid var(--baseline);position:sticky;top:0;background:var(--card);cursor:pointer;}
+  td{padding:7px 10px;border-bottom:1px solid var(--gridline);color:var(--text-secondary);font-variant-numeric:tabular-nums;}
+  tr:hover td{background:var(--surface-1);color:var(--text-primary);}
+  .tablewrap{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:8px;}
+
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .badge .d{width:7px;height:7px;border-radius:50%;}
+  .badge-datacenter{background:color-mix(in srgb, var(--v-datacenter) 16%, transparent);color:var(--v-datacenter);}
+  .badge-pe{background:color-mix(in srgb, var(--v-pe) 16%, transparent);color:var(--v-pe);}
+  .badge-austerity{background:color-mix(in srgb, var(--v-austerity) 16%, transparent);color:var(--v-austerity);}
+
+  .status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;}
+  .status-pill .d{width:8px;height:8px;border-radius:50%;flex:none;}
+  .st-detected .d{background:var(--text-muted);} .st-detected{color:var(--text-secondary);}
+  .st-under_review .d{background:var(--status-warning);} .st-under_review{color:#8a6100;}
+  [data-theme="dark"] .st-under_review{color:var(--status-warning);}
+  .st-confirmed .d{background:var(--status-serious);} .st-confirmed{color:#9c3f21;}
+  [data-theme="dark"] .st-confirmed{color:var(--status-serious);}
+  .st-contained .d{background:var(--status-good);} .st-contained{color:var(--success-text);}
+  .st-recurrence .d{background:var(--status-critical);} .st-recurrence{color:var(--status-critical);}
+  .st-autoimmune_corrected .d{background:var(--seq-400);} .st-autoimmune_corrected{color:var(--seq-550);}
+  [data-theme="dark"] .st-autoimmune_corrected{color:var(--seq-400);}
+
+  svg.chart text{fill:var(--text-muted);font-size:10px;}
+  svg.chart .axisline{stroke:var(--baseline);stroke-width:1;}
+  svg.chart .grid{stroke:var(--gridline);stroke-width:1;}
+  .chart-title{font-size:12.5px;font-weight:700;color:var(--text-primary);margin-bottom:2px;}
+  .chart-sub{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+
+  .map-wrap{position:relative;}
+  #mapSvg{width:100%;height:auto;background:var(--surface-1);border-radius:10px;border:1px solid var(--border);}
+  .bubble{cursor:pointer;transition:opacity .15s;}
+  .bubble:hover{stroke:var(--text-primary);stroke-width:1.5;}
+  .region-label{fill:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.08em;opacity:.55;}
+  .tooltip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--border);
+    border-radius:8px;padding:8px 10px;font-size:11.5px;box-shadow:0 6px 18px rgba(0,0,0,.15);max-width:230px;
+    display:none;z-index:50;color:var(--text-primary);}
+  .tooltip .tt-title{font-weight:700;margin-bottom:3px;}
+  .tooltip .tt-row{color:var(--text-secondary);}
+
+  .reviewcard{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--card);}
+  .reviewcard .rc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+  .rc-id{font-size:11px;color:var(--text-muted);font-weight:700;}
+  .rc-narrative{font-size:12.5px;color:var(--text-secondary);margin-top:8px;line-height:1.5;}
+  .rc-panel{font-size:11px;color:var(--text-muted);margin-top:6px;}
+  .dispute-badge{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--surface-1);border:1px solid var(--border);color:var(--text-secondary);}
+
+  .toggle-table{font-size:11.5px;background:none;border:1px solid var(--border);border-radius:6px;padding:4px 9px;
+    cursor:pointer;color:var(--text-secondary);font-weight:600;float:right;margin-top:-2px;}
+  footer.note{font-size:11px;color:var(--text-muted);text-align:center;margin-top:30px;padding-top:16px;border-top:1px solid var(--border);}
+</style>
+</head>
+<body data-theme="light">
+<div class="tooltip" id="tooltip"></div>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="top-row">
+      <div class="brand">
+        <div class="kicker">Community Immunity Project — Prototype</div>
+        <h1>Pathogenic Exploitation Surveillance Dashboard</h1>
+        <div class="sub">One year of sample outbreak data (Sep 2025 – Aug 2026) · Data Center Extraction · Private Equity Roll-Up · Austerity Contagion</div>
+      </div>
+      <div class="top-controls">
+        <button class="iconbtn" id="themeBtn" type="button">Dark mode</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="map" class="active">Outbreak Map</button>
+      <button data-tab="timeline">Timeline &amp; Impact</button>
+      <button data-tab="hitl">HITL Review</button>
+      <button data-tab="antibody">Antibody Response</button>
+      <button data-tab="vaccination">Vaccination &amp; Prevention</button>
+    </nav>
+  </div>
+</header>
+
+<div class="app">
+  <div class="filterbar">
+    <div class="filter-group">
+      <span class="filter-label">Virus</span>
+      <div id="virusChips"></div>
+    </div>
+    <div class="filter-group range-wrap">
+      <span class="filter-label">Window</span>
+      <input type="range" id="rangeStart" min="0" max="11" value="0" />
+      <input type="range" id="rangeEnd" min="0" max="11" value="11" />
+      <span id="monthLabel"></span>
+    </div>
+    <button class="reset" id="resetBtn" type="button">Reset filters</button>
+  </div>
+
+  <!-- ===================== TAB: MAP ===================== -->
+  <section class="tabpanel active" id="tab-map">
+    <div class="kpirow" id="mapKpis"></div>
+    <div class="grid-2">
+      <div class="card map-wrap">
+        <h3>Geographic outbreak view</h3>
+        <div class="desc">Each bubble is a detected exploitation event · color = virus type · size = Exploitation Harm Index (EHI) severity. Click a bubble for detail.</div>
+        <svg id="mapSvg" class="chart" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="legend" id="mapLegend"></div>
+      </div>
+      <div class="card">
+        <h3>Regional load (filtered)</h3>
+        <div class="desc">Detections and average EHI by Census region, current filter window.</div>
+        <div id="regionBars"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Event log
+        <button class="toggle-table" id="mapTableToggle" type="button">Table view</button>
+      </h3>
+      <div class="desc">Filtered outbreak events, most recent first.</div>
+      <div class="tablewrap"><table id="eventsTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: TIMELINE ===================== -->
+  <section class="tabpanel" id="tab-timeline">
+    <div class="kpirow" id="timelineKpis"></div>
+    <div class="card">
+      <h3>Collective viral impact — total detections per month</h3>
+      <div class="desc">Stacked by virus type across the filtered window.</div>
+      <svg id="stackChart" class="chart" viewBox="0 0 1000 300"></svg>
+      <div class="legend" id="stackLegend"></div>
+    </div>
+    <div class="grid-3" id="smallMultiples"></div>
+    <div class="card">
+      <h3>Average severity (EHI) by virus type
+        <button class="toggle-table" id="ehiTableToggle" type="button">Table view</button>
+      </h3>
+      <svg id="ehiChart" class="chart" viewBox="0 0 1000 260"></svg>
+      <div class="legend" id="ehiLegend"></div>
+      <div class="tablewrap" id="ehiTableWrap" style="display:none;margin-top:10px;"><table id="ehiTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: HITL ===================== -->
+  <section class="tabpanel" id="tab-hitl">
+    <div class="card">
+      <h3>AI Circuit Breaker — Human Review Panel</h3>
+      <div class="desc">No EHI finding reaches the Public Harm Registry without human validation. This sample shows the three-level, non-adversarial dispute lifecycle from Section 2.4 of the Community Immunity Project, including cases where review caught a false positive before it caused harm — the "autoimmune" failure mode this layer exists to prevent.</div>
+    </div>
+    <div class="kpirow" id="hitlKpis"></div>
+    <div class="card">
+      <h3>Autoimmune prevention — self-inflicted harm caught before publication</h3>
+      <div class="desc">Findings that looked like exploitation on first pass but were withdrawn or downgraded on independent review, so the coalition never spent credibility or legal capital on the wrong respondent.</div>
+      <div id="autoimmuneList"></div>
+    </div>
+    <div class="card">
+      <h3>Full review sample</h3>
+      <div id="hitlList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: ANTIBODY ===================== -->
+  <section class="tabpanel" id="tab-antibody">
+    <div class="card">
+      <h3>Antibody response — community-led accountability</h3>
+      <div class="desc">Every confirmed finding converts into Cell formation, a Public Harm Registry entry, remediation-fund routing, and — where the pattern supports it — a legal referral. This is the "adaptive immune system" in the source document made observable.</div>
+    </div>
+    <div class="kpirow" id="antibodyKpis"></div>
+    <div class="card">
+      <h3>Cumulative antibody activity over the year</h3>
+      <div class="desc">Small multiples — each metric has its own scale, so no metric is compressed by another.</div>
+      <div class="grid-3" id="antibodyMultiples"></div>
+    </div>
+    <div class="card">
+      <h3>Remediation funds routed by region
+        <button class="toggle-table" id="remedTableToggle" type="button">Table view</button>
+      </h3>
+      <svg id="remedChart" class="chart" viewBox="0 0 1000 240"></svg>
+      <div class="tablewrap" id="remedTableWrap" style="display:none;margin-top:10px;"><table id="remedTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: VACCINATION ===================== -->
+  <section class="tabpanel" id="tab-vaccination">
+    <div class="card">
+      <h3>Vaccination &amp; prevention — systemic treatment, not just response</h3>
+      <div class="desc">"Vaccinated" jurisdictions have adopted a protective ordinance (an S.E.P.A.-model liability rule, a Registry reporting mandate, an acquisition review board, and similar). Sites in vaccinated states show a substantially lower recurrence rate.</div>
+    </div>
+    <div class="kpirow" id="vaccKpis"></div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Coverage growth</h3>
+        <div class="desc">Cumulative states with an adopted protective ordinance, of 33 tracked states.</div>
+        <svg id="coverageChart" class="chart" viewBox="0 0 620 260"></svg>
+      </div>
+      <div class="card">
+        <h3>Recurrence rate — matured cohorts only</h3>
+        <div class="desc">A site needs ~150 days of observation before a recurrence is even possible in this model. Dotted points are still maturing and are excluded from the trend read — showing them as zero would understate recurrence, not confirm prevention.</div>
+        <svg id="recurChart" class="chart" viewBox="0 0 620 260"></svg>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ordinances adopted this year</h3>
+      <div class="tablewrap"><table id="vaccTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <footer class="note">Synthetic sample data generated for prototype demonstration — not real outbreak records. Community Immunity Project · Sentinel Coalition · August 2026.</footer>
+</div>
+
+<script>
+const DATA = {
+ "generated_for": "2026-08-19",
+ "months": [
+  "2025-09",
+  "2025-10",
+  "2025-11",
+  "2025-12",
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08"
+ ],
+ "virus_types": {
+  "data_center": {
+   "label": "Data Center Extraction",
+   "slot": 1,
+   "color_light": "#2a78d6",
+   "color_dark": "#3987e5",
+   "subtypes": [
+    "Hyperscale Campus Siting",
+    "Colocation Facility Expansion",
+    "Crypto-Mining Conversion",
+    "Grid Interconnection Capture"
+   ],
+   "ehi_mean": 58,
+   "ehi_sd": 16,
+   "weight_by_region": {
+    "South": 1.6,
+    "West": 1.3,
+    "Midwest": 1.0,
+    "Northeast": 0.6
+   }
+  },
+  "private_equity": {
+   "label": "Private Equity Roll-Up",
+   "slot": 2,
+   "color_light": "#eb6834",
+   "color_dark": "#d95926",
+   "subtypes": [
+    "Healthcare System Rollup",
+    "Rental Housing Rollup",
+    "Grocery/Retail Rollup",
+    "Nursing Home Rollup",
+    "Utility Rate-Base Rollup"
+   ],
+   "ehi_mean": 62,
+   "ehi_sd": 20,
+   "weight_by_region": {
+    "South": 1.2,
+    "West": 1.0,
+    "Midwest": 1.2,
+    "Northeast": 1.3
+   }
+  },
+  "austerity": {
+   "label": "Austerity Contagion",
+   "slot": 3,
+   "color_light": "#1baf7a",
+   "color_dark": "#199e70",
+   "subtypes": [
+    "Municipal Service Cuts",
+    "Pension Clawback",
+    "Transit Defunding",
+    "School Budget Cuts",
+    "Water/Utility Privatization"
+   ],
+   "ehi_mean": 50,
+   "ehi_sd": 18,
+   "weight_by_region": {
+    "South": 1.3,
+    "Midwest": 1.3,
+    "Northeast": 0.9,
+    "West": 0.9
+   }
+  }
+ },
+ "events": [
+  {
+   "id": "E0118",
+   "date": "2025-09-05",
+   "month_index": 0,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 49,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 182000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0166",
+   "date": "2025-09-07",
+   "month_index": 0,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 75,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 32000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0023",
+   "date": "2025-09-13",
+   "month_index": 0,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 55,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 241000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0247",
+   "date": "2025-09-18",
+   "month_index": 0,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 36,
+   "status": "recurrence",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 148000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0047",
+   "date": "2025-09-25",
+   "month_index": 0,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 79,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 442000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0106",
+   "date": "2025-09-26",
+   "month_index": 0,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 37,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 266000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0164",
+   "date": "2025-09-26",
+   "month_index": 0,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 52,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0251",
+   "date": "2025-10-01",
+   "month_index": 1,
+   "city": "Las Vegas",
+   "state": "NV",
+   "region": "West",
+   "lat": 36.17,
+   "lon": -115.14,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 48,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0144",
+   "date": "2025-10-04",
+   "month_index": 1,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 76,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 219000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0203",
+   "date": "2025-10-05",
+   "month_index": 1,
+   "city": "Kansas City",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -94.58,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 27,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 180000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0258",
+   "date": "2025-10-05",
+   "month_index": 1,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 51,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 17000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0157",
+   "date": "2025-10-08",
+   "month_index": 1,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 70,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 195000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0116",
+   "date": "2025-10-09",
+   "month_index": 1,
+   "city": "San Antonio",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.42,
+   "lon": -98.49,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 66,
+   "status": "recurrence",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0033",
+   "date": "2025-10-11",
+   "month_index": 1,
+   "city": "Charlotte",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.23,
+   "lon": -80.84,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 61,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 454000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0013",
+   "date": "2025-10-16",
+   "month_index": 1,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 70,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0046",
+   "date": "2025-10-16",
+   "month_index": 1,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 37,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 128000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0194",
+   "date": "2025-10-17",
+   "month_index": 1,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 34,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 468000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0165",
+   "date": "2025-10-18",
+   "month_index": 1,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 47,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0173",
+   "date": "2025-10-21",
+   "month_index": 1,
+   "city": "Boston",
+   "state": "MA",
+   "region": "Northeast",
+   "lat": 42.36,
+   "lon": -71.06,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 32,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 46000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0027",
+   "date": "2025-10-22",
+   "month_index": 1,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 45,
+   "status": "recurrence",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 199000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0246",
+   "date": "2025-10-27",
+   "month_index": 1,
+   "city": "Sacramento",
+   "state": "CA",
+   "region": "West",
+   "lat": 38.58,
+   "lon": -121.49,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 35,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 227000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0202",
+   "date": "2025-11-01",
+   "month_index": 2,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 33,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0207",
+   "date": "2025-11-02",
+   "month_index": 2,
+   "city": "San Antonio",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.42,
+   "lon": -98.49,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 76,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 363000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0259",
+   "date": "2025-11-06",
+   "month_index": 2,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 61,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 58000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0019",
+   "date": "2025-11-07",
+   "month_index": 2,
+   "city": "San Antonio",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.42,
+   "lon": -98.49,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 30,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 422000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0110",
+   "date": "2025-11-08",
+   "month_index": 2,
+   "city": "St. Louis",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 38.63,
+   "lon": -90.2,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 72,
+   "status": "autoimmune_corrected",
+   "dispute_level": 3,
+   "antibody": null
+  },
+  {
+   "id": "E0237",
+   "date": "2025-11-08",
+   "month_index": 2,
+   "city": "Tulsa",
+   "state": "OK",
+   "region": "South",
+   "lat": 36.15,
+   "lon": -95.99,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 49,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 140000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0184",
+   "date": "2025-11-10",
+   "month_index": 2,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 44,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0048",
+   "date": "2025-11-15",
+   "month_index": 2,
+   "city": "Oklahoma City",
+   "state": "OK",
+   "region": "South",
+   "lat": 35.47,
+   "lon": -97.52,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 34,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 401000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0101",
+   "date": "2025-11-15",
+   "month_index": 2,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 48,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 455000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0120",
+   "date": "2025-11-17",
+   "month_index": 2,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 67,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0127",
+   "date": "2025-11-17",
+   "month_index": 2,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 69,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 120000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0195",
+   "date": "2025-11-20",
+   "month_index": 2,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 34,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0099",
+   "date": "2025-11-21",
+   "month_index": 2,
+   "city": "Indianapolis",
+   "state": "IN",
+   "region": "Midwest",
+   "lat": 39.77,
+   "lon": -86.16,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 41,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0018",
+   "date": "2025-11-22",
+   "month_index": 2,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 48,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 315000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0121",
+   "date": "2025-11-23",
+   "month_index": 2,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 89,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0158",
+   "date": "2025-11-23",
+   "month_index": 2,
+   "city": "Portland",
+   "state": "OR",
+   "region": "West",
+   "lat": 45.52,
+   "lon": -122.68,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 79,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0159",
+   "date": "2025-11-23",
+   "month_index": 2,
+   "city": "Portland",
+   "state": "OR",
+   "region": "West",
+   "lat": 45.52,
+   "lon": -122.68,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 35,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0176",
+   "date": "2025-11-25",
+   "month_index": 2,
+   "city": "Buffalo",
+   "state": "NY",
+   "region": "Northeast",
+   "lat": 42.89,
+   "lon": -78.88,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 49,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0072",
+   "date": "2025-12-01",
+   "month_index": 3,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 69,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 419000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0034",
+   "date": "2025-12-02",
+   "month_index": 3,
+   "city": "Charlotte",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.23,
+   "lon": -80.84,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 35,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 433000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0074",
+   "date": "2025-12-02",
+   "month_index": 3,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 58,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 84000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0215",
+   "date": "2025-12-04",
+   "month_index": 3,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 36,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 329000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0040",
+   "date": "2025-12-09",
+   "month_index": 3,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 86,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 253000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0056",
+   "date": "2025-12-09",
+   "month_index": 3,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 50,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 403000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0183",
+   "date": "2025-12-11",
+   "month_index": 3,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 57,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 310000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0145",
+   "date": "2025-12-12",
+   "month_index": 3,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 27,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 171000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0091",
+   "date": "2025-12-20",
+   "month_index": 3,
+   "city": "Baltimore",
+   "state": "MD",
+   "region": "Northeast",
+   "lat": 39.29,
+   "lon": -76.61,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 21,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 397000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0093",
+   "date": "2025-12-23",
+   "month_index": 3,
+   "city": "Chicago",
+   "state": "IL",
+   "region": "Midwest",
+   "lat": 41.88,
+   "lon": -87.63,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 67,
+   "status": "recurrence",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 361000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0160",
+   "date": "2025-12-24",
+   "month_index": 3,
+   "city": "Denver",
+   "state": "CO",
+   "region": "West",
+   "lat": 39.74,
+   "lon": -104.99,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 46,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 305000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0139",
+   "date": "2025-12-25",
+   "month_index": 3,
+   "city": "Tulsa",
+   "state": "OK",
+   "region": "South",
+   "lat": 36.15,
+   "lon": -95.99,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 43,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 369000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0140",
+   "date": "2025-12-25",
+   "month_index": 3,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 47,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 305000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0024",
+   "date": "2026-01-02",
+   "month_index": 4,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 40,
+   "status": "autoimmune_corrected",
+   "dispute_level": 2,
+   "antibody": null
+  },
+  {
+   "id": "E0083",
+   "date": "2026-01-02",
+   "month_index": 4,
+   "city": "Pittsburgh",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 40.44,
+   "lon": -79.99,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 63,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 244000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0231",
+   "date": "2026-01-02",
+   "month_index": 4,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 39,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 441000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0111",
+   "date": "2026-01-03",
+   "month_index": 4,
+   "city": "Kansas City",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -94.58,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 47,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 478000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0209",
+   "date": "2026-01-04",
+   "month_index": 4,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 26,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0105",
+   "date": "2026-01-07",
+   "month_index": 4,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 48,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 60000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0217",
+   "date": "2026-01-09",
+   "month_index": 4,
+   "city": "Miami",
+   "state": "FL",
+   "region": "South",
+   "lat": 25.76,
+   "lon": -80.19,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 62,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0240",
+   "date": "2026-01-11",
+   "month_index": 4,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 53,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 388000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0068",
+   "date": "2026-01-14",
+   "month_index": 4,
+   "city": "Portland",
+   "state": "OR",
+   "region": "West",
+   "lat": 45.52,
+   "lon": -122.68,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 60,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 23000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0257",
+   "date": "2026-01-15",
+   "month_index": 4,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 33,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 386000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0059",
+   "date": "2026-01-16",
+   "month_index": 4,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 48,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0112",
+   "date": "2026-01-18",
+   "month_index": 4,
+   "city": "Omaha",
+   "state": "NE",
+   "region": "Midwest",
+   "lat": 41.26,
+   "lon": -95.93,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 76,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 243000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0122",
+   "date": "2026-01-21",
+   "month_index": 4,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 57,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 297000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0252",
+   "date": "2026-01-23",
+   "month_index": 4,
+   "city": "Las Vegas",
+   "state": "NV",
+   "region": "West",
+   "lat": 36.17,
+   "lon": -115.14,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 43,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0211",
+   "date": "2026-01-24",
+   "month_index": 4,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 24,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 443000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0193",
+   "date": "2026-02-01",
+   "month_index": 5,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 61,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 106000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0239",
+   "date": "2026-02-01",
+   "month_index": 5,
+   "city": "Tulsa",
+   "state": "OK",
+   "region": "South",
+   "lat": 36.15,
+   "lon": -95.99,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 53,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0001",
+   "date": "2026-02-03",
+   "month_index": 5,
+   "city": "Hartford",
+   "state": "CT",
+   "region": "Northeast",
+   "lat": 41.76,
+   "lon": -72.69,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 61,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 180000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0081",
+   "date": "2026-02-04",
+   "month_index": 5,
+   "city": "Philadelphia",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 39.95,
+   "lon": -75.17,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 36,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 52000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0108",
+   "date": "2026-02-04",
+   "month_index": 5,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 54,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0219",
+   "date": "2026-02-04",
+   "month_index": 5,
+   "city": "Miami",
+   "state": "FL",
+   "region": "South",
+   "lat": 25.76,
+   "lon": -80.19,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 77,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 227000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0117",
+   "date": "2026-02-05",
+   "month_index": 5,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 65,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 84000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0253",
+   "date": "2026-02-07",
+   "month_index": 5,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 58,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 277000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0070",
+   "date": "2026-02-08",
+   "month_index": 5,
+   "city": "Las Vegas",
+   "state": "NV",
+   "region": "West",
+   "lat": 36.17,
+   "lon": -115.14,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 72,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 104000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0075",
+   "date": "2026-02-08",
+   "month_index": 5,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 90,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0124",
+   "date": "2026-02-09",
+   "month_index": 5,
+   "city": "Charlotte",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.23,
+   "lon": -80.84,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 45,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 216000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0142",
+   "date": "2026-02-09",
+   "month_index": 5,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 46,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 417000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0079",
+   "date": "2026-02-10",
+   "month_index": 5,
+   "city": "Boston",
+   "state": "MA",
+   "region": "Northeast",
+   "lat": 42.36,
+   "lon": -71.06,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 56,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0188",
+   "date": "2026-02-10",
+   "month_index": 5,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 47,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 89000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0028",
+   "date": "2026-02-11",
+   "month_index": 5,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 92,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 138000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0084",
+   "date": "2026-02-11",
+   "month_index": 5,
+   "city": "Pittsburgh",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 40.44,
+   "lon": -79.99,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 50,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 455000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0085",
+   "date": "2026-02-11",
+   "month_index": 5,
+   "city": "Buffalo",
+   "state": "NY",
+   "region": "Northeast",
+   "lat": 42.89,
+   "lon": -78.88,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 55,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 267000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0260",
+   "date": "2026-02-13",
+   "month_index": 5,
+   "city": "Spokane",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.66,
+   "lon": -117.43,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 66,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 334000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0102",
+   "date": "2026-02-14",
+   "month_index": 5,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 45,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 192000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0190",
+   "date": "2026-02-15",
+   "month_index": 5,
+   "city": "Indianapolis",
+   "state": "IN",
+   "region": "Midwest",
+   "lat": 39.77,
+   "lon": -86.16,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 64,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 417000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0036",
+   "date": "2026-02-18",
+   "month_index": 5,
+   "city": "Nashville",
+   "state": "TN",
+   "region": "South",
+   "lat": 36.16,
+   "lon": -86.78,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 70,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 207000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0092",
+   "date": "2026-02-19",
+   "month_index": 5,
+   "city": "Baltimore",
+   "state": "MD",
+   "region": "Northeast",
+   "lat": 39.29,
+   "lon": -76.61,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 60,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 272000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0191",
+   "date": "2026-02-19",
+   "month_index": 5,
+   "city": "Indianapolis",
+   "state": "IN",
+   "region": "Midwest",
+   "lat": 39.77,
+   "lon": -86.16,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 64,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 424000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0045",
+   "date": "2026-02-22",
+   "month_index": 5,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 35,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0061",
+   "date": "2026-02-22",
+   "month_index": 5,
+   "city": "Sacramento",
+   "state": "CA",
+   "region": "West",
+   "lat": 38.58,
+   "lon": -121.49,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 60,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 62000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0103",
+   "date": "2026-02-23",
+   "month_index": 5,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 47,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 297000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0003",
+   "date": "2026-02-25",
+   "month_index": 5,
+   "city": "Chicago",
+   "state": "IL",
+   "region": "Midwest",
+   "lat": 41.88,
+   "lon": -87.63,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 48,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 113000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0167",
+   "date": "2026-02-25",
+   "month_index": 5,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 66,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0244",
+   "date": "2026-02-25",
+   "month_index": 5,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 55,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0038",
+   "date": "2026-02-27",
+   "month_index": 5,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 46,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 375000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0182",
+   "date": "2026-02-27",
+   "month_index": 5,
+   "city": "Detroit",
+   "state": "MI",
+   "region": "Midwest",
+   "lat": 42.33,
+   "lon": -83.05,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 58,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 438000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0100",
+   "date": "2026-03-05",
+   "month_index": 6,
+   "city": "Indianapolis",
+   "state": "IN",
+   "region": "Midwest",
+   "lat": 39.77,
+   "lon": -86.16,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 63,
+   "status": "recurrence",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 127000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0125",
+   "date": "2026-03-05",
+   "month_index": 6,
+   "city": "Charlotte",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.23,
+   "lon": -80.84,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 37,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0233",
+   "date": "2026-03-09",
+   "month_index": 6,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 91,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0082",
+   "date": "2026-03-11",
+   "month_index": 6,
+   "city": "Philadelphia",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 39.95,
+   "lon": -75.17,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 58,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0098",
+   "date": "2026-03-11",
+   "month_index": 6,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 33,
+   "status": "recurrence",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 443000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0174",
+   "date": "2026-03-13",
+   "month_index": 6,
+   "city": "Philadelphia",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 39.95,
+   "lon": -75.17,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 54,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 261000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0242",
+   "date": "2026-03-14",
+   "month_index": 6,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 84,
+   "status": "autoimmune_corrected",
+   "dispute_level": 2,
+   "antibody": null
+  },
+  {
+   "id": "E0136",
+   "date": "2026-03-15",
+   "month_index": 6,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 82,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 69000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0212",
+   "date": "2026-03-16",
+   "month_index": 6,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 62,
+   "status": "recurrence",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 472000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0015",
+   "date": "2026-03-17",
+   "month_index": 6,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 46,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 308000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0063",
+   "date": "2026-03-17",
+   "month_index": 6,
+   "city": "Phoenix",
+   "state": "AZ",
+   "region": "West",
+   "lat": 33.45,
+   "lon": -112.07,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 72,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0163",
+   "date": "2026-03-17",
+   "month_index": 6,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 28,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0051",
+   "date": "2026-03-18",
+   "month_index": 6,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 72,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 338000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0181",
+   "date": "2026-03-23",
+   "month_index": 6,
+   "city": "Chicago",
+   "state": "IL",
+   "region": "Midwest",
+   "lat": 41.88,
+   "lon": -87.63,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 45,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 467000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0230",
+   "date": "2026-03-25",
+   "month_index": 6,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 71,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 327000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0235",
+   "date": "2026-03-25",
+   "month_index": 6,
+   "city": "Oklahoma City",
+   "state": "OK",
+   "region": "South",
+   "lat": 35.47,
+   "lon": -97.52,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 33,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0169",
+   "date": "2026-03-26",
+   "month_index": 6,
+   "city": "Spokane",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.66,
+   "lon": -117.43,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 26,
+   "status": "autoimmune_corrected",
+   "dispute_level": 2,
+   "antibody": null
+  },
+  {
+   "id": "E0249",
+   "date": "2026-03-26",
+   "month_index": 6,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 13,
+   "status": "autoimmune_corrected",
+   "dispute_level": 3,
+   "antibody": null
+  },
+  {
+   "id": "E0064",
+   "date": "2026-03-27",
+   "month_index": 6,
+   "city": "Tucson",
+   "state": "AZ",
+   "region": "West",
+   "lat": 32.22,
+   "lon": -110.97,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 59,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0192",
+   "date": "2026-04-08",
+   "month_index": 7,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 60,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 407000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0017",
+   "date": "2026-04-09",
+   "month_index": 7,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 53,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 235000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0049",
+   "date": "2026-04-09",
+   "month_index": 7,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 42,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 126000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0054",
+   "date": "2026-04-09",
+   "month_index": 7,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 71,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0189",
+   "date": "2026-04-11",
+   "month_index": 7,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 38,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 187000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0256",
+   "date": "2026-04-12",
+   "month_index": 7,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 68,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 375000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0138",
+   "date": "2026-04-13",
+   "month_index": 7,
+   "city": "Tulsa",
+   "state": "OK",
+   "region": "South",
+   "lat": 36.15,
+   "lon": -95.99,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 89,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 309000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0226",
+   "date": "2026-04-13",
+   "month_index": 7,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 77,
+   "status": "autoimmune_corrected",
+   "dispute_level": 3,
+   "antibody": null
+  },
+  {
+   "id": "E0065",
+   "date": "2026-04-14",
+   "month_index": 7,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 39,
+   "status": "contained",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 225000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0132",
+   "date": "2026-04-14",
+   "month_index": 7,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 54,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 176000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0135",
+   "date": "2026-04-14",
+   "month_index": 7,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 80,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 326000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0025",
+   "date": "2026-04-17",
+   "month_index": 7,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 48,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0151",
+   "date": "2026-04-18",
+   "month_index": 7,
+   "city": "Fresno",
+   "state": "CA",
+   "region": "West",
+   "lat": 36.75,
+   "lon": -119.77,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 83,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 87000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0088",
+   "date": "2026-04-23",
+   "month_index": 7,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 73,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 89000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0008",
+   "date": "2026-05-01",
+   "month_index": 8,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 38,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 67000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0119",
+   "date": "2026-05-01",
+   "month_index": 8,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 65,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0221",
+   "date": "2026-05-02",
+   "month_index": 8,
+   "city": "Nashville",
+   "state": "TN",
+   "region": "South",
+   "lat": 36.16,
+   "lon": -86.78,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 23,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 412000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0131",
+   "date": "2026-05-03",
+   "month_index": 8,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 71,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0238",
+   "date": "2026-05-03",
+   "month_index": 8,
+   "city": "Tulsa",
+   "state": "OK",
+   "region": "South",
+   "lat": 36.15,
+   "lon": -95.99,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 66,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 112000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0141",
+   "date": "2026-05-05",
+   "month_index": 8,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 46,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0031",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Miami",
+   "state": "FL",
+   "region": "South",
+   "lat": 25.76,
+   "lon": -80.19,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 49,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 138000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0041",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 74,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 161000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0078",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "New York",
+   "state": "NY",
+   "region": "Northeast",
+   "lat": 40.71,
+   "lon": -74.01,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 56,
+   "status": "contained",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 234000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0107",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 72,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0155",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Tucson",
+   "state": "AZ",
+   "region": "West",
+   "lat": 32.22,
+   "lon": -110.97,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 84,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0200",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 81,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 307000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0208",
+   "date": "2026-05-09",
+   "month_index": 8,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 37,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 436000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0044",
+   "date": "2026-05-11",
+   "month_index": 8,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 27,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0146",
+   "date": "2026-05-13",
+   "month_index": 8,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 55,
+   "status": "contained",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 178000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0154",
+   "date": "2026-05-15",
+   "month_index": 8,
+   "city": "Tucson",
+   "state": "AZ",
+   "region": "West",
+   "lat": 32.22,
+   "lon": -110.97,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 90,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 90000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0143",
+   "date": "2026-05-17",
+   "month_index": 8,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 42,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 236000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0198",
+   "date": "2026-05-17",
+   "month_index": 8,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 60,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 471000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0080",
+   "date": "2026-05-21",
+   "month_index": 8,
+   "city": "Boston",
+   "state": "MA",
+   "region": "Northeast",
+   "lat": 42.36,
+   "lon": -71.06,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 41,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 92000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0216",
+   "date": "2026-05-21",
+   "month_index": 8,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 76,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 326000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0066",
+   "date": "2026-05-22",
+   "month_index": 8,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 55,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0220",
+   "date": "2026-05-22",
+   "month_index": 8,
+   "city": "Nashville",
+   "state": "TN",
+   "region": "South",
+   "lat": 36.16,
+   "lon": -86.78,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 64,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 342000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0223",
+   "date": "2026-05-22",
+   "month_index": 8,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 60,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 49000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0162",
+   "date": "2026-05-23",
+   "month_index": 8,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 75,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 326000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0243",
+   "date": "2026-05-24",
+   "month_index": 8,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 41,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 271000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0011",
+   "date": "2026-05-25",
+   "month_index": 8,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 80,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 184000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0128",
+   "date": "2026-05-25",
+   "month_index": 8,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 90,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 447000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0153",
+   "date": "2026-05-25",
+   "month_index": 8,
+   "city": "Fresno",
+   "state": "CA",
+   "region": "West",
+   "lat": 36.75,
+   "lon": -119.77,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 62,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0232",
+   "date": "2026-05-25",
+   "month_index": 8,
+   "city": "Raleigh",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.78,
+   "lon": -78.64,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 58,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0030",
+   "date": "2026-05-26",
+   "month_index": 8,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 65,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0137",
+   "date": "2026-05-27",
+   "month_index": 8,
+   "city": "Oklahoma City",
+   "state": "OK",
+   "region": "South",
+   "lat": 35.47,
+   "lon": -97.52,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 94,
+   "status": "autoimmune_corrected",
+   "dispute_level": 2,
+   "antibody": null
+  },
+  {
+   "id": "E0229",
+   "date": "2026-05-27",
+   "month_index": 8,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 57,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 451000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0130",
+   "date": "2026-06-01",
+   "month_index": 9,
+   "city": "Memphis",
+   "state": "TN",
+   "region": "South",
+   "lat": 35.15,
+   "lon": -90.05,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 83,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 351000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0179",
+   "date": "2026-06-06",
+   "month_index": 9,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 56,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 245000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0050",
+   "date": "2026-06-08",
+   "month_index": 9,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 56,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 343000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0175",
+   "date": "2026-06-08",
+   "month_index": 9,
+   "city": "Philadelphia",
+   "state": "PA",
+   "region": "Northeast",
+   "lat": 39.95,
+   "lon": -75.17,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 49,
+   "status": "autoimmune_corrected",
+   "dispute_level": 1,
+   "antibody": null
+  },
+  {
+   "id": "E0042",
+   "date": "2026-06-10",
+   "month_index": 9,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 63,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 273000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0129",
+   "date": "2026-06-10",
+   "month_index": 9,
+   "city": "Memphis",
+   "state": "TN",
+   "region": "South",
+   "lat": 35.15,
+   "lon": -90.05,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 75,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 321000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0171",
+   "date": "2026-06-10",
+   "month_index": 9,
+   "city": "New York",
+   "state": "NY",
+   "region": "Northeast",
+   "lat": 40.71,
+   "lon": -74.01,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 57,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 178000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0206",
+   "date": "2026-06-10",
+   "month_index": 9,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 65,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0250",
+   "date": "2026-06-10",
+   "month_index": 9,
+   "city": "Portland",
+   "state": "OR",
+   "region": "West",
+   "lat": 45.52,
+   "lon": -122.68,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 53,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0069",
+   "date": "2026-06-12",
+   "month_index": 9,
+   "city": "Denver",
+   "state": "CO",
+   "region": "West",
+   "lat": 39.74,
+   "lon": -104.99,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 65,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0004",
+   "date": "2026-06-13",
+   "month_index": 9,
+   "city": "Detroit",
+   "state": "MI",
+   "region": "Midwest",
+   "lat": 42.33,
+   "lon": -83.05,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 48,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0043",
+   "date": "2026-06-13",
+   "month_index": 9,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 43,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 113000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0147",
+   "date": "2026-06-13",
+   "month_index": 9,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 84,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0096",
+   "date": "2026-06-14",
+   "month_index": 9,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 98,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 337000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0248",
+   "date": "2026-06-14",
+   "month_index": 9,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 64,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 303000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0210",
+   "date": "2026-06-16",
+   "month_index": 9,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 65,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 148000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0090",
+   "date": "2026-06-17",
+   "month_index": 9,
+   "city": "Baltimore",
+   "state": "MD",
+   "region": "Northeast",
+   "lat": 39.29,
+   "lon": -76.61,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 42,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 227000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0224",
+   "date": "2026-06-18",
+   "month_index": 9,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 23,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0133",
+   "date": "2026-06-19",
+   "month_index": 9,
+   "city": "Louisville",
+   "state": "KY",
+   "region": "South",
+   "lat": 38.25,
+   "lon": -85.76,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 32,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 110000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0152",
+   "date": "2026-06-20",
+   "month_index": 9,
+   "city": "Fresno",
+   "state": "CA",
+   "region": "West",
+   "lat": 36.75,
+   "lon": -119.77,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 26,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 350000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0123",
+   "date": "2026-06-21",
+   "month_index": 9,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 42,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 400000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0204",
+   "date": "2026-06-21",
+   "month_index": 9,
+   "city": "Kansas City",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -94.58,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 47,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 275000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0002",
+   "date": "2026-06-22",
+   "month_index": 9,
+   "city": "Hartford",
+   "state": "CT",
+   "region": "Northeast",
+   "lat": 41.76,
+   "lon": -72.69,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 45,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 141000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0178",
+   "date": "2026-06-23",
+   "month_index": 9,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 49,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 88000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0218",
+   "date": "2026-06-23",
+   "month_index": 9,
+   "city": "Miami",
+   "state": "FL",
+   "region": "South",
+   "lat": 25.76,
+   "lon": -80.19,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 52,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 431000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0222",
+   "date": "2026-06-23",
+   "month_index": 9,
+   "city": "Nashville",
+   "state": "TN",
+   "region": "South",
+   "lat": 36.16,
+   "lon": -86.78,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 43,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 208000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0037",
+   "date": "2026-06-24",
+   "month_index": 9,
+   "city": "New Orleans",
+   "state": "LA",
+   "region": "South",
+   "lat": 29.95,
+   "lon": -90.07,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 63,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 108000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0094",
+   "date": "2026-06-27",
+   "month_index": 9,
+   "city": "Detroit",
+   "state": "MI",
+   "region": "Midwest",
+   "lat": 42.33,
+   "lon": -83.05,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 44,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 289000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0148",
+   "date": "2026-06-27",
+   "month_index": 9,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 85,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 23000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0109",
+   "date": "2026-07-01",
+   "month_index": 10,
+   "city": "St. Louis",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 38.63,
+   "lon": -90.2,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 61,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 397000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0057",
+   "date": "2026-07-02",
+   "month_index": 10,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 66,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0026",
+   "date": "2026-07-03",
+   "month_index": 10,
+   "city": "Austin",
+   "state": "TX",
+   "region": "South",
+   "lat": 30.27,
+   "lon": -97.74,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 38,
+   "status": "confirmed",
+   "dispute_level": 3,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 284000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0227",
+   "date": "2026-07-04",
+   "month_index": 10,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 43,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 470000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0007",
+   "date": "2026-07-05",
+   "month_index": 10,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 38,
+   "status": "confirmed",
+   "dispute_level": 1,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 233000.0,
+    "legal_referral": true
+   }
+  },
+  {
+   "id": "E0055",
+   "date": "2026-07-05",
+   "month_index": 10,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 78,
+   "status": "confirmed",
+   "dispute_level": 2,
+   "antibody": {
+    "cell_formed": true,
+    "registry_published": true,
+    "remediation_fund_usd": 214000.0,
+    "legal_referral": false
+   }
+  },
+  {
+   "id": "E0201",
+   "date": "2026-07-05",
+   "month_index": 10,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 44,
+   "status": "autoimmune_corrected",
+   "dispute_level": 3,
+   "antibody": null
+  },
+  {
+   "id": "E0021",
+   "date": "2026-07-06",
+   "month_index": 10,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 43,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0060",
+   "date": "2026-07-06",
+   "month_index": 10,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 40,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0087",
+   "date": "2026-07-07",
+   "month_index": 10,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 61,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0012",
+   "date": "2026-07-08",
+   "month_index": 10,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 89,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0156",
+   "date": "2026-07-09",
+   "month_index": 10,
+   "city": "Seattle",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.61,
+   "lon": -122.33,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 39,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0186",
+   "date": "2026-07-09",
+   "month_index": 10,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 71,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0228",
+   "date": "2026-07-10",
+   "month_index": 10,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 22,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0039",
+   "date": "2026-07-11",
+   "month_index": 10,
+   "city": "Memphis",
+   "state": "TN",
+   "region": "South",
+   "lat": 35.15,
+   "lon": -90.05,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 57,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0234",
+   "date": "2026-07-11",
+   "month_index": 10,
+   "city": "Oklahoma City",
+   "state": "OK",
+   "region": "South",
+   "lat": 35.47,
+   "lon": -97.52,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 44,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0241",
+   "date": "2026-07-11",
+   "month_index": 10,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 33,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0035",
+   "date": "2026-07-12",
+   "month_index": 10,
+   "city": "Charlotte",
+   "state": "NC",
+   "region": "South",
+   "lat": 35.23,
+   "lon": -80.84,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 61,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0052",
+   "date": "2026-07-13",
+   "month_index": 10,
+   "city": "Jackson",
+   "state": "MS",
+   "region": "South",
+   "lat": 32.3,
+   "lon": -90.18,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 20,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0005",
+   "date": "2026-07-14",
+   "month_index": 10,
+   "city": "Detroit",
+   "state": "MI",
+   "region": "Midwest",
+   "lat": 42.33,
+   "lon": -83.05,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 71,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0187",
+   "date": "2026-07-14",
+   "month_index": 10,
+   "city": "Columbus",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.96,
+   "lon": -82.99,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 47,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0214",
+   "date": "2026-07-15",
+   "month_index": 10,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 44,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0161",
+   "date": "2026-07-16",
+   "month_index": 10,
+   "city": "Denver",
+   "state": "CO",
+   "region": "West",
+   "lat": 39.74,
+   "lon": -104.99,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 49,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0020",
+   "date": "2026-07-18",
+   "month_index": 10,
+   "city": "San Antonio",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.42,
+   "lon": -98.49,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 77,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0170",
+   "date": "2026-07-18",
+   "month_index": 10,
+   "city": "Spokane",
+   "state": "WA",
+   "region": "West",
+   "lat": 47.66,
+   "lon": -117.43,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 58,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0058",
+   "date": "2026-07-20",
+   "month_index": 10,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 60,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0062",
+   "date": "2026-07-20",
+   "month_index": 10,
+   "city": "Sacramento",
+   "state": "CA",
+   "region": "West",
+   "lat": 38.58,
+   "lon": -121.49,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 68,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0071",
+   "date": "2026-07-20",
+   "month_index": 10,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 79,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0086",
+   "date": "2026-07-21",
+   "month_index": 10,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 80,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0097",
+   "date": "2026-07-22",
+   "month_index": 10,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "private_equity",
+   "subtype": "Utility Rate-Base Rollup",
+   "ehi": 24,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0254",
+   "date": "2026-07-22",
+   "month_index": 10,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 63,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0255",
+   "date": "2026-07-23",
+   "month_index": 10,
+   "city": "Salt Lake City",
+   "state": "UT",
+   "region": "West",
+   "lat": 40.76,
+   "lon": -111.89,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 40,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0199",
+   "date": "2026-07-24",
+   "month_index": 10,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 30,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0225",
+   "date": "2026-07-24",
+   "month_index": 10,
+   "city": "Memphis",
+   "state": "TN",
+   "region": "South",
+   "lat": 35.15,
+   "lon": -90.05,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 67,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0134",
+   "date": "2026-07-25",
+   "month_index": 10,
+   "city": "Richmond",
+   "state": "VA",
+   "region": "South",
+   "lat": 37.54,
+   "lon": -77.44,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 61,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0053",
+   "date": "2026-07-27",
+   "month_index": 10,
+   "city": "Los Angeles",
+   "state": "CA",
+   "region": "West",
+   "lat": 34.05,
+   "lon": -118.24,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 35,
+   "status": "under_review",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0032",
+   "date": "2026-08-02",
+   "month_index": 11,
+   "city": "Miami",
+   "state": "FL",
+   "region": "South",
+   "lat": 25.76,
+   "lon": -80.19,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 72,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0113",
+   "date": "2026-08-02",
+   "month_index": 11,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 57,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0126",
+   "date": "2026-08-02",
+   "month_index": 11,
+   "city": "Nashville",
+   "state": "TN",
+   "region": "South",
+   "lat": 36.16,
+   "lon": -86.78,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 89,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0185",
+   "date": "2026-08-02",
+   "month_index": 11,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 45,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0077",
+   "date": "2026-08-04",
+   "month_index": 11,
+   "city": "New York",
+   "state": "NY",
+   "region": "Northeast",
+   "lat": 40.71,
+   "lon": -74.01,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 59,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0089",
+   "date": "2026-08-04",
+   "month_index": 11,
+   "city": "Hartford",
+   "state": "CT",
+   "region": "Northeast",
+   "lat": 41.76,
+   "lon": -72.69,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 59,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0006",
+   "date": "2026-08-05",
+   "month_index": 11,
+   "city": "Minneapolis",
+   "state": "MN",
+   "region": "Midwest",
+   "lat": 44.98,
+   "lon": -93.27,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 51,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0150",
+   "date": "2026-08-05",
+   "month_index": 11,
+   "city": "Sacramento",
+   "state": "CA",
+   "region": "West",
+   "lat": 38.58,
+   "lon": -121.49,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 96,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0180",
+   "date": "2026-08-05",
+   "month_index": 11,
+   "city": "Chicago",
+   "state": "IL",
+   "region": "Midwest",
+   "lat": 41.88,
+   "lon": -87.63,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 44,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0196",
+   "date": "2026-08-05",
+   "month_index": 11,
+   "city": "St. Louis",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 38.63,
+   "lon": -90.2,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 49,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0022",
+   "date": "2026-08-06",
+   "month_index": 11,
+   "city": "Dallas",
+   "state": "TX",
+   "region": "South",
+   "lat": 32.78,
+   "lon": -96.8,
+   "virus": "data_center",
+   "subtype": "Grid Interconnection Capture",
+   "ehi": 68,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0029",
+   "date": "2026-08-08",
+   "month_index": 11,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 52,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0009",
+   "date": "2026-08-09",
+   "month_index": 11,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 85,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0172",
+   "date": "2026-08-09",
+   "month_index": 11,
+   "city": "Boston",
+   "state": "MA",
+   "region": "Northeast",
+   "lat": 42.36,
+   "lon": -71.06,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 38,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0010",
+   "date": "2026-08-10",
+   "month_index": 11,
+   "city": "Cleveland",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 41.5,
+   "lon": -81.69,
+   "virus": "data_center",
+   "subtype": "Colocation Facility Expansion",
+   "ehi": 53,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0076",
+   "date": "2026-08-10",
+   "month_index": 11,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 89,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0104",
+   "date": "2026-08-10",
+   "month_index": 11,
+   "city": "Cincinnati",
+   "state": "OH",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -84.51,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 64,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0205",
+   "date": "2026-08-10",
+   "month_index": 11,
+   "city": "Kansas City",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 39.1,
+   "lon": -94.58,
+   "virus": "austerity",
+   "subtype": "School Budget Cuts",
+   "ehi": 54,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0016",
+   "date": "2026-08-11",
+   "month_index": 11,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 62,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0149",
+   "date": "2026-08-11",
+   "month_index": 11,
+   "city": "San Diego",
+   "state": "CA",
+   "region": "West",
+   "lat": 32.72,
+   "lon": -117.16,
+   "virus": "private_equity",
+   "subtype": "Rental Housing Rollup",
+   "ehi": 84,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0197",
+   "date": "2026-08-11",
+   "month_index": 11,
+   "city": "St. Louis",
+   "state": "MO",
+   "region": "Midwest",
+   "lat": 38.63,
+   "lon": -90.2,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 79,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0114",
+   "date": "2026-08-12",
+   "month_index": 11,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 49,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0115",
+   "date": "2026-08-12",
+   "month_index": 11,
+   "city": "Houston",
+   "state": "TX",
+   "region": "South",
+   "lat": 29.76,
+   "lon": -95.37,
+   "virus": "private_equity",
+   "subtype": "Grocery/Retail Rollup",
+   "ehi": 9,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0168",
+   "date": "2026-08-13",
+   "month_index": 11,
+   "city": "Albuquerque",
+   "state": "NM",
+   "region": "West",
+   "lat": 35.08,
+   "lon": -106.65,
+   "virus": "private_equity",
+   "subtype": "Nursing Home Rollup",
+   "ehi": 55,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0095",
+   "date": "2026-08-15",
+   "month_index": 11,
+   "city": "Detroit",
+   "state": "MI",
+   "region": "Midwest",
+   "lat": 42.33,
+   "lon": -83.05,
+   "virus": "private_equity",
+   "subtype": "Healthcare System Rollup",
+   "ehi": 98,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0177",
+   "date": "2026-08-15",
+   "month_index": 11,
+   "city": "Providence",
+   "state": "RI",
+   "region": "Northeast",
+   "lat": 41.82,
+   "lon": -71.41,
+   "virus": "austerity",
+   "subtype": "Transit Defunding",
+   "ehi": 83,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0014",
+   "date": "2026-08-18",
+   "month_index": 11,
+   "city": "Milwaukee",
+   "state": "WI",
+   "region": "Midwest",
+   "lat": 43.04,
+   "lon": -87.91,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 59,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0067",
+   "date": "2026-08-18",
+   "month_index": 11,
+   "city": "Portland",
+   "state": "OR",
+   "region": "West",
+   "lat": 45.52,
+   "lon": -122.68,
+   "virus": "data_center",
+   "subtype": "Hyperscale Campus Siting",
+   "ehi": 97,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0213",
+   "date": "2026-08-18",
+   "month_index": 11,
+   "city": "Atlanta",
+   "state": "GA",
+   "region": "South",
+   "lat": 33.75,
+   "lon": -84.39,
+   "virus": "austerity",
+   "subtype": "Pension Clawback",
+   "ehi": 13,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0236",
+   "date": "2026-08-18",
+   "month_index": 11,
+   "city": "Oklahoma City",
+   "state": "OK",
+   "region": "South",
+   "lat": 35.47,
+   "lon": -97.52,
+   "virus": "austerity",
+   "subtype": "Water/Utility Privatization",
+   "ehi": 34,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0245",
+   "date": "2026-08-18",
+   "month_index": 11,
+   "city": "San Francisco",
+   "state": "CA",
+   "region": "West",
+   "lat": 37.77,
+   "lon": -122.42,
+   "virus": "austerity",
+   "subtype": "Municipal Service Cuts",
+   "ehi": 30,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  },
+  {
+   "id": "E0073",
+   "date": "2026-08-19",
+   "month_index": 11,
+   "city": "Boise",
+   "state": "ID",
+   "region": "West",
+   "lat": 43.62,
+   "lon": -116.2,
+   "virus": "data_center",
+   "subtype": "Crypto-Mining Conversion",
+   "ehi": 54,
+   "status": "detected",
+   "dispute_level": null,
+   "antibody": null
+  }
+ ],
+ "hitl_cases": [
+  {
+   "case_id": "HITL-001",
+   "event_id": "E0158",
+   "city": "Portland",
+   "state": "OR",
+   "virus": "private_equity",
+   "ehi": 79,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the private equity roll-up pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2025-11-23"
+  },
+  {
+   "case_id": "HITL-002",
+   "event_id": "E0119",
+   "city": "Dallas",
+   "state": "TX",
+   "virus": "private_equity",
+   "ehi": 65,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Nursing Home Rollup pattern against Tier 1 submissions; EHI 65 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-05-01"
+  },
+  {
+   "case_id": "HITL-003",
+   "event_id": "E0160",
+   "city": "Denver",
+   "state": "CO",
+   "virus": "private_equity",
+   "ehi": 46,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the private equity roll-up pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2025-12-24"
+  },
+  {
+   "case_id": "HITL-004",
+   "event_id": "E0216",
+   "city": "Atlanta",
+   "state": "GA",
+   "virus": "austerity",
+   "ehi": 76,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the School Budget Cuts pattern against Tier 1 submissions; EHI 76 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-05-21"
+  },
+  {
+   "case_id": "HITL-005",
+   "event_id": "E0173",
+   "city": "Boston",
+   "state": "MA",
+   "virus": "austerity",
+   "ehi": 32,
+   "dispute_level": 2,
+   "panel": [
+    "Housing Policy",
+    "Healthcare Administration",
+    "Municipal Finance"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Pension Clawback pattern against Tier 1 submissions; EHI 32 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2025-10-21"
+  },
+  {
+   "case_id": "HITL-006",
+   "event_id": "E0195",
+   "city": "Cincinnati",
+   "state": "OH",
+   "virus": "austerity",
+   "ehi": 34,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the austerity contagion pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2025-11-20"
+  },
+  {
+   "case_id": "HITL-007",
+   "event_id": "E0144",
+   "city": "San Francisco",
+   "state": "CA",
+   "virus": "private_equity",
+   "ehi": 76,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the private equity roll-up pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2025-10-04"
+  },
+  {
+   "case_id": "HITL-008",
+   "event_id": "E0123",
+   "city": "Atlanta",
+   "state": "GA",
+   "virus": "private_equity",
+   "ehi": 42,
+   "dispute_level": 3,
+   "panel": [
+    "Environmental Science",
+    "Healthcare Administration",
+    "Applied Cryptography"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Rental Housing Rollup pattern against Tier 1 submissions; EHI 42 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-06-21"
+  },
+  {
+   "case_id": "HITL-009",
+   "event_id": "E0074",
+   "city": "Albuquerque",
+   "state": "NM",
+   "virus": "data_center",
+   "ehi": 58,
+   "dispute_level": 2,
+   "panel": [
+    "Urban Planning",
+    "Constitutional Law",
+    "Utility Regulation"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Hyperscale Campus Siting pattern against Tier 1 submissions; EHI 58 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2025-12-02"
+  },
+  {
+   "case_id": "HITL-010",
+   "event_id": "E0070",
+   "city": "Las Vegas",
+   "state": "NV",
+   "virus": "data_center",
+   "ehi": 72,
+   "dispute_level": 3,
+   "panel": [
+    "Urban Planning",
+    "Municipal Finance",
+    "Applied Cryptography"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Hyperscale Campus Siting pattern against Tier 1 submissions; EHI 72 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-02-08"
+  },
+  {
+   "case_id": "HITL-011",
+   "event_id": "E0146",
+   "city": "San Francisco",
+   "state": "CA",
+   "virus": "private_equity",
+   "ehi": 55,
+   "dispute_level": 2,
+   "panel": [
+    "Applied Cryptography",
+    "Healthcare Administration",
+    "Labor Economics"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Utility Rate-Base Rollup pattern against Tier 1 submissions; EHI 55 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-05-13"
+  },
+  {
+   "case_id": "HITL-012",
+   "event_id": "E0024",
+   "city": "Austin",
+   "state": "TX",
+   "virus": "data_center",
+   "ehi": 40,
+   "dispute_level": 2,
+   "panel": [
+    "Environmental Science",
+    "Municipal Finance",
+    "Labor Economics"
+   ],
+   "outcome": "Autoimmune-corrected \u2014 finding withdrawn",
+   "narrative": "Nursing-home staffing-ratio complaint against a rollup operator was cross-checked against a regional nursing shortage affecting non-acquired facilities at a similar rate; EHI score reduced from 71 to 24 and the case moved to a facility-specific labor-market watch list rather than a Registry entry.",
+   "date": "2026-01-02"
+  },
+  {
+   "case_id": "HITL-013",
+   "event_id": "E0034",
+   "city": "Charlotte",
+   "state": "NC",
+   "virus": "data_center",
+   "ehi": 35,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the data center extraction pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2025-12-02"
+  },
+  {
+   "case_id": "HITL-014",
+   "event_id": "E0057",
+   "city": "San Francisco",
+   "state": "CA",
+   "virus": "data_center",
+   "ehi": 66,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Crypto-Mining Conversion pattern against Tier 1 submissions; EHI 66 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-07-02"
+  },
+  {
+   "case_id": "HITL-015",
+   "event_id": "E0209",
+   "city": "Dallas",
+   "state": "TX",
+   "virus": "austerity",
+   "ehi": 26,
+   "dispute_level": 3,
+   "panel": [
+    "Applied Cryptography",
+    "Municipal Finance",
+    "Housing Policy"
+   ],
+   "outcome": "Confirmed \u2014 recurrence, prior-adjudication precedent applies",
+   "narrative": "Second documented pattern at this site following an earlier Registry entry; panel confirmed continuity of the austerity contagion pattern and routed for S.E.P.A. Section 5.2(b) recurrence referral.",
+   "date": "2026-01-04"
+  },
+  {
+   "case_id": "HITL-016",
+   "event_id": "E0096",
+   "city": "Minneapolis",
+   "state": "MN",
+   "virus": "private_equity",
+   "ehi": 98,
+   "dispute_level": 3,
+   "panel": [
+    "Environmental Science",
+    "Municipal Finance",
+    "Labor Economics"
+   ],
+   "outcome": "Confirmed \u2014 published to Public Harm Registry",
+   "narrative": "Panel validated the Healthcare System Rollup pattern against Tier 1 submissions; EHI 98 exceeds the publication threshold and no exculpatory external factor was identified.",
+   "date": "2026-06-14"
+  },
+  {
+   "case_id": "HITL-017",
+   "event_id": "E0110",
+   "city": "St. Louis",
+   "state": "MO",
+   "virus": "private_equity",
+   "ehi": 72,
+   "dispute_level": 3,
+   "panel": [
+    "Applied Cryptography",
+    "Labor Economics",
+    "Constitutional Law"
+   ],
+   "outcome": "Autoimmune-corrected \u2014 finding withdrawn",
+   "narrative": "Water-table decline flagged against a colocation facility's cooling draw; Level 2 sortition review cross-validated with the state hydrology survey and attributed 80% of the drop to a two-year regional drought predating the facility. EHI finding withdrawn before Registry publication \u2014 corrected before the coalition spent legal capital on the wrong respondent.",
+   "date": "2025-11-08"
+  },
+  {
+   "case_id": "HITL-018",
+   "event_id": "E0121",
+   "city": "Austin",
+   "state": "TX",
+   "virus": "private_equity",
+   "ehi": 89,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Autoimmune-corrected \u2014 finding withdrawn",
+   "narrative": "A grocery rollup's store closure was submitted as extraction-driven; review found the store had posted losses for six years pre-acquisition and closure was scheduled before the PE deal closed. Reclassified as not-attributable; submitting Cell notified with the comparison timeline.",
+   "date": "2025-11-23"
+  },
+  {
+   "case_id": "HITL-019",
+   "event_id": "E0159",
+   "city": "Portland",
+   "state": "OR",
+   "virus": "private_equity",
+   "ehi": 35,
+   "dispute_level": 1,
+   "panel": [
+    "Intake Duty Reviewer"
+   ],
+   "outcome": "Autoimmune-corrected \u2014 finding withdrawn",
+   "narrative": "Pension clawback claim against a municipality traced, on review, to a bona fide actuarial shortfall reported four years before the disputed budget cycle, not the alleged benefit-cutting policy. Finding downgraded from 'confirmed' to 'context needed' and returned to the Cell for re-submission with the actuarial report attached.",
+   "date": "2025-11-23"
+  }
+ ],
+ "vaccination_events": [
+  {
+   "state": "NV",
+   "date": "2025-11-06",
+   "month_index": 2,
+   "ordinance": "S.E.P.A.-model strict-liability ordinance"
+  },
+  {
+   "state": "MD",
+   "date": "2025-11-14",
+   "month_index": 2,
+   "ordinance": "Municipal service austerity impact-review requirement"
+  },
+  {
+   "state": "MA",
+   "date": "2026-01-05",
+   "month_index": 4,
+   "ordinance": "PE healthcare-acquisition review board"
+  },
+  {
+   "state": "RI",
+   "date": "2026-03-13",
+   "month_index": 6,
+   "ordinance": "Pension protection & anti-clawback charter amendment"
+  },
+  {
+   "state": "GA",
+   "date": "2026-03-20",
+   "month_index": 6,
+   "ordinance": "Public Harm Registry reporting mandate"
+  },
+  {
+   "state": "UT",
+   "date": "2026-04-18",
+   "month_index": 7,
+   "ordinance": "Public Harm Registry reporting mandate"
+  },
+  {
+   "state": "OH",
+   "date": "2026-05-21",
+   "month_index": 8,
+   "ordinance": "Municipal service austerity impact-review requirement"
+  },
+  {
+   "state": "LA",
+   "date": "2026-06-21",
+   "month_index": 9,
+   "ordinance": "PE healthcare-acquisition review board"
+  },
+  {
+   "state": "TN",
+   "date": "2026-07-14",
+   "month_index": 10,
+   "ordinance": "S.E.P.A.-model strict-liability ordinance"
+  },
+  {
+   "state": "MN",
+   "date": "2026-07-18",
+   "month_index": 10,
+   "ordinance": "Data center water/energy disclosure ordinance"
+  },
+  {
+   "state": "NM",
+   "date": "2026-07-23",
+   "month_index": 10,
+   "ordinance": "Pension protection & anti-clawback charter amendment"
+  },
+  {
+   "state": "KY",
+   "date": "2026-08-06",
+   "month_index": 11,
+   "ordinance": "S.E.P.A.-model strict-liability ordinance"
+  },
+  {
+   "state": "MO",
+   "date": "2026-08-16",
+   "month_index": 11,
+   "ordinance": "Public Harm Registry reporting mandate"
+  },
+  {
+   "state": "MS",
+   "date": "2026-08-19",
+   "month_index": 11,
+   "ordinance": "Data center water/energy disclosure ordinance"
+  }
+ ],
+ "monthly": [
+  {
+   "month": "2025-09",
+   "month_index": 0,
+   "by_virus": {
+    "data_center": {
+     "detections": 2,
+     "avg_ehi": 67.0,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 4,
+     "avg_ehi": 53.2,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 1,
+     "avg_ehi": 36.0,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 7,
+    "registry_entries": 7,
+    "remediation_usd": 1311000.0,
+    "legal_referrals": 4
+   },
+   "vaccination_cumulative": {
+    "states_protected": 0,
+    "coverage_pct": 0.0
+   },
+   "recurrence_rate_pct": 14.3,
+   "cohort_matured": true
+  },
+  {
+   "month": "2025-10",
+   "month_index": 1,
+   "by_virus": {
+    "data_center": {
+     "detections": 4,
+     "avg_ehi": 53.2,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 4,
+     "avg_ehi": 64.8,
+     "recurrences": 2,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 6,
+     "avg_ehi": 37.8,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 21,
+    "registry_entries": 21,
+    "remediation_usd": 3444000.0,
+    "legal_referrals": 10
+   },
+   "vaccination_cumulative": {
+    "states_protected": 0,
+    "coverage_pct": 0.0
+   },
+   "recurrence_rate_pct": 21.4,
+   "cohort_matured": true
+  },
+  {
+   "month": "2025-11",
+   "month_index": 2,
+   "by_virus": {
+    "data_center": {
+     "detections": 3,
+     "avg_ehi": 37.3,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 8,
+     "avg_ehi": 62.5,
+     "recurrences": 1,
+     "autoimmune_corrected": 3
+    },
+    "austerity": {
+     "detections": 7,
+     "avg_ehi": 49.4,
+     "recurrences": 2,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 36,
+    "registry_entries": 36,
+    "remediation_usd": 5718000.0,
+    "legal_referrals": 15
+   },
+   "vaccination_cumulative": {
+    "states_protected": 2,
+    "coverage_pct": 6.1
+   },
+   "recurrence_rate_pct": 22.2,
+   "cohort_matured": true
+  },
+  {
+   "month": "2025-12",
+   "month_index": 3,
+   "by_virus": {
+    "data_center": {
+     "detections": 5,
+     "avg_ehi": 59.6,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 6,
+     "avg_ehi": 41.8,
+     "recurrences": 3,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 2,
+     "avg_ehi": 46.5,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 49,
+    "registry_entries": 49,
+    "remediation_usd": 9857000.0,
+    "legal_referrals": 19
+   },
+   "vaccination_cumulative": {
+    "states_protected": 2,
+    "coverage_pct": 6.1
+   },
+   "recurrence_rate_pct": 38.5,
+   "cohort_matured": true
+  },
+  {
+   "month": "2026-01",
+   "month_index": 4,
+   "by_virus": {
+    "data_center": {
+     "detections": 3,
+     "avg_ehi": 49.3,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    },
+    "private_equity": {
+     "detections": 5,
+     "avg_ehi": 58.2,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 7,
+     "avg_ehi": 40.0,
+     "recurrences": 2,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 63,
+    "registry_entries": 63,
+    "remediation_usd": 12860000.0,
+    "legal_referrals": 25
+   },
+   "vaccination_cumulative": {
+    "states_protected": 3,
+    "coverage_pct": 9.1
+   },
+   "recurrence_rate_pct": 20.0,
+   "cohort_matured": true
+  },
+  {
+   "month": "2026-02",
+   "month_index": 5,
+   "by_virus": {
+    "data_center": {
+     "detections": 9,
+     "avg_ehi": 63.8,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 12,
+     "avg_ehi": 52.1,
+     "recurrences": 1,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 10,
+     "avg_ehi": 60.3,
+     "recurrences": 3,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 94,
+    "registry_entries": 94,
+    "remediation_usd": 18603000.0,
+    "legal_referrals": 33
+   },
+   "vaccination_cumulative": {
+    "states_protected": 3,
+    "coverage_pct": 9.1
+   },
+   "recurrence_rate_pct": 16.1,
+   "cohort_matured": true
+  },
+  {
+   "month": "2026-03",
+   "month_index": 6,
+   "by_virus": {
+    "data_center": {
+     "detections": 4,
+     "avg_ehi": 62.2,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    },
+    "private_equity": {
+     "detections": 7,
+     "avg_ehi": 46.7,
+     "recurrences": 2,
+     "autoimmune_corrected": 1
+    },
+    "austerity": {
+     "detections": 8,
+     "avg_ehi": 56.6,
+     "recurrences": 1,
+     "autoimmune_corrected": 2
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 109,
+    "registry_entries": 109,
+    "remediation_usd": 21415000.0,
+    "legal_referrals": 38
+   },
+   "vaccination_cumulative": {
+    "states_protected": 5,
+    "coverage_pct": 15.2
+   },
+   "recurrence_rate_pct": 15.8,
+   "cohort_matured": true
+  },
+  {
+   "month": "2026-04",
+   "month_index": 7,
+   "by_virus": {
+    "data_center": {
+     "detections": 5,
+     "avg_ehi": 50.6,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    },
+    "private_equity": {
+     "detections": 5,
+     "avg_ehi": 75.8,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 4,
+     "avg_ehi": 60.8,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 121,
+    "registry_entries": 121,
+    "remediation_usd": 23957000.0,
+    "legal_referrals": 41
+   },
+   "vaccination_cumulative": {
+    "states_protected": 6,
+    "coverage_pct": 18.2
+   },
+   "recurrence_rate_pct": 0.0,
+   "cohort_matured": false
+  },
+  {
+   "month": "2026-05",
+   "month_index": 8,
+   "by_virus": {
+    "data_center": {
+     "detections": 7,
+     "avg_ehi": 55.4,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 14,
+     "avg_ehi": 67.4,
+     "recurrences": 0,
+     "autoimmune_corrected": 3
+    },
+    "austerity": {
+     "detections": 11,
+     "avg_ehi": 56.6,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 150,
+    "registry_entries": 150,
+    "remediation_usd": 29287000.0,
+    "legal_referrals": 51
+   },
+   "vaccination_cumulative": {
+    "states_protected": 7,
+    "coverage_pct": 21.2
+   },
+   "recurrence_rate_pct": 0.0,
+   "cohort_matured": false
+  },
+  {
+   "month": "2026-06",
+   "month_index": 9,
+   "by_virus": {
+    "data_center": {
+     "detections": 7,
+     "avg_ehi": 54.7,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 10,
+     "avg_ehi": 61.1,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 12,
+     "avg_ehi": 51.9,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 178,
+    "registry_entries": 178,
+    "remediation_usd": 34549000.0,
+    "legal_referrals": 62
+   },
+   "vaccination_cumulative": {
+    "states_protected": 8,
+    "coverage_pct": 24.2
+   },
+   "recurrence_rate_pct": 0.0,
+   "cohort_matured": false
+  },
+  {
+   "month": "2026-07",
+   "month_index": 10,
+   "by_virus": {
+    "data_center": {
+     "detections": 16,
+     "avg_ehi": 57.5,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 8,
+     "avg_ehi": 54.1,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 12,
+     "avg_ehi": 45.7,
+     "recurrences": 0,
+     "autoimmune_corrected": 1
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 184,
+    "registry_entries": 184,
+    "remediation_usd": 36147000.0,
+    "legal_referrals": 65
+   },
+   "vaccination_cumulative": {
+    "states_protected": 11,
+    "coverage_pct": 33.3
+   },
+   "recurrence_rate_pct": 0.0,
+   "cohort_matured": false
+  },
+  {
+   "month": "2026-08",
+   "month_index": 11,
+   "by_virus": {
+    "data_center": {
+     "detections": 11,
+     "avg_ehi": 67.5,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "private_equity": {
+     "detections": 11,
+     "avg_ehi": 65.4,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    },
+    "austerity": {
+     "detections": 10,
+     "avg_ehi": 46.9,
+     "recurrences": 0,
+     "autoimmune_corrected": 0
+    }
+   },
+   "antibody_cumulative": {
+    "cells_formed": 184,
+    "registry_entries": 184,
+    "remediation_usd": 36147000.0,
+    "legal_referrals": 65
+   },
+   "vaccination_cumulative": {
+    "states_protected": 14,
+    "coverage_pct": 42.4
+   },
+   "recurrence_rate_pct": 0.0,
+   "cohort_matured": false
+  }
+ ],
+ "summary": {
+  "total_events": 260,
+  "by_virus": {
+   "data_center": 76,
+   "private_equity": 94,
+   "austerity": 90
+  },
+  "by_status": {
+   "contained": 60,
+   "confirmed": 100,
+   "recurrence": 24,
+   "autoimmune_corrected": 15,
+   "under_review": 29,
+   "detected": 32
+  }
+ }
+};
+</script>
+<script>
+/* ============================== app.js ============================== */
+(function(){
+  "use strict";
+  const VIRUS_ORDER = ["data_center","private_equity","austerity"];
+  const VIRUS_CLASS = {data_center:"badge-datacenter", private_equity:"badge-pe", austerity:"badge-austerity"};
+  const VIRUS_VARCOLOR = {data_center:"--v-datacenter", private_equity:"--v-pe", austerity:"--v-austerity"};
+  const STATUS_LABEL = {
+    detected:"Detected", under_review:"Under review", confirmed:"Confirmed",
+    contained:"Contained", recurrence:"Recurrence", autoimmune_corrected:"Autoimmune-corrected"
+  };
+  const REGIONS = ["Northeast","Midwest","South","West"];
+
+  const state = {
+    virus: new Set(VIRUS_ORDER),
+    range: [0, 11],
+    theme: "light",
+  };
+
+  function cssVar(name){ return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+  function virusColor(key){ return cssVar(VIRUS_VARCOLOR[key]); }
+  function fmtUSD(n){
+    if(n>=1e6) return "$" + (n/1e6).toFixed(2) + "M";
+    if(n>=1e3) return "$" + Math.round(n/1e3) + "K";
+    return "$" + Math.round(n);
+  }
+  function fmtDate(iso){
+    const d = new Date(iso+"T00:00:00");
+    return d.toLocaleDateString("en-US",{month:"short", day:"numeric", year:"numeric"});
+  }
+  function monthLabel(i){
+    const [y,m] = DATA.months[i].split("-");
+    const d = new Date(parseInt(y), parseInt(m)-1, 1);
+    return d.toLocaleDateString("en-US",{month:"short", year:"2-digit"});
+  }
+
+  /* ---------------------------- filtering ---------------------------- */
+  function filteredEvents(){
+    return DATA.events.filter(e => state.virus.has(e.virus) && e.month_index>=state.range[0] && e.month_index<=state.range[1]);
+  }
+  function filteredMonthly(){
+    return DATA.monthly.filter(r => r.month_index>=state.range[0] && r.month_index<=state.range[1]);
+  }
+
+  /* ---------------------------- svg helpers --------------------------- */
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs){
+    const e = document.createElementNS(SVGNS, tag);
+    if(attrs) for(const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function clear(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+
+  function niceMax(v){
+    if(v<=0) return 1;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v/mag;
+    let step;
+    if(n<=1) step=1; else if(n<=2) step=2; else if(n<=5) step=5; else step=10;
+    return step*mag;
+  }
+
+  /* Small reusable line/area chart. series: [{key,label,color,values:[{x,y,dashed?}]}] */
+  function lineChart(svg, series, opts){
+    clear(svg);
+    const vb = svg.viewBox.baseVal;
+    const W = vb.width || 1000, H = vb.height || 260;
+    const padL = opts.padL!=null?opts.padL:40, padR = opts.padR!=null?opts.padR:26, padT = 14, padB = 26;
+    const innerW = W-padL-padR, innerH = H-padT-padB;
+    const allVals = series.flatMap(s=>s.values.map(v=>v.y));
+    const yMax = niceMax(Math.max(1, ...allVals) * 1.15);
+    const n = series[0] ? series[0].values.length : 1;
+    const xStep = n>1 ? innerW/(n-1) : innerW;
+    const xAt = i => padL + i*xStep;
+    const yAt = v => padT + innerH - (v/yMax)*innerH;
+
+    // gridlines (4 bands)
+    const ticks = 4;
+    for(let t=0;t<=ticks;t++){
+      const yv = yMax*t/ticks;
+      const yy = yAt(yv);
+      svg.appendChild(svgEl("line",{x1:padL,x2:padL+innerW,y1:yy,y2:yy,class:"grid"}));
+      const lbl = svgEl("text",{x:padL-8,y:yy+3,"text-anchor":"end"});
+      lbl.textContent = opts.yFormat? opts.yFormat(yv) : Math.round(yv);
+      svg.appendChild(lbl);
+    }
+    svg.appendChild(svgEl("line",{x1:padL,x2:padL+innerW,y1:padT+innerH,y2:padT+innerH,class:"axisline"}));
+
+    // x labels
+    if(opts.xLabels){
+      opts.xLabels.forEach((lab,i)=>{
+        if(n>8 && i%2!==0 && i!==n-1) return;
+        if(n>8 && i===n-2 && (n-1)%2!==0) return; // avoid crowding the forced last label
+        const anchor = i===n-1 ? "end" : (i===0 ? "start" : "middle");
+        const t = svgEl("text",{x:xAt(i), y:padT+innerH+16, "text-anchor":anchor});
+        t.textContent = lab; svg.appendChild(t);
+      });
+    }
+
+    series.forEach(s=>{
+      let d = "";
+      s.values.forEach((v,i)=>{
+        const x = xAt(i), y = yAt(v.y);
+        d += (i===0? "M":"L") + x.toFixed(1) + "," + y.toFixed(1) + " ";
+      });
+      const solidPart = [], dashedPart = [];
+      let curSeg = [];
+      let curDashed = s.values[0] && s.values[0].dashed;
+      s.values.forEach((v,i)=>{
+        if(!!v.dashed !== curDashed){
+          (curDashed?dashedPart:solidPart).push(curSeg);
+          curSeg = [curSeg[curSeg.length-1]||v];
+          curDashed = !!v.dashed;
+        }
+        curSeg.push(v);
+      });
+      (curDashed?dashedPart:solidPart).push(curSeg);
+      function segPath(seg){
+        return seg.map((v,i)=>{
+          const idx = s.values.indexOf(v);
+          const x = xAt(idx), y = yAt(v.y);
+          return (i===0?"M":"L")+x.toFixed(1)+","+y.toFixed(1);
+        }).join(" ");
+      }
+      solidPart.forEach(seg=>{
+        if(seg.length<2) return;
+        svg.appendChild(svgEl("path",{d:segPath(seg), fill:"none", stroke:s.color, "stroke-width":2, "stroke-linecap":"round","stroke-linejoin":"round"}));
+      });
+      dashedPart.forEach(seg=>{
+        if(seg.length<2) return;
+        svg.appendChild(svgEl("path",{d:segPath(seg), fill:"none", stroke:s.color, "stroke-width":2, "stroke-dasharray":"3,4", opacity:0.55}));
+      });
+      s.values.forEach((v,i)=>{
+        const x = xAt(i), y = yAt(v.y);
+        const c = svgEl("circle",{cx:x, cy:y, r:v.dashed?3:3.6, fill:v.dashed?cssVar('--surface-1'):s.color, stroke:s.color, "stroke-width":1.6});
+        svg.appendChild(c);
+      });
+    });
+  }
+
+  function statTile(container, label, value, delta, good){
+    const t = document.createElement("div");
+    t.className = "stat-tile";
+    t.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>` +
+      (delta!=null? `<div class="delta ${good?'good':''}">${delta}</div>`:"");
+    container.appendChild(t);
+  }
+
+  /* =============================== MAP =============================== */
+  const LON_MIN=-125, LON_MAX=-66, LAT_MIN=24, LAT_MAX=50;
+  const COS37 = Math.cos(37*Math.PI/180);
+  function project(lat, lon){
+    const padL=50, padT=20, padB=20, padR=20;
+    const availW = 1000-padL-padR, availH = 640-padT-padB;
+    const scaleY = availH/(LAT_MAX-LAT_MIN);
+    let scaleX = scaleY*COS37;
+    const neededW = (LON_MAX-LON_MIN)*scaleX;
+    if(neededW>availW){ scaleX *= availW/neededW; }
+    const usedW = (LON_MAX-LON_MIN)*scaleX;
+    const offsetX = padL + (availW-usedW)/2;
+    const x = offsetX + (lon-LON_MIN)*scaleX;
+    const y = padT + (LAT_MAX-lat)*scaleY;
+    return [x,y];
+  }
+
+  let selectedEventId = null;
+
+  function renderMap(){
+    const svg = document.getElementById("mapSvg");
+    clear(svg);
+    const ev = filteredEvents();
+
+    // background lat gridlines
+    for(let lat=25; lat<=50; lat+=5){
+      const [x1,y1] = project(lat, LON_MIN);
+      const [x2,y2] = project(lat, LON_MAX);
+      svg.appendChild(svgEl("line",{x1,x2,y1,y2,class:"grid"}));
+    }
+    // region soft labels near approximate centroid
+    const regionCentroid = {
+      "Northeast":[42.5,-74], "Midwest":[42,-90], "South":[32,-89], "West":[40,-115]
+    };
+    REGIONS.forEach(r=>{
+      const [lat,lon] = regionCentroid[r];
+      const [x,y] = project(lat,lon);
+      const t = svgEl("text",{x,y,class:"region-label","text-anchor":"middle"});
+      t.textContent = r.toUpperCase();
+      svg.appendChild(t);
+    });
+
+    // sort so recurrence/larger EHI draw on top
+    const sorted = [...ev].sort((a,b)=> a.ehi-b.ehi);
+    const tooltip = document.getElementById("tooltip");
+
+    sorted.forEach(e=>{
+      const [x,y] = project(e.lat, e.lon);
+      const r = 3 + (e.ehi/100)*9;
+      // isolation ring in the surface color first, so overlapping semi-transparent
+      // bubbles don't alpha-blend into a phantom color not in the legend
+      svg.appendChild(svgEl("circle",{
+        cx:x, cy:y, r:(r+1.1).toFixed(1),
+        fill:"none", stroke: cssVar("--surface-1"), "stroke-width":2
+      }));
+      const c = svgEl("circle",{
+        cx:x, cy:y, r:r.toFixed(1),
+        fill: virusColor(e.virus), "fill-opacity": e.status==="detected"?0.55: (e.status==='autoimmune_corrected'?0.35:0.92),
+        stroke: e.status==="recurrence" ? cssVar("--status-critical") : "none",
+        "stroke-width": e.status==="recurrence"?2.2:0,
+        class:"bubble"
+      });
+      c.addEventListener("mousemove",(ev2)=>{
+        tooltip.style.display="block";
+        tooltip.style.left = (ev2.pageX+14)+"px";
+        tooltip.style.top = (ev2.pageY+10)+"px";
+        tooltip.innerHTML = `<div class="tt-title">${e.city}, ${e.state}</div>
+          <div class="tt-row">${DATA.virus_types[e.virus].label} · ${e.subtype}</div>
+          <div class="tt-row">EHI ${e.ehi} · ${STATUS_LABEL[e.status]}</div>
+          <div class="tt-row">${fmtDate(e.date)}</div>`;
+      });
+      c.addEventListener("mouseleave",()=>{ tooltip.style.display="none"; });
+      c.addEventListener("click", ()=>{ selectedEventId=e.id; renderEventsTable(); document.querySelector('.card .tablewrap').scrollIntoView({behavior:"smooth",block:"center"}); });
+      svg.appendChild(c);
+    });
+
+    // legend
+    const legend = document.getElementById("mapLegend");
+    legend.innerHTML = "";
+    VIRUS_ORDER.forEach(k=>{
+      const item = document.createElement("div"); item.className="item";
+      item.innerHTML = `<span class="swatch" style="background:${virusColor(k)}"></span>${DATA.virus_types[k].label}`;
+      legend.appendChild(item);
+    });
+    const halo = document.createElement("div"); halo.className="item";
+    halo.innerHTML = `<span class="swatch" style="background:none;border:2px solid ${cssVar('--status-critical')}"></span>Recurrence (ring)`;
+    legend.appendChild(halo);
+  }
+
+  function renderMapKpis(){
+    const ev = filteredEvents();
+    const c = document.getElementById("mapKpis"); clear(c);
+    const avgEhi = ev.length? (ev.reduce((a,e)=>a+e.ehi,0)/ev.length).toFixed(1) : "0";
+    const recur = ev.filter(e=>e.status==="recurrence").length;
+    const ai = ev.filter(e=>e.status==="autoimmune_corrected").length;
+    statTile(c, "Filtered detections", ev.length);
+    statTile(c, "Avg EHI severity", avgEhi);
+    statTile(c, "Active recurrences", recur, recur>0? "Prior-adjudication precedent applies":null);
+    statTile(c, "Autoimmune-corrected", ai, "False positives caught pre-publication", true);
+  }
+
+  function renderRegionBars(){
+    const ev = filteredEvents();
+    const c = document.getElementById("regionBars"); clear(c);
+    const byRegion = {};
+    REGIONS.forEach(r=>byRegion[r]={count:0,ehiSum:0});
+    ev.forEach(e=>{ byRegion[e.region].count++; byRegion[e.region].ehiSum+=e.ehi; });
+    const maxCount = Math.max(1,...REGIONS.map(r=>byRegion[r].count));
+    REGIONS.forEach(r=>{
+      const d = byRegion[r];
+      const avg = d.count? (d.ehiSum/d.count).toFixed(0) : "0";
+      const row = document.createElement("div");
+      row.style.marginBottom = "10px";
+      row.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:3px;">
+        <span style="font-weight:600;color:var(--text-primary);">${r}</span><span>${d.count} events · avg EHI ${avg}</span></div>
+        <div style="height:8px;border-radius:5px;background:var(--surface-1);overflow:hidden;">
+        <div style="height:100%;border-radius:5px;background:var(--seq-400);width:${(d.count/maxCount*100).toFixed(0)}%"></div></div>`;
+      c.appendChild(row);
+    });
+  }
+
+  function renderEventsTable(){
+    const table = document.getElementById("eventsTable");
+    const ev = [...filteredEvents()].sort((a,b)=> b.date.localeCompare(a.date)).slice(0,150);
+    table.querySelector("thead").innerHTML = `<tr><th>Date</th><th>Location</th><th>Virus</th><th>Subtype</th><th>EHI</th><th>Status</th></tr>`;
+    const tbody = table.querySelector("tbody"); clear(tbody);
+    ev.forEach(e=>{
+      const tr = document.createElement("tr");
+      if(e.id===selectedEventId) tr.style.outline = "2px solid " + virusColor(e.virus);
+      tr.innerHTML = `<td>${fmtDate(e.date)}</td><td>${e.city}, ${e.state}</td>
+        <td><span class="badge ${VIRUS_CLASS[e.virus]}"><span class="d" style="background:${virusColor(e.virus)}"></span>${DATA.virus_types[e.virus].label}</span></td>
+        <td>${e.subtype}</td><td>${e.ehi}</td>
+        <td><span class="status-pill st-${e.status}"><span class="d"></span>${STATUS_LABEL[e.status]}</span></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* =============================== TIMELINE =============================== */
+  function renderTimelineKpis(){
+    const rows = filteredMonthly();
+    const c = document.getElementById("timelineKpis"); clear(c);
+    let total=0, ehiSum=0, ehiN=0;
+    rows.forEach(r=>{
+      VIRUS_ORDER.forEach(k=>{
+        if(!state.virus.has(k)) return;
+        total += r.by_virus[k].detections;
+        if(r.by_virus[k].detections){ ehiSum += r.by_virus[k].avg_ehi*r.by_virus[k].detections; ehiN += r.by_virus[k].detections; }
+      });
+    });
+    statTile(c,"Total detections (window)", total);
+    statTile(c,"Blended avg EHI", ehiN? (ehiSum/ehiN).toFixed(1):"0");
+    // compare trailing 3-month blocks rather than single endpoint months, so one
+    // noisy month doesn't produce a misleadingly large headline swing
+    const monthTotal = r => VIRUS_ORDER.reduce((a,k)=>a+(state.virus.has(k)?r.by_virus[k].detections:0),0);
+    const nBlock = Math.max(1, Math.min(3, Math.floor(rows.length/2)));
+    const firstBlock = rows.slice(0,nBlock).reduce((a,r)=>a+monthTotal(r),0)/nBlock;
+    const lastBlock = rows.slice(-nBlock).reduce((a,r)=>a+monthTotal(r),0)/nBlock;
+    const growth = firstBlock? Math.round((lastBlock-firstBlock)/firstBlock*100):0;
+    statTile(c,`Detections growth, ${nBlock}-mo avg`, (growth>=0?"+":"")+growth+"%","First vs. last "+nBlock+" months of the window");
+  }
+
+  function renderStackChart(){
+    const svg = document.getElementById("stackChart");
+    clear(svg);
+    const rows = filteredMonthly();
+    const W=1000,H=300, padL=40,padR=14,padT=14,padB=30;
+    const innerW=W-padL-padR, innerH=H-padT-padB;
+    const active = VIRUS_ORDER.filter(k=>state.virus.has(k));
+    const totals = rows.map(r=> active.reduce((a,k)=>a+r.by_virus[k].detections,0));
+    const yMax = niceMax(Math.max(1,...totals)*1.15);
+    const n = rows.length;
+    const bw = innerW/n*0.62;
+    for(let t=0;t<=4;t++){
+      const yv=yMax*t/4, yy=padT+innerH-(yv/yMax)*innerH;
+      svg.appendChild(svgEl("line",{x1:padL,x2:padL+innerW,y1:yy,y2:yy,class:"grid"}));
+      const lbl=svgEl("text",{x:padL-8,y:yy+3,"text-anchor":"end"}); lbl.textContent=Math.round(yv); svg.appendChild(lbl);
+    }
+    svg.appendChild(svgEl("line",{x1:padL,x2:padL+innerW,y1:padT+innerH,y2:padT+innerH,class:"axisline"}));
+    rows.forEach((r,i)=>{
+      const cx = padL + (i+0.5)*(innerW/n);
+      let yCursor = padT+innerH;
+      active.forEach(k=>{
+        const v = r.by_virus[k].detections;
+        const h = (v/yMax)*innerH;
+        const rect = svgEl("rect",{x:(cx-bw/2).toFixed(1), y:(yCursor-h).toFixed(1), width:bw.toFixed(1), height:Math.max(0,h-1).toFixed(1),
+          fill:virusColor(k), rx:2});
+        svg.appendChild(rect);
+        yCursor -= h;
+      });
+      if(n<=12 || i%2===0){
+        const t = svgEl("text",{x:cx,y:padT+innerH+16,"text-anchor":"middle"}); t.textContent = monthLabel(r.month_index); svg.appendChild(t);
+      }
+    });
+    const legend = document.getElementById("stackLegend"); legend.innerHTML="";
+    active.forEach(k=>{
+      const item=document.createElement("div"); item.className="item";
+      item.innerHTML=`<span class="swatch" style="background:${virusColor(k)}"></span>${DATA.virus_types[k].label}`;
+      legend.appendChild(item);
+    });
+  }
+
+  function renderSmallMultiples(){
+    const container = document.getElementById("smallMultiples"); clear(container);
+    const rows = filteredMonthly();
+    VIRUS_ORDER.forEach(k=>{
+      const card = document.createElement("div"); card.className="card";
+      const active = state.virus.has(k);
+      card.innerHTML = `<div class="chart-title">${DATA.virus_types[k].label}</div>
+        <div class="chart-sub">Monthly detections${active?"":" (filtered out)"}</div>`;
+      const svg = svgEl("svg",{class:"chart", viewBox:"0 0 320 160"}); svg.style.width="100%";
+      card.appendChild(svg);
+      container.appendChild(card);
+      if(!active){ svg.style.opacity=0.3; }
+      const values = rows.map(r=>({y:r.by_virus[k].detections}));
+      lineChart(svg, [{key:k,color:virusColor(k),values}], {padL:26});
+    });
+  }
+
+  function renderEhiChart(){
+    const svg = document.getElementById("ehiChart");
+    const rows = filteredMonthly();
+    const active = VIRUS_ORDER.filter(k=>state.virus.has(k));
+    const series = active.map(k=>({
+      key:k, color:virusColor(k),
+      values: rows.map(r=>({y:r.by_virus[k].avg_ehi}))
+    }));
+    lineChart(svg, series, {xLabels: rows.map(r=>monthLabel(r.month_index)), yFormat:v=>Math.round(v)});
+    const legend = document.getElementById("ehiLegend"); legend.innerHTML="";
+    active.forEach(k=>{
+      const item=document.createElement("div"); item.className="item";
+      item.innerHTML=`<span class="swatch" style="background:${virusColor(k)}"></span>${DATA.virus_types[k].label}`;
+      legend.appendChild(item);
+    });
+    const table = document.getElementById("ehiTable");
+    table.querySelector("thead").innerHTML = "<tr><th>Month</th>"+active.map(k=>`<th>${DATA.virus_types[k].label}</th>`).join("")+"</tr>";
+    const tbody = table.querySelector("tbody"); clear(tbody);
+    rows.forEach(r=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML = `<td>${monthLabel(r.month_index)}</td>` + active.map(k=>`<td>${r.by_virus[k].avg_ehi||"—"}</td>`).join("");
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* =============================== HITL =============================== */
+  function disputeLabel(l){ return l===1?"Level 1 · Grace & Clarification": l===2?"Level 2 · Sortition Review Circle":"Level 3 · Registry Publication"; }
+
+  function renderHitlKpis(){
+    const c = document.getElementById("hitlKpis"); clear(c);
+    const cases = DATA.hitl_cases;
+    const ai = cases.filter(h=>h.outcome.startsWith("Autoimmune")).length;
+    const confirmed = cases.filter(h=>h.outcome.startsWith("Confirmed")).length;
+    statTile(c,"Cases reviewed (sample)", cases.length);
+    statTile(c,"Autoimmune-corrected", ai, "Withdrawn before Registry publication", true);
+    statTile(c,"Confirmed to Registry", confirmed);
+    statTile(c,"Correction rate", Math.round(ai/cases.length*100)+"%", "Share of reviewed findings self-corrected");
+  }
+
+  function reviewCardHtml(h, isAutoimmune){
+    return `<div class="reviewcard">
+      <div class="rc-top">
+        <div>
+          <span class="rc-id">${h.case_id}</span> ·
+          <span class="badge ${VIRUS_CLASS[h.virus]}"><span class="d" style="background:${virusColor(h.virus)}"></span>${DATA.virus_types[h.virus].label}</span>
+          <span style="font-size:12.5px;color:var(--text-secondary);margin-left:6px;">${h.city}, ${h.state} · EHI ${h.ehi}</span>
+        </div>
+        <span class="dispute-badge">${disputeLabel(h.dispute_level)}</span>
+      </div>
+      <div class="rc-narrative"><strong style="color:var(--text-primary);">${h.outcome}.</strong> ${h.narrative}</div>
+      <div class="rc-panel">Panel: ${h.panel.join(", ")} · ${fmtDate(h.date)}</div>
+    </div>`;
+  }
+
+  function renderHitlLists(){
+    const cases = DATA.hitl_cases;
+    const aiList = document.getElementById("autoimmuneList");
+    aiList.innerHTML = cases.filter(h=>h.outcome.startsWith("Autoimmune")).map(h=>reviewCardHtml(h,true)).join("");
+    const full = document.getElementById("hitlList");
+    full.innerHTML = cases.map(h=>reviewCardHtml(h,false)).join("");
+  }
+
+  /* =============================== ANTIBODY =============================== */
+  function renderAntibodyKpis(){
+    const rows = filteredMonthly();
+    const c = document.getElementById("antibodyKpis"); clear(c);
+    const last = rows[rows.length-1] || DATA.monthly[DATA.monthly.length-1];
+    const a = last.antibody_cumulative;
+    statTile(c,"Cells formed (cumulative)", a.cells_formed);
+    statTile(c,"Registry entries published", a.registry_entries);
+    statTile(c,"Remediation funds routed", fmtUSD(a.remediation_usd));
+    statTile(c,"Legal referrals filed", a.legal_referrals);
+  }
+
+  function renderAntibodyMultiples(){
+    const container = document.getElementById("antibodyMultiples"); clear(container);
+    const rows = filteredMonthly();
+    const metrics = [
+      {key:"cells_formed", label:"Cells formed", fmt:v=>Math.round(v)},
+      {key:"registry_entries", label:"Registry entries", fmt:v=>Math.round(v)},
+      {key:"remediation_usd", label:"Remediation funds", fmt:v=>fmtUSD(v)},
+    ];
+    metrics.forEach(m=>{
+      const card = document.createElement("div"); card.className="card";
+      card.innerHTML = `<div class="chart-title">${m.label}</div><div class="chart-sub">Cumulative, filtered window</div>`;
+      const svg = svgEl("svg",{class:"chart", viewBox:"0 0 320 160"}); svg.style.width="100%";
+      card.appendChild(svg); container.appendChild(card);
+      const values = rows.map(r=>({y:r.antibody_cumulative[m.key]}));
+      lineChart(svg,[{key:m.key,color:cssVar('--seq-400'),values}],{padL:34, yFormat:m.fmt});
+    });
+  }
+
+  function renderRemediationByRegion(){
+    const svg = document.getElementById("remedChart"); clear(svg);
+    const ev = filteredEvents().filter(e=>e.antibody);
+    const byRegion = {}; REGIONS.forEach(r=>byRegion[r]=0);
+    ev.forEach(e=> byRegion[e.region]+= (e.antibody.remediation_fund_usd||0));
+    const W=1000,H=240,padL=90,padR=60,padT=14,padB=14;
+    const innerW=W-padL-padR, innerH=H-padT-padB;
+    const maxV = niceMax(Math.max(1,...REGIONS.map(r=>byRegion[r]))*1.15);
+    const bh = innerH/REGIONS.length*0.55;
+    REGIONS.forEach((r,i)=>{
+      const cy = padT + (i+0.5)*(innerH/REGIONS.length);
+      const w = (byRegion[r]/maxV)*innerW;
+      svg.appendChild(svgEl("text",{x:padL-10,y:cy+4,"text-anchor":"end"})).textContent=r;
+      svg.appendChild(svgEl("rect",{x:padL,y:(cy-bh/2).toFixed(1),width:Math.max(0,w).toFixed(1),height:bh.toFixed(1),fill:"var(--seq-400)",rx:3}));
+      const lbl = svgEl("text",{x:padL+w+8,y:cy+4}); lbl.textContent = fmtUSD(byRegion[r]); lbl.setAttribute("fill","var(--text-secondary)");
+      svg.appendChild(lbl);
+    });
+    const table = document.getElementById("remedTable");
+    table.querySelector("thead").innerHTML = "<tr><th>Region</th><th>Remediation funds routed</th></tr>";
+    const tbody = table.querySelector("tbody"); clear(tbody);
+    REGIONS.forEach(r=>{
+      const tr=document.createElement("tr"); tr.innerHTML=`<td>${r}</td><td>${fmtUSD(byRegion[r])}</td>`; tbody.appendChild(tr);
+    });
+  }
+
+  /* =============================== VACCINATION =============================== */
+  function stateVaccinatedByMonth(st, mi){
+    const ev = DATA.vaccination_events.find(v=>v.state===st);
+    return !!ev && ev.month_index<=mi;
+  }
+  function renderVaccKpis(){
+    const c = document.getElementById("vaccKpis"); clear(c);
+    const last = DATA.monthly[DATA.monthly.length-1];
+    const v = last.vaccination_cumulative;
+    statTile(c,"States protected", v.states_protected+" / 33");
+    statTile(c,"Coverage", v.coverage_pct+"%");
+
+    // direct comparison: recurrence rate among matured sites in vaccinated vs
+    // non-vaccinated states — this is the number the headline claim rests on
+    const matured = filteredEvents().filter(e=> ["confirmed","contained","recurrence"].includes(e.status));
+    const vax = matured.filter(e=>stateVaccinatedByMonth(e.state, e.month_index));
+    const novax = matured.filter(e=>!stateVaccinatedByMonth(e.state, e.month_index));
+    const rate = arr => arr.length? Math.round(1000*arr.filter(e=>e.status==="recurrence").length/arr.length)/10 : null;
+    const rVax = rate(vax), rNo = rate(novax);
+    statTile(c,"Recurrence: vaccinated states", rVax!=null? rVax+"%" : "n/a",
+      `n=${vax.length} matured sites` + (rNo!=null? ` · vs ${rNo}% in non-vaccinated states`:""),
+      rVax!=null && rNo!=null && rVax<rNo);
+    statTile(c,"Ordinances adopted", DATA.vaccination_events.length);
+  }
+
+  function renderCoverageChart(){
+    const svg = document.getElementById("coverageChart");
+    const values = DATA.monthly.map(r=>({y:r.vaccination_cumulative.states_protected}));
+    lineChart(svg, [{key:"cov",color:cssVar('--seq-400'),values}], {xLabels: DATA.monthly.map(r=>monthLabel(r.month_index))});
+  }
+  function renderRecurChart(){
+    const svg = document.getElementById("recurChart");
+    const values = DATA.monthly.map(r=>({y:r.recurrence_rate_pct, dashed: !r.cohort_matured}));
+    lineChart(svg, [{key:"recur",color:cssVar('--status-critical'),values}], {xLabels: DATA.monthly.map(r=>monthLabel(r.month_index)), yFormat:v=>Math.round(v)+"%"});
+  }
+  function renderVaccTable(){
+    const table = document.getElementById("vaccTable");
+    table.querySelector("thead").innerHTML = "<tr><th>Date</th><th>State</th><th>Ordinance</th></tr>";
+    const tbody = table.querySelector("tbody"); clear(tbody);
+    DATA.vaccination_events.forEach(v=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML = `<td>${fmtDate(v.date)}</td><td>${v.state}</td><td>${v.ordinance}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* =============================== render orchestration =============================== */
+  function renderAll(){
+    renderMapKpis(); renderMap(); renderRegionBars(); renderEventsTable();
+    renderTimelineKpis(); renderStackChart(); renderSmallMultiples(); renderEhiChart();
+    renderHitlKpis(); renderHitlLists();
+    renderAntibodyKpis(); renderAntibodyMultiples(); renderRemediationByRegion();
+    renderVaccKpis(); renderCoverageChart(); renderRecurChart(); renderVaccTable();
+  }
+
+  /* =============================== controls =============================== */
+  function buildVirusChips(){
+    const wrap = document.getElementById("virusChips"); clear(wrap);
+    VIRUS_ORDER.forEach(k=>{
+      const chip = document.createElement("span");
+      chip.className = "chip active";
+      chip.innerHTML = `<span class="dot" style="background:${virusColor(k)}"></span>${DATA.virus_types[k].label}`;
+      chip.style.color = virusColor(k);
+      chip.addEventListener("click", ()=>{
+        if(state.virus.has(k)){ if(state.virus.size>1) state.virus.delete(k); }
+        else state.virus.add(k);
+        chip.classList.toggle("active", state.virus.has(k));
+        chip.classList.toggle("off", !state.virus.has(k));
+        renderAll();
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  function updateMonthLabel(){
+    document.getElementById("monthLabel").textContent = monthLabel(state.range[0]) + " – " + monthLabel(state.range[1]);
+  }
+
+  function initControls(){
+    buildVirusChips();
+    const rs = document.getElementById("rangeStart"), re = document.getElementById("rangeEnd");
+    rs.addEventListener("input", ()=>{
+      let a = parseInt(rs.value), b = parseInt(re.value);
+      if(a>b){ b=a; re.value=b; }
+      state.range=[a,b]; updateMonthLabel(); renderAll();
+    });
+    re.addEventListener("input", ()=>{
+      let a = parseInt(rs.value), b = parseInt(re.value);
+      if(b<a){ a=b; rs.value=a; }
+      state.range=[a,b]; updateMonthLabel(); renderAll();
+    });
+    updateMonthLabel();
+
+    document.getElementById("resetBtn").addEventListener("click", ()=>{
+      state.virus = new Set(VIRUS_ORDER);
+      state.range = [0,11];
+      rs.value=0; re.value=11;
+      buildVirusChips(); updateMonthLabel(); renderAll();
+    });
+
+    document.querySelectorAll("nav.tabs button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll("section.tabpanel").forEach(p=>p.classList.remove("active"));
+        document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    document.getElementById("themeBtn").addEventListener("click", ()=>{
+      state.theme = state.theme==="light" ? "dark" : "light";
+      document.body.setAttribute("data-theme", state.theme);
+      document.getElementById("themeBtn").textContent = state.theme==="light" ? "Dark mode" : "Light mode";
+      renderAll();
+    });
+
+    document.getElementById("mapTableToggle").addEventListener("click", (e)=>{
+      const wrap = document.querySelector("#tab-map .tablewrap");
+      wrap.style.display = wrap.style.display==="none" ? "block" : "none";
+    });
+    document.getElementById("ehiTableToggle").addEventListener("click", ()=>{
+      const w = document.getElementById("ehiTableWrap");
+      const chart = document.getElementById("ehiChart");
+      const showTable = w.style.display==="none";
+      w.style.display = showTable? "block":"none";
+      chart.style.display = showTable? "none":"block";
+      document.getElementById("ehiLegend").style.display = showTable? "none":"flex";
+    });
+    document.getElementById("remedTableToggle").addEventListener("click", ()=>{
+      const w = document.getElementById("remedTableWrap");
+      const chart = document.getElementById("remedChart");
+      const showTable = w.style.display==="none";
+      w.style.display = showTable? "block":"none";
+      chart.style.display = showTable? "none":"block";
+    });
+  }
+
+  initControls();
+  renderAll();
+})();
+</script>
+</body>
+</html>
