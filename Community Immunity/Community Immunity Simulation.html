@@ -174,6 +174,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .section-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
 
 footer{text-align:center;padding:16px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+
+.welcome-hero{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 32px;margin-bottom:20px;border-left:4px solid #185fa5}
+.welcome-hero h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.2}
+.welcome-hero .hero-sub{font-size:14px;color:var(--text2);line-height:1.6;max-width:560px}
+
+.bio-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.bio-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.bio-card .bio-icon{font-size:28px;margin-bottom:10px}
+.bio-card .bio-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.bio-card .bio-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.bio-card .bio-body{font-size:12px;color:var(--text2);line-height:1.6}
+.bio-card .bio-arrow{font-size:11px;font-weight:600;margin-top:10px;display:flex;align-items:center;gap:4px;cursor:pointer}
+
+.step-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.step-cell{padding:14px 12px;background:var(--surface);border-right:1px solid var(--border);position:relative}
+.step-cell:last-child{border-right:none}
+.step-cell .step-num{font-size:10px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.step-cell .step-icon{font-size:18px;margin-bottom:6px}
+.step-cell .step-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.step-cell .step-bio{font-size:10px;color:var(--text3);font-style:italic;margin-bottom:4px}
+.step-cell .step-plain{font-size:11px;color:var(--text2);line-height:1.4}
+.step-connector{position:absolute;right:-8px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:var(--border);border-radius:50%;z-index:1;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text3)}
+
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.who-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.who-card .who-role{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.who-card .who-q{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.3}
+.who-card .who-a{font-size:12px;color:var(--text2);line-height:1.5}
+.who-card .who-cta{margin-top:10px}
+
+.glossary-row{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;align-items:start}
+.glossary-row:last-child{border-bottom:none}
+.glossary-term{font-weight:600;color:var(--text)}
+.glossary-bio{font-size:10px;color:var(--text3);font-style:italic;display:block;margin-top:1px}
+.glossary-def{color:var(--text2);line-height:1.5}
 </style>
 </head>
 <body>
@@ -188,9 +223,14 @@ footer{text-align:center;padding:16px;font-size:11px;color:var(--text3);border-t
     <div class="live-badge"><span class="live-dot"></span> Memphis — active outbreak</div>
   </div>
 
+  <div class="nav-section">Start here</div>
+  <button class="nav-item active" onclick="showTab('welcome')">
+    <span class="icon">&#x1F331;</span> Overview
+  </button>
+
   <div class="nav-section">Immunologist view</div>
-  <button class="nav-item active" onclick="showTab('overview')">
-    <span class="icon">&#x26A1;</span> Overview
+  <button class="nav-item" onclick="showTab('overview')">
+    <span class="icon">&#x26A1;</span> Command center
   </button>
   <button class="nav-item" onclick="showTab('impact')">
     <span class="icon">&#x1F9EC;</span> Impact assessment
@@ -229,14 +269,151 @@ footer{text-align:center;padding:16px;font-size:11px;color:var(--text3);border-t
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-title">Immunologist command center</div>
+    <div class="topbar-title">Community Immunity Project</div>
     <div class="topbar-meta" id="topbar-date"></div>
     <button class="btn btn-danger" onclick="alert('Outbreak report exported (demo)')">Export report</button>
     <button class="btn btn-primary" onclick="showTab('simulation')">Run simulation</button>
   </div>
 
-  <!-- ── OVERVIEW ── -->
-  <div class="content active" id="tab-overview">
+  <!-- ── WELCOME / OVERVIEW ── -->
+  <div class="content active" id="tab-welcome">
+
+    <div class="welcome-hero">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#185fa5;margin-bottom:8px">Community Immunity Project — start here</div>
+      <h2>Your community has an immune system.<br>This tool helps you activate it.</h2>
+      <div class="hero-sub" style="margin-top:10px">When a data center moves into a town without warning — draining water, spiking electricity bills, polluting air — the community's first response looks exactly like what happens inside your body when a virus arrives. This dashboard uses that parallel to help community leaders understand what's happening, what phase they're in, and what to do next.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">The core idea — your body already knows how to fight this</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:4px">
+        <div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">When a virus enters your body, it doesn't announce itself. It moves quietly, extracts what it needs, and relies on your cells not recognizing the threat until it's too late to stop it easily. Sound familiar?</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">AI data centers arrive the same way. A chamber of commerce announcement — no vote, no environmental study, no community input. By the time residents notice the water pressure dropping and the electric bills doubling, the corporation has signed contracts, received tax breaks, and has lawyers on retainer.</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7">The <strong>Community Immunity Project</strong> applies what biology already knows: a body that has fought a virus once — and recorded how it did it — fights the next one faster, harder, and with far less damage. This tool is the recording system.</p>
+        </div>
+        <div style="background:var(--surface2);border-radius:12px;padding:16px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:12px">Biology → community</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px">
+              <span style="color:var(--text3)">The pathogen</span><span style="font-weight:600;color:var(--text)">The data center corporation</span>
+              <span style="color:var(--text3)">Resource extraction</span><span style="font-weight:600;color:var(--text)">Water, energy, air, land</span>
+              <span style="color:var(--text3)">Macrophage response</span><span style="font-weight:600;color:var(--text)">First residents to notice and complain</span>
+              <span style="color:var(--text3)">Innate immunity</span><span style="font-weight:600;color:var(--text)">Local coalition, media, town hall</span>
+              <span style="color:var(--text3)">Adaptive immunity</span><span style="font-weight:600;color:var(--text)">Legal action, legislative pressure</span>
+              <span style="color:var(--text3)">Antibodies</span><span style="font-weight:600;color:var(--text)">Legal precedents, Registry entries</span>
+              <span style="color:var(--text3)">Immunological memory</span><span style="font-weight:600;color:var(--text)">The Public Harm Registry</span>
+              <span style="color:var(--text3)">Vaccination</span><span style="font-weight:600;color:var(--text)">Next town gets the full playbook first</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:10px">The five stages — where is your community right now?</div>
+    <div class="step-strip">
+      <div class="step-cell" style="border-top:3px solid #e34948">
+        <div class="step-num">Stage 1</div>
+        <div class="step-icon">&#x1F9A0;</div>
+        <div class="step-name">Pathogen active</div>
+        <div class="step-bio">Virus has entered the body</div>
+        <div class="step-plain">The facility is being built or operating. Most residents don't know yet. No environmental data was collected. NDAs are signed.</div>
+      </div>
+      <div class="step-cell" style="border-top:3px solid #ea8a00">
+        <div class="step-num">Stage 2</div>
+        <div class="step-icon">&#x1F6A8;</div>
+        <div class="step-name">Macrophage response</div>
+        <div class="step-bio">First cells detect the invader</div>
+        <div class="step-plain">Individual residents notice — bills spiking, water pressure dropping, noise at night. Isolated complaints. No one has connected the dots yet.</div>
+      </div>
+      <div class="step-cell" style="border-top:3px solid #eda100">
+        <div class="step-num">Stage 3</div>
+        <div class="step-icon">&#x1F91D;</div>
+        <div class="step-name">Innate immunity</div>
+        <div class="step-bio">Body mounts first defense</div>
+        <div class="step-plain">A coalition forms. Town halls. Local media. Residents compare notes and recognize a shared pattern. The corporation is named publicly for the first time.</div>
+      </div>
+      <div class="step-cell" style="border-top:3px solid #185fa5">
+        <div class="step-num">Stage 4</div>
+        <div class="step-icon">&#x2696;&#xFE0F;</div>
+        <div class="step-name">Adaptive immunity</div>
+        <div class="step-bio">Targeted attack on the specific threat</div>
+        <div class="step-plain">Legal action. Clean Air Act notice filed. Independent evidence gathered. Congressional pressure applied. The corporation is forced to negotiate.</div>
+      </div>
+      <div class="step-cell" style="border-top:3px solid #3b6d11">
+        <div class="step-num">Stage 5</div>
+        <div class="step-icon">&#x1F9EC;</div>
+        <div class="step-name">Immunity created</div>
+        <div class="step-bio">Antibody enters the bloodstream</div>
+        <div class="step-plain">The case is documented. The legal precedent, evidence methods, and organizing tactics are published in the Registry. The next town starts at Stage 4.</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:10px">Who is this for — and what does each person do here?</div>
+    <div class="who-grid">
+      <div class="who-card" style="border-top:3px solid #e34948">
+        <div class="who-role" style="color:#991b1b">Community resident</div>
+        <div class="who-q">"Something is wrong in my town. Where do I start?"</div>
+        <div class="who-a">Go to the Memphis / xAI tab to see a real example. Find your stage in the five-step strip above. Then go to the Treatment library to see exactly what to do this week.</div>
+        <div class="who-cta"><button class="btn" style="font-size:11px" onclick="showTab('memphis')">See the Memphis example &#x2192;</button></div>
+      </div>
+      <div class="who-card" style="border-top:3px solid #185fa5">
+        <div class="who-role" style="color:#185fa5">Coalition or organization leader</div>
+        <div class="who-q">"I represent multiple communities. How do I coordinate?"</div>
+        <div class="who-a">The Community network tab shows all active outbreaks and their immune status. The 18-month simulation lets you model what changes when communities share resources. The "Share treatment" button on each community row distributes the Memphis protocol to that team.</div>
+        <div class="who-cta"><button class="btn" style="font-size:11px" onclick="showTab('communities')">View community network &#x2192;</button></div>
+      </div>
+      <div class="who-card" style="border-top:3px solid #3b6d11">
+        <div class="who-role" style="color:#3b6d11">Regional or national leader</div>
+        <div class="who-q">"I need to show funders and legislators why this matters at scale."</div>
+        <div class="who-a">The Command center gives you the national outbreak numbers. The Impact assessment breaks down each harm vector with evidence. The simulation shows exactly what changes when registry access goes from 0 to 7 — that's the funding argument in one chart.</div>
+        <div class="who-cta"><button class="btn" style="font-size:11px" onclick="showTab('simulation')">Run the simulation &#x2192;</button></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">What the simulation actually does</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">The 18-month simulation is the heart of this tool. It takes four real factors — how fast your community organizes, how large the corporation's legal budget is, whether you have access to the Registry of past cases, and how much legal support you have — and projects what happens over the next 18 months.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px">The four inputs you control</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7">
+            <div style="margin-bottom:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius)"><strong>Organization speed</strong> — how quickly your community can hold meetings, coordinate, and act together. A trained coalition moves at speed 8. A neighborhood that just started talking moves at 3.</div>
+            <div style="margin-bottom:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius)"><strong>Corporate budget</strong> — how much money the corporation has to fight back. xAI: 9. A regional data center startup: 4.</div>
+            <div style="margin-bottom:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius)"><strong>Registry access</strong> — do you have the Memphis playbook? Do you know which laws apply, which tests to run, which lawyers to call? This is the single highest-leverage variable.</div>
+            <div style="padding:8px 10px;background:var(--surface2);border-radius:var(--radius)"><strong>Legal aid depth</strong> — do you have a nonprofit law firm partner, or are you on your own? This determines whether you can take the fight all the way to a documented outcome.</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px">The most important thing the simulation shows</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">With Registry access at 0, a community spends most of the first six months rediscovering what other communities already learned. They find out about thermal imaging in month 4 instead of week 1. They send the legal notice in month 6 instead of month 2.</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">That four-month delay is the difference between getting concessions and signing an NDA. The simulation makes that gap visible as a chart, a number, and a clear story you can tell a funder or a legislator.</div>
+          <div style="padding:10px 12px;background:var(--bluebg);border-radius:var(--radius);border-left:3px solid #185fa5;font-size:12px;color:var(--text)"><strong>Try this:</strong> go to the 18-month simulation, leave everything else the same, and drag Registry access from 0 to 7. Watch the outcome change from "Partial loss" to "Partial win." That's what the Public Harm Registry does.</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="showTab('simulation')">Go to the simulation &#x2192;</button>
+        <button class="btn" onclick="showTab('impact')">See the impact assessment &#x2192;</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Plain-language glossary — terms used throughout this tool</div>
+      <div style="margin-top:4px">
+        <div class="glossary-row"><div><span class="glossary-term">EHI score</span><span class="glossary-bio">Antigen signature</span></div><div class="glossary-def">Exploitation Harm Index. A 0–100 number that measures how much damage a data center is causing across five dimensions: air, water, grid, noise, and regulatory capture. Memphis scores 74. Criminal liability under S.E.P.A. starts at 76.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">Public Harm Registry</span><span class="glossary-bio">Immunological memory</span></div><div class="glossary-def">A permanent public database of documented cases — what the corporation did, what harm it caused, what legal actions worked. When your community accesses it, you don't have to start from scratch. You start from where Memphis left off.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">S.E.P.A.</span><span class="glossary-bio">The immune system's rulebook</span></div><div class="glossary-def">The Systemic Exploitation Prevention Act — proposed legislation that establishes strict liability for exploitation, creates the Office of Harm Measurement, and imposes criminal penalties on executives whose decisions produce irreversible harm.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">60-Day Notice</span><span class="glossary-bio">First adaptive response</span></div><div class="glossary-def">A Notice of Intent to Sue under the Clean Air Act or Clean Water Act. It's free to file, gives the corporation 60 days to negotiate, and often forces concessions within 20 days. Memphis: filed June 17, 2025. Concessions followed within six weeks.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">Remediation bond</span><span class="glossary-bio">Antitoxin held in reserve</span></div><div class="glossary-def">Money the corporation deposits before construction — enough to clean up the site if they abandon it or go bankrupt. You demand this before the permit is signed, not after the damage is done.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">Qui tam</span><span class="glossary-bio">Immune cell reward system</span></div><div class="glossary-def">A legal provision that lets any citizen bring a lawsuit on behalf of the government and receive 25–40% of what's recovered. Under S.E.P.A., a successful qui tam action against a data center corporation means the community that documented the harm gets paid from the corporation's disgorgement.</div></div>
+        <div class="glossary-row"><div><span class="glossary-term">OHM</span><span class="glossary-bio">The body's diagnostic lab</span></div><div class="glossary-def">Office of Harm Measurement. The independent agency under S.E.P.A. that calculates EHI scores, accepts public complaints, and refers findings to the Office of Exploitation Prosecution. Funded entirely from enforcement collections — it can't be defunded by a captured legislature.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── COMMAND CENTER (was Overview) ── -->
+  <div class="content" id="tab-overview">
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Communities infected</div><div class="kpi-val danger">79</div><div class="kpi-sub">Across 49 states</div></div>
       <div class="kpi"><div class="kpi-label">Active immune responses</div><div class="kpi-val warn">23</div><div class="kpi-sub">Lawsuits, moratoriums, notices</div></div>
@@ -463,7 +640,7 @@ function showTab(id){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   const btns=document.querySelectorAll('.nav-item');
-  const map={overview:0,impact:1,simulation:2,communities:3,treatments:4,memphis:5};
+  const map={welcome:0,overview:1,impact:2,simulation:3,communities:4,treatments:5,memphis:6};
   if(map[id]!==undefined) btns[map[id]].classList.add('active');
 }
 
