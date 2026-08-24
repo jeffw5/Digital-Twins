@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Immunity — Outbreak Impact Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;--surface:#fff;--surface2:#f2f1ed;--border:rgba(0,0,0,.1);
+  --text:#0b0b0b;--text2:#52514e;--text3:#898781;
+  --red:#e34948;--redbg:#fef2f2;--redborder:#fca5a5;
+  --amber:#ba7517;--amberbg:#fef9ec;--amberborder:#fcd34d;
+  --green:#3b6d11;--greenbg:#f0f7e6;--greenborder:#86efac;
+  --blue:#185fa5;--bluebg:#eff6ff;--blueborder:#93c5fd;
+  --purple:#534ab7;--purplebg:#f5f3ff;--purpleborder:#c4b5fd;
+  --radius:8px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column}
+.logo{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+.logo-title{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.2px}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.live-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;border-radius:20px;padding:2px 8px;margin-top:8px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#e34948;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.nav-section{padding:12px 8px 4px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius);margin:1px 8px;cursor:pointer;font-size:13px;color:var(--text2);transition:background .12s,color .12s;border:none;background:none;width:calc(100% - 16px);text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:#eff6ff;color:var(--blue);font-weight:500}
+.nav-item .icon{font-size:15px;width:18px;text-align:center;opacity:.7}
+.nav-item.active .icon{opacity:1}
+.nav-badge{margin-left:auto;font-size:10px;background:var(--redbg);color:#991b1b;border-radius:20px;padding:1px 7px;font-weight:600}
+
+.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--border)}
+.param-summary{font-size:11px;color:var(--text3)}
+.param-row{display:flex;justify-content:space-between;padding:2px 0}
+.param-val{font-weight:600;color:var(--text2)}
+
+.main{overflow-y:auto;display:flex;flex-direction:column}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;flex:1}
+.topbar-meta{font-size:12px;color:var(--text3)}
+.btn{padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;cursor:pointer;transition:background .12s;font-weight:500}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:#185fa5;color:#fff;border-color:#185fa5}
+.btn-primary:hover{background:#0c447c}
+.btn-danger{background:var(--redbg);color:#991b1b;border-color:var(--redborder)}
+
+.content{padding:24px;flex:1;display:none}
+.content.active{display:block}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi-label{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.kpi-val{font-size:26px;font-weight:600;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:11px;color:var(--text3)}
+.kpi-val.danger{color:#991b1b}
+.kpi-val.warn{color:var(--amber)}
+.kpi-val.success{color:var(--green)}
+.kpi-val.blue{color:var(--blue)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
+
+.dim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.dim-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.dim-card:hover{border-color:#93c5fd;background:#fafcff}
+.dim-card.active-dim{border-color:#185fa5;background:#eff6ff}
+.dim-card .dim-icon{font-size:20px;margin-bottom:8px}
+.dim-card .dim-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.dim-card .dim-score{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:6px}
+.dim-card .dim-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block}
+.dim-card .dim-trend{font-size:11px;color:var(--text3);margin-top:6px}
+.dim-click-hint{position:absolute;top:10px;right:10px;font-size:10px;color:var(--text3);opacity:0}
+.dim-card:hover .dim-click-hint{opacity:1}
+
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;display:none}
+.detail-panel.visible{display:block}
+.detail-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.detail-title{font-size:16px;font-weight:600;flex:1}
+.detail-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-section{font-size:12px}
+.detail-section-title{font-weight:600;color:var(--text2);margin-bottom:8px;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.fact-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--border)}
+.fact-row:last-child{border-bottom:none}
+.fact-label{color:var(--text2)}
+.fact-val{font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+.finding-item{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.finding-item:last-child{border-bottom:none}
+.finding-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.action-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:var(--radius);margin-bottom:6px;font-size:12px}
+.action-tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:8px}
+
+.timeline-outer{position:relative;padding-left:28px}
+.timeline-line{position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tl-item{position:relative;padding-bottom:16px}
+.tl-dot{position:absolute;left:-23px;width:14px;height:14px;border-radius:50%;border:2px solid var(--surface);top:2px}
+.tl-date{font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.tl-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.tl-body{font-size:11px;color:var(--text2);line-height:1.5}
+.tl-outcome{font-size:10px;padding:3px 8px;border-radius:20px;display:inline-block;margin-top:4px;font-weight:500}
+
+.sim-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.ctrl-group{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.ctrl-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between}
+.ctrl-label span{color:var(--text3);font-weight:400}
+.ctrl-track{display:flex;align-items:center;gap:8px}
+.ctrl-track input[type=range]{flex:1;accent-color:#185fa5;height:4px}
+.ctrl-val{font-size:14px;font-weight:700;min-width:24px;text-align:right;font-variant-numeric:tabular-nums}
+.ctrl-desc{font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4}
+
+.phase-runner{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.phase-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.phase-scrub{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.phase-fill{height:100%;background:#185fa5;border-radius:2px;transition:width .5s}
+.phase-label{font-size:12px;color:var(--text3);min-width:80px;text-align:right}
+.phase-item{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:var(--radius);margin-bottom:6px;transition:background .15s,opacity .2s;border:1px solid transparent}
+.phase-item.done{background:#f0f7e6;border-color:var(--greenborder)}
+.phase-item.current{background:#eff6ff;border-color:var(--blueborder)}
+.phase-item.future{opacity:.35}
+.phase-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.phase-item.done .phase-num{background:var(--greenbg);color:var(--green)}
+.phase-item.current .phase-num{background:#185fa5;color:#fff}
+.phase-item.future .phase-num{background:var(--surface2);color:var(--text3)}
+.phase-content .phase-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.phase-content .phase-desc{font-size:11px;color:var(--text2);line-height:1.4}
+.phase-content .phase-bio{font-size:10px;color:var(--text3);margin-top:4px;font-style:italic}
+
+.outcome-matrix{margin-bottom:16px}
+.matrix-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px}
+.matrix-row{display:grid;grid-template-columns:130px 1fr 80px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.matrix-row:last-child{border-bottom:none}
+.matrix-dim{color:var(--text2);font-weight:500}
+.matrix-bar-outer{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.matrix-bar-inner{height:100%;border-radius:3px;transition:width .6s}
+.matrix-pct{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+
+.comm-table{width:100%;border-collapse:collapse;font-size:12px}
+.comm-table th{text-align:left;padding:6px 8px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border);background:var(--surface2)}
+.comm-table td{padding:8px;border-bottom:1px solid var(--border)}
+.comm-table tr:last-child td{border-bottom:none}
+.comm-table tr:hover td{background:var(--surface2)}
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.ehi-bar{height:5px;border-radius:3px;margin-top:3px;transition:width .5s}
+.share-link{color:var(--blue);cursor:pointer;font-size:11px;text-decoration:none;font-weight:500}
+.share-link:hover{text-decoration:underline}
+
+.treatment-filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.f-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);font-size:11px;cursor:pointer;background:var(--surface);color:var(--text2);font-weight:500;transition:all .12s}
+.f-btn:hover{border-color:#93c5fd;color:var(--blue)}
+.f-btn.active{background:#185fa5;color:#fff;border-color:#185fa5}
+.tx-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.tx-card:hover{border-color:#93c5fd}
+.tx-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.tx-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;margin-top:1px}
+.tx-title{font-size:13px;font-weight:600;flex:1}
+.tx-efficacy{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.tx-body{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.tx-outcome{font-size:11px;padding:6px 10px;border-radius:var(--radius);display:flex;align-items:flex-start;gap:6px}
+.tx-actions{display:flex;gap:6px;margin-top:8px}
+
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius);margin-bottom:14px;font-size:12px}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+.section-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+footer{text-align:center;padding:16px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-title">Community Immunity Project</div>
+    <div class="logo-sub">Outbreak intelligence dashboard</div>
+    <div class="live-badge"><span class="live-dot"></span> Memphis — active outbreak</div>
+  </div>
+
+  <div class="nav-section">Immunologist view</div>
+  <button class="nav-item active" onclick="showTab('overview')">
+    <span class="icon">&#x26A1;</span> Overview
+  </button>
+  <button class="nav-item" onclick="showTab('impact')">
+    <span class="icon">&#x1F9EC;</span> Impact assessment
+  </button>
+  <button class="nav-item" onclick="showTab('simulation')">
+    <span class="icon">&#x1F52C;</span> 18-month simulation
+    <span class="nav-badge">LIVE</span>
+  </button>
+  <button class="nav-item" onclick="showTab('communities')">
+    <span class="icon">&#x1F30E;</span> Community network
+  </button>
+  <button class="nav-item" onclick="showTab('treatments')">
+    <span class="icon">&#x1F48A;</span> Treatment library
+  </button>
+
+  <div class="nav-section">Active outbreak</div>
+  <button class="nav-item" onclick="showTab('memphis')">
+    <span class="icon">&#x1F3ED;</span> Memphis / xAI
+    <span class="nav-badge">EHI 74</span>
+  </button>
+
+  <div class="sidebar-footer">
+    <div class="param-summary">
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">Current parameters</div>
+      <div class="param-row"><span>Org speed</span><span class="param-val" id="sp-org">5 / 10</span></div>
+      <div class="param-row"><span>Corp budget</span><span class="param-val" id="sp-corp">8 / 10</span></div>
+      <div class="param-row"><span>Registry access</span><span class="param-val" id="sp-reg">0 / 10</span></div>
+      <div class="param-row"><span>Legal aid</span><span class="param-val" id="sp-legal">3 / 10</span></div>
+      <div class="param-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px">
+        <span>Projected outcome</span><span class="param-val danger" id="sp-outcome">Partial loss</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">Immunologist command center</div>
+    <div class="topbar-meta" id="topbar-date"></div>
+    <button class="btn btn-danger" onclick="alert('Outbreak report exported (demo)')">Export report</button>
+    <button class="btn btn-primary" onclick="showTab('simulation')">Run simulation</button>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
+  <div class="content active" id="tab-overview">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Communities infected</div><div class="kpi-val danger">79</div><div class="kpi-sub">Across 49 states</div></div>
+      <div class="kpi"><div class="kpi-label">Active immune responses</div><div class="kpi-val warn">23</div><div class="kpi-sub">Lawsuits, moratoriums, notices</div></div>
+      <div class="kpi"><div class="kpi-label">Memphis EHI score</div><div class="kpi-val danger">74 / 100</div><div class="kpi-sub">Criminal threshold: 76</div></div>
+      <div class="kpi"><div class="kpi-label">Registry antibodies shared</div><div class="kpi-val success">12</div><div class="kpi-sub">Treatments distributed</div></div>
+    </div>
+
+    <div class="alert" style="background:var(--redbg);border:1px solid var(--redborder)">
+      <span class="alert-icon" style="color:#991b1b">&#x26A0;</span>
+      <div><strong>Outbreak warning:</strong> Memphis EHI score (74) is 2 points below the S.E.P.A. criminal liability threshold. Des Moines (77) and Reno (81) have already crossed it. Three communities lack any organized response. Registry access at 0 for 61 of 79 affected communities.</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Outbreak spread timeline</div>
+        <div style="position:relative;height:200px"><canvas id="spreadChart" role="img" aria-label="Line chart showing cumulative communities affected over 24 months, with immune response adoptions overlaid.">Cumulative spread: growing from 1 to 79 communities over 24 months.</canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Immune response phase distribution</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#e34948;display:inline-block"></span>Pathogen active 32%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#eda100;display:inline-block"></span>Innate response 41%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2a78d6;display:inline-block"></span>Adaptive 17%</span>
+          <span style="font-size:11px;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1baf7a;display:inline-block"></span>Inoculated 10%</span>
+        </div>
+        <div style="position:relative;height:172px"><canvas id="phaseDonut" role="img" aria-label="Doughnut chart showing 32% pathogen active, 41% innate response, 17% adaptive, 10% inoculated.">Phase distribution across 79 communities.</canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Memphis xAI — harm dimension snapshot (click any row for detail)</div>
+      <div class="outcome-matrix" id="overviewMatrix"></div>
+    </div>
+  </div>
+
+  <!-- ── IMPACT ASSESSMENT ── -->
+  <div class="content" id="tab-impact">
+    <div class="alert" style="background:var(--bluebg);border:1px solid var(--blueborder)">
+      <span class="alert-icon" style="color:#185fa5">&#x1F52C;</span>
+      <div><strong>Immunologist view:</strong> Each dimension below is a viral vector. Click any card to open the full impact brief — what the pathogen is doing, what the community's current immune state is, and what treatment addresses it.</div>
+    </div>
+
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <div class="detail-panel" id="detailPanel">
+      <div class="detail-header">
+        <div style="font-size:22px" id="dp-icon"></div>
+        <div class="detail-title" id="dp-title"></div>
+        <div id="dp-score-badge"></div>
+        <button class="detail-close" onclick="closeDetail()" aria-label="Close detail">&#x2715;</button>
+      </div>
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section">
+            <div class="detail-section-title">Measured harm — Memphis</div>
+            <div id="dp-facts"></div>
+          </div>
+          <hr class="section-divider">
+          <div class="detail-section">
+            <div class="detail-section-title">Pathogen mechanism</div>
+            <div id="dp-mechanism" style="font-size:12px;color:var(--text2);line-height:1.6"></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-section">
+            <div class="detail-section-title">Current immune state</div>
+            <div id="dp-immune"></div>
+          </div>
+          <hr class="section-divider">
+          <div class="detail-section">
+            <div class="detail-section-title">Recommended treatment</div>
+            <div id="dp-treatment"></div>
+          </div>
+          <hr class="section-divider">
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn btn-primary" id="dp-deepdive">Deep dive &#x2197;</button>
+            <button class="btn" onclick="showTab('treatments')">View treatments</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:4px">
+      <div class="card-title">18-month impact projection by dimension</div>
+      <div style="position:relative;height:260px"><canvas id="impactProjectionChart" role="img" aria-label="Multi-line chart projecting harm index scores across five dimensions over 18 months under current parameters.">Harm projection across air quality, water, grid, noise, and regulatory capture dimensions.</canvas></div>
+    </div>
+  </div>
+
+  <!-- ── SIMULATION ── -->
+  <div class="content" id="tab-simulation">
+    <div class="sim-controls">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Community organization speed <span>How fast locals mobilize</span></div>
+        <div class="ctrl-track"><input type="range" id="sOrg" min="1" max="10" value="5" step="1" oninput="updateSim()"><span class="ctrl-val" id="vOrg">5</span></div>
+        <div class="ctrl-desc" id="dOrg"></div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Corporate legal budget <span>Opponent's resource depth</span></div>
+        <div class="ctrl-track"><input type="range" id="sCorp" min="1" max="10" value="8" step="1" oninput="updateSim()"><span class="ctrl-val" id="vCorp">8</span></div>
+        <div class="ctrl-desc" id="dCorp"></div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Registry access <span>Information advantage</span></div>
+        <div class="ctrl-track"><input type="range" id="sReg" min="0" max="10" value="0" step="1" oninput="updateSim()"><span class="ctrl-val" id="vReg">0</span></div>
+        <div class="ctrl-desc" id="dReg"></div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Legal aid depth <span>Enforcement capacity</span></div>
+        <div class="ctrl-track"><input type="range" id="sLegal" min="0" max="10" value="3" step="1" oninput="updateSim()"><span class="ctrl-val" id="vLegal">3</span></div>
+        <div class="ctrl-desc" id="dLegal"></div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Projected outcome</div><div class="kpi-val" id="sim-outcome-val" style="font-size:18px">Partial loss</div><div class="kpi-sub" id="sim-outcome-sub">NDA settlement likely</div></div>
+      <div class="kpi"><div class="kpi-label">Notice filed at month</div><div class="kpi-val" id="sim-notice">6</div><div class="kpi-sub">Optimal: month 2</div></div>
+      <div class="kpi"><div class="kpi-label">Community resistance peak</div><div class="kpi-val" id="sim-peak">58%</div><div class="kpi-sub">At month 18</div></div>
+      <div class="kpi"><div class="kpi-label">Registry leverage multiplier</div><div class="kpi-val blue" id="sim-mult">1.0×</div><div class="kpi-sub">vs. baseline</div></div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">18-month outcome curve</div>
+        <div style="display:flex;gap:12px;margin-bottom:8px;font-size:11px">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:#1baf7a;display:inline-block"></span>Community resistance</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;border-top:2px dashed #e34948;display:inline-block"></span>Corporate pressure</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;border-top:2px dotted #185fa5;display:inline-block"></span>Registry-boosted</span>
+        </div>
+        <div style="position:relative;height:210px"><canvas id="simMainChart" role="img" aria-label="Line chart showing community resistance versus corporate pressure over 18 months, with registry-boosted scenario overlay.">18-month simulation projection.</canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Critical intervention windows</div>
+        <div id="interventionWindows"></div>
+      </div>
+    </div>
+
+    <div class="phase-runner">
+      <div class="phase-header">
+        <button class="btn btn-primary" id="playBtn" onclick="togglePlay()" style="min-width:90px">&#x25B6; Play</button>
+        <div class="phase-scrub"><div class="phase-fill" id="phaseFill" style="width:0%"></div></div>
+        <div class="phase-label" id="phaseLabel">Phase 1 of 6</div>
+        <button class="btn" onclick="resetPlay()">Reset</button>
+      </div>
+      <div id="phaseList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Month-by-month decision log</div>
+      <div style="position:relative;height:180px"><canvas id="simDecisionChart" role="img" aria-label="Stacked bar chart showing monthly community capacity split between discovery work and action work over 18 months.">Monthly capacity allocation: discovery vs. action work.</canvas></div>
+    </div>
+  </div>
+
+  <!-- ── COMMUNITIES ── -->
+  <div class="content" id="tab-communities">
+    <div class="alert" style="background:var(--amberbg);border:1px solid var(--amberborder)">
+      <span class="alert-icon" style="color:var(--amber)">&#x1F4E1;</span>
+      <div><strong>Network status:</strong> 79 communities affected. 61 have no Registry access. Clicking "Share treatment" sends the Memphis protocol to that community's immune response team.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Active community network — immune response status</div>
+      <table class="comm-table" id="commTable">
+        <thead><tr><th>Community</th><th>Pathogen / actor</th><th>Primary harm</th><th>EHI score</th><th>Immune status</th><th>Resistance</th><th>Action</th></tr></thead>
+        <tbody id="commBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── TREATMENTS ── -->
+  <div class="content" id="tab-treatments">
+    <div class="treatment-filters" id="txFilters"></div>
+    <div id="txList"></div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Treatment efficacy comparison</div>
+      <div style="position:relative;height:340px"><canvas id="txEfficacyChart" role="img" aria-label="Horizontal bar chart comparing efficacy of eight treatment protocols, from highest to lowest.">Treatment efficacy from highest to lowest.</canvas></div>
+    </div>
+  </div>
+
+  <!-- ── MEMPHIS ── -->
+  <div class="content" id="tab-memphis">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">EHI score</div><div class="kpi-val danger">74</div><div class="kpi-sub">2 pts below criminal threshold</div></div>
+      <div class="kpi"><div class="kpi-label">Turbines operating</div><div class="kpi-val warn">35</div><div class="kpi-sub">Permitted: 15</div></div>
+      <div class="kpi"><div class="kpi-label">NOx increase</div><div class="kpi-val danger">+79%</div><div class="kpi-sub">Near-facility measurement</div></div>
+      <div class="kpi"><div class="kpi-label">Cancer risk multiplier</div><div class="kpi-val danger">4×</div><div class="kpi-sub">vs. national average</div></div>
+    </div>
+    <div class="alert" style="background:var(--redbg);border:1px solid var(--redborder)">
+      <span class="alert-icon" style="color:#991b1b">&#x26A0;</span>
+      <div><strong>Status:</strong> NAACP / SELC lawsuit active. 15-turbine permit granted. 20 turbines still unpermitted. Independent air study underway ($250K community-funded). Congressional inquiry filed Feb 2026. Outcome: partial immunity — antibody being synthesized for Registry distribution.</div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Case timeline — immune response log</div>
+        <div class="timeline-outer" id="memphisTimeline"></div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Harm profile — all five vectors</div>
+          <div style="position:relative;height:200px"><canvas id="memphisRadar" role="img" aria-label="Radar chart showing Memphis harm scores across air quality (79), water (42), grid stress (68), noise and health (71), and regulatory capture (85).">Memphis harm profile across five dimensions.</canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Treatment protocol — what worked</div>
+          <div id="memphisProtocol"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<footer>Community Immunity Project &mdash; built on S.E.P.A. v1.0 &middot; Brockovich Community Methodology &middot; AI Circuit Breaker framework &mdash; Discussion draft, June 2026</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+const C={red:'#e34948',amber:'#eda100',green:'#1baf7a',blue:'#2a78d6',purple:'#4a3aa7',gray:'#888780'};
+const grid='#e1e0d9';
+const t2='#52514e';
+const t3='#898781';
+
+function showTab(id){
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const btns=document.querySelectorAll('.nav-item');
+  const map={overview:0,impact:1,simulation:2,communities:3,treatments:4,memphis:5};
+  if(map[id]!==undefined) btns[map[id]].classList.add('active');
+}
+
+const DIMS=[
+  {id:'air',icon:'&#x1F32B;',name:'Air quality',score:79,status:'critical',statusColor:C.red,statusBg:'#fef2f2',
+    trend:'79% NOx spike vs. pre-xAI baseline',
+    facts:[['Peak NOx increase','79%'],['Formaldehyde (annual)','9.8 tons'],['Cancer risk vs. avg','4×'],['Communities w/ similar air harm','14']],
+    mechanism:'xAI operates 35 gas turbines (permitted: 15) under a 364-day permit exemption claimed to have no legal basis for turbines. Combustion produces nitrogen oxides, formaldehyde, and fine particulate matter that accumulate in low-income neighborhoods already bearing disproportionate industrial burden. The corporation self-monitors — the only data available is from independent university researchers and satellite imaging.',
+    immune:'NAACP / SELC filed 60-Day Clean Air Act Notice of Intent to Sue (Jun 2025). City air tests omitted ozone. Community raised $250K for independent study. Congressional inquiry filed Feb 2026.',
+    treatment:'60-Day Clean Air Act citizen suit notice; independent third-party air monitoring with EPA-compliant sensor placement; real-time public data dashboard. Efficacy: 85%.'},
+  {id:'water',icon:'&#x1F4A7;',name:'Water depletion',score:42,status:'elevated',statusColor:C.amber,statusBg:'#fef9ec',
+    trend:'Aquifer draw vs. permit not independently verified',
+    facts:[['Water recycling plant pledged','$80M'],['Annual permit cap (Provo model)','4.38M gal'],['Communities w/ well loss reported','23'],['Independent water audit','Pending']],
+    mechanism:'Evaporative cooling systems in data centers consume potable water at industrial scale. Unlike closed-loop systems, open evaporative cooling loses water to atmosphere — permanently removing it from the local hydrological cycle. In drought-stressed regions, aquifer drawdown accelerates. Memphis\'s $80M water recycling plant was pledged under community pressure, not required by original permit.',
+    immune:'Memphis: $80M water recycling plant commitment secured through lawsuit pressure. Not yet operational. 23 other communities report well pressure loss with no commitment from operators.',
+    treatment:'Closed-loop water system requirement as permit condition; annual draw cap with third-party audit rights; remediation bond sized to aquifer restoration cost. Efficacy: 76%.'},
+  {id:'grid',icon:'&#x26A1;',name:'Grid stress',score:68,status:'serious',statusColor:'#eb6834',statusBg:'#fff7f3',
+    trend:'Monthly bills: $50 → $300+ in affected areas',
+    facts:[['Avg monthly bill increase','$50 → $300+'],['Grid brownout reports','Multiple areas'],['Communities w/ grid instability','31'],['Utility PUC complaints filed','8']],
+    mechanism:'Hyperscale data centers draw industrial-scale power that the existing grid was not designed to serve. Utilities respond by upgrading infrastructure — costs that are socialized across all ratepayers, including households that receive no benefit from the data center. Brownouts and grid instability follow when peak data center loads coincide with residential demand spikes.',
+    immune:'Food & Water Watch organizing around NY moratorium bill. PUC complaints filed in 8 jurisdictions. Washington State HB 2515 requires utilities to develop formal rules for hyperscale load.',
+    treatment:'State PUC complaint requiring utility impact study before grid interconnection; demand that infrastructure upgrade costs be borne by data center operator, not socialized to ratepayers. Efficacy: 68%.'},
+  {id:'noise',icon:'&#x1F50A;',name:'Noise and health',score:71,status:'serious',statusColor:'#eb6834',statusBg:'#fff7f3',
+    trend:'24/7 industrial hum; livestock reproductive failure reported',
+    facts:[['Noise description','Deafening, constant'],['Health reports','Headaches, sleep disruption, asthma'],['Livestock impact','Zero live births (1 rancher)'],['Pre-permit noise study','None conducted']],
+    mechanism:'Cooling systems for large data centers emit continuous broadband industrial noise. Unlike construction noise, which is temporary, cooling system noise is permanent and 24/7. Chronic low-frequency noise exposure is associated with headache, sleep disruption, cardiovascular stress, and psychological distress. No pre-approval noise baseline study was conducted in the Memphis case.',
+    immune:'Community health surveys documenting symptom onset correlated with facility opening. County health department meeting held April 2025. No binding noise mitigation requirement in permit.',
+    treatment:'Mandatory noise baseline study before permit; binding noise ceiling (decibel limit at residential property line) with automatic permit revocation if violated; independent quarterly monitoring. Efficacy: 61%.'},
+  {id:'reg',icon:'&#x1F3DB;',name:'Regulatory capture',score:85,status:'critical',statusColor:C.red,statusBg:'#fef2f2',
+    trend:'Zoning changed in closed session; NDAs cover facility details',
+    facts:[['Public notice given','None'],['NDA scope','Full facility details'],['Residents excluded from council','Confirmed'],['Permit exemption used','364-day no-review window']],
+    mechanism:'The most consistent finding across Brockovich\'s 10,000+ submissions is weaponized secrecy: NDAs covering facility existence, zoning changes approved in closed sessions, residents deliberately removed from meeting schedules. In Memphis, the chamber of commerce announced the facility after agreements were signed — no public hearing, no environmental review. Regulatory capture operates by preventing the regulatory process from ever being triggered.',
+    immune:'Congressional inquiry demands transparency on turbine inventory and permitting status. SELC challenging the permit exemption claim legally. 79 municipalities have enacted moratoriums requiring EIS before any permit.',
+    treatment:'Preemptive moratorium ordinance requiring EIS before permit; FOIA campaign targeting all correspondence between corporation and officials; qui tam whistleblower channel for municipal employees with knowledge of NDA violations. Efficacy: 88%.'},
+  {id:'econ',icon:'&#x1F4B0;',name:'Economic extraction',score:63,status:'serious',statusColor:'#eb6834',statusBg:'#fff7f3',
+    trend:'Tax abatements + few jobs + infrastructure cost socialized',
+    facts:[['Jobs created','Hundreds (disputed)',''],['Tax abatement value','Undisclosed (NDA)'],['Infrastructure cost to city','$35M+ substation'],['Utility ratepayer cost share','Unquantified']],
+    mechanism:'Data centers typically negotiate aggressive tax abatements as a condition of siting — reducing or eliminating the property tax revenue that would normally compensate the community for infrastructure costs, environmental burden, and service demands. The net fiscal impact is frequently negative: the community bears grid upgrade costs, water infrastructure costs, and health externalities, while tax revenue is deferred or eliminated.',
+    immune:'Financial impact analysis pending. No independent fiscal audit was required as a permit condition. xAI\'s $35M substation and $80M water recycling plant investments were secured through lawsuit pressure — not originally required.',
+    treatment:'Independent fiscal impact study required before any tax abatement is granted; clawback provisions if employment targets are missed; remediation bond sized to full site restoration cost. Efficacy: 72%.'},
+];
+
+function renderDims(){
+  const g=document.getElementById('dimGrid');
+  g.innerHTML=DIMS.map((d,i)=>`
+    <div class="dim-card" id="dc-${d.id}" onclick="openDetail(${i})" role="button" tabindex="0" aria-label="Open ${d.name} impact detail">
+      <span class="dim-click-hint">Click for detail</span>
+      <div class="dim-icon">${d.icon}</div>
+      <div class="dim-name">${d.name}</div>
+      <div class="dim-score" style="color:${d.statusColor}">${d.score}</div>
+      <span class="dim-status" style="background:${d.statusBg};color:${d.statusColor}">${d.status}</span>
+      <div class="dim-trend">${d.trend}</div>
+    </div>
+  `).join('');
+}
+
+function openDetail(i){
+  const d=DIMS[i];
+  document.querySelectorAll('.dim-card').forEach(c=>c.classList.remove('active-dim'));
+  document.getElementById('dc-'+d.id).classList.add('active-dim');
+  document.getElementById('dp-icon').innerHTML=d.icon;
+  document.getElementById('dp-title').textContent=d.name+' — Memphis impact brief';
+  document.getElementById('dp-score-badge').innerHTML=`<span style="font-size:22px;font-weight:700;color:${d.statusColor}">${d.score}/100</span>`;
+  document.getElementById('dp-facts').innerHTML=d.facts.map(f=>`
+    <div class="fact-row"><span class="fact-label">${f[0]}</span><span class="fact-val">${f[1]}</span></div>
+  `).join('');
+  document.getElementById('dp-mechanism').textContent=d.mechanism;
+  document.getElementById('dp-immune').innerHTML=`<div style="font-size:12px;color:var(--text2);line-height:1.6;padding:8px;background:var(--greenbg);border-radius:var(--radius);border-left:3px solid var(--green)">${d.immune}</div>`;
+  document.getElementById('dp-treatment').innerHTML=`<div style="font-size:12px;color:var(--text2);line-height:1.6;padding:8px;background:var(--bluebg);border-radius:var(--radius);border-left:3px solid #185fa5">${d.treatment}</div>`;
+  document.getElementById('dp-deepdive').onclick=()=>sendPromptForDim(d);
+  const panel=document.getElementById('detailPanel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function sendPromptForDim(d){
+  if(typeof sendPrompt==='function'){
+    sendPrompt('Give me a detailed immunologist-level analysis of the '+d.name+' vector in the Memphis xAI case: what is the pathogen doing, what is the current immune response achieving, what is the 18-month prognosis under current parameters, and what is the single highest-leverage treatment intervention?');
+  }
+}
+
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('visible');
+  document.querySelectorAll('.dim-card').forEach(c=>c.classList.remove('active-dim'));
+}
+
+function renderOverviewMatrix(){
+  const el=document.getElementById('overviewMatrix');
+  el.innerHTML=DIMS.map(d=>`
+    <div class="matrix-row" style="cursor:pointer" onclick="showTab('impact')" title="Click to open impact assessment">
+      <span class="matrix-dim">${d.icon} ${d.name}</span>
+      <div class="matrix-bar-outer"><div class="matrix-bar-inner" style="width:${d.score}%;background:${d.statusColor}"></div></div>
+      <span class="matrix-pct" style="color:${d.statusColor}">${d.score}</span>
+    </div>
+  `).join('');
+}
+
+let spreadChart,phaseDonut,impactChart,simMain,simDecision,memRadar,txEfficacy;
+
+function buildOverviewCharts(){
+  const months=['M-12','M-9','M-6','M-3','Now','M+3','M+6','M+9','M+12'];
+  const spread=[4,11,19,31,44,55,64,71,79];
+  const responses=[0,1,3,7,12,16,19,21,23];
+  const ctx1=document.getElementById('spreadChart').getContext('2d');
+  spreadChart=new Chart(ctx1,{type:'line',data:{labels:months,datasets:[
+    {label:'Communities affected',data:spread,borderColor:C.red,backgroundColor:C.red+'18',borderWidth:2,pointRadius:3,fill:true,tension:.4},
+    {label:'Immune responses',data:responses,borderColor:C.green,backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[4,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}},grid:{color:grid}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
+
+  const ctx2=document.getElementById('phaseDonut').getContext('2d');
+  phaseDonut=new Chart(ctx2,{type:'doughnut',data:{labels:['Pathogen active','Innate response','Adaptive immunity','Inoculated'],datasets:[{data:[25,32,13,8],backgroundColor:[C.red,C.amber,C.blue,C.green],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
+}
+
+function buildImpactChart(){
+  const months=Array.from({length:19},(_,i)=>i===0?'Now':`M${i}`);
+  const ctx=document.getElementById('impactProjectionChart').getContext('2d');
+  const org=parseInt(document.getElementById('sOrg').value)||5;
+  const reg=parseInt(document.getElementById('sReg').value)||0;
+  const legal=parseInt(document.getElementById('sLegal').value)||3;
+  const proj=(base,decay,boost)=>months.map((_,i)=>Math.round(Math.max(5,Math.min(100,base-i*decay+(reg*boost*i)/10+(legal*0.3*i)/10))));
+  if(impactChart)impactChart.destroy();
+  impactChart=new Chart(ctx,{type:'line',data:{labels:months,datasets:[
+    {label:'Air quality harm',data:proj(79,1.2,.8),borderColor:C.red,borderWidth:2,pointRadius:0,tension:.4},
+    {label:'Regulatory capture',data:proj(85,.6,.5),borderColor:C.purple,borderWidth:2,pointRadius:0,tension:.4,borderDash:[5,3]},
+    {label:'Noise/health',data:proj(71,1,.7),borderColor:'#eb6834',borderWidth:2,pointRadius:0,tension:.4,borderDash:[3,3]},
+    {label:'Grid stress',data:proj(68,1.5,1),borderColor:C.blue,borderWidth:2,pointRadius:0,tension:.4},
+    {label:'Water',data:proj(42,.5,.4),borderColor:C.green,borderWidth:2,pointRadius:0,tension:.4},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}},scales:{y:{min:0,max:100,ticks:{font:{size:10},callback:v=>v},grid:{color:grid}},x:{ticks:{font:{size:10},maxTicksLimit:10},grid:{display:false}}}}});
+}
+
+const PHASES=[
+  {name:'Pathogen arrives unannounced',bio:'Signal detection — L1 layer',desc:'xAI installs 35 turbines under a claimed 364-day permit exemption. No public notice. No environmental review. NDA covers facility details. Residents have no baseline air or water data.',color:C.red},
+  {name:'Macrophage response — individual complaints',bio:'Innate immune response begins',desc:'Residents in Boxtown and Westwood report headaches, asthma spikes, 24/7 noise. Individual complaints filed with county health. Isolated — no connection between neighborhoods yet.',color:C.amber},
+  {name:'Coalition forms — innate response amplifies',bio:'Pattern recognition — L2 layer',desc:'NAACP Memphis chapter, SELC, and local health advocates connect. Shared harm pattern recognized across neighborhoods. First media coverage. Community meetings produce coordinated testimony.',color:C.amber},
+  {name:'Evidence synthesized — antigen identified',bio:'Causal chain construction',desc:'UTK researchers publish 79% NOx spike measurement. Thermal imaging reveals 35 turbines vs. claimed 15. Community raises $250K for independent air study. EHI score calculated at 74.',color:C.blue},
+  {name:'Adaptive response — legal action filed',bio:'Circuit breaker activated',desc:'60-Day CAA Notice of Intent to Sue filed. Congressional inquiry opens. National media amplifies. Human review panel validates EHI score. Permit negotiation forced.',color:C.blue},
+  {name:'Antibody synthesized — Registry entry created',bio:'Immunological memory — L4 layer',desc:'Partial permit concessions documented. Memphis protocol entered into Registry. Dallas, Des Moines, and Reno communities receive treatment kit. Next outbreak faces a vaccinated host.',color:C.green},
+];
+
+function buildPhaseList(){
+  document.getElementById('phaseList').innerHTML=PHASES.map((p,i)=>`
+    <div class="phase-item future" id="pi-${i}">
+      <div class="phase-num">${i+1}</div>
+      <div class="phase-content">
+        <div class="phase-name">${p.name}</div>
+        <div class="phase-desc">${p.desc}</div>
+        <div class="phase-bio">${p.bio}</div>
+      </div>
+    </div>
+  `).join('');
+  updatePhases(0);
+}
+
+let playTimer=null,playing=false,curPhase=0;
+function togglePlay(){
+  if(playing){clearInterval(playTimer);playing=false;document.getElementById('playBtn').innerHTML='&#x25B6; Play';return;}
+  playing=true;curPhase=0;document.getElementById('playBtn').innerHTML='&#x23F8; Pause';
+  playTimer=setInterval(()=>{
+    if(curPhase>=PHASES.length){clearInterval(playTimer);playing=false;document.getElementById('playBtn').innerHTML='&#x25B6; Play';return;}
+    updatePhases(curPhase);curPhase++;
+  },2000);
+}
+function resetPlay(){clearInterval(playTimer);playing=false;curPhase=0;updatePhases(-1);document.getElementById('playBtn').innerHTML='&#x25B6; Play';document.getElementById('phaseFill').style.width='0%';document.getElementById('phaseLabel').textContent='Phase 1 of 6';}
+function updatePhases(n){
+  PHASES.forEach((_,i)=>{
+    const el=document.getElementById('pi-'+i);
+    el.className='phase-item '+(i<n?'done':i===n?'current':'future');
+  });
+  const pct=Math.round((n/PHASES.length)*100);
+  document.getElementById('phaseFill').style.width=pct+'%';
+  document.getElementById('phaseLabel').textContent=`Phase ${Math.min(n+1,6)} of 6`;
+}
+
+function buildInterventionWindows(){
+  const org=parseInt(document.getElementById('sOrg').value)||5;
+  const reg=parseInt(document.getElementById('sReg').value)||0;
+  const notice=Math.round(Math.max(1,8-org*0.6-reg*0.4));
+  const windows=[
+    {name:'File Notice of Intent to Sue',ideal:'Month 2',actual:`Month ${notice}`,ok:notice<=3},
+    {name:'Commission independent air study',ideal:'Month 1',actual:`Month ${Math.round(Math.max(1,5-reg*0.5))}`,ok:reg>=4},
+    {name:'Demand remediation bond',ideal:'Before permit',actual:reg>=5?'Before permit':'After permit (missed)',ok:reg>=5},
+    {name:'Connect to Registry',ideal:'Month 1',actual:reg===0?'Never (Registry=0)':'Month 1',ok:reg>0},
+    {name:'EHI score submitted to OHM',ideal:'Month 4',actual:`Month ${Math.round(Math.max(3,9-org*0.4-reg*0.6))}`,ok:true},
+  ];
+  document.getElementById('interventionWindows').innerHTML=windows.map(w=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+      <span style="color:var(--text2)">${w.name}</span>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:${t3}">Ideal: ${w.ideal}</div>
+        <div style="font-weight:600;color:${w.ok?C.green:C.red}">${w.actual}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+let simMainChart=null,simDecisionChart=null;
+function updateSim(){
+  const org=parseInt(document.getElementById('sOrg').value);
+  const corp=parseInt(document.getElementById('sCorp').value);
+  const reg=parseInt(document.getElementById('sReg').value);
+  const legal=parseInt(document.getElementById('sLegal').value);
+  document.getElementById('vOrg').textContent=org;
+  document.getElementById('vCorp').textContent=corp;
+  document.getElementById('vReg').textContent=reg;
+  document.getElementById('vLegal').textContent=legal;
+  document.getElementById('sp-org').textContent=org+' / 10';
+  document.getElementById('sp-corp').textContent=corp+' / 10';
+  document.getElementById('sp-reg').textContent=reg+' / 10';
+  document.getElementById('sp-legal').textContent=legal+' / 10';
+
+  const descs={
+    org:['Very slow — months before first meeting','Slow — basic coordination only','Some org — inconsistent','Moderate — regular coalition meetings','Good — disciplined, weekly cadence','Strong — rapid response capability','High — professional coordinator','Very high — full-time organizer','Expert — NAACP-level infrastructure','Maximum — seasoned national coalition'],
+    corp:['Minimal budget — startup facility','Small legal team','Some resources','Moderate — regional law firm','Strong — national firm on retainer','High — dedicated litigation team','Very high — multiple firms','Corporate war chest','Near-unlimited litigation budget','Maximum — top-5 law firms, full PR'],
+    reg:['No Registry — discovering everything fresh','One precedent case known','A few cases referenced','Basic toolkit available','Solid treatment library access','Full Registry — searchable precedents','Rich database + legal templates','Expert Registry + causal chain templates','Near-complete institutional knowledge','Full immunity — complete Registry + mentors'],
+    legal:['No legal help — community alone','Occasional pro bono advice','Limited SELC-style support','Some nonprofit legal partnership','Part-time legal team','Solid legal partnership','Strong team — can take to trial','Expert litigation team','High-resource legal infrastructure','Maximum — full S.E.P.A. OEP support']
+  };
+  document.getElementById('dOrg').textContent=descs.org[org-1];
+  document.getElementById('dCorp').textContent=descs.corp[corp-1];
+  document.getElementById('dReg').textContent=descs.reg[reg];
+  document.getElementById('dLegal').textContent=descs.legal[legal];
+
+  const months=Array.from({length:19},(_,i)=>i===0?'Now':`M${i}`);
+  const comm=months.map((_,i)=>{const b=20+org*3+reg*4+legal*3;return Math.round(Math.min(95,b+i*(org*0.7+reg*0.6+legal*0.4)));});
+  const corp_=months.map((_,i)=>Math.round(Math.max(10,90-i*(corp<5?3:1.5)-reg*i*0.3)));
+  const regBoost=months.map((_,i)=>Math.round(Math.min(98,comm[i]+(reg*2.5+legal*1.5)*Math.min(i/3,1))));
+
+  const peak=Math.max(...comm);
+  const noticeMonth=Math.round(Math.max(1,8-org*0.6-reg*0.4));
+  const mult=(1+(reg*0.12+legal*0.04)).toFixed(1);
+  const outcome=peak>75&&legal>=5?'Full immunity':peak>60&&legal>=4?'Partial win — precedent set':peak>45?'Partial loss — NDA likely':'Loss — no documentation';
+  const outSub={
+    'Full immunity':'Registry entry published, criminal referral possible',
+    'Partial win — precedent set':'Key concessions, case documented',
+    'Partial loss — NDA likely':'Some concessions, knowledge buried',
+    'Loss — no documentation':'Corporation moves to next town unchanged'
+  };
+  const outColor=peak>75&&legal>=5?C.green:peak>60&&legal>=4?C.blue:peak>45?C.amber:C.red;
+
+  document.getElementById('sim-outcome-val').textContent=outcome;
+  document.getElementById('sim-outcome-val').style.color=outColor;
+  document.getElementById('sim-outcome-sub').textContent=outSub[outcome]||'';
+  document.getElementById('sim-notice').textContent=noticeMonth;
+  document.getElementById('sim-peak').textContent=peak+'%';
+  document.getElementById('sim-mult').textContent=mult+'×';
+  document.getElementById('sp-outcome').textContent=outcome.split(' — ')[0];
+  document.getElementById('sp-outcome').style.color=outColor;
+
+  const ctx=document.getElementById('simMainChart').getContext('2d');
+  if(simMainChart)simMainChart.destroy();
+  simMainChart=new Chart(ctx,{type:'line',data:{labels:months,datasets:[
+    {label:'Community resistance',data:comm,borderColor:C.green,backgroundColor:C.green+'15',borderWidth:2,pointRadius:0,fill:true,tension:.4},
+    {label:'Corporate pressure',data:corp_,borderColor:C.red,borderWidth:2,pointRadius:0,tension:.4,borderDash:[5,3]},
+    {label:'Registry-boosted',data:regBoost,borderColor:'#185fa5',borderWidth:1.5,pointRadius:0,tension:.4,borderDash:[2,2]},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:grid}},x:{ticks:{font:{size:10},maxTicksLimit:10},grid:{display:false}}}}});
+
+  const discovery=months.map((_,i)=>Math.round(Math.max(5,60-reg*5-i*(org*0.8+reg*0.6))));
+  const action=months.map((_,i)=>Math.min(95,100-discovery[i]));
+  const ctx2=document.getElementById('simDecisionChart').getContext('2d');
+  if(simDecisionChart)simDecisionChart.destroy();
+  simDecisionChart=new Chart(ctx2,{type:'bar',data:{labels:months,datasets:[
+    {label:'Rediscovery work (wasted)',data:discovery,backgroundColor:C.red+'88',borderWidth:0,borderRadius:2},
+    {label:'Direct action capacity',data:action,backgroundColor:C.green+'88',borderWidth:0,borderRadius:2},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{font:{size:9},maxTicksLimit:10},grid:{display:false}},y:{stacked:true,max:100,ticks:{font:{size:9},callback:v=>v+'%'},grid:{color:grid}}}}});
+
+  buildInterventionWindows();
+  if(impactChart) buildImpactChart();
+}
+
+const COMMUNITIES=[
+  {name:'Memphis, TN',actor:'xAI / Elon Musk',harm:'Air — NOx 79% spike',ehi:74,status:'amber',pct:62},
+  {name:'Des Moines, IA',actor:'Meta',harm:'Water + Air',ehi:77,status:'red',pct:22},
+  {name:'Reno, NV',actor:'Switch / Tesla',harm:'Water + Energy',ehi:81,status:'red',pct:28},
+  {name:'Chicagoland, IL',actor:'Microsoft / Verizon',harm:'Energy — grid stress',ehi:58,status:'green',pct:71},
+  {name:'Columbus, OH',actor:'Google',harm:'Energy + Noise',ehi:61,status:'amber',pct:51},
+  {name:'Dallas, TX',actor:'DataBank',harm:'Water — well depletion',ehi:66,status:'amber',pct:45},
+  {name:'Phoenix, AZ',actor:'Google / Meta',harm:'Water — aquifer',ehi:52,status:'blue',pct:82},
+  {name:'Loudoun Co, VA',actor:'Multiple hyperscalers',harm:'Land + Energy',ehi:45,status:'blue',pct:88},
+  {name:'Quincy, WA',actor:'Microsoft',harm:'Water — Columbia River',ehi:55,status:'green',pct:68},
+  {name:'N. Virginia',actor:'Amazon AWS',harm:'Land + Energy',ehi:48,status:'blue',pct:85},
+];
+const statusMeta={red:{label:'Pathogen active',color:C.red,bg:'#fef2f2'},amber:{label:'Innate response',color:'#b45309',bg:'#fef9ec'},green:{label:'Adaptive immunity',color:C.green,bg:'#f0f7e6'},blue:{label:'Inoculated',color:'#185fa5',bg:'#eff6ff'}};
+
+function buildCommTable(){
+  document.getElementById('commBody').innerHTML=COMMUNITIES.map(c=>{
+    const s=statusMeta[c.status];
+    return `<tr>
+      <td style="font-weight:500">${c.name}</td>
+      <td style="color:${t2}">${c.actor}</td>
+      <td style="color:${t2}">${c.harm}</td>
+      <td><div style="font-weight:700;color:${c.ehi>=76?C.red:c.ehi>=60?'#b45309':C.green}">${c.ehi}</div><div class="ehi-bar" style="width:${c.ehi}%;background:${c.ehi>=76?C.red:c.ehi>=60?'#ea8a00':C.green}"></div></td>
+      <td><span class="status-pill" style="background:${s.bg};color:${s.color}"><span style="width:5px;height:5px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.label}</span></td>
+      <td><div style="display:flex;align-items:center;gap:6px;font-size:11px"><div style="flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${c.pct}%;height:100%;background:${s.color};border-radius:2px"></div></div>${c.pct}%</div></td>
+      <td><span class="share-link" onclick="shareProtocol('${c.name}','${c.harm}')">Share Memphis protocol &#x2197;</span></td>
+    </tr>`;
+  }).join('');
+}
+function shareProtocol(name,harm){
+  if(typeof sendPrompt==='function'){sendPrompt('Draft a concise treatment protocol for the community in '+name+' based on the Memphis xAI case. Their primary harm is: '+harm+'. Include: the most relevant legal tools, the first three actions they should take this week, which Registry antibodies apply, and the specific EHI dimensions to document first.');}
+}
+
+const TREATMENTS=[
+  {type:'legal',tag:'Legal',tagColor:'#185fa5',tagBg:'#eff6ff',title:'60-Day Clean Air Act Notice of Intent to Sue',efficacy:85,body:'File through SELC or local environmental law firm. Requires documented permit violations or exemption abuse. Forces corporation to negotiate within 20 days. Zero cost via NAACP / SELC partnership. Memphis: forced permit renegotiation in 6 weeks.',outcome:'Memphis: permit concessions within 6 weeks of filing'},
+  {type:'data',tag:'Data',tagColor:C.purple,tagBg:'#f5f3ff',title:'Independent thermal imaging and air baseline study',efficacy:91,body:'Commission UTK-style independent monitoring before or immediately after construction begins. Thermal imaging reveals actual turbine count vs. claimed. Satellite data documents heat plume and water draw vs. permit. Costs $15K–$40K — community fundraisable.',outcome:'Memphis: documented 35 turbines vs. xAI\'s claimed 15'},
+  {type:'org',tag:'Organizing',tagColor:'#b45309',tagBg:'#fef9ec',title:'NAACP plus SELC coalition activation',efficacy:78,body:'Connect local NAACP chapter with Southern Environmental Law Center. Joint press conference amplifies community voice nationally. Existing legal infrastructure, no startup cost. Proven in Memphis — applicable wherever pollution burden falls disproportionately on communities of color.',outcome:'Memphis: national coverage within 48 hours of press conference'},
+  {type:'policy',tag:'Policy',tagColor:C.green,tagBg:'#f0f7e6',title:'Municipal moratorium with EIS requirement',efficacy:72,body:'Pass 90-day moratorium ordinance requiring full Environmental Impact Study before any permit. Template from Food & Water Watch. SLAPP-resistant when paired with legal defense fund. Enacted in 79 municipalities as of 2026.',outcome:'79 municipalities enacted; 34 blocked construction entirely'},
+  {type:'legal',tag:'Legal',tagColor:'#185fa5',tagBg:'#eff6ff',title:'FOIA cascade — zoning, permits, and NDA records',efficacy:68,body:'File simultaneous FOIA requests at city, county, state EPA, and Army Corps levels. Targets: all correspondence between corporation and officials, permit applications with resource estimates, NDA attachments. Free to file. Timeline: 30 days.',outcome:'Revealed closed-session zoning changes in 14 cases'},
+  {type:'data',tag:'Data',tagColor:C.purple,tagBg:'#f5f3ff',title:'Utility bill spike documentation network',efficacy:61,body:'Organize neighbors to photograph utility bills monthly and upload to Community Immunity portal. Cross-reference against construction timeline. Establishes causal chain for EHI calculation. Tier 4 data pointing analysts to Tier 1 corroboration.',outcome:'Average documented spike: $50 → $300+ monthly in 23 communities'},
+  {type:'policy',tag:'Policy',tagColor:C.green,tagBg:'#f0f7e6',title:'Remediation bond demand — before permit signing',efficacy:88,body:'Before any development agreement is signed, demand a remediation bond equal to 150% of estimated site restoration cost, posted with a neutral third party. If corporation abandons or goes bankrupt, bond funds cleanup. Non-negotiable condition of approval.',outcome:'Secured in Loudoun Co. agreement after sustained community pressure'},
+  {type:'policy',tag:'Policy',tagColor:C.green,tagBg:'#f0f7e6',title:'Closed-loop water system as zoning condition',efficacy:76,body:'Require data center to use closed-loop cooling (water recycled internally) rather than open evaporative cooling (consumes potable water). Annual draw cap with municipal audit rights. Modeled on Provo, UT agreement. xAI ultimately committed $80M to water recycling under pressure.',outcome:'Provo, UT: aquifer protection secured as permit condition'},
+];
+let txFilter='all';
+function buildTreatments(filter){
+  txFilter=filter||txFilter;
+  const list=txFilter==='all'?TREATMENTS:TREATMENTS.filter(t=>t.type===txFilter);
+  document.getElementById('txList').innerHTML=list.map(t=>`
+    <div class="tx-card">
+      <div class="tx-head">
+        <span class="tx-tag" style="background:${t.tagBg};color:${t.tagColor}">${t.tag}</span>
+        <span class="tx-title">${t.title}</span>
+        <span class="tx-efficacy" style="color:${t.efficacy>=80?C.green:t.efficacy>=65?C.amber:C.red}">${t.efficacy}%</span>
+      </div>
+      <div class="tx-body">${t.body}</div>
+      <div class="tx-outcome" style="background:${t.tagBg};border-left:3px solid ${t.tagColor}">
+        <span style="color:${t.tagColor};font-weight:600">&#x2713;</span>
+        <span style="font-size:11px;color:${t2}">${t.outcome}</span>
+      </div>
+      <div class="tx-actions">
+        <button class="btn" style="font-size:11px" onclick="deployTreatment('${t.title}')">Deploy to community &#x2197;</button>
+      </div>
+    </div>
+  `).join('');
+  ['all','legal','org','data','policy'].forEach(f=>{
+    const b=document.getElementById('ftb-'+f);
+    if(b) b.className='f-btn'+(f===txFilter?' active':'');
+  });
+  buildTxEfficacyChart();
+}
+function deployTreatment(title){
+  if(typeof sendPrompt==='function'){sendPrompt('Create a step-by-step deployment guide for the treatment protocol "'+title+'" for a community organizer who has no prior legal or technical experience. Include: what to do in the first 72 hours, who to call, what documents to gather, and what to expect from the corporation\'s response.');}
+}
+
+const txFiltersData=[{id:'all',label:'All treatments'},{id:'legal',label:'Legal'},{id:'org',label:'Organizing'},{id:'data',label:'Data'},{id:'policy',label:'Policy'}];
+function buildTxFilters(){
+  document.getElementById('txFilters').innerHTML=txFiltersData.map(f=>`<button class="f-btn${f.id==='all'?' active':''}" id="ftb-${f.id}" onclick="buildTreatments('${f.id}')">${f.label}</button>`).join('');
+}
+function buildTxEfficacyChart(){
+  const sorted=[...TREATMENTS].sort((a,b)=>b.efficacy-a.efficacy);
+  const ctx=document.getElementById('txEfficacyChart').getContext('2d');
+  if(txEfficacy)txEfficacy.destroy();
+  txEfficacy=new Chart(ctx,{type:'bar',data:{labels:sorted.map(t=>t.title.length>36?t.title.substring(0,36)+'…':t.title),datasets:[{label:'Efficacy',data:sorted.map(t=>t.efficacy),backgroundColor:sorted.map(t=>t.efficacy>=80?C.green+'cc':t.efficacy>=65?C.amber+'cc':C.red+'cc'),borderRadius:3,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:100,ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:grid}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
+}
+
+const MTML=[
+  {date:'Jun 2024',color:C.red,title:'xAI Colossus announced without public notice',body:'Memphis chamber of commerce surprise announcement. NDA covering all facility details. No public hearing, no EIS, no resident input. 35 turbines begin operating under claimed 364-day exemption.',outcome:'Pathogen established',outcomeColor:C.red},
+  {date:'Apr 2025',color:'#ea8a00',title:'Community macrophage response — residents notice harm',body:'Boxtown and Westwood residents report headaches, asthma, 24/7 industrial hum. Individual complaints filed. Community meetings begin connecting isolated reports into a shared pattern.',outcome:'Innate response begins',outcomeColor:'#ea8a00'},
+  {date:'Jun 2025',color:C.blue,title:'Independent evidence gathered — antigen identified',body:'UTK researchers document 79% NOx spike. Thermal imaging shows 35 turbines. SELC reviews Clean Air Act exposure. EHI calculated at 74. Community raises $250K for independent air study.',outcome:'Pattern confirmed',outcomeColor:C.blue},
+  {date:'Jun 17 2025',color:C.blue,title:'NAACP / SELC file 60-Day Notice of Intent to Sue',body:'Cancer risk at 4× national average documented. Clean Air Act Notice sent. xAI given 20 days to come to table. National media coverage. xAI states turbines "in compliance with all applicable laws."',outcome:'Adaptive response activated',outcomeColor:C.blue},
+  {date:'Jul 2025',color:'#ea8a00',title:'15-turbine permit granted — partial outcome',body:'Shelby County grants permit for 15 of 35 turbines. Annual allowances: 87t NOx, 9.8t formaldehyde. City air tests omit ozone. SELC raises concerns. 20 turbines remain unpermitted. Lawsuit threat active.',outcome:'Partial immunity — contested',outcomeColor:'#ea8a00'},
+  {date:'Feb 2026',color:C.green,title:'Congressional inquiry — systemic pressure applied',body:'Rep. Steve Cohen demands full turbine inventory, emissions comparison, community engagement plan. Independent health impact analysis raises fine particulate concerns across Shelby County.',outcome:'Antibody forming',outcomeColor:C.green},
+  {date:'Ongoing',color:C.green,title:'Registry entry being written — treatment protocol live',body:'SELC lawsuit active. Independent air study underway. Memphis case documented for Public Harm Registry. Dallas, Des Moines, and Reno communities receiving Memphis treatment protocol.',outcome:'Immunity distributed',outcomeColor:C.green},
+];
+
+function buildMemphisTimeline(){
+  document.getElementById('memphisTimeline').innerHTML=MTML.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot" style="background:${t.color}"></div>
+      <div class="tl-date">${t.date}</div>
+      <div class="tl-title">${t.title}</div>
+      <div class="tl-body">${t.body}</div>
+      <span class="tl-outcome" style="background:${t.color}22;color:${t.color}">${t.outcome}</span>
+    </div>
+  `).join('');
+}
+function buildMemphisRadar(){
+  const ctx=document.getElementById('memphisRadar').getContext('2d');
+  memRadar=new Chart(ctx,{type:'radar',data:{labels:['Air quality','Water','Grid stress','Noise/health','Regulatory capture'],datasets:[
+    {label:'Memphis harm',data:[79,42,68,71,85],backgroundColor:C.red+'22',borderColor:C.red,borderWidth:2,pointBackgroundColor:C.red,pointRadius:4},
+    {label:'Legal threshold',data:[50,50,50,50,50],backgroundColor:'transparent',borderColor:grid,borderWidth:1,borderDash:[4,4],pointRadius:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:grid},pointLabels:{font:{size:10},color:t2}}}}});
+}
+function buildMemphisProtocol(){
+  const applied=[TREATMENTS[0],TREATMENTS[1],TREATMENTS[2],TREATMENTS[6]];
+  document.getElementById('memphisProtocol').innerHTML=applied.map(t=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:${t.tagColor};display:inline-block"></span>${t.title.substring(0,38)}…</span>
+      <span style="font-weight:700;color:${t.efficacy>=80?C.green:C.amber}">${t.efficacy}%</span>
+    </div>
+  `).join('');
+}
+
+window.addEventListener('load',()=>{
+  renderDims();
+  renderOverviewMatrix();
+  buildOverviewCharts();
+  buildImpactChart();
+  buildPhaseList();
+  updateSim();
+  buildCommTable();
+  buildTxFilters();
+  buildTreatments('all');
+  buildMemphisTimeline();
+  buildMemphisRadar();
+  buildMemphisProtocol();
+});
+</script>
+</body>
+</html>
