@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play the Long Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    color-scheme: dark;
+    --wood:        #2e2116;
+    --wood-2:      #3a2b1c;
+    --wood-3:      #4a381f;
+    --ink:         #f2e9d8;
+    --ink-soft:    #d9cbb0;
+    --ink-muted:   #a8977a;
+    --ink-faint:   #7d6f57;
+    --hair:        rgba(242,233,216,0.13);
+    --hair-strong: rgba(242,233,216,0.24);
+
+    --reactive:      #d95926;
+    --reactive-soft: rgba(217,89,38,0.16);
+    --drift:         #199e70;
+    --drift-soft:    rgba(25,158,112,0.16);
+    --longview:      #3987e5;
+    --longview-soft: rgba(57,135,229,0.16);
+
+    --brass:       #c99a45;
+    --brass-soft:  rgba(201,154,69,0.16);
+
+    --radius: 4px;
+    --measure: 64ch;
+
+    --font-display: "Zilla Slab", "Roboto Slab", Georgia, serif;
+    --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "Space Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; }
+  body{
+    margin:0;
+    background: var(--wood);
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background:
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 7px),
+      radial-gradient(900px 500px at 12% 0%, rgba(201,154,69,0.05), transparent 60%),
+      radial-gradient(1000px 700px at 90% 100%, rgba(57,135,229,0.05), transparent 55%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  a{ color: var(--longview); }
+  ::selection{ background: var(--reactive-soft); color: var(--ink); }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    color: var(--ink);
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+  }
+  em{ font-style: italic; color: var(--ink); }
+  strong{ color: var(--ink-soft); font-weight: 600; }
+
+  .mono{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  button, input{ font-family: inherit; }
+  button{ -webkit-tap-highlight-color: transparent; }
+  :focus-visible{ outline: 2px solid var(--longview); outline-offset: 2px; }
+
+  .wrap{
+    position: relative; z-index:1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 110px;
+  }
+
+  /* ---------- header ---------- */
+  header.top{
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 68px 24px 8px;
+    position: relative; z-index:1;
+  }
+  header.top .eyebrow{ margin-bottom: 16px; }
+  header.top h1{
+    font-size: clamp(2.4rem, 5.6vw, 4rem);
+    letter-spacing: -0.005em;
+  }
+  header.top .dek{
+    max-width: var(--measure);
+    margin-top: 18px;
+    font-size: 1.06rem;
+    color: var(--ink-soft);
+  }
+  header.top .dek + .dek{ margin-top: 12px; }
+
+  /* ---------- scorecard ---------- */
+  .scorecard{
+    position: relative; z-index:1;
+    max-width: 1000px;
+    margin: 34px auto 40px;
+    padding: 0 24px;
+  }
+  .scorecard-inner{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius);
+    padding: 16px 22px;
+  }
+  .score-groups{ display:flex; gap:26px; flex-wrap:wrap; }
+  .score-item{ display:flex; align-items:baseline; gap:8px; }
+  .score-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .score-label{ font-size:0.78rem; color:var(--ink-muted); }
+  .score-num{ font-family: var(--font-mono); font-size:1.15rem; color:var(--ink); font-weight:700; }
+  .btn-ghost{
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    background: transparent;
+    border: 1px solid var(--hair-strong);
+    padding: 8px 14px;
+    border-radius: 3px;
+    cursor:pointer;
+    transition: color .12s ease, border-color .12s ease;
+  }
+  .btn-ghost:hover{ color: var(--ink); border-color: var(--ink-muted); }
+
+  /* ---------- deck / card ---------- */
+  .deck-nav{
+    display:flex; align-items:center; justify-content:space-between;
+    max-width: 1000px; margin: 0 auto 14px; padding: 0 24px;
+    position:relative; z-index:1;
+  }
+  .dots{ display:flex; gap:8px; }
+  .dot{
+    width:9px; height:9px; border-radius:50%;
+    background: var(--hair-strong);
+    border: none; cursor:pointer; padding:0;
+    transition: background .12s ease, transform .12s ease;
+  }
+  .dot.answered{ background: var(--brass); }
+  .dot.current{ transform: scale(1.5); }
+  .navbtn{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    background: var(--wood-2);
+    border: 1px solid var(--hair-strong);
+    padding: 9px 16px;
+    border-radius: 3px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    transition: background .12s ease;
+  }
+  .navbtn:hover{ background: var(--wood-3); }
+  .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+  .card{
+    position: relative; z-index:1;
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius);
+    padding: 38px clamp(20px,4vw,48px) 42px;
+    max-width: 1000px;
+    margin: 0 auto 20px;
+    box-shadow: inset 0 1px 0 rgba(242,233,216,0.04);
+  }
+  .card::before, .card::after{
+    content:"";
+    position:absolute; top:16px; width:6px; height:6px; border-radius:50%;
+    background: rgba(0,0,0,0.35);
+    box-shadow: 0 1px 0 rgba(242,233,216,0.08);
+  }
+  .card::before{ left:16px; }
+  .card::after{ right:16px; }
+
+  .card-top{
+    display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap;
+  }
+  .tag{
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    padding: 4px 9px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+  .tag-domain{ background: var(--brass-soft); color: var(--brass); border: 1px solid rgba(201,154,69,0.35); }
+  .tag-progress{ color: var(--ink-faint); }
+
+  .card h2{ font-size: clamp(1.5rem, 2.8vw, 2rem); margin-bottom: 20px; }
+
+  .block{ margin-bottom: 22px; }
+  .block-label{
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .block.plan .block-label{ color: var(--longview); }
+  .block.pull .block-label{ color: var(--reactive); }
+  .block p{ max-width: var(--measure); color: var(--ink-soft); margin:0; }
+  .block.pull{
+    border-left: 2px solid var(--reactive);
+    padding-left: 16px;
+  }
+  .block.plan{
+    border-left: 2px solid var(--longview);
+    padding-left: 16px;
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; margin: 26px 0 4px; }
+  .choice-btn{
+    text-align:left;
+    background: var(--wood);
+    border: 1px solid var(--hair-strong);
+    color: var(--ink-soft);
+    padding: 15px 18px;
+    border-radius: 3px;
+    cursor:pointer;
+    font-size: 0.96rem;
+    line-height: 1.5;
+    transition: border-color .12s ease, background .12s ease;
+  }
+  .choice-btn:hover{ border-color: var(--ink-muted); background: var(--wood-3); }
+  .choice-btn.picked{ cursor:default; }
+  .choice-btn.picked.cat-reactive{ border-color: var(--reactive); background: var(--reactive-soft); }
+  .choice-btn.picked.cat-drift{ border-color: var(--drift); background: var(--drift-soft); }
+  .choice-btn.picked.cat-longview{ border-color: var(--longview); background: var(--longview-soft); }
+  .choice-btn.dim{ opacity:0.5; cursor:default; }
+  .choice-btn.dim:hover{ border-color: var(--hair-strong); background: var(--wood); }
+
+  .result{
+    margin-top: 28px;
+    padding-top: 26px;
+    border-top: 1px solid var(--hair);
+  }
+  .result-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+  }
+  .result-tag .dot{ width:7px; height:7px; }
+  .result-tag.cat-reactive{ background: var(--reactive-soft); color: var(--reactive); }
+  .result-tag.cat-drift{ background: var(--drift-soft); color: var(--drift); }
+  .result-tag.cat-longview{ background: var(--longview-soft); color: var(--longview); }
+
+  svg text{ font-family: var(--font-mono); }
+  .axis-label{ fill: var(--ink-faint); font-size: 10px; letter-spacing: 0.03em; }
+  .tick-label{ fill: var(--ink-faint); font-size: 9.5px; }
+
+  .bias-box{
+    display:grid;
+    grid-template-columns: minmax(200px,1fr) minmax(200px,1fr);
+    gap: 22px;
+    margin-top: 22px;
+  }
+  .bias-card{
+    background: var(--wood);
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    padding: 16px 18px;
+  }
+  .bias-card .bc-label{
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .bias-card .bc-title{
+    font-family: var(--font-display);
+    color: var(--ink);
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .bias-card .bc-body{ font-size: 0.9rem; color: var(--ink-soft); }
+  .bias-card.countermove{ border-color: rgba(57,135,229,0.35); }
+  .bias-card.countermove .bc-label{ color: var(--longview); }
+
+  /* ---------- synthesis ---------- */
+  .synthesis{
+    position: relative; z-index:1;
+    max-width: 1000px;
+    margin: 8px auto 0;
+    padding: 30px clamp(20px,4vw,48px);
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius);
+  }
+  .synthesis h3{ font-size: 1.35rem; margin-bottom: 12px; }
+  .synthesis .empty{ color: var(--ink-muted); font-size:0.95rem; }
+  .synthesis .body{ color: var(--ink-soft); max-width: var(--measure); }
+  .synthesis .takeaway{
+    margin-top:16px;
+    padding: 14px 18px;
+    border-left: 2px solid var(--longview);
+    background: var(--longview-soft);
+    border-radius: 0 3px 3px 0;
+    font-size: 0.94rem;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabbar{
+    position: relative; z-index:1;
+    max-width: 1000px;
+    margin: 30px auto 0;
+    padding: 0 24px;
+    display:flex; gap: 8px;
+  }
+  .tabbtn{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-bottom: none;
+    padding: 11px 18px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    transition: color .12s ease, background .12s ease;
+  }
+  .tabbtn:hover{ color: var(--ink-soft); }
+  .tabbtn.active{
+    color: var(--ink);
+    background: var(--wood-2);
+    border-color: var(--hair-strong);
+    box-shadow: inset 0 2px 0 var(--brass);
+  }
+
+  /* ---------- badges ---------- */
+  .badges-shelf{
+    position: relative; z-index:1;
+    max-width: 1000px;
+    margin: 18px auto 0;
+    padding: 0 24px;
+    display:flex; flex-wrap:wrap; gap:9px;
+  }
+  .badge-chip{
+    display:flex; align-items:center; gap:7px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-radius: 20px;
+    padding: 6px 13px 6px 10px;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .badge-chip .badge-dot{ width:7px; height:7px; border-radius:50%; background: var(--hair-strong); flex-shrink:0; }
+  .badge-chip.unlocked{ color: var(--brass); border-color: rgba(201,154,69,0.45); background: var(--brass-soft); }
+  .badge-chip.unlocked .badge-dot{ background: var(--brass); }
+
+  /* ---------- mode toggle (long game) ---------- */
+  .mode-toggle{ display:flex; gap:8px; margin-bottom:22px; }
+  .modebtn{
+    font-family: var(--font-mono); font-size:0.76rem; color: var(--ink-muted);
+    background: var(--wood-2); border: 1px solid var(--hair-strong); border-radius: 20px;
+    padding: 8px 16px; cursor:pointer; transition: color .12s ease, border-color .12s ease;
+  }
+  .modebtn:hover{ color: var(--ink-soft); }
+  .modebtn.active{ color: var(--ink); border-color: var(--brass); background: var(--brass-soft); }
+
+  /* ---------- the long game ---------- */
+  .game-intro{ max-width: var(--measure); color: var(--ink-soft); margin: 26px 0 30px; position:relative; z-index:1; }
+  .game-intro p + p{ margin-top: 10px; }
+
+  .roster{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .traveler-card{
+    background: var(--wood-2);
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color .12s ease, background .12s ease, transform .12s ease;
+  }
+  .traveler-card:hover{ border-color: var(--brass); transform: translateY(-2px); }
+  .traveler-card.done{ cursor:pointer; border-color: rgba(201,154,69,0.4); }
+  .traveler-badge{
+    width:52px; height:52px; border-radius:50%;
+    margin: 0 auto 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-size:1.3rem; font-weight:700;
+    background: var(--wood-3); color: var(--ink-muted);
+    border: 2px dashed var(--hair-strong);
+  }
+  .traveler-card.done .traveler-badge{
+    border-style: solid; border-color: var(--brass); color: var(--brass); background: var(--brass-soft);
+  }
+  .traveler-name{ font-weight:600; color: var(--ink); font-size:0.92rem; margin-bottom:4px; }
+  .traveler-sub{ font-family: var(--font-mono); font-size:0.72rem; color: var(--ink-faint); }
+
+  .match{
+    background: var(--wood-2);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius);
+    padding: 32px clamp(20px,4vw,44px) 36px;
+    max-width: 1000px;
+    margin: 0 auto 20px;
+  }
+  .match-top{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:22px; }
+  .match-title{ font-size: 1.4rem; }
+  .match-scores{ display:flex; gap:22px; }
+  .match-score{ text-align:right; }
+  .match-score .ms-label{ font-family: var(--font-mono); font-size:0.66rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); }
+  .match-score .ms-num{ font-family: var(--font-mono); font-size:1.4rem; font-weight:700; color:var(--ink); }
+  .match-score.you .ms-num{ color: var(--longview); }
+  .match-score.them .ms-num{ color: var(--ink-muted); }
+
+  .history-strip{ display:flex; gap:6px; margin-bottom:26px; flex-wrap:wrap; }
+  .history-slot{
+    width:34px; height:44px; border-radius:3px;
+    border: 1px solid var(--hair);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .history-slot .hs-half{ flex:1; }
+  .history-slot.empty{ background: var(--wood); }
+
+  .payoff-toggle{
+    font-family: var(--font-mono); font-size:0.72rem; color: var(--ink-muted);
+    background:none; border: 1px solid var(--hair-strong); border-radius:3px;
+    padding: 6px 12px; cursor:pointer; margin-bottom:18px;
+  }
+  .payoff-toggle:hover{ color: var(--ink); }
+  .payoff-grid{
+    display:none;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair-strong);
+    border-radius: 4px;
+    overflow:hidden;
+    margin-bottom: 22px;
+    max-width: 480px;
+    font-size: 0.86rem;
+  }
+  .payoff-grid.shown{ display:grid; }
+  .payoff-grid > div{ background: var(--wood); padding: 10px 12px; color: var(--ink-soft); }
+  .payoff-grid .ph{ font-family: var(--font-mono); font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color: var(--ink-faint); }
+  .payoff-grid .pv{ font-family: var(--font-mono); font-weight:700; }
+  .payoff-grid .pv .you{ color: var(--longview); }
+  .payoff-grid .pv .them{ color: var(--ink-muted); }
+
+  .move-btns{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom: 8px; }
+  .move-btn{
+    flex: 1 1 220px;
+    padding: 20px 20px;
+    border-radius: var(--radius);
+    cursor:pointer;
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight:600;
+    text-align:left;
+    transition: transform .1s ease, filter .1s ease;
+  }
+  .move-btn:hover{ transform: translateY(-2px); }
+  .move-btn .mb-sub{ display:block; font-family: var(--font-mono); font-weight:400; font-size:0.78rem; margin-top:6px; opacity:0.85; }
+  .move-btn.share{ background: var(--longview-soft); border: 1px solid rgba(57,135,229,0.5); color: var(--longview); }
+  .move-btn.alone{ background: var(--reactive-soft); border: 1px solid rgba(217,89,38,0.5); color: var(--reactive); }
+  .move-btn:disabled{ opacity:0.4; cursor:default; transform:none; }
+
+  .peek-toggle{
+    font-family: var(--font-mono); font-size:0.72rem; color: var(--ink-muted);
+    background:none; border: 1px solid var(--hair-strong); border-radius:3px;
+    padding: 7px 13px; cursor:pointer; margin-top:20px;
+  }
+  .peek-toggle:hover{ color: var(--ink); }
+  .peek-grid{
+    display:none;
+    grid-template-columns: minmax(200px,1fr) minmax(200px,1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .peek-grid.shown{ display:grid; }
+  .peek-card{
+    background: var(--wood); border: 1px solid var(--hair); border-radius:3px;
+    padding: 14px 16px;
+  }
+  .peek-card .peek-label{
+    font-family: var(--font-mono); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom: 8px;
+  }
+  .peek-card.cat-reactive .peek-label{ color: var(--reactive); }
+  .peek-card.cat-drift .peek-label{ color: var(--drift); }
+  .peek-card.cat-longview .peek-label{ color: var(--longview); }
+  .peek-card .peek-choice{ font-size:0.88rem; color: var(--ink-soft); margin-bottom:8px; }
+  .peek-card .peek-outcome{ font-family: var(--font-mono); font-size:0.78rem; color: var(--ink-faint); }
+
+  .guess-block{ margin: 22px 0 4px; padding-top:20px; border-top:1px dashed var(--hair); }
+  .guess-label{ font-family: var(--font-mono); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:12px; }
+  .guess-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .guess-chip{
+    font-size: 0.86rem; color: var(--ink-soft);
+    background: var(--wood); border: 1px solid var(--hair-strong); border-radius:20px;
+    padding: 8px 15px; cursor:pointer; transition: border-color .12s ease, background .12s ease;
+  }
+  .guess-chip:hover{ border-color: var(--brass); }
+  .guess-chip:disabled{ cursor:default; }
+  .guess-chip.correct{ border-color: var(--drift); background: var(--drift-soft); color: var(--drift); }
+  .guess-chip.wrong{ border-color: var(--reactive); background: var(--reactive-soft); color: var(--reactive); opacity:0.7; }
+  .guess-feedback{ margin-top:10px; font-size:0.86rem; }
+  .guess-feedback.correct{ color: var(--drift); }
+  .guess-feedback.wrong{ color: var(--reactive); }
+
+  .replay-btn{
+    font-family: var(--font-mono); font-size:0.74rem; color: var(--longview);
+    background: var(--longview-soft); border: 1px solid rgba(57,135,229,0.4); border-radius:3px;
+    padding: 9px 16px; cursor:pointer; margin-top:20px;
+  }
+  .replay-btn:hover{ filter: brightness(1.15); }
+
+  .pass-screen{
+    background: var(--wood-2); border: 1px solid var(--hair-strong); border-radius: var(--radius);
+    padding: 56px clamp(20px,4vw,44px); max-width:1000px; margin:0 auto 20px; text-align:center;
+  }
+  .pass-screen .pass-icon{ font-size:2.1rem; margin-bottom:16px; }
+  .pass-screen h3{ font-size:1.3rem; margin-bottom:10px; }
+  .pass-screen p{ color: var(--ink-soft); max-width: 46ch; margin: 0 auto 26px; }
+
+  .match-summary{ margin-top: 24px; padding-top:24px; border-top: 1px solid var(--hair); }
+  .summary-reveal{
+    display:flex; align-items:center; gap:16px; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .summary-badge{
+    width:56px; height:56px; border-radius:50%;
+    background: var(--brass-soft); border: 2px solid var(--brass); color: var(--brass);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-weight:700; font-size:1.4rem;
+    flex-shrink:0;
+  }
+  .summary-note{ max-width: var(--measure); color: var(--ink-soft); }
+  .counterfactual{
+    display:grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap:12px;
+    margin: 18px 0;
+  }
+  .cf-box{ background: var(--wood); border:1px solid var(--hair); border-radius:3px; padding:14px 16px; text-align:center; }
+  .cf-box .cf-label{ font-family: var(--font-mono); font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+  .cf-box .cf-num{ font-family: var(--font-mono); font-size:1.3rem; font-weight:700; color:var(--ink); }
+  .cf-box.actual{ border-color: var(--brass); }
+  .cf-box.actual .cf-num{ color: var(--brass); }
+
+  .recap{
+    background: var(--wood-2); border:1px solid var(--hair); border-radius: var(--radius);
+    padding: 30px clamp(20px,4vw,44px); max-width:1000px; margin: 0 auto 20px;
+  }
+  .recap h3{ font-size:1.35rem; margin-bottom:14px; }
+
+  footer.foot{
+    max-width: 1000px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    position: relative; z-index:1;
+  }
+
+  @media (max-width: 640px){
+    .bias-box{ grid-template-columns: 1fr; }
+    header.top{ padding-top: 48px; }
+    .match-top{ flex-direction: column; align-items:flex-start; }
+    .payoff-grid{ font-size: 0.78rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="eyebrow">A practice deck, and a game, about thinking past today</div>
+  <h1>Play the Long Game</h1>
+  <p class="dek">Almost nobody wakes up and decides to ruin the soil, drain the fund, or blow the deadline. Bad long-term outcomes hardly ever start with an obviously bad choice. They start with one that sounds completely reasonable in the moment — a compromise, a "just this once," a "we'll catch up later." A good plan and solid data don't protect you from that choice. They just make it feel more responsible when you make it.</p>
+  <p class="dek">Below are eight real forks in the road — a farmer, a parent, a student, an executive, a whole town. Each starts with a real plan, backed by real numbers. Then something pulls at it. Pick how you'd respond, see where it actually leads, and start noticing your own pattern before it costs you anything.</p>
+  <p class="dek">There's a second way to feel the same lesson: play it. <strong>Fellow Travelers</strong> is the actual math behind long-term trust — the same game theorists use to explain why cooperation survives in a selfish world. Meet five of them, one at a time, and find out who's worth teaming up with.</p>
+</header>
+
+<div class="tabbar">
+  <button class="tabbtn active" id="tabForks">Trailside Forks</button>
+  <button class="tabbtn" id="tabGame">Fellow Travelers</button>
+</div>
+
+<div class="badges-shelf" id="badgesShelf"></div>
+
+<div id="panel-forks">
+  <div class="scorecard">
+    <div class="scorecard-inner">
+      <div class="score-groups">
+        <div class="score-item"><span class="score-dot" style="background:var(--reactive)"></span><span class="score-label">Reactive</span><span class="score-num mono" id="scoreReactive">0</span></div>
+        <div class="score-item"><span class="score-dot" style="background:var(--drift)"></span><span class="score-label">Quiet drift</span><span class="score-num mono" id="scoreDrift">0</span></div>
+        <div class="score-item"><span class="score-dot" style="background:var(--longview)"></span><span class="score-label">Long view</span><span class="score-num mono" id="scoreLongview">0</span></div>
+      </div>
+      <button class="btn-ghost" id="resetBtn">Restart practice</button>
+    </div>
+  </div>
+
+  <div class="deck-nav">
+    <button class="navbtn" id="prevBtn">← Prev</button>
+    <div class="dots" id="dots"></div>
+    <button class="navbtn" id="nextBtn">Next →</button>
+  </div>
+
+  <div class="wrap">
+    <div class="card" id="card"></div>
+
+    <div class="synthesis" id="synthesis">
+      <h3>Your pattern</h3>
+      <p class="empty" id="synthesisEmpty">Answer a couple of forks and this fills in — the trap you fall for most, named, with one thing to practice against it.</p>
+      <div class="body" id="synthesisBody" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="panel-game" style="display:none;">
+  <div class="scorecard" id="gameScorecard">
+    <div class="scorecard-inner">
+      <div class="score-groups">
+        <div class="score-item"><span class="score-label">Trips taken</span><span class="score-num mono" id="gameTripsPlayed">0</span><span class="score-label">/ 5</span></div>
+        <div class="score-item"><span class="score-label">Total supplies</span><span class="score-num mono" id="gameTotalSupplies">0</span></div>
+        <div class="score-item"><span class="score-label">Share rate</span><span class="score-num mono" id="gameShareRate">—</span></div>
+      </div>
+      <button class="btn-ghost" id="gameResetBtn">Restart the trail</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="mode-toggle" id="modeToggle">
+      <button class="modebtn active" id="modeAI">Play vs the Trail</button>
+      <button class="modebtn" id="modeFriend">Play vs a Friend</button>
+    </div>
+
+    <div class="game-intro">
+      <p><strong>The game:</strong> you meet a fellow traveler for an 8-day stretch of trail. Each day, at the same time, you both quietly decide: <strong>Share the Trail</strong> (pool your supplies) or <strong>Go It Alone</strong> (keep what you have, maybe take a bit more). Neither of you sees the other's choice until both are locked in.</p>
+      <p>Share together and you both do fine. Go alone while they share, and you clean up. Share while they go alone, and you're the one who gets cleaned out. Go alone while they do too, and you both do worse than if you'd just shared — every time. Five travelers, five hidden styles. Play them all to see your own — or grab a friend and play it for real.</p>
+    </div>
+
+    <div id="rosterView">
+      <div class="roster" id="roster"></div>
+      <div id="gameRecap"></div>
+    </div>
+
+    <div id="matchView" style="display:none;"></div>
+    <div id="friendView" style="display:none;"></div>
+  </div>
+</div>
+
+<footer class="foot">
+  <span>Play the Long Game — a practice deck, not a verdict.</span>
+  <span>Companion to Depth of Field.</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+
+  /* ============================================================
+     SCENARIO DATA
+     Each scenario: a real plan, a pull toward abandoning it, and
+     three responses. "reactive" and "drift" both fall for the same
+     named bias — drift is just the version that feels responsible.
+     "longview" holds the plan. Every scenario has its own chart
+     data (7 points across its own timeline) so the payoff/erosion
+     shape is specific to that story, not a reused template.
+  ============================================================= */
+  const SCENARIOS = [
+    {
+      domain: "FARM",
+      title: "The Rotation Plan",
+      plan: "You planned to rest this field into legumes this season after three straight years of corn — yields are already down 9%, and rotation is projected to restore about 15% of that within four years.",
+      pull: "Corn futures just spiked. A neighbor who's planting corn again stands to clear an extra $8,400 this year if the price holds through harvest.",
+      bias: {
+        name: "Salience bias",
+        def: "A loud, immediate signal (this week's price) crowds out a slower, quieter one (three years of yield data) — even when the quiet signal carries more weight."
+      },
+      countermove: "Write the multi-year plan down with the reasoning before news like this ever hits. Set one rule in advance: only multi-year data changes the plan, never a single season's price.",
+      choices: [
+        { text: "Scrap the rotation, plant corn again this year to catch the price.", cat:"reactive" },
+        { text: "Split the field — corn on half, rotate the other half — to hedge both ways.", cat:"drift" },
+        { text: "Stick with the rotation exactly as planned.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Now","Yr 1","Yr 2","Yr 3","Yr 4","Yr 5","Yr 6"],
+        yLabel: "CUMULATIVE PROFIT ($K)",
+        format: v => "$" + Math.round(v) + "k",
+        series: {
+          reactive: [0,9,16,21,23,23,21],
+          drift:    [0,7,13,19,24,29,33],
+          longview: [0,4,9,16,25,35,46],
+        }
+      }
+    },
+    {
+      domain: "HOME",
+      title: "The Resale Deal",
+      plan: "You've been auto-saving $50 every payday toward a $1,500 emergency fund — three months of rent. Fourteen months in, you're at $700.",
+      pull: "A friend is reselling a bulk lot of kids' clothes at 70% off retail. It's a real deal, but it needs $400 up front this week, supposedly recoverable through resale within two months.",
+      bias: {
+        name: "Present bias",
+        def: "A gain available right now outweighs a much larger, calmer benefit later — especially when it's wrapped in urgency ('this week only')."
+      },
+      countermove: "Use a 72-hour rule: anything non-essential above a set dollar threshold has to wait three days before a yes. Real opportunities survive that wait. Manufactured urgency usually doesn't.",
+      choices: [
+        { text: "Pull $400 from the emergency fund for the deal.", cat:"reactive" },
+        { text: "Pause the auto-save for two months and put that money toward it instead, so the fund itself isn't touched.", cat:"drift" },
+        { text: "Pass on the deal, keep the fund plan running exactly as it is.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Now","Mo 2","Mo 4","Mo 6","Mo 8","Mo 10","Mo 12"],
+        yLabel: "EMERGENCY FUND ($)",
+        format: v => "$" + Math.round(v),
+        series: {
+          reactive: [700,300,380,460,540,620,700],
+          drift:    [700,700,760,830,900,970,1040],
+          longview: [700,850,1000,1150,1300,1450,1600],
+        }
+      }
+    },
+    {
+      domain: "SCHOOL",
+      title: "The Night Before",
+      plan: "Your 8-week study plan — 45 minutes a night — has your practice scores climbing steadily toward the exam.",
+      pull: "Everyone's going to a big party tonight, the week of your last practice tests. Skipping it means missing the photos and the inside jokes for weeks.",
+      bias: {
+        name: "Present bias + planning fallacy",
+        def: "Tonight's fun outweighs a test that's still 'later' — and 'I'll make it up' quietly assumes a future weekend that's actually just as busy as this one."
+      },
+      countermove: "Decide the makeup time in advance, as an if-then: 'if I leave by 10, then I study 7–8am Saturday.' A vague 'later' rarely survives contact with an actual weekend.",
+      choices: [
+        { text: "Skip tonight's study block entirely, go all in on the party.", cat:"reactive" },
+        { text: "Go to the party, tell yourself you'll make up the time this weekend.", cat:"drift" },
+        { text: "Go for 90 minutes, leave early, keep the study block.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Wk -6","Wk -5","Wk -4","Wk -3","Wk -2","Wk -1","Test day"],
+        yLabel: "PRACTICE SCORE",
+        format: v => Math.round(v),
+        series: {
+          reactive: [1020,1035,1040,1030,1010,1020,1040],
+          drift:    [1020,1040,1055,1060,1050,1075,1110],
+          longview: [1020,1045,1070,1095,1120,1150,1180],
+        }
+      }
+    },
+    {
+      domain: "COLLEGE",
+      title: "The One-Time Door",
+      plan: "Your four-year plan has you on a sustainable 15-credit pace, graduating around a 3.6 GPA.",
+      pull: "A prestigious internship wants you next summer — but only if you finish a prerequisite this semester, which means jumping to 21 credits right now.",
+      bias: {
+        name: "Scarcity framing",
+        def: "A 'once in a lifetime' door feels like it never reopens — when most real opportunities, on close inspection, come around more than once."
+      },
+      countermove: "Before any now-or-never decision, name the real fallback out loud: 'if this door closes, what's my honest next-best option?' Naming it usually cuts the panic in half.",
+      choices: [
+        { text: "Overload to 21 credits to guarantee the internship track.", cat:"reactive" },
+        { text: "Overload, but drop your one enrichment elective to 'make room' — same credit count, same load.", cat:"drift" },
+        { text: "Ask about a deferred track, or accept you might reapply next cycle, and keep your sustainable pace.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Now","Mo 1","Mo 2","Mo 3","Mo 4","Mo 5","Mo 6"],
+        yLabel: "THIS SEMESTER'S GPA",
+        format: v => v.toFixed(1),
+        series: {
+          reactive: [3.6,3.5,3.3,3.0,2.8,2.7,2.6],
+          drift:    [3.6,3.5,3.3,3.1,2.9,2.8,2.7],
+          longview: [3.6,3.6,3.6,3.6,3.6,3.6,3.6],
+        }
+      }
+    },
+    {
+      domain: "WORK",
+      title: "The Soft Quarter",
+      plan: "Your 3-year plan puts 12% of budget into an R&D line meant to open a new product category by year three.",
+      pull: "This quarter came in soft. Trimming the R&D line 40% closes the gap and calms this week's stock reaction.",
+      bias: {
+        name: "Metric myopia",
+        def: "What's measured and visible right now (this quarter's number) outweighs what's true but slower to show up (a category worth building) — because the audience watching is short-term too."
+      },
+      countermove: "Decide the commitment first, from the multi-year thesis — then separately decide how to communicate a soft quarter. Never let the second decision quietly rewrite the first.",
+      choices: [
+        { text: "Cut the R&D line 40% this quarter to hit the number.", cat:"reactive" },
+        { text: "Keep the budget line intact on paper, but quietly freeze hiring and delay two key hires two quarters.", cat:"drift" },
+        { text: "Hold the R&D line, explain the soft quarter transparently instead.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Now","Q1","Q2","Q3","Q4","Q5","Q6"],
+        yLabel: "LAUNCH PROGRESS (%)",
+        format: v => Math.round(v) + "%",
+        series: {
+          reactive: [20,22,24,25,26,27,28],
+          drift:    [20,23,27,30,33,36,39],
+          longview: [20,30,42,55,68,82,96],
+        }
+      }
+    },
+    {
+      domain: "HOUSE",
+      title: "The Quiet Hum",
+      plan: "$40 a month set aside for HVAC service twice a year — projected to stretch a $6,000 system's life from about 12 years to 18.",
+      pull: "It's still running fine. Skipping this spring's service saves $150 right now, in a month where that's real money.",
+      bias: {
+        name: "Normalcy bias",
+        def: "No visible failure gets quietly read as evidence of health — when most mechanical failure stays invisible right up until it isn't."
+      },
+      countermove: "Put maintenance on a fixed calendar date, not on how the thing 'seems to be doing.' A date doesn't care whether this month feels tight.",
+      choices: [
+        { text: "Skip the service, tell yourself you'll catch the next one.", cat:"reactive" },
+        { text: "Do a quick DIY filter change instead — basically the same thing, cheaper.", cat:"drift" },
+        { text: "Keep the scheduled professional service.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Yr 1","Yr 2","Yr 3","Yr 4","Yr 5","Yr 6","Yr 7"],
+        yLabel: "BREAKDOWN RISK THIS YEAR (%)",
+        format: v => Math.round(v) + "%",
+        series: {
+          reactive: [5,8,14,22,33,47,60],
+          drift:    [5,7,11,17,25,35,46],
+          longview: [5,5,6,6,7,7,8],
+        }
+      }
+    },
+    {
+      domain: "TOWN",
+      title: "The Loud Meeting",
+      plan: "The town set aside $50k a year toward a 10-year reserve fund, to fully repave the worst road corridor by year eight instead of patching it forever.",
+      pull: "Pothole complaints are loud at tonight's meeting. Redirecting the reserve fund to patch more now would quiet the room before the election.",
+      bias: {
+        name: "Availability heuristic",
+        def: "The loudest, most visible complaint outweighs the silent, compounding cost of a fund that never gets to finish compounding."
+      },
+      countermove: "Protect long-horizon funds structurally — require a supermajority or a public vote to redirect them. Make raiding them harder than a single meeting's mood.",
+      choices: [
+        { text: "Redirect the whole reserve fund to patching this year.", cat:"reactive" },
+        { text: "Redirect just this year's contribution, promising to catch the fund up next year.", cat:"drift" },
+        { text: "Hold the reserve fund, patch only the worst safety hazards from the regular budget.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Yr 1","Yr 2","Yr 3","Yr 4","Yr 5","Yr 6","Yr 7"],
+        yLabel: "RESERVE FUND ($K)",
+        format: v => "$" + Math.round(v) + "k",
+        series: {
+          reactive: [50,10,10,10,10,10,10],
+          drift:    [50,20,45,30,55,35,60],
+          longview: [50,100,150,200,250,300,350],
+        }
+      }
+    },
+    {
+      domain: "HEALTH",
+      title: "The Rainy Day",
+      plan: "A 20-minute walk every day, building toward better long-term energy and heart health. You're 11 days into the streak.",
+      pull: "Bad night of sleep, it's raining, and today feels like the day to skip — just one day surely won't matter.",
+      bias: {
+        name: "All-or-nothing thinking",
+        def: "Treating 'do it fully' and 'don't do it at all' as the only two options — when a bare minimum protects the thing that actually matters: consistency."
+      },
+      countermove: "Set a floor you'll never skip below — even two minutes counts — kept separate from your real target. Protect the floor, not the ceiling.",
+      choices: [
+        { text: "Skip today entirely, no walk.", cat:"reactive" },
+        { text: "Skip today, tell yourself you'll double up tomorrow to make up for it.", cat:"drift" },
+        { text: "Do a scaled-down 5-minute version — keep the streak technically alive.", cat:"longview" },
+      ],
+      chart: {
+        xTicks: ["Wk 1","Wk 2","Wk 3","Wk 4","Wk 5","Wk 6","Wk 7"],
+        yLabel: "HABIT STRENGTH (INDEX)",
+        format: v => Math.round(v),
+        series: {
+          reactive: [62,55,50,42,38,30,26],
+          drift:    [62,58,54,50,47,44,42],
+          longview: [62,64,67,70,74,78,83],
+        }
+      }
+    },
+  ];
+
+  const CAT_LABEL = { reactive:"Reactive", drift:"Quiet drift", longview:"Long view" };
+  const CAT_VAR = { reactive:"var(--reactive)", drift:"var(--drift)", longview:"var(--longview)" };
+
+  // shuffle each scenario's choice order once per page load, Fisher-Yates
+  function shuffled(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  SCENARIOS.forEach(s=>{ s._order = shuffled(s.choices.map((c,i)=>i)); });
+
+  /* ============================================================
+     STATE
+  ============================================================= */
+  const state = {
+    current: 0,
+    answers: {}, // idx -> choiceIndex (original index into s.choices)
+  };
+
+  function counts(){
+    const c = { reactive:0, drift:0, longview:0 };
+    Object.keys(state.answers).forEach(k=>{
+      const s = SCENARIOS[k];
+      const cat = s.choices[state.answers[k]].cat;
+      c[cat]++;
+    });
+    return c;
+  }
+
+  function biasTally(){
+    const tally = {};
+    Object.keys(state.answers).forEach(k=>{
+      const s = SCENARIOS[k];
+      const cat = s.choices[state.answers[k]].cat;
+      if(cat==="reactive" || cat==="drift"){
+        tally[s.bias.name] = tally[s.bias.name] || { count:0, scenario:s };
+        tally[s.bias.name].count++;
+      }
+    });
+    return tally;
+  }
+
+  /* ============================================================
+     CHART RENDERER — generic 3-line chart, auto-scaled per scenario
+  ============================================================= */
+  function renderChart(chartData, highlightCat){
+    const { xTicks, yLabel, format, series } = chartData;
+    const plot = { x0:54, x1:576, y0:206, y1:26 };
+    const all = [].concat(series.reactive, series.drift, series.longview);
+    let min = Math.min(...all), max = Math.max(...all);
+    const pad = (max-min)*0.12 || Math.max(1, max*0.1);
+    min = Math.max(0, min - pad); max = max + pad;
+
+    const n = xTicks.length;
+    const xAt = i => plot.x0 + (i/(n-1))*(plot.x1-plot.x0);
+    const yAt = v => plot.y0 - ((v-min)/(max-min))*(plot.y0-plot.y1);
+
+    function pathFor(vals){
+      return vals.map((v,i)=> (i===0?"M":"L") + xAt(i).toFixed(1) + "," + yAt(v).toFixed(1)).join(" ");
+    }
+
+    let grid = "";
+    xTicks.forEach((t,i)=>{
+      grid += `<line x1="${xAt(i)}" y1="${plot.y0}" x2="${xAt(i)}" y2="${plot.y1}" stroke="var(--hair)" stroke-width="1"/>`;
+      grid += `<text class="tick-label" x="${xAt(i)}" y="${plot.y0+16}" text-anchor="middle">${t}</text>`;
+    });
+    [0,0.5,1].forEach(f=>{
+      const v = min + f*(max-min);
+      const y = yAt(v);
+      grid += `<line x1="${plot.x0}" y1="${y}" x2="${plot.x1}" y2="${y}" stroke="var(--hair)" stroke-width="1"/>`;
+      grid += `<text class="tick-label" x="${plot.x0-8}" y="${y+3}" text-anchor="end">${format(v)}</text>`;
+    });
+
+    const order = ["reactive","drift","longview"];
+    let lines = "";
+    order.forEach(cat=>{
+      const isHi = cat === highlightCat;
+      const w = isHi ? 3 : 1.6;
+      const op = highlightCat ? (isHi ? 1 : 0.4) : 0.85;
+      lines += `<path d="${pathFor(series[cat])}" fill="none" stroke="${CAT_VAR[cat]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}"/>`;
+      if(isHi){
+        const lastX = xAt(n-1), lastY = yAt(series[cat][n-1]);
+        lines += `<circle cx="${lastX}" cy="${lastY}" r="4.5" fill="${CAT_VAR[cat]}" stroke="var(--wood-2)" stroke-width="2"/>`;
+      }
+    });
+
+    const legend = order.map((cat,i)=>`
+      <g transform="translate(${plot.x0 + i*150},${plot.y1-14})">
+        <line x1="0" y1="4" x2="16" y2="4" stroke="${CAT_VAR[cat]}" stroke-width="2.5"/>
+        <text class="tick-label" x="21" y="7.5" fill="var(--ink-soft)">${CAT_LABEL[cat]}</text>
+      </g>
+    `).join("");
+
+    return `
+      <svg viewBox="0 0 600 230" role="img" aria-label="Chart of ${yLabel} across three paths">
+        ${grid}
+        <line x1="${plot.x0}" y1="${plot.y0}" x2="${plot.x1}" y2="${plot.y0}" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text class="axis-label" transform="translate(16,${(plot.y0+plot.y1)/2}) rotate(-90)" text-anchor="middle">${yLabel}</text>
+        ${lines}
+        ${legend}
+      </svg>
+    `;
+  }
+
+  /* ============================================================
+     CARD RENDERER
+  ============================================================= */
+  const cardEl = $("card");
+
+  function renderCard(idx){
+    const s = SCENARIOS[idx];
+    const answered = state.answers.hasOwnProperty(idx);
+    const chosenChoiceIdx = answered ? state.answers[idx] : null;
+
+    const choicesHtml = s._order.map(origIdx=>{
+      const c = s.choices[origIdx];
+      if(!answered){
+        return `<button class="choice-btn" data-idx="${origIdx}">${c.text}</button>`;
+      }
+      const isPicked = origIdx === chosenChoiceIdx;
+      const cls = isPicked ? `picked cat-${c.cat}` : "dim";
+      return `<button class="choice-btn ${cls}" disabled>${c.text}</button>`;
+    }).join("");
+
+    let resultHtml = "";
+    if(answered){
+      const chosen = s.choices[chosenChoiceIdx];
+      const cat = chosen.cat;
+      const chartHtml = renderChart(s.chart, cat);
+      const bcTitle = cat === "longview"
+        ? `You dodged: ${s.bias.name}`
+        : `You fell for: ${s.bias.name}`;
+      const otherCats = ["reactive","drift","longview"].filter(c=>c!==cat);
+      const peekCardsHtml = otherCats.map(c=>{
+        const otherChoice = s.choices.find(ch=>ch.cat===c);
+        const seriesEnd = s.chart.series[c][s.chart.series[c].length-1];
+        const verdict = c === "longview" ? "would have held the plan" : "would have fallen for it too";
+        return `
+          <div class="peek-card cat-${c}">
+            <div class="peek-label">${CAT_LABEL[c]}</div>
+            <div class="peek-choice">${otherChoice.text}</div>
+            <div class="peek-outcome">Ends at ${s.chart.format(seriesEnd)} — ${verdict}</div>
+          </div>
+        `;
+      }).join("");
+      resultHtml = `
+        <div class="result">
+          <div class="result-tag cat-${cat}"><span class="dot score-dot" style="background:${CAT_VAR[cat]}"></span>${CAT_LABEL[cat]}</div>
+          ${chartHtml}
+          <div class="bias-box">
+            <div class="bias-card">
+              <div class="bc-label">The pattern</div>
+              <div class="bc-title">${bcTitle}</div>
+              <div class="bc-body">${s.bias.def}</div>
+            </div>
+            <div class="bias-card countermove">
+              <div class="bc-label">Practice this</div>
+              <div class="bc-title">The countermove</div>
+              <div class="bc-body">${s.countermove}</div>
+            </div>
+          </div>
+          <button class="peek-toggle" id="peekToggle">Peek at the other two paths — free, no penalty →</button>
+          <div class="peek-grid" id="peekGrid">${peekCardsHtml}</div>
+        </div>
+      `;
+    }
+
+    cardEl.innerHTML = `
+      <div class="card-top">
+        <span class="tag tag-domain">${s.domain}</span>
+        <span class="tag tag-progress mono">FORK ${idx+1} OF ${SCENARIOS.length}</span>
+      </div>
+      <h2>${s.title}</h2>
+      <div class="block plan"><div class="block-label">The plan</div><p>${s.plan}</p></div>
+      <div class="block pull"><div class="block-label">The pull</div><p>${s.pull}</p></div>
+      <div class="choices">${choicesHtml}</div>
+      ${resultHtml}
+    `;
+
+    if(!answered){
+      Array.from(cardEl.querySelectorAll(".choice-btn")).forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          state.answers[idx] = Number(btn.dataset.idx);
+          renderCard(idx);
+          renderScorecard();
+          renderSynthesis();
+          renderDots();
+          renderBadges();
+        });
+      });
+    } else {
+      const peekToggle = $("peekToggle");
+      if(peekToggle){
+        peekToggle.addEventListener("click", ()=>{
+          const shown = $("peekGrid").classList.toggle("shown");
+          peekToggle.textContent = shown ? "Hide the other paths" : "Peek at the other two paths — free, no penalty →";
+        });
+      }
+    }
+
+    renderNav(idx);
+  }
+
+  function renderDots(){
+    $("dots").innerHTML = SCENARIOS.map((s,i)=>`
+      <button class="dot ${state.answers.hasOwnProperty(i) ? "answered":""} ${i===state.current ? "current":""}" data-i="${i}" aria-label="Fork ${i+1}"></button>
+    `).join("");
+    Array.from($("dots").querySelectorAll(".dot")).forEach(d=>{
+      d.addEventListener("click", ()=>{ state.current = Number(d.dataset.i); renderCard(state.current); renderDots(); });
+    });
+  }
+
+  function renderNav(idx){
+    $("prevBtn").disabled = idx===0;
+    $("nextBtn").disabled = idx===SCENARIOS.length-1;
+  }
+
+  $("prevBtn").addEventListener("click", ()=>{ if(state.current>0){ state.current--; renderCard(state.current); renderDots(); } });
+  $("nextBtn").addEventListener("click", ()=>{ if(state.current<SCENARIOS.length-1){ state.current++; renderCard(state.current); renderDots(); } });
+
+  /* ============================================================
+     SCORECARD + SYNTHESIS
+  ============================================================= */
+  function renderScorecard(){
+    const c = counts();
+    $("scoreReactive").textContent = c.reactive;
+    $("scoreDrift").textContent = c.drift;
+    $("scoreLongview").textContent = c.longview;
+  }
+
+  function renderSynthesis(){
+    const answeredCount = Object.keys(state.answers).length;
+    const tally = biasTally();
+    const entries = Object.entries(tally).sort((a,b)=>b[1].count - a[1].count);
+
+    if(answeredCount < 2 || entries.length === 0){
+      $("synthesisEmpty").style.display = "block";
+      $("synthesisBody").style.display = "none";
+      if(answeredCount >= 2 && entries.length === 0){
+        $("synthesisEmpty").textContent = "Every fork answered so far went to the long view. Keep going — the pattern shows up over more forks, good or otherwise.";
+      }
+      return;
+    }
+    $("synthesisEmpty").style.display = "none";
+    $("synthesisBody").style.display = "block";
+
+    const top = entries[0];
+    const [biasName, info] = top;
+    $("synthesisBody").innerHTML = `
+      <p>Out of ${answeredCount} fork${answeredCount===1?"":"s"} so far, the trap you've walked into most is <strong>${biasName}</strong> (${info.count} time${info.count===1?"":"s"}).</p>
+      <div class="takeaway"><strong>One thing to practice:</strong> ${info.scenario.countermove}</div>
+    `;
+  }
+
+  $("resetBtn").addEventListener("click", ()=>{
+    state.answers = {};
+    state.current = 0;
+    renderCard(0);
+    renderDots();
+    renderScorecard();
+    renderSynthesis();
+    renderBadges();
+  });
+
+  /* ============================================================
+     INIT (Forks)
+  ============================================================= */
+  renderCard(state.current);
+  renderDots();
+  renderScorecard();
+  renderSynthesis();
+
+  /* ============================================================
+     TABS
+  ============================================================= */
+  $("tabForks").addEventListener("click", ()=>{
+    $("tabForks").classList.add("active");
+    $("tabGame").classList.remove("active");
+    $("panel-forks").style.display = "block";
+    $("panel-game").style.display = "none";
+  });
+  $("tabGame").addEventListener("click", ()=>{
+    $("tabGame").classList.add("active");
+    $("tabForks").classList.remove("active");
+    $("panel-game").style.display = "block";
+    $("panel-forks").style.display = "none";
+  });
+
+  /* ============================================================
+     THE LONG GAME — an iterated Prisoner's Dilemma, trail-themed.
+     Five hidden fellow travelers, each running a fixed strategy.
+     Share the Trail = cooperate. Go It Alone = defect.
+     Payoffs (classic PD ordering, T>R>P>S and 2R>T+S so that
+     steady mutual cooperation beats trading exploitation):
+       both share      -> 3 / 3   (Reward)
+       both go alone    -> 1 / 1   (Punishment)
+       you alone, them share -> 5 / 0   (Temptation / Sucker)
+       you share, them alone -> 0 / 5
+  ============================================================= */
+  const ROUNDS_PER_MATCH = 8;
+
+  const STRATEGIES = {
+    echo: {
+      name: "The Echo",
+      blurb: "Does back to you whatever you did last.",
+      note: "This one only ever gave back what you gave it. Every time you shared, it shared right back next time. That's cooperation in miniature — trust that gets returned compounds.",
+      fn: (history) => history.length === 0 ? "share" : history[history.length-1].you,
+    },
+    lonewolf: {
+      name: "The Lone Wolf",
+      blurb: "Travels alone, every single day.",
+      note: "This one went it alone every day, no matter what you did. Against a partner like this, endless sharing just gets you cleaned out. The skill isn't blind generosity — it's noticing the pattern and matching it.",
+      fn: () => "alone",
+    },
+    trailangel: {
+      name: "The Trail Angel",
+      blurb: "Shares everything, always.",
+      note: "This one shared every day, no matter what you did — even when you didn't. Easy to lean on here, but notice: a partner who never protects themselves is also easy to take advantage of. Long-term thinking still needs its eyes open.",
+      fn: () => "share",
+    },
+    guarded: {
+      name: "The Guarded One",
+      blurb: "Shares — until burned once.",
+      note: "This one shared right up until you went it alone once — then never again. One short-term grab undid the whole rest of the trip. Some trust, once spent, doesn't refill.",
+      fn: (history) => history.some(r => r.you === "alone") ? "alone" : "share",
+    },
+    wanderer: {
+      name: "The Wanderer",
+      blurb: "No pattern. Pure chance.",
+      note: "This one had no pattern at all — sharing or not was a coin flip every day. Against pure randomness there's no strategy to learn, only odds to manage. Most people aren't actually this random — that's what makes the other four worth studying.",
+      fn: () => Math.random() < 0.5 ? "share" : "alone",
+    },
+  };
+  const STRAT_IDS = Object.keys(STRATEGIES);
+
+  function payoff(you, them){
+    if(you==="share" && them==="share") return [3,3];
+    if(you==="alone" && them==="alone") return [1,1];
+    if(you==="alone" && them==="share") return [5,0];
+    return [0,5]; // you share, them alone
+  }
+
+  function simulateConstant(stratId, constantMove, rounds){
+    const fn = STRATEGIES[stratId].fn;
+    let hist = [], total = 0;
+    for(let i=0;i<rounds;i++){
+      const their = fn(hist);
+      const [yp] = payoff(constantMove, their);
+      hist.push({ you: constantMove, them: their });
+      total += yp;
+    }
+    return total;
+  }
+
+  function shuffleIds(ids){
+    const a = ids.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  const gameState = {
+    slotAssignment: shuffleIds(STRAT_IDS),
+    matches: {},      // slotIndex -> { history, youTotal, themTotal, done, everDone, archiveYou, archiveThem, archivedHistory, replayCount, mirrorCount, guessCorrect, wrongGuesses }
+    activeSlot: null,
+  };
+
+  function tripsPlayed(){ return Object.values(gameState.matches).filter(m=>m.everDone).length; }
+  function allRounds(){
+    const rounds = [];
+    Object.values(gameState.matches).forEach(m => {
+      rounds.push(...(m.archivedHistory||[]));
+      rounds.push(...m.history);
+    });
+    return rounds;
+  }
+  function matchEffectiveTotal(m){ return m.youTotal + (m.archiveYou||0); }
+
+  function renderGameScorecard(){
+    const rounds = allRounds();
+    const total = Object.values(gameState.matches).reduce((s,m)=>s+matchEffectiveTotal(m),0);
+    const shareCount = rounds.filter(r=>r.you==="share").length;
+    $("gameTripsPlayed").textContent = tripsPlayed();
+    $("gameTotalSupplies").textContent = total;
+    $("gameShareRate").textContent = rounds.length ? Math.round(100*shareCount/rounds.length) + "%" : "—";
+  }
+
+  function historyStripHtml(history, youLabel, themLabel){
+    youLabel = youLabel || "you"; themLabel = themLabel || "they";
+    let html = "";
+    for(let i=0;i<ROUNDS_PER_MATCH;i++){
+      const r = history[i];
+      if(!r){ html += `<div class="history-slot empty"></div>`; continue; }
+      const youColor = r.you==="share" ? "var(--longview)" : "var(--reactive)";
+      const themColor = r.them==="share" ? "var(--longview)" : "var(--reactive)";
+      html += `<div class="history-slot" title="Day ${i+1}: ${youLabel} ${r.you==="share"?"shared":"went alone"}, ${themLabel} ${r.them==="share"?"shared":"went alone"}">
+        <div class="hs-half" style="background:${youColor}"></div>
+        <div class="hs-half" style="background:${themColor}; opacity:0.55;"></div>
+      </div>`;
+    }
+    return html;
+  }
+
+  let payoffShown = false;
+  function payoffGridHtml(){
+    return `
+    <div class="payoff-grid${payoffShown ? " shown" : ""}" id="payoffGrid">
+      <div class="ph"></div><div class="ph">THEY SHARE</div><div class="ph">THEY GO ALONE</div>
+      <div class="ph">YOU SHARE</div><div class="pv"><span class="you">3</span> / <span class="them">3</span></div><div class="pv"><span class="you">0</span> / <span class="them">5</span></div>
+      <div class="ph">YOU GO ALONE</div><div class="pv"><span class="you">5</span> / <span class="them">0</span></div><div class="pv"><span class="you">1</span> / <span class="them">1</span></div>
+    </div>
+  `;
+  }
+
+  function freshMatch(){
+    return { history:[], youTotal:0, themTotal:0, done:false, everDone:false,
+      archiveYou:0, archiveThem:0, archivedHistory:[], replayCount:0, mirrorCount:0,
+      guessCorrect:false, wrongGuesses:[] };
+  }
+
+  function renderRoster(){
+    $("roster").innerHTML = STRAT_IDS.map((_,i)=>{
+      const m = gameState.matches[i];
+      const done = m && m.done;
+      const started = !!m;
+      let badgeContent = "?";
+      let name = `Traveler #${i+1}`;
+      let sub = "Not met yet";
+      let cls = "";
+      if(done){
+        const strat = STRATEGIES[gameState.slotAssignment[i]];
+        badgeContent = strat.name.replace("The ","").charAt(0);
+        name = strat.name;
+        sub = `${matchEffectiveTotal(m)} supplies earned${m.replayCount ? ` · met ${m.replayCount+1} times` : ""}`;
+        cls = "done";
+      } else if(started){
+        sub = m.everDone ? `Meeting someone new — day ${m.history.length} of ${ROUNDS_PER_MATCH}` : `Day ${m.history.length} of ${ROUNDS_PER_MATCH} — in progress`;
+      }
+      return `
+        <div class="traveler-card ${cls}" data-i="${i}">
+          <div class="traveler-badge">${badgeContent}</div>
+          <div class="traveler-name">${name}</div>
+          <div class="traveler-sub">${sub}</div>
+        </div>
+      `;
+    }).join("");
+    Array.from($("roster").querySelectorAll(".traveler-card")).forEach(card=>{
+      card.addEventListener("click", ()=> startMatch(Number(card.dataset.i)));
+    });
+    renderRecap();
+  }
+
+  function renderRecap(){
+    const played = tripsPlayed();
+    if(played < STRAT_IDS.length){ $("gameRecap").innerHTML = ""; return; }
+    const rounds = allRounds();
+    const total = Object.values(gameState.matches).reduce((s,m)=>s+matchEffectiveTotal(m),0);
+    const shareRate = Math.round(100 * rounds.filter(r=>r.you==="share").length / rounds.length);
+    let verdict;
+    if(shareRate >= 70) verdict = "You're basically a Trail Angel yourself — quick to team up, most of the time it paid off.";
+    else if(shareRate >= 40) verdict = "You read each trail as you went — sharing with some, holding back from others. A fair-weather diplomat.";
+    else verdict = "You mostly traveled solo. It protects you from being the sucker — but it also means you rarely found out what steady trust could've earned.";
+    $("gameRecap").innerHTML = `
+      <div class="recap">
+        <h3>Trail recap</h3>
+        <p>All five travelers met. <strong>${total} total supplies</strong> gathered, sharing <strong>${shareRate}%</strong> of the time.</p>
+        <p style="margin-top:10px; color:var(--ink-soft);">${verdict}</p>
+      </div>
+    `;
+  }
+
+  function showRosterView(){
+    $("rosterView").style.display = "block";
+    $("matchView").style.display = "none";
+    renderRoster();
+    renderGameScorecard();
+  }
+
+  function startMatch(i){
+    gameState.activeSlot = i;
+    if(!gameState.matches[i]) gameState.matches[i] = freshMatch();
+    $("rosterView").style.display = "none";
+    $("matchView").style.display = "block";
+    renderMatch();
+  }
+
+  function replayMatch(i){
+    const m = gameState.matches[i];
+    m.archiveYou = (m.archiveYou||0) + m.youTotal;
+    m.archiveThem = (m.archiveThem||0) + m.themTotal;
+    m.archivedHistory = (m.archivedHistory||[]).concat(m.history);
+    m.replayCount = (m.replayCount||0) + 1;
+    m.history = []; m.youTotal = 0; m.themTotal = 0; m.done = false; m.mirrorCount = 0;
+    m.guessCorrect = false; m.wrongGuesses = [];
+    const others = STRAT_IDS.filter(id => id !== gameState.slotAssignment[i]);
+    gameState.slotAssignment[i] = others[Math.floor(Math.random()*others.length)];
+    renderMatch();
+    renderGameScorecard();
+    renderBadges();
+  }
+
+  function guessBlockHtml(i, m){
+    if(m.done) return "";
+    const solved = !!m.guessCorrect;
+    const chips = STRAT_IDS.map(id=>{
+      const strat = STRATEGIES[id];
+      const isWrong = (m.wrongGuesses||[]).includes(id);
+      const isRight = solved && id === gameState.slotAssignment[i];
+      const disabled = solved || isWrong;
+      const cls = isRight ? "correct" : (isWrong ? "wrong" : "");
+      return `<button class="guess-chip ${cls}" data-id="${id}" ${disabled?"disabled":""}>${strat.name}</button>`;
+    }).join("");
+    const feedback = solved
+      ? `<div class="guess-feedback correct">Correct — this is ${STRATEGIES[gameState.slotAssignment[i]].name}. +2 insight bonus, banked.</div>`
+      : ((m.wrongGuesses||[]).length ? `<div class="guess-feedback wrong">Not this one — no penalty. Try another, or just keep playing and see.</div>` : "");
+    return `
+      <div class="guess-block">
+        <div class="guess-label">Who do you think this is? Guess any time — free, no penalty.</div>
+        <div class="guess-row">${chips}</div>
+        ${feedback}
+      </div>
+    `;
+  }
+
+  function playRound(move){
+    const i = gameState.activeSlot;
+    const m = gameState.matches[i];
+    if(m.done) return;
+    const stratId = gameState.slotAssignment[i];
+    const their = STRATEGIES[stratId].fn(m.history);
+    const prevThem = m.history.length ? m.history[m.history.length-1].them : null;
+    if(prevThem !== null && move === prevThem) m.mirrorCount = (m.mirrorCount||0) + 1;
+    if((m.mirrorCount||0) >= 5) badgeFlags.reader = true;
+    const [yp, tp] = payoff(move, their);
+    m.history.push({ you: move, them: their, youPts: yp, themPts: tp });
+    m.youTotal += yp; m.themTotal += tp;
+    if(m.history.length >= ROUNDS_PER_MATCH){ m.done = true; m.everDone = true; }
+    renderMatch();
+    renderGameScorecard();
+    renderBadges();
+  }
+
+  function renderMatch(){
+    const i = gameState.activeSlot;
+    const m = gameState.matches[i];
+    const done = m.done;
+    const strat = STRATEGIES[gameState.slotAssignment[i]];
+    const title = done ? strat.name : `Traveler #${i+1}`;
+    const last = m.history[m.history.length-1];
+
+    let bodyHtml = "";
+    if(!done){
+      bodyHtml = `
+        ${last ? `<p class="mono" style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:18px;">
+          Day ${m.history.length}: you ${last.you==="share"?"shared the trail":"went it alone"}, they ${last.them==="share"?"shared":"went it alone"} — you +${last.youPts}, them +${last.themPts}.
+        </p>` : ""}
+        <p class="mono" style="font-size:0.8rem; color:var(--ink-faint); margin-bottom:14px;">DAY ${m.history.length+1} OF ${ROUNDS_PER_MATCH}</p>
+        <div class="move-btns">
+          <button class="move-btn share" id="moveShare">Share the Trail<span class="mb-sub">Pool what you have</span></button>
+          <button class="move-btn alone" id="moveAlone">Go It Alone<span class="mb-sub">Keep it, maybe take a bit more</span></button>
+        </div>
+        ${guessBlockHtml(i, m)}
+      `;
+    } else {
+      const allShare = simulateConstant(gameState.slotAssignment[i], "share", ROUNDS_PER_MATCH);
+      const allAlone = simulateConstant(gameState.slotAssignment[i], "alone", ROUNDS_PER_MATCH);
+      bodyHtml = `
+        <div class="match-summary">
+          <div class="summary-reveal">
+            <div class="summary-badge">${strat.name.replace("The ","").charAt(0)}</div>
+            <div class="summary-note">
+              <p style="color:var(--ink); font-weight:600; margin-bottom:6px;">You were traveling with: ${strat.name}</p>
+              <p>${strat.note}</p>
+            </div>
+          </div>
+          <p class="mono" style="font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:8px;">What you'd have scored, playing it differently</p>
+          <div class="counterfactual">
+            <div class="cf-box"><div class="cf-label">Always shared</div><div class="cf-num">${allShare}</div></div>
+            <div class="cf-box"><div class="cf-label">Always alone</div><div class="cf-num">${allAlone}</div></div>
+            <div class="cf-box actual"><div class="cf-label">What you actually scored</div><div class="cf-num">${m.youTotal}</div></div>
+          </div>
+          <button class="replay-btn" id="replayBtn">Meet them again — free, no penalty →</button>
+        </div>
+      `;
+    }
+
+    $("matchView").innerHTML = `
+      <div class="match">
+        <button class="navbtn" id="backToRoster" style="margin-bottom:22px;">← Back to travelers</button>
+        <div class="match-top">
+          <h2 class="match-title">${title}</h2>
+          <div class="match-scores">
+            <div class="match-score you"><div class="ms-label">You</div><div class="ms-num">${m.youTotal}</div></div>
+            <div class="match-score them"><div class="ms-label">Them</div><div class="ms-num">${m.themTotal}</div></div>
+          </div>
+        </div>
+        <div class="history-strip">${historyStripHtml(m.history)}</div>
+        <button class="payoff-toggle" id="payoffToggle">What are the stakes?</button>
+        ${payoffGridHtml()}
+        ${bodyHtml}
+      </div>
+    `;
+
+    $("backToRoster").addEventListener("click", showRosterView);
+    $("payoffToggle").addEventListener("click", ()=>{ payoffShown = !payoffShown; $("payoffGrid").classList.toggle("shown", payoffShown); });
+    if(!done){
+      $("moveShare").addEventListener("click", ()=> playRound("share"));
+      $("moveAlone").addEventListener("click", ()=> playRound("alone"));
+      Array.from(document.querySelectorAll(".guess-chip")).forEach(chip=>{
+        chip.addEventListener("click", ()=>{
+          const guessId = chip.dataset.id;
+          if(guessId === gameState.slotAssignment[i]){
+            if(!m.guessCorrect){
+              m.guessCorrect = true;
+              m.youTotal += 2;
+              badgeFlags.spotter = true;
+            }
+          } else {
+            m.wrongGuesses = (m.wrongGuesses||[]).concat(guessId);
+          }
+          renderMatch();
+          renderGameScorecard();
+          renderBadges();
+        });
+      });
+    } else {
+      $("replayBtn").addEventListener("click", ()=> replayMatch(i));
+    }
+  }
+
+  $("gameResetBtn").addEventListener("click", ()=>{
+    gameState.slotAssignment = shuffleIds(STRAT_IDS);
+    gameState.matches = {};
+    gameState.activeSlot = null;
+    showRosterView();
+    renderBadges();
+  });
+
+  /* ============================================================
+     PLAY VS A FRIEND — local pass-and-play, same rules and payoff
+     matrix as above, two real players instead of a hidden strategy.
+     Reuses historyStripHtml() and payoff() from the AI-mode engine.
+  ============================================================= */
+  const friendState = {
+    phase: "intro", // intro | pass1 | choose1 | pass2 | choose2 | reveal | summary
+    round: 0,
+    history: [],
+    youTotal: 0,   // Player 1
+    themTotal: 0,  // Player 2
+    pendingP1: null,
+    mirrorCount: 0,
+  };
+
+  function friendReset(){
+    friendState.round = 0;
+    friendState.history = [];
+    friendState.youTotal = 0;
+    friendState.themTotal = 0;
+    friendState.pendingP1 = null;
+    friendState.mirrorCount = 0;
+  }
+
+  function friendChooseP1(move){
+    friendState.pendingP1 = move;
+    friendState.phase = "pass2";
+    renderFriendView();
+  }
+
+  function friendChooseP2(move){
+    const p1 = friendState.pendingP1, p2 = move;
+    const prev = friendState.history[friendState.history.length-1];
+    if(prev){
+      if(p1 === prev.them) friendState.mirrorCount++;
+      if(p2 === prev.you) friendState.mirrorCount++;
+    }
+    if(friendState.mirrorCount >= 5) badgeFlags.reader = true;
+    const [p1pts, p2pts] = payoff(p1, p2);
+    friendState.history.push({ you:p1, them:p2, youPts:p1pts, themPts:p2pts });
+    friendState.youTotal += p1pts; friendState.themTotal += p2pts;
+    friendState.round++;
+    friendState.pendingP1 = null;
+    friendState.phase = "reveal";
+    renderFriendView();
+    renderBadges();
+  }
+
+  function friendAdvance(){
+    friendState.phase = friendState.round >= ROUNDS_PER_MATCH ? "summary" : "pass1";
+    renderFriendView();
+  }
+
+  function friendPlayAgain(){
+    friendReset();
+    friendState.phase = "pass1";
+    renderFriendView();
+  }
+
+  function renderFriendView(){
+    let html = "";
+    if(friendState.phase === "intro"){
+      html = `
+        <div class="pass-screen">
+          <div class="pass-icon">🤝</div>
+          <h3>Same eight days, two real players</h3>
+          <p>You and a friend share one device. Each round you'll pass it back and forth — nobody sees the other's choice until both are locked in. Same rules as the trail: share or go alone, eight days, no talking strategy once you start.</p>
+          <button class="navbtn" id="friendStartBtn">Start the trip →</button>
+        </div>
+      `;
+    } else if(friendState.phase === "pass1" || friendState.phase === "pass2"){
+      const who = friendState.phase === "pass1" ? "Player 1" : "Player 2";
+      html = `
+        <div class="pass-screen">
+          <div class="pass-icon">🔄</div>
+          <h3>Pass the device to ${who}</h3>
+          <p>Day ${friendState.round+1} of ${ROUNDS_PER_MATCH}. ${who}, once you're holding it and no one else can see, tap below.</p>
+          <button class="navbtn" id="friendReadyBtn">I'm ${who} — show me the choice</button>
+        </div>
+      `;
+    } else if(friendState.phase === "choose1" || friendState.phase === "choose2"){
+      const who = friendState.phase === "choose1" ? "Player 1" : "Player 2";
+      html = `
+        <div class="pass-screen">
+          <p class="mono" style="font-size:0.8rem; color:var(--ink-faint); margin-bottom:18px;">${who} · DAY ${friendState.round+1} OF ${ROUNDS_PER_MATCH}</p>
+          <div class="move-btns">
+            <button class="move-btn share" id="friendMoveShare">Share the Trail<span class="mb-sub">Pool what you have</span></button>
+            <button class="move-btn alone" id="friendMoveAlone">Go It Alone<span class="mb-sub">Keep it, maybe take a bit more</span></button>
+          </div>
+        </div>
+      `;
+    } else if(friendState.phase === "reveal"){
+      const last = friendState.history[friendState.history.length-1];
+      html = `
+        <div class="match">
+          <p class="mono" style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:18px;">
+            Day ${friendState.round}: Player 1 ${last.you==="share"?"shared the trail":"went it alone"}, Player 2 ${last.them==="share"?"shared":"went it alone"} — P1 +${last.youPts}, P2 +${last.themPts}.
+          </p>
+          <div class="match-top">
+            <h2 class="match-title">Day ${friendState.round} result</h2>
+            <div class="match-scores">
+              <div class="match-score you"><div class="ms-label">Player 1</div><div class="ms-num">${friendState.youTotal}</div></div>
+              <div class="match-score them"><div class="ms-label">Player 2</div><div class="ms-num">${friendState.themTotal}</div></div>
+            </div>
+          </div>
+          <div class="history-strip">${historyStripHtml(friendState.history, "Player 1", "Player 2")}</div>
+          <button class="navbtn" id="friendNextBtn">${friendState.round >= ROUNDS_PER_MATCH ? "See the final result →" : "Next round →"}</button>
+        </div>
+      `;
+    } else if(friendState.phase === "summary"){
+      const totalMoves = friendState.history.length * 2;
+      const shares = friendState.history.reduce((s,r)=> s + (r.you==="share"?1:0) + (r.them==="share"?1:0), 0);
+      const combinedRate = totalMoves ? Math.round(100*shares/totalMoves) : 0;
+      let verdict;
+      if(combinedRate >= 70) verdict = "You two mostly shared — real trust, and it paid out for both of you.";
+      else if(combinedRate >= 40) verdict = "A mix of sharing and holding back — you were each reading the other as you went.";
+      else verdict = "Mostly solo travel on both sides — safe, but you left a lot of shared upside on the table.";
+      html = `
+        <div class="match">
+          <div class="match-top">
+            <h2 class="match-title">Trip complete</h2>
+            <div class="match-scores">
+              <div class="match-score you"><div class="ms-label">Player 1</div><div class="ms-num">${friendState.youTotal}</div></div>
+              <div class="match-score them"><div class="ms-label">Player 2</div><div class="ms-num">${friendState.themTotal}</div></div>
+            </div>
+          </div>
+          <div class="history-strip">${historyStripHtml(friendState.history, "Player 1", "Player 2")}</div>
+          <p style="margin-top:18px; color:var(--ink-soft);">Combined, you shared <strong>${combinedRate}%</strong> of moves. ${verdict}</p>
+          <button class="replay-btn" id="friendReplayBtn">Play again — free, no penalty →</button>
+        </div>
+      `;
+    }
+    $("friendView").innerHTML = html;
+
+    if(friendState.phase === "intro"){
+      $("friendStartBtn").addEventListener("click", ()=>{ friendReset(); friendState.phase="pass1"; renderFriendView(); });
+    } else if(friendState.phase === "pass1"){
+      $("friendReadyBtn").addEventListener("click", ()=>{ friendState.phase="choose1"; renderFriendView(); });
+    } else if(friendState.phase === "pass2"){
+      $("friendReadyBtn").addEventListener("click", ()=>{ friendState.phase="choose2"; renderFriendView(); });
+    } else if(friendState.phase === "choose1"){
+      $("friendMoveShare").addEventListener("click", ()=> friendChooseP1("share"));
+      $("friendMoveAlone").addEventListener("click", ()=> friendChooseP1("alone"));
+    } else if(friendState.phase === "choose2"){
+      $("friendMoveShare").addEventListener("click", ()=> friendChooseP2("share"));
+      $("friendMoveAlone").addEventListener("click", ()=> friendChooseP2("alone"));
+    } else if(friendState.phase === "reveal"){
+      $("friendNextBtn").addEventListener("click", friendAdvance);
+    } else if(friendState.phase === "summary"){
+      $("friendReplayBtn").addEventListener("click", friendPlayAgain);
+    }
+  }
+
+  let gameMode = "ai";
+  function setGameMode(mode){
+    gameMode = mode;
+    $("modeAI").classList.toggle("active", mode==="ai");
+    $("modeFriend").classList.toggle("active", mode==="friend");
+    $("gameScorecard").style.display = mode==="ai" ? "" : "none";
+    $("friendView").style.display = mode==="friend" ? "block" : "none";
+    if(mode==="ai"){
+      $("rosterView").style.display = "block";
+      $("matchView").style.display = "none";
+      showRosterView();
+    } else {
+      $("rosterView").style.display = "none";
+      $("matchView").style.display = "none";
+      renderFriendView();
+    }
+  }
+  $("modeAI").addEventListener("click", ()=> setGameMode("ai"));
+  $("modeFriend").addEventListener("click", ()=> setGameMode("friend"));
+
+  /* ============================================================
+     BADGES — visible signals of accumulated effort, shared across
+     both tabs. Live-computed from existing state, so "Restart"
+     buttons honestly re-lock them rather than faking a streak.
+  ============================================================= */
+  const badgeFlags = { spotter:false, reader:false };
+  const BADGES = [
+    { name:"Steady Hand", desc:"Choose the long view 5+ times in Trailside Forks.", check: ()=> counts().longview >= 5 },
+    { name:"Full Circle", desc:"Answer all 8 Trailside Forks.", check: ()=> Object.keys(state.answers).length >= SCENARIOS.length },
+    { name:"Pattern Spotter", desc:"Correctly guess a traveler's identity mid-trip.", check: ()=> badgeFlags.spotter },
+    { name:"Reader of the Trail", desc:"Mirror your partner's last move 5+ times in one trip.", check: ()=> badgeFlags.reader },
+    { name:"Five for Five", desc:"Meet all five fellow travelers.", check: ()=> tripsPlayed() >= STRAT_IDS.length },
+  ];
+  function renderBadges(){
+    $("badgesShelf").innerHTML = BADGES.map(b=>{
+      const unlocked = b.check();
+      return `<div class="badge-chip ${unlocked?"unlocked":""}" title="${b.desc}"><span class="badge-dot"></span><span class="badge-name">${b.name}</span></div>`;
+    }).join("");
+  }
+
+  showRosterView();
+  renderBadges();
+
+})();
+</script>
+</body>
+</html>
