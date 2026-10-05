@@ -1,0 +1,49 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://vocabularies.verizon.com/core-mappings> a owl:Ontology;
+  rdfs:label "Vocabulary | Core | Cross-scheme Mappings"@en;
+  dct:description "SKOS mapping links that tie the 20 core vocabularies into one lineage: where core-businessoperations and core-technicalservices attach under core-services, and which same-named concepts in different schemes mean the same thing. Same-label pairs whose senses differ (Customer, Design, Guideline, Implementation, Investigation, Commercial, Finance, Strategy, Customer Support, Sales Operations, Data Architecture, Data Security) are deliberately left unmapped."@en;
+  owl:versionInfo "1.1";
+  dct:modified "2026-10-05"^^<http://www.w3.org/2001/XMLSchema#date> .
+
+# Business Operations: the core-businessoperations scheme expands this core-services concept.
+<https://vocabularies.verizon.com/core-businessoperations/471884fa-9501-4cf1-9729-2f1fb89866ef> skos:exactMatch <https://vocabularies.verizon.com/core-services/4b86c227-1255-4156-bcd8-35ddb4d65ed3> .
+# Technical Services sits under Services, mirroring taxonomy-core-services-technicalservices.
+<https://vocabularies.verizon.com/core-technicalservices/a61ef64d-e4e8-4ea3-84b2-f47509dd57e0> skos:broadMatch <https://vocabularies.verizon.com/core-services/fd9504c5-bc85-4272-9dec-0899d435310f> .
+# Communications
+<https://vocabularies.verizon.com/core-businessoperations/b801e4e1-0e24-4d6f-b4b2-d165c156e092> skos:closeMatch <https://vocabularies.verizon.com/core-services/f59420c3-c47a-48a3-a73a-9405a4081589> .
+# Competitive Analysis
+<https://vocabularies.verizon.com/core-businessoperations/68db00ba-503e-46ad-9459-5b3ce2ff1acd> skos:closeMatch <https://vocabularies.verizon.com/core-services/7740e61e-194b-4e76-86d2-25b0b837d74a> .
+# Customer Segmentation
+<https://vocabularies.verizon.com/core-businessoperations/4ce27546-1e58-453b-ab28-f5b76ddddec8> skos:closeMatch <https://vocabularies.verizon.com/core-services/5e2f16d7-6e6a-483e-ab27-2ba27923ee2c> .
+# Predictive Analytics
+<https://vocabularies.verizon.com/core-businessoperations/6de0e05c-2f56-44f8-bac6-088ac0e5fd07> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/1d1668fc-d15a-432d-bf67-200bddf266c7> .
+# Compliance
+<https://vocabularies.verizon.com/core-domain/dd579740-0a5d-441b-bb5a-0f8ff919301e> skos:closeMatch <https://vocabularies.verizon.com/core-compliance/fdb5a5c0-b1c9-4028-a266-999a4cc8530a> .
+# Data Engineering
+<https://vocabularies.verizon.com/core-asset/d7d371b8-4e0f-4165-bcd9-1938046e4208> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/ffb499fb-4287-42dd-b5e1-33f73496fabb> .
+# Knowledge Engineering
+<https://vocabularies.verizon.com/core-asset/39241a57-f639-44a9-9f72-370ebc2eb72f> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/711b448d-651f-4104-9b4e-91bd6a1f8124> .
+# Quality Engineering
+<https://vocabularies.verizon.com/core-asset/1930e697-e58d-40df-9cf1-8690d01eb672> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/ae80b132-e174-4db6-a00a-baecde30bf2f> .
+# Detective Controls
+<https://vocabularies.verizon.com/core-asset/0e13fdd1-573a-4d40-813c-0b38b0cfdc6c> skos:closeMatch <https://vocabularies.verizon.com/core-services/0f6629be-426b-4a8c-807f-c4f5c8720ef1> .
+# Data Management
+<https://vocabularies.verizon.com/core-capability/ba7e6b25-f08a-4564-95d0-261341cdd8da> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/e1f26e06-f169-4980-b2fe-7828cc238f39> .
+# Data Masking
+<https://vocabularies.verizon.com/core-capability/85276846-9e6b-430b-a1af-0b5aab5f3a06> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/b0476db7-3b3b-418d-b15b-63aa581eb97d> .
+# Database Management
+<https://vocabularies.verizon.com/core-capability/e32ee234-35e5-4fbe-a347-7bae4f29e367> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/593348a3-038f-4692-9d6b-ad5c2de81bbb> .
+# Risk Management
+<https://vocabularies.verizon.com/core-capability/7dd00d00-6fc4-4422-894f-eee0a98a1cf4> skos:closeMatch <https://vocabularies.verizon.com/core-services/19acad5b-c36a-41b4-b444-8d4475dda9c6> .
+# Industry Standards
+<https://vocabularies.verizon.com/core-compliance/bbc5dbcb-2e4a-4a25-90d5-d84cbfc515a7> skos:closeMatch <https://vocabularies.verizon.com/core-services/32cd9f0d-86cc-4c6d-8290-fda12936afe4> .
+# Policy Management
+<https://vocabularies.verizon.com/core-services/a210ed79-0a37-4a9b-b34a-bae1f759b8f7> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/cac64e8f-0ac2-46cd-8eff-f144911a404d> .
+# Security Management
+<https://vocabularies.verizon.com/core-services/38375569-16ce-4824-932c-53a7159cc3bb> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/d385efb0-54ec-4ede-8caa-9f787799d20b> .
+# Threat Management
+<https://vocabularies.verizon.com/core-services/5d3bff6b-ad4c-40cf-9706-7756525053c1> skos:closeMatch <https://vocabularies.verizon.com/core-technicalservices/9bd16586-4f37-48eb-b0ce-3211a90cb34d> .

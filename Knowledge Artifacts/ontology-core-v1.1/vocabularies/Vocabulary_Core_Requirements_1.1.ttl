@@ -1,0 +1,216 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+<https://vocabularies.verizon.com/core-requirements> a skos:ConceptScheme;
+  rdfs:label "Vocabulary | Core | Requirements"@en;
+  skos:prefLabel "Vocabulary | Core | Requirements"@en;
+  skos:hasTopConcept <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>;
+  skos:editorialNote "Verizon Knowledge Engineering acknowledges that some definitions contained within this vocabulary were generated with the assistance of VZGPT (vzgpt.verizon.com) or Google Gemini.";
+  dct:description "Statements that describe what a product or service should do and the constraints under which it must operate."@en;
+  dct:title "Vocabulary | Core | Requirements"@en;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> <https://vocabularies.verizon.com/core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2026-10-05T00:00:00.000Z"^^xsd:dateTime;
+  skos:changeNote "This is the initial version of the vocabulary definitions to be refined over time with input from other stakeholders & resources.";
+  dct:created "2025-03-25T17:01:01.370Z"^^xsd:dateTime;
+  owl:versionInfo "1.1";
+  skos:changeNote "1.1: unused caie: and sp: prefixes removed; scheme included in the Domain lineage v1.1 package."@en;
+  skos:changeNote "1.1: Non-Functional Feature moved from broader Functional Feature to broader Feature, matching the OWL fix (FunctionalFeature disjointWith NonFunctionalFeature)."@en .
+
+<https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>
+  a skos:Concept;
+  skos:definition "Statements that describe what a product or service should do and the constraints under which it must operate."@en;
+  skos:prefLabel "Requirements"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-14T14:33:09.816Z"^^xsd:dateTime;
+  dct:created "2025-03-25T17:25:47.474Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/092575d9-169a-4322-a8a4-4728f96d5ea6>
+  a skos:Concept;
+  skos:definition "The underlying emotional needs and motivations that drive users to engage with a product or service."@en;
+  skos:prefLabel "Emotional Job"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/2ab2ea5a-5ecb-48e9-a7a4-64d06119e138>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:13:52.789Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/b79344bf-c413-4583-a8af-1c1591dabb14>
+  a skos:Concept;
+  skos:definition "A distinct function or attribute of a product or service."@en;
+  skos:prefLabel "Feature"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/4d4390b0-418b-4bea-b355-340e91622342>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:02:14.767Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/1214aac9-132b-4381-b4b0-3c84e8580689>
+  a skos:Concept;
+  skos:definition "A feature that relates to the core functionality of a product or service."@en;
+  skos:prefLabel "Functional Feature"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/b79344bf-c413-4583-a8af-1c1591dabb14>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:20:54.490Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/b34bf931-5c70-478d-bbdd-577e9297d182>
+  a skos:Concept;
+  skos:definition "The specific tasks and actions that users need to perform to accomplish their goals."@en;
+  skos:prefLabel "Functional Job"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/2ab2ea5a-5ecb-48e9-a7a4-64d06119e138>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:14:01.808Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/2ab2ea5a-5ecb-48e9-a7a4-64d06119e138>
+  a skos:Concept;
+  skos:definition "A high-level task or activity that a user wants to accomplish."@en;
+  skos:prefLabel "Job"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:02:37.221Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/1986c190-476d-402a-a711-252821b2537d>
+  a skos:Concept;
+  skos:definition "The person or system responsible for performing a job."@en;
+  skos:prefLabel "Job Executor"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/992a1b49-8271-46d4-8eac-f499938720d4>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:15:08.172Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/33087d9e-be26-462a-b3db-d2dcddd2ba25>
+  a skos:Concept;
+  skos:definition "A discrete action or sub-task within a larger job."@en;
+  skos:prefLabel "Job Step"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/b34bf931-5c70-478d-bbdd-577e9297d182>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:21:40.386Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/3b454a89-5434-4e7f-a51e-1d17550a7759>
+  a skos:Concept;
+  skos:definition "The end-to-end experience a user has while interacting with a product or service."@en;
+  skos:prefLabel "Journey"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:02:55.923Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/0d130ca1-26eb-413f-b9a3-f73fef9ee8d2>
+  a skos:Concept;
+  skos:definition "A specific stage or touchpoint within a user journey."@en;
+  skos:prefLabel "Journey Step"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/3b454a89-5434-4e7f-a51e-1d17550a7759>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:14:24.811Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/992a1b49-8271-46d4-8eac-f499938720d4>
+  a skos:Concept;
+  skos:definition "A high-level problem or opportunity that a product or service aims to address."@en;
+  skos:prefLabel "Need"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/b9a65d87-727f-4107-ba2b-44ccdb15d213>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:14:46.086Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/16b9b4df-9a64-49d0-aa90-c0fa9eec2c02>
+  a skos:Concept;
+  skos:definition "A feature that relates to the quality, performance, or other non-functional aspects of a product or service."@en;
+  skos:prefLabel "Non-Functional Feature"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/b79344bf-c413-4583-a8af-1c1591dabb14>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:21:15.911Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/283cd894-3584-4447-9815-22f59f2f061e>
+  a skos:Concept;
+  skos:definition "The desired result or benefit that a user aims to achieve by completing a job."@en;
+  skos:prefLabel "Outcome"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:10:35.449Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/b9a65d87-727f-4107-ba2b-44ccdb15d213>
+  a skos:Concept;
+  skos:definition "A specific, documented need that a product or service must fulfill."@en;
+  skos:prefLabel "Requirement"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:10:43.344Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/4d4390b0-418b-4bea-b355-340e91622342>
+  a skos:Concept;
+  skos:definition "A detailed description of a product or service’s technical requirements."@en;
+  skos:prefLabel "Specification"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/b9a65d87-727f-4107-ba2b-44ccdb15d213>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:14:55.884Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-requirements/8af040ce-0ccc-4847-877c-aded9e9d3441>
+  a skos:Concept;
+  skos:definition "A job that is necessary to enable or facilitate the completion of a primary job."@en;
+  skos:prefLabel "Supporting Job"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-requirements>;
+  skos:broader <https://vocabularies.verizon.com/core-requirements/2ab2ea5a-5ecb-48e9-a7a4-64d06119e138>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T18:14:10.298Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:54:17.113Z"^^xsd:dateTime .

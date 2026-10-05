@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ontology Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="explorer.css">
+<style>
+.tabs{display:flex;gap:2px;padding:8px 10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{appearance:none;border:0;background:transparent;padding:9px 13px 10px;font:500 14px var(--f-body);color:var(--ink-soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:inline-flex;gap:7px;align-items:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tab small{font:11px var(--f-mono);color:var(--muted)}
+.g-node{cursor:grab}
+.g-node rect{stroke-width:1.4}
+.g-node text{font-size:12px;fill:var(--ink);pointer-events:none}
+.g-node.ext rect{stroke-dasharray:4 3;fill:var(--bg)}
+.g-node.ext text{fill:var(--ink-soft)}
+.g-node.prop rect{rx:13}
+.g-node.sel rect{stroke-width:3}
+.g-node.dim,.g-edge.dim,.g-lab.dim{opacity:.13}
+.g-edge{fill:none;stroke-width:1.4}
+.g-edge.sub{stroke:var(--muted)}
+.g-edge.shape{stroke:var(--t-core)}
+.g-edge.prop{stroke:var(--t-gov)}
+.g-edge.match{stroke:var(--t-found);stroke-dasharray:7 3 2 3}
+.g-edge.disjoint{stroke:var(--bad);stroke-dasharray:4 3}
+.g-edge.inv{stroke:var(--t-legacy);stroke-dasharray:2 3}
+.g-lab{font:10.5px var(--f-mono);fill:var(--ink-soft);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.gwrap{position:relative}
+.gwrap .svgwrap{min-height:520px;max-height:74vh}
+.ekind{display:inline-flex;align-items:center;gap:6px;appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font:500 12.5px var(--f-body);cursor:pointer}
+.ekind[aria-pressed="false"]{opacity:.45}
+.shapes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px;padding:14px}
+.shape{border:1px solid var(--line);border-radius:9px;padding:12px 14px;display:grid;gap:8px;background:var(--surface)}
+.shape h3{margin:0;font:600 15px var(--f-display)}
+.shape .tg{font-size:13px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.2fr);gap:8px;align-items:center;font-size:13px;border-top:1px solid var(--line);padding-top:7px}
+.crow .p{font-family:var(--f-mono);font-size:12px;color:var(--t-core);overflow-wrap:anywhere}
+.crow .card-n{font:11px var(--f-mono);color:var(--muted);white-space:nowrap}
+.meta{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;padding:16px;font-size:14px}
+.meta dt{color:var(--muted);font-size:12px;letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
+.meta dd{margin:0;overflow-wrap:anywhere}
+.modsec{padding:0 16px 16px;display:grid;gap:14px}
+.modsec h3{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:600}
+.modsec ul.notes{margin:0;padding-left:18px;color:var(--ink-soft);font-size:13.5px;display:grid;gap:6px}
+.pad{padding:12px 14px}
+td .lnk{margin:1px 0}
+.dtxt{color:var(--ink-soft);font-size:13px;max-width:60ch}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"></header>
+<main class="wrap">
+  <div class="head" id="head"></div>
+  <div class="work">
+    <section class="card" aria-label="Ontology views">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div id="view"></div>
+    </section>
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </div>
+</main>
+<script src="data/explorer-data.js"></script>
+<script src="explorer.js"></script>
+<script>
+const {D,ONT,VOC,NODES,esc,href,keyOf,boot,setKey,colorOf,classHref,classLabel,localName,propLabel,ALIAS,ownerOfIri} = X;
+const NS = "http://www.w3.org/2000/svg";
+const XSD = "http://www.w3.org/2001/XMLSchema#";
+let M = null, S = {tab:null, sel:null, kinds:new Set(["sub","shape","prop","match","disjoint","inv"]), q:""};
+const IRI2NODE = {}; D.lineage.nodes.forEach(n=>{ if(n.iri) IRI2NODE[n.iri.replace(/[#/]$/,"")] = n.id; });
+const nodeForIri = iri => IRI2NODE[iri.replace(/[#/]$/,"")];
+
+/* ---------- module model ---------- */
+function taxRecord(tid){
+  const refs = D.taxref[tid]||{}, ns = NODES[tid].iri;
+  const rec = {id:tid, iri:ns, file:null, synthetic:true, classes:{}, props:{}, shapes:[], restrictions:[], disjoint:[], individuals:[], axioms:[], imports:[],
+    meta:{title:NODES[tid].label+" taxonomy", description:`Not supplied. This view collects the classes in ${ns} that the supplied modules declare or reference, and every SHACL shape, subclass axiom and property that touches them.`}};
+  Object.entries(refs).forEach(([iri,e])=>{ rec.classes[iri] = {label:e.label, parents:(e.parents||[]).slice(), local:true, usedBy:e.usedBy, conceptKey:e.concept, declaredIn:e.declaredIn}; });
+  // usage from other modules
+  for(const [mid,o] of Object.entries(ONT)){
+    o.shapes.forEach(s=>{
+      const tIn = s.target.some(t=>t.startsWith(ns)), pIn = s.props.some(p=>p.class&&p.class.startsWith(ns));
+      if(tIn||pIn){ rec.shapes.push(Object.assign({from:mid}, s, {props: tIn? s.props : s.props.filter(p=>p.class&&p.class.startsWith(ns))})); }
+    });
+    Object.entries(o.classes).forEach(([iri,c])=>{
+      if((c.local||c.anchored) && !iri.startsWith(ns) && c.parents.some(p=>p.startsWith(ns))) rec.classes[iri] = Object.assign({}, c, {local:false, owner:mid, incoming:true});
+    });
+    Object.entries(o.props).forEach(([iri,p])=>{
+      if([...p.domain,...p.range].some(x=>x.startsWith(ns))) rec.props[iri] = Object.assign({from:mid}, p);
+    });
+    o.axioms.forEach(a=>{ if(a.o.startsWith(ns)||a.s.startsWith(ns)) rec.axioms.push(Object.assign({from:mid},a)); });
+  }
+  const touch = iri => { if(!rec.classes[iri]) { const ci = X.classIndex[iri]; rec.classes[iri] = {label:classLabel(iri), parents:[], local:false, owner:ownerOfIri(iri) || (ci&&ci.mid)}; } };
+  rec.shapes.forEach(s=>{ s.target.forEach(touch); s.props.forEach(p=>p.class&&touch(p.class)); });
+  Object.values(rec.props).forEach(p=>[...p.domain,...p.range].forEach(x=>!x.startsWith(XSD)&&touch(x)));
+  rec.axioms.forEach(a=>{ touch(a.s); touch(a.o); });
+  Object.values(rec.classes).forEach(c=>c.parents.forEach(touch));
+  return rec;
+}
+function buildModel(id){
+  const rec = ONT[id] || taxRecord(id);
+  const cls = rec.classes;
+  const isMine = c => c.local || c.anchored;
+  // incoming references from other modules
+  const incoming = [];
+  const mine = new Set(Object.entries(cls).filter(([i,c])=>isMine(c)).map(([i])=>i));
+  if(ONT[id]) for(const [mid,o] of Object.entries(ONT)){
+    if(mid===id) continue;
+    Object.entries(o.classes).forEach(([iri,c])=>{ if((c.local||c.anchored)) c.parents.forEach(p=>{ if(mine.has(p)) incoming.push({mid, kind:"subclass", s:iri, o:p, label:`${c.label} ⊑ ${cls[p].label}`}); }); });
+    o.shapes.forEach(s=>s.props.forEach(p=>{ if(p.class&&mine.has(p.class)) incoming.push({mid, kind:"shape", s:s.target[0], o:p.class, label:`${classLabel(s.target[0])} ${localName(p.path)} ${cls[p.class].label}`}); }));
+    o.shapes.forEach(s=>s.target.forEach(t=>{ if(mine.has(t)) incoming.push({mid, kind:"shape-target", s:t, o:t, label:`${s.label} constrains ${cls[t].label}`}); }));
+    Object.entries(o.props).forEach(([pi,p])=>[...p.domain,...p.range].forEach(x=>{ if(mine.has(x)) incoming.push({mid, kind:"property", s:pi, o:x, label:`${p.label} (${p.domain.map(classLabel).join(", ")} → ${p.range.map(classLabel).join(", ")})`}); }));
+  }
+  // graph
+  const nodes = new Map(), edges = [];
+  const addC = iri => { if(!nodes.has(iri)){ const c = cls[iri]||{label:classLabel(iri),parents:[]}; nodes.set(iri,{id:iri, label:c.label, type:"class", ext:!isMine(c), owner:isMine(c)?id:(c.owner||ownerOfIri(iri))}); } return nodes.get(iri); };
+  Object.entries(cls).forEach(([iri,c])=>{ if(isMine(c)||c.incoming){ addC(iri); c.parents.forEach(p=>{ addC(p); edges.push({s:iri,o:p,k:"sub"}); }); } });
+  rec.shapes.forEach(s=>s.target.forEach(t=>{ addC(t); s.props.forEach(p=>{ if(p.class){ addC(p.class); edges.push({s:t,o:p.class,k:"shape",l:localName(p.path)+card(p,true)}); } }); }));
+  Object.entries(rec.props).forEach(([pi,p])=>{ if(p.kind==="object") p.domain.forEach(d=>p.range.forEach(r=>{ if(!r.startsWith(XSD)){ addC(d); addC(r); edges.push({s:d,o:r,k:"prop",l:p.label}); } })); });
+  rec.restrictions.forEach(r=>{ if(r.value && /^https?:/.test(r.value) && !r.value.startsWith(XSD)){ addC(r.cls); addC(r.value); edges.push({s:r.cls,o:r.value,k:"prop",l:localName(r.prop)}); } });
+  rec.disjoint.forEach(([a,b])=>{ addC(a); addC(b); edges.push({s:a,o:b,k:"disjoint",l:"disjoint"}); });
+  rec.axioms.forEach(a=>{ addC(a.s); addC(a.o); edges.push({s:a.s,o:a.o,k:"match",l:a.p}); });
+  if(id==="upper") Object.entries(rec.props).forEach(([pi,p])=>(p.pairs||[]).forEach(([d,r])=>{ if(d&&r&&!r.startsWith(XSD)){ addC(d); addC(r); edges.push({s:d,o:r,k:"shape",l:p.label}); } }));
+  const propNodes = id==="align" || id==="v-svc" || (!edges.length && Object.values(rec.props).some(p=>p.parents.length||p.inverse));
+  if(propNodes){
+    const addP = iri => { if(!nodes.has(iri)){ const p = rec.props[iri]; nodes.set(iri,{id:iri, label:p?p.label:propLabel(iri), type:"prop", ext:!p||p.external, owner:p&&!p.external?id:(iri.includes("/obo/")?"ro":ownerOfIri(iri))}); } };
+    Object.entries(rec.props).forEach(([pi,p])=>{
+      addP(pi);
+      p.parents.forEach(x=>{ addP(x); edges.push({s:pi,o:x,k:"sub",l:"subPropertyOf"}); });
+      (p.closeMatch||[]).forEach(x=>{ addP(x); edges.push({s:pi,o:x,k:"match",l:"closeMatch"}); });
+      if(p.inverse && pi<p.inverse){ addP(p.inverse); edges.push({s:pi,o:p.inverse,k:"inv",l:"inverseOf"}); }
+    });
+  }
+  return {id, rec, incoming, nodes:[...nodes.values()], edges, mine};
+}
+function card(p, short){
+  const a = p.minCount, b = p.maxCount;
+  if(a==null && b==null) return short?"":"any";
+  const s = `${a==null?0:a}..${b==null?"*":b}`;
+  return short?` [${s}]`:s;
+}
+
+/* ---------- header ---------- */
+function head(){
+  const r = M.rec, m = r.meta||{};
+  const nCls = M.mine.size, nP = Object.keys(r.props).length;
+  const op = Object.values(r.props).filter(p=>p.kind==="object").length, dp = Object.values(r.props).filter(p=>p.kind==="datatype").length;
+  const sc = r.shapes.reduce((s,x)=>s+x.props.length,0);
+  const node = NODES[M.id] || NODES[Object.keys(ALIAS).find(k=>ALIAS[k]===M.id)];
+  const src = r.synthetic ? `<div class="srcnote">${esc(m.description)}</div>` : "";
+  document.getElementById("head").innerHTML = `
+    <div class="eyebrow"><i class="dot" style="background:${colorOf(M.id)}"></i>${esc(X.TIERS[X.tierOf(M.id)].name)} · <span class="mono" style="text-transform:none;letter-spacing:0">${esc(r.iri||"")}</span></div>
+    <h1>${esc(X.label(M.id))}</h1>
+    ${!r.synthetic&&m.description?`<p class="lede">${esc(m.description)}</p>`:""}
+    <div class="stats">
+      ${nCls?`<span class="stat"><b>${nCls}</b> classes</span>`:""}${op?`<span class="stat"><b>${op}</b> object properties</span>`:""}${dp?`<span class="stat"><b>${dp}</b> datatype properties</span>`:""}
+      ${nP-op-dp?`<span class="stat"><b>${nP-op-dp}</b> annotation properties</span>`:""}
+      ${r.shapes.length?`<span class="stat"><b>${r.shapes.length}</b> SHACL shapes · <b>${sc}</b> constraints</span>`:""}
+      ${r.individuals.length?`<span class="stat"><b>${r.individuals.length}</b> individuals</span>`:""}
+      ${r.imports.length?`<span class="stat"><b>${r.imports.length}</b> imports</span>`:""}
+      ${M.incoming.length?`<span class="stat"><b>${M.incoming.length}</b> references from other modules</span>`:""}
+      ${m.version?`<span class="stat">version <b>${esc(m.version)}</b></span>`:""}${r.file?`<span class="stat">${esc(r.file)}</span>`:""}
+    </div>${src}`;
+}
+
+/* ---------- tabs ---------- */
+function tabs(){
+  const r = M.rec;
+  const T = [
+    ["graph","Relationship graph", M.nodes.length>1 ? M.nodes.length : 0],
+    ["classes","Classes", Object.keys(r.classes).length],
+    ["shapes","Shapes", r.shapes.length],
+    ["props","Properties", Object.keys(r.props).length],
+    ["inds","Individuals", r.individuals.length],
+    ["module","Module", 1]
+  ].filter(t=>t[2]);
+  if(!T.find(t=>t[0]===S.tab)) S.tab = T[0][0];
+  document.getElementById("tabs").innerHTML = T.map(([k,l,n])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===S.tab}">${l}${k!=="module"?`<small>${n}</small>`:""}</button>`).join("");
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; tabs(); view(); });
+}
+function view(){
+  const v = document.getElementById("view");
+  ({graph:graphView, classes:classView, shapes:shapeView, props:propView, inds:indView, module:moduleView})[S.tab](v);
+}
+
+/* ---------- force-directed graph ---------- */
+const KINDS = {sub:["subclass / subproperty","var(--muted)"], shape:["SHACL constraint","var(--t-core)"], prop:["property domain → range","var(--t-gov)"], match:["closeMatch","var(--t-found)"], disjoint:["disjointWith","var(--bad)"], inv:["inverseOf","var(--t-legacy)"]};
+let G = null;
+function textW(s){ return Math.min(214, 26 + Math.min(s.length,28)*7); }
+function simulate(nodes, edges){
+  let seed = 7; const rnd = () => (seed = (seed*16807)%2147483647)/2147483647;
+  const n = nodes.length, idx = new Map(nodes.map((d,i)=>[d.id,i]));
+  const R = Math.sqrt(n)*70;
+  nodes.forEach((d,i)=>{ const a = i/n*Math.PI*2*3.1; d.x = Math.cos(a)*R*(.4+rnd()*.6); d.y = Math.sin(a)*R*(.4+rnd()*.6); });
+  const E = edges.map(e=>[idx.get(e.s), idx.get(e.o), e.k]).filter(e=>e[0]!=null&&e[1]!=null&&e[0]!==e[1]);
+  const deg = new Array(n).fill(0); E.forEach(([a,b])=>{deg[a]++;deg[b]++;});
+  const it = n>90?260:360;
+  for(let t=0;t<it;t++){
+    const cool = 1 - t/it, fx = new Float64Array(n), fy = new Float64Array(n);
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+      let dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y; let d2 = dx*dx+dy*dy+.01;
+      const wsum = (nodes[i].w+nodes[j].w)/2;
+      let f = 26000/d2; if(Math.abs(dx)<wsum && Math.abs(dy)<40) f *= 3;
+      const d = Math.sqrt(d2); fx[i]+=dx/d*f; fy[i]+=dy/d*f; fx[j]-=dx/d*f; fy[j]-=dy/d*f;
+    }
+    E.forEach(([a,b,k])=>{
+      const dx = nodes[b].x-nodes[a].x, dy = nodes[b].y-nodes[a].y, d = Math.sqrt(dx*dx+dy*dy)+.01;
+      const L = (k==="sub"?120:190) + Math.min(80,(deg[a]+deg[b])*4), f = (d-L)*.05;
+      fx[a]+=dx/d*f; fy[a]+=dy/d*f; fx[b]-=dx/d*f; fy[b]-=dy/d*f;
+      if(k==="sub"){ fy[a]+=1.2; fy[b]-=1.2; }
+    });
+    for(let i=0;i<n;i++){ fx[i]-=nodes[i].x*.006; fy[i]-=nodes[i].y*.006;
+      const m = Math.min(28*cool+2, Math.hypot(fx[i],fy[i])); const h = Math.hypot(fx[i],fy[i])+.001;
+      nodes[i].x += fx[i]/h*m; nodes[i].y += fy[i]/h*m; }
+  }
+  // remove remaining box overlaps
+  for(let r=0;r<120;r++){
+    let moved = false;
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+      const a = nodes[i], b = nodes[j];
+      const ox = (a.w+b.w)/2 + 18 - Math.abs(a.x-b.x), oy = 28 + 16 - Math.abs(a.y-b.y);
+      if(ox>0 && oy>0){
+        moved = true;
+        if(ox < oy*2.2){ const s = (a.x<b.x?-1:1)*ox/2; a.x += s; b.x -= s; }
+        else { const s = (a.y<b.y?-1:1)*oy/2; a.y += s; b.y -= s; }
+      }
+    }
+    if(!moved) break;
+  }
+}
+function graphView(v){
+  const present = new Set(M.edges.map(e=>e.k));
+  v.innerHTML = `<div class="toolbar"><span class="tlabel">Edges</span>${[...present].map(k=>`<button class="ekind" data-k="${k}" aria-pressed="${S.kinds.has(k)}"><svg width="22" height="8" aria-hidden="true"><path d="M1 4H21" class="g-edge ${k}"/></svg>${KINDS[k][0]} <small class="count">${M.edges.filter(e=>e.k===k).length}</small></button>`).join("")}
+    <span class="count" style="margin-left:auto">${M.edges.length>26?"Select a box to see its relation names · ":""}drag to rearrange</span><button class="btn" id="relayout">Re-layout</button></div>
+    <div class="gwrap"><div class="svgwrap" id="gbox"></div></div>
+    <div class="legend pad" style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);border-top:1px solid var(--line)">
+      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="${colorOf(M.id)}"/></svg>declared in this module</span>
+      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>from another module (colour = its tier)</span>
+      ${M.nodes.some(n=>n.type==="prop")?`<span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="5" fill="none" stroke="var(--ink-soft)"/></svg>property</span>`:""}
+    </div>`;
+  v.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ S.kinds.has(b.dataset.k)?S.kinds.delete(b.dataset.k):S.kinds.add(b.dataset.k); b.setAttribute("aria-pressed",S.kinds.has(b.dataset.k)); paintGraph(); });
+  if(!G || G.id!==M.id){
+    const nodes = M.nodes.map(n=>Object.assign({}, n, {w:textW(n.label)}));
+    simulate(nodes, M.edges);
+    G = {id:M.id, nodes, by:new Map(nodes.map(n=>[n.id,n])), fresh:true};
+  }
+  document.getElementById("relayout").onclick = () => { simulate(G.nodes, M.edges); paintGraph(); };
+  paintGraph();
+}
+function paintGraph(){
+  const box = document.getElementById("gbox"); if(!box) return;
+  const ns = G.nodes, pad = 60;
+  const minX = Math.min(...ns.map(n=>n.x-n.w/2))-pad, maxX = Math.max(...ns.map(n=>n.x+n.w/2))+pad;
+  const minY = Math.min(...ns.map(n=>n.y-14))-pad, maxY = Math.max(...ns.map(n=>n.y+14))+pad;
+  const W = maxX-minX, H = maxY-minY;
+  const focus = S.sel && G.by.has(S.sel) ? new Set([S.sel]) : null;
+  const E = M.edges.filter(e=>S.kinds.has(e.k));
+  if(focus) E.forEach(e=>{ if(e.s===S.sel) focus.add(e.o); if(e.o===S.sel) focus.add(e.s); });
+  const markers = Object.entries(KINDS).map(([k,[l,c]])=>`<marker id="ar-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${k==="sub"?"var(--surface)":c}" stroke="${c}" stroke-width="1.2"/></marker>`).join("");
+  // edge geometry: clip to box border
+  const clip = (a,b) => { const dx=b.x-a.x, dy=b.y-a.y; const hw=b.w/2+3, hh=17; const t = Math.min(Math.abs(dx)>0?hw/Math.abs(dx):1e9, Math.abs(dy)>0?hh/Math.abs(dy):1e9, 1); return [b.x-dx*t, b.y-dy*t]; };
+  const pairCount = {};
+  let edgeSvg = "", labSvg = "";
+  E.forEach(e=>{
+    const a = G.by.get(e.s), b = G.by.get(e.o); if(!a||!b||a===b) return;
+    const pk = [e.s,e.o].sort().join("|"); const nth = pairCount[pk] = (pairCount[pk]||0)+1;
+    const [x2,y2] = clip(a,b), [x1,y1] = clip(b,a);
+    const mx = (x1+x2)/2, my = (y1+y2)/2, dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy)||1;
+    const bend = (nth-1)*28*(nth%2?1:-1);
+    const cx = mx - dy/len*bend, cy = my + dx/len*bend;
+    const dim = focus && !(focus.has(e.s)&&focus.has(e.o)&&(e.s===S.sel||e.o===S.sel)) ? " dim" : "";
+    const arrow = e.k==="disjoint"||e.k==="inv"||e.k==="match"&&false ? "" : ` marker-end="url(#ar-${e.k})"`;
+    edgeSvg += `<path class="g-edge ${e.k}${dim}" d="M${x1-minX},${y1-minY} Q${cx-minX},${cy-minY} ${x2-minX},${y2-minY}"${arrow}/>`;
+    const showLab = focus ? !dim : E.length<=26;
+    if(e.l && e.k!=="sub" && showLab) labSvg += `<text class="g-lab${dim}" x="${(x1+2*cx+x2)/4-minX}" y="${(y1+2*cy+y2)/4-minY-3}" text-anchor="middle">${esc(e.l)}</text>`;
+  });
+  const nodeSvg = ns.map(n=>{
+    const col = n.ext ? (n.owner?colorOf(n.owner):"var(--muted)") : colorOf(M.id);
+    const dim = focus && !focus.has(n.id) ? " dim" : "";
+    const lab = n.label.length>28 ? n.label.slice(0,27)+"…" : n.label;
+    return `<g class="g-node${n.ext?" ext":""}${n.type==="prop"?" prop":""}${n.id===S.sel?" sel":""}${dim}" data-id="${esc(n.id)}" transform="translate(${n.x-minX-n.w/2},${n.y-minY-14})" tabindex="0" role="button" aria-label="${esc(n.label)}"><title>${esc(n.label)}</title><rect width="${n.w}" height="28" rx="${n.type==="prop"?14:6}" fill="var(--surface)" stroke="${col}"/>${n.type==="prop"?"":`<circle cx="10" cy="14" r="3.5" fill="${col}"/>`}<text x="${n.type==="prop"?n.w/2:19}" y="18"${n.type==="prop"?' text-anchor="middle"':""}>${esc(lab)}</text></g>`;
+  }).join("");
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Relationship graph of ${esc(X.label(M.id))}"><defs>${markers}</defs><g>${edgeSvg}</g><g>${labSvg}</g><g>${nodeSvg}</g></svg>`;
+  const svg = box.querySelector("svg");
+  // drag + select
+  svg.querySelectorAll(".g-node").forEach(g=>{
+    const n = G.by.get(g.dataset.id);
+    let start = null;
+    g.addEventListener("pointerdown", e=>{ start = {x:e.clientX, y:e.clientY, nx:n.x, ny:n.y, moved:false}; g.setPointerCapture(e.pointerId); });
+    g.addEventListener("pointermove", e=>{ if(!start) return; const dx=e.clientX-start.x, dy=e.clientY-start.y; if(Math.abs(dx)+Math.abs(dy)>3){ start.moved=true; n.x=start.nx+dx; n.y=start.ny+dy; g.setAttribute("transform",`translate(${n.x-minX-n.w/2},${n.y-minY-14})`);} });
+    g.addEventListener("pointerup", e=>{ const s = start; start = null; if(!s) return; if(s.moved){ paintGraph(); } else select(n.id); });
+    g.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select(n.id); } });
+  });
+  // center selected
+  if(G.fresh && !(S.sel && G.by.has(S.sel) && S.center)){ box.scrollLeft = (box.scrollWidth-box.clientWidth)/2; box.scrollTop = (box.scrollHeight-box.clientHeight)/2; }
+  G.fresh = false;
+  if(S.sel && G.by.has(S.sel) && S.center){ const n = G.by.get(S.sel); box.scrollLeft = n.x-minX-box.clientWidth/2; box.scrollTop = n.y-minY-box.clientHeight/2; S.center=false; }
+}
+
+/* ---------- tables ---------- */
+function clink(iri){
+  const h = M.rec.classes[iri] && (M.rec.classes[iri].local||M.rec.classes[iri].anchored) && !M.rec.synthetic ? null : classHref(iri);
+  const own = (M.rec.classes[iri]&&(M.rec.classes[iri].owner)) || ownerOfIri(iri);
+  if(M.nodes.find(n=>n.id===iri) || M.rec.classes[iri]) return `<button class="lnk${M.mine.has(iri)?"":" ext"}" data-sel="${esc(iri)}">${own&&!M.mine.has(iri)?`<i class="dot" style="background:${colorOf(own)}"></i>`:""}${esc(classLabel(iri))}</button>`;
+  return h ? `<a class="lnk ext" href="${h}">${esc(classLabel(iri))}</a>` : `<span class="lnk ext">${esc(iri.startsWith(XSD)?"xsd:"+localName(iri):classLabel(iri))}</span>`;
+}
+function wire(root){ root.querySelectorAll("[data-sel]").forEach(b=>b.onclick=e=>{ e.stopPropagation(); select(b.dataset.sel); }); root.querySelectorAll("tr[data-row]").forEach(tr=>tr.onclick=()=>select(tr.dataset.row)); }
+function search(v, ph, rerender){
+  return `<div class="toolbar"><input type="search" id="tq" placeholder="${ph}" value="${esc(S.q)}" aria-label="${ph}"><span class="count" id="tcount"></span></div>`;
+}
+function bindSearch(fn){ const q = document.getElementById("tq"); q.oninput = () => { S.q = q.value.trim(); fn(); }; }
+function classView(v){
+  v.innerHTML = search(v,"Filter classes") + `<div class="tablewrap" style="max-height:72vh"><table><thead><tr><th>Class</th><th>Parents</th><th>Definition</th><th class="num">Shapes</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+  const all = Object.entries(M.rec.classes).sort((a,b)=>(M.mine.has(b[0])-M.mine.has(a[0])) || a[1].label.localeCompare(b[1].label));
+  const fill = () => {
+    const q = S.q.toLowerCase();
+    const rows = all.filter(([i,c])=>!q || c.label.toLowerCase().includes(q) || (c.comment||"").toLowerCase().includes(q));
+    document.getElementById("tb").innerHTML = rows.map(([i,c])=>{
+      const nsh = M.rec.shapes.filter(s=>s.target.includes(i)).length;
+      return `<tr data-row="${esc(i)}" class="${i===S.sel?"rowsel":""}"><td><b style="font-weight:${M.mine.has(i)?600:400}">${esc(c.label)}</b>${M.mine.has(i)?"":`<div class="count">${esc(X.label(c.owner||ownerOfIri(i)||"")||"external")}</div>`}</td><td>${c.parents.map(clink).join(" ")}</td><td class="dtxt">${esc((c.comment||"").slice(0,220))}${(c.comment||"").length>220?"…":""}</td><td class="num">${nsh||""}</td></tr>`;
+    }).join("");
+    document.getElementById("tcount").textContent = `${rows.length} of ${all.length}`;
+    wire(document.getElementById("tb"));
+  };
+  bindSearch(fill); fill();
+}
+function shapeView(v){
+  v.innerHTML = `<div class="shapes">${M.rec.shapes.map(s=>`<article class="shape">
+    <h3>${esc(s.label.replace(/Shape$/," shape"))}</h3>
+    <div class="tg"><span class="tag">targets</span>${s.target.map(clink).join("")}${s.from&&s.from!==M.id?`<span class="tag">in ${esc(X.label(s.from))}</span>`:""}</div>
+    ${s.props.map(p=>`<div class="crow"><span class="p" title="${esc(p.path)}">${esc(localName(p.path))}</span><span class="card-n">${card(p)}</span><span>${p.class?clink(p.class):p.datatype?`<span class="lnk ext">xsd:${esc(localName(p.datatype))}</span>`:'<span class="empty">any</span>'}</span></div>`).join("")}
+  </article>`).join("")}</div>`;
+  wire(v);
+}
+function propView(v){
+  const ps = Object.entries(M.rec.props).sort((a,b)=>(a[1].kind||"").localeCompare(b[1].kind||"") || a[1].label.localeCompare(b[1].label));
+  const upper = ps.some(([i,p])=>p.pairs&&p.pairs.length);
+  v.innerHTML = search(v,"Filter properties") + `<div class="tablewrap" style="max-height:72vh"><table><thead><tr><th>Property</th><th>Kind</th><th>${upper?"Connects":"Domain → range"}</th><th>Notes</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+  const fill = () => {
+    const q = S.q.toLowerCase();
+    const rows = ps.filter(([i,p])=>!q || p.label.toLowerCase().includes(q) || (p.comment||"").toLowerCase().includes(q));
+    document.getElementById("tb").innerHTML = rows.map(([i,p])=>{
+      const dr = upper ? (p.pairs||[]).slice(0,4).map(([d,r])=>`${esc(classLabel(d))} → ${esc(r?classLabel(r):"")}`).join("<br>") + ((p.pairs||[]).length>4?`<br><span class="count">+${p.pairs.length-4} more</span>`:"")
+        : `${p.domain.map(clink).join(" ")||'<span class="empty">—</span>'} → ${p.range.map(clink).join(" ")||'<span class="empty">—</span>'}`;
+      const notes = [];
+      if(p.parents.length) notes.push("sub of "+p.parents.map(x=>esc(propLabel(x))).join(", "));
+      if(p.inverse) notes.push("inverse of "+esc(propLabel(p.inverse)));
+      if(p.closeMatch) notes.push("closeMatch "+p.closeMatch.map(x=>esc(propLabel(x))).join(", "));
+      if(p.alignment) notes.push("aligned to "+p.alignment.map(x=>esc(propLabel(x))).join(", "));
+      if(p.usedBy) notes.push("used by "+p.usedBy.map(x=>esc(X.label(x))).join(", "));
+      if(p.from) notes.push("declared in "+esc(X.label(p.from)));
+      if(p.characteristics&&p.characteristics.length) notes.push(p.characteristics.map(esc).join(", "));
+      if(p.comment) notes.push(`<span class="dtxt">${esc(p.comment.slice(0,160))}${p.comment.length>160?"…":""}</span>`);
+      return `<tr data-row="${esc(i)}" class="${i===S.sel?"rowsel":""}"><td><b style="font-weight:600">${esc(p.label)}</b></td><td><span class="tag">${esc(p.kind||"")}</span></td><td>${dr}</td><td style="font-size:13px">${notes.join("<br>")}</td></tr>`;
+    }).join("");
+    document.getElementById("tcount").textContent = `${rows.length} of ${ps.length}`;
+    wire(document.getElementById("tb"));
+  };
+  bindSearch(fill); fill();
+}
+function indView(v){
+  const inds = M.rec.individuals.slice().sort((a,b)=>a.iri.localeCompare(b.iri));
+  v.innerHTML = search(v,"Filter individuals") + `<div class="tablewrap" style="max-height:72vh"><table><thead><tr><th>Group</th><th>Individual</th><th>Type</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+  const fill = () => {
+    const q = S.q.toLowerCase();
+    const rows = inds.filter(i=>!q || i.iri.toLowerCase().includes(q) || i.label.toLowerCase().includes(q));
+    document.getElementById("tb").innerHTML = rows.map(i=>{
+      const segs = localName(i.iri).split(":");
+      const name = segs.length>1 ? segs.pop().replace(/_/g," ") : i.label;
+      return `<tr data-row="${esc(i.iri)}" class="${i.iri===S.sel?"rowsel":""}"><td class="count">${esc(segs.length&&localName(i.iri).includes(":")?segs.join(" › "):"")}</td><td><b style="font-weight:500">${esc(name)}</b>${i.comment?`<div class="dtxt">${esc(i.comment)}</div>`:""}</td><td>${i.types.map(clink).join(" ")||'<span class="tag">NamedIndividual</span>'}</td></tr>`;
+    }).join("");
+    document.getElementById("tcount").textContent = `${rows.length} of ${inds.length}`;
+    wire(document.getElementById("tb"));
+  };
+  bindSearch(fill); fill();
+}
+function modLink(id){ return id && NODES[id] ? `<a class="lnk" href="${href(...X.primaryView(id))}"><i class="dot" style="background:${colorOf(id)}"></i>${esc(X.label(id))}</a>` : ""; }
+function moduleView(v){
+  const r = M.rec, m = r.meta||{};
+  const lid = NODES[M.id] ? M.id : null;
+  const ins = lid ? D.lineage.edges.filter(e=>e[1]===lid) : [], outs = lid ? D.lineage.edges.filter(e=>e[0]===lid) : [];
+  const grp = list => { const g = {}; list.forEach(e=>(g[e[2]] ||= []).push(e)); return g; };
+  const ET = Object.fromEntries(D.lineage.etypes.map(e=>[e.id,e.label]));
+  const lists = (g, idx) => Object.entries(g).map(([t,es])=>`<div><h3>${esc(ET[t]||t)}</h3><div class="chips">${es.map(e=>modLink(e[idx])).join("")}</div></div>`).join("");
+  const byMod = {}; M.incoming.forEach(x=>(byMod[x.mid] ||= []).push(x));
+  v.innerHTML = `<dl class="meta">
+      ${r.iri?`<dt>IRI</dt><dd class="mono">${esc(r.iri)}</dd>`:""}${m.versionIRI?`<dt>Version IRI</dt><dd class="mono">${esc(m.versionIRI)}</dd>`:""}
+      ${m.title?`<dt>Title</dt><dd>${esc(m.title)}</dd>`:""}${m.version?`<dt>Version</dt><dd>${esc(m.version)}</dd>`:""}
+      ${m.created?`<dt>Created</dt><dd>${esc(m.created)}</dd>`:""}${m.modified?`<dt>Modified</dt><dd>${esc(m.modified)}</dd>`:""}
+      ${m.creators?`<dt>Creators</dt><dd>${esc(m.creators)}</dd>`:""}<dt>File</dt><dd>${esc(r.file||"not supplied")}</dd>
+    </dl>
+    <div class="modsec">
+      ${m.changeNotes&&m.changeNotes.length?`<div><h3>Change notes</h3><ul class="notes">${m.changeNotes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
+      ${r.imports.length?`<div><h3>owl:imports</h3><div class="chips">${r.imports.map(i=>nodeForIri(i)?modLink(nodeForIri(i)):`<span class="lnk ext mono">${esc(i)}</span>`).join("")}</div></div>`:""}
+      ${lid?`<div style="display:grid;gap:10px"><h3 style="margin:0">Draws from (lineage)</h3>${lists(grp(ins),0)||'<p class="empty">Nothing upstream.</p>'}</div>
+      <div style="display:grid;gap:10px"><h3 style="margin:0">Feeds into (lineage)</h3>${lists(grp(outs),1)||'<p class="empty">Nothing downstream.</p>'}</div>`:""}
+      ${Object.keys(byMod).length?`<div><h3>How other modules use this one</h3>${Object.entries(byMod).map(([mid,xs])=>`<div style="margin:6px 0 10px"><div>${modLink(mid)} <span class="count">${xs.length} reference${xs.length>1?"s":""}</span></div><ul class="notes" style="margin-top:6px">${xs.slice(0,12).map(x=>`<li>${esc(x.label)} <span class="count">${x.kind}</span></li>`).join("")}${xs.length>12?`<li class="count">and ${xs.length-12} more</li>`:""}</ul></div>`).join("")}</div>`:""}
+    </div>`;
+}
+
+/* ---------- detail panel ---------- */
+function find(key){
+  const r = M.rec;
+  const c = Object.keys(r.classes).find(i=>keyOf(i)===key && M.mine.has(i)) || Object.keys(r.classes).find(i=>keyOf(i)===key);
+  if(c) return c;
+  const p = Object.keys(r.props).find(i=>keyOf(i)===key); if(p) return p;
+  const ind = r.individuals.find(i=>keyOf(i.iri)===key); if(ind) return ind.iri;
+  const s = r.shapes.find(s=>keyOf(s.iri)===key); if(s) return s.iri;
+  return null;
+}
+function panel(){
+  const P = document.getElementById("panel"), r = M.rec, i = S.sel;
+  if(!i){
+    const tree = X.viewsFor(M.id).taxonomy, voc = X.viewsFor(M.id).vocabulary;
+    P.innerHTML = `<span class="kind"><i class="dot" style="background:${colorOf(M.id)}"></i>${esc(X.TIERS[X.tierOf(M.id)].name)}</span><h2>${esc(X.label(M.id))}</h2>
+      <p>${esc((NODES[M.id]||{}).desc || r.meta.description || "")}</p>
+      <p class="empty">Select a class, property or individual in any view to see its details here.</p>
+      <div class="gorow">${tree?`<a class="go" href="${href("taxonomy",tree)}">Hierarchy</a>`:""}${voc?`<a class="go" href="${href("vocabulary",voc)}">Vocabulary</a>`:""}</div>`;
+    return;
+  }
+  const c = r.classes[i], p = r.props[i], ind = r.individuals.find(x=>x.iri===i), shp = r.shapes.find(s=>s.iri===i);
+  const tree = X.viewsFor(M.id).taxonomy;
+  let h = "";
+  if(c){
+    const mine = M.mine.has(i), own = mine ? M.id : (c.owner||ownerOfIri(i));
+    const kids = Object.entries(r.classes).filter(([k,x])=>x.parents.includes(i));
+    const sh = r.shapes.filter(s=>s.target.includes(i));
+    const refBy = []; r.shapes.forEach(s=>s.props.forEach(pp=>{ if(pp.class===i) refBy.push([s,pp]); }));
+    const pr = Object.entries(r.props).filter(([k,x])=>x.range.includes(i)||x.domain.includes(i));
+    const rs = r.restrictions.filter(x=>x.cls===i);
+    const dj = r.disjoint.filter(([a,b])=>a===i||b===i).map(([a,b])=>a===i?b:a);
+    const inc = M.incoming.filter(x=>x.o===i);
+    const ext = !mine ? classHref(i) : null;
+    const sub = c.subjectRef || (c.conceptKey ? [X.vocabFor(M.id), c.conceptKey] : null);
+    h = `<span class="kind"><i class="dot" style="background:${own?colorOf(own):"var(--muted)"}"></i>owl:Class${mine?"":` · ${own?"from "+esc(X.label(own)):"external"}`}</span><h2>${esc(c.label)}</h2>
+      ${c.comment?`<p class="def">${esc(c.comment)}</p>${c.commentFrom==="vocab"?'<span class="tag">definition from the grounding concept</span>':""}`:`<p class="empty">No definition in the files.</p>`}
+      ${c.parents.length?`<div class="sec"><h3>Subclass of</h3><div class="chips">${c.parents.map(clink).join("")}</div></div>`:""}
+      ${kids.length?`<div class="sec"><h3>Subclasses (${kids.length})</h3><div class="chips">${kids.map(([k])=>clink(k)).join("")}</div></div>`:""}
+      ${sh.length?`<div class="sec"><h3>Constrained by</h3>${sh.map(s=>s.props.map(pp=>`<div class="crow" style="grid-template-columns:minmax(0,1fr) auto minmax(0,1.2fr)"><span class="p" style="font-family:var(--f-mono);font-size:12px;color:var(--t-core)">${esc(localName(pp.path))}</span><span class="count">${card(pp)}</span><span>${pp.class?clink(pp.class):pp.datatype?"xsd:"+esc(localName(pp.datatype)):""}</span></div>`).join("")).join("")}</div>`:""}
+      ${refBy.length?`<div class="sec"><h3>Pointed to by</h3><div class="chips">${refBy.map(([s,pp])=>`<button class="lnk" data-sel="${esc(s.target[0])}">${esc(classLabel(s.target[0]))}<small>${esc(localName(pp.path))}</small></button>`).join("")}</div></div>`:""}
+      ${pr.length?`<div class="sec"><h3>Properties</h3><div class="chips">${pr.map(([k,x])=>`<button class="lnk" data-sel="${esc(k)}">${esc(x.label)}<small>${x.domain.includes(i)?"domain":"range"}</small></button>`).join("")}</div></div>`:""}
+      ${rs.length?`<div class="sec"><h3>OWL restrictions</h3>${rs.map(x=>`<p class="mono" style="font-size:12.5px">${esc(localName(x.prop))} ${esc(x.kind)} ${esc(/^https?:/.test(x.value)?classLabel(x.value):x.value)}</p>`).join("")}</div>`:""}
+      ${dj.length?`<div class="sec"><h3>Disjoint with</h3><div class="chips">${dj.map(clink).join("")}</div></div>`:""}
+      ${inc.length?`<div class="sec"><h3>Used by other modules</h3><ul class="notes" style="margin:0;padding-left:18px;font-size:13px;color:var(--ink-soft)">${inc.slice(0,10).map(x=>`<li>${esc(x.label)} <span class="count">${esc(X.label(x.mid))}</span></li>`).join("")}</ul></div>`:""}
+      ${c.usedBy?`<div class="sec"><h3>Referenced by</h3><div class="chips">${c.usedBy.map(modLink).join("")}</div></div>`:""}
+      <div class="gorow">${mine&&tree&&!r.synthetic?`<a class="go" href="${href("taxonomy",tree,keyOf(i))}">Show in hierarchy</a>`:""}${r.synthetic&&c.conceptKey?`<a class="go" href="${href("taxonomy",M.id,c.conceptKey)}">Show in hierarchy</a>`:""}
+        ${sub&&sub[0]?`<a class="go" href="${href("vocabulary",sub[0],sub[1])}">Grounding concept</a>`:""}${ext?`<a class="go" href="${ext}">Open in ${esc(X.label(own))}</a>`:""}</div>
+      <div class="iri">${esc(i)}</div>`;
+  } else if(p){
+    h = `<span class="kind"><i class="dot" style="background:${colorOf(M.id)}"></i>${esc(p.kind||"")} property</span><h2>${esc(p.label)}</h2>
+      ${p.comment?`<p class="def">${esc(p.comment)}</p>`:""}
+      ${p.domain.length?`<div class="sec"><h3>Domain</h3><div class="chips">${p.domain.map(clink).join("")}</div></div>`:""}
+      ${p.range.length?`<div class="sec"><h3>Range</h3><div class="chips">${p.range.map(clink).join("")}</div></div>`:""}
+      ${p.parents.length?`<div class="sec"><h3>Subproperty of</h3><div class="chips">${p.parents.map(x=>r.props[x]?`<button class="lnk" data-sel="${esc(x)}">${esc(propLabel(x))}</button>`:`<span class="lnk ext">${esc(propLabel(x))}</span>`).join("")}</div></div>`:""}
+      ${p.inverse?`<div class="sec"><h3>Inverse</h3><div class="chips">${r.props[p.inverse]?`<button class="lnk" data-sel="${esc(p.inverse)}">${esc(propLabel(p.inverse))}</button>`:`<span class="lnk ext">${esc(propLabel(p.inverse))}</span>`}</div></div>`:""}
+      ${p.closeMatch?`<div class="sec"><h3>closeMatch</h3><div class="chips">${p.closeMatch.map(x=>`<span class="lnk ext">${esc(propLabel(x))}</span>`).join("")}</div></div>`:""}
+      ${p.alignment?`<div class="sec"><h3>Aligned to RO / BFO</h3><div class="chips">${p.alignment.map(x=>`<a class="lnk ext" href="${href("ontology","ro",keyOf(x))}">${esc(propLabel(x))}</a>`).join("")}</div></div>`:""}
+      ${p.pairs&&p.pairs.length?`<div class="sec"><h3>Connects (from SHACL shapes)</h3>${p.pairs.map(([d,rr])=>`<div class="path">${clink(d)}<span class="sep">→</span>${rr?clink(rr):""}</div>`).join("")}</div>`:""}
+      ${p.usedBy?`<div class="sec"><h3>Used by</h3><div class="chips">${p.usedBy.map(modLink).join("")}</div></div>`:""}
+      <div class="iri">${esc(i)}</div>`;
+  } else if(ind){
+    const segs = localName(i).split(":");
+    h = `<span class="kind"><i class="dot" style="background:${colorOf(M.id)}"></i>Individual</span><h2>${esc(segs[segs.length-1].replace(/_/g," "))}</h2>
+      ${segs.length>1?`<div class="sec"><h3>Name path</h3><div class="path">${segs.slice(0,-1).map(s=>`<span class="tag">${esc(s)}</span>`).join('<span class="sep">›</span>')}</div></div>`:""}
+      ${ind.comment?`<p class="def">${esc(ind.comment)}</p>`:""}
+      ${ind.types.length?`<div class="sec"><h3>Type</h3><div class="chips">${ind.types.map(clink).join("")}</div></div>`:""}
+      <div class="gorow">${tree?`<a class="go" href="${href("taxonomy",tree,keyOf(i))}">Show in hierarchy</a>`:""}</div><div class="iri">${esc(i)}</div>`;
+  } else if(shp){
+    h = `<span class="kind">sh:NodeShape</span><h2>${esc(shp.label)}</h2><div class="iri">${esc(i)}</div>`;
+  } else {
+    const ext = classHref(i);
+    h = `<span class="kind">External</span><h2>${esc(classLabel(i))}</h2>${ext?`<div class="gorow"><a class="go" href="${ext}">Open</a></div>`:""}<div class="iri">${esc(i)}</div>`;
+  }
+  P.innerHTML = h;
+  wire(P);
+}
+function select(iri){
+  S.sel = iri; S.center = false;
+  const c = M.rec.classes[iri], p = M.rec.props[iri], ind = M.rec.individuals.find(x=>x.iri===iri);
+  if(c||p||ind) setKey(M.id, keyOf(iri));
+  panel();
+  if(S.tab==="graph") paintGraph();
+  else document.querySelectorAll("tr[data-row]").forEach(tr=>tr.classList.toggle("rowsel", tr.dataset.row===iri));
+}
+
+boot("ontology", (id,key)=>{
+  if(!M || M.id!==id){ M = buildModel(id); S.tab = null; S.sel = null; S.q = ""; }
+  document.title = `${X.label(id)} · Ontology Explorer`;
+  head();
+  let target = key ? find(key) : null;
+  if(target){
+    S.sel = target;
+    const isInd = M.rec.individuals.some(x=>x.iri===target);
+    if(!S.tab) S.tab = G && false ? "graph" : (M.nodes.some(n=>n.id===target) ? "graph" : isInd ? "inds" : M.rec.props[target] ? "props" : "classes");
+    S.center = true;
+  }
+  tabs(); view(); panel();
+});
+</script>
+</body>
+</html>

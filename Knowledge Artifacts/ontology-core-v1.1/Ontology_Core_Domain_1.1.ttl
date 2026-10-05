@@ -1,0 +1,528 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/ontology-core-domain/> a owl:Ontology;
+  rdfs:label "Ontology | Core | Domain Reference Model"@en;
+  dct:title "Ontology | Core | Domain Reference Model"@en;
+  dct:description "The Domain Reference Model (DRM) is Verizon's unifying ontology and the foundation for every other domain ontology. It declares the shared relations, the root classes each domain ontology specialises, and the SHACL rules that bind them, and it anchors all of these to BFO 2020 through the OBO Relations Core. Core, taxonomy and governance ontologies import the DRM; the DRM imports only RO core and BFO."@en;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-core-domain/1.1>;
+  owl:versionInfo "1.1";
+  owl:priorVersion <https://ontologies.verizon.com/ontology-core-domain/1.0>;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:created "2024-10-02T01:04:45.186Z"^^xsd:dateTime;
+  dct:modified "2026-10-05T16:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  <http://verizon.ontologies.com/terms/certified> false;
+  skos:changeNote "v1.1: imports ontology-core-requirements and alignment-upper-ro; removed the 13 metaphacts-namespace shapes and stubs that duplicated the verizon shapes; Event shape now lives in ontology-core-event (occursWhen); Services has a Lifecycle; run-time service classes re-homed to taxonomy-core-services; added Outcome, JobStep and Feature bridge shapes.", "v1.1 (vocabularies): OperationsManagement, Communications and ServiceLevelManagement now carry dc11:subject links to their core-services concepts; Reporting and Training have no core-services concept yet.",
+    "v1.1 (DRM): renamed Domain Reference Model and made the foundation. The separate upper ontology and the upper-to-RO alignment module are retired: their 21 relations, RO alignments and BFO anchors are declared here. The DRM no longer imports the core, taxonomy and governance modules; they import it. upperontology IRIs remain as deprecated owl:equivalentProperty for existing data. Event, not Events, is anchored to occurrent, because Events also groups Event State and Trigger."@en;
+  owl:imports <http://purl.obolibrary.org/obo/ro/core.owl>, <http://purl.obolibrary.org/obo/bfo/2020/bfo.owl> .
+
+<https://ontologies.verizon.com/ontology-core-domain/Domain> a owl:Class;
+  rdfs:label "Domain"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-17T13:44:19.495Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-10-02T01:08:09.624Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-domain/cbbdf6cc-4d02-4205-85e5-1eadbf014603> .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/ComplianceShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:controls;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-compliance/Compliance> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:assignedTo;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-role/Role>
+    ], [
+      sh:path drm:performs;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-persona/Persona> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DigitalAssetShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset> .
+
+<https://ontologies.verizon.com/ontology-core-asset/PhysicalAssetShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset> .
+
+<https://ontologies.verizon.com/taxonomy-core-issue/IssueShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:occursIn;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ], [
+      sh:path drm:generates;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Observation>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-issue/Issue> .
+
+<https://ontologies.verizon.com/taxonomy-core-process/ProcessShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:generates;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Observation>
+    ], [
+      sh:path drm:creates;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>
+    ], [
+      sh:path drm:modifies;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>
+    ], [
+      sh:path drm:creates;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset>
+    ], [
+      sh:path drm:performedBy;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-persona/Persona>
+    ], [
+      sh:path drm:modifies;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset>
+    ], [
+      sh:path drm:typeOf;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>
+    ], [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-services/Services>
+    ], [
+      sh:path drm:occursIn;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-location/Location>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-process/Process> .
+
+<https://ontologies.verizon.com/taxonomy-core-role/RoleShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:performs;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ], [
+      sh:path drm:consumes;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-role/Role> .
+
+<https://ontologies.verizon.com/taxonomy-core-rules/RulesShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:guides;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ], [
+      sh:path drm:constrains;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-rules/Rules> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/ServicesShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/ontology-core-capability/Capability>
+    ], [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-valuestream/ValueStream>
+    ], [
+      sh:path drm:assignedTo;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-persona/Persona>
+    ], [
+      sh:path drm:has;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-services/Services> .
+
+<https://ontologies.verizon.com/taxonomy-core-valuestream/ValueStreamShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enabledBy;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-services/Services>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-valuestream/ValueStream> .
+
+<https://ontologies.verizon.com/taxonomy-core-process/Process> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-rules/Rules> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/ontology-core-event/Event> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DigitalAsset> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-issue/Issue> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-role/Role> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/Compliance> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-valuestream/ValueStream> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/Persona> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/Services> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:58:40.883Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/OperationsManagement> a owl:Class; dc11:subject <https://vocabularies.verizon.com/core-services/994db5b9-03f0-42cd-a96b-bc2fdec9760c>; rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-services/Services>, <https://ontologies.verizon.com/taxonomy-core-lifecycle/RunTime>; rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/Communications> a owl:Class; dc11:subject <https://vocabularies.verizon.com/core-services/f59420c3-c47a-48a3-a73a-9405a4081589>; rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-services/Services>, <https://ontologies.verizon.com/taxonomy-core-lifecycle/RunTime>; rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/ServiceLevelManagement> a owl:Class; dc11:subject <https://vocabularies.verizon.com/core-services/c0c59e21-9009-406f-92dc-9392f49e260a>; rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-services/Services>, <https://ontologies.verizon.com/taxonomy-core-lifecycle/RunTime>; rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/Reporting> a owl:Class; rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-services/Services>, <https://ontologies.verizon.com/taxonomy-core-lifecycle/RunTime>; rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/Training> a owl:Class; rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-services/Services>, <https://ontologies.verizon.com/taxonomy-core-lifecycle/RunTime>; rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/ontology-core-domain/OutcomeBridgeShape> a sh:NodeShape;
+  rdfs:comment "Binds Requirements to the operating model: every Outcome is enabled by a Capability."@en;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/Outcome>;
+  sh:property [ sh:path drm:enabledBy; sh:class <https://ontologies.verizon.com/ontology-core-capability/Capability> ] .
+
+<https://ontologies.verizon.com/ontology-core-domain/JobStepBridgeShape> a sh:NodeShape;
+  rdfs:comment "Binds Requirements to the operating model: a Job Step is performed through a Process."@en;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/JobStep>;
+  sh:property [ sh:path drm:performedBy; sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process> ] .
+
+<https://ontologies.verizon.com/ontology-core-domain/FeatureBridgeShape> a sh:NodeShape;
+  rdfs:comment "Binds Requirements to the operating model: a Feature is delivered by a Service."@en;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/Feature>;
+  sh:property [ sh:path drm:enabledBy; sh:class <https://ontologies.verizon.com/taxonomy-core-services/Services> ] .
+
+# ---------------------------------------------------------------- shared relations (formerly the upper ontology)
+
+drm:enables a owl:ObjectProperty;
+  rdfs:label "enables"@en;
+  skos:definition "The subject makes the object possible or supports it; for example an Asset enables a Process and Services enable a Capability."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/enables>;
+  owl:inverseOf drm:enabledBy .
+
+drm:enabledBy a owl:ObjectProperty;
+  rdfs:label "enabled by"@en;
+  skos:definition "Inverse of enables."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/enabledBy>;
+  owl:inverseOf drm:enables .
+
+drm:performs a owl:ObjectProperty;
+  rdfs:label "performs"@en;
+  skos:definition "An agent, persona or role carries out a process."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/performs>;
+  owl:inverseOf drm:performedBy;
+  rdfs:subPropertyOf <http://purl.obolibrary.org/obo/RO_0000056> .
+
+drm:performedBy a owl:ObjectProperty;
+  rdfs:label "performed by"@en;
+  skos:definition "A process is carried out by the object."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/performedBy>;
+  owl:inverseOf drm:performs;
+  rdfs:subPropertyOf <http://purl.obolibrary.org/obo/RO_0000057> .
+
+drm:occursIn a owl:ObjectProperty;
+  rdfs:label "occurs in"@en;
+  skos:definition "An event or issue takes place in a location or within a process."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/occursIn>;
+  skos:closeMatch <http://purl.obolibrary.org/obo/BFO_0000066> .
+
+drm:occursWhen a owl:ObjectProperty;
+  rdfs:label "occurs when"@en;
+  skos:definition "An event takes place at, or during, a time."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/occursWhen> .
+
+drm:assignedTo a owl:ObjectProperty;
+  rdfs:label "assigned to"@en;
+  skos:definition "A persona or party is given a role."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/assignedTo>;
+  skos:closeMatch <http://purl.obolibrary.org/obo/RO_0000087> .
+
+drm:guides a owl:ObjectProperty;
+  rdfs:label "guides"@en;
+  skos:definition "A rule or standard informs how a process should be carried out without strictly binding it."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/guides> .
+
+drm:constrains a owl:ObjectProperty;
+  rdfs:label "constrains"@en;
+  skos:definition "A rule limits how a process may be carried out."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/constrains> .
+
+drm:controls a owl:ObjectProperty;
+  rdfs:label "controls"@en;
+  skos:definition "A compliance requirement or control governs a process."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/controls> .
+
+drm:generates a owl:ObjectProperty;
+  rdfs:label "generates"@en;
+  skos:definition "The subject gives rise to the object; for example an Event generates a Process and a Process generates an Observation."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/generates> .
+
+drm:creates a owl:ObjectProperty;
+  rdfs:label "creates"@en;
+  skos:definition "A process brings an asset into existence."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/creates> .
+
+drm:modifies a owl:ObjectProperty;
+  rdfs:label "modifies"@en;
+  skos:definition "A process changes an asset."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/modifies> .
+
+drm:consumes a owl:ObjectProperty;
+  rdfs:label "consumes"@en;
+  skos:definition "A role or process uses up, or uses the output of, a process or asset."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/consumes> .
+
+drm:typeOf a owl:ObjectProperty;
+  rdfs:label "type of"@en;
+  skos:definition "The subject is a kind or category associated with the object."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/typeOf> .
+
+drm:has a owl:ObjectProperty;
+  rdfs:label "has"@en;
+  skos:definition "General has-part or has-characteristic relation; for example Services have a Lifecycle and an Event has an Event State."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/has>;
+  skos:closeMatch <http://purl.obolibrary.org/obo/BFO_0000051> .
+
+drm:hasRelated a owl:ObjectProperty;
+  rdfs:label "has related"@en;
+  skos:definition "General association between two entities where no more specific relation applies."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/hasRelated> .
+
+drm:is a owl:ObjectProperty;
+  rdfs:label "is"@en;
+  skos:definition "General identity or classification statement used by Requirements shapes; prefer a more specific relation where one exists."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/is> .
+
+drm:provides a owl:ObjectProperty;
+  rdfs:label "provides"@en;
+  skos:definition "The subject supplies the object; for example a Job Executor provides an Outcome."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/provides> .
+
+drm:initiates a owl:ObjectProperty;
+  rdfs:label "initiates"@en;
+  skos:definition "A trigger starts an event."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/initiates>;
+  owl:inverseOf drm:initiatedBy .
+
+drm:initiatedBy a owl:ObjectProperty;
+  rdfs:label "initiated by"@en;
+  skos:definition "An event is started by a trigger."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/>;
+  dct:replaces <https://ontologies.verizon.com/upperontology/initiatedBy>;
+  owl:inverseOf drm:initiates .
+
+# legacy upper-ontology IRIs, kept so existing data and shapes still resolve
+
+<https://ontologies.verizon.com/upperontology/enables> owl:equivalentProperty drm:enables; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/enabledBy> owl:equivalentProperty drm:enabledBy; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/performs> owl:equivalentProperty drm:performs; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/performedBy> owl:equivalentProperty drm:performedBy; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/occursIn> owl:equivalentProperty drm:occursIn; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/occursWhen> owl:equivalentProperty drm:occursWhen; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/assignedTo> owl:equivalentProperty drm:assignedTo; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/guides> owl:equivalentProperty drm:guides; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/constrains> owl:equivalentProperty drm:constrains; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/controls> owl:equivalentProperty drm:controls; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/generates> owl:equivalentProperty drm:generates; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/creates> owl:equivalentProperty drm:creates; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/modifies> owl:equivalentProperty drm:modifies; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/consumes> owl:equivalentProperty drm:consumes; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/typeOf> owl:equivalentProperty drm:typeOf; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/has> owl:equivalentProperty drm:has; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/hasRelated> owl:equivalentProperty drm:hasRelated; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/is> owl:equivalentProperty drm:is; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/provides> owl:equivalentProperty drm:provides; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/initiates> owl:equivalentProperty drm:initiates; owl:deprecated true .
+
+<https://ontologies.verizon.com/upperontology/initiatedBy> owl:equivalentProperty drm:initiatedBy; owl:deprecated true .
+
+# ---------------------------------------------------------------- reference classes each domain ontology specialises, anchored to BFO 2020
+
+<https://ontologies.verizon.com/ontology-core-asset/Asset> a owl:Class;
+  rdfs:label "Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002> .
+
+<https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset> a owl:Class;
+  rdfs:label "Physical Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000040> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DigitalAsset> a owl:Class;
+  rdfs:label "Digital Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000031> .
+
+<https://ontologies.verizon.com/ontology-core-capability/Capability> a owl:Class;
+  rdfs:label "Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000017> .
+
+<https://ontologies.verizon.com/ontology-core-event/Events> a owl:Class;
+  rdfs:label "Events"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en .
+
+<https://ontologies.verizon.com/ontology-core-event/Event> a owl:Class;
+  rdfs:label "Event"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000003> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Requirements> a owl:Class;
+  rdfs:label "Requirements"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Requirement> a owl:Class;
+  rdfs:label "Requirement"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000031> .
+
+<https://ontologies.verizon.com/taxonomy-core-process/Process> a owl:Class;
+  rdfs:label "Process"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-process/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000015>;
+  dc11:subject <https://vocabularies.verizon.com/core-process/660e0439-8caa-4a1d-8881-92cd5dc9fafe> .
+
+<https://ontologies.verizon.com/taxonomy-core-role/Role> a owl:Class;
+  rdfs:label "Role"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-role/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000023>;
+  dc11:subject <https://vocabularies.verizon.com/core-role/f85e8978-696d-4d40-a560-f98a2756e814> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Party> a owl:Class;
+  rdfs:label "Party"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000004>;
+  dc11:subject <https://vocabularies.verizon.com/core-party/003c7b04-3c39-4b43-8135-46b8d6724906> .
+
+<https://ontologies.verizon.com/taxonomy-core-location/Location> a owl:Class;
+  rdfs:label "Location"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-location/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002>;
+  dc11:subject <https://vocabularies.verizon.com/core-location/b7a8cc47-e0a0-4113-a645-b41a61312257> .
+
+<https://ontologies.verizon.com/taxonomy-core-valuestream/ValueStream> a owl:Class;
+  rdfs:label "Value Stream"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-valuestream/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000015>;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/d2bbbe96-dc61-42dd-a48c-faf38a3d65dd> .
+
+<https://ontologies.verizon.com/taxonomy-core-rules/Rules> a owl:Class;
+  rdfs:label "Rules"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-rules/>;
+  rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000031>;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/Persona> a owl:Class;
+  rdfs:label "Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/c8cb38ee-f506-4864-920d-e7523e513081> .
+
+<https://ontologies.verizon.com/taxonomy-core-time/Time> a owl:Class;
+  rdfs:label "Time"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-time/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-time/77bf78dd-7407-440f-9dd0-3c24166b83c6> .
+
+<https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> a owl:Class;
+  rdfs:label "Lifecycle"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-lifecycle/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/709e43d0-b78f-44d6-8eb8-f0b847714548> .
+
+<https://ontologies.verizon.com/taxonomy-core-services/Services> a owl:Class;
+  rdfs:label "Services"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-services/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-services/fd9504c5-bc85-4272-9dec-0899d435310f> .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/Compliance> a owl:Class;
+  rdfs:label "Compliance"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-compliance/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/fdb5a5c0-b1c9-4028-a266-999a4cc8530a> .
+
+<https://ontologies.verizon.com/taxonomy-core-issue/Issue> a owl:Class;
+  rdfs:label "Issue"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-issue/>;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a> .

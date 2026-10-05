@@ -1,0 +1,122 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/ontology-core-event/> a owl:Ontology;
+  rdfs:label "Ontology | Core | Event"@en;
+  dct:title "Ontology | Core | Event"@en;
+  dct:description "This ontology defines the core concept of an event, including its attributes, relationships and temporal aspects. This is foundational for tracking and analyzing events within Verizon."@en;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-core-event/1.1>;
+  owl:versionInfo "1.1";
+  owl:priorVersion <https://ontologies.verizon.com/ontology-core-event/1.0>;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:created "2024-10-01T20:18:37.686Z"^^xsd:dateTime;
+  dct:modified "2026-10-05T16:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  <http://verizon.ontologies.com/terms/certified> false;
+  skos:changeNote "v1.1: removed TM Forum SID, RAN and ThinkHome payloads; EventState now uses core-event stateValue (exactly 1); consolidated Event, EventState and Trigger shapes onto upper-ontology paths (occursWhen is the single temporal path); imports taxonomy-core-process for generates; moved legacy service model to vocabulary-core-servicemodel.";
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>,
+    <https://ontologies.verizon.com/taxonomy-core-location/>,
+    <https://ontologies.verizon.com/taxonomy-core-persona/>,
+    <https://ontologies.verizon.com/taxonomy-core-time/>,
+    <https://ontologies.verizon.com/taxonomy-core-process/>,
+    <https://ontologies.verizon.com/vocabulary-core-servicemodel/>;
+  skos:changeNote "v1.1 (DRM): the separate upper ontology is retired. Its relations are declared in the Domain Reference Model (ontology-core-domain), which this module now imports as its foundation; shape paths use the ontology-core-domain relation IRIs."@en .
+
+rdfs:label a owl:AnnotationProperty .
+
+rdfs:comment a owl:AnnotationProperty .
+
+owl:versionInfo a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/contributor> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/creator> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/rights> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/subject> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/title> a owl:AnnotationProperty .
+
+dct:license a owl:AnnotationProperty .
+
+<https://ontologies.verizon.com/ontology-core-event/Event> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-event/Events>;
+  rdfs:label "Event"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "milsh69";
+  dct:modified "2025-04-24T17:00:42.330Z"^^xsd:dateTime;
+  dct:created "2024-10-01T20:18:37.686Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-event/efff0dc6-e5c3-4115-9530-3b4d3c2ac462> .
+
+<https://ontologies.verizon.com/ontology-core-event/Trigger> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-event/Events>;
+  rdfs:label "Trigger"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:modified "2025-04-17T13:47:06.434Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-event/9a20b917-0e76-49d0-aff7-2b8945698b1d> .
+
+<https://ontologies.verizon.com/ontology-core-event/DiscreteValue> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-event/EventState>;
+  rdfs:label "Discrete Value"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:modified "2025-04-17T13:47:06.434Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-event/468f43ec-b8d7-43da-aea4-58f2e3808748> .
+
+<https://ontologies.verizon.com/ontology-core-event/Events> a owl:Class;
+  rdfs:label "Events"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-17T13:47:06.434Z"^^xsd:dateTime;
+  dct:created "2025-04-01T19:40:18.573Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-event/947282e3-8021-459d-bbfa-4fd63affbb41> .
+
+<https://ontologies.verizon.com/ontology-core-event/EventState> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-event/Events>, [ a owl:Restriction;
+      owl:onProperty <https://ontologies.verizon.com/ontology-core-event/stateValue>;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ];
+  rdfs:label "Event State"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:modified "2026-10-05T12:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-event/f407fce6-0343-4fb2-8622-e91946e3f7ae> .
+
+<https://ontologies.verizon.com/ontology-core-event/stateValue> a owl:DatatypeProperty;
+  rdfs:label "state value"@en;
+  rdfs:domain <https://ontologies.verizon.com/ontology-core-event/EventState>;
+  rdfs:comment "The observed value of an event state. Replaces the ThinkHome realStateValue property used in v1.0."@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> .
+
+<https://ontologies.verizon.com/ontology-core-event/EventShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-event/Event>;
+  sh:property [ sh:path drm:occursIn; sh:class <https://ontologies.verizon.com/taxonomy-core-location/Location> ],
+    [ sh:path drm:occursWhen; sh:class <https://ontologies.verizon.com/taxonomy-core-time/Time> ],
+    [ sh:path drm:initiatedBy; sh:class <https://ontologies.verizon.com/ontology-core-event/Trigger> ],
+    [ sh:path drm:has; sh:class <https://ontologies.verizon.com/ontology-core-event/EventState> ],
+    [ sh:path drm:generates; sh:class <https://ontologies.verizon.com/taxonomy-core-process/Process> ] .
+
+<https://ontologies.verizon.com/ontology-core-event/EventStateShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-event/EventState>;
+  sh:property [ sh:path <https://ontologies.verizon.com/ontology-core-event/stateValue>; sh:minCount 1; sh:maxCount 1 ] .
+
+<https://ontologies.verizon.com/ontology-core-event/TriggerShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-event/Trigger>;
+  sh:property [ sh:path drm:initiates; sh:class <https://ontologies.verizon.com/ontology-core-event/Event> ] .

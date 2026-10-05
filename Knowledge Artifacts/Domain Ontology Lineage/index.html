@@ -1,0 +1,459 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Domain Ontology Lineage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: header + controls, then a left-to-right lineage graph (7 tiers) beside a detail panel; findings and tier ledger below. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eaeef3; --ink:#16202c; --ink-soft:#3c4757; --muted:#647083; --line:#d4dae3;
+  --t-found:#6650c4; --t-legacy:#a46c06; --t-vocab:#0c7f80; --t-tax:#2f7d3a; --t-core:#1f5bc4; --t-domain:#16202c; --t-domain-fg:#ffffff; --t-gov:#b83260;
+  --warn:#b45309; --warn-bg:#fdf3e4; --ok:#1d7a45; --ok-bg:#e7f4ec;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; --ok:#5fcf8c; --ok-bg:#15261c; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; --ok:#5fcf8c; --ok-bg:#15261c; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;gap:24px}
+header{display:grid;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{max-width:72ch;color:var(--ink-soft);margin:0}
+.lede code,.mono{font-family:var(--f-mono);font-size:.88em}
+.controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group-label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13px/1 var(--f-body);padding:7px 10px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip[aria-pressed="false"]{color:var(--muted);background:transparent}
+.chip[aria-pressed="false"] svg{opacity:.35}
+.chip:focus-visible,.node:focus-visible,.find:focus-visible,.link:focus-visible{outline:2px solid var(--t-core);outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+@media (max-width:1100px){.main{grid-template-columns:minmax(0,1fr)}}
+.graph{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto;min-width:0}
+.graph svg{display:block}
+.collabel{font-family:var(--f-display);font-weight:700;font-size:14px;fill:var(--ink)}
+.colsub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.colband{fill:var(--surface-2)}
+.node{cursor:pointer;transition:opacity .18s}
+.node rect.box{fill:var(--surface);stroke-width:1.4}
+.node .lbl{font:500 12.5px var(--f-body);fill:var(--ink)}
+.node .meta{font:400 10.5px var(--f-mono);fill:var(--muted)}
+.node.sel rect.box{stroke-width:2.6}
+.node.domain rect.box{fill:var(--t-domain)}
+.node.domain .lbl{fill:var(--t-domain-fg);font-weight:600}
+.node.domain .meta{fill:var(--t-domain-fg);opacity:.75}
+.node.dim{opacity:.22}
+.node .warnmark{fill:var(--warn)}
+.edge{fill:none;stroke-width:1.3;opacity:.55;transition:opacity .18s}
+.edge.hot{opacity:1;stroke-width:2}
+.edge.dim{opacity:.07}
+.e-imports{stroke:var(--ink-soft)}
+.e-grounds{stroke:var(--t-vocab)}
+.e-inherits{stroke:var(--t-legacy);stroke-dasharray:5 4}
+.e-anchors{stroke:var(--t-gov);stroke-dasharray:1.5 3.5}
+.e-aligns{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
+.e-maps{stroke:var(--t-vocab);stroke-dasharray:2 3}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;display:grid;gap:14px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:1100px){.panel{position:static}}
+.panel h2{font-family:var(--f-display);font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
+.tierpill{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.iri{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-soft);word-break:break-all;background:var(--surface-2);padding:6px 8px;border-radius:6px}
+.stats{display:flex;flex-wrap:wrap;gap:6px}
+.stat{font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line);border-radius:5px;padding:3px 7px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.panel p{margin:0;color:var(--ink-soft);font-size:14px}
+.rel h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:600}
+.rel ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.link{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);font:500 12.5px var(--f-body);padding:4px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.link:hover{background:var(--surface-2)}
+.link small{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.note:has(b.ok){background:var(--ok-bg)}
+.note{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--ink)}
+.note b{color:var(--warn)}
+.lineage-count{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.openlink .obox{fill:var(--surface-2);stroke:var(--line)}
+.openlink .oglyph{fill:none;stroke:var(--ink-soft);stroke-width:1.5;stroke-linecap:round}
+.openlink:hover .obox,.openlink:focus-visible .obox{fill:var(--ink);stroke:var(--ink)}
+.openlink:hover .oglyph,.openlink:focus-visible .oglyph{stroke:var(--bg)}
+.openlink:focus-visible{outline:none}
+.explore{display:grid;gap:6px}
+.explore a{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:var(--surface)}
+.explore a:hover{border-color:var(--ink-soft);background:var(--surface-2)}
+.explore a.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.explore a.primary small{color:var(--bg);opacity:.75}
+.explore b{font-weight:600;font-size:14px}
+.explore small{grid-column:2;font-size:12px;color:var(--muted)}
+.explore svg{grid-row:span 2}
+.explore .arr{grid-row:1/span 2;grid-column:3}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-soft);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+section.block{display:grid;gap:12px}
+section.block h2{font-family:var(--f-display);font-size:24px;margin:0}
+section.block > p{margin:0;color:var(--ink-soft);max-width:72ch}
+.findings{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:12px}
+.find{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:14px 16px;cursor:pointer;display:grid;gap:6px;font:inherit}
+.find:hover{border-color:var(--warn)}
+.find .sev.ok,.note b.ok{color:var(--ok)}
+.find .sev{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn)}
+.find strong{font-family:var(--f-display);font-size:16px;line-height:1.25;font-weight:600}
+.find span.body{font-size:13.5px;color:var(--ink-soft)}
+.ledger-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+tr:last-child td{border-bottom:none}
+td .mono{color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){.node,.edge{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Verizon Knowledge Fabric · ontology-core-domain v1.1 · draft</div>
+    <h1>Domain Ontology Lineage</h1>
+    <p class="lede">How the Domain Reference Model (<code>ontology-core-domain</code>) stands on BFO 2020 and the OBO Relations Core, and how vocabularies, taxonomies, core ontologies and governance overlays build on it. There is no separate upper ontology: the reference model is the foundation every other domain ontology imports. This is the corrected v1.1 set: the TM Forum SID, RAN and ThinkHome payloads are removed and every lineage issue from v1.0 is resolved. All 20 core SKOS vocabularies (888 concepts) are now in the lineage, each grounding its taxonomy or core ontology. Edges come from the v1.1 files: <code>owl:imports</code>, <code>dc:subject</code> links, vocabulary-to-taxonomy grounding, subclass anchors and SKOS mappings. Select any node to trace its ancestry and descendants, then open its vocabulary, hierarchy or ontology explorer from the panel. The small arrow on each node, or a double-click, opens that module’s main explorer directly.</p>
+  </header>
+
+  <div class="controls">
+    <div class="group" role="group" aria-label="Trace direction">
+      <span class="group-label">Trace</span>
+      <button class="chip" id="dir-up" data-dir="up" aria-pressed="false">Upstream</button>
+      <button class="chip" id="dir-both" data-dir="both" aria-pressed="true">Both</button>
+      <button class="chip" id="dir-down" data-dir="down" aria-pressed="false">Downstream</button>
+    </div>
+    <div class="group" role="group" aria-label="Edge types" id="edgeToggles">
+      <span class="group-label">Edges</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="graph" id="graph" aria-label="Lineage graph"></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <section class="block">
+    <h2>Resolution log</h2>
+    <p>What changed between v1.0 and v1.1, and the follow-ups that sit outside the supplied files. Select an entry to highlight the modules involved.</p>
+    <div class="findings" id="findings"></div>
+  </section>
+
+  <section class="block">
+    <h2>Tier ledger</h2>
+    <p>Counts are taken from the v1.1 files. The taxonomy OWL modules were not supplied; they appear because the core modules import them, and each is backed by its supplied SKOS scheme.</p>
+    <div class="ledger-wrap"><table id="ledger"></table></div>
+  </section>
+</div>
+
+<script>
+const TIERS = [
+  {id:"found",  name:"Formal foundations", sub:"BFO 2020 · OBO RO core",  color:"--t-found"},
+  {id:"legacy", name:"Inherited sources",  sub:"origin vocabularies",      color:"--t-legacy"},
+  {id:"vocab",  name:"Vocabularies",       sub:"SKOS · dc:subject",      color:"--t-vocab"},
+  {id:"domain", name:"Domain Reference Model", sub:"ontology-core-domain", color:"--t-domain"},
+  {id:"tax",    name:"Taxonomies",         sub:"taxonomy-core-*",        color:"--t-tax"},
+  {id:"core",   name:"Core ontologies",    sub:"ontology-core-*",        color:"--t-core"},
+  {id:"gov",    name:"Governance overlays",sub:"enablingvalue.com",      color:"--t-gov"}
+];
+const VZ = "https://ontologies.verizon.com/";
+const VC = "https://vocabularies.verizon.com/";
+const VFILE = {businessoperations:"BusinessOperations",technicalservices:"TechnicalServices",valuestream:"ValueStream"};
+const voc = (id,label,n,depth,branches,desc) => ({id:"v-"+id,label:label+" vocab",tier:"vocab",status:"supplied",file:"vocabularies/Vocabulary_Core_"+(VFILE[id]||id[0].toUpperCase()+id.slice(1))+"_1.1.ttl",iri:VC+"core-"+id+(id==="issue"?"/":""),meta:n+" concepts",stats:[n+" concepts","depth "+depth,"top: "+branches],desc:"SKOS concept scheme. "+desc});
+const tax = (id,label,classes,desc) => ({id:"tax-"+id,label,tier:"tax",status:"referenced",iri:VZ+"taxonomy-core-"+id+"/",stats:classes?["seen: "+classes]:[],desc});
+
+const NODES = [
+  {id:"bfo",label:"BFO 2020",tier:"found",status:"referenced",iri:"http://purl.obolibrary.org/obo/bfo/2020/bfo.owl",meta:"pinned · 14 cls",
+   stats:["ISO/IEC 21838-2","pinned via catalog-v001.xml","14 classes surfaced via RO"],desc:"Basic Formal Ontology, the top-level ontology. It supplies the continuant / occurrent split: independent, specifically and generically dependent continuants; process; role, function, disposition, quality. RO core imports the unversioned bfo.owl, so the v1.1 catalog redirects that import to the BFO 2020 release, and the Domain Reference Model also imports BFO 2020 by its version IRI. Everything resolves to one BFO."},
+  {id:"ro",label:"OBO Relations Core",tier:"found",status:"supplied",file:"BFO Relations.owl",iri:"http://purl.obolibrary.org/obo/ro/core.owl",meta:"30 props",
+   stats:["release 2024-04-24","30 object properties","13 classes","4 SWRL rules","unchanged"],desc:"The OBO Relation Ontology core: the standard relations over BFO (part of / has part, participates in / has participant, realizes, occurs in, located in, bearer of, concretizes). Four SWRL rules specialise 'has characteristic' into has disposition, quality, role and function. Kept as published; its BFO import is pinned to BFO 2020 by the catalog. The Domain Reference Model imports it and specialises its relations."},
+
+  {id:"svc",label:"Service Model (2012)",tier:"legacy",status:"referenced",iri:"http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#",meta:"origin",
+   stats:["now lives in vocabulary-core-servicemodel"],desc:"The original 2012 service model: Discover → Define → Design → Develop artifacts, personas, corporate / customer / compliance outcomes, D&A goals, governance controls, tools and applications. In v1.0 it was copied into both Capability and Event; v1.1 extracts it once."},
+  {id:"dqm",label:"DQM vocabulary",tier:"legacy",status:"referenced",iri:"http://purl.org/dqm-vocabulary/v1/dqm#",meta:"origin",
+   stats:["now lives in vocabulary-core-servicemodel"],desc:"Data-quality rule properties (hasCondition, testedProperty, referenceProperty, operatedValue, cleansingProperty, reqMetadata) and inverses such as basedOn / hasScore."},
+
+  {id:"v-svc",label:"Service Model vocab",tier:"vocab",status:"supplied",file:"Vocabulary_Core_ServiceModel_1.1.ttl",iri:VZ+"vocabulary-core-servicemodel/",meta:"new · 328",
+   stats:["new in v1.1","328 statements","249 duplicates merged"],desc:"Single home for the inherited 2012 service model, co-ode governance personas and DQM properties. Capability and Event import it instead of each carrying a copy."},
+  voc("product","Product",68,5,"Physical Product, Product Business Drivers, Product Concept, Product Function, Product Lifecycle","Grounds taxonomy-core-product."),
+  voc("party","Party",49,6,"Organization, Person, Vendor","Grounds taxonomy-core-party. Its Commercial, Finance and Strategy concepts share labels with Domain and Business Operations but name organisational units, so they are left unmapped."),
+  voc("persona","Persona",46,3,"Persona, Personalization, Preference, Prior History, Profile and User Behavior Data","Grounds taxonomy-core-persona."),
+  voc("location","Location",22,3,"Geospatial, Logical, Physical","Grounds taxonomy-core-location. City, State, Province, Region, Street Name and ZIP Code sit under Street Address as address components (part-of, not kind-of)."),
+  voc("time","Time",25,3,"Absolute, Episodic, Relative","Grounds taxonomy-core-time. v1.1 gives Future its own definition (it carried Full Period's) and drafts definitions for Relative and Subsecond, marked for steward review."),
+  voc("lifecycle","Lifecycle",21,3,"Acquire, Design Time, Inventory, Retire, Run Time","Grounds taxonomy-core-lifecycle, including the Run Time branch the five Domain service classes now sit under."),
+  voc("valuestream","Value Stream",19,2,"11 value streams from Order to Cash to Supply Chain Management","Grounds taxonomy-core-valuestream."),
+  voc("process","Process",12,3,"Measurement, Observation, Process Step","Grounds taxonomy-core-process."),
+  voc("services","Services",96,7,"Business Services, Functional Services","Grounds taxonomy-core-services and now three Domain classes: Operations Management, Communications and Service Level Management carry dc:subject links to it. Its Business Operations concept is where core-businessoperations attaches."),
+  voc("technicalservices","Tech Services",207,5,"Knowledge Engineering, Platform Operations, Data Engineering, Enterprise Search, Security Management and 8 more","Grounds taxonomy-core-services-technicalservices. The largest scheme. Its root broadMatches Services; 10 concepts closeMatch same-named ones in Asset, Capability, Services and Business Operations."),
+  voc("role","Role",5,1,"Consumer, Customer, Partner, Provider","Grounds taxonomy-core-role, which all three governance role hierarchies specialise."),
+  voc("rules","Rules",16,3,"Decision Logic, Process Flow, Structural Rule","Grounds taxonomy-core-rules."),
+  voc("compliance","Compliance",92,6,"Controls, Documentation, Environmental, Guideline, Licensing, Regulation, Social Impact","Grounds taxonomy-core-compliance. Documentation catalogues DCAM, DAMA-DMBOK2, ISO, NIST, TM Forum and enterprise standards. The TM Forum entries are reference standards, not lineage, so they were kept."),
+  voc("issue","Issue",9,2,"Defect, Problem, Request","Grounds taxonomy-core-issue. Its scheme IRI ends in a slash (core-issue/), unlike the other 19."),
+  voc("asset","Asset",33,4,"Biological, Digital, Physical Asset","Grounds ontology-core-asset through 33 dc:subject links. System Engineering now points to the scheme's existing concept (b5f33aea-…), so every link resolves."),
+  voc("requirements","Requirements",16,4,"Job, Journey, Outcome, Requirement","Grounds ontology-core-requirements through 16 dc:subject links. v1.1 moves Non-Functional Feature under Feature, matching the OWL fix."),
+  voc("event","Event",5,2,"Event, Event State, Trigger","Grounds ontology-core-event through 5 dc:subject links. Event and Events share one definition."),
+  voc("capability","Capability",49,4,"Business, Functional, Technical Capability","Grounds ontology-core-capability through 49 dc:subject links."),
+  voc("domain","Domain",22,3,"Commercial, Corporate, Network, Supply Chain","Grounds ontology-core-domain. Only the Domain class is linked; its 21 sub-domains (Finance, Legal, Network, Procurement…) have no OWL classes yet."),
+  voc("businessoperations","Business Ops",76,4,"Analytics & Reporting, Communications, Quality Management, Strategy, Sustainability, Technology","New to the lineage. No taxonomy or ontology imports it, so it attaches by mapping: its root exactMatches the Business Operations concept in core-services, and 4 concepts closeMatch Services and Technical Services."),
+
+  tax("product","Product","IndividualProduct","Product taxonomy. PhysicalAsset is a subclass of IndividualProduct."),
+  tax("party","Party","Party, Person","Party taxonomy. Asset now imports it directly: HumanAsset is a subclass of Person and BiologicalAsset is typeOf Party. Governance artifacts are stewardedBy a Party."),
+  tax("persona","Persona","Persona","The most shared module: imported by Asset, Event, Requirements and Domain. Persona performs Process and is assignedTo Role."),
+  tax("location","Location","Location","Where events and processes occur (occursIn)."),
+  tax("time","Time","Time","When events occur. v1.1 uses occursWhen as the single temporal path."),
+  tax("lifecycle","Lifecycle","Lifecycle, RunTime","Assets and Services have a Lifecycle. The five run-time service classes now sit under RunTime in the Verizon namespace."),
+  tax("valuestream","Value Stream","ValueStream, DataAnalyticsInsights","Value streams are enabledBy Services; DataAnalyticsInsights is enabledBy Data and Analytic Products. Asset now imports it."),
+  tax("process","Process","Process, Observation","The hub of Domain's shapes: Process creates / modifies Assets, generates Observations, is performedBy Persona and enables Services. Event now imports it for 'Event generates Process'; a Job Step is performedBy a Process."),
+  tax("services","Services","Services + 5 run-time classes","Services enable Capability and ValueStream, are assignedTo Persona and have a Lifecycle. Features are enabledBy Services. Operations, Communications, Service Level Management, Reporting and Training are now Services subclasses."),
+  tax("services-technicalservices","Technical Services","","Technical services sub-taxonomy. No shape references it yet."),
+  tax("role","Role","Role","Role performs and consumes Process. All three governance role hierarchies now specialise it."),
+  tax("rules","Rules","Rules","Rules guide and constrain Process. The governance overlay's Rule (SWRL) is a skos:closeMatch."),
+  tax("compliance","Compliance","Compliance","Compliance controls Process. The governance overlay's Constraint (SHACL) is a skos:closeMatch."),
+  tax("issue","Issue","Issue","Issues occur in Process and generate Observations."),
+
+  {id:"asset",label:"Asset",tier:"core",status:"supplied",file:"Ontology_Core_Asset_1.1.ttl",iri:VZ+"ontology-core-asset/",meta:"33 cls",
+   stats:["33 classes","7 SHACL shapes","6 imports","v1.1"],desc:"Asset → Digital / Physical / Biological. DigitalAsset → Artifact (15 kinds), Data → Data Product, Analytics → Analytic Product, Digital Agent → Autonomous Agent → AI / BI Agent, Document, Media, IP, Semantics. Governance anchors here: Data Asset ⊑ Data, Semantic Artefact ⊑ Semantics, Analytic Model ⊑ Analytics, AI System ⊑ Digital Asset."},
+  {id:"req",label:"Requirements",tier:"core",status:"supplied",file:"Ontology_Core_Requirements_1.1.ttl",iri:VZ+"ontology-core-requirements/",meta:"16 cls",
+   stats:["16 classes","7 SHACL shapes","1 disjointness","v1.1"],desc:"Jobs-to-be-done framing. Job (Functional, Emotional, Supporting; Job Step), Journey (Journey Step), Outcome, Requirement → Need (Job Executor) and Specification → Feature → Functional / Non-Functional (now siblings and disjoint). Imports the Domain Reference Model."},
+  {id:"event",label:"Event",tier:"core",status:"supplied",file:"Ontology_Core_Event_1.1.ttl",iri:VZ+"ontology-core-event/",meta:"5 cls",
+   stats:["5 classes","1 datatype property","3 SHACL shapes","v1.1"],desc:"Events → Event, Event State (→ Discrete Value) and Trigger. Event occursIn Location, occursWhen Time, is initiatedBy a Trigger, has an Event State and generates Process. Event State carries exactly one stateValue. File reduced from 2,505 statements to 19."},
+  {id:"cap",label:"Capability",tier:"core",status:"supplied",file:"Ontology_Core_Capability_1.1.ttl",iri:VZ+"ontology-core-capability/",meta:"49 cls",
+   stats:["49 classes","imports service model vocab","v1.1"],desc:"Capability → Business, Functional and Technical. Technical carries the data platform set: Data Management (Dictionary, Masking, Modeling, Privacy, Security), Integration, Storage → Data Lake → Cloud / On-prem Lakehouse, Test Data, MDM, Metric Management, Data Fabric, Data Catalog, AI & ML. File reduced from 2,238 statements to 60."},
+
+  {id:"domain",label:"Domain Reference Model",short:"Reference Model",tier:"domain",status:"supplied",file:"Ontology_Core_Domain_1.1.ttl",iri:VZ+"ontology-core-domain/",meta:"foundation",
+   stats:["imports RO core + BFO 2020 only","21 relations","20 reference classes","12 BFO anchors","13 SHACL shapes","v1.1"],desc:"The unifying ontology and the foundation for every other domain ontology. It declares the 21 shared relations (enables, performs, occursIn, occursWhen, assignedTo, guides, constrains, controls, generates, creates, modifies, has and more), aligns them to RO, declares the root class of each domain ontology and anchors 12 of them to BFO 2020. Its SHACL rules bind the domains together: Process creates / modifies Assets and enables Services; Services enable Capability and ValueStream; Rules guide and constrain Process; Compliance controls Process; Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services. Core, taxonomy and governance ontologies import it; it imports none of them."},
+
+  {id:"g-data",label:"Data Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-data.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-data",meta:"21 cls",
+   stats:["21 classes","2 core anchors","v1.1"],desc:"Data assets, policies (access, retention, quality, privacy), governance bodies and roles (owner, steward, custodian), and quality dimensions. Data Asset ⊑ Asset Data; Governance Role ⊑ Role. The base the other three governance modules import."},
+  {id:"g-sem",label:"Semantic Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-semantic.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-semantic",meta:"19 cls",
+   stats:["19 classes","3 core anchors","v1.1"],desc:"Governs the lineage itself. Its Semantic Artefact hierarchy (Thesaurus, Taxonomy, Formal Ontology, Knowledge Graph, Business Glossary) now sits under Asset Semantics; stewards specialise Role and the council is a Governance Body."},
+  {id:"g-an",label:"Analytics Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-analytics.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-analytics",meta:"17 cls",
+   stats:["17 classes","3 core anchors","v1.1"],desc:"Analytic model types and lifecycle, platforms, committee and validation results. Analytic Model ⊑ Analytics; Business Requirement ⊑ Requirements Requirement; its Governance Body now specialises the data-governance one instead of duplicating it."},
+  {id:"g-ai",label:"AI Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-ai.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-ai",meta:"20 cls",
+   stats:["20 classes","2 core anchors","v1.1"],desc:"AI systems, EU AI Act risk tiers, documentation and conformity assessment, FRIA, human oversight, audit logs, provider and deployer roles. AI System ⊑ Digital Asset; AI Governance Role ⊑ Role."},
+  {id:"g-ovl",label:"Governance Overlay",tier:"gov",status:"supplied",file:"ontology-core-governance-overlay.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-overlay#",meta:"16 cls",
+   stats:["16 classes","bound to Verizon core","v1.1"],desc:"The deontic layer. Normative sources mandate requirements, operationalized by a SHACL Constraint or SWRL Rule that appliesTo Process, Services or Capability. The core: stand-in is gone: it imports ontology-core-domain and matches taxonomy-core-compliance, taxonomy-core-rules and taxonomy-core-party directly."}
+];
+
+// [from, to, type, note]
+const EDGES = [
+  ["bfo","ro","imports","RO core imports bfo.owl, pinned to BFO 2020 by the catalog"],
+  ["ro","domain","imports","relations specialise RO"],["bfo","domain","imports","BFO 2020 by version IRI; 12 class anchors"],
+  ["domain","asset","imports","foundation"],["domain","cap","imports","foundation"],["domain","event","imports","foundation"],["domain","req","imports","foundation"],
+  ...["product","party","persona","location","time","lifecycle","valuestream","process","services","services-technicalservices","role","rules","compliance","issue"].map(t=>["domain","tax-"+t,"imports","should import the DRM (taxonomy module not supplied)"]),
+  ...["product","party","persona","lifecycle","valuestream"].map(t=>["tax-"+t,"asset","imports"]),
+  ...["location","persona","time","process"].map(t=>["tax-"+t,"event","imports"]),
+  ["tax-persona","req","imports"],
+  ["v-svc","cap","imports","replaces the embedded copy"],["v-svc","event","imports","replaces the embedded copy"],
+  ["v-asset","asset","grounds","33 dc:subject"],["v-capability","cap","grounds","49 dc:subject"],["v-event","event","grounds","5 dc:subject"],["v-requirements","req","grounds","16 dc:subject"],["v-domain","domain","grounds","1 dc:subject"],["v-services","domain","grounds","4 dc:subject"],
+  ...["process","role","party","location","valuestream","rules","persona","time","lifecycle","compliance","issue"].map(t=>["v-"+t,"domain","grounds","root class grounded in the top concept"]),
+  ...["product","party","persona","location","time","lifecycle","valuestream","process","services","role","rules","compliance","issue"].map(t=>["v-"+t,"tax-"+t,"grounds","scheme behind the taxonomy"]),
+  ["v-technicalservices","tax-services-technicalservices","grounds","scheme behind the taxonomy"],
+  ["v-businessoperations","v-services","maps","root exactMatch Business Operations; 3 closeMatch"],
+  ["v-technicalservices","v-services","maps","root broadMatch Services; 3 closeMatch"],
+  ["v-businessoperations","v-technicalservices","maps","1 closeMatch"],
+  ["v-asset","v-technicalservices","maps","3 closeMatch"],["v-asset","v-services","maps","1 closeMatch"],
+  ["v-capability","v-technicalservices","maps","3 closeMatch"],["v-capability","v-services","maps","1 closeMatch"],
+  ["v-compliance","v-services","maps","1 closeMatch"],["v-domain","v-compliance","maps","1 closeMatch"],
+  ["svc","v-svc","inherits","extracted into one module"],["dqm","v-svc","inherits","extracted into one module"],
+  ["asset","g-data","anchors","imported; Data Asset ⊑ Data"],["asset","g-sem","anchors","imported; Semantic Artefact ⊑ Semantics"],["asset","g-an","anchors","imported; Analytic Model ⊑ Analytics"],["asset","g-ai","anchors","imported; AI System ⊑ Digital Asset"],
+  ["req","g-an","anchors","imported; Business Requirement ⊑ Requirement"],
+  ["tax-role","g-data","anchors","Governance Role ⊑ Role"],["tax-role","g-sem","anchors","Semantic Governance Role ⊑ Role"],["tax-role","g-ai","anchors","AI Governance Role ⊑ Role"],
+  ["tax-party","g-ovl","anchors","stewardedBy range Party"],
+  ["domain","g-data","imports","foundation"],["domain","g-sem","imports","foundation"],["domain","g-an","imports","foundation"],["domain","g-ai","imports","foundation"],["domain","g-ovl","imports","foundation"],
+  ["g-data","g-sem","imports"],["g-data","g-an","imports"],["g-data","g-ai","imports"],
+  ["tax-compliance","g-ovl","aligns","Constraint skos:closeMatch Compliance"],["tax-rules","g-ovl","aligns","Rule skos:closeMatch Rules"]
+];
+const VIEWS = {"bfo":{"p":"ontology.html#bfo","v":{"taxonomy":"taxonomy.html#bfo","ontology":"ontology.html#bfo"}},"ro":{"p":"ontology.html#ro","v":{"taxonomy":"taxonomy.html#ro","ontology":"ontology.html#ro"}},"svc":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"dqm":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"v-svc":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"v-product":{"p":"vocabulary.html#v-product","v":{"vocabulary":"vocabulary.html#v-product","taxonomy":"taxonomy.html#tax-product","ontology":"ontology.html#tax-product"}},"v-party":{"p":"vocabulary.html#v-party","v":{"vocabulary":"vocabulary.html#v-party","taxonomy":"taxonomy.html#tax-party","ontology":"ontology.html#tax-party"}},"v-persona":{"p":"vocabulary.html#v-persona","v":{"vocabulary":"vocabulary.html#v-persona","taxonomy":"taxonomy.html#tax-persona","ontology":"ontology.html#tax-persona"}},"v-location":{"p":"vocabulary.html#v-location","v":{"vocabulary":"vocabulary.html#v-location","taxonomy":"taxonomy.html#tax-location","ontology":"ontology.html#tax-location"}},"v-time":{"p":"vocabulary.html#v-time","v":{"vocabulary":"vocabulary.html#v-time","taxonomy":"taxonomy.html#tax-time","ontology":"ontology.html#tax-time"}},"v-lifecycle":{"p":"vocabulary.html#v-lifecycle","v":{"vocabulary":"vocabulary.html#v-lifecycle","taxonomy":"taxonomy.html#tax-lifecycle","ontology":"ontology.html#tax-lifecycle"}},"v-valuestream":{"p":"vocabulary.html#v-valuestream","v":{"vocabulary":"vocabulary.html#v-valuestream","taxonomy":"taxonomy.html#tax-valuestream","ontology":"ontology.html#tax-valuestream"}},"v-process":{"p":"vocabulary.html#v-process","v":{"vocabulary":"vocabulary.html#v-process","taxonomy":"taxonomy.html#tax-process","ontology":"ontology.html#tax-process"}},"v-services":{"p":"vocabulary.html#v-services","v":{"vocabulary":"vocabulary.html#v-services","taxonomy":"taxonomy.html#tax-services","ontology":"ontology.html#tax-services"}},"v-technicalservices":{"p":"vocabulary.html#v-technicalservices","v":{"vocabulary":"vocabulary.html#v-technicalservices","taxonomy":"taxonomy.html#tax-services-technicalservices","ontology":"ontology.html#tax-services-technicalservices"}},"v-role":{"p":"vocabulary.html#v-role","v":{"vocabulary":"vocabulary.html#v-role","taxonomy":"taxonomy.html#tax-role","ontology":"ontology.html#tax-role"}},"v-rules":{"p":"vocabulary.html#v-rules","v":{"vocabulary":"vocabulary.html#v-rules","taxonomy":"taxonomy.html#tax-rules","ontology":"ontology.html#tax-rules"}},"v-compliance":{"p":"vocabulary.html#v-compliance","v":{"vocabulary":"vocabulary.html#v-compliance","taxonomy":"taxonomy.html#tax-compliance","ontology":"ontology.html#tax-compliance"}},"v-issue":{"p":"vocabulary.html#v-issue","v":{"vocabulary":"vocabulary.html#v-issue","taxonomy":"taxonomy.html#tax-issue","ontology":"ontology.html#tax-issue"}},"v-asset":{"p":"vocabulary.html#v-asset","v":{"vocabulary":"vocabulary.html#v-asset","taxonomy":"taxonomy.html#v-asset","ontology":"ontology.html#asset"}},"v-requirements":{"p":"vocabulary.html#v-requirements","v":{"vocabulary":"vocabulary.html#v-requirements","taxonomy":"taxonomy.html#v-requirements","ontology":"ontology.html#req"}},"v-event":{"p":"vocabulary.html#v-event","v":{"vocabulary":"vocabulary.html#v-event","taxonomy":"taxonomy.html#v-event","ontology":"ontology.html#event"}},"v-capability":{"p":"vocabulary.html#v-capability","v":{"vocabulary":"vocabulary.html#v-capability","taxonomy":"taxonomy.html#v-capability","ontology":"ontology.html#cap"}},"v-domain":{"p":"vocabulary.html#v-domain","v":{"vocabulary":"vocabulary.html#v-domain","taxonomy":"taxonomy.html#v-domain","ontology":"ontology.html#domain"}},"v-businessoperations":{"p":"vocabulary.html#v-businessoperations","v":{"vocabulary":"vocabulary.html#v-businessoperations","taxonomy":"taxonomy.html#v-businessoperations"}},"tax-product":{"p":"taxonomy.html#tax-product","v":{"vocabulary":"vocabulary.html#v-product","taxonomy":"taxonomy.html#tax-product","ontology":"ontology.html#tax-product"}},"tax-party":{"p":"taxonomy.html#tax-party","v":{"vocabulary":"vocabulary.html#v-party","taxonomy":"taxonomy.html#tax-party","ontology":"ontology.html#tax-party"}},"tax-persona":{"p":"taxonomy.html#tax-persona","v":{"vocabulary":"vocabulary.html#v-persona","taxonomy":"taxonomy.html#tax-persona","ontology":"ontology.html#tax-persona"}},"tax-location":{"p":"taxonomy.html#tax-location","v":{"vocabulary":"vocabulary.html#v-location","taxonomy":"taxonomy.html#tax-location","ontology":"ontology.html#tax-location"}},"tax-time":{"p":"taxonomy.html#tax-time","v":{"vocabulary":"vocabulary.html#v-time","taxonomy":"taxonomy.html#tax-time","ontology":"ontology.html#tax-time"}},"tax-lifecycle":{"p":"taxonomy.html#tax-lifecycle","v":{"vocabulary":"vocabulary.html#v-lifecycle","taxonomy":"taxonomy.html#tax-lifecycle","ontology":"ontology.html#tax-lifecycle"}},"tax-valuestream":{"p":"taxonomy.html#tax-valuestream","v":{"vocabulary":"vocabulary.html#v-valuestream","taxonomy":"taxonomy.html#tax-valuestream","ontology":"ontology.html#tax-valuestream"}},"tax-process":{"p":"taxonomy.html#tax-process","v":{"vocabulary":"vocabulary.html#v-process","taxonomy":"taxonomy.html#tax-process","ontology":"ontology.html#tax-process"}},"tax-services":{"p":"taxonomy.html#tax-services","v":{"vocabulary":"vocabulary.html#v-services","taxonomy":"taxonomy.html#tax-services","ontology":"ontology.html#tax-services"}},"tax-services-technicalservices":{"p":"taxonomy.html#tax-services-technicalservices","v":{"vocabulary":"vocabulary.html#v-technicalservices","taxonomy":"taxonomy.html#tax-services-technicalservices","ontology":"ontology.html#tax-services-technicalservices"}},"tax-role":{"p":"taxonomy.html#tax-role","v":{"vocabulary":"vocabulary.html#v-role","taxonomy":"taxonomy.html#tax-role","ontology":"ontology.html#tax-role"}},"tax-rules":{"p":"taxonomy.html#tax-rules","v":{"vocabulary":"vocabulary.html#v-rules","taxonomy":"taxonomy.html#tax-rules","ontology":"ontology.html#tax-rules"}},"tax-compliance":{"p":"taxonomy.html#tax-compliance","v":{"vocabulary":"vocabulary.html#v-compliance","taxonomy":"taxonomy.html#tax-compliance","ontology":"ontology.html#tax-compliance"}},"tax-issue":{"p":"taxonomy.html#tax-issue","v":{"vocabulary":"vocabulary.html#v-issue","taxonomy":"taxonomy.html#tax-issue","ontology":"ontology.html#tax-issue"}},"asset":{"p":"ontology.html#asset","v":{"vocabulary":"vocabulary.html#v-asset","taxonomy":"taxonomy.html#asset","ontology":"ontology.html#asset"}},"req":{"p":"ontology.html#req","v":{"vocabulary":"vocabulary.html#v-requirements","taxonomy":"taxonomy.html#req","ontology":"ontology.html#req"}},"event":{"p":"ontology.html#event","v":{"vocabulary":"vocabulary.html#v-event","taxonomy":"taxonomy.html#event","ontology":"ontology.html#event"}},"cap":{"p":"ontology.html#cap","v":{"vocabulary":"vocabulary.html#v-capability","taxonomy":"taxonomy.html#cap","ontology":"ontology.html#cap"}},"domain":{"p":"ontology.html#domain","v":{"vocabulary":"vocabulary.html#v-domain","taxonomy":"taxonomy.html#domain","ontology":"ontology.html#domain"}},"g-data":{"p":"ontology.html#g-data","v":{"taxonomy":"taxonomy.html#g-data","ontology":"ontology.html#g-data"}},"g-sem":{"p":"ontology.html#g-sem","v":{"taxonomy":"taxonomy.html#g-sem","ontology":"ontology.html#g-sem"}},"g-an":{"p":"ontology.html#g-an","v":{"taxonomy":"taxonomy.html#g-an","ontology":"ontology.html#g-an"}},"g-ai":{"p":"ontology.html#g-ai","v":{"taxonomy":"taxonomy.html#g-ai","ontology":"ontology.html#g-ai"}},"g-ovl":{"p":"ontology.html#g-ovl","v":{"taxonomy":"taxonomy.html#g-ovl","ontology":"ontology.html#g-ovl"}}};
+const ETYPES = [
+  {id:"imports",label:"owl:imports"},{id:"grounds",label:"vocabulary grounding"},{id:"inherits",label:"inherited source"},
+  {id:"anchors",label:"subclass / range anchor"},{id:"aligns",label:"skos:closeMatch"},{id:"maps",label:"vocabulary mapping"}
+];
+
+const FINDINGS = [
+  {sev:"Fixed",title:"All 20 vocabularies in the lineage",body:"The 14 taxonomy schemes, Business Operations and the five core schemes are now supplied v1.1 files. Each taxonomy is grounded by its scheme, and Services grounds three Domain classes (Operations Management, Communications, Service Level Management) through new dc:subject links.",nodes:["v-services","domain","tax-services","v-product","v-party","v-persona","v-location","v-time","v-lifecycle","v-valuestream","v-process","v-technicalservices","v-role","v-rules","v-compliance","v-issue"]},
+  {sev:"Fixed",title:"Business Operations placed",body:"core-businessoperations had no taxonomy or ontology. A new mapping file attaches it: its root exactMatches the Business Operations concept in core-services. Technical Services broadMatches Services, and 17 same-named concepts with the same sense are closeMatched across schemes. Pairs whose senses differ (Customer, Design, Guideline, Investigation and others) are left unmapped.",nodes:["v-businessoperations","v-services","v-technicalservices","v-asset","v-capability","v-compliance","v-domain"]},
+  {sev:"Fixed",title:"Vocabulary defects corrected",body:"Requirements: Non-Functional Feature now sits under Feature, matching the OWL disjointness. Time: Future no longer carries Full Period's definition, and Relative and Subsecond get drafted definitions marked for steward review. Unused caie: and sp: prefixes were removed from all 20 schemes.",nodes:["v-requirements","v-time","req","tax-time"]},
+  {sev:"Fixed",title:"The Domain Reference Model is the foundation",body:"The separate upper ontology and the upper-to-RO alignment are retired. ontology-core-domain now declares the 21 shared relations, their RO alignments and the root class of every domain ontology, and imports only RO core and BFO 2020. Asset, Capability, Event, Requirements and all five governance modules import it; it imports none of them, so there is no circular import. The upperontology IRIs stay as deprecated equivalents so existing data still resolves.",nodes:["domain","ro","bfo","asset","cap","event","req","g-data","g-sem","g-an","g-ai","g-ovl"]},
+  {sev:"Fixed",title:"RO core pinned to BFO 2020",body:"RO core 2024-04-24 imports the unversioned bfo.owl, which does not guarantee BFO 2020. The RO file stays exactly as published; a catalog-v001.xml redirects that import to the BFO 2020 release, and the DRM imports BFO 2020 by version IRI, so RO and the DRM share one BFO.",nodes:["ro","bfo","domain"]},
+  {sev:"Fixed",title:"Root classes anchored to BFO",body:"12 reference classes sit under BFO: Asset and Location ⊑ continuant; Physical Asset ⊑ material entity; Digital Asset, Requirement and Rules ⊑ generically dependent continuant; Party ⊑ independent continuant; Capability ⊑ realizable entity; Role ⊑ role; Process and Value Stream ⊑ process; Event ⊑ occurrent. 128 classes now reach BFO and a disjointness check finds no conflicts. Event replaces Events as the anchor because Events also groups Event State and Trigger.",nodes:["domain","bfo","asset","cap","event","req","tax-process","tax-role","tax-party","tax-location","tax-valuestream","tax-rules"]},
+  {sev:"Fixed",title:"Requirements bound into the model",body:"Requirements imports the Domain Reference Model, and three bridge shapes in the DRM bind it to the operating model: Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services.",nodes:["req","domain","cap","tax-process","tax-services"]},
+  {sev:"Fixed",title:"One IRI for the domain",body:"All four governance modules and the overlay import ontologies.verizon.com/ontology-core-domain/. Their example.org class namespaces moved to enablingvalue.com, version IRIs are real, and the overlay's core: stand-in is replaced by the Verizon taxonomies.",nodes:["domain","g-data","g-sem","g-an","g-ai","g-ovl"]},
+  {sev:"Fixed",title:"Feature hierarchy corrected",body:"Non-Functional Feature is now a sibling of Functional Feature under Feature, and the two are disjoint. The seven reflexive subClassOf axioms are removed.",nodes:["req","v-requirements"]},
+  {sev:"Fixed",title:"Each Asset class has its own concept",body:"System Engineering now points to the existing core-asset concept System Engineering (b5f33aea-30d7-4585-b1e2-b074d1126cec) instead of sharing Solution Architecture's. All 104 core dc:subject links resolve against the supplied schemes.",nodes:["asset","v-asset"]},
+  {sev:"Fixed",title:"One generation of shapes",body:"Domain drops the 13 metaphacts shapes and stubs; Requirements and Event shapes use the DRM relations only. The Event shape moved into ontology-core-event with occursWhen as the single temporal path.",nodes:["domain","event","req"]},
+  {sev:"Fixed",title:"SID, RAN and ThinkHome removed",body:"1,616 TM Forum SID individuals, about 265 RAN attributes per file and the ThinkHome energy terms are gone, along with orphaned anonymous axioms. Event State uses its own stateValue property. The mislabeled Passport and auto_negotiate definitions went with them.",nodes:["cap","event"]},
+  {sev:"Fixed",title:"Service model extracted once",body:"The 2012 service model, co-ode personas and DQM properties moved into vocabulary-core-servicemodel, merging 249 duplicates. Capability and Event import it. Asset and Event now import the taxonomies their shapes reference.",nodes:["v-svc","svc","dqm","cap","event","asset"]},
+  {sev:"Follow-up",title:"Model the Domain sub-domains",body:"core-domain has 21 sub-domains (Commercial, Corporate, Network, Supply Chain and their children) but ontology-core-domain declares only Domain. Add OWL classes for the ones shapes need to reference.",nodes:["v-domain","domain"]},
+  {sev:"Follow-up",title:"Reporting and Training lack Services concepts",body:"Both Domain classes sit under taxonomy-core-services, but core-services has no matching concept. Analytics & Reporting (Business Operations) and Training (Technical Services, under Threat Management) are different senses, so no link was made.",nodes:["v-services","domain"]},
+  {sev:"Follow-up",title:"Vocabulary housekeeping",body:"Event and Events share one definition. Six Technical Services pairs share definitions (e.g. Directory Maintenance / Directory Management, Manage Taxonomies / Taxonomy Management). core-issue's scheme IRI ends in a slash. Services Provisioning has no definition. These need a steward's call, so they were left as is.",nodes:["v-technicalservices","v-event","v-issue"]},
+  {sev:"Follow-up",title:"Taxonomies should import the DRM",body:"The 14 taxonomy modules were not supplied. Each should import ontology-core-domain and drop any import of the old upperontology, so they build on the reference model like the core and governance modules do.",nodes:["domain","tax-process","tax-role","tax-party","tax-persona","tax-services","tax-lifecycle","tax-location","tax-time","tax-valuestream","tax-rules","tax-compliance","tax-issue","tax-product","tax-services-technicalservices"]},
+  {sev:"Follow-up",title:"Anchor the remaining root classes",body:"Persona, Time, Lifecycle, Services, Compliance and Issue are declared in the DRM but not yet placed under BFO, because their members span categories (Time mixes temporal regions with frequencies such as Weekly; Services classes also sit under the Run Time lifecycle stage). Event State and Trigger need the same decision. Each carries an editorial note in the file.",nodes:["domain","tax-persona","tax-time","tax-lifecycle","tax-services","tax-compliance","tax-issue","event"]},
+  {sev:"Follow-up",title:"Review relation definitions",body:"The 21 DRM relations now carry definitions drafted from how the shapes use them. is, typeOf and hasRelated are very general; consider replacing them with specific relations before certifying.",nodes:["domain","req"]},
+  {sev:"Follow-up",title:"Review bridge shapes with stewards",body:"The three Requirements bridges are a modeling proposal. Confirm the property choices with the Requirements and Domain stewards before certifying v1.1.",nodes:["domain","req"]}
+];
+
+// ---------- layout ----------
+const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const COLW=182, NW=152, NH=34, GAP=42, TOP=70, PADX=14;
+const cols = TIERS.map(t=>NODES.filter(n=>n.tier===t.id));
+const maxRows = Math.max(...cols.map(c=>c.length));
+const H = TOP + maxRows*GAP + 14, W = PADX*2 + TIERS.length*COLW - (COLW-NW);
+cols.forEach((c,ci)=>{
+  const off = (maxRows - c.length)*GAP/2;
+  c.forEach((n,ri)=>{ n.x = PADX + ci*COLW; n.y = TOP + off + ri*GAP; });
+});
+const warnNodes = new Set(FINDINGS.filter(f=>f.sev==="Follow-up").flatMap(f=>f.nodes.slice(0,1)));
+
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,role:"img","aria-label":"Ontology lineage graph"});
+document.getElementById("graph").appendChild(svg);
+
+TIERS.forEach((t,ci)=>{
+  const x=PADX+ci*COLW;
+  el("rect",{x:x-6,y:8,width:NW+12,height:H-16,rx:8,class:"colband",opacity:ci%2?0.55:0.9},svg);
+  const l=el("text",{x:x,y:30,class:"collabel"},svg); l.textContent=t.name;
+  const s=el("text",{x:x,y:46,class:"colsub"},svg); s.textContent=t.sub;
+});
+
+const gEdges=el("g",{},svg), gNodes=el("g",{},svg);
+const edgeEls = EDGES.map(([a,b,type,note])=>{
+  const A=byId[a],B=byId[b]; let d;
+  const ay=A.y+NH/2, by=B.y+NH/2;
+  if(B.x>A.x){const x1=A.x+NW,x2=B.x,dx=(x2-x1)*0.5;d=`M${x1},${ay} C${x1+dx},${ay} ${x2-dx},${by} ${x2},${by}`;}
+  else if(B.x===A.x){const x1=A.x+NW,b=Math.min(34,14+Math.abs(by-ay)/12);d=`M${x1},${ay} C${x1+b},${ay} ${x1+b},${by} ${x1},${by}`;}
+  else {const x1=A.x+NW,x2=B.x+NW;d=`M${x1},${ay} C${x1+60},${ay} ${x2+60},${by} ${x2},${by}`;}
+  const p=el("path",{d,class:"edge e-"+type},gEdges);
+  if(note){const t=el("title",{},p);t.textContent=`${A.label} → ${B.label}: ${note}`;}
+  return {a,b,type,p};
+});
+
+const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5"};
+NODES.forEach(n=>{
+  const g=el("g",{class:"node"+(n.tier==="domain"?" domain":""),transform:`translate(${n.x},${n.y})`,tabindex:"0",role:"button","aria-label":`${n.label}, ${TIERS.find(t=>t.id===n.tier).name}`},gNodes);
+  const col=`var(${TIERS.find(t=>t.id===n.tier).color})`;
+  el("rect",{class:"box",width:NW,height:NH,rx:6,stroke:col,"stroke-dasharray":statusStroke[n.status]},g);
+  if(n.tier!=="domain") el("circle",{cx:12,cy:NH/2,r:4,fill:col},g);
+  const lx = n.tier==="domain"?10:22;
+  const t=el("text",{x:lx,y:15,class:"lbl"},g); t.textContent=n.short||n.label;
+  const m=el("text",{x:lx,y:27,class:"meta"},g); m.textContent=n.meta||(n.status==="referenced"?"referenced":"");
+  if(warnNodes.has(n.id)) el("path",{d:`M${NW-12},5 l4.5,8 h-9 z`,class:"warnmark"},g);
+  const oa=el("a",{href:VIEWS[n.id].p,class:"openlink","aria-label":`Open the ${n.label} explorer`},g);
+  const ot=el("title",{},oa); ot.textContent="Open explorer";
+  el("rect",{x:NW-21,y:NH-17,width:16,height:13,rx:3,class:"obox"},oa);
+  el("path",{d:`M${NW-16.5},${NH-7.5} l6,-6 M${NW-14},${NH-13.5} h3.5 v3.5`,class:"oglyph"},oa);
+  oa.addEventListener("click",e=>e.stopPropagation());
+  g.addEventListener("dblclick",()=>{location.href=VIEWS[n.id].p;});
+  g.addEventListener("click",()=>select(n.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id);}});
+  n.g=g;
+});
+
+// ---------- controls ----------
+const active=new Set(ETYPES.map(e=>e.id));
+const tg=document.getElementById("edgeToggles");
+const legend=document.getElementById("legend");
+const sample=(type)=>`<svg width="26" height="8" aria-hidden="true"><path d="M1,4 H25" class="edge e-${type}" style="opacity:1;stroke-width:2"/></svg>`;
+ETYPES.forEach(e=>{
+  const b=document.createElement("button");b.className="chip";b.id="edge-"+e.id;b.setAttribute("aria-pressed","true");
+  b.innerHTML=sample(e.id)+e.label;
+  b.onclick=()=>{active.has(e.id)?active.delete(e.id):active.add(e.id);b.setAttribute("aria-pressed",active.has(e.id));render();};
+  tg.appendChild(b);
+});
+legend.innerHTML = TIERS.map(t=>`<span><i class="dot" style="background:var(${t.color})"></i>${t.name}</span>`).join("")+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)"/></svg>supplied file</span>`+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>referenced, not supplied</span>`+
+  `<span><svg width="12" height="12"><path d="M1,11 L6,2 L11,11 z" fill="var(--warn)"/></svg>has an open follow-up</span>`;
+
+let dir="both", sel="domain", focusSet=null;
+document.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{dir=b.dataset.dir;document.querySelectorAll("[data-dir]").forEach(x=>x.setAttribute("aria-pressed",x===b));focusSet=null;render();});
+
+function trace(id){
+  const nodes=new Set([id]), edges=new Set();
+  const walk=(start,up)=>{const stack=[start],seen=new Set([start]);
+    while(stack.length){const cur=stack.pop();
+      edgeEls.forEach((e,i)=>{if(!active.has(e.type))return;
+        const from=up?e.b:e.a,to=up?e.a:e.b;
+        if(from===cur){edges.add(i);nodes.add(to);if(!seen.has(to)){seen.add(to);stack.push(to);}}});}};
+  if(dir!=="down")walk(id,true);
+  if(dir!=="up")walk(id,false);
+  return {nodes,edges};
+}
+function select(id){sel=id;focusSet=null;render();}
+
+function render(){
+  let T;
+  if(focusSet){T={nodes:new Set(focusSet),edges:new Set(edgeEls.map((e,i)=>(active.has(e.type)&&focusSet.includes(e.a)&&focusSet.includes(e.b))?i:-1).filter(i=>i>=0))};}
+  else T=trace(sel);
+  edgeEls.forEach((e,i)=>{
+    e.p.style.display=active.has(e.type)?"":"none";
+    e.p.classList.toggle("hot",T.edges.has(i));e.p.classList.toggle("dim",!T.edges.has(i));
+  });
+  NODES.forEach(n=>{n.g.classList.toggle("dim",!T.nodes.has(n.id));n.g.classList.toggle("sel",!focusSet&&n.id===sel);});
+  if(!focusSet) renderPanel(sel,T);
+}
+
+function relList(ids){return ids.length?`<ul>${ids.map(({id,type})=>`<li><button class="link" data-go="${id}"><i class="dot" style="background:var(${TIERS.find(t=>t.id===byId[id].tier).color})"></i>${byId[id].label}<small>${type}</small></button></li>`).join("")}</ul>`:`<p style="font-size:13px">None in this map.</p>`;}
+
+const VIEWINFO={vocabulary:["Vocabulary","concepts, definitions, mappings"],taxonomy:["Hierarchy","horizontal, vertical and outline trees"],ontology:["Ontology","graph, classes, shapes, properties"]};
+const VICON={vocabulary:'<path d="M3 3h10v10H3z M6 6h4 M6 8.5h4 M6 11h2"/>',taxonomy:'<path d="M3 4h4 M7 4v8 M7 8h5 M7 12h5"/>',ontology:'<circle cx="4" cy="4" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><path d="M5.7 5 10 5.6 M4.6 6 5.6 10 M10.6 7.4 7.5 10.8"/>'};
+function exploreLinks(id){
+  const v=VIEWS[id]; if(!v) return "";
+  const order=Object.keys(v.v).sort((a,b)=>(v.v[b]===v.p)-(v.v[a]===v.p));
+  return order.map(k=>`<a href="${v.v[k]}" class="${v.v[k]===v.p?"primary":""}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">${VICON[k]}</svg><b>${VIEWINFO[k][0]}</b><small>${VIEWINFO[k][1]}</small><span class="arr" aria-hidden="true">→</span></a>`).join("");
+}
+function renderPanel(id,T){
+  const n=byId[id], tier=TIERS.find(t=>t.id===n.tier);
+  const ins=EDGES.filter(e=>e[1]===id).map(e=>({id:e[0],type:e[2]}));
+  const outs=EDGES.filter(e=>e[0]===id).map(e=>({id:e[1],type:e[2]}));
+  const fs=FINDINGS.filter(f=>f.nodes.includes(id));
+  const statusText={supplied:`v1.1 file · ${n.file}`,referenced:"Referenced, not supplied"}[n.status];
+  document.getElementById("panel").innerHTML=`
+    <span class="tierpill"><i class="dot" style="background:var(${tier.color})"></i>${tier.name}</span>
+    <h2>${n.label}</h2>
+    <div class="iri">${n.iri}</div>
+    <p style="font-size:12.5px;color:var(--muted)">${statusText}</p>
+    ${n.stats&&n.stats.length?`<div class="stats">${n.stats.map(s=>`<span class="stat">${s}</span>`).join("")}</div>`:""}
+    <p>${n.desc}</p>
+    <div class="rel"><h3>Explore this module</h3><div class="explore">${exploreLinks(n.id)}</div></div>
+    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related modules over ${T.edges.size} edges</div>
+    <div class="rel"><h3>Draws from</h3>${relList(ins)}</div>
+    <div class="rel"><h3>Feeds into</h3>${relList(outs)}</div>
+    ${fs.map(f=>`<div class="note"><b class="${f.sev==='Fixed'?'ok':''}">${f.sev}:</b> ${f.title}</div>`).join("")}`;
+  document.querySelectorAll("#panel [data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+
+document.getElementById("findings").innerHTML=FINDINGS.map((f,i)=>`<button class="find" data-f="${i}"><span class="sev ${f.sev==='Fixed'?'ok':''}">${f.sev}</span><strong>${f.title}</strong><span class="body">${f.body}</span></button>`).join("");
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
+  const f=FINDINGS[+b.dataset.f]; focusSet=f.nodes; render();
+  const p=document.getElementById("panel");
+  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Modules involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
+  document.querySelectorAll("#panel [data-go]").forEach(x=>x.onclick=()=>select(x.dataset.go));
+  document.getElementById("graph").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
+
+// ledger
+const ledgerRows=[
+  ["Formal foundations","BFO 2020, OBO Relations Core (pinned by catalog-v001.xml)","1 of 2","14 BFO classes · 30 relations"],
+  ["Inherited sources","2012 Service Model, DQM vocabulary","via vocab","origins of vocabulary-core-servicemodel"],
+  ["Vocabularies","service model (new), mappings (new), 20 core schemes: asset, capability, event, requirements, domain, product, party, persona, location, time, lifecycle, valuestream, process, services, technical services, role, rules, compliance, issue, business operations","21 + mappings","888 concepts · 119 dc:subject links · 19 mappings"],
+  ["Domain Reference Model","ontology-core-domain (foundation); Ontology_Core_Bundle_1.1.ttl loads the full set for validation","1 of 1","21 relations · 20 reference classes · 12 BFO anchors · 13 shapes"],
+  ["Taxonomies","product, party, persona, location, time, lifecycle, valuestream, process, services, technical services, role, rules, compliance, issue","0 of 14","14 modules, should import the DRM"],
+  ["Core ontologies","Asset, Requirements, Event, Capability","4 of 4","103 named classes · each imports the DRM"],
+  ["Governance overlays","Data, Semantic, Analytics, AI, Overlay","5 of 5","93 classes · 10 core anchors"]
+];
+document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
+
+render();
+</script>
+
+</body></html>

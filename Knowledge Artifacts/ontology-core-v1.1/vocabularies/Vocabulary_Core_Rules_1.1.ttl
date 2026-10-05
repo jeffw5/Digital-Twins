@@ -1,0 +1,221 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+<https://vocabularies.verizon.com/core-rules> a skos:ConceptScheme;
+  rdfs:label "Vocabulary | Core | Rules"@en;
+  skos:prefLabel "Vocabulary | Core | Rules"@en;
+  skos:hasTopConcept <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab>;
+  skos:editorialNote "Verizon Knowledge Engineering acknowledges that some definitions contained within this vocabulary were generated with the assistance of VZGPT (vzgpt.verizon.com) or Google Gemini.";
+  dct:description "Statements that define or restrict an organization's activities, guiding decision-making and ensuring actions align with business strategy, ultimately streamlining operations and enhancing efficiency."@en;
+  dct:title "Vocabulary | Core | Rules"@en;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> <https://vocabularies.verizon.com/core-rules/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2026-10-05T00:00:00.000Z"^^xsd:dateTime;
+  skos:changeNote "This is the initial version of the vocabulary definitions to be refined over time with input from other stakeholders & resources.";
+  dct:created "2025-03-25T16:58:45.094Z"^^xsd:dateTime;
+  owl:versionInfo "1.1";
+  skos:changeNote "1.1: unused caie: and sp: prefixes removed; scheme included in the Domain lineage v1.1 package."@en .
+
+<https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab>
+  a skos:Concept;
+  skos:definition "Statements that define or restrict an organization's activities, guiding decision-making and ensuring actions align with business strategy, ultimately streamlining operations and enhancing efficiency. "@en;
+  skos:prefLabel "Rules"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-14T14:28:59.157Z"^^xsd:dateTime;
+  dct:created "2025-03-25T17:23:12.511Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/bbb126d7-188f-4605-8c80-3c86a6c9c044>
+  a skos:Concept;
+  skos:definition "Process based rules that test conditions and upon finding them true, initiate another business event, message or other activity"@en;
+  skos:example "IF <condition> THEN action"@en;
+  skos:prefLabel "Action Enabler Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:07.730Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/f685d7bb-32de-49f1-80f0-82a6d833beac>
+  a skos:Concept;
+  skos:definition "Rule that creates new information from existing information based on mathematical calculation or use of algorithm. Result is a piece of knowledge inferred, but not simply known. "@en;
+  skos:example "<term> IS COMPUTED AS <formula>"@en;
+  skos:prefLabel "Computation Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/7eddaa82-f972-4884-99e8-52312de04b8f>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:50:55.801Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d>
+  a skos:Concept;
+  skos:definition "Rules used for validation of data"@en;
+  skos:prefLabel "Constraint Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:17.327Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832>
+  a skos:Concept;
+  skos:definition "Core of what is typically referred to as 'business rules.' When a business decision needs to be made, the business rules are the individual statements of business logic that determine the result of the decision."@en;
+  skos:prefLabel "Decision Logic"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:48:37.865Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/7eddaa82-f972-4884-99e8-52312de04b8f>
+  a skos:Concept;
+  skos:definition "Also known as the Eligibility Rule, a set of conditions or logic that determines whether a specific characteristic or value should be derived or assigned based on other existing data or values."@en;
+  skos:prefLabel "Derivation Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:26.318Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/c7175f30-31b8-4965-9b46-18751c6fa24c>
+  a skos:Concept;
+  skos:definition "Word or phrase used by the business"@en;
+  skos:prefLabel "Facts"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/89500d88-a545-4741-905e-4753793d9c8d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:50.743Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/e5cb3a2a-5ad5-4830-9982-d136e55798c6>
+  a skos:Concept;
+  skos:definition "Rule that does not reject the transaction; they merely warn about an undesirable circumstance. Usually translates to warning messages."@en;
+  skos:example "<term> SHOULD HAVE <at least, at most, exactly n of> <term>"@en, "<term> SHOULD BE IN LIST <a,b,c>"@en;
+  skos:prefLabel "Guideline"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:35.001Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/dcfed8cd-9779-4e12-9c72-5179ea71dee8>
+  a skos:Concept;
+  skos:definition "Specify that if certain facts are true, a particular conclusion can be determined."@en;
+  skos:example "IF <term> <operator> <term> THEN <term> <operator> <term>"@en;
+  skos:prefLabel "Inference Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/7eddaa82-f972-4884-99e8-52312de04b8f>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:51:04.121Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/1071b57a-5253-45bc-8974-35415e92e356>
+  a skos:Concept;
+  skos:definition "Rules that reject the attempted business transaction"@en;
+  skos:example "<term> MUST HAVE <at least, at most, exactly n of> <term>"@en, "<term> MUST BE IN LIST <a,b,c>"@en;
+  skos:scopeNote "Grammar to use during rule documentation not implementation."@en;
+  skos:prefLabel "Mandatory Constraint"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:50:11.811Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/35514d06-e3cf-4900-a5f4-c2e253383a39>
+  a skos:Concept;
+  skos:definition "Places restrictions before and after a given operation"@en;
+  skos:prefLabel "Operation Constraint"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:50:20.363Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/9cc87075-f802-4093-bba5-900c273d892f>
+  a skos:Concept;
+  skos:definition "Rules that purely direct the movement through a process flow (or workflow, etc.)"@en;
+  skos:prefLabel "Process Flow"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:48:46.878Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/ce981f6c-7c48-4772-99d8-a4908c45ac10>
+  a skos:Concept;
+  skos:definition "Require conditions to be true prior to an action being taken"@en;
+  skos:prefLabel "Stimulus & Response"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:50:29.852Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/89500d88-a545-4741-905e-4753793d9c8d>
+  a skos:Concept;
+  skos:definition "Defines the fundamental structure and organization of data, concepts, and knowledge, ensuring consistency and facilitating analysis, and is often considered a \"definitional rule\". "@en;
+  skos:prefLabel "Structural Rule"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:48:55.683Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/61910c6f-c011-457d-85ad-c82ccb8abd5d>
+  a skos:Concept;
+  skos:definition "Authoritative constraint that established policies around classes, objects and the relationships between them that should not be disregarded"@en;
+  skos:prefLabel "Structure Constraint"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:50:40.140Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-rules/0fd5e62e-e537-4a24-bd32-3a061fa852d4>
+  a skos:Concept;
+  skos:definition "Relationships between two business concepts expressed as a statement connecting terms through prepositions and verbs into sensible business-relevant observations"@en;
+  skos:prefLabel "Terms"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-rules>;
+  skos:broader <https://vocabularies.verizon.com/core-rules/89500d88-a545-4741-905e-4753793d9c8d>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-03T15:49:58.705Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:49:47.371Z"^^xsd:dateTime .

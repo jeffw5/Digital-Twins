@@ -1,0 +1,501 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ontologies.verizon.com/ontology-core-capability/> a owl:Ontology;
+  rdfs:label "Ontology | Core | Capability"@en;
+  dct:title "Ontology | Core | Capability"@en;
+  dct:description "This ontology defines the core concept of a capability, including its attributes and relationships. This is foundational for understanding and analyzing the organization's capabilities."@en;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-core-capability/1.1>;
+  owl:versionInfo "1.1";
+  owl:priorVersion <https://ontologies.verizon.com/ontology-core-capability/1.0>;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:created "2024-09-15T00:00:00.000Z"^^xsd:dateTime;
+  dct:modified "2026-10-05T16:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  <http://verizon.ontologies.com/terms/certified> false;
+  skos:changeNote "v1.1: removed embedded TM Forum SID individuals, RAN network attributes and ThinkHome energy terms; moved the 2012 service model, co-ode governance personas and DQM properties to vocabulary-core-servicemodel (imported); dropped orphaned anonymous datatypes, misspelled skos declarations and local file: IRIs.";
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>,
+    <https://ontologies.verizon.com/vocabulary-core-servicemodel/>;
+  skos:changeNote "v1.1 (DRM): the separate upper ontology is retired. Its relations are declared in the Domain Reference Model (ontology-core-domain), which this module now imports as its foundation; shape paths use the ontology-core-domain relation IRIs."@en .
+
+<https://ontologies.verizon.com/ontology-core-capability/> dc11:title "Composite Ontologies for Verizon Knowledge Fabric"; rdfs:comment "Component Design for Verizon Knowledge Fabric"@en .
+
+rdfs:label a owl:AnnotationProperty .
+
+rdfs:comment a owl:AnnotationProperty .
+
+owl:versionInfo a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/contributor> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/creator> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/rights> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/subject> a owl:AnnotationProperty .
+
+<http://purl.org/dc/elements/1.1/title> a owl:AnnotationProperty .
+
+dct:license a owl:AnnotationProperty .
+
+<https://ontologies.verizon.com/ontology-core-capability/ArtificialIntelligenceMachineLearning>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Artificial Intelligence & Machine Learning"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/ebec0ac7-b9ca-4386-8aed-9a104ec9f2fa> .
+
+<https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/Capability>;
+  rdfs:label "Technical Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/0e790a36-fb48-4f96-a9f8-e55f1fa99ae7> .
+
+<https://ontologies.verizon.com/ontology-core-capability/BillingAccountingManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Billing & Accounting Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/adb1faa6-aaeb-4f02-a84c-8714bcc9cea7> .
+
+<https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/Capability>;
+  rdfs:label "Functional Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/f55ca509-135c-4e8b-9f8b-0cdca5b5cd1a> .
+
+<https://ontologies.verizon.com/ontology-core-capability/BusinessCapability> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/Capability>;
+  rdfs:label "Business Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/a9f0e92c-69ec-420b-8ada-921031cff506> .
+
+<https://ontologies.verizon.com/ontology-core-capability/Capability> a owl:Class;
+  rdfs:label "Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/fb72da4d-4eb4-4690-86e7-dec31096cbe0> .
+
+<https://ontologies.verizon.com/ontology-core-capability/BusinessIntelligence> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Business Intelligence"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/04fcea37-e9ed-48b7-917f-71d293b9321c> .
+
+<https://ontologies.verizon.com/ontology-core-capability/BusinessMarketplace> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Business Marketplace"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/6d6a83f9-c418-4907-b16c-644dcf1fe386> .
+
+<https://ontologies.verizon.com/ontology-core-capability/CloudDataLakehouse> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataLakeManagement>;
+  rdfs:label "Cloud Data Lakehouse"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/9881fe12-3aee-4f89-b89d-c639ec8c35db> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataLakeManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/StorageManagement>;
+  rdfs:label "Data Lake Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/fd2b3060-3f83-4534-9707-ee0cc681154b> .
+
+<https://ontologies.verizon.com/ontology-core-capability/CustomerRelationshipManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Customer Relationship Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/94103774-efbe-473b-b761-64c515e00113> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataArchitecture> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Architecture"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/b671bd99-30da-4aa0-8935-5de3e7c879aa> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataCatalog> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Catalog"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/a52efc2e-c37a-4c17-9a1c-d38c5134b3af> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataDictionary> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Data Dictionary"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/96dde8da-6834-4118-b55c-d2a8005400ac> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/ba7e6b25-f08a-4564-95d0-261341cdd8da> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataDiscovery> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Discovery"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/d686b92a-9a95-4e31-b181-95211fb3f5f1> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataFabric> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Fabric"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/2e992962-b829-4064-a982-bab8ff56dc7a> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataIntegration> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/Integration>;
+  rdfs:label "Data Integration"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/788e1214-6555-4fac-ae09-345810ab8e29> .
+
+<https://ontologies.verizon.com/ontology-core-capability/Integration> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Integration"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/9b9aeddc-f0df-4d74-bda3-95a469885852> .
+
+<https://ontologies.verizon.com/ontology-core-capability/StorageManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Storage Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/b9be4013-7b5f-4eab-bb45-1268a2955fef> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataLineageManagement> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Lineage Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/82238678-b36a-4ce8-88c7-e34c126b3b54> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataMarketplace> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Marketplace"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/4f24d758-0571-4977-904b-3036fb6171fc> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataMasking> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Data Masking"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/85276846-9e6b-430b-a1af-0b5aab5f3a06> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataModeling> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Data Modeling"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/8140f000-0a90-4499-8948-455a93ffc27a> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataPrivacy> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Data Privacy"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/1c8e3a8b-af50-454d-9070-64dfd27ce070> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataProcessIntegration> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data & Process Integration"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/f521e592-59ae-48a3-b42b-56bd1cf1f4d0> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataQualityCapability> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Quality Capability"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/35cb4c73-f80f-4db6-9dc9-750d2b5acb45> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataReporting> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Reporting"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/9bfe9579-a30a-4c79-b8b5-c24c505b5f77> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataScience> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Data Science"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/4f4d34f8-3578-4315-8e71-b9de9018825f> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataSecurity> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Data Security"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/aae1e57d-1ab4-4b27-8a65-254cc87a0884> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DataSubsetting> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TestDataManagement>;
+  rdfs:label "Data Subsetting"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/2b68b32f-9c43-4160-b5e4-07ed48b34cef> .
+
+<https://ontologies.verizon.com/ontology-core-capability/TestDataManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Test Data Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/d740f2c3-a822-4723-8ab5-a81179251707> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DatabaseManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataManagement>;
+  rdfs:label "Database Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/e32ee234-35e5-4fbe-a347-7bae4f29e367> .
+
+<https://ontologies.verizon.com/ontology-core-capability/DigitalAssetManagement> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Digital Asset Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/81cb11a5-91f0-4336-b807-1b5a8722262b> .
+
+<https://ontologies.verizon.com/ontology-core-capability/MasterDataManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Master Data Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/0cb2cfc0-0712-4a97-bad8-dc8190243632> .
+
+<https://ontologies.verizon.com/ontology-core-capability/MetricManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TechnicalCapability>;
+  rdfs:label "Metric Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/792ff73f-fd20-4f2a-835b-49fa954660e6> .
+
+<https://ontologies.verizon.com/ontology-core-capability/OnPremisesDataLakehouse>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/DataLakeManagement>;
+  rdfs:label "On Premises Data Lakehouse"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/1108dd72-9202-4d57-8852-2f3ea423908a> .
+
+<https://ontologies.verizon.com/ontology-core-capability/OrderManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Order Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/c8905008-2e0e-40b7-aa87-9c068644d580> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ProcessIntegration> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/Integration>;
+  rdfs:label "Process Integration"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/bc55e274-5860-4d84-8f50-91e09e27ceea> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ProductDataSyndication> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Product Data Syndication"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/f2f47038-84d8-4563-ba66-c82f589736d8> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ProductInformationManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Product Information Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/66dde6af-0090-4c1a-9ee5-7fb91eed9f51> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ProductManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Product Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/daf9ec41-7881-4fb3-847e-c9d1abb2e7f8> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ResourceManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Resource Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/1b5987d8-751d-4f6c-a1f2-b7cafd70970f> .
+
+<https://ontologies.verizon.com/ontology-core-capability/RiskManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Risk Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/7dd00d00-6fc4-4422-894f-eee0a98a1cf4> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ServiceActivationManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Service Activation Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/a2007c3c-da06-4b7d-b78d-a507802243cc> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ServiceAssuranceManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Service Assurance Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/b0608ff9-e1d1-4822-b631-73b0ffabba66> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ServicePortfolioManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/FunctionalCapability>;
+  rdfs:label "Service Portfolio Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/90de7ed2-eedf-4d81-abed-a4c11baeb45b> .
+
+<https://ontologies.verizon.com/ontology-core-capability/ServiceProvisioningManagement>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/BusinessCapability>;
+  rdfs:label "Service Provisioning Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/82b30123-84aa-49d3-8fdc-679106d5497f> .
+
+<https://ontologies.verizon.com/ontology-core-capability/SyntheticDataGeneration>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-capability/TestDataManagement>;
+  rdfs:label "Synthetic Data Generation"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-16T16:45:17.708Z"^^xsd:dateTime;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-capability/86585b93-21fd-44e3-9fb0-3462e00e25b2> .

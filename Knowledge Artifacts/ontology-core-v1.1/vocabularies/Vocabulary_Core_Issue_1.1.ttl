@@ -1,0 +1,131 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+<https://vocabularies.verizon.com/core-issue/> a skos:ConceptScheme;
+  rdfs:label "Vocabulary | Core | Issue"@en;
+  skos:prefLabel "Vocabulary | Core | Issue"@en;
+  skos:hasTopConcept <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a>;
+  skos:editorialNote "Verizon Knowledge Engineering acknowledges that some definitions contained within this vocabulary were generated with the assistance of VZGPT (vzgpt.verizon.com) or Google Gemini.";
+  dct:description "A generic term used to describe any problem, concern, or question that needs to be addressed. It is a broad term that encompasses defects, incidents, problems, requests, needs, and questions."@en;
+  dct:title "Vocabulary | Core | Issue"@en;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> <https://vocabularies.verizon.com/core-issue/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2026-10-05T00:00:00.000Z"^^xsd:dateTime;
+  skos:changeNote "This is the initial version of the vocabulary definitions to be refined over time with input from other stakeholders & resources.";
+  dct:created "2025-03-25T16:55:51.565Z"^^xsd:dateTime;
+  owl:versionInfo "1.1";
+  skos:changeNote "1.1: unused caie: and sp: prefixes removed; scheme included in the Domain lineage v1.1 package."@en .
+
+<https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a>
+  a skos:Concept;
+  skos:definition "A generic term used to describe any problem, concern, or question that needs to be addressed. It is a broad term that encompasses defects, incidents, problems, requests, needs, and questions."@en;
+  skos:prefLabel "Issue"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-14T14:08:33.781Z"^^xsd:dateTime;
+  dct:created "2025-03-25T17:19:17.993Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/86d58597-5a5c-47e6-ac8e-381b4bbd36bf>
+  a skos:Concept;
+  skos:definition "A flaw or imperfection in a product or system that causes it to deviate from its intended behavior or specifications. This deviation may or may not impact usability."@en;
+  skos:prefLabel "Defect"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:24:51.118Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/65c8c83a-f4b6-4f7e-8a70-0cda08962bb6>
+  a skos:Concept;
+  skos:definition "An event that disrupts or could disrupt a service or system operation. Often used interchangeably with “problem”."@en;
+  skos:prefLabel "Incident"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/59bff6f8-1846-4afc-9d2a-15e8254e3b82>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:25:44.864Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/2238f3ea-708b-4d0a-a6fe-0393f3c74f15>
+  a skos:Concept;
+  skos:definition "A significant defect that severely impacts the functionality, performance, or usability of a product or system. It may render the product unusable or cause a critical loss of data or functionality."@en;
+  skos:prefLabel "Major Defect"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/86d58597-5a5c-47e6-ac8e-381b4bbd36bf>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:25:21.380Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/53763e91-fe23-4609-b179-13bfaa87c5ef>
+  a skos:Concept;
+  skos:definition "A small, insignificant flaw that does not significantly impact the functionality or usability of a product or system. It may be a cosmetic issue or a slight deviation from the specifications."@en;
+  skos:prefLabel "Minor Defect"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/86d58597-5a5c-47e6-ac8e-381b4bbd36bf>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:25:32.185Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/7b06ba32-215a-45ee-90eb-e8ded38777dd>
+  a skos:Concept;
+  skos:definition "High-level requirements or expectations that must be met for a product or system to be successful."@en;
+  skos:prefLabel "Needs"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/e9cee37a-9a70-43d7-a1d6-2a125bddae63>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:26:00.168Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/59bff6f8-1846-4afc-9d2a-15e8254e3b82>
+  a skos:Concept;
+  skos:definition "A situation or event that needs to be investigated and resolved. It may be a symptom of a defect, an unexpected behavior, or a performance issue."@en;
+  skos:prefLabel "Problem"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:25:00.510Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/07e3e717-6ff3-4e02-8bac-ffeea6257ad5>
+  a skos:Concept;
+  skos:definition "An inquiry seeking information or clarification on a particular topic or issue."@en;
+  skos:prefLabel "Question"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/e9cee37a-9a70-43d7-a1d6-2a125bddae63>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:26:08.996Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
+
+<https://vocabularies.verizon.com/core-issue/e9cee37a-9a70-43d7-a1d6-2a125bddae63>
+  a skos:Concept;
+  skos:definition "A formal demand for something, such as a change, enhancement, or new feature."@en;
+  skos:prefLabel "Request"@en;
+  skos:inScheme <https://vocabularies.verizon.com/core-issue/>;
+  skos:broader <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-01T17:25:10.594Z"^^xsd:dateTime;
+  dct:created "2025-03-31T18:44:16.026Z"^^xsd:dateTime .
