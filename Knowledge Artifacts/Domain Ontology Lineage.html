@@ -1,0 +1,395 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Domain Ontology Lineage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: header + controls, then a left-to-right lineage graph (7 tiers) beside a detail panel; findings and tier ledger below. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eaeef3; --ink:#16202c; --ink-soft:#3c4757; --muted:#647083; --line:#d4dae3;
+  --t-found:#6650c4; --t-legacy:#a46c06; --t-vocab:#0c7f80; --t-tax:#2f7d3a; --t-core:#1f5bc4; --t-domain:#16202c; --t-domain-fg:#ffffff; --t-gov:#b83260;
+  --warn:#b45309; --warn-bg:#fdf3e4;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;gap:24px}
+header{display:grid;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{max-width:72ch;color:var(--ink-soft);margin:0}
+.lede code,.mono{font-family:var(--f-mono);font-size:.88em}
+.controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group-label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13px/1 var(--f-body);padding:7px 10px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip[aria-pressed="false"]{color:var(--muted);background:transparent}
+.chip[aria-pressed="false"] svg{opacity:.35}
+.chip:focus-visible,.node:focus-visible,.find:focus-visible,.link:focus-visible{outline:2px solid var(--t-core);outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+@media (max-width:1100px){.main{grid-template-columns:minmax(0,1fr)}}
+.graph{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto;min-width:0}
+.graph svg{display:block}
+.collabel{font-family:var(--f-display);font-weight:700;font-size:14px;fill:var(--ink)}
+.colsub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.colband{fill:var(--surface-2)}
+.node{cursor:pointer;transition:opacity .18s}
+.node rect.box{fill:var(--surface);stroke-width:1.4}
+.node .lbl{font:500 12.5px var(--f-body);fill:var(--ink)}
+.node .meta{font:400 10.5px var(--f-mono);fill:var(--muted)}
+.node.sel rect.box{stroke-width:2.6}
+.node.domain rect.box{fill:var(--t-domain)}
+.node.domain .lbl{fill:var(--t-domain-fg);font-weight:600}
+.node.domain .meta{fill:var(--t-domain-fg);opacity:.75}
+.node.dim{opacity:.22}
+.node .warnmark{fill:var(--warn)}
+.edge{fill:none;stroke-width:1.3;opacity:.55;transition:opacity .18s}
+.edge.hot{opacity:1;stroke-width:2}
+.edge.dim{opacity:.07}
+.e-imports{stroke:var(--ink-soft)}
+.e-grounds{stroke:var(--t-vocab)}
+.e-embeds{stroke:var(--t-legacy);stroke-dasharray:5 4}
+.e-refs{stroke:var(--muted);stroke-dasharray:1.5 3.5}
+.e-aligns{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;display:grid;gap:14px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:1100px){.panel{position:static}}
+.panel h2{font-family:var(--f-display);font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
+.tierpill{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.iri{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-soft);word-break:break-all;background:var(--surface-2);padding:6px 8px;border-radius:6px}
+.stats{display:flex;flex-wrap:wrap;gap:6px}
+.stat{font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line);border-radius:5px;padding:3px 7px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.panel p{margin:0;color:var(--ink-soft);font-size:14px}
+.rel h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:600}
+.rel ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.link{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);font:500 12.5px var(--f-body);padding:4px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.link:hover{background:var(--surface-2)}
+.link small{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.note{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--ink)}
+.note b{color:var(--warn)}
+.lineage-count{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-soft);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+section.block{display:grid;gap:12px}
+section.block h2{font-family:var(--f-display);font-size:24px;margin:0}
+section.block > p{margin:0;color:var(--ink-soft);max-width:72ch}
+.findings{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:12px}
+.find{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:14px 16px;cursor:pointer;display:grid;gap:6px;font:inherit}
+.find:hover{border-color:var(--warn)}
+.find .sev{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn)}
+.find strong{font-family:var(--f-display);font-size:16px;line-height:1.25;font-weight:600}
+.find span.body{font-size:13.5px;color:var(--ink-soft)}
+.ledger-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+tr:last-child td{border-bottom:none}
+td .mono{color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){.node,.edge{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Verizon Knowledge Fabric · ontology-core-domain v1.0 · draft</div>
+    <h1>Domain Ontology Lineage</h1>
+    <p class="lede">How vocabularies, taxonomies and core ontologies assemble into the unifying <code>ontology-core-domain</code>, and how the governance overlays sit on top of it. Every edge comes from the supplied files: <code>owl:imports</code>, <code>dc:subject</code> links to SKOS schemes, SHACL shape paths, and payloads embedded in the core modules. Select any node to trace its full ancestry and descendants.</p>
+  </header>
+
+  <div class="controls">
+    <div class="group" role="group" aria-label="Trace direction">
+      <span class="group-label">Trace</span>
+      <button class="chip" id="dir-up" data-dir="up" aria-pressed="false">Upstream</button>
+      <button class="chip" id="dir-both" data-dir="both" aria-pressed="true">Both</button>
+      <button class="chip" id="dir-down" data-dir="down" aria-pressed="false">Downstream</button>
+    </div>
+    <div class="group" role="group" aria-label="Edge types" id="edgeToggles">
+      <span class="group-label">Edges</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="graph" id="graph" aria-label="Lineage graph"></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <section class="block">
+    <h2>Lineage findings</h2>
+    <p>Gaps and defects the trace surfaces in the current v1.0 drafts. Select a finding to highlight the modules involved.</p>
+    <div class="findings" id="findings"></div>
+  </section>
+
+  <section class="block">
+    <h2>Tier ledger</h2>
+    <p>Counts are taken from the supplied files. Taxonomy modules and the upper ontology were not supplied; they appear here because the core modules import them.</p>
+    <div class="ledger-wrap"><table id="ledger"></table></div>
+  </section>
+</div>
+
+<script>
+const TIERS = [
+  {id:"found",  name:"Foundations",        sub:"BFO · RO · upper",       color:"--t-found"},
+  {id:"legacy", name:"Inherited sources",  sub:"embedded payloads",      color:"--t-legacy"},
+  {id:"vocab",  name:"Vocabularies",       sub:"SKOS · dc:subject",      color:"--t-vocab"},
+  {id:"tax",    name:"Taxonomies",         sub:"taxonomy-core-*",        color:"--t-tax"},
+  {id:"core",   name:"Core ontologies",    sub:"ontology-core-*",        color:"--t-core"},
+  {id:"domain", name:"Unifying domain",    sub:"ontology-core-domain",   color:"--t-domain"},
+  {id:"gov",    name:"Governance overlays",sub:"enablingvalue.com",      color:"--t-gov"}
+];
+const VZ = "https://ontologies.verizon.com/";
+const tax = (id,label,classes,desc) => ({id:"tax-"+id,label,tier:"tax",status:"referenced",iri:VZ+"taxonomy-core-"+id+"/",stats:classes?["seen: "+classes]:[],desc});
+
+const NODES = [
+  {id:"bfo",label:"BFO 2020",tier:"found",status:"referenced",iri:"http://purl.obolibrary.org/obo/bfo.owl",meta:"13 cls",
+   stats:["13 BFO classes surfaced via RO"],desc:"Basic Formal Ontology. Supplies the continuant / occurrent split (independent, specifically and generically dependent continuants; process; role, function, disposition, quality)."},
+  {id:"ro",label:"OBO Relations Core",tier:"found",status:"supplied",file:"BFO Relations.owl",iri:"http://purl.obolibrary.org/obo/ro/core.owl",meta:"30 props",
+   stats:["release 2024-04-24","30 object properties","13 classes","4 SWRL rules","CC0"],desc:"Core relations over BFO: part of / has part, participates in / has participant, realizes, occurs in, located in, bearer of, concretizes. Four SWRL rules specialise 'has characteristic' into has disposition, quality, role and function."},
+  {id:"upper",label:"Upper Ontology",tier:"found",status:"referenced",iri:VZ+"upperontology/",meta:"imported",
+   stats:["imported by all 4 core modules","~14 relations used as sh:path"],desc:"Verizon's shared relation set: enables, enabledBy, performs, performedBy, occursIn, occurs, assignedTo, guides, constrains, controls, generates, creates, modifies, typeOf, has, hasRelated. It mirrors a metaphacts 'basic-formal-ontology' namespace used by the older shapes."},
+
+  {id:"svc",label:"Service Model (2012)",tier:"legacy",status:"embedded",iri:"http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#",meta:"≈276",
+   stats:["241 subjects in Capability","276 subjects in Event"],desc:"The original 2012 service model: Discover → Define → Design → Develop artifacts, personas, corporate / customer / compliance outcomes, D&A goals, 41 governance controls, tools and applications. Carried forward as named individuals and annotation properties."},
+  {id:"sid",label:"TM Forum SID set",tier:"legacy",status:"embedded",iri:"http://www.semanticweb.org/milsh69/ontologies/2024/2/end-to-end-governance-example#",meta:"1,616",
+   stats:["1,616 individuals","duplicated in Capability and Event"],desc:"Telecom information framework entities (Party, ProductOffering, Customer/Resource Facing Service, PolicyRule, MetricDefinition, SecurityIncident, Workflow…) from the 2024 end-to-end governance example. Declared as owl:NamedIndividual, so they carry names but no structure."},
+  {id:"ran",label:"RAN network attributes",tier:"legacy",status:"embedded",iri:"http://www.semanticweb.org/wallkje/ontologies/2024/capability# · /event#",meta:"≈265",
+   stats:["264 in Capability","265 in Event","~200 field definitions"],desc:"Cell-site topology (CellSite → BasebandUnit → Radio / Antenna; gNodeB → CU → DU; Tower → Sector) with hasOne / hasMany cardinality links, plus physical-data field definitions such as azimuth, enodeb_id, pbit5_fd_avg and past7_util_p95."},
+  {id:"thinkhome",label:"ThinkHome Energy",tier:"legacy",status:"embedded",iri:"https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/EnergyResourceOntology.owl#",meta:"≈83",
+   stats:["23 subjects in Capability","83 subjects in Event"],desc:"Unit enumerations (currency, energy, capacity, area, weight), command shapes and state-value restrictions. EventState's cardinality-1 realStateValue axiom comes from here."},
+  {id:"dqm",label:"DQM vocabulary",tier:"legacy",status:"embedded",iri:"http://purl.org/dqm-vocabulary/v1/dqm#",meta:"props",
+   stats:["~40 sub-property axioms"],desc:"Data-quality rule properties (hasCondition, testedProperty, referenceProperty, operatedValue, cleansingProperty, reqMetadata) and inverses such as basedOn / hasScore."},
+
+  {id:"v-asset",label:"Core Asset terms",tier:"vocab",status:"referenced",iri:"https://vocabularies.verizon.com/core-asset/",meta:"33 → 32",stats:["33 dc:subject links","32 distinct concepts"],desc:"SKOS concept scheme behind ontology-core-asset. Each OWL class points to its concept by dc:subject."},
+  {id:"v-cap",label:"Core Capability terms",tier:"vocab",status:"referenced",iri:"https://vocabularies.verizon.com/core-capability/",meta:"49",stats:["49 dc:subject links"],desc:"SKOS concept scheme behind ontology-core-capability."},
+  {id:"v-req",label:"Core Requirements terms",tier:"vocab",status:"referenced",iri:"https://vocabularies.verizon.com/core-requirements/",meta:"16",stats:["16 dc:subject links"],desc:"SKOS concept scheme behind ontology-core-requirements (jobs-to-be-done language)."},
+  {id:"v-event",label:"Core Event terms",tier:"vocab",status:"referenced",iri:"https://vocabularies.verizon.com/core-event/",meta:"5",stats:["5 dc:subject links"],desc:"SKOS concept scheme behind ontology-core-event."},
+  {id:"v-domain",label:"Core Domain terms",tier:"vocab",status:"referenced",iri:"https://vocabularies.verizon.com/core-domain/",meta:"1",stats:["1 dc:subject link"],desc:"SKOS concept scheme behind ontology-core-domain. Only the Domain class itself is grounded."},
+
+  tax("product","Product","IndividualProduct","Product taxonomy. PhysicalAsset is declared a subclass of IndividualProduct. Imported by Asset only; Domain reaches it transitively."),
+  tax("party","Party","Party, Person","Party taxonomy. HumanAsset is a subclass of Person; Party is assignedTo Persona; BiologicalAsset is typeOf Party."),
+  tax("persona","Persona","Persona","Persona taxonomy. The most shared module: imported by Event, Requirements and Domain; Persona performs Process and is assignedTo Role."),
+  tax("location","Location","Location","Where events and processes occur (occursIn)."),
+  tax("time","Time","Time","When events occur (occurs / occursWhen)."),
+  tax("lifecycle","Lifecycle","Lifecycle, RunTime","Every Asset has a Lifecycle (AssetShape). Service-management run-time classes hang under RunTime."),
+  tax("valuestream","Value Stream","ValueStream, DataAnalyticsInsights","Value streams are enabledBy Services; DataAnalyticsInsights is enabledBy Data and Analytic Products."),
+  tax("process","Process","Process, Observation","The hub of Domain's shapes: Process creates / modifies Assets, generates Observations, is performedBy Persona and enables Services."),
+  tax("services","Services","Services","Services enable Capability and ValueStream and are assignedTo Persona."),
+  tax("services-technicalservices","Technical Services","","Technical services sub-taxonomy. Imported by Domain; no shape references it yet."),
+  tax("role","Role","Role","Role performs and consumes Process; Persona is assignedTo Role."),
+  tax("rules","Rules","Rules","Rules guide and constrain Process. The governance overlay's Rule (SWRL) is a skos:closeMatch."),
+  tax("compliance","Compliance","Compliance","Compliance controls Process. The governance overlay's Constraint (SHACL) is a skos:closeMatch."),
+  tax("issue","Issue","Issue","Issues occur in Process and generate Observations."),
+
+  {id:"asset",label:"Asset",tier:"core",status:"supplied",file:"Ontology_Core_Asset_1.0.ttl",iri:VZ+"ontology-core-asset/",meta:"33 cls",
+   stats:["33 classes","7 SHACL shapes","created 2024-09-24","modified 2025-09-30"],desc:"Asset → Digital / Physical / Biological. DigitalAsset → Artifact (15 kinds: specifications, controls, SLA, value map…), Data → Data Product, Analytics → Analytic Product, Digital Agent → Autonomous Agent → AI / BI Agent, Document, Media, IP, Semantics. HumanAsset is both a BiologicalAsset and a Person."},
+  {id:"req",label:"Requirements",tier:"core",status:"supplied",file:"Ontology_Core_Requirements_1.0.ttl",iri:VZ+"ontology-core-requirements/",meta:"16 cls",
+   stats:["16 classes","7 SHACL shapes","created 2024-09-15","modified 2025-09-30"],desc:"Jobs-to-be-done framing. Job (Functional, Emotional, Supporting; Job Step), Journey (Journey Step), Outcome, Requirement → Need (Job Executor) and Specification → Feature (Functional / Non-Functional). Job Executor performs Job, enables Outcome, relates to Persona."},
+  {id:"event",label:"Event",tier:"core",status:"supplied",file:"Ontology_Core_Event_1.0.ttl",iri:VZ+"ontology-core-event/",meta:"5 cls",
+   stats:["5 named classes","~2,200 embedded subjects","created 2024-10-01","modified 2025-09-30"],desc:"Events → Event, Event State (→ Discrete Value) and Trigger. Event occursIn Location, occursWhen Time, is initiatedBy a Trigger, has an Event State and generates Process. Most of the file is the embedded legacy payload."},
+  {id:"cap",label:"Capability",tier:"core",status:"supplied",file:"Ontology_Core_Capability_1.0.ttl",iri:VZ+"ontology-core-capability/",meta:"49 cls",
+   stats:["49 classes","~2,150 embedded subjects","modified 2025-09-30"],desc:"Capability → Business, Functional and Technical. Technical carries the data platform set: Data Management (Dictionary, Masking, Modeling, Privacy, Security), Integration, Storage → Data Lake → Cloud / On-prem Lakehouse, Test Data, MDM, Metric Management, Data Fabric, Data Catalog, AI & ML."},
+
+  {id:"domain",label:"Domain",tier:"domain",status:"supplied",file:"Ontology_Core_Domain_1.0.ttl",iri:VZ+"ontology-core-domain/",meta:"16 imports",
+   stats:["16 owl:imports","24 node shapes","1 class (Domain)","created 2024-10-02","modified 2025-09-30"],desc:"The unifying ontology. It adds almost no classes of its own; it assembles 13 taxonomies and 3 core ontologies and binds them with SHACL: Process creates / modifies Assets and enables Services; Services enable Capability and ValueStream; Rules guide and constrain Process; Compliance controls Process; Event generates Process at a Location and Time."},
+
+  {id:"g-data",label:"Data Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-data.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-data",meta:"21 cls",
+   stats:["21 classes","7 object props","4 datatype props"],desc:"Data assets (structured / semi / unstructured), policies (access, retention, quality, privacy), governance bodies and roles (owner, steward, custodian), and quality dimensions. The base that the other three governance modules import."},
+  {id:"g-sem",label:"Semantic Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-semantic.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-semantic",meta:"19 cls",
+   stats:["19 classes","10 object props","5 datatype props"],desc:"Governs the lineage itself. Its Semantic Artefact hierarchy names the same layers this map traces (Thesaurus, Taxonomy, Formal Ontology, Knowledge Graph, Business Glossary), plus terms, mappings (exact / broad / narrow), stewards and a council."},
+  {id:"g-an",label:"Analytics Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-analytics.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-analytics",meta:"17 cls",
+   stats:["17 classes","7 object props","3 datatype props"],desc:"Analytic model types, the build → deploy → monitor → refresh → retire lifecycle, training and serving platforms, governance committee, business requirement and validation results."},
+  {id:"g-ai",label:"AI Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-ai.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-ai",meta:"20 cls",
+   stats:["20 classes","10 object props","4 datatype props"],desc:"AI systems, EU AI Act risk tiers, technical documentation and conformity assessment, FRIA, human oversight, audit logs (6-month retention), provider and deployer roles. Training / validation / test datasets subclass Data Asset."},
+  {id:"g-ovl",label:"Governance Overlay",tier:"gov",status:"supplied",file:"ontology-core-governance-overlay.ttl",iri:"https://value-enablement.com/ont/governance#",meta:"16 cls",
+   stats:["16 classes","13 object props","5 datatype props"],desc:"The deontic layer. Normative sources (law, standard, discipline, policy) mandate requirements; each is operationalized by a SHACL Constraint or SWRL Rule that appliesTo a Process, Service, input/output or Capability, with lineage back to the SME repository row."}
+];
+
+// [from, to, type, note]
+const EDGES = [
+  ["bfo","ro","imports","RO Core imports bfo.owl"],
+  ["bfo","upper","aligns","property names come from a basic-formal-ontology namespace"],
+  ["ro","upper","aligns","occursIn, has part, participates in have RO equivalents; no mapping asserted"],
+  ["upper","asset","imports"],["upper","cap","imports"],["upper","event","imports"],["upper","req","imports"],
+  ["tax-product","asset","imports"],
+  ["tax-location","event","imports"],["tax-persona","event","imports"],["tax-time","event","imports"],
+  ["tax-persona","req","imports"],
+  ...["compliance","services-technicalservices","party","services","issue","lifecycle","process","rules","location","persona","role","time","valuestream"].map(t=>["tax-"+t,"domain","imports"]),
+  ["asset","domain","imports"],["cap","domain","imports"],["event","domain","imports"],
+  ["v-asset","asset","grounds"],["v-cap","cap","grounds"],["v-event","event","grounds"],["v-req","req","grounds"],["v-domain","domain","grounds"],
+  ["svc","cap","embeds"],["svc","event","embeds"],["sid","cap","embeds"],["sid","event","embeds"],
+  ["ran","cap","embeds"],["ran","event","embeds"],["thinkhome","cap","embeds"],["thinkhome","event","embeds"],["dqm","cap","embeds"],["dqm","event","embeds"],
+  ["tax-lifecycle","asset","refs","AssetShape: has Lifecycle"],["tax-valuestream","asset","refs","Data / Analytic Product enable DataAnalyticsInsights"],
+  ["tax-party","asset","refs","HumanAsset ⊑ Person; BiologicalAsset typeOf Party"],["tax-persona","asset","refs","Persona guides Asset"],
+  ["tax-process","event","refs","Event generates Process"],
+  ["domain","g-data","imports","via enablingvalue.com IRI"],["domain","g-sem","imports"],["domain","g-an","imports"],["domain","g-ai","imports"],["domain","g-ovl","imports","via core: stand-in"],
+  ["g-data","g-sem","imports"],["g-data","g-an","imports"],["g-data","g-ai","imports"],
+  ["tax-compliance","g-ovl","aligns","Constraint skos:closeMatch Compliance"],["tax-rules","g-ovl","aligns","Rule skos:closeMatch Rules"],["tax-party","g-ovl","refs","stewardedBy range Party"]
+];
+const ETYPES = [
+  {id:"imports",label:"owl:imports"},{id:"grounds",label:"vocabulary grounding"},{id:"embeds",label:"embedded payload"},
+  {id:"refs",label:"shape / subclass reference"},{id:"aligns",label:"alignment (unasserted or closeMatch)"}
+];
+
+const FINDINGS = [
+  {sev:"Gap",title:"Requirements never reaches Domain",body:"Domain imports Asset, Capability and Event but not ontology-core-requirements. Jobs, Outcomes and Features sit outside the unifying ontology, so nothing binds a Job Executor's Outcome to the Process or Capability that delivers it.",nodes:["req","domain"]},
+  {sev:"Gap",title:"Three IRIs for one domain",body:"Verizon modules use ontologies.verizon.com/ontology-core-domain/. The four governance modules import www.enablingvalue.com/ontology-core-domain and the overlay imports value-enablement.com core:. Without owl:equivalentClass bridges the overlays load against nothing.",nodes:["domain","g-data","g-sem","g-an","g-ai","g-ovl"]},
+  {sev:"Gap",title:"Upper ontology is not anchored to RO",body:"Shapes use upper-ontology relations (occursIn, performs, enables) whose names echo BFO, but no equivalence or sub-property links to RO_0000056, BFO_0000066 or BFO_0000050 are asserted. The BFO lineage is nominal only.",nodes:["bfo","ro","upper"]},
+  {sev:"Defect",title:"Non-functional feature is a functional feature",body:"NonFunctionalFeature ⊑ FunctionalFeature makes every non-functional requirement functional under OWL semantics. Seven Requirements classes also list themselves as their own superclass (Job ⊑ Job, Outcome ⊑ Outcome…).",nodes:["req","v-req"]},
+  {sev:"Defect",title:"Two classes share one vocabulary concept",body:"SolutionArchitecture and SystemEngineering both carry dc:subject …/core-asset/328eef65-…, so the vocabulary cannot tell them apart.",nodes:["asset","v-asset"]},
+  {sev:"Defect",title:"Domain carries two generations of shapes",body:"13 shapes target metaphacts.com classes and 11 target verizon.com classes for the same concepts (Process, Persona, Rules, Compliance…). Event also uses 'occurs' in Domain but 'occursWhen' in its own file.",nodes:["domain","event","tax-process","tax-persona"]},
+  {sev:"Cleanup",title:"Legacy payload duplicated in two modules",body:"About 2,150 to 2,200 legacy subjects (1,616 SID individuals, the 2012 service model, RAN attributes) appear in both Capability and Event, and the RAN set is minted twice under capability# and event#. Moving them to their own vocabulary modules would make the lineage explicit.",nodes:["cap","event","sid","svc","ran"]},
+  {sev:"Cleanup",title:"Mislabeled field definitions",body:"PassportIdentification is defined as 'Past 7 Days Average Per Day Bytes Passed', and auto_negotiate reuses the area_short definition. Event also contains empty owl:AllDisjointClasses member lists carried in from ThinkHome.",nodes:["cap","event","sid","ran","thinkhome"]}
+];
+
+// ---------- layout ----------
+const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const COLW=182, NW=152, NH=34, GAP=42, TOP=70, PADX=14;
+const cols = TIERS.map(t=>NODES.filter(n=>n.tier===t.id));
+const maxRows = Math.max(...cols.map(c=>c.length));
+const H = TOP + maxRows*GAP + 14, W = PADX*2 + TIERS.length*COLW - (COLW-NW);
+cols.forEach((c,ci)=>{
+  const off = (maxRows - c.length)*GAP/2;
+  c.forEach((n,ri)=>{ n.x = PADX + ci*COLW; n.y = TOP + off + ri*GAP; });
+});
+const warnNodes = new Set(FINDINGS.flatMap(f=>f.nodes.slice(0,2)));
+
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,role:"img","aria-label":"Ontology lineage graph"});
+document.getElementById("graph").appendChild(svg);
+
+TIERS.forEach((t,ci)=>{
+  const x=PADX+ci*COLW;
+  el("rect",{x:x-6,y:8,width:NW+12,height:H-16,rx:8,class:"colband",opacity:ci%2?0.55:0.9},svg);
+  const l=el("text",{x:x,y:30,class:"collabel"},svg); l.textContent=t.name;
+  const s=el("text",{x:x,y:46,class:"colsub"},svg); s.textContent=t.sub;
+});
+
+const gEdges=el("g",{},svg), gNodes=el("g",{},svg);
+const edgeEls = EDGES.map(([a,b,type,note])=>{
+  const A=byId[a],B=byId[b]; let d;
+  const ay=A.y+NH/2, by=B.y+NH/2;
+  if(B.x>A.x){const x1=A.x+NW,x2=B.x,dx=(x2-x1)*0.5;d=`M${x1},${ay} C${x1+dx},${ay} ${x2-dx},${by} ${x2},${by}`;}
+  else {const x1=A.x+NW,x2=B.x+NW;d=`M${x1},${ay} C${x1+60},${ay} ${x2+60},${by} ${x2},${by}`;}
+  const p=el("path",{d,class:"edge e-"+type},gEdges);
+  if(note){const t=el("title",{},p);t.textContent=`${A.label} → ${B.label}: ${note}`;}
+  return {a,b,type,p};
+});
+
+const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5"};
+NODES.forEach(n=>{
+  const g=el("g",{class:"node"+(n.tier==="domain"?" domain":""),transform:`translate(${n.x},${n.y})`,tabindex:"0",role:"button","aria-label":`${n.label}, ${TIERS.find(t=>t.id===n.tier).name}`},gNodes);
+  const col=`var(${TIERS.find(t=>t.id===n.tier).color})`;
+  el("rect",{class:"box",width:NW,height:NH,rx:6,stroke:col,"stroke-dasharray":statusStroke[n.status]},g);
+  if(n.tier!=="domain") el("circle",{cx:12,cy:NH/2,r:4,fill:col},g);
+  const lx = n.tier==="domain"?10:22;
+  const t=el("text",{x:lx,y:15,class:"lbl"},g); t.textContent=n.label;
+  const m=el("text",{x:lx,y:27,class:"meta"},g); m.textContent=n.meta||(n.status==="referenced"?"referenced":"");
+  if(warnNodes.has(n.id)) el("path",{d:`M${NW-12},6 l5,9 h-10 z`,class:"warnmark"},g);
+  g.addEventListener("click",()=>select(n.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id);}});
+  n.g=g;
+});
+
+// ---------- controls ----------
+const active=new Set(ETYPES.map(e=>e.id));
+const tg=document.getElementById("edgeToggles");
+const legend=document.getElementById("legend");
+const sample=(type)=>`<svg width="26" height="8" aria-hidden="true"><path d="M1,4 H25" class="edge e-${type}" style="opacity:1;stroke-width:2"/></svg>`;
+ETYPES.forEach(e=>{
+  const b=document.createElement("button");b.className="chip";b.id="edge-"+e.id;b.setAttribute("aria-pressed","true");
+  b.innerHTML=sample(e.id)+e.label;
+  b.onclick=()=>{active.has(e.id)?active.delete(e.id):active.add(e.id);b.setAttribute("aria-pressed",active.has(e.id));render();};
+  tg.appendChild(b);
+});
+legend.innerHTML = TIERS.map(t=>`<span><i class="dot" style="background:var(${t.color})"></i>${t.name}</span>`).join("")+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)"/></svg>supplied file</span>`+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>referenced, not supplied</span>`+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="1.5 2.5"/></svg>embedded in a core file</span>`+
+  `<span><svg width="12" height="12"><path d="M1,11 L6,2 L11,11 z" fill="var(--warn)"/></svg>has a finding</span>`;
+
+let dir="both", sel="domain", focusSet=null;
+document.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{dir=b.dataset.dir;document.querySelectorAll("[data-dir]").forEach(x=>x.setAttribute("aria-pressed",x===b));focusSet=null;render();});
+
+function trace(id){
+  const nodes=new Set([id]), edges=new Set();
+  const walk=(start,up)=>{const stack=[start],seen=new Set([start]);
+    while(stack.length){const cur=stack.pop();
+      edgeEls.forEach((e,i)=>{if(!active.has(e.type))return;
+        const from=up?e.b:e.a,to=up?e.a:e.b;
+        if(from===cur){edges.add(i);nodes.add(to);if(!seen.has(to)){seen.add(to);stack.push(to);}}});}};
+  if(dir!=="down")walk(id,true);
+  if(dir!=="up")walk(id,false);
+  return {nodes,edges};
+}
+function select(id){sel=id;focusSet=null;render();}
+
+function render(){
+  let T;
+  if(focusSet){T={nodes:new Set(focusSet),edges:new Set(edgeEls.map((e,i)=>(active.has(e.type)&&focusSet.includes(e.a)&&focusSet.includes(e.b))?i:-1).filter(i=>i>=0))};}
+  else T=trace(sel);
+  edgeEls.forEach((e,i)=>{
+    e.p.style.display=active.has(e.type)?"":"none";
+    e.p.classList.toggle("hot",T.edges.has(i));e.p.classList.toggle("dim",!T.edges.has(i));
+  });
+  NODES.forEach(n=>{n.g.classList.toggle("dim",!T.nodes.has(n.id));n.g.classList.toggle("sel",!focusSet&&n.id===sel);});
+  if(!focusSet) renderPanel(sel,T);
+}
+
+function relList(ids){return ids.length?`<ul>${ids.map(({id,type})=>`<li><button class="link" data-go="${id}"><i class="dot" style="background:var(${TIERS.find(t=>t.id===byId[id].tier).color})"></i>${byId[id].label}<small>${type}</small></button></li>`).join("")}</ul>`:`<p style="font-size:13px">None in this map.</p>`;}
+
+function renderPanel(id,T){
+  const n=byId[id], tier=TIERS.find(t=>t.id===n.tier);
+  const ins=EDGES.filter(e=>e[1]===id).map(e=>({id:e[0],type:e[2]}));
+  const outs=EDGES.filter(e=>e[0]===id).map(e=>({id:e[1],type:e[2]}));
+  const fs=FINDINGS.filter(f=>f.nodes.includes(id));
+  const statusText={supplied:`Supplied · ${n.file}`,referenced:"Referenced by imports, not supplied",embedded:"Embedded inside core module files"}[n.status];
+  document.getElementById("panel").innerHTML=`
+    <span class="tierpill"><i class="dot" style="background:var(${tier.color})"></i>${tier.name}</span>
+    <h2>${n.label}</h2>
+    <div class="iri">${n.iri}</div>
+    <p style="font-size:12.5px;color:var(--muted)">${statusText}</p>
+    ${n.stats&&n.stats.length?`<div class="stats">${n.stats.map(s=>`<span class="stat">${s}</span>`).join("")}</div>`:""}
+    <p>${n.desc}</p>
+    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related modules over ${T.edges.size} edges</div>
+    <div class="rel"><h3>Draws from</h3>${relList(ins)}</div>
+    <div class="rel"><h3>Feeds into</h3>${relList(outs)}</div>
+    ${fs.map(f=>`<div class="note"><b>${f.sev}:</b> ${f.title}</div>`).join("")}`;
+  document.querySelectorAll("#panel [data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+
+document.getElementById("findings").innerHTML=FINDINGS.map((f,i)=>`<button class="find" data-f="${i}"><span class="sev">${f.sev}</span><strong>${f.title}</strong><span class="body">${f.body}</span></button>`).join("");
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
+  const f=FINDINGS[+b.dataset.f]; focusSet=f.nodes; render();
+  const p=document.getElementById("panel");
+  p.innerHTML=`<span class="tierpill" style="color:var(--warn)">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Modules involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
+  document.querySelectorAll("#panel [data-go]").forEach(x=>x.onclick=()=>select(x.dataset.go));
+  document.getElementById("graph").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
+
+// ledger
+const ledgerRows=[
+  ["Foundations","BFO 2020, OBO Relations Core, Upper Ontology","1 of 3","13 classes · 30 relations · 4 SWRL rules (RO)"],
+  ["Inherited sources","2012 Service Model, TM Forum SID set, RAN attributes, ThinkHome, DQM","embedded","≈2,200 subjects per host file"],
+  ["Vocabularies","core-asset, core-capability, core-event, core-requirements, core-domain","0 of 5","104 dc:subject links"],
+  ["Taxonomies","product, party, persona, location, time, lifecycle, valuestream, process, services, technical services, role, rules, compliance, issue","0 of 14","14 modules imported"],
+  ["Core ontologies","Asset, Requirements, Event, Capability","4 of 4","103 named classes"],
+  ["Unifying domain","ontology-core-domain","1 of 1","16 imports · 24 node shapes"],
+  ["Governance overlays","Data, Semantic, Analytics, AI, Overlay","5 of 5","93 classes · 47 object props"]
+];
+document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
+
+render();
+</script>
+
+</body></html>

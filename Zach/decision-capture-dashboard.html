@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decision capture in the agentic loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #121a24;
+  --surface: #1a2431;
+  --surface-2: #22303f;
+  --line: #2f3f52;
+  --text: #dbe3ec;
+  --muted: #8d9bab;
+  --authority: #e2b25c;
+  --executor: #74a9d8;
+  --adversary: #d98395;
+  --substrate: #5cbcab;
+  --measure: #a7b47a;
+  --focus: #ffffff;
+}
+:root[data-theme="light"] {
+  --bg: #f3f1ec;
+  --surface: #ffffff;
+  --surface-2: #e9e6df;
+  --line: #d3cfc6;
+  --text: #1e242c;
+  --muted: #5c6672;
+  --authority: #a9741c;
+  --executor: #2f6ea3;
+  --adversary: #a8465b;
+  --substrate: #1f8a79;
+  --measure: #6b7a2a;
+  --focus: #000000;
+}
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+* { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+code, .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+a { color: var(--executor); }
+h1, h2, h3 { font-weight: 600; line-height: 1.25; margin: 0; }
+h1 { font-size: 1.45rem; }
+h2 { font-size: 1.2rem; margin-top: 2rem; margin-bottom: .6rem; }
+h3 { font-size: 1rem; margin-top: 1.4rem; margin-bottom: .4rem; }
+p { margin: 0 0 .9rem; max-width: 68ch; }
+ul, ol { padding-left: 1.3rem; margin: 0 0 .9rem; max-width: 68ch; }
+li { margin-bottom: .35rem; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.top .row { max-width: 780px; margin: 0 auto; padding: 12px 16px 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.top .sub { color: var(--muted); font-size: .9rem; margin: 2px 0 8px; }
+.themebtn { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 6px; padding: 4px 10px; font: inherit; font-size: .8rem; cursor: pointer; white-space: nowrap; }
+nav.tabs { max-width: 780px; margin: 0 auto; padding: 0 8px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button {
+  background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted);
+  padding: 10px 10px 12px; font: inherit; font-size: .95rem; cursor: pointer; white-space: nowrap;
+}
+nav.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--authority); }
+nav.tabs button:focus-visible, .themebtn:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+section.panel { display: none; }
+section.panel.active { display: block; }
+
+/* Loop */
+.loopwrap { margin: 1.2rem 0 .6rem; }
+.loopwrap svg { width: 100%; height: auto; display: block; }
+.stage { cursor: pointer; }
+.stage rect, .stage circle { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: stroke .15s; }
+.stage text { fill: var(--text); font-family: "IBM Plex Sans", sans-serif; font-size: 15px; font-weight: 500; pointer-events: none; }
+.stage .small { font-size: 12px; fill: var(--muted); font-weight: 400; }
+.stage.on rect { stroke-width: 2.5; }
+.stage[data-role="authority"].on rect { stroke: var(--authority); }
+.stage[data-role="executor"].on rect { stroke: var(--executor); }
+.stage[data-role="adversary"].on rect { stroke: var(--adversary); }
+.stage[data-role="substrate"].on rect { stroke: var(--substrate); }
+.stage[data-role="measure"].on rect { stroke: var(--measure); }
+.flow { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.flow.on { stroke: var(--text); stroke-width: 2; }
+.arrow { fill: var(--line); }
+.actorlbl { font-family: "IBM Plex Sans", sans-serif; font-size: 12px; fill: var(--muted); }
+.detail {
+  background: var(--surface); border: 1px solid var(--line); border-left-width: 4px;
+  border-radius: 8px; padding: 12px 14px; min-height: 120px;
+}
+.detail h3 { margin-top: 0; }
+.detail dl { display: grid; grid-template-columns: 6.5rem 1fr; gap: 4px 10px; margin: .4rem 0 0; font-size: .95rem; }
+.detail dt { color: var(--muted); }
+.detail dd { margin: 0; }
+.detail[data-role="authority"] { border-left-color: var(--authority); }
+.detail[data-role="executor"] { border-left-color: var(--executor); }
+.detail[data-role="adversary"] { border-left-color: var(--adversary); }
+.detail[data-role="substrate"] { border-left-color: var(--substrate); }
+.detail[data-role="measure"] { border-left-color: var(--measure); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--muted); margin: .6rem 0 0; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; background: currentColor; }
+.legend .a { color: var(--authority); } .legend .x { color: var(--executor); } .legend .v { color: var(--adversary); } .legend .s { color: var(--substrate); } .legend .m { color: var(--measure); }
+
+/* Interfaces */
+.ifsvg svg { width: 100%; height: auto; display: block; margin: 1rem 0; }
+.ifsvg text { font-family: "IBM Plex Sans", sans-serif; fill: var(--text); font-size: 14px; }
+.ifsvg .lbl { font-size: 11.5px; fill: var(--muted); }
+.ifsvg .box { fill: var(--surface); stroke-width: 1.5; }
+.ifsvg .chan { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.ifsvg .chan.hi { stroke: var(--text); stroke-width: 2.2; }
+.chanlist { display: grid; gap: 8px; margin: .6rem 0 1rem; }
+.chan-item { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+.chan-item summary { font-weight: 500; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 8px; }
+.chan-item summary::-webkit-details-marker { display: none; }
+.chan-item summary::after { content: "+"; color: var(--muted); }
+.chan-item[open] summary::after { content: "−"; }
+.chan-item .body { margin-top: .5rem; font-size: .95rem; }
+.chan-item .body p:last-child { margin-bottom: 0; }
+
+/* Definitions */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin: .8rem 0; }
+.chip { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: .85rem; cursor: pointer; }
+.chip[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+.search { width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; }
+.term { border-top: 1px solid var(--line); padding: 12px 0; }
+.term:last-child { border-bottom: 1px solid var(--line); }
+.term .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.term .name { font-weight: 600; }
+.term .src { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+.term .def { margin: .3rem 0 0; font-size: .95rem; }
+.term .map { margin: .35rem 0 0; font-size: .88rem; color: var(--muted); }
+.term .map b { color: var(--text); font-weight: 500; }
+.src-j { border-left: 3px solid var(--authority); padding-left: 10px; }
+.src-m { border-left: 3px solid var(--executor); padding-left: 10px; }
+.src-s { border-left: 3px solid var(--substrate); padding-left: 10px; }
+.empty { color: var(--muted); padding: 1rem 0; }
+
+/* Tables */
+.tbl { overflow-x: auto; margin: .6rem 0 1.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 500; }
+
+/* Mermaid */
+pre.mermaid { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; margin: .8rem 0 1.4rem; }
+
+/* Plan */
+.plan { display: grid; gap: 14px; margin-bottom: 1rem; }
+.plan > div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px 4px; }
+.plan h3 { margin-top: 0; }
+.plan ol { margin-bottom: .6rem; }
+.talk li { margin-bottom: .6rem; }
+.note { color: var(--muted); font-size: .9rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (min-width: 640px) { .plan { grid-template-columns: 1fr 1fr; } .plan > .full { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="row">
+    <div>
+      <h1>Decision capture in the agentic loop</h1>
+      <div class="sub">Working model for the Welz and Walk collaboration. Draft, September 2026.</div>
+    </div>
+    <button class="themebtn" id="themebtn" type="button">Light</button>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" aria-selected="true" data-tab="loop">Loop</button>
+    <button role="tab" aria-selected="false" data-tab="interfaces">Interfaces</button>
+    <button role="tab" aria-selected="false" data-tab="definitions">Definitions</button>
+    <button role="tab" aria-selected="false" data-tab="schema">Record</button>
+    <button role="tab" aria-selected="false" data-tab="deep">Deep dive</button>
+    <button role="tab" aria-selected="false" data-tab="plan">Plan</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- LOOP -->
+<section class="panel active" id="tab-loop" role="tabpanel">
+  <p style="margin-top:1rem">A decision passes through five stages. A human holds intent and approves what crosses a threshold; an agent does the work; a second agent challenges it; a memory substrate holds the record. Tap a stage to see who acts and what gets written.</p>
+
+  <div class="loopwrap">
+  <svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" aria-label="Five stage decision loop">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow"/></marker>
+    </defs>
+    <!-- actor lanes -->
+    <text x="18" y="52" class="actorlbl">Human</text>
+    <text x="18" y="182" class="actorlbl">Agents</text>
+    <text x="18" y="322" class="actorlbl">Substrate</text>
+    <line x1="18" y1="112" x2="622" y2="112" stroke="var(--line)" stroke-dasharray="3 5"/>
+    <line x1="18" y1="252" x2="622" y2="252" stroke="var(--line)" stroke-dasharray="3 5"/>
+
+    <!-- flows -->
+    <path id="f1" class="flow" d="M140,70 L140,150" marker-end="url(#ah)"/>
+    <path id="f2" class="flow" d="M200,180 L240,180" marker-end="url(#ah)"/>
+    <path id="f3" class="flow" d="M360,180 L400,180" marker-end="url(#ah)"/>
+    <path id="f4" class="flow" d="M460,150 L460,70" marker-end="url(#ah)"/>
+    <path id="f5" class="flow" d="M520,70 L580,70 L580,290 L520,290" marker-end="url(#ah)"/>
+    <path id="f6" class="flow" d="M400,290 L200,290" marker-end="url(#ah)"/>
+    <path id="f7" class="flow" d="M140,270 L140,210" marker-end="url(#ah)"/>
+    <path id="f8" class="flow" d="M300,210 L300,270" marker-end="url(#ah)"/>
+    <text x="410" y="140" class="actorlbl">only above threshold</text>
+    <text x="222" y="308" class="actorlbl">predicted vs actual feeds the next scoped view</text>
+
+    <!-- stages -->
+    <g class="stage on" data-stage="frame" data-role="authority" tabindex="0" role="button" aria-label="Frame">
+      <rect x="80" y="30" width="120" height="40" rx="8"/>
+      <text x="140" y="55" text-anchor="middle">1 Frame</text>
+    </g>
+    <g class="stage" data-stage="consult" data-role="executor" tabindex="0" role="button" aria-label="Consult">
+      <rect x="80" y="150" width="120" height="60" rx="8"/>
+      <text x="140" y="175" text-anchor="middle">2 Consult</text>
+      <text x="140" y="196" text-anchor="middle" class="small">scoped view</text>
+    </g>
+    <g class="stage" data-stage="weigh" data-role="adversary" tabindex="0" role="button" aria-label="Weigh">
+      <rect x="240" y="150" width="120" height="60" rx="8"/>
+      <text x="300" y="175" text-anchor="middle">3 Weigh</text>
+      <text x="300" y="196" text-anchor="middle" class="small">prune, challenge</text>
+    </g>
+    <g class="stage" data-stage="commit" data-role="executor" tabindex="0" role="button" aria-label="Commit">
+      <rect x="400" y="150" width="120" height="60" rx="8"/>
+      <text x="460" y="175" text-anchor="middle">4 Commit</text>
+      <text x="460" y="196" text-anchor="middle" class="small">predict first</text>
+    </g>
+    <g class="stage" data-stage="approve" data-role="authority" tabindex="0" role="button" aria-label="Approve">
+      <rect x="400" y="30" width="120" height="40" rx="8"/>
+      <text x="460" y="55" text-anchor="middle">Approve</text>
+    </g>
+    <g class="stage" data-stage="measure" data-role="measure" tabindex="0" role="button" aria-label="Measure">
+      <rect x="400" y="270" width="120" height="40" rx="8"/>
+      <text x="460" y="295" text-anchor="middle">5 Measure</text>
+    </g>
+    <g class="stage" data-stage="record" data-role="substrate" tabindex="0" role="button" aria-label="Record">
+      <rect x="80" y="270" width="120" height="40" rx="8"/>
+      <text x="140" y="295" text-anchor="middle">Record</text>
+    </g>
+  </svg>
+  </div>
+
+  <div class="detail" id="stagedetail" data-role="authority"></div>
+  <div class="legend"><span class="a">Authority (human)</span><span class="x">Executor (agent)</span><span class="v">Adversary (agent)</span><span class="s">Substrate</span><span class="m">Measurement</span></div>
+
+  <h2>Why capture happens here</h2>
+  <p>A person moving through consult, reason, reframe, delegate, escalate, and commit leaves no trace unless asked to. An agent in a harness makes those moves as actual tool calls and prompts, so the traversal record is a side effect of running the work. The human's own decisions are captured at the two points where the harness has to stop and ask (framing and approval), which is where the prediction and its failure condition are also forced.</p>
+  <p>The one step that blocks on data the agent cannot get from the substrate is the pre-commit prediction. In every other digital environment that step is an authoring task nobody performs; here it is a form the agent cannot skip.</p>
+</section>
+
+<!-- INTERFACES -->
+<section class="panel" id="tab-interfaces" role="tabpanel">
+  <p style="margin-top:1rem">Four parties, six channels. The substrate is Utraya (an RDF baseline of assertions with provenance and two time axes) with holonic containment supplying the scoped views. Tap a channel for what crosses it.</p>
+
+  <div class="ifsvg">
+  <svg viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" aria-label="Interfaces between human, agents, and substrate">
+    <defs>
+      <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrow"/></marker>
+    </defs>
+    <!-- Human -->
+    <rect class="box" x="230" y="20" width="180" height="56" rx="8" stroke="var(--authority)"/>
+    <text x="320" y="44" text-anchor="middle">Human</text>
+    <text x="320" y="62" text-anchor="middle" class="lbl">authority, owns intent and budgets</text>
+    <!-- Executor -->
+    <rect class="box" x="40" y="170" width="220" height="70" rx="8" stroke="var(--executor)"/>
+    <text x="150" y="196" text-anchor="middle">Executor agent</text>
+    <text x="150" y="216" text-anchor="middle" class="lbl">decomposes, provisions workers,</text>
+    <text x="150" y="230" text-anchor="middle" class="lbl">proposes and commits</text>
+    <!-- Adversary -->
+    <rect class="box" x="380" y="170" width="220" height="70" rx="8" stroke="var(--adversary)"/>
+    <text x="490" y="196" text-anchor="middle">Adversary agent</text>
+    <text x="490" y="216" text-anchor="middle" class="lbl">stresses, reframes, estimates impact,</text>
+    <text x="490" y="230" text-anchor="middle" class="lbl">audits escalation</text>
+    <!-- Substrate -->
+    <rect class="box" x="40" y="330" width="560" height="74" rx="8" stroke="var(--substrate)"/>
+    <text x="320" y="356" text-anchor="middle">Memory and traceability substrate</text>
+    <text x="320" y="376" text-anchor="middle" class="lbl">Utraya baseline (assertions, provenance, valid and transaction time)</text>
+    <text x="320" y="392" text-anchor="middle" class="lbl">holons and portals supply role projections; every operation reachable over MCP</text>
+
+    <!-- channels -->
+    <path id="c1" class="chan" d="M280,76 L180,170" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+    <text x="196" y="118" class="lbl">C1 intent and approval</text>
+    <path id="c2" class="chan" d="M360,76 L460,170" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+    <text x="414" y="118" class="lbl">C2 escalation</text>
+    <path id="c3" class="chan" d="M260,205 L380,205" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+    <text x="292" y="198" class="lbl">C3 challenge</text>
+    <path id="c4" class="chan" d="M120,240 L120,330" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+    <text x="128" y="290" class="lbl">C4 executor view</text>
+    <path id="c5" class="chan" d="M520,240 L520,330" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+    <text x="420" y="290" class="lbl">C5 adversary view</text>
+    <path id="c6" class="chan" d="M320,240 L320,330" marker-end="url(#ah2)"/>
+    <text x="270" y="318" class="lbl">C6 trace and outcome</text>
+  </svg>
+  </div>
+
+  <div class="chanlist" id="chanlist">
+    <details class="chan-item" data-chan="c1"><summary>C1 Human to executor. Intent, budgets, approval.</summary><div class="body">
+      <p>Inbound to the agent: the task, the framing question if the human states one, and budgets on the constrained qualities (cost, time, acceptable risk). Outbound to the human: the framed decision for confirmation, and answers to questions the human marks critical.</p>
+      <p>Writes: a DecisionRecord is opened with the human as authority; each Budget carries the human as owner. In Jeff's terms the budgets are where the guardrail gate lives, as an ordered constraint set rather than a fixed ethic.</p>
+    </div></details>
+    <details class="chan-item" data-chan="c2"><summary>C2 Adversary to human. Escalation.</summary><div class="body">
+      <p>The adversary estimates the value and impact of each decision and passes the ones above threshold to the human with the frontier and its own challenge attached. The executor never estimates its own escalations, since an executor that decides what reaches its overseer controls its own oversight. Below threshold the adversary clears the decision back to the executor.</p>
+      <p>Writes: a TraceEvent with move escalate, the escalatedTo link, and the status change. Jeff's circuit breaker levels (L1 alert, L2 hold, L3 halt) are the threshold policy this channel enforces for AI-in-the-loop alternatives.</p>
+    </div></details>
+    <details class="chan-item" data-chan="c3"><summary>C3 Executor and adversary. Challenge.</summary><div class="body">
+      <p>The executor hands over the frontier and its intended choice. The adversary returns a challenge in one of three modes (stress the plan for exploitable failure, force the executor to defend or adapt, introduce a different framing) together with any frontier options the executor neglected.</p>
+      <p>Writes: TraceEvents with move reframe or reason, additional Alternative entries, and any divergence found between an option's declared and observed profile.</p>
+    </div></details>
+    <details class="chan-item" data-chan="c4"><summary>C4 Executor and substrate. Scoped view and assertions.</summary><div class="body">
+      <p>Query: a task-scoped projection of the baseline, built by the executor's role holon (interior graph, boundary, projection, context) with its own weights over entries. The interface is a budgeted query simple enough for the least capable worker, because a structure that can only be reached through sophisticated queries has relocated the demand for capability rather than reduced it.</p>
+      <p>Write: every assertion the executor makes (alternatives, qualities, the prediction, the commit) lands as an assertion with the executor as asserting agent, a valid-time interval, and a transaction time. Portals validate with SHACL and record provenance on traversal. All operations are reachable over MCP.</p>
+    </div></details>
+    <details class="chan-item" data-chan="c5"><summary>C5 Adversary and substrate. Independent view.</summary><div class="body">
+      <p>The adversary holds its own projection with its own weights and is never provisioned by the executor, since a critic provisioned by its target is a compliance exercise. Its standing queries cover neglected frontier options and declared-versus-observed divergence.</p>
+      <p>Write: value and impact estimates, divergence findings, and its own TraceEvents, each attributed to the adversary as asserting agent.</p>
+    </div></details>
+    <details class="chan-item" data-chan="c6"><summary>C6 Measurement to substrate. Outcomes and reinforcement.</summary><div class="body">
+      <p>Telemetry, test results, twin runs, or cost and schedule actuals arrive against the MeasurementSignal the prediction named. The outcome is scored against the prediction and its falsifier; the gap reinforces or attenuates the pattern that was used.</p>
+      <p>Write: Outcome, observed Quality values, the gap, and a Pattern lifecycle event (reinforce or attenuate). Attenuation without reinforcement retires the pattern in time, so stale structure leaves without an auditor finding it.</p>
+    </div></details>
+  </div>
+
+  <h2>Substrate properties the loop depends on</h2>
+  <div class="tbl"><table>
+    <tr><th>Property</th><th>What it gives the loop</th></tr>
+    <tr><td>Baseline and projections</td><td>One body of truth per instance; each role sees a projection constructed from its role IRI, so the executor and adversary views differ without the underlying record diverging.</td></tr>
+    <tr><td>Assertions with provenance</td><td>Every entry names its asserting agent, so declared and observed evidence stay distinct and the traversal policy can be queried across many records.</td></tr>
+    <tr><td>Valid time and transaction time</td><td>A correction and a change are distinguishable; the record of what was believed at commit time survives later revision.</td></tr>
+    <tr><td>Holonic containment</td><td>A DecisionRecord that delegates a piece opens a child record inside its own boundary, which is Jeff's recursive breakdown structure realized as containment.</td></tr>
+    <tr><td>Controlled mutation</td><td>Standing structure changes only through named operations (promote, reinforce, attenuate, retire), so pattern change is attributable.</td></tr>
+    <tr><td>MCP surface and federation</td><td>Agents on any harness reach the substrate the same way; a partner's instance can be queried at its interface without exposing its interior, which is Jeff's opaque value-chain boundary.</td></tr>
+  </table></div>
+</section>
+
+<!-- DEFINITIONS -->
+<section class="panel" id="tab-definitions" role="tabpanel">
+  <p style="margin-top:1rem">Terms from Jeff's decision model, the meta-problem-solving framework, and the substrate, with the correspondence between them where one exists.</p>
+  <input class="search" id="q" type="search" placeholder="Filter terms" aria-label="Filter terms">
+  <div class="filters" role="group" aria-label="Source filter">
+    <button class="chip" data-src="all" aria-pressed="true" type="button">All</button>
+    <button class="chip" data-src="j" aria-pressed="false" type="button">Decision model (Jeff)</button>
+    <button class="chip" data-src="m" aria-pressed="false" type="button">Meta-problem solving</button>
+    <button class="chip" data-src="s" aria-pressed="false" type="button">Substrate</button>
+  </div>
+  <div id="terms"></div>
+</section>
+
+<!-- RECORD / SCHEMA -->
+<section class="panel" id="tab-schema" role="tabpanel">
+  <h2 style="margin-top:1rem">The record a decision leaves behind</h2>
+  <p>The class diagram is on the Deep dive tab; the table below states each class and where the loop writes it.</p>
+  <div class="tbl"><table>
+    <tr><th>Class</th><th>Holds</th><th>Written at</th></tr>
+    <tr><td><code>DecisionRecord</code></td><td>framing question, decision class, status, links to everything below</td><td>Frame (opened), Commit (closed)</td></tr>
+    <tr><td><code>Budget</code></td><td>a constrained quality, its limit, the authority as owner</td><td>Frame</td></tr>
+    <tr><td><code>Alternative</code></td><td>a candidate with declared qualities and a dominated flag</td><td>Consult, Weigh</td></tr>
+    <tr><td><code>Quality</code></td><td>name, value, and whether declared or observed</td><td>Consult (declared), Measure (observed)</td></tr>
+    <tr><td><code>TraceEvent</code></td><td>the move (consult, reason, reframe, delegate, escalate, commit, reuse), actor, time, evidence reference</td><td>every stage</td></tr>
+    <tr><td><code>Prediction</code></td><td>expected effect in one of four categories (strategy, service, process, asset)</td><td>before Commit</td></tr>
+    <tr><td><code>Falsifier</code></td><td>the failure condition and the measurement signal it will be read from</td><td>before Commit</td></tr>
+    <tr><td><code>Outcome</code></td><td>observed value and the gap against the prediction</td><td>Measure</td></tr>
+    <tr><td><code>Pattern</code></td><td>a promoted path with a weight and a lifecycle state</td><td>Consult (reused), Measure (reinforced or attenuated)</td></tr>
+    <tr><td><code>Actor</code></td><td>role: authority, executor, adversary</td><td>Frame</td></tr>
+    <tr><td><code>Requirement</code></td><td>a software requirement the decision derives or constrains; identifier, statement, priority</td><td>Commit</td></tr>
+    <tr><td><code>TestCase</code></td><td>a verification of a requirement; the prediction names the tests expected to pass and the falsifier the tests whose failure refutes the decision</td><td>Commit (named), Measure (run)</td></tr>
+  </table></div>
+  <p>Ten classes describe the decision; Requirement and TestCase tie it to the software it produced, which is the trace chain the prototype demonstrates on its own construction.</p>
+
+  <h2>Alignment to PROV-O</h2>
+  <p>A <code>DecisionRecord</code> is a <code>prov:Activity</code>. Each <code>Alternative</code>, <code>Prediction</code>, <code>Outcome</code>, <code>Requirement</code>, and <code>TestCase</code> is a <code>prov:Entity</code>; a requirement <code>wasDerivedFrom</code> the decision that produced it. An <code>Actor</code> is a <code>prov:Agent</code> with a role qualifier. A <code>TraceEvent</code> is a qualified association whose role is the move, which is what makes the traversal policy a query over many records rather than a story told after the fact.</p>
+
+  <h2>Correspondence with the decision model</h2>
+  <div class="tbl"><table>
+    <tr><th>Decision model element</th><th>Where it lands in the record</th></tr>
+    <tr><td>Decision Breakdown Structure node</td><td>DecisionRecord; child decisions are records reached through a delegate TraceEvent and held inside the parent's holon</td></tr>
+    <tr><td>Candidate alternatives and criteria</td><td>Alternative and Quality</td></tr>
+    <tr><td>Guardrail gate</td><td>Ordered Budget set owned by the authority; the lexicographic order is a configuration of that set</td></tr>
+    <tr><td>Causal Impact Map</td><td>Prediction, with the same four categories</td></tr>
+    <tr><td>Measurement and feedback</td><td>Outcome and gap</td></tr>
+    <tr><td>Harvested decision pattern</td><td>Pattern with lifecycle</td></tr>
+    <tr><td>Holonic governance and circuit breaker</td><td>Adversary threshold and the escalate move; L1 to L3 map to threshold bands</td></tr>
+    <tr><td>Design-time decision queue</td><td>Records with status open, ranked by the adversary's value and impact estimate</td></tr>
+    <tr><td>Decision-to-requirements traceability (Fitch 2009)</td><td>DecisionRecord derives Requirement; Requirement verifiedBy TestCase; test result as Outcome</td></tr>
+    <tr><td>Decision frontier</td><td>Records with status open in the current holon, at any depth</td></tr>
+  </table></div>
+</section>
+
+<!-- DEEP DIVE -->
+<section class="panel" id="tab-deep" role="tabpanel">
+  <h2 style="margin-top:1rem">Interaction sequence</h2>
+  <p>Numbered steps match the table on the Record tab. Every arrow carrying a decision move emits a TraceEvent.</p>
+<pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant H as Authority (human)
+    participant X as Executor (agent)
+    participant A as Adversary (agent)
+    participant K as Substrate (Utraya)
+    participant T as Tools / environment
+    participant M as Measurement
+
+    H->>X: Task + intent + budgets (cost, time, risk)
+    Note over X: open DecisionRecord<br/>framing question, decision class, budgets
+    X->>K: scoped view request (task-scoped projection)
+    Note right of X: TraceEvent(consult)
+    K-->>X: candidates + declared qualities + prior patterns
+    X->>X: dominance prune, keep frontier
+    Note right of X: TraceEvent(reason)<br/>Alternative[] with Quality values
+
+    alt matching standing pattern exists
+        X->>X: apply pattern, skip deliberation
+        Note right of X: TraceEvent(reuse) refs Pattern
+    else novel
+        X->>A: frontier + intended choice
+        A->>K: independent scoped view (own weights)
+        A-->>X: challenge (stress / defend / reframe) + neglected frontier options
+        Note right of A: TraceEvent(reframe or reason)
+        A->>A: estimate value and impact of the decision
+    end
+
+    alt value/impact above threshold
+        A->>H: escalate with frontier + challenge
+        Note right of A: TraceEvent(escalate)
+        H-->>X: approval or redirection
+    else below threshold
+        A-->>X: cleared
+    end
+
+    Note over X: Prediction + Falsifier + MeasurementSignal<br/>recorded before commit
+    X->>T: commit alternative, execute
+    Note right of X: TraceEvent(commit)
+    T-->>M: telemetry / test result / actuals
+    M->>K: Outcome scored against Prediction
+    K->>K: reinforce or attenuate Pattern
+    Note over K: predicted vs actual gap feeds the next scoped view
+</pre>
+
+  <h2>Record structure</h2>
+<pre class="mermaid">
+classDiagram
+    direction LR
+    class DecisionRecord {
+        framingQuestion
+        decisionClass
+        status
+    }
+    class Alternative {
+        declaredQualities
+        dominated: bool
+    }
+    class Quality {
+        name
+        value
+        source: declared | observed
+    }
+    class Budget {
+        quality
+        limit
+        owner: Authority
+    }
+    class Prediction {
+        expectedEffect
+        category: strategy | service | process | asset
+    }
+    class Falsifier {
+        failureCondition
+        signal: MeasurementSignal
+    }
+    class Outcome {
+        observedValue
+        gap
+    }
+    class TraceEvent {
+        move: consult | reason | reframe | delegate | escalate | commit | reuse
+        actor
+        timestamp
+        evidenceRef
+    }
+    class Pattern {
+        weight
+        lifecycle: promote | reinforce | attenuate | retire
+    }
+    class Actor {
+        role: authority | executor | adversary
+    }
+    class Requirement {
+        id
+        statement
+        priority
+    }
+    class TestCase {
+        id
+        expected: pass | fail
+        lastResult
+    }
+    DecisionRecord "1" --> "*" Requirement : derives
+    Requirement "1" --> "*" TestCase : verifiedBy
+    Prediction --> TestCase : namesExpected
+    Falsifier --> TestCase : namesRefuting
+    TestCase --> Outcome : produces
+    DecisionRecord "1" --> "*" Alternative : considers
+    DecisionRecord "1" --> "*" Budget : constrainedBy
+    DecisionRecord "1" --> "1" Alternative : selects
+    DecisionRecord "1" --> "*" TraceEvent : traversal
+    Alternative "1" --> "*" Quality : hasQuality
+    DecisionRecord "1" --> "1" Prediction : states
+    Prediction "1" --> "1" Falsifier : boundedBy
+    Prediction "1" --> "0..1" Outcome : scoredBy
+    DecisionRecord "0..1" --> "1" Pattern : reuses
+    Outcome --> Pattern : reinforces or attenuates
+    TraceEvent --> Actor : performedBy
+    DecisionRecord --> Actor : escalatedTo
+</pre>
+
+  <h2>Which step writes which class</h2>
+  <div class="tbl"><table>
+    <tr><th>Sequence step</th><th>Trace move</th><th>Classes populated</th></tr>
+    <tr><td>1 Task and budgets arrive</td><td>(opens record)</td><td>DecisionRecord, Budget, Actor (authority)</td></tr>
+    <tr><td>3 Scoped view request</td><td>consult</td><td>TraceEvent, evidence reference into the store</td></tr>
+    <tr><td>5 Prune to frontier</td><td>reason</td><td>Alternative, Quality (declared)</td></tr>
+    <tr><td>8 Pattern reuse</td><td>reuse</td><td>Pattern reference on the record</td></tr>
+    <tr><td>10 Adversary challenge</td><td>reframe or reason</td><td>TraceEvent, additional Alternative entries</td></tr>
+    <tr><td>13 Escalation</td><td>escalate</td><td>TraceEvent, escalatedTo, status change</td></tr>
+    <tr><td>16 Pre-commit</td><td>(no move)</td><td>Prediction, Falsifier, MeasurementSignal</td></tr>
+    <tr><td>17 Commit</td><td>commit</td><td>TraceEvent, selected Alternative, status closed, derived Requirement and named TestCase entries</td></tr>
+    <tr><td>19 Measurement</td><td>(no move)</td><td>Outcome from the test run, Quality (observed), gap</td></tr>
+    <tr><td>20 Reinforcement</td><td>(no move)</td><td>Pattern weight, lifecycle event</td></tr>
+  </table></div>
+</section>
+
+<!-- PLAN -->
+<section class="panel" id="tab-plan" role="tabpanel">
+  <h2 style="margin-top:1rem">The prototype records its own construction</h2>
+  <p>Decision records mined from an existing program's artifacts inherit whatever that program failed to write down, so they are a poor test of the schema. The prototype instead runs the loop on a decision process the two collaborators control: the building of the prototype itself. Every decision taken while building it (schema choices, stack choices, scope cuts, what to test) passes through the harness and lands in the store, and the record is tied to the software artifacts the decision produced.</p>
+  <p>The trace chain is decision to requirement to test case to result. A decision derives or constrains one or more requirements; a requirement is verified by one or more test cases; a test run is the measurement. The prediction at commit names the tests expected to pass and the falsifier names the tests whose failure would mean the decision was wrong, so continuous integration closes the loop without a separate measurement system. This is Fitch's decision-to-requirements traceability with the requirement written as a software requirement and the verification written as a test.</p>
+
+  <h2>Prototype plan</h2>
+  <div class="plan">
+    <div>
+      <h3>Zach</h3>
+      <ol>
+        <li>Write the decision record schema in specl, extended with Requirement and TestCase, and run it through the review tool.</li>
+        <li>Set up the harness so every decision in building the prototype is taken through the loop (frame, consult, weigh, commit with prediction and falsifier) and written to the store.</li>
+        <li>Keep the prototype's own requirements and tests in the store, linked from the decisions that produced them, with CI results written back as outcomes.</li>
+        <li>Render the store in g3-toolkit as a breakdown structure with drill-down, frontier toggle, and trace from decision through requirement to test result.</li>
+        <li>Report on the record after the first working increment: which decisions were escalated, which predictions failed, which patterns were promoted.</li>
+      </ol>
+    </div>
+    <div>
+      <h3>Jeff</h3>
+      <ol>
+        <li>Define the decision classes and framing questions the software effort will use, drawn from the Fitch corpus, so the records are typed from the first commit.</li>
+        <li>Author the Causal Impact Map template for a software decision (strategy, service, process, asset) with a named test or metric as the measurement signal.</li>
+        <li>Recast the guardrail gate as a configurable constraint set and state the thresholds the prototype's own decisions are held to.</li>
+        <li>Specify which prototype decisions carry a circuit breaker record (those that hand a choice to a predicting agent) and what the L1 to L3 bands are.</li>
+        <li>Own the narrative and the customer conversation, using the prototype's own record as the demonstration.</li>
+      </ol>
+    </div>
+    <div class="full">
+      <h3>Together</h3>
+      <ol>
+        <li>Agree the schema first; the first decision written to the store is the decision to adopt it.</li>
+        <li>Build the smallest increment that can record a decision, derive a requirement, run a test, and score the outcome, and take every decision along the way through the loop.</li>
+        <li>Review the record together after that increment before adding federation, a second decision class, or a customer's process.</li>
+        <li>Publish the schema and the record of the build as a joint paper, with the tooling following as the commercial artifact.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Open points for discussion</h2>
+  <ul class="talk">
+    <li>The lexicographic gate needs thresholds and a treatment of incomparability; without them the judgment that an alternative degrades a boundary is made silently, which defeats the traceability aim.</li>
+    <li>The circuit breaker instruments only alternatives that hand a live decision to a predicting agent. The declared-versus-observed audit applies to partners and non-AI alternatives as well, and the record should carry it for both.</li>
+    <li>Five strata plus twins plus ecosystem is a platform pitch. The record and its traceability are the sellable unit; federation and twins stay on the roadmap.</li>
+    <li>Whether Jeff's H·O·V·A quad-tuple (holonic boundary, domain ontology, vector context, domain agent) is a role holon in the substrate's sense, or a separate governance object that references one, is unsettled and decides how the circuit breaker record is stored.</li>
+    <li>A self-recorded build is a favorable test of capture and an unfavorable test of generality; the record of the build should say which decisions would not have been captured under a customer's process.</li>
+  </ul>
+  <p class="note">Sources for the decision model: Fitch, "All Faults are Decision Faults" (2017); "Exploiting Decision to Requirements Traceability" (2009); "Leveraging Decision Patterns to Tame Complexity" (2022); "Extending MBSE for Decision Patterns and Traceability" (2024); PPI SyEN 107 (2021); The Value Enablement Group, "Decision Architecture Platform" (2026).</p>
+</section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js"></script>
+<script>
+(function () {
+  // mermaid: render on first open of the Deep dive tab so hidden panels do not mis-size the diagrams
+  var mermaidDone = false;
+  function renderMermaid() {
+    if (mermaidDone || typeof mermaid === 'undefined') return;
+    mermaidDone = true;
+    var light = document.documentElement.getAttribute('data-theme') === 'light';
+    try {
+      mermaid.initialize({ startOnLoad: false, theme: light ? 'neutral' : 'dark', securityLevel: 'loose' });
+      mermaid.run({ nodes: document.querySelectorAll('pre.mermaid') });
+    } catch (e) { console.error('mermaid', e); }
+  }
+  // theme
+  var root = document.documentElement, btn = document.getElementById('themebtn');
+  var saved = null;
+  try { saved = localStorage.getItem('dl-theme'); } catch (e) {}
+  if (saved === 'light') root.setAttribute('data-theme', 'light');
+  function syncBtn() { btn.textContent = root.getAttribute('data-theme') === 'light' ? 'Dark' : 'Light'; }
+  syncBtn();
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    if (next === 'light') root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
+    try { localStorage.setItem('dl-theme', next); } catch (e) {}
+    syncBtn();
+  });
+
+  // tabs
+  var tabs = document.querySelectorAll('nav.tabs button');
+  function show(id) {
+    tabs.forEach(function (t) { t.setAttribute('aria-selected', t.dataset.tab === id ? 'true' : 'false'); });
+    document.querySelectorAll('section.panel').forEach(function (p) { p.classList.toggle('active', p.id === 'tab-' + id); });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+    window.scrollTo(0, 0);
+    if (id === 'deep') setTimeout(renderMermaid, 0);
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.tab); }); });
+  var h = (location.hash || '').replace('#', '');
+  if (h && document.getElementById('tab-' + h)) show(h);
+
+  // loop stages
+  var stages = {
+    frame: { role: 'authority', title: '1 Frame', who: 'Human, with the executor', does: 'States the task, the intent, and budgets on the constrained qualities (cost, time, acceptable risk). The executor proposes the framing question and decision class; the human confirms or redirects.', writes: 'DecisionRecord opened; Budget entries with the human as owner; Actor roles assigned.', move: 'None yet (the record is opened).' },
+    consult: { role: 'executor', title: '2 Consult', who: 'Executor', does: 'Requests a task-scoped projection from the substrate. Receives candidate alternatives with their declared qualities and any standing pattern that matched before.', writes: 'TraceEvent(consult) with a reference to the evidence retrieved.', move: 'consult' },
+    weigh: { role: 'adversary', title: '3 Weigh', who: 'Executor, then adversary', does: 'The executor discards dominated options and keeps the frontier. If a standing pattern applies it is reused and deliberation is skipped. Otherwise the adversary challenges the intended choice, surfaces neglected frontier options, and estimates value and impact.', writes: 'Alternative entries with Quality values; TraceEvent(reason), TraceEvent(reframe), or TraceEvent(reuse).', move: 'reason, reframe, or reuse' },
+    approve: { role: 'authority', title: 'Approve', who: 'Human, on the adversary\u2019s call', does: 'Only decisions the adversary estimates above the value and impact threshold reach the human, with the frontier and the challenge attached. The human approves or redirects. Below threshold the adversary clears the decision directly.', writes: 'TraceEvent(escalate); escalatedTo link; status change.', move: 'escalate' },
+    commit: { role: 'executor', title: '4 Commit', who: 'Executor', does: 'Before acting, states what is expected to happen (in one of four categories) and the condition under which the choice will be judged to have failed, naming the signal it will be read from. For a software decision the signal is a set of tests: those expected to pass, and those whose failure refutes the choice. Then executes.', writes: 'Prediction, Falsifier, MeasurementSignal; derived Requirement and named TestCase entries; TraceEvent(commit); selected Alternative; status closed.', move: 'commit' },
+    measure: { role: 'measure', title: '5 Measure', who: 'Measurement source (the test run for the prototype; telemetry, twin, or actuals elsewhere)', does: 'The named signal arrives and is scored against the prediction and its falsifier. The gap is the learning signal.', writes: 'Outcome with observed Quality values and the gap.', move: 'None (an observation, not a move).' },
+    record: { role: 'substrate', title: 'Record', who: 'Substrate', does: 'Holds everything above as assertions with provenance and two time axes. Reinforces the pattern that was used when the gap is small and attenuates it when large; a pattern that stops being reinforced retires. The next scoped view carries the result.', writes: 'Pattern weight and lifecycle event.', move: 'None (a lifecycle operation).' }
+  };
+  var detail = document.getElementById('stagedetail');
+  function render(key) {
+    var s = stages[key];
+    detail.setAttribute('data-role', s.role);
+    detail.innerHTML = '<h3>' + s.title + '</h3><dl><dt>Who</dt><dd>' + s.who + '</dd><dt>What happens</dt><dd>' + s.does + '</dd><dt>Written</dt><dd>' + s.writes + '</dd><dt>Trace move</dt><dd>' + s.move + '</dd></dl>';
+    document.querySelectorAll('.stage').forEach(function (g) { g.classList.toggle('on', g.dataset.stage === key); });
+  }
+  document.querySelectorAll('.stage').forEach(function (g) {
+    g.addEventListener('click', function () { render(g.dataset.stage); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); render(g.dataset.stage); } });
+  });
+  render('frame');
+
+  // interface channels
+  document.querySelectorAll('.chan-item').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      var p = document.getElementById(d.dataset.chan);
+      if (p) p.classList.toggle('hi', d.open);
+    });
+  });
+
+  // definitions
+  var terms = [
+    { s: 'j', n: 'Decision Breakdown Structure (DBS)', d: 'A decision treated as a first-class, decomposable object carrying its class, governance status, criteria, and candidate alternatives; any node opens into its own DBS recursively.', m: 'DecisionRecord held in a holon; child records reached by a delegate move.' },
+    { s: 'j', n: 'Decision class', d: 'Single answer, multiple answer, or multi-part (architecture).', m: 'decisionClass on DecisionRecord.' },
+    { s: 'j', n: 'Decision status', d: 'Overlooked, open or in analysis, at risk or poorly made, closed or well-managed.', m: 'status on DecisionRecord.' },
+    { s: 'j', n: 'Decision frontier', d: 'The line across the whole graph between closed decisions and the open ones that still need deciding before a view is fully specified.', m: 'Open records in the current holon, at any depth.' },
+    { s: 'j', n: 'Graph of Graphs', d: 'Federation of five organizational strata (intra-domain, inter-domain, business operation, value chain, ecosystem). Solid edges specialize one stratum into the next; dashed edges let a domain-level decision reach an outer stratum directly.', m: 'Federated substrate instances; a partner instance is queried at its interface only.' },
+    { s: 'j', n: 'Causal Impact Map', d: 'A forecast of how each alternative ripples into strategy, services, processes, and assets (biological, digital, physical) before anything is committed.', m: 'Prediction, with the same four categories.' },
+    { s: 'j', n: 'Measurement and feedback loop', d: 'What is measured after commitment, inside a twin or the real operation, compared back against the prediction. The gap between predicted and actual is fed forward into the next decision in the same category.', m: 'Outcome and gap; pattern reinforcement.' },
+    { s: 'j', n: 'Guardrail gate (Planet, People, Profit)', d: 'A strict lexicographic ordering applied to every alternative: an alternative that degrades a planetary boundary does not advance to the People gate; one that clears Planet but degrades safety, dignity, or equity does not advance to Profit. A weighted score is rejected because a large enough Profit number could buy back a failure. Rejections converge into a redesign task that re-enters as a new alternative.', m: 'Ordered Budget set owned by the authority.' },
+    { s: 'j', n: 'Digital twin decision layer', d: 'The DBS and its Causal Impact Map sit at the core of the twin rather than beside it, so an alternative is tested against live synchronized state; measurement sensors are woven through the twin\u2019s surface.', m: 'Measurement source for C6; not required for the prototype.' },
+    { s: 'j', n: 'Design-time decision queue', d: 'Open, at-risk, and overlooked decisions for the current DBS, ranked by priority where assigned.', m: 'Open records ranked by the adversary\u2019s value and impact estimate.' },
+    { s: 'j', n: 'Holonic governance', d: 'The governance node that constrains the decision engine; every decision node that introduces an autonomous AI agent into execution carries its own circuit breaker record.', m: 'Adversary role plus threshold policy.' },
+    { s: 'j', n: 'AI Circuit Breaker (AI CB)', d: 'A governance record attached to any alternative that hands a live, revisable decision to something that predicts rather than executes (a routing agent, a scoring model, entity resolution). Not applied to deterministic rule tables or human-only review, since there is no AI intent to check against a ground truth.', m: 'A threshold policy on the escalate move for AI-in-the-loop alternatives.' },
+    { s: 'j', n: 'Governance quad-tuple (H\u00b7O\u00b7V\u00b7A)', d: 'A holonic boundary defining what the agent may and may not do, a domain ontology it is checked against, a vector context store of the live signal it reasons over, and the domain agent itself, version-locked together.', m: 'Candidate: a role holon with its projection; open point.' },
+    { s: 'j', n: 'Delta vs tolerance', d: 'The gap between what the agent intends and what a ground-truth signal supports. Below tolerance the action proceeds; beyond it a three-level safe state engages.', m: 'Divergence between declared and observed profile.' },
+    { s: 'j', n: 'Safe states L1, L2, L3', d: 'L1 soft alert (logged, nothing withheld); L2 AI hold (action withheld for review); L3 emergency halt (action blocked; after a third trip in a window the behavior is locked out, SOP-02).', m: 'Threshold bands on the escalate move.' },
+    { s: 'j', n: 'Governance console', d: 'The companion that runs the live L1 to L5 trace and the morphism boundary certification for an actual agent; each circuit-breaker-flagged alternative links to a matching trace.', m: 'A view over TraceEvents and escalations.' },
+    { s: 'j', n: 'Decision faults', d: 'Fitch\u2019s three classes: decisions overlooked (recognized too late), poorly made (rework cascades), poorly implemented (chosen alternative not realized as intended). Traceability is strongest against poor implementation; decision patterns are strongest against oversight; management methodology covers all three.', m: 'Status values plus the observed record.' },
+    { s: 'j', n: 'Sense, Analyze, Respond, Learn', d: 'The loop inside every stratum: sense intra- and inter-domain signals, analyze against catalog and models, respond with a decision, learn and harvest the pattern for reuse.', m: 'Consult, Weigh, Commit, Measure.' },
+    { s: 'j', n: 'Problem classification', d: 'Quality, performance, resource optimization, opportunity and investment planning, risk management. What a traced decision is ultimately in service of.', m: 'A tag on DecisionRecord (not yet in the schema).' },
+    { s: 'j', n: 'Decision-to-requirements traceability', d: 'Fitch (2009): each requirement is traced to the decision that produced it, so a requirement change is evaluated against the decision behind it and a decision change shows which requirements move.', m: 'DecisionRecord derives Requirement; Requirement verifiedBy TestCase.' },
+    { s: 'j', n: 'Decision pattern', d: 'A reusable decision structure harvested from repeated decisions of the same kind (Fitch).', m: 'Pattern with lifecycle.' },
+
+    { s: 'm', n: 'Traversal policy', d: 'Decision makers share the same functional mechanisms (perception, recall, inference, action); effectiveness comes from the path taken through them. At each node the move set is small: consult, reason, reframe, delegate, escalate, commit. Skill is the tuning of the decision logic at those nodes, and a policy that cannot be observed cannot be evaluated.', m: 'TraceEvent sequence on a DecisionRecord.' },
+    { s: 'm', n: 'No policy dominates', d: 'A tuning efficient for one problem class performs worse on another, so diversity of policies across a population is a resource to preserve rather than average away.', m: 'Distinct executor and adversary projections.' },
+    { s: 'm', n: 'Authority', d: 'Owns intent. Sets direction, approves decisions above a stated value and impact threshold, and answers the questions marked critical.', m: 'Human on C1 and C2.' },
+    { s: 'm', n: 'Executor', d: 'Realizes the intent. Decomposes the work, assigns bounded pieces to workers, and provisions each with a scoped view.', m: 'Executor agent on C1, C3, C4.' },
+    { s: 'm', n: 'Adversary', d: 'Prevents the executor from becoming an unexamined monoculture, in three modes: stress the plan, force a defense, introduce a different framing. Holds its own access to the shared knowledge and a direct escalation channel, and so doubles as the escalation auditor.', m: 'Adversary agent on C2, C3, C5.' },
+    { s: 'm', n: 'Scoped view', d: 'A projection of the external knowledge structure containing what the task requires, so that attention is spent on the decision rather than on holding everything relevant.', m: 'Role projection over the Utraya baseline.' },
+    { s: 'm', n: 'Governable structure', d: 'The external knowledge structure earns the adjective through three properties: entries are inspectable, access decisions are auditable, and mistakes are correctable with a recorded reason. Access is a weight per role over entries; removal is rarely needed because down-weighting is reversible.', m: 'Utraya assertions with provenance and role weights.' },
+    { s: 'm', n: 'Dominance prunes, the decision weighs', d: 'An option worse or equal on every quality is discarded without knowing the present decision; a frontier option cannot be. Budgets for the constrained qualities are owned by the authority and the remaining quality is optimized inside them.', m: 'dominated flag; Budget; adversary frontier exploration.' },
+    { s: 'm', n: 'Standing structure', d: 'A path that has succeeded repeatedly under a real signal is promoted into a procedure, checklist, or stored routine, so the deliberation is spent once.', m: 'Pattern.' },
+    { s: 'm', n: 'Behavior outranks self-description', d: 'What an option declares about itself and what it has been observed doing are separate evidence. The observed record bounds trust from below only. Divergence between the two is a signal, and auditing it is a standing assignment for the adversary.', m: 'Quality.source (declared or observed).' },
+    { s: 'm', n: 'Controlled change vocabulary', d: 'Standing structure changes only through promote, reinforce, attenuate, retire. Persistence is earned: a structure that stops being reinforced attenuates and is retired. Durable change requires structural commitment and dispositional change together.', m: 'Pattern.lifecycle; substrate mutation operations.' },
+    { s: 'm', n: 'Predictions precede outcomes', d: 'Decisions of consequence carry a stated expectation and a stated failure condition before the outcome exists; outcomes are recorded against both.', m: 'Prediction, Falsifier, Outcome.' },
+    { s: 'm', n: 'Two-phase accounting', d: 'Building the structure spends capability once; each decision pays only the marginal cost of a scoped view.', m: 'Build-time ingest of the ASoT; run-time projection.' },
+    { s: 'm', n: 'Trialogue', d: 'Human, orchestrator agent, and adversary agent as three roles, each free to stand over subagents; the framework constrains roles, provisioning, and escalation and leaves internals open.', m: 'The four-party interface diagram.' },
+
+    { s: 's', n: 'Utraya', d: 'Universal Substrate for Agentic Knowledge and Memory. An RDF-based substrate serving agent memory and personal knowledge as projections of one baseline, federating across instances, with every operation reachable over MCP.', m: 'The substrate party.' },
+    { s: 's', n: 'Baseline and projection', d: 'The baseline is what an instance holds true, represented one way; a projection is a role-specific view constructed from the role\u2019s IRI. Anything a role holds that is not derivable from the baseline is itself baseline.', m: 'Executor and adversary views on C4 and C5.' },
+    { s: 's', n: 'Assertion', d: 'The unit of the record: a claim made by an asserting agent with provenance, a valid-time interval, and a transaction time. A retraction records its own provenance and a traceable path through superseding assertions.', m: 'Every class in the record.' },
+    { s: 's', n: 'Valid time and transaction time', d: 'Two intervals per assertion: when it is taken to hold, and when the instance recorded it. Together they distinguish a correction from a change.', m: 'Distinguishes what was believed at commit from later revision.' },
+    { s: 's', n: 'Holon', d: 'Four graphs (interior, boundary, projection, context) connected by portals that transform, validate with SHACL, and record provenance on traversal. Containment is interior (functional), membership, or parthood.', m: 'A DecisionRecord and its children; role scoping.' },
+    { s: 's', n: 'Portal', d: 'The typed crossing between holons; where a scoped view is produced and where provenance of the crossing is written.', m: 'C4 and C5 query paths.' },
+    { s: 's', n: 'Access and acceptance policy', d: 'Access policy belongs to the data producer; acceptance policy belongs to the consumer; enforcement belongs to the federate, and any cached or redistributed result stays subject to the same authorization decision.', m: 'Value-chain opacity; partner interface.' },
+    { s: 's', n: 'Mutation operations', d: 'A discrete, controllable set of operations through which graph structure changes, attributable and reviewable.', m: 'Pattern lifecycle vocabulary.' },
+    { s: 's', n: 'Trace log and run manifest', d: 'The trialectic harness artifacts: a per-run record of decision-node moves, and a manifest naming the models, graph, and preregistered falsifier for the run.', m: 'TraceEvent source for the prototype.' },
+    { s: 's', n: 'Trace case', d: 'The chain decision, requirement, test case, result held in the store for one decision, with the prediction and falsifier naming which tests carry the expectation and the refutation.', m: 'The unit the prototype demonstrates on its own build.' },
+    { s: 's', n: 'g3-toolkit', d: 'Graph visualization toolkit (TypeScript, React, SVG) with compound nodes, drill-down, and obstacle-aware edge routing.', m: 'Renders the breakdown structure, frontier, and the decision-to-test trace.' },
+    { s: 's', n: 'specl', d: 'RDF-native specification format and toolchain with requirement identifiers, acceptance items, decisions, and a review workflow.', m: 'Where the schema is written and reviewed.' }
+  ];
+  var srcName = { j: 'Decision model', m: 'Meta-problem solving', s: 'Substrate' };
+  var srcFilter = 'all', q = '';
+  var termsEl = document.getElementById('terms');
+  function draw() {
+    var needle = q.trim().toLowerCase();
+    var out = terms.filter(function (t) {
+      if (srcFilter !== 'all' && t.s !== srcFilter) return false;
+      if (!needle) return true;
+      return (t.n + ' ' + t.d + ' ' + t.m).toLowerCase().indexOf(needle) >= 0;
+    }).map(function (t) {
+      return '<div class="term src-' + t.s + '"><div class="head"><span class="name">' + t.n + '</span><span class="src">' + srcName[t.s] + '</span></div><p class="def">' + t.d + '</p>' + (t.m ? '<p class="map"><b>In the loop:</b> ' + t.m + '</p>' : '') + '</div>';
+    }).join('');
+    termsEl.innerHTML = out || '<p class="empty">No terms match. Clear the filter or try another word.</p>';
+  }
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      srcFilter = c.dataset.src;
+      document.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  document.getElementById('q').addEventListener('input', function (e) { q = e.target.value; draw(); });
+  draw();
+})();
+</script>
+</body>
+</html>
