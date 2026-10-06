@@ -42,7 +42,7 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);l
 .collabel{font-family:var(--f-display);font-weight:700;font-size:14px;fill:var(--ink)}
 .colsub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
 .colband{fill:var(--surface-2)}
-.node{cursor:pointer;transition:opacity .18s}
+.node{cursor:pointer;transition:opacity .18s;-webkit-user-select:none;user-select:none}
 .node rect.box{fill:var(--surface);stroke-width:1.4}
 .node .lbl{font:500 12.5px var(--f-body);fill:var(--ink)}
 .node .meta{font:400 10.5px var(--f-mono);fill:var(--muted)}
@@ -57,11 +57,13 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);l
 .edge.dim{opacity:.07}
 .e-imports{stroke:var(--ink-soft)}
 .e-grounds{stroke:var(--t-vocab)}
-.e-inherits{stroke:var(--t-legacy);stroke-dasharray:5 4}
+.e-inherits{stroke:var(--t-tax);stroke-width:1.6}
 .e-anchors{stroke:var(--t-gov);stroke-dasharray:1.5 3.5}
 .e-aligns{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
 .e-maps{stroke:var(--t-vocab);stroke-dasharray:2 3}
 .e-relates{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
+.e-declares{stroke:var(--ink-soft);stroke-dasharray:1 3}
+.e-flows{stroke:var(--t-tax);stroke-dasharray:3 4;opacity:.7}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;display:grid;gap:14px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
 @media (max-width:1100px){.panel{position:static}}
 .panel h2{font-family:var(--f-display);font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
@@ -130,7 +132,7 @@ td .mono{color:var(--ink-soft)}
       </div>
     </div>
     <h1>Marketing Ontology Lineage</h1>
-    <p class="lede">How the marketing domain stands on the Domain Reference Model, BFO 2020 and the OBO Relations Core. The ontology was built first, as a catalog of 23 marketing services, each enabled by its supporting processes and enabling a matching capability. The terms each process creates, uses, changes, targets or promotes then became the classes of two marketing taxonomies, grounded in two marketing vocabularies: one for general marketing and one for competitive intelligence, whose services, processes and terms were surfaced from the PEO Competitive Graph. New relations are declared in BFO Relations first and then referenced. Edges come from the files: <code>owl:imports</code>, <code>dc:subject</code> grounding, subclass anchors, relation use in SHACL shapes and SKOS mappings. Select any node to trace its ancestry and descendants, then open its vocabulary, hierarchy, ontology or graph explorer from the panel. The small arrow on each node, or a double-click, opens that module’s main explorer.</p>
+    <p class="lede">The holarchy behind ontology-domain-marketing, read left to right from parent to child. BFO 2020 and the OBO Relations Core sit above the unifying ontology, ontology-core-domain, which declares the roots of every core ontology (ontology-core-*) and core taxonomy (taxonomy-core-*); vocabulary-core-domain grounds it. The marketing domain inherits all of it: vocabulary-domain-marketing hangs off vocabulary-core-domain, taxonomy-domain-marketing and taxonomy-domain-marketing-ci specialise the core taxonomy and ontology classes, and ontology-domain-marketing imports them all. The ontology was built first, as a catalog of 23 marketing services with their enabling processes; the terms those processes need became the domain taxonomies and vocabularies. Competitive intelligence services, processes and terms were surfaced from the PEO Competitive Graph. New relations are declared in BFO Relations first. Select any box to trace what it inherits and what inherits from it; double-click, or use its arrow, to open it in its vocabulary, hierarchy or ontology view.</p>
   </header>
 
   <div class="controls">
@@ -154,19 +156,19 @@ td .mono{color:var(--ink-soft)}
 
   <section class="block">
     <h2>Resolution log</h2>
-    <p>How the package was built and what still needs a steward or files outside this package. Select an entry to highlight the modules involved.</p>
+    <p>How the package was built and what still needs a steward. Select an entry to highlight the vocabularies, taxonomies and ontologies involved.</p>
     <div class="findings" id="findings"></div>
   </section>
 
   <section class="block">
     <h2>Tier ledger</h2>
-    <p>Counts are taken from the marketing package and the DRM 1.1 file. The core modules were not supplied; they appear because marketing specialises their root classes or references them in shapes.</p>
+    <p>Counts are taken from the marketing files and the two core files. The core taxonomies and ontologies have no files of their own here: ontology-core-domain declares their root classes, so they are read from it.</p>
     <div class="ledger-wrap"><table id="ledger"></table></div>
   </section>
 </div>
 
 <script>
-const TIERS = [{"id": "found", "name": "Formal foundations", "sub": "BFO 2020 · RO core + extension", "color": "--t-found"}, {"id": "vocab", "name": "Vocabularies", "sub": "SKOS · dc:subject", "color": "--t-vocab"}, {"id": "domain", "name": "Domain Reference Model", "sub": "ontology-core-domain", "color": "--t-domain"}, {"id": "core", "name": "Core modules", "sub": "roots marketing specialises", "color": "--t-core"}, {"id": "tax", "name": "Marketing taxonomies", "sub": "terms the processes need", "color": "--t-tax"}, {"id": "mont", "name": "Marketing ontology", "sub": "services and processes", "color": "--t-gov"}];
+const TIERS = [{"id": "found", "name": "Formal foundations", "sub": "BFO 2020 · RO core · BFO Relations", "color": "--t-found"}, {"id": "vocab", "name": "Core vocabulary", "sub": "vocabulary-core-*", "color": "--t-vocab"}, {"id": "domain", "name": "Unifying ontology", "sub": "ontology-core-domain (DRM)", "color": "--t-domain"}, {"id": "core", "name": "Core ontologies", "sub": "ontology-core-*", "color": "--t-core"}, {"id": "tax", "name": "Core taxonomies", "sub": "taxonomy-core-*", "color": "--t-tax"}, {"id": "vdom", "name": "Domain vocabularies", "sub": "vocabulary-domain-*", "color": "--t-vocab"}, {"id": "tdom", "name": "Domain taxonomies", "sub": "taxonomy-domain-*", "color": "--t-tax"}, {"id": "mont", "name": "Domain ontology", "sub": "ontology-domain-*", "color": "--t-gov"}];
 const NODES = [
 {
 "id": "bfo",
@@ -178,9 +180,9 @@ const NODES = [
 "stats": [
 "ISO/IEC 21838-2",
 "11 categories reached",
-"346 of 406 classes anchored"
+"346 of 406 marketing classes anchored"
 ],
-"desc": "Basic Formal Ontology sets what kind of thing each marketing class is. Processes are occurrents; services' plans, content, claims, offerings and intelligence products are generically dependent continuants; market roles are roles; customer loyalty and churn risk are dispositions; perception measures are qualities; market segments and the market holon are object aggregates."
+"desc": "Basic Formal Ontology sets what kind of thing each class is. It sits above ontology-core-domain, so every core and domain class inherits a BFO category through it: processes are occurrents; plans, content, claims, offerings and intelligence products are generically dependent continuants; market roles are roles; customer loyalty and churn risk are dispositions; perception measures are qualities; market segments and the market holon are object aggregates."
 },
 {
 "id": "ro",
@@ -195,11 +197,11 @@ const NODES = [
 "core content unchanged",
 "4 used by marketing shapes"
 ],
-"desc": "The OBO Relation Ontology core, kept as published. Marketing shapes use its relations where they fit: has member, has part, realized in, role of."
+"desc": "The OBO Relation Ontology core, kept as published and imported by ontology-core-domain. Marketing shapes use its relations where they fit: has member, has part, realized in, role of."
 },
 {
 "id": "vzro",
-"label": "Marketing relations",
+"label": "BFO Relations",
 "tier": "found",
 "status": "supplied",
 "file": "BFO Relations.owl",
@@ -211,290 +213,751 @@ const NODES = [
 "IAO is about reused",
 "declared before use"
 ],
-"desc": "Relations the marketing domain needs that RO core lacks, declared first in BFO Relations.owl and then referenced by the marketing ontology's shapes: competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens."
+"desc": "Relations the marketing domain needs that RO core lacks, declared first in BFO Relations.owl and then referenced by ontology-domain-marketing's shapes: competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens."
 },
 {
 "id": "v-domain",
-"label": "Core Domain vocab",
+"label": "vocabulary-core-domain",
 "tier": "vocab",
 "status": "supplied",
-"file": "Vocabulary_Core_Domain_1.1.ttl",
+"file": "Vocabulary_Core_Domain_1_1.ttl",
 "iri": "https://vocabularies.verizon.com/core-domain",
 "meta": "22 concepts",
 "stats": [
 "22 concepts",
-"grounds the DRM Domain class"
+"grounds ontology-core-domain",
+"parent of vocabulary-domain-marketing"
 ],
-"desc": "The business domains. Marketing sits under Commercial; its Marketing concept is the domain this package specialises, though no SKOS mapping yet joins it to the marketing scheme."
+"desc": "The business domains, grounding the Domain class of ontology-core-domain. Its Marketing concept is the parent of vocabulary-domain-marketing: the domain scheme's top concept Marketing is skos:exactMatch to it."
+},
+{
+"id": "domain",
+"label": "ontology-core-domain",
+"tier": "domain",
+"status": "supplied",
+"file": "Ontology_Core_Domain_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-domain/",
+"meta": "unifying ontology",
+"stats": [
+"imports RO core + BFO 2020",
+"21 relations",
+"31 classes",
+"5 classes declared in this release",
+"9 relations used by marketing"
+],
+"desc": "The unifying ontology (Domain Reference Model) and the DNA of the marketing domain. It declares the root classes of the core taxonomies and ontologies, the shared relations and the SHACL rules that bind them; every core taxonomy and ontology imports it. This release declares Run Time, Observation, Outcome, Job Step and Feature, which its Services classes and bridge shapes already used, so it now references no undeclared class. Its shapes set the pattern the marketing build follows: a Process enables Services, Services enable a Capability, a Process creates, modifies and consumes assets, and Rules guide and constrain a Process. Marketing reuses 9 of its relations: constrains, consumes, creates, enabled by, enables, guides, has, modifies, type of."
+},
+{
+"id": "v-asset",
+"label": "vocabulary-core-asset",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-asset_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-asset",
+"meta": "33 concepts",
+"stats": [
+"33 concepts",
+"grounds ontology-core-asset"
+],
+"desc": "A resource controlled by an entity from which future economic benefits are expected to be generated. Grounds every class of ontology-core-asset."
+},
+{
+"id": "v-businessoperations",
+"label": "vocabulary-core-businessoperations",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-businessoperations_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-businessoperations",
+"meta": "76 concepts",
+"stats": [
+"76 concepts",
+"grounds taxonomy-core-businessoperations"
+],
+"desc": "The ongoing, recurring activities involved in running a business for the purpose of generating revenue and profit. Grounds every class of taxonomy-core-businessoperations."
+},
+{
+"id": "v-capability",
+"label": "vocabulary-core-capability",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-capability_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-capability",
+"meta": "49 concepts",
+"stats": [
+"49 concepts",
+"grounds ontology-core-capability"
+],
+"desc": "A measurable business competency achieved through the combined effectiveness of people, processes, and technology. Grounds every class of ontology-core-capability."
+},
+{
+"id": "v-compliance",
+"label": "vocabulary-core-compliance",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-compliance_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-compliance",
+"meta": "92 concepts",
+"stats": [
+"92 concepts",
+"grounds taxonomy-core-compliance"
+],
+"desc": "Adherence to laws, regulations, policies, and ethical standards relevant to an organization’s operations Grounds every class of taxonomy-core-compliance."
+},
+{
+"id": "v-event",
+"label": "vocabulary-core-event",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-event_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-event",
+"meta": "5 concepts",
+"stats": [
+"5 concepts",
+"grounds ontology-core-event"
+],
+"desc": "An action or occurrence, often generated by a user or the system, that triggers a response. Grounds every class of ontology-core-event."
+},
+{
+"id": "v-issue",
+"label": "vocabulary-core-issue",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-issue_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-issue/",
+"meta": "9 concepts",
+"stats": [
+"9 concepts",
+"grounds taxonomy-core-issue"
+],
+"desc": "A generic term used to describe any problem, concern, or question that needs to be addressed. It is a broad term that encompasses defects, incidents, problems, requests, needs, and questions. Grounds every class of taxonomy-core-issue."
+},
+{
+"id": "v-lifecycle",
+"label": "vocabulary-core-lifecycle",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-lifecycle_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-lifecycle",
+"meta": "21 concepts",
+"stats": [
+"21 concepts",
+"grounds taxonomy-core-lifecycle"
+],
+"desc": "The complete progression of a system or product through a series of stages, from its initial conception to its eventual retirement. Grounds every class of taxonomy-core-lifecycle."
+},
+{
+"id": "v-location",
+"label": "vocabulary-core-location",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-location_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-location",
+"meta": "22 concepts",
+"stats": [
+"22 concepts",
+"grounds taxonomy-core-location"
+],
+"desc": "A position or point in physical or digital space. Grounds every class of taxonomy-core-location."
+},
+{
+"id": "v-party",
+"label": "vocabulary-core-party",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-party_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-party",
+"meta": "49 concepts",
+"stats": [
+"49 concepts",
+"grounds taxonomy-core-party"
+],
+"desc": "A general term referring to any individual or group involved in a transaction or interaction. Grounds every class of taxonomy-core-party."
+},
+{
+"id": "v-persona",
+"label": "vocabulary-core-persona",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-persona_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-persona",
+"meta": "46 concepts",
+"stats": [
+"46 concepts",
+"grounds taxonomy-core-persona"
+],
+"desc": "A semi-fictional representation of your ideal customer, based on research and data about existing and potential customers. Grounds every class of taxonomy-core-persona."
+},
+{
+"id": "v-process",
+"label": "vocabulary-core-process",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-process_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-process",
+"meta": "12 concepts",
+"stats": [
+"12 concepts",
+"grounds taxonomy-core-process"
+],
+"desc": "A collection of interrelated activities or tasks performed to achieve a specific outcome. Grounds every class of taxonomy-core-process."
+},
+{
+"id": "v-product",
+"label": "vocabulary-core-product",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-product_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-product",
+"meta": "68 concepts",
+"stats": [
+"68 concepts",
+"grounds taxonomy-core-product"
+],
+"desc": "A good, service, or idea offered to the market to satisfy a customer need or want. Grounds every class of taxonomy-core-product."
+},
+{
+"id": "v-requirements",
+"label": "vocabulary-core-requirements",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-requirements_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-requirements",
+"meta": "16 concepts",
+"stats": [
+"16 concepts",
+"grounds ontology-core-requirements"
+],
+"desc": "Statements that describe what a product or service should do and the constraints under which it must operate. Grounds every class of ontology-core-requirements."
+},
+{
+"id": "v-role",
+"label": "vocabulary-core-role",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-role_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-role",
+"meta": "5 concepts",
+"stats": [
+"5 concepts",
+"grounds taxonomy-core-role"
+],
+"desc": "Dictates the user’s permissions and functionalities within a system or platform. Grounds every class of taxonomy-core-role."
+},
+{
+"id": "v-rules",
+"label": "vocabulary-core-rules",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-rules_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-rules",
+"meta": "16 concepts",
+"stats": [
+"16 concepts",
+"grounds taxonomy-core-rules"
+],
+"desc": "Statements that define or restrict an organization's activities, guiding decision-making and ensuring actions align with business strategy, ultimately streamlining operations and enhancing efficiency. Grounds every class of taxonomy-core-rules."
+},
+{
+"id": "v-services",
+"label": "vocabulary-core-services",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-services_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-services",
+"meta": "96 concepts",
+"stats": [
+"96 concepts",
+"grounds taxonomy-core-services"
+],
+"desc": "Intangible activities or benefits provided by one party to another. Grounds every class of taxonomy-core-services."
+},
+{
+"id": "v-technicalservices",
+"label": "vocabulary-core-technicalservices",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-technicalservices_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-technicalservices",
+"meta": "207 concepts",
+"stats": [
+"207 concepts",
+"grounds taxonomy-core-services-technicalservices"
+],
+"desc": "Specialized support for technical products or services, often requiring advanced technical expertise. Grounds every class of taxonomy-core-services-technicalservices."
+},
+{
+"id": "v-time",
+"label": "vocabulary-core-time",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-time_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-time",
+"meta": "25 concepts",
+"stats": [
+"25 concepts",
+"grounds taxonomy-core-time"
+],
+"desc": "The indefinite continued progress of existence and events in the past, present, and future regarded as a whole. Grounds every class of taxonomy-core-time."
+},
+{
+"id": "v-valuestream",
+"label": "vocabulary-core-valuestream",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_vocabulary-core-valuestream_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-valuestream",
+"meta": "19 concepts",
+"stats": [
+"19 concepts",
+"grounds taxonomy-core-valuestream"
+],
+"desc": "A series of steps an organization undertakes to deliver a product or service to a customer, from initial concept to final delivery and beyond. Grounds every class of taxonomy-core-valuestream."
+},
+{
+"id": "v-svc",
+"label": "vocabulary-core-servicemodel",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_ServiceModel_1.1.ttl",
+"iri": "https://ontologies.verizon.com/vocabulary-core-servicemodel/",
+"meta": "213 individuals",
+"stats": [
+"213 individuals",
+"imported by ontology-core-capability and -event"
+],
+"desc": "Inherited vocabulary from the 2012 service model (lifecycle artifacts, personas, outcomes, governance controls, tools, applications), co-ode governance personas and DQM data-quality rule properties. Extracted from ontology-core-capability and ontology-core-event v1.0, where it was duplicated."
+},
+{
+"id": "c-asset",
+"label": "ontology-core-asset",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Asset_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-asset/",
+"meta": "123 inherit",
+"stats": [
+"33 classes",
+"123 marketing classes inherit",
+"imports 6"
+],
+"desc": "33 classes, declared in Ontology_Core_Asset_1.1.ttl. Root: Asset. ontology-core-domain declares Asset, Digital Asset, Physical Asset. BFO anchor: Asset ⊑ continuant. 123 marketing classes inherit from it (74 in taxonomy-domain-marketing, 49 in taxonomy-domain-marketing-ci)."
+},
+{
+"id": "c-capability",
+"label": "ontology-core-capability",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Capability_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-capability/",
+"meta": "24 inherit",
+"stats": [
+"49 classes",
+"24 marketing classes inherit",
+"5 shape refs",
+"imports 2"
+],
+"desc": "49 classes, declared in Ontology_Core_Capability_1.1.ttl. Root: Capability. ontology-core-domain declares Capability. BFO anchor: Capability ⊑ realizable entity. 24 marketing classes inherit from it (24 in ontology-domain-marketing)."
+},
+{
+"id": "c-event",
+"label": "ontology-core-event",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Event_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-event/",
+"meta": "14 inherit",
+"stats": [
+"5 classes",
+"14 marketing classes inherit",
+"imports 6"
+],
+"desc": "5 classes, declared in Ontology_Core_Event_1.1.ttl. Root: Events. ontology-core-domain declares Event, Events. Events not yet anchored to BFO (a decision for the core steward). 14 marketing classes inherit from it (4 in taxonomy-domain-marketing, 10 in taxonomy-domain-marketing-ci)."
+},
+{
+"id": "c-requirements",
+"label": "ontology-core-requirements",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Requirements_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-requirements/",
+"meta": "1 inherit",
+"stats": [
+"16 classes",
+"1 marketing classes inherit",
+"imports 2"
+],
+"desc": "16 classes, declared in Ontology_Core_Requirements_1.1.ttl. Root: Requirements. ontology-core-domain declares Feature, Job Step, Outcome, Requirement, Requirements. Requirements not yet anchored to BFO (a decision for the core steward). 1 marketing classes inherit from it (1 in taxonomy-domain-marketing)."
+},
+{
+"id": "g-ai",
+"label": "ontology-core-governance-ai",
+"tier": "core",
+"status": "supplied",
+"file": "ontology-core-governance-ai.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-ai",
+"meta": "20 classes",
+"stats": [
+"20 classes",
+"imports 3"
+],
+"desc": "20 classes, declared in ontology-core-governance-ai.ttl. Roots: AI Governance Role, AI System, Audit Log, Fundamental Rights Impact Assessment, Human Oversight Measure, Risk Classification…. AI Governance Role, AI System, Audit Log, Fundamental Rights Impact Assessment, Human Oversight Measure, Risk Classification not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "g-an",
+"label": "ontology-core-governance-analytics",
+"tier": "core",
+"status": "supplied",
+"file": "ontology-core-governance-analytics.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-analytics",
+"meta": "17 classes",
+"stats": [
+"17 classes",
+"imports 4"
+],
+"desc": "17 classes, declared in ontology-core-governance-analytics.ttl. Roots: Analytic Infrastructure, Analytic Model, Analytics Governance Body, Business Requirement, Model Lifecycle Stage, Model Validation Result. Analytic Infrastructure, Analytic Model, Analytics Governance Body, Business Requirement, Model Lifecycle Stage, Model Validation Result not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "g-data",
+"label": "ontology-core-governance-data",
+"tier": "core",
+"status": "supplied",
+"file": "ontology-core-governance-data.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-data",
+"meta": "21 classes",
+"stats": [
+"21 classes",
+"imports 2"
+],
+"desc": "21 classes, declared in ontology-core-governance-data.ttl. Roots: Data Asset, Data Policy, Data Quality Dimension, Governance Body, Governance Role. Data Asset, Data Policy, Data Quality Dimension, Governance Body, Governance Role not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "g-ovl",
+"label": "ontology-core-governance-overlay",
+"tier": "core",
+"status": "supplied",
+"file": "ontology-core-governance-overlay.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-overlay",
+"meta": "16 classes",
+"stats": [
+"16 classes",
+"imports 1"
+],
+"desc": "16 classes, declared in ontology-core-governance-overlay.ttl. Roots: Deontic Modality, Governance Artifact, Governance Status, Method, Normative Requirement, Normative Source…. Deontic Modality, Governance Artifact, Governance Status, Method, Normative Requirement, Normative Source not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "g-sem",
+"label": "ontology-core-governance-semantic",
+"tier": "core",
+"status": "supplied",
+"file": "ontology-core-governance-semantic.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-semantic",
+"meta": "19 classes",
+"stats": [
+"19 classes",
+"imports 3"
+],
+"desc": "19 classes, declared in ontology-core-governance-semantic.ttl. Roots: Business Term, Mapping Repository, Semantic Artefact, Semantic Governance Council, Semantic Governance Role, Semantic Mapping. Business Term, Mapping Repository, Semantic Artefact, Semantic Governance Council, Semantic Governance Role, Semantic Mapping not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-bundle",
+"label": "ontology-core-bundle",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Bundle_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-bundle/",
+"meta": "imports the core",
+"stats": [
+"imports 28"
+],
+"desc": "Load manifest with no classes of its own. It imports ontology-core-domain and every core ontology and taxonomy, and ontology-domain-marketing imports it, so the whole core flows into marketing. Business Operations was added to it in this release."
+},
+{
+"id": "c-businessoperations",
+"label": "taxonomy-core-businessoperations",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_BusinessOperations_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-businessoperations/",
+"meta": "14 inherit",
+"stats": [
+"76 classes",
+"14 marketing classes inherit",
+"imports 2"
+],
+"desc": "76 classes, generated from vocabulary-core-businessoperations (one class per concept, subclass per skos:broader). Root: Business Operations. Business Operations not yet anchored to BFO (a decision for the core steward). 14 marketing classes inherit from it (11 in ontology-domain-marketing, 3 in taxonomy-domain-marketing)."
+},
+{
+"id": "c-compliance",
+"label": "taxonomy-core-compliance",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Compliance_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-compliance/",
+"meta": "92 classes",
+"stats": [
+"92 classes",
+"imports 1"
+],
+"desc": "92 classes, generated from vocabulary-core-compliance (one class per concept, subclass per skos:broader). Root: Compliance. ontology-core-domain declares Compliance. Compliance not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-issue",
+"label": "taxonomy-core-issue",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Issue_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-issue/",
+"meta": "6 inherit",
+"stats": [
+"9 classes",
+"6 marketing classes inherit",
+"imports 1"
+],
+"desc": "9 classes, generated from vocabulary-core-issue (one class per concept, subclass per skos:broader). Root: Issue. ontology-core-domain declares Issue. Issue not yet anchored to BFO (a decision for the core steward). 6 marketing classes inherit from it (5 in taxonomy-domain-marketing, 1 in taxonomy-domain-marketing-ci)."
+},
+{
+"id": "c-lifecycle",
+"label": "taxonomy-core-lifecycle",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Lifecycle_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-lifecycle/",
+"meta": "22 inherit",
+"stats": [
+"21 classes",
+"22 marketing classes inherit",
+"imports 1"
+],
+"desc": "21 classes, generated from vocabulary-core-lifecycle (one class per concept, subclass per skos:broader). Root: Lifecycle. ontology-core-domain declares Lifecycle, Run Time. Lifecycle not yet anchored to BFO (a decision for the core steward). 22 marketing classes inherit from it (9 in ontology-domain-marketing, 13 in taxonomy-domain-marketing)."
+},
+{
+"id": "c-location",
+"label": "taxonomy-core-location",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Location_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-location/",
+"meta": "22 classes",
+"stats": [
+"22 classes",
+"imports 1"
+],
+"desc": "22 classes, generated from vocabulary-core-location (one class per concept, subclass per skos:broader). Root: Location. ontology-core-domain declares Location. BFO anchor: Location ⊑ continuant. It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-party",
+"label": "taxonomy-core-party",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Party_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-party/",
+"meta": "3 shape refs",
+"stats": [
+"49 classes",
+"3 shape refs",
+"imports 1"
+],
+"desc": "49 classes, generated from vocabulary-core-party (one class per concept, subclass per skos:broader). Root: Party. ontology-core-domain declares Party. BFO anchor: Party ⊑ independent continuant. ontology-domain-marketing uses it in 3 SHACL constraints."
+},
+{
+"id": "c-persona",
+"label": "taxonomy-core-persona",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Persona_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-persona/",
+"meta": "1 inherit",
+"stats": [
+"46 classes",
+"1 marketing classes inherit",
+"1 shape refs",
+"imports 1"
+],
+"desc": "46 classes, generated from vocabulary-core-persona (one class per concept, subclass per skos:broader). Root: Persona. ontology-core-domain declares Persona. Persona not yet anchored to BFO (a decision for the core steward). 1 marketing classes inherit from it (1 in taxonomy-domain-marketing)."
+},
+{
+"id": "c-process",
+"label": "taxonomy-core-process",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Process_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-process/",
+"meta": "121 inherit",
+"stats": [
+"12 classes",
+"121 marketing classes inherit",
+"imports 1"
+],
+"desc": "12 classes, generated from vocabulary-core-process (one class per concept, subclass per skos:broader). Root: Process. ontology-core-domain declares Observation, Process. BFO anchor: Process ⊑ process. 121 marketing classes inherit from it (121 in ontology-domain-marketing)."
+},
+{
+"id": "c-product",
+"label": "taxonomy-core-product",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Product_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-product/",
+"meta": "68 classes",
+"stats": [
+"68 classes",
+"imports 1"
+],
+"desc": "68 classes, generated from vocabulary-core-product (one class per concept, subclass per skos:broader). Root: Product. Product not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-role",
+"label": "taxonomy-core-role",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Role_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-role/",
+"meta": "15 inherit",
+"stats": [
+"5 classes",
+"15 marketing classes inherit",
+"imports 1"
+],
+"desc": "5 classes, generated from vocabulary-core-role (one class per concept, subclass per skos:broader). Root: Role. ontology-core-domain declares Role. BFO anchor: Role ⊑ role. 15 marketing classes inherit from it (15 in taxonomy-domain-marketing)."
+},
+{
+"id": "c-rules",
+"label": "taxonomy-core-rules",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Rules_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-rules/",
+"meta": "26 inherit",
+"stats": [
+"16 classes",
+"26 marketing classes inherit",
+"imports 1"
+],
+"desc": "16 classes, generated from vocabulary-core-rules (one class per concept, subclass per skos:broader). Root: Rules. ontology-core-domain declares Rules. BFO anchor: Rules ⊑ generically dependent continuant. 26 marketing classes inherit from it (16 in taxonomy-domain-marketing, 10 in taxonomy-domain-marketing-ci)."
+},
+{
+"id": "c-services",
+"label": "taxonomy-core-services",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Services_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-services/",
+"meta": "24 inherit",
+"stats": [
+"96 classes",
+"24 marketing classes inherit",
+"1 shape refs",
+"imports 1"
+],
+"desc": "96 classes, generated from vocabulary-core-services (one class per concept, subclass per skos:broader). Root: Services. ontology-core-domain declares Communications, Operations Management, Service Level Management, Services. Services not yet anchored to BFO (a decision for the core steward). 24 marketing classes inherit from it (24 in ontology-domain-marketing)."
+},
+{
+"id": "c-technicalservices",
+"label": "taxonomy-core-services-technicalservices",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_TechnicalServices_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-services-technicalservices/",
+"meta": "207 classes",
+"stats": [
+"207 classes",
+"imports 2"
+],
+"desc": "207 classes, generated from vocabulary-core-technicalservices (one class per concept, subclass per skos:broader). Root: Technical Services. Technical Services not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-time",
+"label": "taxonomy-core-time",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Time_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-time/",
+"meta": "25 classes",
+"stats": [
+"25 classes",
+"imports 1"
+],
+"desc": "25 classes, generated from vocabulary-core-time (one class per concept, subclass per skos:broader). Root: Time. ontology-core-domain declares Time. Time not yet anchored to BFO (a decision for the core steward). It flows into ontology-domain-marketing through ontology-core-bundle; no marketing class specialises it yet."
+},
+{
+"id": "c-valuestream",
+"label": "taxonomy-core-valuestream",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_ValueStream_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-valuestream/",
+"meta": "2 shape refs",
+"stats": [
+"19 classes",
+"2 shape refs",
+"imports 1"
+],
+"desc": "19 classes, generated from vocabulary-core-valuestream (one class per concept, subclass per skos:broader). Root: Value Stream. ontology-core-domain declares Value Stream. BFO anchor: Value Stream ⊑ process. ontology-domain-marketing uses it in 2 SHACL constraints."
 },
 {
 "id": "v-marketing",
-"label": "Marketing vocab",
-"tier": "vocab",
+"label": "vocabulary-domain-marketing",
+"tier": "vdom",
 "status": "supplied",
 "file": "Vocabulary_Domain_Marketing_1.1.ttl",
 "iri": "https://vocabularies.verizon.com/domain-marketing",
 "meta": "271 concepts",
 "stats": [
 "271 concepts",
-"190 new in 1.1",
-"81 concepts of 1.0 kept"
+"exactMatch to core Marketing",
+"190 new in 1.1"
 ],
-"desc": "Concepts for the marketing services, their enabling processes and every term those processes create, use, target or measure. Each term concept carries a scope note naming the processes it emerges from and the services they support. A service, its capability and its enabling process share one concept when the service has a single enabling process."
+"desc": "Concepts for the marketing services, their enabling processes and every term those processes create, use, target or measure. Its top concept Marketing is skos:exactMatch to Marketing in vocabulary-core-domain, so the scheme hangs off the core vocabulary. Each term concept has a scope note naming the processes it emerges from and the services they support."
 },
 {
 "id": "v-marketing-ci",
-"label": "Marketing CI vocab",
-"tier": "vocab",
+"label": "vocabulary-domain-marketing-ci",
+"tier": "vdom",
 "status": "supplied",
 "file": "Vocabulary_Domain_Marketing_CI_1.0.ttl",
 "iri": "https://vocabularies.verizon.com/domain-marketing-ci",
 "meta": "92 concepts",
 "stats": [
 "92 concepts",
-"surfaced from the PEO Competitive Graph",
-"broadMatch to marketing"
+"from the PEO Competitive Graph",
+"broadMatch to vocabulary-domain-marketing"
 ],
-"desc": "Concepts for the competitive intelligence services, processes and terms, each surfaced from the PEO Competitive Graph and citing it as dct:source: the market holon, competitor facts, source authority tiers, threats and openings, exposure and pressure roll-ups, claim checks and verdicts, MTBH and the trip threshold, and battlecards. Its top concept, Competitive Intelligence, has a broadMatch to Marketing Insights & Analysis in the marketing vocabulary."
-},
-{
-"id": "domain",
-"label": "Domain Reference Model",
-"short": "Reference Model",
-"tier": "domain",
-"status": "supplied",
-"file": "Ontology_Core_Domain_1.1.ttl",
-"iri": "https://ontologies.verizon.com/ontology-core-domain/",
-"meta": "foundation",
-"stats": [
-"imports RO core + BFO 2020 only",
-"21 relations",
-"20 reference classes",
-"12 BFO anchors",
-"9 relations used by marketing"
-],
-"desc": "The unifying ontology and the DNA of the marketing domain. Its shapes set the pattern the marketing build follows: a Process enables Services, Services enable a Capability, a Process creates, modifies and consumes assets, and Rules guide and constrain a Process. Marketing specialises its roots and reuses 9 of its relations: constrains, consumes, creates, enabled by, enables, guides, has, modifies, type of."
-},
-{
-"id": "c-process",
-"label": "Process",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-process/",
-"meta": "121 below",
-"stats": [
-"1 class used",
-"121 marketing descendants"
-],
-"desc": "Marketing specialises Process: 121 marketing classes descend from it (121 in the ontology). BFO anchor: Process ⊑ process. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-services",
-"label": "Services",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-services/",
-"meta": "33 below",
-"stats": [
-"3 classes used",
-"33 marketing descendants",
-"1 shape refs"
-],
-"desc": "Marketing specialises Communications, Reporting, Services: 33 marketing classes descend from it (33 in the ontology). Communications, Reporting, Services not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-capability",
-"label": "Capability",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/ontology-core-capability/",
-"meta": "24 below",
-"stats": [
-"1 class used",
-"24 marketing descendants",
-"5 shape refs"
-],
-"desc": "Marketing specialises Capability: 24 marketing classes descend from it (24 in the ontology). BFO anchor: Capability ⊑ realizable entity. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-asset",
-"label": "Asset",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/ontology-core-asset/",
-"meta": "123 below",
-"stats": [
-"1 class used",
-"123 marketing descendants"
-],
-"desc": "Marketing specialises Digital Asset: 123 marketing classes descend from it (74 in the marketing taxonomy, 49 in the CI taxonomy). BFO anchor: Digital Asset ⊑ generically dependent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-role",
-"label": "Role",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-role/",
-"meta": "15 below",
-"stats": [
-"1 class used",
-"15 marketing descendants"
-],
-"desc": "Marketing specialises Role: 15 marketing classes descend from it (15 in the marketing taxonomy). BFO anchor: Role ⊑ role. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-event",
-"label": "Event",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/ontology-core-event/",
-"meta": "14 below",
-"stats": [
-"1 class used",
-"14 marketing descendants"
-],
-"desc": "Marketing specialises Event: 14 marketing classes descend from it (4 in the marketing taxonomy, 10 in the CI taxonomy). BFO anchor: Event ⊑ occurrent. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-rules",
-"label": "Rules",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-rules/",
-"meta": "26 below",
-"stats": [
-"1 class used",
-"26 marketing descendants"
-],
-"desc": "Marketing specialises Rules: 26 marketing classes descend from it (16 in the marketing taxonomy, 10 in the CI taxonomy). BFO anchor: Rules ⊑ generically dependent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-lifecycle",
-"label": "Lifecycle",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-lifecycle/",
-"meta": "13 below",
-"stats": [
-"1 class used",
-"13 marketing descendants"
-],
-"desc": "Marketing specialises Lifecycle: 13 marketing classes descend from it (13 in the marketing taxonomy). Lifecycle not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-issue",
-"label": "Issue",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-issue/",
-"meta": "6 below",
-"stats": [
-"1 class used",
-"6 marketing descendants"
-],
-"desc": "Marketing specialises Issue: 6 marketing classes descend from it (5 in the marketing taxonomy, 1 in the CI taxonomy). Issue not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-persona",
-"label": "Persona",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-persona/",
-"meta": "1 below",
-"stats": [
-"1 class used",
-"1 marketing descendants",
-"1 shape refs"
-],
-"desc": "Marketing specialises Persona: 1 marketing classes descend from it (1 in the marketing taxonomy). Persona not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-requirements",
-"label": "Requirements",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/ontology-core-requirements/",
-"meta": "1 below",
-"stats": [
-"1 class used",
-"1 marketing descendants"
-],
-"desc": "Marketing specialises Outcome: 1 marketing classes descend from it (1 in the marketing taxonomy). Outcome not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-party",
-"label": "Party",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-party/",
-"meta": "3 refs",
-"stats": [
-"1 class used",
-"3 shape refs"
-],
-"desc": "Referenced in marketing shapes: Party. BFO anchor: Party ⊑ independent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
-},
-{
-"id": "c-valuestream",
-"label": "Value Stream",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-valuestream/",
-"meta": "2 refs",
-"stats": [
-"1 class used",
-"2 shape refs"
-],
-"desc": "Referenced in marketing shapes: Marketing Brand Management. Marketing Brand Management not yet anchored to BFO (steward decision pending in the DRM). Not declared in the supplied files; marketing references it by IRI."
-},
-{
-"id": "c-businessoperations",
-"label": "Business Ops",
-"tier": "core",
-"status": "referenced",
-"iri": "https://ontologies.verizon.com/taxonomy-core-businessoperations/",
-"meta": "14 below",
-"stats": [
-"3 classes used",
-"14 marketing descendants"
-],
-"desc": "Marketing specialises Communications, Strategy, Technology: 14 marketing classes descend from it (11 in the ontology, 3 in the marketing taxonomy). Communications, Strategy, Technology not yet anchored to BFO (steward decision pending in the DRM). Not declared in the supplied files; marketing references it by IRI."
+"desc": "Concepts for the competitive intelligence services, processes and terms, each surfaced from the PEO Competitive Graph and citing it as dct:source. Its top concept, Competitive Intelligence, has a broadMatch to Marketing Insights & Analysis in vocabulary-domain-marketing, which in turn hangs off vocabulary-core-domain."
 },
 {
 "id": "mktx",
-"label": "Marketing Taxonomy",
-"tier": "tax",
+"label": "taxonomy-domain-marketing",
+"tier": "tdom",
 "status": "supplied",
 "file": "Taxonomy_Domain_Marketing_1.0.ttl",
 "iri": "https://ontologies.verizon.com/taxonomy-domain-marketing/",
-"meta": "166 cls",
+"meta": "166 classes",
 "stats": [
 "166 classes",
-"each used by a process",
-"imports the DRM",
-"20 classes re-homed from 1.0"
+"imports ontology-core-domain",
+"539 inherited classes",
+"each used by a process"
 ],
-"desc": "The term structures that emerge from the marketing processes: plans, content, brand assets, market claims, data assets, technology, insights, metrics and measurements, offerings and features, market roles, segments, rules (segment definitions, pricing models, qualification criteria, partner incentives, compliance rules), channels, characteristics, market events, lifecycle stages, personas, issues and outcomes. Each class has a scope note naming the processes it emerges from. Direct BFO anchors: Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic."
+"desc": "The term structures that emerge from the marketing processes. Every root specialises a class declared in ontology-core-domain, so the hierarchy runs unbroken from BFO through the core taxonomies and ontologies (Digital Asset, Role, Rules, Event, Lifecycle, Issue, Persona, Requirement, Value Stream) into marketing. Direct BFO anchors: Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic."
 },
 {
 "id": "mkci",
-"label": "Marketing CI Taxonomy",
-"tier": "tax",
+"label": "taxonomy-domain-marketing-ci",
+"tier": "tdom",
 "status": "supplied",
 "file": "Taxonomy_Domain_Marketing_CI_1.0.ttl",
 "iri": "https://ontologies.verizon.com/taxonomy-domain-marketing-ci/",
-"meta": "71 cls",
+"meta": "71 classes",
 "stats": [
 "71 classes",
-"from the PEO Competitive Graph",
-"imports the marketing taxonomy",
-"4 datatype properties"
+"imports taxonomy-domain-marketing",
+"705 inherited classes",
+"from the PEO Competitive Graph"
 ],
-"desc": "Competitive intelligence terms surfaced from the PEO Competitive Graph: the market holon; intelligence sources by authority tier (filing 3; company, press, transcript and broker 2; review and reference 1; tracker 0); competitor claims (scale, momentum, pricing, valuation, capability, channel, credential, segment focus); claim checks (source match, freshness, authority, conflict, contradiction, unsourced, misread source); verdicts (verified, stale corrected, held, failed); breaker results and trip threshold; threat and opening assessments; exposure and pressure scores; MTBH and failure rate; battlecards, landscape matrix, roll-up view and claim ledger; competitive moves; CPEO and ESAC credentials."
+"desc": "Competitive intelligence terms surfaced from the PEO Competitive Graph. It imports taxonomy-domain-marketing and ontology-core-domain and builds on their classes: the market holon; intelligence sources by authority tier; competitor claims; claim checks and verdicts; breaker results and trip threshold; threat and opening assessments; exposure and pressure scores; MTBH; battlecards, landscape matrix, roll-up view and claim ledger; competitive moves; CPEO and ESAC credentials."
 },
 {
 "id": "mkt",
-"label": "Marketing Ontology",
+"label": "ontology-domain-marketing",
 "tier": "mont",
 "status": "supplied",
 "file": "Ontology_Domain_Marketing_1.1.ttl",
@@ -504,23 +967,73 @@ const NODES = [
 "23 services",
 "23 capabilities",
 "121 processes",
-"95 process term shapes",
 "169 SHACL shapes",
+"1215 inherited classes",
 "v1.1"
 ],
-"desc": "Built first, service by service. The catalog has 17 marketing services and 6 competitive intelligence services. Each service is enabled by its supporting processes and enables a matching capability, following the DRM pattern. Each process has a shape listing the terms it creates, uses, changes, targets or promotes (228 links in all); those terms live in the two marketing taxonomies. The competitive intelligence services and processes come from the PEO Competitive Graph: landscape, pricing intelligence, threat and opening analysis, claim verification (AI Circuit Breaker) and battlecards."
+"desc": "Built first, service by service: 17 marketing services and 6 competitive intelligence services, each enabled by its supporting processes and enabling a matching capability, following the ontology-core-domain pattern. It imports ontology-core-bundle, the core load manifest, plus the core taxonomies and ontologies it uses directly and both marketing taxonomies, so the whole holarchy flows into it: BFO, ontology-core-domain, every core ontology and taxonomy, and every marketing term class (1215 inherited classes in all). Its services specialise Services and its processes specialise Process."
 }
 ];
 // [from, to, type, note]
-const EDGES = [["bfo", "ro", "imports", "RO core imports BFO"], ["ro", "vzro", "relates", "extension declared in the same file; measures ⊑ IAO is about"], ["bfo", "vzro", "anchors", "information relations range over generically dependent continuant"], ["ro", "domain", "imports", "relations specialise RO"], ["bfo", "domain", "imports", "BFO 2020 by version IRI; 12 class anchors"], ["domain", "mktx", "imports", "taxonomy roots specialise the DRM roots"], ["domain", "mkci", "imports", "foundation"], ["mktx", "mkci", "imports", "CI terms specialise marketing roots"], ["domain", "mkt", "imports", "foundation; services, capabilities and processes"], ["mktx", "mkt", "imports", "process shapes point to these terms"], ["mkci", "mkt", "imports", "CI process shapes point to these terms"], ["ro", "mkt", "imports", "RO relations used in shapes: has member, has part, realized in, role of"], ["vzro", "mkt", "relates", "shapes use competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens"], ["bfo", "mktx", "anchors", "Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic anchored directly"], ["bfo", "mkci", "anchors", "Market anchored directly"], ["v-domain", "domain", "grounds", "1 dc:subject"], ["v-marketing", "mkt", "grounds", "139 dc:subject"], ["v-marketing", "mktx", "grounds", "166 dc:subject"], ["v-marketing-ci", "mkt", "grounds", "30 dc:subject"], ["v-marketing-ci", "mkci", "grounds", "71 dc:subject"], ["v-marketing-ci", "v-marketing", "maps", "Competitive Intelligence broadMatch Marketing Insights & Analysis; CI terms broadMatch their marketing parents"], ["domain", "c-process", "imports", "declares the root class; the module imports the DRM"], ["c-process", "mkt", "anchors", "1 direct subclass; 121 descendants"], ["domain", "c-services", "imports", "declares the root class; the module imports the DRM"], ["c-services", "mkt", "anchors", "5 direct subclasses; 33 descendants"], ["domain", "c-capability", "imports", "declares the root class; the module imports the DRM"], ["c-capability", "mkt", "anchors", "1 direct subclass; 24 descendants"], ["domain", "c-asset", "imports", "declares the root class; the module imports the DRM"], ["c-asset", "mktx", "anchors", "3 direct subclasses; 74 descendants"], ["domain", "c-role", "imports", "declares the root class; the module imports the DRM"], ["c-role", "mktx", "anchors", "1 direct subclass; 15 descendants"], ["domain", "c-event", "imports", "declares the root class; the module imports the DRM"], ["c-event", "mktx", "anchors", "1 direct subclass; 4 descendants"], ["domain", "c-rules", "imports", "declares the root class; the module imports the DRM"], ["c-rules", "mktx", "anchors", "1 direct subclass; 16 descendants"], ["domain", "c-lifecycle", "imports", "declares the root class; the module imports the DRM"], ["c-lifecycle", "mktx", "anchors", "1 direct subclass; 13 descendants"], ["domain", "c-issue", "imports", "declares the root class; the module imports the DRM"], ["c-issue", "mktx", "anchors", "1 direct subclass; 5 descendants"], ["domain", "c-persona", "imports", "declares the root class; the module imports the DRM"], ["c-persona", "mktx", "anchors", "1 direct subclass; 1 descendants"], ["c-persona", "mkt", "relates", "used in 1 shape constraints"], ["domain", "c-requirements", "imports", "declares the root class; the module imports the DRM"], ["c-requirements", "mktx", "anchors", "1 direct subclass; 1 descendants"], ["domain", "c-party", "imports", "declares the root class; the module imports the DRM"], ["c-party", "mkt", "relates", "used in 3 shape constraints"], ["domain", "c-valuestream", "imports", "core module, should import the DRM"], ["c-valuestream", "mkt", "relates", "used in 2 shape constraints"], ["domain", "c-businessoperations", "imports", "core module, should import the DRM"], ["c-businessoperations", "mkt", "anchors", "1 direct subclass; 11 descendants"], ["c-businessoperations", "mktx", "anchors", "2 direct subclasses; 3 descendants"]];
-const VIEWS = {"bfo": {"p": "ontology.html#bfo", "v": {"taxonomy": "taxonomy.html#bfo", "ontology": "ontology.html#bfo", "graph": "graph.html#bfo"}}, "ro": {"p": "ontology.html#ro", "v": {"taxonomy": "taxonomy.html#ro", "ontology": "ontology.html#ro", "graph": "graph.html#ro"}}, "vzro": {"p": "ontology.html#vzro", "v": {"taxonomy": "taxonomy.html#vzro", "ontology": "ontology.html#vzro", "graph": "graph.html#vzro"}}, "v-domain": {"p": "vocabulary.html#v-domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#v-domain", "ontology": "ontology.html#domain", "graph": "graph.html#v-domain"}}, "v-marketing": {"p": "vocabulary.html#v-marketing", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#v-marketing", "ontology": "ontology.html#mkt", "graph": "graph.html#v-marketing"}}, "v-marketing-ci": {"p": "vocabulary.html#v-marketing-ci", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#v-marketing-ci", "ontology": "ontology.html#mkci", "graph": "graph.html#v-marketing-ci"}}, "domain": {"p": "ontology.html#domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#domain", "ontology": "ontology.html#domain", "graph": "graph.html#domain"}}, "mkt": {"p": "ontology.html#mkt", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mkt", "ontology": "ontology.html#mkt", "graph": "graph.html#mkt"}}, "mktx": {"p": "taxonomy.html#mktx", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mktx", "ontology": "ontology.html#mktx", "graph": "graph.html#mktx"}}, "mkci": {"p": "taxonomy.html#mkci", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#mkci", "ontology": "ontology.html#mkci", "graph": "graph.html#mkci"}}, "c-process": {"p": "ontology.html#domain~Process", "v": {"ontology": "ontology.html#domain~Process", "graph": "graph.html#domain~Process"}}, "c-services": {"p": "ontology.html#domain~Communications", "v": {"ontology": "ontology.html#domain~Communications", "graph": "graph.html#domain~Communications"}}, "c-capability": {"p": "ontology.html#domain~Capability", "v": {"ontology": "ontology.html#domain~Capability", "graph": "graph.html#domain~Capability"}}, "c-asset": {"p": "ontology.html#domain~DigitalAsset", "v": {"ontology": "ontology.html#domain~DigitalAsset", "graph": "graph.html#domain~DigitalAsset"}}, "c-role": {"p": "ontology.html#domain~Role", "v": {"ontology": "ontology.html#domain~Role", "graph": "graph.html#domain~Role"}}, "c-event": {"p": "ontology.html#domain~Event", "v": {"ontology": "ontology.html#domain~Event", "graph": "graph.html#domain~Event"}}, "c-rules": {"p": "ontology.html#domain~Rules", "v": {"ontology": "ontology.html#domain~Rules", "graph": "graph.html#domain~Rules"}}, "c-lifecycle": {"p": "ontology.html#domain~Lifecycle", "v": {"ontology": "ontology.html#domain~Lifecycle", "graph": "graph.html#domain~Lifecycle"}}, "c-issue": {"p": "ontology.html#domain~Issue", "v": {"ontology": "ontology.html#domain~Issue", "graph": "graph.html#domain~Issue"}}, "c-persona": {"p": "ontology.html#domain~Persona", "v": {"ontology": "ontology.html#domain~Persona", "graph": "graph.html#domain~Persona"}}, "c-requirements": {"p": "ontology.html#domain~Outcome", "v": {"ontology": "ontology.html#domain~Outcome", "graph": "graph.html#domain~Outcome"}}, "c-party": {"p": "ontology.html#domain~Party", "v": {"ontology": "ontology.html#domain~Party", "graph": "graph.html#domain~Party"}}, "c-valuestream": {"p": "ontology.html#mkt~MarketingBrandManagement", "v": {"ontology": "ontology.html#mkt~MarketingBrandManagement", "graph": "graph.html#mkt~MarketingBrandManagement"}}, "c-businessoperations": {"p": "ontology.html#mkt~Communications", "v": {"ontology": "ontology.html#mkt~Communications", "graph": "graph.html#mkt~Communications"}}};
-const ETYPES = [{"id": "imports", "label": "owl:imports"}, {"id": "grounds", "label": "vocabulary grounding"}, {"id": "anchors", "label": "subclass anchor"}, {"id": "relates", "label": "relations / shape use"}, {"id": "maps", "label": "vocabulary mapping"}];
+const EDGES = [["bfo", "ro", "imports", "RO core imports BFO"], ["ro", "vzro", "relates", "extension declared in the same file; measures ⊑ IAO is about"], ["bfo", "vzro", "anchors", "information relations range over generically dependent continuant"], ["ro", "domain", "imports", "relations specialise RO"], ["bfo", "domain", "imports", "BFO 2020 by version IRI"], ["v-domain", "domain", "grounds", "Domain dc:subject"], ["v-domain", "v-marketing", "maps", "Marketing skos:exactMatch Marketing (core)"], ["v-marketing", "v-marketing-ci", "maps", "Competitive Intelligence broadMatch Marketing Insights & Analysis; CI terms broadMatch their marketing parents"], ["domain", "mktx", "imports", "all core taxonomies and ontologies flow in"], ["domain", "mkci", "imports", "all core taxonomies and ontologies flow in"], ["mktx", "mkci", "imports", "CI terms specialise marketing terms"], ["domain", "mkt", "imports", "all core taxonomies and ontologies flow in"], ["mktx", "mkt", "imports", "process shapes point to these terms"], ["mkci", "mkt", "imports", "CI process shapes point to these terms"], ["ro", "mkt", "imports", "RO relations used in shapes: has member, has part, realized in, role of"], ["vzro", "mkt", "relates", "shapes use competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens"], ["bfo", "mktx", "anchors", "Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic anchored directly"], ["bfo", "mkci", "anchors", "Market anchored directly"], ["v-marketing", "mkt", "grounds", "139 dc:subject"], ["v-marketing", "mktx", "grounds", "166 dc:subject"], ["v-marketing-ci", "mkt", "grounds", "30 dc:subject"], ["v-marketing-ci", "mkci", "grounds", "71 dc:subject"], ["c-lifecycle", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-lifecycle"], ["c-party", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-party"], ["c-persona", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-persona"], ["c-product", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-product"], ["c-valuestream", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-valuestream"], ["domain", "c-asset", "declares", "ontology-core-domain declares its root; ontology-core-asset imports it"], ["bfo", "c-asset", "anchors", "Asset ⊑ continuant"], ["v-asset", "c-asset", "grounds", "33 dc:subject"], ["c-asset", "mktx", "inherits", "3 direct subclasses; 74 classes inherit"], ["domain", "c-capability", "declares", "ontology-core-domain declares its root; ontology-core-capability imports it"], ["v-svc", "c-capability", "imports", "ontology-core-capability imports vocabulary-core-servicemodel"], ["bfo", "c-capability", "anchors", "Capability ⊑ realizable entity"], ["v-capability", "c-capability", "grounds", "49 dc:subject"], ["c-capability", "mkt", "inherits", "1 direct subclass; 24 classes inherit"], ["c-location", "c-event", "imports", "ontology-core-event imports taxonomy-core-location"], ["c-persona", "c-event", "imports", "ontology-core-event imports taxonomy-core-persona"], ["c-process", "c-event", "imports", "ontology-core-event imports taxonomy-core-process"], ["c-time", "c-event", "imports", "ontology-core-event imports taxonomy-core-time"], ["domain", "c-event", "declares", "ontology-core-domain declares its root; ontology-core-event imports it"], ["v-svc", "c-event", "imports", "ontology-core-event imports vocabulary-core-servicemodel"], ["bfo", "c-event", "anchors", ""], ["v-event", "c-event", "grounds", "5 dc:subject"], ["c-event", "mktx", "inherits", "1 direct subclass; 4 classes inherit"], ["c-persona", "c-requirements", "imports", "ontology-core-requirements imports taxonomy-core-persona"], ["domain", "c-requirements", "declares", "ontology-core-domain declares its root; ontology-core-requirements imports it"], ["bfo", "c-requirements", "anchors", ""], ["v-requirements", "c-requirements", "grounds", "16 dc:subject"], ["c-requirements", "mktx", "inherits", "1 direct subclass; 1 classes inherit"], ["c-asset", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-asset"], ["domain", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-domain"], ["g-data", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-governance-data"], ["c-asset", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-asset"], ["c-requirements", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-requirements"], ["domain", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-domain"], ["g-data", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-governance-data"], ["c-asset", "g-data", "imports", "ontology-core-governance-data imports ontology-core-asset"], ["domain", "g-data", "imports", "ontology-core-governance-data imports ontology-core-domain"], ["domain", "g-ovl", "imports", "ontology-core-governance-overlay imports ontology-core-domain"], ["c-asset", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-asset"], ["domain", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-domain"], ["g-data", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-governance-data"], ["c-asset", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-asset"], ["c-businessoperations", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-businessoperations"], ["c-capability", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-capability"], ["c-compliance", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-compliance"], ["c-event", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-event"], ["c-issue", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-issue"], ["c-lifecycle", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-lifecycle"], ["c-location", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-location"], ["c-party", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-party"], ["c-persona", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-persona"], ["c-process", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-process"], ["c-product", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-product"], ["c-requirements", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-requirements"], ["c-role", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-role"], ["c-rules", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-rules"], ["c-services", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-services"], ["c-technicalservices", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-services-technicalservices"], ["c-time", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-time"], ["c-valuestream", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-valuestream"], ["domain", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-domain"], ["g-ai", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-ai"], ["g-an", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-analytics"], ["g-data", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-data"], ["g-ovl", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-overlay"], ["g-sem", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-semantic"], ["v-svc", "c-bundle", "imports", "ontology-core-bundle imports vocabulary-core-servicemodel"], ["c-services", "c-businessoperations", "imports", "taxonomy-core-businessoperations imports taxonomy-core-services"], ["domain", "c-businessoperations", "imports", "taxonomy-core-businessoperations imports ontology-core-domain"], ["v-businessoperations", "c-businessoperations", "grounds", "76 dc:subject"], ["c-businessoperations", "mkt", "inherits", "1 direct subclass; 11 classes inherit"], ["c-businessoperations", "mktx", "inherits", "2 direct subclasses; 3 classes inherit"], ["domain", "c-compliance", "declares", "ontology-core-domain declares its root; taxonomy-core-compliance imports it"], ["v-compliance", "c-compliance", "grounds", "92 dc:subject"], ["domain", "c-issue", "declares", "ontology-core-domain declares its root; taxonomy-core-issue imports it"], ["v-issue", "c-issue", "grounds", "9 dc:subject"], ["c-issue", "mktx", "inherits", "1 direct subclass; 5 classes inherit"], ["domain", "c-lifecycle", "declares", "ontology-core-domain declares its root; taxonomy-core-lifecycle imports it"], ["v-lifecycle", "c-lifecycle", "grounds", "21 dc:subject"], ["c-lifecycle", "mktx", "inherits", "1 direct subclass; 13 classes inherit"], ["domain", "c-location", "declares", "ontology-core-domain declares its root; taxonomy-core-location imports it"], ["bfo", "c-location", "anchors", "Location ⊑ continuant"], ["v-location", "c-location", "grounds", "22 dc:subject"], ["domain", "c-party", "declares", "ontology-core-domain declares its root; taxonomy-core-party imports it"], ["bfo", "c-party", "anchors", "Party ⊑ independent continuant"], ["v-party", "c-party", "grounds", "49 dc:subject"], ["c-party", "mkt", "relates", "used in 3 shape constraints"], ["domain", "c-persona", "declares", "ontology-core-domain declares its root; taxonomy-core-persona imports it"], ["v-persona", "c-persona", "grounds", "46 dc:subject"], ["c-persona", "mktx", "inherits", "1 direct subclass; 1 classes inherit"], ["c-persona", "mkt", "relates", "used in 1 shape constraints"], ["domain", "c-process", "declares", "ontology-core-domain declares its root; taxonomy-core-process imports it"], ["bfo", "c-process", "anchors", "Process ⊑ process"], ["v-process", "c-process", "grounds", "12 dc:subject"], ["c-process", "mkt", "inherits", "1 direct subclass; 121 classes inherit"], ["domain", "c-product", "imports", "taxonomy-core-product imports ontology-core-domain"], ["v-product", "c-product", "grounds", "68 dc:subject"], ["domain", "c-role", "declares", "ontology-core-domain declares its root; taxonomy-core-role imports it"], ["bfo", "c-role", "anchors", "Role ⊑ role"], ["v-role", "c-role", "grounds", "5 dc:subject"], ["c-role", "mktx", "inherits", "1 direct subclass; 15 classes inherit"], ["domain", "c-rules", "declares", "ontology-core-domain declares its root; taxonomy-core-rules imports it"], ["bfo", "c-rules", "anchors", "Rules ⊑ generically dependent continuant"], ["v-rules", "c-rules", "grounds", "16 dc:subject"], ["c-rules", "mktx", "inherits", "1 direct subclass; 16 classes inherit"], ["domain", "c-services", "declares", "ontology-core-domain declares its root; taxonomy-core-services imports it"], ["v-services", "c-services", "grounds", "96 dc:subject"], ["c-services", "mkt", "inherits", "2 direct subclasses; 24 classes inherit"], ["c-services", "c-technicalservices", "imports", "taxonomy-core-services-technicalservices imports taxonomy-core-services"], ["domain", "c-technicalservices", "imports", "taxonomy-core-services-technicalservices imports ontology-core-domain"], ["v-technicalservices", "c-technicalservices", "grounds", "207 dc:subject"], ["domain", "c-time", "declares", "ontology-core-domain declares its root; taxonomy-core-time imports it"], ["v-time", "c-time", "grounds", "25 dc:subject"], ["domain", "c-valuestream", "declares", "ontology-core-domain declares its root; taxonomy-core-valuestream imports it"], ["bfo", "c-valuestream", "anchors", "Value Stream ⊑ process"], ["v-valuestream", "c-valuestream", "grounds", "19 dc:subject"], ["c-valuestream", "mkt", "relates", "used in 2 shape constraints"], ["c-bundle", "mkt", "imports", "the whole core flows in"], ["v-services", "v-businessoperations", "maps", "exactMatch links between vocabulary-core-businessoperations and vocabulary-core-services"], ["v-services", "v-technicalservices", "maps", "broadMatch links between vocabulary-core-technicalservices and vocabulary-core-services"], ["v-technicalservices", "v-businessoperations", "maps", "closeMatch links between vocabulary-core-businessoperations and vocabulary-core-technicalservices"], ["v-compliance", "v-domain", "maps", "closeMatch links between vocabulary-core-domain and vocabulary-core-compliance"], ["v-technicalservices", "v-asset", "maps", "closeMatch links between vocabulary-core-asset and vocabulary-core-technicalservices"], ["v-services", "v-asset", "maps", "closeMatch links between vocabulary-core-asset and vocabulary-core-services"], ["v-technicalservices", "v-capability", "maps", "closeMatch links between vocabulary-core-capability and vocabulary-core-technicalservices"], ["v-services", "v-capability", "maps", "closeMatch links between vocabulary-core-capability and vocabulary-core-services"], ["v-services", "v-compliance", "maps", "closeMatch links between vocabulary-core-compliance and vocabulary-core-services"]];
+const VIEWS = {"bfo": {"p": "ontology.html#bfo", "v": {"taxonomy": "taxonomy.html#bfo", "ontology": "ontology.html#bfo", "graph": "graph.html#bfo"}}, "ro": {"p": "ontology.html#ro", "v": {"taxonomy": "taxonomy.html#ro", "ontology": "ontology.html#ro", "graph": "graph.html#ro"}}, "vzro": {"p": "ontology.html#vzro", "v": {"taxonomy": "taxonomy.html#vzro", "ontology": "ontology.html#vzro", "graph": "graph.html#vzro"}}, "v-domain": {"p": "vocabulary.html#v-domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#v-domain", "ontology": "ontology.html#domain", "graph": "graph.html#v-domain"}}, "v-marketing": {"p": "vocabulary.html#v-marketing", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#v-marketing", "ontology": "ontology.html#mkt", "graph": "graph.html#v-marketing"}}, "v-marketing-ci": {"p": "vocabulary.html#v-marketing-ci", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#v-marketing-ci", "ontology": "ontology.html#mkci", "graph": "graph.html#v-marketing-ci"}}, "domain": {"p": "ontology.html#domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#domain", "ontology": "ontology.html#domain", "graph": "graph.html#domain"}}, "mkt": {"p": "ontology.html#mkt", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mkt~MarketingService", "ontology": "ontology.html#mkt", "graph": "graph.html#mkt"}}, "mktx": {"p": "taxonomy.html#mktx~MarketingAsset", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mktx~MarketingAsset", "ontology": "ontology.html#mktx", "graph": "graph.html#mktx"}}, "mkci": {"p": "taxonomy.html#mkci~Market", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#mkci~Market", "ontology": "ontology.html#mkci", "graph": "graph.html#mkci"}}, "c-asset": {"p": "ontology.html#c-asset~Asset", "v": {"taxonomy": "taxonomy.html#c-asset~Asset", "ontology": "ontology.html#c-asset~Asset", "vocabulary": "vocabulary.html#v-asset"}}, "c-capability": {"p": "ontology.html#c-capability~Capability", "v": {"taxonomy": "taxonomy.html#c-capability~Capability", "ontology": "ontology.html#c-capability~Capability", "vocabulary": "vocabulary.html#v-capability"}}, "c-event": {"p": "ontology.html#c-event~Events", "v": {"taxonomy": "taxonomy.html#c-event~Events", "ontology": "ontology.html#c-event~Events", "vocabulary": "vocabulary.html#v-event"}}, "c-requirements": {"p": "ontology.html#c-requirements~Requirements", "v": {"taxonomy": "taxonomy.html#c-requirements~Requirements", "ontology": "ontology.html#c-requirements~Requirements", "vocabulary": "vocabulary.html#v-requirements"}}, "g-ai": {"p": "ontology.html#g-ai~AIGovernanceRole", "v": {"taxonomy": "taxonomy.html#g-ai~AIGovernanceRole", "ontology": "ontology.html#g-ai~AIGovernanceRole"}}, "g-an": {"p": "ontology.html#g-an~AnalyticInfrastructure", "v": {"taxonomy": "taxonomy.html#g-an~AnalyticInfrastructure", "ontology": "ontology.html#g-an~AnalyticInfrastructure"}}, "g-data": {"p": "ontology.html#g-data~DataAsset", "v": {"taxonomy": "taxonomy.html#g-data~DataAsset", "ontology": "ontology.html#g-data~DataAsset"}}, "g-ovl": {"p": "ontology.html#g-ovl~DeonticModality", "v": {"taxonomy": "taxonomy.html#g-ovl~DeonticModality", "ontology": "ontology.html#g-ovl~DeonticModality"}}, "g-sem": {"p": "ontology.html#g-sem~BusinessTerm", "v": {"taxonomy": "taxonomy.html#g-sem~BusinessTerm", "ontology": "ontology.html#g-sem~BusinessTerm"}}, "c-bundle": {"p": "ontology.html#c-bundle", "v": {"taxonomy": "taxonomy.html#c-bundle", "ontology": "ontology.html#c-bundle"}}, "c-businessoperations": {"p": "taxonomy.html#c-businessoperations~BusinessOperations", "v": {"taxonomy": "taxonomy.html#c-businessoperations~BusinessOperations", "ontology": "ontology.html#c-businessoperations~BusinessOperations", "vocabulary": "vocabulary.html#v-businessoperations"}}, "c-compliance": {"p": "taxonomy.html#c-compliance~Compliance", "v": {"taxonomy": "taxonomy.html#c-compliance~Compliance", "ontology": "ontology.html#c-compliance~Compliance", "vocabulary": "vocabulary.html#v-compliance"}}, "c-issue": {"p": "taxonomy.html#c-issue~Issue", "v": {"taxonomy": "taxonomy.html#c-issue~Issue", "ontology": "ontology.html#c-issue~Issue", "vocabulary": "vocabulary.html#v-issue"}}, "c-lifecycle": {"p": "taxonomy.html#c-lifecycle~Lifecycle", "v": {"taxonomy": "taxonomy.html#c-lifecycle~Lifecycle", "ontology": "ontology.html#c-lifecycle~Lifecycle", "vocabulary": "vocabulary.html#v-lifecycle"}}, "c-location": {"p": "taxonomy.html#c-location~Location", "v": {"taxonomy": "taxonomy.html#c-location~Location", "ontology": "ontology.html#c-location~Location", "vocabulary": "vocabulary.html#v-location"}}, "c-party": {"p": "taxonomy.html#c-party~Party", "v": {"taxonomy": "taxonomy.html#c-party~Party", "ontology": "ontology.html#c-party~Party", "vocabulary": "vocabulary.html#v-party"}}, "c-persona": {"p": "taxonomy.html#c-persona~Persona", "v": {"taxonomy": "taxonomy.html#c-persona~Persona", "ontology": "ontology.html#c-persona~Persona", "vocabulary": "vocabulary.html#v-persona"}}, "c-process": {"p": "taxonomy.html#c-process~Process", "v": {"taxonomy": "taxonomy.html#c-process~Process", "ontology": "ontology.html#c-process~Process", "vocabulary": "vocabulary.html#v-process"}}, "c-product": {"p": "taxonomy.html#c-product~Product", "v": {"taxonomy": "taxonomy.html#c-product~Product", "ontology": "ontology.html#c-product~Product", "vocabulary": "vocabulary.html#v-product"}}, "c-role": {"p": "taxonomy.html#c-role~Role", "v": {"taxonomy": "taxonomy.html#c-role~Role", "ontology": "ontology.html#c-role~Role", "vocabulary": "vocabulary.html#v-role"}}, "c-rules": {"p": "taxonomy.html#c-rules~Rules", "v": {"taxonomy": "taxonomy.html#c-rules~Rules", "ontology": "ontology.html#c-rules~Rules", "vocabulary": "vocabulary.html#v-rules"}}, "c-services": {"p": "taxonomy.html#c-services~Services", "v": {"taxonomy": "taxonomy.html#c-services~Services", "ontology": "ontology.html#c-services~Services", "vocabulary": "vocabulary.html#v-services"}}, "c-technicalservices": {"p": "taxonomy.html#c-technicalservices~TechnicalServices", "v": {"taxonomy": "taxonomy.html#c-technicalservices~TechnicalServices", "ontology": "ontology.html#c-technicalservices~TechnicalServices", "vocabulary": "vocabulary.html#v-technicalservices"}}, "c-time": {"p": "taxonomy.html#c-time~Time", "v": {"taxonomy": "taxonomy.html#c-time~Time", "ontology": "ontology.html#c-time~Time", "vocabulary": "vocabulary.html#v-time"}}, "c-valuestream": {"p": "taxonomy.html#c-valuestream~ValueStream", "v": {"taxonomy": "taxonomy.html#c-valuestream~ValueStream", "ontology": "ontology.html#c-valuestream~ValueStream", "vocabulary": "vocabulary.html#v-valuestream"}}, "v-asset": {"p": "vocabulary.html#v-asset", "v": {"vocabulary": "vocabulary.html#v-asset", "taxonomy": "taxonomy.html#v-asset", "ontology": "ontology.html#c-asset"}}, "v-businessoperations": {"p": "vocabulary.html#v-businessoperations", "v": {"vocabulary": "vocabulary.html#v-businessoperations", "taxonomy": "taxonomy.html#v-businessoperations", "ontology": "ontology.html#c-businessoperations"}}, "v-capability": {"p": "vocabulary.html#v-capability", "v": {"vocabulary": "vocabulary.html#v-capability", "taxonomy": "taxonomy.html#v-capability", "ontology": "ontology.html#c-capability"}}, "v-compliance": {"p": "vocabulary.html#v-compliance", "v": {"vocabulary": "vocabulary.html#v-compliance", "taxonomy": "taxonomy.html#v-compliance", "ontology": "ontology.html#c-compliance"}}, "v-event": {"p": "vocabulary.html#v-event", "v": {"vocabulary": "vocabulary.html#v-event", "taxonomy": "taxonomy.html#v-event", "ontology": "ontology.html#c-event"}}, "v-issue": {"p": "vocabulary.html#v-issue", "v": {"vocabulary": "vocabulary.html#v-issue", "taxonomy": "taxonomy.html#v-issue", "ontology": "ontology.html#c-issue"}}, "v-lifecycle": {"p": "vocabulary.html#v-lifecycle", "v": {"vocabulary": "vocabulary.html#v-lifecycle", "taxonomy": "taxonomy.html#v-lifecycle", "ontology": "ontology.html#c-lifecycle"}}, "v-location": {"p": "vocabulary.html#v-location", "v": {"vocabulary": "vocabulary.html#v-location", "taxonomy": "taxonomy.html#v-location", "ontology": "ontology.html#c-location"}}, "v-party": {"p": "vocabulary.html#v-party", "v": {"vocabulary": "vocabulary.html#v-party", "taxonomy": "taxonomy.html#v-party", "ontology": "ontology.html#c-party"}}, "v-persona": {"p": "vocabulary.html#v-persona", "v": {"vocabulary": "vocabulary.html#v-persona", "taxonomy": "taxonomy.html#v-persona", "ontology": "ontology.html#c-persona"}}, "v-process": {"p": "vocabulary.html#v-process", "v": {"vocabulary": "vocabulary.html#v-process", "taxonomy": "taxonomy.html#v-process", "ontology": "ontology.html#c-process"}}, "v-product": {"p": "vocabulary.html#v-product", "v": {"vocabulary": "vocabulary.html#v-product", "taxonomy": "taxonomy.html#v-product", "ontology": "ontology.html#c-product"}}, "v-requirements": {"p": "vocabulary.html#v-requirements", "v": {"vocabulary": "vocabulary.html#v-requirements", "taxonomy": "taxonomy.html#v-requirements", "ontology": "ontology.html#c-requirements"}}, "v-role": {"p": "vocabulary.html#v-role", "v": {"vocabulary": "vocabulary.html#v-role", "taxonomy": "taxonomy.html#v-role", "ontology": "ontology.html#c-role"}}, "v-rules": {"p": "vocabulary.html#v-rules", "v": {"vocabulary": "vocabulary.html#v-rules", "taxonomy": "taxonomy.html#v-rules", "ontology": "ontology.html#c-rules"}}, "v-services": {"p": "vocabulary.html#v-services", "v": {"vocabulary": "vocabulary.html#v-services", "taxonomy": "taxonomy.html#v-services", "ontology": "ontology.html#c-services"}}, "v-technicalservices": {"p": "vocabulary.html#v-technicalservices", "v": {"vocabulary": "vocabulary.html#v-technicalservices", "taxonomy": "taxonomy.html#v-technicalservices", "ontology": "ontology.html#c-technicalservices"}}, "v-time": {"p": "vocabulary.html#v-time", "v": {"vocabulary": "vocabulary.html#v-time", "taxonomy": "taxonomy.html#v-time", "ontology": "ontology.html#c-time"}}, "v-valuestream": {"p": "vocabulary.html#v-valuestream", "v": {"vocabulary": "vocabulary.html#v-valuestream", "taxonomy": "taxonomy.html#v-valuestream", "ontology": "ontology.html#c-valuestream"}}, "v-svc": {"p": "ontology.html#v-svc", "v": {"ontology": "ontology.html#v-svc", "taxonomy": "taxonomy.html#v-svc"}}};
+const ETYPES = [{"id": "imports", "label": "owl:imports"}, {"id": "declares", "label": "declares core roots"}, {"id": "inherits", "label": "inheritance (rdfs:subClassOf)"}, {"id": "anchors", "label": "BFO anchor"}, {"id": "grounds", "label": "vocabulary grounding"}, {"id": "maps", "label": "vocabulary inheritance (SKOS match)"}, {"id": "relates", "label": "relations / shape use"}];
 
 const FINDINGS = [
 {
 "sev": "Fixed",
+"title": "Missing core classes declared",
+"body": "The core taxonomies existed only as vocabularies, so classes that ontology-core-domain and the core ontologies use (Run Time, Observation, Person, Individual Product, Data Analytics & Insights, Marketing & Brand Management) had no declaration. All 15 core taxonomies are now OWL files generated from their core vocabularies: 763 classes, one per concept, subclassed along skos:broader and grounded by dc:subject; their IRIs are exactly the ones the core already uses. ontology-core-domain now declares Run Time, Observation, Outcome, Job Step and Feature itself. Every class reference across the core and marketing files resolves.",
+"nodes": [
+"domain",
+"c-lifecycle",
+"c-process",
+"c-requirements",
+"c-party",
+"c-product",
+"c-valuestream"
+]
+},
+{
+"sev": "Fixed",
+"title": "Marketing re-anchored on the full core",
+"body": "With the core files in hand, three links from 1.0 turn out to be valid and are restored: Marketing Communications, Marketing Strategy and Marketing Technology specialise Communications, Strategy and Technology in taxonomy-core-businessoperations; Marketing Outcome specialises Outcome in ontology-core-requirements; and the Brand Management processes enable Marketing & Brand Management in taxonomy-core-valuestream. The stand-in value stream class added earlier was removed.",
+"nodes": [
+"mktx",
+"mkt",
+"c-businessoperations",
+"c-requirements",
+"c-valuestream"
+]
+},
+{
+"sev": "Fixed",
+"title": "The whole core flows into marketing",
+"body": "ontology-domain-marketing imports ontology-core-bundle, the core's load manifest, so every core ontology and taxonomy flows in; it and the marketing taxonomies also import each core taxonomy or ontology they specialise directly. Their hierarchies carry the full chain from BFO: 539 inherited classes in taxonomy-domain-marketing, 705 in taxonomy-domain-marketing-ci and 1215 in ontology-domain-marketing. taxonomy-core-businessoperations was added to the bundle, which had left it out.",
+"nodes": [
+"c-bundle",
+"mkt",
+"mktx",
+"mkci",
+"domain"
+]
+},
+{
+"sev": "Fixed",
+"title": "Vocabulary inheritance",
+"body": "vocabulary-domain-marketing's top concept Marketing is skos:exactMatch to Marketing in vocabulary-core-domain, and vocabulary-domain-marketing-ci hangs off vocabulary-domain-marketing by broadMatch. The core cross-scheme mappings (Business Operations under Services, Technical Services under Services and the same-sense pairs) are carried over.",
+"nodes": [
+"v-marketing",
+"v-domain",
+"v-marketing-ci",
+"v-businessoperations",
+"v-services"
+]
+},
+{
+"sev": "Fixed",
 "title": "Built service-first",
-"body": "The ontology starts from a catalog of 23 marketing services. Each is enabled by its supporting processes and enables a matching capability, the pattern the Domain Reference Model's Process and Services shapes set. All 121 processes support at least one service.",
+"body": "ontology-domain-marketing starts from a catalog of 23 marketing services. Each is enabled by its supporting processes and enables a matching capability, the pattern ontology-core-domain's Process and Services shapes set. All 121 processes support at least one service, and every one of the 237 taxonomy classes is used by a process or service shape.",
 "nodes": [
 "mkt",
 "domain",
@@ -531,72 +1044,29 @@ const FINDINGS = [
 },
 {
 "sev": "Fixed",
-"title": "Terms emerge from processes",
-"body": "Every process carries a shape saying what it creates, uses, changes, targets or promotes (228 links). Those terms are the classes of the two marketing taxonomies, and every one of the 237 taxonomy classes is used by at least one process. Each class and concept has a scope note naming its processes and the services they support.",
-"nodes": [
-"mkt",
-"mktx",
-"mkci",
-"v-marketing",
-"v-marketing-ci"
-]
-},
-{
-"sev": "Fixed",
 "title": "Competitive intelligence from the PEO Competitive Graph",
-"body": "Five CI services (landscape, pricing intelligence, threat and opening analysis, claim verification, battlecards), their processes and their terms were surfaced from the graph's threat graph, landscape matrix, AI Circuit Breaker and source list. Each CI class and concept cites the graph as dct:source. It is an input to the build, not a module in the lineage.",
+"body": "Five CI services (landscape, pricing intelligence, threat and opening analysis, claim verification, battlecards), their processes and their terms were surfaced from the graph. Each CI class and concept cites the graph as dct:source. It is an input to the build, not part of the lineage.",
 "nodes": [
 "mkci",
 "v-marketing-ci",
-"mkt"
-]
-},
-{
-"sev": "Fixed",
-"title": "Two vocabularies, two taxonomies",
-"body": "General marketing terms are in vocabulary-domain-marketing (271 concepts) and taxonomy-domain-marketing (166 classes). Competitive intelligence terms are in vocabulary-domain-marketing-ci (92 concepts) and taxonomy-domain-marketing-ci (71 classes), which builds on the marketing taxonomy's roots.",
-"nodes": [
-"v-marketing",
-"v-marketing-ci",
-"mktx",
-"mkci"
-]
-},
-{
-"sev": "Fixed",
-"title": "1.0 IRIs kept",
-"body": "Every 1.0 process keeps its IRI and concept. The 20 1.0 classes that are not processes (Brand Equity, Customer Loyalty, Marketing Plans, Market Targets and others) are now taxonomy classes; their 1.0 IRIs stay in the ontology as deprecated equivalent classes so existing data resolves.",
-"nodes": [
-"mkt",
-"mktx",
-"v-marketing"
-]
-},
-{
-"sev": "Fixed",
-"title": "Built on the Domain Reference Model",
-"body": "The package imports ontology-core-domain 1.1 in place of the retired upper ontology; shapes use the DRM relations; Lifecycle and Product Catalog are no longer subclasses of marketing processes.",
-"nodes": [
-"mkt",
-"domain",
-"ro",
-"bfo"
-]
-},
-{
-"sev": "Fixed",
-"title": "New relations declared in BFO Relations first",
-"body": "12 relations and their inverses are declared in BFO Relations.owl and then referenced by the marketing shapes. IAO 'is about' is reused under its OBO IRI.",
-"nodes": [
-"vzro",
-"ro",
 "mkt"
 ]
 },
 {
 "sev": "Follow-up",
+"title": "Steward review of the generated core taxonomies",
+"body": "The 15 OWL taxonomies are generated mechanically from the core vocabularies: class IRIs come from the concept labels in CamelCase, and the hierarchy follows skos:broader. Product, Business Operations and Technical Services roots are not declared in ontology-core-domain (Business Operations is equivalent to its Services concept and Technical Services sits under Services, per the core mappings). Confirm the IRIs and roots before certifying.",
+"nodes": [
+"c-product",
+"c-businessoperations",
+"c-technicalservices",
+"domain"
+]
+},
+{
+"sev": "Follow-up",
 "title": "Anchor the remaining roots (60)",
-"body": "60 of 406 marketing classes do not reach BFO yet: Services 24, Marketing Channel 15, Lifecycle 13, Issue 6, Persona 1, Outcome 1. Services, Lifecycle, Issue, Persona and Outcome wait on the DRM steward decision; Marketing Channel needs one here.",
+"body": "60 of 406 marketing classes do not reach BFO yet: Services 24, Marketing Channel 15, Lifecycle 13, Issue 6, Persona 1, Marketing Outcome 1. Services, Lifecycle, Issue, Persona, Outcome (under Requirements) and Product have no BFO parent in the core; Marketing Channel needs one in taxonomy-domain-marketing.",
 "nodes": [
 "mkt",
 "c-services",
@@ -604,7 +1074,19 @@ const FINDINGS = [
 "c-issue",
 "c-persona",
 "c-requirements",
-"domain"
+"mktx"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Align marketing terms with the richer core (13 same-label candidates)",
+"body": "Now that the full core taxonomies are available, some marketing classes share a label with a core class and may belong under it, or be the same thing. The core mappings warn that same labels can mean different things, so these were not linked automatically: Advertising (taxonomy-core-services); Campaign Management (taxonomy-core-services); Competitive Analysis (taxonomy-core-businessoperations, taxonomy-core-services); Competitive Pricing Analysis (taxonomy-core-product); Customer Feedback (taxonomy-core-services-technicalservices); Events (ontology-core-event); Internal Communication (taxonomy-core-businessoperations); Marketing Management (taxonomy-core-services); Marketing Strategy (taxonomy-core-product); Pricing Management (taxonomy-core-services); Pricing Strategy (taxonomy-core-product); Product Management (ontology-core-capability); Value Proposition (taxonomy-core-businessoperations).",
+"nodes": [
+"mktx",
+"mkt",
+"c-businessoperations",
+"c-role",
+"c-asset"
 ]
 },
 {
@@ -617,46 +1099,18 @@ const FINDINGS = [
 },
 {
 "sev": "Follow-up",
-"title": "Removed CI content from the earlier draft",
-"body": "Win/loss analysis, the CI-001 to CI-005 policies, intelligence signal classes and decision records came from the Intelligence Fabric demo, not the competitive graph, and were removed. Add them back as services, processes and terms if they are wanted.",
-"nodes": [
-"mkci",
-"mkt"
-]
-},
-{
-"sev": "Follow-up",
-"title": "Link the marketing schemes to Core Domain",
-"body": "Core Domain has a Marketing concept under Commercial; the marketing vocabulary has its own top concept Marketing. Add an exactMatch so the domain vocabularies hang off the core one.",
-"nodes": [
-"v-marketing",
-"v-domain"
-]
-},
-{
-"sev": "Follow-up",
-"title": "Map RO core to the extended file",
-"body": "BFO Relations.owl still carries the RO core ontology IRI. Add a catalog entry that resolves it to the local file, or imports from purl.obolibrary.org will not see the marketing relations.",
-"nodes": [
-"vzro",
-"ro"
-]
-},
-{
-"sev": "Follow-up",
 "title": "Validate with a reasoner and SHACL engine",
-"body": "The package was checked with a purpose-built Turtle parser: references resolve, no BFO disjointness is violated, every service has an enabling process and every taxonomy class is used by a process. Run it through TopBraid or RDF4J and an OWL reasoner before certifying.",
+"body": "The package was checked with a purpose-built Turtle parser: every class reference across the core and marketing files resolves, no BFO disjointness is violated, every service has an enabling process and every taxonomy class is used. Load ontology-core-bundle and ontology-domain-marketing through the catalog in TopBraid or Protégé with an OWL reasoner and a SHACL engine before certifying.",
 "nodes": [
 "mkt",
-"mktx",
-"mkci"
+"c-bundle"
 ]
 }
 ];
 
 // ---------- layout ----------
 const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
-const COLW=182, NW=152, NH=34, GAP=42, TOP=70, PADX=14;
+const COLW=226, NW=196, NH=34, GAP=42, TOP=70, PADX=14;
 const cols = TIERS.map(t=>NODES.filter(n=>n.tier===t.id));
 const maxRows = Math.max(...cols.map(c=>c.length));
 const H = TOP + maxRows*GAP + 14, W = PADX*2 + TIERS.length*COLW - (COLW-NW);
@@ -690,7 +1144,7 @@ const edgeEls = EDGES.map(([a,b,type,note])=>{
   return {a,b,type,p};
 });
 
-const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5"};
+const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5",generated:"6 2"};
 NODES.forEach(n=>{
   const g=el("g",{class:"node"+(n.tier==="domain"?" domain":""),transform:`translate(${n.x},${n.y})`,tabindex:"0",role:"button","aria-label":`${n.label}, ${TIERS.find(t=>t.id===n.tier).name}`},gNodes);
   const col=`var(${TIERS.find(t=>t.id===n.tier).color})`;
@@ -705,12 +1159,13 @@ NODES.forEach(n=>{
   el("rect",{x:NW-21,y:NH-17,width:16,height:13,rx:3,class:"obox"},oa);
   el("path",{d:`M${NW-16.5},${NH-7.5} l6,-6 M${NW-14},${NH-13.5} h3.5 v3.5`,class:"oglyph"},oa);
   oa.addEventListener("click",e=>e.stopPropagation());
-  g.addEventListener("dblclick",()=>{location.href=VIEWS[n.id].p;});
+  g.addEventListener("dblclick",e=>{e.preventDefault();e.stopPropagation();openNode(n.id);});
   g.addEventListener("click",()=>select(n.id));
   g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id);}});
   n.g=g;
 });
 
+function openNode(id){ const v=VIEWS[id]; if(!v) return; window.location.assign(new URL(v.p, window.location.href).href); }
 // ---------- controls ----------
 const active=new Set(ETYPES.map(e=>e.id));
 const tg=document.getElementById("edgeToggles");
@@ -757,7 +1212,7 @@ function render(){
 
 function relList(ids){return ids.length?`<ul>${ids.map(({id,type})=>`<li><button class="link" data-go="${id}"><i class="dot" style="background:var(${TIERS.find(t=>t.id===byId[id].tier).color})"></i>${byId[id].label}<small>${type}</small></button></li>`).join("")}</ul>`:`<p style="font-size:13px">None in this map.</p>`;}
 
-const VIEWINFO={vocabulary:["Vocabulary","concepts, definitions, mappings"],taxonomy:["Hierarchy","horizontal, vertical and outline trees"],ontology:["Ontology","classes, shapes, properties, module"],graph:["Graph","network, cluster, hierarchy and list views"]};
+const VIEWINFO={vocabulary:["Vocabulary","concepts, definitions, mappings"],taxonomy:["Hierarchy","horizontal, vertical and outline trees"],ontology:["Ontology","classes, shapes, properties"],graph:["Graph","network, cluster, hierarchy and list views"]};
 const VICON={graph:'<circle cx="4" cy="4" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="7" cy="12" r="2"/><path d="M5.7 4.5 10 5M5 5.7 6.4 10.2M11 6.8 8.3 10.5"/>',vocabulary:'<path d="M3 3h10v10H3z M6 6h4 M6 8.5h4 M6 11h2"/>',taxonomy:'<path d="M3 4h4 M7 4v8 M7 8h5 M7 12h5"/>',ontology:'<circle cx="4" cy="4" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><path d="M5.7 5 10 5.6 M4.6 6 5.6 10 M10.6 7.4 7.5 10.8"/>'};
 function exploreLinks(id){
   const v=VIEWS[id]; if(!v) return "";
@@ -769,7 +1224,7 @@ function renderPanel(id,T){
   const ins=EDGES.filter(e=>e[1]===id).map(e=>({id:e[0],type:e[2]}));
   const outs=EDGES.filter(e=>e[0]===id).map(e=>({id:e[1],type:e[2]}));
   const fs=FINDINGS.filter(f=>f.nodes.includes(id));
-  const statusText={supplied:`supplied file · ${n.file}`,referenced:"Referenced, not supplied"}[n.status];
+  const statusText={supplied:`supplied file · ${n.file}`,referenced:"Referenced, not supplied",embedded:`declared in ontology-core-domain · ${n.file}`,generated:`generated from its core vocabulary · ${n.file}`}[n.status];
   document.getElementById("panel").innerHTML=`
     <span class="tierpill"><i class="dot" style="background:var(${tier.color})"></i>${tier.name}</span>
     <h2>${n.label}</h2>
@@ -777,8 +1232,8 @@ function renderPanel(id,T){
     <p style="font-size:12.5px;color:var(--muted)">${statusText}</p>
     ${n.stats&&n.stats.length?`<div class="stats">${n.stats.map(s=>`<span class="stat">${s}</span>`).join("")}</div>`:""}
     <p>${n.desc}</p>
-    <div class="rel"><h3>Explore this module</h3><div class="explore">${exploreLinks(n.id)}</div></div>
-    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related modules over ${T.edges.size} edges</div>
+    <div class="rel"><h3>Explore</h3><div class="explore">${exploreLinks(n.id)}</div></div>
+    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related vocabularies, taxonomies and ontologies over ${T.edges.size} edges</div>
     <div class="rel"><h3>Draws from</h3>${relList(ins)}</div>
     <div class="rel"><h3>Feeds into</h3>${relList(outs)}</div>
     ${fs.map(f=>`<div class="note"><b class="${f.sev==='Fixed'?'ok':''}">${f.sev}:</b> ${f.title}</div>`).join("")}`;
@@ -789,14 +1244,14 @@ document.getElementById("findings").innerHTML=FINDINGS.map((f,i)=>`<button class
 document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
   const f=FINDINGS[+b.dataset.f]; focusSet=f.nodes; render();
   const p=document.getElementById("panel");
-  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Modules involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
+  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
   document.querySelectorAll("#panel [data-go]").forEach(x=>x.onclick=()=>select(x.dataset.go));
   document.getElementById("graph").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 });
 
 // ledger
-const ledgerRows=[["Formal foundations", "BFO 2020; OBO Relations Core; marketing relations extension (same file)", "1 of 2 files", "11 BFO categories used · 30 RO + 22 new relations"], ["Vocabularies", "Core Domain 1.1, Domain Marketing 1.1, Domain Marketing CI 1.0", "3 of 3", "22 + 271 + 92 concepts"], ["Domain Reference Model", "ontology-core-domain 1.1 (foundation)", "1 of 1", "21 relations · 9 used by marketing"], ["Core modules", "Process, Services, Capability, Asset, Role, Event, Rules, Lifecycle, Issue, Persona, Requirements, Party, Value Stream, Business Ops", "0 of 14", "roots declared in the DRM or referenced by IRI"], ["Marketing taxonomies", "taxonomy-domain-marketing 1.0, taxonomy-domain-marketing-ci 1.0", "2 of 2", "166 + 71 classes, each used by a process"], ["Marketing ontology", "ontology-domain-marketing 1.1", "1 of 1", "23 services · 23 capabilities · 121 processes · 169 shapes"]];
-document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
+const ledgerRows=[["Formal foundations", "BFO 2020; OBO Relations Core; BFO Relations (same file)", "1 of 2 files", "11 BFO categories used · 30 RO + 22 new relations"], ["Core vocabularies", "21 schemes: vocabulary-core-asset, vocabulary-core-businessoperations, vocabulary-core-capability, vocabulary-core-compliance, vocabulary-core-domain, vocabulary-core-event, vocabulary-core-issue, vocabulary-core-lifecycle, vocabulary-core-location, vocabulary-core-party, vocabulary-core-persona, vocabulary-core-process, vocabulary-core-product, vocabulary-core-requirements, vocabulary-core-role, vocabulary-core-rules, vocabulary-core-servicemodel, vocabulary-core-services, vocabulary-core-technicalservices, vocabulary-core-time, vocabulary-core-valuestream", "21 of 21", "888 concepts"], ["Unifying ontology", "ontology-core-domain 1.1", "1 of 1", "31 classes · 21 relations · 9 used by marketing"], ["Core ontologies", "ontology-core-asset, ontology-core-capability, ontology-core-event, ontology-core-requirements, ontology-core-governance-ai, ontology-core-governance-analytics, ontology-core-governance-data, ontology-core-governance-overlay, ontology-core-governance-semantic, ontology-core-bundle", "10 of 10", "196 classes"], ["Core taxonomies", "taxonomy-core-businessoperations, taxonomy-core-compliance, taxonomy-core-issue, taxonomy-core-lifecycle, taxonomy-core-location, taxonomy-core-party, taxonomy-core-persona, taxonomy-core-process, taxonomy-core-product, taxonomy-core-role, taxonomy-core-rules, taxonomy-core-services, taxonomy-core-services-technicalservices, taxonomy-core-time, taxonomy-core-valuestream", "generated from 15 vocabularies", "763 classes"], ["Domain vocabularies", "vocabulary-domain-marketing 1.1, vocabulary-domain-marketing-ci 1.0", "2 of 2", "271 + 92 concepts"], ["Domain taxonomies", "taxonomy-domain-marketing 1.0, taxonomy-domain-marketing-ci 1.0", "2 of 2", "166 + 71 classes, each used by a process"], ["Domain ontology", "ontology-domain-marketing 1.1", "1 of 1", "23 services · 23 capabilities · 121 processes · 169 shapes"]];
+document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Vocabularies, taxonomies and ontologies</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
 
 /* ---------- theme: chosen here, followed by every lineage page ---------- */
 function setTheme(t,save){

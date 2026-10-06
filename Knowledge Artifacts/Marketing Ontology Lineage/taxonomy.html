@@ -64,7 +64,7 @@ const {D,VOC,ONT,esc,href,keyOf,boot,setKey,concept,colorOf,viewsFor,NODES,class
 const NS = "http://www.w3.org/2000/svg";
 let T = null, S = {lay:"h", collapsed:new Set(), sel:null, q:"", zoom:1};
 
-/* ---------- build a tree model for any module ---------- */
+/* ---------- build a tree model for any vocabulary, taxonomy or ontology ---------- */
 function mk(key,label,type,extra={}){ return Object.assign({key,label,type,children:[]},extra); }
 function fromVocab(vid, taxid){
   const v = VOC[vid], kids = {}, by = {};
@@ -89,13 +89,13 @@ function fromVocab(vid, taxid){
 function find(roots, pred){ for(const r of roots){ if(pred(r)) return r; const f = find(r.children,pred); if(f) return f; } return null; }
 function fromOntology(mid){
   const o = ONT[mid], groups = [];
-  const inSet = Object.entries(o.classes).filter(([i,c])=>c.local||c.anchored);
+  const inSet = Object.entries(o.classes).filter(([i,c])=>c.local||c.anchored||c.via);
   if(inSet.length){
     const keep = new Set(inSet.map(([i])=>i));
     inSet.forEach(([i,c])=>c.parents.forEach(p=>keep.add(p)));
     const kids = {};
-    keep.forEach(i=>{ const c=o.classes[i]; (c&&c.parents.length&&(c.local||c.anchored)?c.parents:[]).forEach(p=>{ if(keep.has(p)) (kids[p] ||= []).push(i); }); });
-    const roots = [...keep].filter(i=>{ const c=o.classes[i]; return !(c&&(c.local||c.anchored)&&c.parents.some(p=>keep.has(p))); });
+    keep.forEach(i=>{ const c=o.classes[i]; (c&&c.parents.length&&(c.local||c.anchored||c.via)?c.parents:[]).forEach(p=>{ if(keep.has(p)) (kids[p] ||= []).push(i); }); });
+    const roots = [...keep].filter(i=>{ const c=o.classes[i]; return !(c&&(c.local||c.anchored||c.via)&&c.parents.some(p=>keep.has(p))); });
     const seen = new Set();
     const build = (i, stack) => {
       const c = o.classes[i]||{label:classLabel(i),parents:[]};
@@ -149,7 +149,7 @@ function buildModel(id){
     title = X.label(id).replace(/ vocab$/,"");
     sub = id.startsWith("tax-") ? `taxonomy-core-${id.slice(4)}` : VOC[vid].iri;
     note = id.startsWith("tax-")
-      ? `<b>Source:</b> the taxonomy's OWL module was not supplied, so the hierarchy is drawn from <code>skos:broader</code> in its backing scheme, <a href="${href("vocabulary",vid)}">${esc(X.label(vid))}</a>. Concepts marked <span class="tag ok">OWL</span> are also OWL classes that the core modules reference.`
+      ? `<b>Source:</b> the taxonomy's OWL file was not supplied, so the hierarchy is drawn from <code>skos:broader</code> in its backing scheme, <a href="${href("vocabulary",vid)}">${esc(X.label(vid))}</a>. Concepts marked <span class="tag ok">OWL</span> are also OWL classes that the core modules reference.`
       : `<b>Source:</b> <code>skos:broader</code> links in ${esc(VOC[vid].iri)}.`;
   } else {
     const mid = ALIAS[id]||id, o = ONT[mid];
@@ -157,7 +157,7 @@ function buildModel(id){
     kind = "Class hierarchy";
     title = X.label(mid);
     sub = o.iri;
-    note = `<b>Source:</b> <code>rdfs:subClassOf</code>${o.individuals.length?", individual names (segments split on “:”)":""}${Object.values(o.props).some(p=>p.parents.length)?" and <code>rdfs:subPropertyOf</code>":""} in ${esc(o.file||"the files that reference it")}. Dashed boxes are classes from other modules; a dotted link marks a class that has more than one parent.`;
+    note = `<b>Source:</b> <code>rdfs:subClassOf</code>${o.individuals.length?", individual names (segments split on “:”)":""}${Object.values(o.props).some(p=>p.parents.length)?" and <code>rdfs:subPropertyOf</code>":""} in ${esc(o.file||"the files that reference it")}. Dashed boxes are inherited: classes declared in a parent (BFO, ontology-core-domain and its core taxonomies and ontologies, or a parent domain taxonomy), or, in a core taxonomy or ontology, the marketing classes that specialise it. A dotted link marks a class that has more than one parent.`;
   }
   // index
   let uid = 0; const all = [];
@@ -353,19 +353,21 @@ try{ const l = localStorage.getItem("tax-lay"); if(l){ S.lay = l; document.query
 boot("taxonomy", (id,key)=>{
   if(!T || T.id!==id){
     T = buildModel(id); S.sel = null; S.q = ""; document.getElementById("q").value = "";
-    const lv = T.all.length>70 ? 3 : 99;
-    S.collapsed = new Set(T.all.filter(n=>n.children.length && n.depth>=lv-1 && lv<99).map(n=>n.uid));
+    const isInt = n => !!(n.cls && (n.cls.local || n.cls.via==="specialised")); const own = T.all.filter(n=>n.cls&&n.cls.local);
+    const hasInt = new Map(); const hi = n => { if(!hasInt.has(n.uid)) hasInt.set(n.uid, isInt(n) || n.children.some(hi)); return hasInt.get(n.uid); };
+    const base = own.length ? Math.min(...own.map(n=>n.depth)) : 0; const lv = T.all.length>70 ? base+3 : 99;
+    S.collapsed = new Set(T.all.filter(n=>n.children.length && (own.length ? (!hi(n) || (n.depth>=lv-1 && lv<99)) : (n.depth>=lv-1 && lv<99))).map(n=>n.uid));
     head();
     const types = new Set(T.all.map(n=>n.type));
     document.getElementById("legend").innerHTML = [
       `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="${colorOf(T.id)}"/></svg>${types.has("concept")?"concept":"declared here"}</span>`,
-      (T.all.some(n=>n.ghost)?`<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>from another module</span>`:""),
+      (T.all.some(n=>n.ghost)?`<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>inherited from a parent, or a specialisation in marketing</span>`:""),
       (T.all.some(n=>n.multi)?`<span><svg width="22" height="8"><path d="M1 4H21" stroke="var(--muted)" stroke-dasharray="3 3"/></svg>second parent</span>`:""),
-      (T.all.some(n=>n.owl||n.type==="owlonly")?`<span><span class="tag ok">OWL</span>also an OWL class in the core modules</span>`:""),
+      (T.all.some(n=>n.owl||n.type==="owlonly")?`<span><span class="tag ok">OWL</span>also an OWL class in the core ontologies</span>`:""),
       `<span>Select a box for details; use − / + on a box to fold it.</span>`].join("");
   }
   document.title = `${T.title} · Hierarchy Explorer`;
-  const target = key ? T.all.find(n=>n.key===key) : null;
+  const target = key ? (T.all.find(n=>n.key===key && !n.ghost) || T.all.find(n=>n.key===key)) : null;
   const n = target || T.roots[0];
   select(n.uid, !!target);
   if(!target) document.getElementById("canvas").scrollTo(0,0);

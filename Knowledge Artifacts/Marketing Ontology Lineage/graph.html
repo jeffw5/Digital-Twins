@@ -203,7 +203,7 @@ footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 1
   <header>
     <div>
       <h1>Marketing Ontology Graph</h1>
-      <p>Services → processes → terms: ontology-domain-marketing, the two marketing taxonomies and vocabularies, the Domain Reference Model, BFO 2020 and BFO Relations · one graph built from the lineage data</p>
+      <p>Services → processes → terms: ontology-domain-marketing, the two marketing taxonomies and vocabularies, ontology-core-domain with its core taxonomies and ontologies, BFO 2020 and BFO Relations · one graph built from the lineage data</p>
     </div>
   </header>
 
@@ -274,7 +274,7 @@ footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 1
           </div>
           <label id="groupWrap" hidden>Group by <select id="groupBy" aria-label="Group by">
             <option value="layer">Kind of node</option><option value="cat">BFO category</option>
-            <option value="branch">Marketing branch</option><option value="module">Module</option></select></label>
+            <option value="branch">Marketing branch</option><option value="module">Vocabulary, taxonomy or ontology</option></select></label>
           <label id="dirWrap" hidden>Direction <select id="hierDir" aria-label="Hierarchy direction"><option value="tb">Top → bottom</option><option value="lr">Left → right</option></select></label>
         </div>
       </div>
@@ -288,7 +288,7 @@ footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 1
     <aside class="panel details" id="details" aria-live="polite"></aside>
   </div>
   <footer>
-    <span>Upper layer: BFO 2020 (ISO/IEC 21838-2) through the Domain Reference Model.</span>
+    <span>Upper layer: BFO 2020 (ISO/IEC 21838-2) through ontology-core-domain, the unifying ontology.</span>
     <span>Hover for attributes · click to pin · double-click to focus · drag · scroll to zoom</span>
     <span id="ftr"></span>
   </footer>
@@ -309,13 +309,13 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const NSP=[['mkt',VZ+'ontology-domain-marketing/'],['mkci',VZ+'taxonomy-domain-marketing-ci/'],['mktx',VZ+'taxonomy-domain-marketing/'],['vmci','https://vocabularies.verizon.com/domain-marketing-ci/'],['drm',VZ+'ontology-core-domain/'],['vzro',VR],['obo',OBO],
   ['vmkt','https://vocabularies.verizon.com/domain-marketing/'],['vdom','https://vocabularies.verizon.com/core-domain/'],['owl','http://www.w3.org/2002/07/owl#'],['xsd',XSD]];
 const curie=x=>{for(const [p,ns] of NSP) if(x.startsWith(ns)) return p+':'+x.slice(ns.length); const m=/^https:\/\/ontologies\.verizon\.com\/([^/]+)\/(.*)$/.exec(x); return m?m[1].replace(/^(taxonomy|ontology)-core-/,'')+':'+m[2]:x};
-const MODNAME={mkt:'Ontology · Marketing',mktx:'Taxonomy · Marketing',mkci:'Taxonomy · Marketing CI','v-marketing-ci':'Vocabulary · Marketing CI',domain:'Domain Reference Model',bfo:'BFO 2020',vzro:'BFO Relations · marketing',ro:'OBO Relations Core','v-marketing':'Vocabulary · Marketing','v-domain':'Vocabulary · Core Domain'};
+const MODNAME=Object.fromEntries(D.lineage.nodes.map(n=>[n.id,n.label]));
 const nodeLabel=id=>{const n=(D.lineage.nodes.find(n=>n.id===id)||{}); return n.label||MODNAME[id]||id};
 
 /* classes: local declarations first, then references */
 const CL=new Map();
 ['mkt','mktx','mkci','domain','bfo'].forEach(mid=>Object.entries(ONT[mid].classes).forEach(([iri,c])=>{ if(c.local&&!CL.has(iri)) CL.set(iri,Object.assign({},c,{mid})) }));
-['mkt','mktx','mkci','domain','bfo','vzro'].forEach(mid=>Object.entries(ONT[mid].classes).forEach(([iri,c])=>{ if(!CL.has(iri)&&iri!==OWLT) CL.set(iri,Object.assign({},c,{mid:c.owner||mid,ext:true})) }));
+['mkt','mktx','mkci','domain','bfo','vzro'].forEach(mid=>Object.entries(ONT[mid].classes).forEach(([iri,c])=>{ if(!CL.has(iri)&&iri!==OWLT&&!(c.via==='inherited'&&!c.anc)) CL.set(iri,Object.assign({},c,{mid:c.owner||mid,ext:true})) }));
 const parentsOf=i=>(CL.get(i)||{parents:[]}).parents||[];
 const supCache=new Map();
 function supers(c){ if(supCache.has(c)) return supCache.get(c); const seen=new Set(); const st=[c];
@@ -344,10 +344,10 @@ const LAYERS=[
   {id:'proc',name:'Processes',color:'var(--k-proc)'},
   {id:'tax',name:'Marketing taxonomy terms',color:'var(--k-tax)'},
   {id:'taxci',name:'CI taxonomy terms',color:'var(--k-taxci)'},
-  {id:'drm',name:'Domain Reference Model roots',color:'var(--k-drm)'},
-  {id:'core',name:'Core module classes',color:'var(--k-core)'},
+  {id:'drm',name:'Core taxonomy and ontology classes (ontology-core-domain)',color:'var(--k-drm)'},
+  {id:'core',name:'Other core classes',color:'var(--k-core)'},
   {id:'bfo',name:'BFO 2020 categories',color:'var(--k-bfo)'},
-  {id:'rel',name:'Relations (BFO Relations, DRM, RO)',color:'var(--k-rel)'},
+  {id:'rel',name:'Relations (BFO Relations, ontology-core-domain, RO)',color:'var(--k-rel)'},
   {id:'concept',name:'Vocabulary concepts (SKOS)',color:'var(--k-concept)'},
 ];
 const ETYPES=[
@@ -367,10 +367,10 @@ const addN=(id,o)=>{ if(!N.has(id)) N.set(id,Object.assign({id},o)); return N.ge
 const OD=VZ+'ontology-domain-marketing/', SVC_ROOTS=[OD+'MarketingService',OD+'MarketingCapability'];
 const layerOfClass=(iri,c)=>iri.startsWith(OBO+'BFO_')?'bfo':c.ext?(c.mid==='domain'?'drm':'core'):c.mid==='mkt'?((SVC_ROOTS.includes(iri)||[...supers(iri)].some(s=>SVC_ROOTS.includes(s)))?'svc':'proc'):c.mid==='mktx'?'tax':c.mid==='mkci'?'taxci':c.mid==='domain'?'drm':'core';
 CL.forEach((c,iri)=>{ const layer=layerOfClass(iri,c); if(layer==='bfo'&&!iri.startsWith(OBO+'BFO_')) return;
-  addN(iri,{text:c.label||local(iri),layer,module:c.ext?(c.mid||'core'):c.mid,kind:layer==='bfo'?'BFO class':layer==='drm'?'DRM root class':layer==='core'?'Core class':'Class',
+  addN(iri,{text:c.label||local(iri),layer,module:c.component||(c.ext?(c.mid||'core'):c.mid),kind:layer==='bfo'?'BFO class':layer==='drm'?'Core class':layer==='core'?'Core class':'Class',
     cat:layer==='bfo'?(CATOF[local(iri)]||'continuant'):catOf(iri),isNew:!!(CONCEPT.get(conceptOf(c))||{}).isNew&&c.mid!=='domain',note:/Re-homed from/.test(c.comment||''),concept:conceptOf(c),ci:c.mid==='mkci'||(CONCEPT.get(conceptOf(c))||{}).vid==='v-marketing-ci'}) });
-CONCEPT.forEach((c,iri)=>addN(iri,{text:c.label,layer:'concept',module:c.vid,kind:c.vid==='v-domain'?'Core Domain concept':c.vid==='v-marketing-ci'?'CI concept':'Marketing concept',isNew:c.isNew,ci:c.vid==='v-marketing-ci'}));
-REL.forEach((p,iri)=>addN(iri,{text:p.label,layer:'rel',module:p.mid,kind:p.mod==='vzro'?'Marketing relation':p.mod==='drm'?'DRM relation':'RO relation',relmod:p.mod}));
+CONCEPT.forEach((c,iri)=>addN(iri,{text:c.label,layer:'concept',module:c.vid,kind:c.vid==='v-domain'?'vocabulary-core-domain concept':c.vid==='v-marketing-ci'?'CI concept':'Marketing concept',isNew:c.isNew,ci:c.vid==='v-marketing-ci'}));
+REL.forEach((p,iri)=>addN(iri,{text:p.label,layer:'rel',module:p.mid,kind:p.mod==='vzro'?'Marketing relation':p.mod==='drm'?'ontology-core-domain relation':'RO relation',relmod:p.mod}));
 /* facets: classes that share one concept */
 const byConcept=new Map(); N.forEach(n=>{ if(n.concept&&['svc','proc','tax','taxci'].includes(n.layer)) (byConcept.get(n.concept)||byConcept.set(n.concept,[]).get(n.concept)).push(n) });
 N.forEach(n=>{ n.facet=n.layer==='svc'?(/Capability$/.test(n.id)?'capability':'service'):n.layer==='proc'?'process':'other' });
@@ -404,14 +404,14 @@ const PRESETS=[
   {id:'chain',name:'Service → process → term',sub:'The whole build order in one view',layers:['svc','proc','tax','taxci'],edges:['service','uses'],hideIso:true,style:'dot'},
   {id:'ci',name:'Competitive intelligence',sub:'From the PEO Competitive Graph',only:ciSet,edges:['service','uses','sub']},
   {id:'bfo',name:'Lineage to BFO',sub:'Every class down to its BFO category',layers:['svc','proc','tax','taxci','drm','core','bfo'],edges:['sub'],style:'dot'},
-  {id:'tax',name:'Marketing taxonomy',sub:'Term structures on the DRM roots',layers:['tax','drm','core','bfo'],edges:['sub'],hideIso:true,style:'dot'},
+  {id:'tax',name:'Marketing taxonomy',sub:'Term structures on the core taxonomy and ontology roots',layers:['tax','drm','core','bfo'],edges:['sub'],hideIso:true,style:'dot'},
   {id:'taxci',name:'CI taxonomy',sub:'Competitive intelligence term structures',layers:['taxci','tax'],edges:['sub'],hideIso:true},
   {id:'rules',name:'SHACL rules',sub:'Constraints beyond process use',layers:['svc','proc','tax','taxci','drm','core'],edges:['shape'],hideIso:true},
   {id:'rels',name:'Relations',sub:'New relations and their RO / BFO anchors',layers:['rel','bfo'],edges:['relsub','inverse','domrange'],hideIso:true},
   {id:'vocab',name:'Vocabulary → ontology',sub:'Concepts and the classes they ground',layers:['concept','svc','proc'],edges:['broader','grounds'],style:'dot'},
   {id:'all',name:'Everything',sub:'All layers; use dots and filters',layers:LAYERS.map(l=>l.id),edges:ETYPES.map(e=>e.id).filter(e=>e!=='grounds'),style:'dot'},
 ];
-const RELMODS=[['vzro','Marketing (new)'],['drm','DRM'],['ro','RO core']];
+const RELMODS=[['vzro','BFO Relations (new)'],['drm','ontology-core-domain'],['ro','RO core']];
 function freshState(){ return {layers:{},etypes:{},cats:new Set(CATS.map(c=>c[0])),facets:new Set(['process','capability','service']),relmods:new Set(RELMODS.map(r=>r[0])),newOnly:false,noteOnly:false,
   style:'pill',labels:true,elabels:false,group:true,hideIso:false,dist:110,rep:520,focus:false,hops:1,preset:'services',only:null,layout:'force',groupBy:'layer',hierDir:'tb',sortKey:null,sortDir:1} }
 let S=freshState();
@@ -535,7 +535,7 @@ function groupOf(n){
     case 'branch': return n.branch||'zz';
     default: return n.layer }
 }
-function groupLabel(k){ if(k==='zz') return S.groupBy==='branch'?'Outside the marketing modules':'No category (other kinds)';
+function groupLabel(k){ if(k==='zz') return S.groupBy==='branch'?'Outside the marketing domain':'No category (other kinds)';
   if(S.groupBy==='layer') return (LAYERS.find(l=>l.id===k)||{name:k}).name;
   if(S.groupBy==='cat') return CATNAME[k]||k;
   if(S.groupBy==='module') return MODNAME[k]||nodeLabel(k);
@@ -655,7 +655,7 @@ function highlight(){ if(!nSel) return;
 function legend(){ const L=document.getElementById('legend'); const vis=new Set(cur.nodes.map(n=>n.layer)); const items=[];
   const sw=(c,t,dashY)=>`<span><i style="border-color:${c};background:color-mix(in srgb,${c} 20%,var(--surface))${dashY?';border-style:dashed':''}"></i>${t}</span>`;
   LAYERS.forEach(l=>{ if(vis.has(l.id)&&l.id!=='rel') items.push(sw(l.color,l.name.replace(/ \(.*\)/,''))) });
-  if(vis.has('rel')) items.push(sw('var(--k-rel)','Marketing relation'),sw('var(--k-drm)','DRM relation'),sw('var(--k-ro)','RO relation'));
+  if(vis.has('rel')) items.push(sw('var(--k-rel)','Marketing relation'),sw('var(--k-drm)','ontology-core-domain relation'),sw('var(--k-ro)','RO relation'));
   if(cur.nodes.some(n=>isClassLayer(n.layer)&&n.cat==='none')) items.push(sw('var(--muted)','Not yet anchored to BFO',1));
   L.innerHTML=items.join('') }
 
@@ -910,7 +910,7 @@ document.getElementById('ftr').textContent=`${N.size} nodes · ${E.length} links
 const H0=fromHash();
 if(H0&&PRESET_FOR[H0.mid]){ applyPreset(PRESET_FOR[H0.mid]) }
 syncControls(); render();
-if(H0&&H0.target){ const tl=N.get(H0.target).layer; if(['svc','proc','tax','taxci'].includes(tl)){ applyPreset('chain'); selected=H0.target; S.focus=true; S.hops=2; S.etypes.sub=true; S.style='pill'; syncControls() } forced.add(H0.target); render(); setTimeout(()=>{ select(H0.target,{center:true}); fit() },1500) }
+if(H0&&H0.target){ forced.add(H0.target); render(); setTimeout(()=>{ select(H0.target,{center:true}) },1500) }
 else { select(null); }
 if(S.layout==='force'&&!(H0&&H0.target)) setTimeout(fit,1600);
 </script>
