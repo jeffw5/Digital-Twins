@@ -17,8 +17,8 @@ const label = id => {
 
 /* ---------- which views exist for a lineage node ---------- */
 const ALIAS = {svc:"v-svc", dqm:"v-svc"};
-const VOCAB_OF_ONT = {asset:"v-asset", req:"v-requirements", cap:"v-capability", event:"v-event", domain:"v-domain"};
-const ONT_OF_VOCAB = Object.fromEntries(Object.entries(VOCAB_OF_ONT).map(([a,b])=>[b,a]));
+const VOCAB_OF_ONT = D.vocabOf;
+const ONT_OF_VOCAB = D.ontOfVocab;
 function vocabFor(id){
   if(VOC[id]) return id;
   if(id.startsWith("tax-")){
@@ -63,7 +63,7 @@ function parseHash(){
   return i<0 ? {id:h, key:null} : {id:h.slice(0,i), key:h.slice(i+1)};
 }
 
-/* ---------- class / concept lookups across modules ---------- */
+/* ---------- class / concept lookups across vocabularies, taxonomies and ontologies ---------- */
 const classIndex = {};
 for(const [mid,o] of Object.entries(ONT)) for(const [iri,c] of Object.entries(o.classes)){
   if(c.local) (classIndex[iri] ||= {mid, c});
@@ -122,12 +122,12 @@ function topbar(page, id){
   const pills = ["vocabulary","taxonomy","ontology"].map(p=>{
     const tgt = v[p];
     if(p===page) return `<span class="on" aria-current="page">${PAGE_NAMES[p]}</span>`;
-    return tgt ? `<a href="${href(p,tgt)}">${PAGE_NAMES[p]}</a>` : `<span class="off" title="No ${PAGE_NAMES[p].toLowerCase()} view for this module">${PAGE_NAMES[p]}</span>`;
+    return tgt ? `<a href="${href(p,tgt)}">${PAGE_NAMES[p]}</a>` : `<span class="off" title="No ${PAGE_NAMES[p].toLowerCase()} view for this one">${PAGE_NAMES[p]}</span>`;
   }).join("");
   bar.innerHTML = `<div class="topbar-in">
     <nav class="crumb" aria-label="Breadcrumb"><a href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2 4 7l5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Lineage map</a><span class="sep">/</span><b>${PAGE_NAMES[page]}</b></nav>
-    <div class="picker"><label for="modpick">Module</label><select id="modpick">${sel}</select></div>
-    <nav class="views" aria-label="Views of this module">${pills}</nav></div>`;
+    <div class="picker"><label for="modpick">${page==="vocabulary"?"Vocabulary":"Taxonomy or ontology"}</label><select id="modpick">${sel}</select></div>
+    <nav class="views" aria-label="Views">${pills}</nav></div>`;
   document.getElementById("modpick").onchange = e => { location.hash = e.target.value; };
 }
 function boot(page, render){

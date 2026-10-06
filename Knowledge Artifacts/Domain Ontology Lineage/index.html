@@ -42,7 +42,7 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);l
 .collabel{font-family:var(--f-display);font-weight:700;font-size:14px;fill:var(--ink)}
 .colsub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
 .colband{fill:var(--surface-2)}
-.node{cursor:pointer;transition:opacity .18s}
+.node{cursor:pointer;transition:opacity .18s;-webkit-user-select:none;user-select:none}
 .node rect.box{fill:var(--surface);stroke-width:1.4}
 .node .lbl{font:500 12.5px var(--f-body);fill:var(--ink)}
 .node .meta{font:400 10.5px var(--f-mono);fill:var(--muted)}
@@ -57,10 +57,11 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);l
 .edge.dim{opacity:.07}
 .e-imports{stroke:var(--ink-soft)}
 .e-grounds{stroke:var(--t-vocab)}
-.e-inherits{stroke:var(--t-legacy);stroke-dasharray:5 4}
+.e-inherits{stroke:var(--t-tax);stroke-width:1.6}
 .e-anchors{stroke:var(--t-gov);stroke-dasharray:1.5 3.5}
 .e-aligns{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
 .e-maps{stroke:var(--t-vocab);stroke-dasharray:2 3}
+.e-declares{stroke:var(--ink-soft);stroke-dasharray:1 3}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;display:grid;gap:14px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
 @media (max-width:1100px){.panel{position:static}}
 .panel h2{font-family:var(--f-display);font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
@@ -112,14 +113,24 @@ th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
 td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
 tr:last-child td{border-bottom:none}
 td .mono{color:var(--ink-soft)}
+.headrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px}
+.themeseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.themeseg button{appearance:none;border:0;background:transparent;color:var(--muted);font:500 12.5px/1 var(--f-body);padding:7px 12px;cursor:pointer}
+.themeseg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.themeseg button:focus-visible{outline:2px solid var(--t-core);outline-offset:-2px}
 @media (prefers-reduced-motion:reduce){.node,.edge{transition:none}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Verizon Knowledge Fabric · ontology-core-domain v1.1 · draft</div>
+    <div class="headrow">
+      <div class="eyebrow">Verizon Knowledge Fabric · ontology-core-domain v1.1 · draft</div>
+      <div class="themeseg" role="group" aria-label="Colour theme for all lineage pages">
+        <button type="button" data-th="auto" aria-pressed="true">Auto</button><button type="button" data-th="light" aria-pressed="false">Light</button><button type="button" data-th="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
     <h1>Domain Ontology Lineage</h1>
-    <p class="lede">How the Domain Reference Model (<code>ontology-core-domain</code>) stands on BFO 2020 and the OBO Relations Core, and how vocabularies, taxonomies, core ontologies and governance overlays build on it. There is no separate upper ontology: the reference model is the foundation every other domain ontology imports. This is the corrected v1.1 set: the TM Forum SID, RAN and ThinkHome payloads are removed and every lineage issue from v1.0 is resolved. All 20 core SKOS vocabularies (888 concepts) are now in the lineage, each grounding its taxonomy or core ontology. Edges come from the v1.1 files: <code>owl:imports</code>, <code>dc:subject</code> links, vocabulary-to-taxonomy grounding, subclass anchors and SKOS mappings. Select any node to trace its ancestry and descendants, then open its vocabulary, hierarchy or ontology explorer from the panel. The small arrow on each node, or a double-click, opens that module’s main explorer directly.</p>
+    <p class="lede">The holarchy of the core, read left to right from parent to child. BFO 2020 and the OBO Relations Core sit above the unifying ontology, <code>ontology-core-domain</code>, which declares the root classes, the 21 shared relations and the SHACL rules every other ontology builds on. Each core taxonomy (<code>taxonomy-core-*</code>) is an OWL file generated from its core vocabulary (<code>vocabulary-core-*</code>) and imports the unifying ontology; the core ontologies (<code>ontology-core-*</code>) and the governance ontologies (<code>ontology-core-governance-*</code>) import it and the taxonomies they specialise; <code>ontology-core-bundle</code> loads the whole set. There are only vocabularies, taxonomies and ontologies, each named by the convention. Edges come from the files: <code>owl:imports</code>, root declarations, <code>rdfs:subClassOf</code> inheritance across files, BFO anchors, <code>dc:subject</code> grounding and SKOS mappings. Select any box to trace what it inherits and what inherits from it; double-click, or use its arrow, to open it in its vocabulary, hierarchy or ontology view.</p>
   </header>
 
   <div class="controls">
@@ -143,167 +154,1016 @@ td .mono{color:var(--ink-soft)}
 
   <section class="block">
     <h2>Resolution log</h2>
-    <p>What changed between v1.0 and v1.1, and the follow-ups that sit outside the supplied files. Select an entry to highlight the modules involved.</p>
+    <p>What changed between v1.0 and v1.1, and the follow-ups that sit outside the supplied files. Select an entry to highlight the vocabularies, taxonomies and ontologies involved.</p>
     <div class="findings" id="findings"></div>
   </section>
 
   <section class="block">
     <h2>Tier ledger</h2>
-    <p>Counts are taken from the v1.1 files. The taxonomy OWL modules were not supplied; they appear because the core modules import them, and each is backed by its supplied SKOS scheme.</p>
+    <p>Counts are taken from the v1.1 files. The core taxonomies are OWL files generated from their supplied core vocabularies.</p>
     <div class="ledger-wrap"><table id="ledger"></table></div>
   </section>
 </div>
 
 <script>
-const TIERS = [
-  {id:"found",  name:"Formal foundations", sub:"BFO 2020 · OBO RO core",  color:"--t-found"},
-  {id:"legacy", name:"Inherited sources",  sub:"origin vocabularies",      color:"--t-legacy"},
-  {id:"vocab",  name:"Vocabularies",       sub:"SKOS · dc:subject",      color:"--t-vocab"},
-  {id:"domain", name:"Domain Reference Model", sub:"ontology-core-domain", color:"--t-domain"},
-  {id:"tax",    name:"Taxonomies",         sub:"taxonomy-core-*",        color:"--t-tax"},
-  {id:"core",   name:"Core ontologies",    sub:"ontology-core-*",        color:"--t-core"},
-  {id:"gov",    name:"Governance overlays",sub:"enablingvalue.com",      color:"--t-gov"}
-];
-const VZ = "https://ontologies.verizon.com/";
-const VC = "https://vocabularies.verizon.com/";
-const VFILE = {businessoperations:"BusinessOperations",technicalservices:"TechnicalServices",valuestream:"ValueStream"};
-const voc = (id,label,n,depth,branches,desc) => ({id:"v-"+id,label:label+" vocab",tier:"vocab",status:"supplied",file:"vocabularies/Vocabulary_Core_"+(VFILE[id]||id[0].toUpperCase()+id.slice(1))+"_1.1.ttl",iri:VC+"core-"+id+(id==="issue"?"/":""),meta:n+" concepts",stats:[n+" concepts","depth "+depth,"top: "+branches],desc:"SKOS concept scheme. "+desc});
-const tax = (id,label,classes,desc) => ({id:"tax-"+id,label,tier:"tax",status:"referenced",iri:VZ+"taxonomy-core-"+id+"/",stats:classes?["seen: "+classes]:[],desc});
-
+const TIERS = [{"id": "found", "name": "Formal foundations", "sub": "BFO 2020 · OBO RO core", "color": "--t-found"}, {"id": "vocab", "name": "Core vocabularies", "sub": "vocabulary-core-*", "color": "--t-vocab"}, {"id": "domain", "name": "Unifying ontology", "sub": "ontology-core-domain", "color": "--t-domain"}, {"id": "tax", "name": "Core taxonomies", "sub": "taxonomy-core-*", "color": "--t-tax"}, {"id": "core", "name": "Core ontologies", "sub": "ontology-core-*", "color": "--t-core"}, {"id": "gov", "name": "Core governance ontologies", "sub": "ontology-core-governance-*", "color": "--t-gov"}, {"id": "bundle", "name": "Load bundle", "sub": "ontology-core-bundle", "color": "--t-legacy"}];
 const NODES = [
-  {id:"bfo",label:"BFO 2020",tier:"found",status:"referenced",iri:"http://purl.obolibrary.org/obo/bfo/2020/bfo.owl",meta:"pinned · 14 cls",
-   stats:["ISO/IEC 21838-2","pinned via catalog-v001.xml","14 classes surfaced via RO"],desc:"Basic Formal Ontology, the top-level ontology. It supplies the continuant / occurrent split: independent, specifically and generically dependent continuants; process; role, function, disposition, quality. RO core imports the unversioned bfo.owl, so the v1.1 catalog redirects that import to the BFO 2020 release, and the Domain Reference Model also imports BFO 2020 by its version IRI. Everything resolves to one BFO."},
-  {id:"ro",label:"OBO Relations Core",tier:"found",status:"supplied",file:"BFO Relations.owl",iri:"http://purl.obolibrary.org/obo/ro/core.owl",meta:"30 props",
-   stats:["release 2024-04-24","30 object properties","13 classes","4 SWRL rules","unchanged"],desc:"The OBO Relation Ontology core: the standard relations over BFO (part of / has part, participates in / has participant, realizes, occurs in, located in, bearer of, concretizes). Four SWRL rules specialise 'has characteristic' into has disposition, quality, role and function. Kept as published; its BFO import is pinned to BFO 2020 by the catalog. The Domain Reference Model imports it and specialises its relations."},
-
-  {id:"svc",label:"Service Model (2012)",tier:"legacy",status:"referenced",iri:"http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#",meta:"origin",
-   stats:["now lives in vocabulary-core-servicemodel"],desc:"The original 2012 service model: Discover → Define → Design → Develop artifacts, personas, corporate / customer / compliance outcomes, D&A goals, governance controls, tools and applications. In v1.0 it was copied into both Capability and Event; v1.1 extracts it once."},
-  {id:"dqm",label:"DQM vocabulary",tier:"legacy",status:"referenced",iri:"http://purl.org/dqm-vocabulary/v1/dqm#",meta:"origin",
-   stats:["now lives in vocabulary-core-servicemodel"],desc:"Data-quality rule properties (hasCondition, testedProperty, referenceProperty, operatedValue, cleansingProperty, reqMetadata) and inverses such as basedOn / hasScore."},
-
-  {id:"v-svc",label:"Service Model vocab",tier:"vocab",status:"supplied",file:"Vocabulary_Core_ServiceModel_1.1.ttl",iri:VZ+"vocabulary-core-servicemodel/",meta:"new · 328",
-   stats:["new in v1.1","328 statements","249 duplicates merged"],desc:"Single home for the inherited 2012 service model, co-ode governance personas and DQM properties. Capability and Event import it instead of each carrying a copy."},
-  voc("product","Product",68,5,"Physical Product, Product Business Drivers, Product Concept, Product Function, Product Lifecycle","Grounds taxonomy-core-product."),
-  voc("party","Party",49,6,"Organization, Person, Vendor","Grounds taxonomy-core-party. Its Commercial, Finance and Strategy concepts share labels with Domain and Business Operations but name organisational units, so they are left unmapped."),
-  voc("persona","Persona",46,3,"Persona, Personalization, Preference, Prior History, Profile and User Behavior Data","Grounds taxonomy-core-persona."),
-  voc("location","Location",22,3,"Geospatial, Logical, Physical","Grounds taxonomy-core-location. City, State, Province, Region, Street Name and ZIP Code sit under Street Address as address components (part-of, not kind-of)."),
-  voc("time","Time",25,3,"Absolute, Episodic, Relative","Grounds taxonomy-core-time. v1.1 gives Future its own definition (it carried Full Period's) and drafts definitions for Relative and Subsecond, marked for steward review."),
-  voc("lifecycle","Lifecycle",21,3,"Acquire, Design Time, Inventory, Retire, Run Time","Grounds taxonomy-core-lifecycle, including the Run Time branch the five Domain service classes now sit under."),
-  voc("valuestream","Value Stream",19,2,"11 value streams from Order to Cash to Supply Chain Management","Grounds taxonomy-core-valuestream."),
-  voc("process","Process",12,3,"Measurement, Observation, Process Step","Grounds taxonomy-core-process."),
-  voc("services","Services",96,7,"Business Services, Functional Services","Grounds taxonomy-core-services and now three Domain classes: Operations Management, Communications and Service Level Management carry dc:subject links to it. Its Business Operations concept is where core-businessoperations attaches."),
-  voc("technicalservices","Tech Services",207,5,"Knowledge Engineering, Platform Operations, Data Engineering, Enterprise Search, Security Management and 8 more","Grounds taxonomy-core-services-technicalservices. The largest scheme. Its root broadMatches Services; 10 concepts closeMatch same-named ones in Asset, Capability, Services and Business Operations."),
-  voc("role","Role",5,1,"Consumer, Customer, Partner, Provider","Grounds taxonomy-core-role, which all three governance role hierarchies specialise."),
-  voc("rules","Rules",16,3,"Decision Logic, Process Flow, Structural Rule","Grounds taxonomy-core-rules."),
-  voc("compliance","Compliance",92,6,"Controls, Documentation, Environmental, Guideline, Licensing, Regulation, Social Impact","Grounds taxonomy-core-compliance. Documentation catalogues DCAM, DAMA-DMBOK2, ISO, NIST, TM Forum and enterprise standards. The TM Forum entries are reference standards, not lineage, so they were kept."),
-  voc("issue","Issue",9,2,"Defect, Problem, Request","Grounds taxonomy-core-issue. Its scheme IRI ends in a slash (core-issue/), unlike the other 19."),
-  voc("asset","Asset",33,4,"Biological, Digital, Physical Asset","Grounds ontology-core-asset through 33 dc:subject links. System Engineering now points to the scheme's existing concept (b5f33aea-…), so every link resolves."),
-  voc("requirements","Requirements",16,4,"Job, Journey, Outcome, Requirement","Grounds ontology-core-requirements through 16 dc:subject links. v1.1 moves Non-Functional Feature under Feature, matching the OWL fix."),
-  voc("event","Event",5,2,"Event, Event State, Trigger","Grounds ontology-core-event through 5 dc:subject links. Event and Events share one definition."),
-  voc("capability","Capability",49,4,"Business, Functional, Technical Capability","Grounds ontology-core-capability through 49 dc:subject links."),
-  voc("domain","Domain",22,3,"Commercial, Corporate, Network, Supply Chain","Grounds ontology-core-domain. Only the Domain class is linked; its 21 sub-domains (Finance, Legal, Network, Procurement…) have no OWL classes yet."),
-  voc("businessoperations","Business Ops",76,4,"Analytics & Reporting, Communications, Quality Management, Strategy, Sustainability, Technology","New to the lineage. No taxonomy or ontology imports it, so it attaches by mapping: its root exactMatches the Business Operations concept in core-services, and 4 concepts closeMatch Services and Technical Services."),
-
-  tax("product","Product","IndividualProduct","Product taxonomy. PhysicalAsset is a subclass of IndividualProduct."),
-  tax("party","Party","Party, Person","Party taxonomy. Asset now imports it directly: HumanAsset is a subclass of Person and BiologicalAsset is typeOf Party. Governance artifacts are stewardedBy a Party."),
-  tax("persona","Persona","Persona","The most shared module: imported by Asset, Event, Requirements and Domain. Persona performs Process and is assignedTo Role."),
-  tax("location","Location","Location","Where events and processes occur (occursIn)."),
-  tax("time","Time","Time","When events occur. v1.1 uses occursWhen as the single temporal path."),
-  tax("lifecycle","Lifecycle","Lifecycle, RunTime","Assets and Services have a Lifecycle. The five run-time service classes now sit under RunTime in the Verizon namespace."),
-  tax("valuestream","Value Stream","ValueStream, DataAnalyticsInsights","Value streams are enabledBy Services; DataAnalyticsInsights is enabledBy Data and Analytic Products. Asset now imports it."),
-  tax("process","Process","Process, Observation","The hub of Domain's shapes: Process creates / modifies Assets, generates Observations, is performedBy Persona and enables Services. Event now imports it for 'Event generates Process'; a Job Step is performedBy a Process."),
-  tax("services","Services","Services + 5 run-time classes","Services enable Capability and ValueStream, are assignedTo Persona and have a Lifecycle. Features are enabledBy Services. Operations, Communications, Service Level Management, Reporting and Training are now Services subclasses."),
-  tax("services-technicalservices","Technical Services","","Technical services sub-taxonomy. No shape references it yet."),
-  tax("role","Role","Role","Role performs and consumes Process. All three governance role hierarchies now specialise it."),
-  tax("rules","Rules","Rules","Rules guide and constrain Process. The governance overlay's Rule (SWRL) is a skos:closeMatch."),
-  tax("compliance","Compliance","Compliance","Compliance controls Process. The governance overlay's Constraint (SHACL) is a skos:closeMatch."),
-  tax("issue","Issue","Issue","Issues occur in Process and generate Observations."),
-
-  {id:"asset",label:"Asset",tier:"core",status:"supplied",file:"Ontology_Core_Asset_1.1.ttl",iri:VZ+"ontology-core-asset/",meta:"33 cls",
-   stats:["33 classes","7 SHACL shapes","6 imports","v1.1"],desc:"Asset → Digital / Physical / Biological. DigitalAsset → Artifact (15 kinds), Data → Data Product, Analytics → Analytic Product, Digital Agent → Autonomous Agent → AI / BI Agent, Document, Media, IP, Semantics. Governance anchors here: Data Asset ⊑ Data, Semantic Artefact ⊑ Semantics, Analytic Model ⊑ Analytics, AI System ⊑ Digital Asset."},
-  {id:"req",label:"Requirements",tier:"core",status:"supplied",file:"Ontology_Core_Requirements_1.1.ttl",iri:VZ+"ontology-core-requirements/",meta:"16 cls",
-   stats:["16 classes","7 SHACL shapes","1 disjointness","v1.1"],desc:"Jobs-to-be-done framing. Job (Functional, Emotional, Supporting; Job Step), Journey (Journey Step), Outcome, Requirement → Need (Job Executor) and Specification → Feature → Functional / Non-Functional (now siblings and disjoint). Imports the Domain Reference Model."},
-  {id:"event",label:"Event",tier:"core",status:"supplied",file:"Ontology_Core_Event_1.1.ttl",iri:VZ+"ontology-core-event/",meta:"5 cls",
-   stats:["5 classes","1 datatype property","3 SHACL shapes","v1.1"],desc:"Events → Event, Event State (→ Discrete Value) and Trigger. Event occursIn Location, occursWhen Time, is initiatedBy a Trigger, has an Event State and generates Process. Event State carries exactly one stateValue. File reduced from 2,505 statements to 19."},
-  {id:"cap",label:"Capability",tier:"core",status:"supplied",file:"Ontology_Core_Capability_1.1.ttl",iri:VZ+"ontology-core-capability/",meta:"49 cls",
-   stats:["49 classes","imports service model vocab","v1.1"],desc:"Capability → Business, Functional and Technical. Technical carries the data platform set: Data Management (Dictionary, Masking, Modeling, Privacy, Security), Integration, Storage → Data Lake → Cloud / On-prem Lakehouse, Test Data, MDM, Metric Management, Data Fabric, Data Catalog, AI & ML. File reduced from 2,238 statements to 60."},
-
-  {id:"domain",label:"Domain Reference Model",short:"Reference Model",tier:"domain",status:"supplied",file:"Ontology_Core_Domain_1.1.ttl",iri:VZ+"ontology-core-domain/",meta:"foundation",
-   stats:["imports RO core + BFO 2020 only","21 relations","20 reference classes","12 BFO anchors","13 SHACL shapes","v1.1"],desc:"The unifying ontology and the foundation for every other domain ontology. It declares the 21 shared relations (enables, performs, occursIn, occursWhen, assignedTo, guides, constrains, controls, generates, creates, modifies, has and more), aligns them to RO, declares the root class of each domain ontology and anchors 12 of them to BFO 2020. Its SHACL rules bind the domains together: Process creates / modifies Assets and enables Services; Services enable Capability and ValueStream; Rules guide and constrain Process; Compliance controls Process; Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services. Core, taxonomy and governance ontologies import it; it imports none of them."},
-
-  {id:"g-data",label:"Data Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-data.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-data",meta:"21 cls",
-   stats:["21 classes","2 core anchors","v1.1"],desc:"Data assets, policies (access, retention, quality, privacy), governance bodies and roles (owner, steward, custodian), and quality dimensions. Data Asset ⊑ Asset Data; Governance Role ⊑ Role. The base the other three governance modules import."},
-  {id:"g-sem",label:"Semantic Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-semantic.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-semantic",meta:"19 cls",
-   stats:["19 classes","3 core anchors","v1.1"],desc:"Governs the lineage itself. Its Semantic Artefact hierarchy (Thesaurus, Taxonomy, Formal Ontology, Knowledge Graph, Business Glossary) now sits under Asset Semantics; stewards specialise Role and the council is a Governance Body."},
-  {id:"g-an",label:"Analytics Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-analytics.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-analytics",meta:"17 cls",
-   stats:["17 classes","3 core anchors","v1.1"],desc:"Analytic model types and lifecycle, platforms, committee and validation results. Analytic Model ⊑ Analytics; Business Requirement ⊑ Requirements Requirement; its Governance Body now specialises the data-governance one instead of duplicating it."},
-  {id:"g-ai",label:"AI Governance",tier:"gov",status:"supplied",file:"ontology-core-governance-ai.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-ai",meta:"20 cls",
-   stats:["20 classes","2 core anchors","v1.1"],desc:"AI systems, EU AI Act risk tiers, documentation and conformity assessment, FRIA, human oversight, audit logs, provider and deployer roles. AI System ⊑ Digital Asset; AI Governance Role ⊑ Role."},
-  {id:"g-ovl",label:"Governance Overlay",tier:"gov",status:"supplied",file:"ontology-core-governance-overlay.ttl",iri:"https://www.enablingvalue.com/ontology-core-governance-overlay#",meta:"16 cls",
-   stats:["16 classes","bound to Verizon core","v1.1"],desc:"The deontic layer. Normative sources mandate requirements, operationalized by a SHACL Constraint or SWRL Rule that appliesTo Process, Services or Capability. The core: stand-in is gone: it imports ontology-core-domain and matches taxonomy-core-compliance, taxonomy-core-rules and taxonomy-core-party directly."}
+{
+"id": "bfo",
+"label": "BFO 2020",
+"tier": "found",
+"status": "referenced",
+"iri": "http://purl.obolibrary.org/obo/bfo/2020/bfo.owl",
+"meta": "pinned · 14 cls",
+"stats": [
+"ISO/IEC 21838-2",
+"pinned via catalog-v001.xml",
+"14 classes surfaced via RO"
+],
+"desc": "Basic Formal Ontology, the top-level ontology. It supplies the continuant / occurrent split: independent, specifically and generically dependent continuants; process; role, function, disposition, quality. RO core imports the unversioned bfo.owl, so the v1.1 catalog redirects that import to the BFO 2020 release, and the ontology-core-domain also imports BFO 2020 by its version IRI. Everything resolves to one BFO."
+},
+{
+"id": "ro",
+"label": "OBO Relations Core",
+"tier": "found",
+"status": "supplied",
+"file": "BFO Relations.owl",
+"iri": "http://purl.obolibrary.org/obo/ro/core.owl",
+"meta": "30 props",
+"stats": [
+"release 2024-04-24",
+"30 object properties",
+"13 classes",
+"4 SWRL rules",
+"unchanged"
+],
+"desc": "The OBO Relation Ontology core: the standard relations over BFO (part of / has part, participates in / has participant, realizes, occurs in, located in, bearer of, concretizes). Four SWRL rules specialise 'has characteristic' into has disposition, quality, role and function. Kept as published; its BFO import is pinned to BFO 2020 by the catalog. The ontology-core-domain imports it and specialises its relations."
+},
+{
+"id": "v-domain",
+"label": "vocabulary-core-domain",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Domain_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-domain",
+"meta": "22 concepts",
+"stats": [
+"22 concepts",
+"grounds ontology-core-domain"
+],
+"desc": "SKOS concept scheme. Grounds ontology-core-domain. Only the Domain class is linked; its 21 sub-domains (Finance, Legal, Network, Procurement…) have no OWL classes yet."
+},
+{
+"id": "v-asset",
+"label": "vocabulary-core-asset",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Asset_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-asset",
+"meta": "33 concepts",
+"stats": [
+"33 concepts",
+"grounds ontology-core-asset"
+],
+"desc": "SKOS concept scheme. Grounds ontology-core-asset through 33 dc:subject links. System Engineering now points to the scheme's existing concept (b5f33aea-…), so every link resolves."
+},
+{
+"id": "v-businessoperations",
+"label": "vocabulary-core-businessoperations",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_BusinessOperations_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-businessoperations",
+"meta": "76 concepts",
+"stats": [
+"76 concepts",
+"grounds taxonomy-core-businessoperations"
+],
+"desc": "SKOS concept scheme. New to the lineage. No taxonomy or ontology imports it, so it attaches by mapping: its root exactMatches the Business Operations concept in core-services, and 4 concepts closeMatch Services and Technical Services."
+},
+{
+"id": "v-capability",
+"label": "vocabulary-core-capability",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Capability_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-capability",
+"meta": "49 concepts",
+"stats": [
+"49 concepts",
+"grounds ontology-core-capability"
+],
+"desc": "SKOS concept scheme. Grounds ontology-core-capability through 49 dc:subject links."
+},
+{
+"id": "v-compliance",
+"label": "vocabulary-core-compliance",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Compliance_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-compliance",
+"meta": "92 concepts",
+"stats": [
+"92 concepts",
+"grounds taxonomy-core-compliance"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-compliance. Documentation catalogues DCAM, DAMA-DMBOK2, ISO, NIST, TM Forum and enterprise standards. The TM Forum entries are reference standards, not lineage, so they were kept."
+},
+{
+"id": "v-event",
+"label": "vocabulary-core-event",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Event_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-event",
+"meta": "5 concepts",
+"stats": [
+"5 concepts",
+"grounds ontology-core-event"
+],
+"desc": "SKOS concept scheme. Grounds ontology-core-event through 5 dc:subject links. Event and Events share one definition."
+},
+{
+"id": "v-issue",
+"label": "vocabulary-core-issue",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Issue_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-issue/",
+"meta": "9 concepts",
+"stats": [
+"9 concepts",
+"grounds taxonomy-core-issue"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-issue. Its scheme IRI ends in a slash (core-issue/), unlike the other 19."
+},
+{
+"id": "v-lifecycle",
+"label": "vocabulary-core-lifecycle",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Lifecycle_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-lifecycle",
+"meta": "21 concepts",
+"stats": [
+"21 concepts",
+"grounds taxonomy-core-lifecycle"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-lifecycle, including the Run Time branch the five Domain service classes now sit under."
+},
+{
+"id": "v-location",
+"label": "vocabulary-core-location",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Location_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-location",
+"meta": "22 concepts",
+"stats": [
+"22 concepts",
+"grounds taxonomy-core-location"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-location. City, State, Province, Region, Street Name and ZIP Code sit under Street Address as address components (part-of, not kind-of)."
+},
+{
+"id": "v-party",
+"label": "vocabulary-core-party",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Party_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-party",
+"meta": "49 concepts",
+"stats": [
+"49 concepts",
+"grounds taxonomy-core-party"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-party. Its Commercial, Finance and Strategy concepts share labels with Domain and Business Operations but name organisational units, so they are left unmapped."
+},
+{
+"id": "v-persona",
+"label": "vocabulary-core-persona",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Persona_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-persona",
+"meta": "46 concepts",
+"stats": [
+"46 concepts",
+"grounds taxonomy-core-persona"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-persona."
+},
+{
+"id": "v-process",
+"label": "vocabulary-core-process",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Process_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-process",
+"meta": "12 concepts",
+"stats": [
+"12 concepts",
+"grounds taxonomy-core-process"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-process."
+},
+{
+"id": "v-product",
+"label": "vocabulary-core-product",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Product_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-product",
+"meta": "68 concepts",
+"stats": [
+"68 concepts",
+"grounds taxonomy-core-product"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-product."
+},
+{
+"id": "v-requirements",
+"label": "vocabulary-core-requirements",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Requirements_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-requirements",
+"meta": "16 concepts",
+"stats": [
+"16 concepts",
+"grounds ontology-core-requirements"
+],
+"desc": "SKOS concept scheme. Grounds ontology-core-requirements through 16 dc:subject links. v1.1 moves Non-Functional Feature under Feature, matching the OWL fix."
+},
+{
+"id": "v-role",
+"label": "vocabulary-core-role",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Role_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-role",
+"meta": "5 concepts",
+"stats": [
+"5 concepts",
+"grounds taxonomy-core-role"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-role, which all three governance role hierarchies specialise."
+},
+{
+"id": "v-rules",
+"label": "vocabulary-core-rules",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Rules_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-rules",
+"meta": "16 concepts",
+"stats": [
+"16 concepts",
+"grounds taxonomy-core-rules"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-rules."
+},
+{
+"id": "v-services",
+"label": "vocabulary-core-services",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Services_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-services",
+"meta": "96 concepts",
+"stats": [
+"96 concepts",
+"grounds taxonomy-core-services"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-services and now three Domain classes: Operations Management, Communications and Service Level Management carry dc:subject links to it. Its Business Operations concept is where core-businessoperations attaches."
+},
+{
+"id": "v-technicalservices",
+"label": "vocabulary-core-technicalservices",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_TechnicalServices_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-technicalservices",
+"meta": "207 concepts",
+"stats": [
+"207 concepts",
+"grounds taxonomy-core-services-technicalservices"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-services-technicalservices. The largest scheme. Its root broadMatches Services; 10 concepts closeMatch same-named ones in Asset, Capability, Services and Business Operations."
+},
+{
+"id": "v-time",
+"label": "vocabulary-core-time",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_Time_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-time",
+"meta": "25 concepts",
+"stats": [
+"25 concepts",
+"grounds taxonomy-core-time"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-time. v1.1 gives Future its own definition (it carried Full Period's) and drafts definitions for Relative and Subsecond, marked for steward review."
+},
+{
+"id": "v-valuestream",
+"label": "vocabulary-core-valuestream",
+"tier": "vocab",
+"status": "supplied",
+"file": "vocabularies/Vocabulary_Core_ValueStream_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-valuestream",
+"meta": "19 concepts",
+"stats": [
+"19 concepts",
+"grounds taxonomy-core-valuestream"
+],
+"desc": "SKOS concept scheme. Grounds taxonomy-core-valuestream."
+},
+{
+"id": "v-svc",
+"label": "vocabulary-core-servicemodel",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_ServiceModel_1.1.ttl",
+"iri": "https://ontologies.verizon.com/vocabulary-core-servicemodel/",
+"meta": "new · 328",
+"stats": [
+"new in v1.1",
+"328 statements",
+"249 duplicates merged"
+],
+"desc": "Single home for the inherited 2012 service model, co-ode governance personas and DQM properties. Capability and Event import it instead of each carrying a copy. Its sources, the 2012 service model and the DQM vocabulary, are cited as dct:source rather than shown as separate boxes."
+},
+{
+"id": "domain",
+"label": "ontology-core-domain",
+"tier": "domain",
+"status": "supplied",
+"file": "Ontology_Core_Domain_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-domain/",
+"meta": "unifying ontology",
+"stats": [
+"imports RO core + BFO 2020 only",
+"21 relations",
+"31 classes",
+"12 BFO anchors",
+"13 SHACL shapes",
+"v1.1",
+"5 classes declared in this release"
+],
+"desc": "The unifying ontology and the foundation for every other domain ontology. It declares the 21 shared relations (enables, performs, occursIn, occursWhen, assignedTo, guides, constrains, controls, generates, creates, modifies, has and more), aligns them to RO, declares the root class of each domain ontology and anchors 12 of them to BFO 2020. Its SHACL rules bind the domains together: Process creates / modifies Assets and enables Services; Services enable Capability and ValueStream; Rules guide and constrain Process; Compliance controls Process; Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services. Core, taxonomy and governance ontologies import it; it imports none of them. This release declares Run Time, Observation, Outcome, Job Step and Feature, which its Services classes and bridge shapes already used, so it references no undeclared class."
+},
+{
+"id": "c-businessoperations",
+"label": "taxonomy-core-businessoperations",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_BusinessOperations_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-businessoperations/",
+"meta": "76 classes",
+"stats": [
+"76 classes",
+"imports 2"
+],
+"desc": "Now an OWL taxonomy generated from vocabulary-core-businessoperations: 76 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. Business Operations not yet anchored to BFO."
+},
+{
+"id": "c-compliance",
+"label": "taxonomy-core-compliance",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Compliance_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-compliance/",
+"meta": "92 classes",
+"stats": [
+"92 classes",
+"imports 1"
+],
+"desc": "Compliance controls Process. The governance overlay's Constraint (SHACL) is a skos:closeMatch. Now an OWL taxonomy generated from vocabulary-core-compliance: 92 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Compliance. Compliance not yet anchored to BFO."
+},
+{
+"id": "c-issue",
+"label": "taxonomy-core-issue",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Issue_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-issue/",
+"meta": "9 classes",
+"stats": [
+"9 classes",
+"imports 1"
+],
+"desc": "Issues occur in Process and generate Observations. Now an OWL taxonomy generated from vocabulary-core-issue: 9 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Issue. Issue not yet anchored to BFO."
+},
+{
+"id": "c-lifecycle",
+"label": "taxonomy-core-lifecycle",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Lifecycle_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-lifecycle/",
+"meta": "21 classes",
+"stats": [
+"21 classes",
+"imports 1"
+],
+"desc": "Assets and Services have a Lifecycle. The five run-time service classes now sit under RunTime in the Verizon namespace. Now an OWL taxonomy generated from vocabulary-core-lifecycle: 21 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Lifecycle, Run Time. Lifecycle not yet anchored to BFO."
+},
+{
+"id": "c-location",
+"label": "taxonomy-core-location",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Location_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-location/",
+"meta": "22 classes",
+"stats": [
+"22 classes",
+"imports 1"
+],
+"desc": "Where events and processes occur (occursIn). Now an OWL taxonomy generated from vocabulary-core-location: 22 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Location. BFO anchor: Location ⊑ continuant."
+},
+{
+"id": "c-party",
+"label": "taxonomy-core-party",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Party_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-party/",
+"meta": "49 classes",
+"stats": [
+"49 classes",
+"imports 1"
+],
+"desc": "Party taxonomy. Asset now imports it directly: HumanAsset is a subclass of Person and BiologicalAsset is typeOf Party. Governance artifacts are stewardedBy a Party. Now an OWL taxonomy generated from vocabulary-core-party: 49 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Party. BFO anchor: Party ⊑ independent continuant."
+},
+{
+"id": "c-persona",
+"label": "taxonomy-core-persona",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Persona_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-persona/",
+"meta": "46 classes",
+"stats": [
+"46 classes",
+"imports 1"
+],
+"desc": "The most shared taxonomy: imported by Asset, Event, Requirements and Domain. Persona performs Process and is assignedTo Role. Now an OWL taxonomy generated from vocabulary-core-persona: 46 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Persona. Persona not yet anchored to BFO."
+},
+{
+"id": "c-process",
+"label": "taxonomy-core-process",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Process_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-process/",
+"meta": "12 classes",
+"stats": [
+"12 classes",
+"imports 1"
+],
+"desc": "The hub of Domain's shapes: Process creates / modifies Assets, generates Observations, is performedBy Persona and enables Services. Event now imports it for 'Event generates Process'; a Job Step is performedBy a Process. Now an OWL taxonomy generated from vocabulary-core-process: 12 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Observation, Process. BFO anchor: Process ⊑ process."
+},
+{
+"id": "c-product",
+"label": "taxonomy-core-product",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Product_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-product/",
+"meta": "68 classes",
+"stats": [
+"68 classes",
+"imports 1"
+],
+"desc": "Product taxonomy. PhysicalAsset is a subclass of IndividualProduct. Now an OWL taxonomy generated from vocabulary-core-product: 68 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. Product not yet anchored to BFO."
+},
+{
+"id": "c-role",
+"label": "taxonomy-core-role",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Role_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-role/",
+"meta": "5 classes",
+"stats": [
+"5 classes",
+"imports 1"
+],
+"desc": "Role performs and consumes Process. All three governance role hierarchies now specialise it. Now an OWL taxonomy generated from vocabulary-core-role: 5 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Role. BFO anchor: Role ⊑ role."
+},
+{
+"id": "c-rules",
+"label": "taxonomy-core-rules",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Rules_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-rules/",
+"meta": "16 classes",
+"stats": [
+"16 classes",
+"imports 1"
+],
+"desc": "Rules guide and constrain Process. The governance overlay's Rule (SWRL) is a skos:closeMatch. Now an OWL taxonomy generated from vocabulary-core-rules: 16 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Rules. BFO anchor: Rules ⊑ generically dependent continuant."
+},
+{
+"id": "c-services",
+"label": "taxonomy-core-services",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Services_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-services/",
+"meta": "96 classes",
+"stats": [
+"96 classes",
+"imports 1"
+],
+"desc": "Services enable Capability and ValueStream, are assignedTo Persona and have a Lifecycle. Features are enabledBy Services. Operations, Communications, Service Level Management, Reporting and Training are now Services subclasses. Now an OWL taxonomy generated from vocabulary-core-services: 96 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Communications, Operations Management, Service Level Management, Services. Services not yet anchored to BFO."
+},
+{
+"id": "c-technicalservices",
+"label": "taxonomy-core-services-technicalservices",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_TechnicalServices_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-services-technicalservices/",
+"meta": "207 classes",
+"stats": [
+"207 classes",
+"imports 2"
+],
+"desc": "Technical services sub-taxonomy. No shape references it yet. Now an OWL taxonomy generated from vocabulary-core-technicalservices: 207 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. Technical Services not yet anchored to BFO."
+},
+{
+"id": "c-time",
+"label": "taxonomy-core-time",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_Time_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-time/",
+"meta": "25 classes",
+"stats": [
+"25 classes",
+"imports 1"
+],
+"desc": "When events occur. v1.1 uses occursWhen as the single temporal path. Now an OWL taxonomy generated from vocabulary-core-time: 25 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Time. Time not yet anchored to BFO."
+},
+{
+"id": "c-valuestream",
+"label": "taxonomy-core-valuestream",
+"tier": "tax",
+"status": "generated",
+"file": "Taxonomy_Core_ValueStream_1.1.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-core-valuestream/",
+"meta": "19 classes",
+"stats": [
+"19 classes",
+"imports 1"
+],
+"desc": "Value streams are enabledBy Services; DataAnalyticsInsights is enabledBy Data and Analytic Products. Asset now imports it. Now an OWL taxonomy generated from vocabulary-core-valuestream: 19 classes, one per concept, subclassed along skos:broader and grounded by dc:subject. ontology-core-domain declares Value Stream. BFO anchor: Value Stream ⊑ process."
+},
+{
+"id": "c-asset",
+"label": "ontology-core-asset",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Asset_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-asset/",
+"meta": "33 classes",
+"stats": [
+"33 classes",
+"imports 6"
+],
+"desc": "Asset → Digital / Physical / Biological. DigitalAsset → Artifact (15 kinds), Data → Data Product, Analytics → Analytic Product, Digital Agent → Autonomous Agent → AI / BI Agent, Document, Media, IP, Semantics. Governance anchors here: Data Asset ⊑ Data, Semantic Artefact ⊑ Semantics, Analytic Model ⊑ Analytics, AI System ⊑ Digital Asset. 33 classes. ontology-core-domain declares Asset, Digital Asset, Physical Asset. BFO anchor: Asset ⊑ continuant."
+},
+{
+"id": "c-capability",
+"label": "ontology-core-capability",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Capability_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-capability/",
+"meta": "49 classes",
+"stats": [
+"49 classes",
+"imports 2"
+],
+"desc": "Capability → Business, Functional and Technical. Technical carries the data platform set: Data Management (Dictionary, Masking, Modeling, Privacy, Security), Integration, Storage → Data Lake → Cloud / On-prem Lakehouse, Test Data, MDM, Metric Management, Data Fabric, Data Catalog, AI & ML. File reduced from 2,238 statements to 60. 49 classes. ontology-core-domain declares Capability. BFO anchor: Capability ⊑ realizable entity."
+},
+{
+"id": "c-event",
+"label": "ontology-core-event",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Event_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-event/",
+"meta": "5 classes",
+"stats": [
+"5 classes",
+"imports 6"
+],
+"desc": "Events → Event, Event State (→ Discrete Value) and Trigger. Event occursIn Location, occursWhen Time, is initiatedBy a Trigger, has an Event State and generates Process. Event State carries exactly one stateValue. File reduced from 2,505 statements to 19. 5 classes. ontology-core-domain declares Event, Events. Events not yet anchored to BFO."
+},
+{
+"id": "c-requirements",
+"label": "ontology-core-requirements",
+"tier": "core",
+"status": "supplied",
+"file": "Ontology_Core_Requirements_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-requirements/",
+"meta": "16 classes",
+"stats": [
+"16 classes",
+"imports 2"
+],
+"desc": "Jobs-to-be-done framing. Job (Functional, Emotional, Supporting; Job Step), Journey (Journey Step), Outcome, Requirement → Need (Job Executor) and Specification → Feature → Functional / Non-Functional (now siblings and disjoint). Imports the ontology-core-domain. 16 classes. ontology-core-domain declares Feature, Job Step, Outcome, Requirement, Requirements. Requirements not yet anchored to BFO."
+},
+{
+"id": "g-data",
+"label": "ontology-core-governance-data",
+"tier": "gov",
+"status": "supplied",
+"file": "ontology-core-governance-data.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-data",
+"meta": "21 classes",
+"stats": [
+"21 classes",
+"imports 2"
+],
+"desc": "Data assets, policies (access, retention, quality, privacy), governance bodies and roles (owner, steward, custodian), and quality dimensions. Data Asset ⊑ Asset Data; Governance Role ⊑ Role. The base the other three governance ontologies import. 21 classes. BFO anchor: Data Asset ⊑ continuant; Governance Role ⊑ role. Data Policy, Data Quality Dimension, Governance Body not yet anchored to BFO."
+},
+{
+"id": "g-sem",
+"label": "ontology-core-governance-semantic",
+"tier": "gov",
+"status": "supplied",
+"file": "ontology-core-governance-semantic.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-semantic",
+"meta": "19 classes",
+"stats": [
+"19 classes",
+"imports 3"
+],
+"desc": "Governs the lineage itself. Its Semantic Artefact hierarchy (Thesaurus, Taxonomy, Formal Ontology, Knowledge Graph, Business Glossary) now sits under Asset Semantics; stewards specialise Role and the council is a Governance Body. 19 classes. BFO anchor: Semantic Artefact ⊑ continuant; Semantic Governance Role ⊑ role. Business Term, Mapping Repository, Semantic Governance Council, Semantic Mapping not yet anchored to BFO."
+},
+{
+"id": "g-an",
+"label": "ontology-core-governance-analytics",
+"tier": "gov",
+"status": "supplied",
+"file": "ontology-core-governance-analytics.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-analytics",
+"meta": "17 classes",
+"stats": [
+"17 classes",
+"imports 4"
+],
+"desc": "Analytic model types and lifecycle, platforms, committee and validation results. Analytic Model ⊑ Analytics; Business Requirement ⊑ Requirements Requirement; its Governance Body now specialises the data-governance one instead of duplicating it. 17 classes. BFO anchor: Analytic Model ⊑ continuant; Business Requirement ⊑ generically dependent continuant. Analytic Infrastructure, Analytics Governance Body, Model Lifecycle Stage, Model Validation Result not yet anchored to BFO."
+},
+{
+"id": "g-ai",
+"label": "ontology-core-governance-ai",
+"tier": "gov",
+"status": "supplied",
+"file": "ontology-core-governance-ai.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-ai",
+"meta": "20 classes",
+"stats": [
+"20 classes",
+"imports 3"
+],
+"desc": "AI systems, EU AI Act risk tiers, documentation and conformity assessment, FRIA, human oversight, audit logs, provider and deployer roles. AI System ⊑ Digital Asset; AI Governance Role ⊑ Role. 20 classes. BFO anchor: AI Governance Role ⊑ role; AI System ⊑ continuant; Test Dataset ⊑ continuant; Training Dataset ⊑ continuant. Audit Log, Fundamental Rights Impact Assessment, Human Oversight Measure, Risk Classification, Technical Documentation not yet anchored to BFO."
+},
+{
+"id": "g-ovl",
+"label": "ontology-core-governance-overlay",
+"tier": "gov",
+"status": "supplied",
+"file": "ontology-core-governance-overlay.ttl",
+"iri": "https://www.enablingvalue.com/ontology-core-governance-overlay",
+"meta": "16 classes",
+"stats": [
+"16 classes",
+"imports 1"
+],
+"desc": "The deontic layer. Normative sources mandate requirements, operationalized by a SHACL Constraint or SWRL Rule that appliesTo Process, Services or Capability. The core: stand-in is gone: it imports ontology-core-domain and matches taxonomy-core-compliance, taxonomy-core-rules and taxonomy-core-party directly. 16 classes. Deontic Modality, Governance Artifact, Governance Status, Method, Normative Requirement, Normative Source not yet anchored to BFO."
+},
+{
+"id": "c-bundle",
+"label": "ontology-core-bundle",
+"tier": "bundle",
+"status": "supplied",
+"file": "Ontology_Core_Bundle_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-bundle/",
+"meta": "imports the core",
+"stats": [
+"imports 26"
+],
+"desc": "Load manifest with no axioms of its own: it imports ontology-core-domain and every core ontology and taxonomy, so loading it brings in the whole core for SHACL validation. Business Operations was added to it in this release."
+}
 ];
-
 // [from, to, type, note]
-const EDGES = [
-  ["bfo","ro","imports","RO core imports bfo.owl, pinned to BFO 2020 by the catalog"],
-  ["ro","domain","imports","relations specialise RO"],["bfo","domain","imports","BFO 2020 by version IRI; 12 class anchors"],
-  ["domain","asset","imports","foundation"],["domain","cap","imports","foundation"],["domain","event","imports","foundation"],["domain","req","imports","foundation"],
-  ...["product","party","persona","location","time","lifecycle","valuestream","process","services","services-technicalservices","role","rules","compliance","issue"].map(t=>["domain","tax-"+t,"imports","should import the DRM (taxonomy module not supplied)"]),
-  ...["product","party","persona","lifecycle","valuestream"].map(t=>["tax-"+t,"asset","imports"]),
-  ...["location","persona","time","process"].map(t=>["tax-"+t,"event","imports"]),
-  ["tax-persona","req","imports"],
-  ["v-svc","cap","imports","replaces the embedded copy"],["v-svc","event","imports","replaces the embedded copy"],
-  ["v-asset","asset","grounds","33 dc:subject"],["v-capability","cap","grounds","49 dc:subject"],["v-event","event","grounds","5 dc:subject"],["v-requirements","req","grounds","16 dc:subject"],["v-domain","domain","grounds","1 dc:subject"],["v-services","domain","grounds","4 dc:subject"],
-  ...["process","role","party","location","valuestream","rules","persona","time","lifecycle","compliance","issue"].map(t=>["v-"+t,"domain","grounds","root class grounded in the top concept"]),
-  ...["product","party","persona","location","time","lifecycle","valuestream","process","services","role","rules","compliance","issue"].map(t=>["v-"+t,"tax-"+t,"grounds","scheme behind the taxonomy"]),
-  ["v-technicalservices","tax-services-technicalservices","grounds","scheme behind the taxonomy"],
-  ["v-businessoperations","v-services","maps","root exactMatch Business Operations; 3 closeMatch"],
-  ["v-technicalservices","v-services","maps","root broadMatch Services; 3 closeMatch"],
-  ["v-businessoperations","v-technicalservices","maps","1 closeMatch"],
-  ["v-asset","v-technicalservices","maps","3 closeMatch"],["v-asset","v-services","maps","1 closeMatch"],
-  ["v-capability","v-technicalservices","maps","3 closeMatch"],["v-capability","v-services","maps","1 closeMatch"],
-  ["v-compliance","v-services","maps","1 closeMatch"],["v-domain","v-compliance","maps","1 closeMatch"],
-  ["svc","v-svc","inherits","extracted into one module"],["dqm","v-svc","inherits","extracted into one module"],
-  ["asset","g-data","anchors","imported; Data Asset ⊑ Data"],["asset","g-sem","anchors","imported; Semantic Artefact ⊑ Semantics"],["asset","g-an","anchors","imported; Analytic Model ⊑ Analytics"],["asset","g-ai","anchors","imported; AI System ⊑ Digital Asset"],
-  ["req","g-an","anchors","imported; Business Requirement ⊑ Requirement"],
-  ["tax-role","g-data","anchors","Governance Role ⊑ Role"],["tax-role","g-sem","anchors","Semantic Governance Role ⊑ Role"],["tax-role","g-ai","anchors","AI Governance Role ⊑ Role"],
-  ["tax-party","g-ovl","anchors","stewardedBy range Party"],
-  ["domain","g-data","imports","foundation"],["domain","g-sem","imports","foundation"],["domain","g-an","imports","foundation"],["domain","g-ai","imports","foundation"],["domain","g-ovl","imports","foundation"],
-  ["g-data","g-sem","imports"],["g-data","g-an","imports"],["g-data","g-ai","imports"],
-  ["tax-compliance","g-ovl","aligns","Constraint skos:closeMatch Compliance"],["tax-rules","g-ovl","aligns","Rule skos:closeMatch Rules"]
-];
-const VIEWS = {"bfo":{"p":"ontology.html#bfo","v":{"taxonomy":"taxonomy.html#bfo","ontology":"ontology.html#bfo"}},"ro":{"p":"ontology.html#ro","v":{"taxonomy":"taxonomy.html#ro","ontology":"ontology.html#ro"}},"svc":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"dqm":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"v-svc":{"p":"ontology.html#v-svc","v":{"taxonomy":"taxonomy.html#v-svc","ontology":"ontology.html#v-svc"}},"v-product":{"p":"vocabulary.html#v-product","v":{"vocabulary":"vocabulary.html#v-product","taxonomy":"taxonomy.html#tax-product","ontology":"ontology.html#tax-product"}},"v-party":{"p":"vocabulary.html#v-party","v":{"vocabulary":"vocabulary.html#v-party","taxonomy":"taxonomy.html#tax-party","ontology":"ontology.html#tax-party"}},"v-persona":{"p":"vocabulary.html#v-persona","v":{"vocabulary":"vocabulary.html#v-persona","taxonomy":"taxonomy.html#tax-persona","ontology":"ontology.html#tax-persona"}},"v-location":{"p":"vocabulary.html#v-location","v":{"vocabulary":"vocabulary.html#v-location","taxonomy":"taxonomy.html#tax-location","ontology":"ontology.html#tax-location"}},"v-time":{"p":"vocabulary.html#v-time","v":{"vocabulary":"vocabulary.html#v-time","taxonomy":"taxonomy.html#tax-time","ontology":"ontology.html#tax-time"}},"v-lifecycle":{"p":"vocabulary.html#v-lifecycle","v":{"vocabulary":"vocabulary.html#v-lifecycle","taxonomy":"taxonomy.html#tax-lifecycle","ontology":"ontology.html#tax-lifecycle"}},"v-valuestream":{"p":"vocabulary.html#v-valuestream","v":{"vocabulary":"vocabulary.html#v-valuestream","taxonomy":"taxonomy.html#tax-valuestream","ontology":"ontology.html#tax-valuestream"}},"v-process":{"p":"vocabulary.html#v-process","v":{"vocabulary":"vocabulary.html#v-process","taxonomy":"taxonomy.html#tax-process","ontology":"ontology.html#tax-process"}},"v-services":{"p":"vocabulary.html#v-services","v":{"vocabulary":"vocabulary.html#v-services","taxonomy":"taxonomy.html#tax-services","ontology":"ontology.html#tax-services"}},"v-technicalservices":{"p":"vocabulary.html#v-technicalservices","v":{"vocabulary":"vocabulary.html#v-technicalservices","taxonomy":"taxonomy.html#tax-services-technicalservices","ontology":"ontology.html#tax-services-technicalservices"}},"v-role":{"p":"vocabulary.html#v-role","v":{"vocabulary":"vocabulary.html#v-role","taxonomy":"taxonomy.html#tax-role","ontology":"ontology.html#tax-role"}},"v-rules":{"p":"vocabulary.html#v-rules","v":{"vocabulary":"vocabulary.html#v-rules","taxonomy":"taxonomy.html#tax-rules","ontology":"ontology.html#tax-rules"}},"v-compliance":{"p":"vocabulary.html#v-compliance","v":{"vocabulary":"vocabulary.html#v-compliance","taxonomy":"taxonomy.html#tax-compliance","ontology":"ontology.html#tax-compliance"}},"v-issue":{"p":"vocabulary.html#v-issue","v":{"vocabulary":"vocabulary.html#v-issue","taxonomy":"taxonomy.html#tax-issue","ontology":"ontology.html#tax-issue"}},"v-asset":{"p":"vocabulary.html#v-asset","v":{"vocabulary":"vocabulary.html#v-asset","taxonomy":"taxonomy.html#v-asset","ontology":"ontology.html#asset"}},"v-requirements":{"p":"vocabulary.html#v-requirements","v":{"vocabulary":"vocabulary.html#v-requirements","taxonomy":"taxonomy.html#v-requirements","ontology":"ontology.html#req"}},"v-event":{"p":"vocabulary.html#v-event","v":{"vocabulary":"vocabulary.html#v-event","taxonomy":"taxonomy.html#v-event","ontology":"ontology.html#event"}},"v-capability":{"p":"vocabulary.html#v-capability","v":{"vocabulary":"vocabulary.html#v-capability","taxonomy":"taxonomy.html#v-capability","ontology":"ontology.html#cap"}},"v-domain":{"p":"vocabulary.html#v-domain","v":{"vocabulary":"vocabulary.html#v-domain","taxonomy":"taxonomy.html#v-domain","ontology":"ontology.html#domain"}},"v-businessoperations":{"p":"vocabulary.html#v-businessoperations","v":{"vocabulary":"vocabulary.html#v-businessoperations","taxonomy":"taxonomy.html#v-businessoperations"}},"tax-product":{"p":"taxonomy.html#tax-product","v":{"vocabulary":"vocabulary.html#v-product","taxonomy":"taxonomy.html#tax-product","ontology":"ontology.html#tax-product"}},"tax-party":{"p":"taxonomy.html#tax-party","v":{"vocabulary":"vocabulary.html#v-party","taxonomy":"taxonomy.html#tax-party","ontology":"ontology.html#tax-party"}},"tax-persona":{"p":"taxonomy.html#tax-persona","v":{"vocabulary":"vocabulary.html#v-persona","taxonomy":"taxonomy.html#tax-persona","ontology":"ontology.html#tax-persona"}},"tax-location":{"p":"taxonomy.html#tax-location","v":{"vocabulary":"vocabulary.html#v-location","taxonomy":"taxonomy.html#tax-location","ontology":"ontology.html#tax-location"}},"tax-time":{"p":"taxonomy.html#tax-time","v":{"vocabulary":"vocabulary.html#v-time","taxonomy":"taxonomy.html#tax-time","ontology":"ontology.html#tax-time"}},"tax-lifecycle":{"p":"taxonomy.html#tax-lifecycle","v":{"vocabulary":"vocabulary.html#v-lifecycle","taxonomy":"taxonomy.html#tax-lifecycle","ontology":"ontology.html#tax-lifecycle"}},"tax-valuestream":{"p":"taxonomy.html#tax-valuestream","v":{"vocabulary":"vocabulary.html#v-valuestream","taxonomy":"taxonomy.html#tax-valuestream","ontology":"ontology.html#tax-valuestream"}},"tax-process":{"p":"taxonomy.html#tax-process","v":{"vocabulary":"vocabulary.html#v-process","taxonomy":"taxonomy.html#tax-process","ontology":"ontology.html#tax-process"}},"tax-services":{"p":"taxonomy.html#tax-services","v":{"vocabulary":"vocabulary.html#v-services","taxonomy":"taxonomy.html#tax-services","ontology":"ontology.html#tax-services"}},"tax-services-technicalservices":{"p":"taxonomy.html#tax-services-technicalservices","v":{"vocabulary":"vocabulary.html#v-technicalservices","taxonomy":"taxonomy.html#tax-services-technicalservices","ontology":"ontology.html#tax-services-technicalservices"}},"tax-role":{"p":"taxonomy.html#tax-role","v":{"vocabulary":"vocabulary.html#v-role","taxonomy":"taxonomy.html#tax-role","ontology":"ontology.html#tax-role"}},"tax-rules":{"p":"taxonomy.html#tax-rules","v":{"vocabulary":"vocabulary.html#v-rules","taxonomy":"taxonomy.html#tax-rules","ontology":"ontology.html#tax-rules"}},"tax-compliance":{"p":"taxonomy.html#tax-compliance","v":{"vocabulary":"vocabulary.html#v-compliance","taxonomy":"taxonomy.html#tax-compliance","ontology":"ontology.html#tax-compliance"}},"tax-issue":{"p":"taxonomy.html#tax-issue","v":{"vocabulary":"vocabulary.html#v-issue","taxonomy":"taxonomy.html#tax-issue","ontology":"ontology.html#tax-issue"}},"asset":{"p":"ontology.html#asset","v":{"vocabulary":"vocabulary.html#v-asset","taxonomy":"taxonomy.html#asset","ontology":"ontology.html#asset"}},"req":{"p":"ontology.html#req","v":{"vocabulary":"vocabulary.html#v-requirements","taxonomy":"taxonomy.html#req","ontology":"ontology.html#req"}},"event":{"p":"ontology.html#event","v":{"vocabulary":"vocabulary.html#v-event","taxonomy":"taxonomy.html#event","ontology":"ontology.html#event"}},"cap":{"p":"ontology.html#cap","v":{"vocabulary":"vocabulary.html#v-capability","taxonomy":"taxonomy.html#cap","ontology":"ontology.html#cap"}},"domain":{"p":"ontology.html#domain","v":{"vocabulary":"vocabulary.html#v-domain","taxonomy":"taxonomy.html#domain","ontology":"ontology.html#domain"}},"g-data":{"p":"ontology.html#g-data","v":{"taxonomy":"taxonomy.html#g-data","ontology":"ontology.html#g-data"}},"g-sem":{"p":"ontology.html#g-sem","v":{"taxonomy":"taxonomy.html#g-sem","ontology":"ontology.html#g-sem"}},"g-an":{"p":"ontology.html#g-an","v":{"taxonomy":"taxonomy.html#g-an","ontology":"ontology.html#g-an"}},"g-ai":{"p":"ontology.html#g-ai","v":{"taxonomy":"taxonomy.html#g-ai","ontology":"ontology.html#g-ai"}},"g-ovl":{"p":"ontology.html#g-ovl","v":{"taxonomy":"taxonomy.html#g-ovl","ontology":"ontology.html#g-ovl"}}};
-const ETYPES = [
-  {id:"imports",label:"owl:imports"},{id:"grounds",label:"vocabulary grounding"},{id:"inherits",label:"inherited source"},
-  {id:"anchors",label:"subclass / range anchor"},{id:"aligns",label:"skos:closeMatch"},{id:"maps",label:"vocabulary mapping"}
-];
+const EDGES = [["bfo", "ro", "imports", "RO core imports BFO (pinned to BFO 2020 by the catalog)"], ["bfo", "domain", "imports", "BFO 2020 by version IRI"], ["ro", "domain", "imports", "relations specialise RO"], ["c-lifecycle", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-lifecycle"], ["c-party", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-party"], ["c-persona", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-persona"], ["c-product", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-product"], ["c-valuestream", "c-asset", "imports", "ontology-core-asset imports taxonomy-core-valuestream"], ["domain", "c-asset", "declares", "ontology-core-domain declares its root; ontology-core-asset imports it"], ["c-party", "c-asset", "inherits", "1 subclass link into ontology-core-asset"], ["c-product", "c-asset", "inherits", "1 subclass link into ontology-core-asset"], ["bfo", "c-asset", "anchors", "direct BFO anchors"], ["domain", "c-capability", "declares", "ontology-core-domain declares its root; ontology-core-capability imports it"], ["v-svc", "c-capability", "imports", "ontology-core-capability imports vocabulary-core-servicemodel"], ["bfo", "c-capability", "anchors", "direct BFO anchors"], ["c-location", "c-event", "imports", "ontology-core-event imports taxonomy-core-location"], ["c-persona", "c-event", "imports", "ontology-core-event imports taxonomy-core-persona"], ["c-process", "c-event", "imports", "ontology-core-event imports taxonomy-core-process"], ["c-time", "c-event", "imports", "ontology-core-event imports taxonomy-core-time"], ["domain", "c-event", "declares", "ontology-core-domain declares its root; ontology-core-event imports it"], ["v-svc", "c-event", "imports", "ontology-core-event imports vocabulary-core-servicemodel"], ["bfo", "c-event", "anchors", "direct BFO anchors"], ["c-persona", "c-requirements", "imports", "ontology-core-requirements imports taxonomy-core-persona"], ["domain", "c-requirements", "declares", "ontology-core-domain declares its root; ontology-core-requirements imports it"], ["bfo", "c-requirements", "anchors", "direct BFO anchors"], ["c-asset", "g-data", "imports", "ontology-core-governance-data imports ontology-core-asset"], ["domain", "g-data", "imports", "ontology-core-governance-data imports ontology-core-domain"], ["c-asset", "g-data", "inherits", "1 subclass link into ontology-core-governance-data"], ["c-role", "g-data", "inherits", "1 subclass link into ontology-core-governance-data"], ["c-asset", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-asset"], ["domain", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-domain"], ["g-data", "g-sem", "imports", "ontology-core-governance-semantic imports ontology-core-governance-data"], ["c-asset", "g-sem", "inherits", "1 subclass link into ontology-core-governance-semantic"], ["c-role", "g-sem", "inherits", "1 subclass link into ontology-core-governance-semantic"], ["g-data", "g-sem", "inherits", "1 subclass link into ontology-core-governance-semantic"], ["c-asset", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-asset"], ["c-requirements", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-requirements"], ["domain", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-domain"], ["g-data", "g-an", "imports", "ontology-core-governance-analytics imports ontology-core-governance-data"], ["c-asset", "g-an", "inherits", "1 subclass link into ontology-core-governance-analytics"], ["g-data", "g-an", "inherits", "1 subclass link into ontology-core-governance-analytics"], ["c-requirements", "g-an", "inherits", "1 subclass link into ontology-core-governance-analytics"], ["c-asset", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-asset"], ["domain", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-domain"], ["g-data", "g-ai", "imports", "ontology-core-governance-ai imports ontology-core-governance-data"], ["c-asset", "g-ai", "inherits", "1 subclass link into ontology-core-governance-ai"], ["g-data", "g-ai", "inherits", "3 subclass links into ontology-core-governance-ai"], ["c-role", "g-ai", "inherits", "1 subclass link into ontology-core-governance-ai"], ["domain", "g-ovl", "imports", "ontology-core-governance-overlay imports ontology-core-domain"], ["c-services", "c-businessoperations", "imports", "taxonomy-core-businessoperations imports taxonomy-core-services"], ["domain", "c-businessoperations", "imports", "taxonomy-core-businessoperations imports ontology-core-domain"], ["c-services", "c-businessoperations", "inherits", "1 subclass link into taxonomy-core-businessoperations"], ["domain", "c-compliance", "declares", "ontology-core-domain declares its root; taxonomy-core-compliance imports it"], ["domain", "c-issue", "declares", "ontology-core-domain declares its root; taxonomy-core-issue imports it"], ["domain", "c-lifecycle", "declares", "ontology-core-domain declares its root; taxonomy-core-lifecycle imports it"], ["domain", "c-location", "declares", "ontology-core-domain declares its root; taxonomy-core-location imports it"], ["bfo", "c-location", "anchors", "direct BFO anchors"], ["domain", "c-party", "declares", "ontology-core-domain declares its root; taxonomy-core-party imports it"], ["bfo", "c-party", "anchors", "direct BFO anchors"], ["domain", "c-persona", "declares", "ontology-core-domain declares its root; taxonomy-core-persona imports it"], ["domain", "c-process", "declares", "ontology-core-domain declares its root; taxonomy-core-process imports it"], ["bfo", "c-process", "anchors", "direct BFO anchors"], ["domain", "c-product", "imports", "taxonomy-core-product imports ontology-core-domain"], ["domain", "c-role", "declares", "ontology-core-domain declares its root; taxonomy-core-role imports it"], ["bfo", "c-role", "anchors", "direct BFO anchors"], ["domain", "c-rules", "declares", "ontology-core-domain declares its root; taxonomy-core-rules imports it"], ["bfo", "c-rules", "anchors", "direct BFO anchors"], ["domain", "c-services", "declares", "ontology-core-domain declares its root; taxonomy-core-services imports it"], ["c-lifecycle", "c-services", "inherits", "3 subclass links into taxonomy-core-services"], ["c-services", "c-technicalservices", "imports", "taxonomy-core-services-technicalservices imports taxonomy-core-services"], ["domain", "c-technicalservices", "imports", "taxonomy-core-services-technicalservices imports ontology-core-domain"], ["c-services", "c-technicalservices", "inherits", "1 subclass link into taxonomy-core-services-technicalservices"], ["domain", "c-time", "declares", "ontology-core-domain declares its root; taxonomy-core-time imports it"], ["domain", "c-valuestream", "declares", "ontology-core-domain declares its root; taxonomy-core-valuestream imports it"], ["bfo", "c-valuestream", "anchors", "direct BFO anchors"], ["bfo", "c-bundle", "imports", "ontology-core-bundle imports BFO 2020"], ["c-asset", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-asset"], ["c-businessoperations", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-businessoperations"], ["c-capability", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-capability"], ["c-compliance", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-compliance"], ["c-event", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-event"], ["c-issue", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-issue"], ["c-lifecycle", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-lifecycle"], ["c-location", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-location"], ["c-party", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-party"], ["c-persona", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-persona"], ["c-process", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-process"], ["c-product", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-product"], ["c-requirements", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-requirements"], ["c-role", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-role"], ["c-rules", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-rules"], ["c-services", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-services"], ["c-technicalservices", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-services-technicalservices"], ["c-time", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-time"], ["c-valuestream", "c-bundle", "imports", "ontology-core-bundle imports taxonomy-core-valuestream"], ["domain", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-domain"], ["g-ai", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-ai"], ["g-an", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-analytics"], ["g-data", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-data"], ["g-ovl", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-overlay"], ["g-sem", "c-bundle", "imports", "ontology-core-bundle imports ontology-core-governance-semantic"], ["ro", "c-bundle", "imports", "ontology-core-bundle imports OBO Relations Core"], ["v-svc", "c-bundle", "imports", "ontology-core-bundle imports vocabulary-core-servicemodel"], ["v-businessoperations", "c-businessoperations", "grounds", "76 dc:subject"], ["v-compliance", "c-compliance", "grounds", "92 dc:subject"], ["v-issue", "c-issue", "grounds", "9 dc:subject"], ["v-lifecycle", "c-lifecycle", "grounds", "21 dc:subject"], ["v-location", "c-location", "grounds", "22 dc:subject"], ["v-party", "c-party", "grounds", "49 dc:subject"], ["v-persona", "c-persona", "grounds", "46 dc:subject"], ["v-process", "c-process", "grounds", "12 dc:subject"], ["v-product", "c-product", "grounds", "68 dc:subject"], ["v-role", "c-role", "grounds", "5 dc:subject"], ["v-rules", "c-rules", "grounds", "16 dc:subject"], ["v-services", "c-services", "grounds", "96 dc:subject"], ["v-technicalservices", "c-technicalservices", "grounds", "207 dc:subject"], ["v-time", "c-time", "grounds", "25 dc:subject"], ["v-valuestream", "c-valuestream", "grounds", "19 dc:subject"], ["v-asset", "c-asset", "grounds", "33 dc:subject"], ["v-capability", "c-capability", "grounds", "49 dc:subject"], ["v-event", "c-event", "grounds", "5 dc:subject"], ["v-requirements", "c-requirements", "grounds", "16 dc:subject"], ["v-domain", "domain", "grounds", "1 dc:subject"], ["v-services", "domain", "grounds", "4 dc:subject"], ["v-lifecycle", "domain", "grounds", "2 dc:subject"], ["v-process", "domain", "grounds", "2 dc:subject"], ["v-role", "domain", "grounds", "1 dc:subject"], ["v-party", "domain", "grounds", "1 dc:subject"], ["v-location", "domain", "grounds", "1 dc:subject"], ["v-valuestream", "domain", "grounds", "1 dc:subject"], ["v-rules", "domain", "grounds", "1 dc:subject"], ["v-persona", "domain", "grounds", "1 dc:subject"], ["v-time", "domain", "grounds", "1 dc:subject"], ["v-compliance", "domain", "grounds", "1 dc:subject"], ["v-issue", "domain", "grounds", "1 dc:subject"], ["v-requirements", "domain", "grounds", "3 dc:subject"], ["v-services", "v-businessoperations", "maps", "exactMatch links between vocabulary-core-businessoperations and vocabulary-core-services"], ["v-services", "v-technicalservices", "maps", "broadMatch links between vocabulary-core-technicalservices and vocabulary-core-services"], ["v-technicalservices", "v-businessoperations", "maps", "closeMatch links between vocabulary-core-businessoperations and vocabulary-core-technicalservices"], ["v-compliance", "v-domain", "maps", "closeMatch links between vocabulary-core-domain and vocabulary-core-compliance"], ["v-technicalservices", "v-asset", "maps", "closeMatch links between vocabulary-core-asset and vocabulary-core-technicalservices"], ["v-services", "v-asset", "maps", "closeMatch links between vocabulary-core-asset and vocabulary-core-services"], ["v-technicalservices", "v-capability", "maps", "closeMatch links between vocabulary-core-capability and vocabulary-core-technicalservices"], ["v-services", "v-capability", "maps", "closeMatch links between vocabulary-core-capability and vocabulary-core-services"], ["v-services", "v-compliance", "maps", "closeMatch links between vocabulary-core-compliance and vocabulary-core-services"]];
+const VIEWS = {"v-domain": {"p": "vocabulary.html#v-domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#v-domain", "ontology": "ontology.html#domain"}}, "v-asset": {"p": "vocabulary.html#v-asset", "v": {"vocabulary": "vocabulary.html#v-asset", "taxonomy": "taxonomy.html#v-asset", "ontology": "ontology.html#c-asset"}}, "v-businessoperations": {"p": "vocabulary.html#v-businessoperations", "v": {"vocabulary": "vocabulary.html#v-businessoperations", "taxonomy": "taxonomy.html#v-businessoperations", "ontology": "ontology.html#c-businessoperations"}}, "v-capability": {"p": "vocabulary.html#v-capability", "v": {"vocabulary": "vocabulary.html#v-capability", "taxonomy": "taxonomy.html#v-capability", "ontology": "ontology.html#c-capability"}}, "v-compliance": {"p": "vocabulary.html#v-compliance", "v": {"vocabulary": "vocabulary.html#v-compliance", "taxonomy": "taxonomy.html#v-compliance", "ontology": "ontology.html#c-compliance"}}, "v-event": {"p": "vocabulary.html#v-event", "v": {"vocabulary": "vocabulary.html#v-event", "taxonomy": "taxonomy.html#v-event", "ontology": "ontology.html#c-event"}}, "v-issue": {"p": "vocabulary.html#v-issue", "v": {"vocabulary": "vocabulary.html#v-issue", "taxonomy": "taxonomy.html#v-issue", "ontology": "ontology.html#c-issue"}}, "v-lifecycle": {"p": "vocabulary.html#v-lifecycle", "v": {"vocabulary": "vocabulary.html#v-lifecycle", "taxonomy": "taxonomy.html#v-lifecycle", "ontology": "ontology.html#c-lifecycle"}}, "v-location": {"p": "vocabulary.html#v-location", "v": {"vocabulary": "vocabulary.html#v-location", "taxonomy": "taxonomy.html#v-location", "ontology": "ontology.html#c-location"}}, "v-party": {"p": "vocabulary.html#v-party", "v": {"vocabulary": "vocabulary.html#v-party", "taxonomy": "taxonomy.html#v-party", "ontology": "ontology.html#c-party"}}, "v-persona": {"p": "vocabulary.html#v-persona", "v": {"vocabulary": "vocabulary.html#v-persona", "taxonomy": "taxonomy.html#v-persona", "ontology": "ontology.html#c-persona"}}, "v-process": {"p": "vocabulary.html#v-process", "v": {"vocabulary": "vocabulary.html#v-process", "taxonomy": "taxonomy.html#v-process", "ontology": "ontology.html#c-process"}}, "v-product": {"p": "vocabulary.html#v-product", "v": {"vocabulary": "vocabulary.html#v-product", "taxonomy": "taxonomy.html#v-product", "ontology": "ontology.html#c-product"}}, "v-requirements": {"p": "vocabulary.html#v-requirements", "v": {"vocabulary": "vocabulary.html#v-requirements", "taxonomy": "taxonomy.html#v-requirements", "ontology": "ontology.html#c-requirements"}}, "v-role": {"p": "vocabulary.html#v-role", "v": {"vocabulary": "vocabulary.html#v-role", "taxonomy": "taxonomy.html#v-role", "ontology": "ontology.html#c-role"}}, "v-rules": {"p": "vocabulary.html#v-rules", "v": {"vocabulary": "vocabulary.html#v-rules", "taxonomy": "taxonomy.html#v-rules", "ontology": "ontology.html#c-rules"}}, "v-services": {"p": "vocabulary.html#v-services", "v": {"vocabulary": "vocabulary.html#v-services", "taxonomy": "taxonomy.html#v-services", "ontology": "ontology.html#c-services"}}, "v-technicalservices": {"p": "vocabulary.html#v-technicalservices", "v": {"vocabulary": "vocabulary.html#v-technicalservices", "taxonomy": "taxonomy.html#v-technicalservices", "ontology": "ontology.html#c-technicalservices"}}, "v-time": {"p": "vocabulary.html#v-time", "v": {"vocabulary": "vocabulary.html#v-time", "taxonomy": "taxonomy.html#v-time", "ontology": "ontology.html#c-time"}}, "v-valuestream": {"p": "vocabulary.html#v-valuestream", "v": {"vocabulary": "vocabulary.html#v-valuestream", "taxonomy": "taxonomy.html#v-valuestream", "ontology": "ontology.html#c-valuestream"}}, "v-svc": {"p": "ontology.html#v-svc", "v": {"ontology": "ontology.html#v-svc", "taxonomy": "taxonomy.html#v-svc"}}, "c-businessoperations": {"p": "taxonomy.html#c-businessoperations~BusinessOperations", "v": {"taxonomy": "taxonomy.html#c-businessoperations~BusinessOperations", "ontology": "ontology.html#c-businessoperations~BusinessOperations", "vocabulary": "vocabulary.html#v-businessoperations"}}, "c-compliance": {"p": "taxonomy.html#c-compliance~Compliance", "v": {"taxonomy": "taxonomy.html#c-compliance~Compliance", "ontology": "ontology.html#c-compliance~Compliance", "vocabulary": "vocabulary.html#v-compliance"}}, "c-issue": {"p": "taxonomy.html#c-issue~Issue", "v": {"taxonomy": "taxonomy.html#c-issue~Issue", "ontology": "ontology.html#c-issue~Issue", "vocabulary": "vocabulary.html#v-issue"}}, "c-lifecycle": {"p": "taxonomy.html#c-lifecycle~Lifecycle", "v": {"taxonomy": "taxonomy.html#c-lifecycle~Lifecycle", "ontology": "ontology.html#c-lifecycle~Lifecycle", "vocabulary": "vocabulary.html#v-lifecycle"}}, "c-location": {"p": "taxonomy.html#c-location~Location", "v": {"taxonomy": "taxonomy.html#c-location~Location", "ontology": "ontology.html#c-location~Location", "vocabulary": "vocabulary.html#v-location"}}, "c-party": {"p": "taxonomy.html#c-party~Party", "v": {"taxonomy": "taxonomy.html#c-party~Party", "ontology": "ontology.html#c-party~Party", "vocabulary": "vocabulary.html#v-party"}}, "c-persona": {"p": "taxonomy.html#c-persona~Persona", "v": {"taxonomy": "taxonomy.html#c-persona~Persona", "ontology": "ontology.html#c-persona~Persona", "vocabulary": "vocabulary.html#v-persona"}}, "c-process": {"p": "taxonomy.html#c-process~Process", "v": {"taxonomy": "taxonomy.html#c-process~Process", "ontology": "ontology.html#c-process~Process", "vocabulary": "vocabulary.html#v-process"}}, "c-product": {"p": "taxonomy.html#c-product~Product", "v": {"taxonomy": "taxonomy.html#c-product~Product", "ontology": "ontology.html#c-product~Product", "vocabulary": "vocabulary.html#v-product"}}, "c-role": {"p": "taxonomy.html#c-role~Role", "v": {"taxonomy": "taxonomy.html#c-role~Role", "ontology": "ontology.html#c-role~Role", "vocabulary": "vocabulary.html#v-role"}}, "c-rules": {"p": "taxonomy.html#c-rules~Rules", "v": {"taxonomy": "taxonomy.html#c-rules~Rules", "ontology": "ontology.html#c-rules~Rules", "vocabulary": "vocabulary.html#v-rules"}}, "c-services": {"p": "taxonomy.html#c-services~Services", "v": {"taxonomy": "taxonomy.html#c-services~Services", "ontology": "ontology.html#c-services~Services", "vocabulary": "vocabulary.html#v-services"}}, "c-technicalservices": {"p": "taxonomy.html#c-technicalservices~TechnicalServices", "v": {"taxonomy": "taxonomy.html#c-technicalservices~TechnicalServices", "ontology": "ontology.html#c-technicalservices~TechnicalServices", "vocabulary": "vocabulary.html#v-technicalservices"}}, "c-time": {"p": "taxonomy.html#c-time~Time", "v": {"taxonomy": "taxonomy.html#c-time~Time", "ontology": "ontology.html#c-time~Time", "vocabulary": "vocabulary.html#v-time"}}, "c-valuestream": {"p": "taxonomy.html#c-valuestream~ValueStream", "v": {"taxonomy": "taxonomy.html#c-valuestream~ValueStream", "ontology": "ontology.html#c-valuestream~ValueStream", "vocabulary": "vocabulary.html#v-valuestream"}}, "c-asset": {"p": "ontology.html#c-asset~Asset", "v": {"taxonomy": "taxonomy.html#c-asset~Asset", "ontology": "ontology.html#c-asset~Asset", "vocabulary": "vocabulary.html#v-asset"}}, "c-capability": {"p": "ontology.html#c-capability~Capability", "v": {"taxonomy": "taxonomy.html#c-capability~Capability", "ontology": "ontology.html#c-capability~Capability", "vocabulary": "vocabulary.html#v-capability"}}, "c-event": {"p": "ontology.html#c-event~Events", "v": {"taxonomy": "taxonomy.html#c-event~Events", "ontology": "ontology.html#c-event~Events", "vocabulary": "vocabulary.html#v-event"}}, "c-requirements": {"p": "ontology.html#c-requirements~Requirements", "v": {"taxonomy": "taxonomy.html#c-requirements~Requirements", "ontology": "ontology.html#c-requirements~Requirements", "vocabulary": "vocabulary.html#v-requirements"}}, "g-data": {"p": "ontology.html#g-data~DataAsset", "v": {"taxonomy": "taxonomy.html#g-data~DataAsset", "ontology": "ontology.html#g-data~DataAsset"}}, "g-sem": {"p": "ontology.html#g-sem~BusinessTerm", "v": {"taxonomy": "taxonomy.html#g-sem~BusinessTerm", "ontology": "ontology.html#g-sem~BusinessTerm"}}, "g-an": {"p": "ontology.html#g-an~AnalyticInfrastructure", "v": {"taxonomy": "taxonomy.html#g-an~AnalyticInfrastructure", "ontology": "ontology.html#g-an~AnalyticInfrastructure"}}, "g-ai": {"p": "ontology.html#g-ai~AIGovernanceRole", "v": {"taxonomy": "taxonomy.html#g-ai~AIGovernanceRole", "ontology": "ontology.html#g-ai~AIGovernanceRole"}}, "g-ovl": {"p": "ontology.html#g-ovl~DeonticModality", "v": {"taxonomy": "taxonomy.html#g-ovl~DeonticModality", "ontology": "ontology.html#g-ovl~DeonticModality"}}, "c-bundle": {"p": "ontology.html#c-bundle", "v": {"taxonomy": "taxonomy.html#c-bundle", "ontology": "ontology.html#c-bundle"}}, "bfo": {"p": "ontology.html#bfo", "v": {"taxonomy": "taxonomy.html#bfo", "ontology": "ontology.html#bfo"}}, "ro": {"p": "ontology.html#ro", "v": {"taxonomy": "taxonomy.html#ro", "ontology": "ontology.html#ro"}}, "domain": {"p": "ontology.html#domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#domain", "ontology": "ontology.html#domain"}}};
+const ETYPES = [{"id": "imports", "label": "owl:imports"}, {"id": "declares", "label": "declares core roots"}, {"id": "inherits", "label": "inheritance (rdfs:subClassOf)"}, {"id": "anchors", "label": "BFO anchor"}, {"id": "grounds", "label": "vocabulary grounding"}, {"id": "maps", "label": "vocabulary mapping (SKOS match)"}];
 
 const FINDINGS = [
-  {sev:"Fixed",title:"All 20 vocabularies in the lineage",body:"The 14 taxonomy schemes, Business Operations and the five core schemes are now supplied v1.1 files. Each taxonomy is grounded by its scheme, and Services grounds three Domain classes (Operations Management, Communications, Service Level Management) through new dc:subject links.",nodes:["v-services","domain","tax-services","v-product","v-party","v-persona","v-location","v-time","v-lifecycle","v-valuestream","v-process","v-technicalservices","v-role","v-rules","v-compliance","v-issue"]},
-  {sev:"Fixed",title:"Business Operations placed",body:"core-businessoperations had no taxonomy or ontology. A new mapping file attaches it: its root exactMatches the Business Operations concept in core-services. Technical Services broadMatches Services, and 17 same-named concepts with the same sense are closeMatched across schemes. Pairs whose senses differ (Customer, Design, Guideline, Investigation and others) are left unmapped.",nodes:["v-businessoperations","v-services","v-technicalservices","v-asset","v-capability","v-compliance","v-domain"]},
-  {sev:"Fixed",title:"Vocabulary defects corrected",body:"Requirements: Non-Functional Feature now sits under Feature, matching the OWL disjointness. Time: Future no longer carries Full Period's definition, and Relative and Subsecond get drafted definitions marked for steward review. Unused caie: and sp: prefixes were removed from all 20 schemes.",nodes:["v-requirements","v-time","req","tax-time"]},
-  {sev:"Fixed",title:"The Domain Reference Model is the foundation",body:"The separate upper ontology and the upper-to-RO alignment are retired. ontology-core-domain now declares the 21 shared relations, their RO alignments and the root class of every domain ontology, and imports only RO core and BFO 2020. Asset, Capability, Event, Requirements and all five governance modules import it; it imports none of them, so there is no circular import. The upperontology IRIs stay as deprecated equivalents so existing data still resolves.",nodes:["domain","ro","bfo","asset","cap","event","req","g-data","g-sem","g-an","g-ai","g-ovl"]},
-  {sev:"Fixed",title:"RO core pinned to BFO 2020",body:"RO core 2024-04-24 imports the unversioned bfo.owl, which does not guarantee BFO 2020. The RO file stays exactly as published; a catalog-v001.xml redirects that import to the BFO 2020 release, and the DRM imports BFO 2020 by version IRI, so RO and the DRM share one BFO.",nodes:["ro","bfo","domain"]},
-  {sev:"Fixed",title:"Root classes anchored to BFO",body:"12 reference classes sit under BFO: Asset and Location ⊑ continuant; Physical Asset ⊑ material entity; Digital Asset, Requirement and Rules ⊑ generically dependent continuant; Party ⊑ independent continuant; Capability ⊑ realizable entity; Role ⊑ role; Process and Value Stream ⊑ process; Event ⊑ occurrent. 128 classes now reach BFO and a disjointness check finds no conflicts. Event replaces Events as the anchor because Events also groups Event State and Trigger.",nodes:["domain","bfo","asset","cap","event","req","tax-process","tax-role","tax-party","tax-location","tax-valuestream","tax-rules"]},
-  {sev:"Fixed",title:"Requirements bound into the model",body:"Requirements imports the Domain Reference Model, and three bridge shapes in the DRM bind it to the operating model: Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services.",nodes:["req","domain","cap","tax-process","tax-services"]},
-  {sev:"Fixed",title:"One IRI for the domain",body:"All four governance modules and the overlay import ontologies.verizon.com/ontology-core-domain/. Their example.org class namespaces moved to enablingvalue.com, version IRIs are real, and the overlay's core: stand-in is replaced by the Verizon taxonomies.",nodes:["domain","g-data","g-sem","g-an","g-ai","g-ovl"]},
-  {sev:"Fixed",title:"Feature hierarchy corrected",body:"Non-Functional Feature is now a sibling of Functional Feature under Feature, and the two are disjoint. The seven reflexive subClassOf axioms are removed.",nodes:["req","v-requirements"]},
-  {sev:"Fixed",title:"Each Asset class has its own concept",body:"System Engineering now points to the existing core-asset concept System Engineering (b5f33aea-30d7-4585-b1e2-b074d1126cec) instead of sharing Solution Architecture's. All 104 core dc:subject links resolve against the supplied schemes.",nodes:["asset","v-asset"]},
-  {sev:"Fixed",title:"One generation of shapes",body:"Domain drops the 13 metaphacts shapes and stubs; Requirements and Event shapes use the DRM relations only. The Event shape moved into ontology-core-event with occursWhen as the single temporal path.",nodes:["domain","event","req"]},
-  {sev:"Fixed",title:"SID, RAN and ThinkHome removed",body:"1,616 TM Forum SID individuals, about 265 RAN attributes per file and the ThinkHome energy terms are gone, along with orphaned anonymous axioms. Event State uses its own stateValue property. The mislabeled Passport and auto_negotiate definitions went with them.",nodes:["cap","event"]},
-  {sev:"Fixed",title:"Service model extracted once",body:"The 2012 service model, co-ode personas and DQM properties moved into vocabulary-core-servicemodel, merging 249 duplicates. Capability and Event import it. Asset and Event now import the taxonomies their shapes reference.",nodes:["v-svc","svc","dqm","cap","event","asset"]},
-  {sev:"Follow-up",title:"Model the Domain sub-domains",body:"core-domain has 21 sub-domains (Commercial, Corporate, Network, Supply Chain and their children) but ontology-core-domain declares only Domain. Add OWL classes for the ones shapes need to reference.",nodes:["v-domain","domain"]},
-  {sev:"Follow-up",title:"Reporting and Training lack Services concepts",body:"Both Domain classes sit under taxonomy-core-services, but core-services has no matching concept. Analytics & Reporting (Business Operations) and Training (Technical Services, under Threat Management) are different senses, so no link was made.",nodes:["v-services","domain"]},
-  {sev:"Follow-up",title:"Vocabulary housekeeping",body:"Event and Events share one definition. Six Technical Services pairs share definitions (e.g. Directory Maintenance / Directory Management, Manage Taxonomies / Taxonomy Management). core-issue's scheme IRI ends in a slash. Services Provisioning has no definition. These need a steward's call, so they were left as is.",nodes:["v-technicalservices","v-event","v-issue"]},
-  {sev:"Follow-up",title:"Taxonomies should import the DRM",body:"The 14 taxonomy modules were not supplied. Each should import ontology-core-domain and drop any import of the old upperontology, so they build on the reference model like the core and governance modules do.",nodes:["domain","tax-process","tax-role","tax-party","tax-persona","tax-services","tax-lifecycle","tax-location","tax-time","tax-valuestream","tax-rules","tax-compliance","tax-issue","tax-product","tax-services-technicalservices"]},
-  {sev:"Follow-up",title:"Anchor the remaining root classes",body:"Persona, Time, Lifecycle, Services, Compliance and Issue are declared in the DRM but not yet placed under BFO, because their members span categories (Time mixes temporal regions with frequencies such as Weekly; Services classes also sit under the Run Time lifecycle stage). Event State and Trigger need the same decision. Each carries an editorial note in the file.",nodes:["domain","tax-persona","tax-time","tax-lifecycle","tax-services","tax-compliance","tax-issue","event"]},
-  {sev:"Follow-up",title:"Review relation definitions",body:"The 21 DRM relations now carry definitions drafted from how the shapes use them. is, typeOf and hasRelated are very general; consider replacing them with specific relations before certifying.",nodes:["domain","req"]},
-  {sev:"Follow-up",title:"Review bridge shapes with stewards",body:"The three Requirements bridges are a modeling proposal. Confirm the property choices with the Requirements and Domain stewards before certifying v1.1.",nodes:["domain","req"]}
+{
+"sev": "Fixed",
+"title": "Naming convention enforced",
+"body": "Every vocabulary, taxonomy and ontology is named by the convention: vocabulary-core-*, taxonomy-core-*, ontology-core-* (with ontology-core-governance-* and ontology-core-bundle). There are only vocabularies, taxonomies and ontologies, with no separate inherited-source boxes: the 2012 service model and DQM vocabulary are cited as sources of vocabulary-core-servicemodel.",
+"nodes": [
+"v-svc",
+"domain",
+"c-process",
+"c-asset"
+]
+},
+{
+"sev": "Fixed",
+"title": "All 15 core taxonomies are OWL and import the unifying ontology",
+"body": "The taxonomies existed only as vocabularies, so classes that ontology-core-domain and the core ontologies use (Run Time, Observation, Person, Individual Product, Data Analytics & Insights, Marketing & Brand Management) had no declaration. Each taxonomy is now an OWL file generated from its core vocabulary (763 classes, one per concept, subclassed along skos:broader, grounded by dc:subject) and imports ontology-core-domain. Class IRIs are exactly the ones the core already used.",
+"nodes": [
+"domain",
+"c-businessoperations",
+"c-compliance",
+"c-issue",
+"c-lifecycle",
+"c-location",
+"c-party",
+"c-persona",
+"c-process"
+]
+},
+{
+"sev": "Fixed",
+"title": "ontology-core-domain declares every class it uses",
+"body": "It referenced Run Time, Observation, Outcome, Job Step and Feature without declaring them. It now declares all five, following its pattern for core roots; their hierarchies stay in taxonomy-core-lifecycle, taxonomy-core-process and ontology-core-requirements. Every class reference across the core files resolves.",
+"nodes": [
+"domain",
+"c-lifecycle",
+"c-process",
+"c-requirements"
+]
+},
+{
+"sev": "Fixed",
+"title": "Business Operations is a taxonomy and in the bundle",
+"body": "taxonomy-core-businessoperations is generated from its vocabulary; its root is equivalent to Business Operations in taxonomy-core-services, per the core mappings. ontology-core-bundle now imports it.",
+"nodes": [
+"c-businessoperations",
+"c-services",
+"v-businessoperations",
+"c-bundle"
+]
+},
+{
+"sev": "Fixed",
+"title": "All 20 vocabularies in the lineage",
+"body": "The 14 taxonomy schemes, Business Operations and the five core schemes are now supplied v1.1 files. Each taxonomy is grounded by its scheme, and Services grounds three Domain classes (Operations Management, Communications, Service Level Management) through new dc:subject links.",
+"nodes": [
+"v-services",
+"domain",
+"c-services",
+"v-product",
+"v-party",
+"v-persona",
+"v-location",
+"v-time",
+"v-lifecycle",
+"v-valuestream",
+"v-process",
+"v-technicalservices",
+"v-role",
+"v-rules",
+"v-compliance",
+"v-issue"
+]
+},
+{
+"sev": "Fixed",
+"title": "Business Operations placed",
+"body": "core-businessoperations had no taxonomy or ontology. A new mapping file attaches it: its root exactMatches the Business Operations concept in core-services. Technical Services broadMatches Services, and 17 same-named concepts with the same sense are closeMatched across schemes. Pairs whose senses differ (Customer, Design, Guideline, Investigation and others) are left unmapped.",
+"nodes": [
+"v-businessoperations",
+"v-services",
+"v-technicalservices",
+"v-asset",
+"v-capability",
+"v-compliance",
+"v-domain"
+]
+},
+{
+"sev": "Fixed",
+"title": "Vocabulary defects corrected",
+"body": "Requirements: Non-Functional Feature now sits under Feature, matching the OWL disjointness. Time: Future no longer carries Full Period's definition, and Relative and Subsecond get drafted definitions marked for steward review. Unused caie: and sp: prefixes were removed from all 20 schemes.",
+"nodes": [
+"v-requirements",
+"v-time",
+"c-requirements",
+"c-time"
+]
+},
+{
+"sev": "Fixed",
+"title": "The ontology-core-domain is the foundation",
+"body": "The separate upper ontology and the upper-to-RO alignment are retired. ontology-core-domain now declares the 21 shared relations, their RO alignments and the root class of every domain ontology, and imports only RO core and BFO 2020. Asset, Capability, Event, Requirements and all five governance ontologies import it; it imports none of them, so there is no circular import. The upperontology IRIs stay as deprecated equivalents so existing data still resolves.",
+"nodes": [
+"domain",
+"ro",
+"bfo",
+"c-asset",
+"c-capability",
+"c-event",
+"c-requirements",
+"g-data",
+"g-sem",
+"g-an",
+"g-ai",
+"g-ovl"
+]
+},
+{
+"sev": "Fixed",
+"title": "RO core pinned to BFO 2020",
+"body": "RO core 2024-04-24 imports the unversioned bfo.owl, which does not guarantee BFO 2020. The RO file stays exactly as published; a catalog-v001.xml redirects that import to the BFO 2020 release, and ontology-core-domain imports BFO 2020 by version IRI, so RO and ontology-core-domain share one BFO.",
+"nodes": [
+"ro",
+"bfo",
+"domain"
+]
+},
+{
+"sev": "Fixed",
+"title": "Root classes anchored to BFO",
+"body": "12 reference classes sit under BFO: Asset and Location ⊑ continuant; Physical Asset ⊑ material entity; Digital Asset, Requirement and Rules ⊑ generically dependent continuant; Party ⊑ independent continuant; Capability ⊑ realizable entity; Role ⊑ role; Process and Value Stream ⊑ process; Event ⊑ occurrent. 128 classes now reach BFO and a disjointness check finds no conflicts. Event replaces Events as the anchor because Events also groups Event State and Trigger.",
+"nodes": [
+"domain",
+"bfo",
+"c-asset",
+"c-capability",
+"c-event",
+"c-requirements",
+"c-process",
+"c-role",
+"c-party",
+"c-location",
+"c-valuestream",
+"c-rules"
+]
+},
+{
+"sev": "Fixed",
+"title": "Requirements bound into the model",
+"body": "Requirements imports the ontology-core-domain, and three bridge shapes in ontology-core-domain bind it to the operating model: Outcome enabledBy Capability, Job Step performedBy Process, Feature enabledBy Services.",
+"nodes": [
+"c-requirements",
+"domain",
+"c-capability",
+"c-process",
+"c-services"
+]
+},
+{
+"sev": "Fixed",
+"title": "One IRI for the domain",
+"body": "All four governance ontologies and the overlay import ontologies.verizon.com/ontology-core-domain/. Their example.org class namespaces moved to enablingvalue.com, version IRIs are real, and the overlay's core: stand-in is replaced by the Verizon taxonomies.",
+"nodes": [
+"domain",
+"g-data",
+"g-sem",
+"g-an",
+"g-ai",
+"g-ovl"
+]
+},
+{
+"sev": "Fixed",
+"title": "Feature hierarchy corrected",
+"body": "Non-Functional Feature is now a sibling of Functional Feature under Feature, and the two are disjoint. The seven reflexive subClassOf axioms are removed.",
+"nodes": [
+"c-requirements",
+"v-requirements"
+]
+},
+{
+"sev": "Fixed",
+"title": "Each Asset class has its own concept",
+"body": "System Engineering now points to the existing core-asset concept System Engineering (b5f33aea-30d7-4585-b1e2-b074d1126cec) instead of sharing Solution Architecture's. All 104 core dc:subject links resolve against the supplied schemes.",
+"nodes": [
+"c-asset",
+"v-asset"
+]
+},
+{
+"sev": "Fixed",
+"title": "One generation of shapes",
+"body": "Domain drops the 13 metaphacts shapes and stubs; Requirements and Event shapes use ontology-core-domain relations only. The Event shape moved into ontology-core-event with occursWhen as the single temporal path.",
+"nodes": [
+"domain",
+"c-event",
+"c-requirements"
+]
+},
+{
+"sev": "Fixed",
+"title": "SID, RAN and ThinkHome removed",
+"body": "1,616 TM Forum SID individuals, about 265 RAN attributes per file and the ThinkHome energy terms are gone, along with orphaned anonymous axioms. Event State uses its own stateValue property. The mislabeled Passport and auto_negotiate definitions went with them.",
+"nodes": [
+"c-capability",
+"c-event"
+]
+},
+{
+"sev": "Fixed",
+"title": "Service model extracted once",
+"body": "The 2012 service model, co-ode personas and DQM properties moved into vocabulary-core-servicemodel, merging 249 duplicates. Capability and Event import it. Asset and Event now import the taxonomies their shapes reference.",
+"nodes": [
+"v-svc",
+"c-capability",
+"c-event",
+"c-asset"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Steward review of the generated taxonomies",
+"body": "Class IRIs are the concept labels in CamelCase and the hierarchy follows skos:broader. Product, Business Operations and Technical Services roots are not declared in ontology-core-domain. Confirm the IRIs and roots before certifying.",
+"nodes": [
+"c-product",
+"c-businessoperations",
+"c-technicalservices",
+"domain"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Model the Domain sub-domains",
+"body": "core-domain has 21 sub-domains (Commercial, Corporate, Network, Supply Chain and their children) but ontology-core-domain declares only Domain. Add OWL classes for the ones shapes need to reference.",
+"nodes": [
+"v-domain",
+"domain"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Reporting and Training lack Services concepts",
+"body": "Both Domain classes sit under taxonomy-core-services, but core-services has no matching concept. Analytics & Reporting (Business Operations) and Training (Technical Services, under Threat Management) are different senses, so no link was made.",
+"nodes": [
+"v-services",
+"domain"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Vocabulary housekeeping",
+"body": "Event and Events share one definition. Six Technical Services pairs share definitions (e.g. Directory Maintenance / Directory Management, Manage Taxonomies / Taxonomy Management). core-issue's scheme IRI ends in a slash. Services Provisioning has no definition. These need a steward's call, so they were left as is.",
+"nodes": [
+"v-technicalservices",
+"v-event",
+"v-issue"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Anchor the remaining root classes",
+"body": "Persona, Time, Lifecycle, Services, Compliance and Issue are declared in ontology-core-domain but not yet placed under BFO, because their members span categories (Time mixes temporal regions with frequencies such as Weekly; Services classes also sit under the Run Time lifecycle stage). Event State and Trigger need the same decision. Each carries an editorial note in the file. Product (taxonomy-core-product) and Requirements (ontology-core-requirements, the parent of Outcome) also have no BFO parent.",
+"nodes": [
+"domain",
+"c-persona",
+"c-time",
+"c-lifecycle",
+"c-services",
+"c-compliance",
+"c-issue",
+"c-event"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Review relation definitions",
+"body": "The 21 DRM relations now carry definitions drafted from how the shapes use them. is, typeOf and hasRelated are very general; consider replacing them with specific relations before certifying.",
+"nodes": [
+"domain",
+"c-requirements"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Review bridge shapes with stewards",
+"body": "The three Requirements bridges are a modeling proposal. Confirm the property choices with the Requirements and Domain stewards before certifying v1.1.",
+"nodes": [
+"domain",
+"c-requirements"
+]
+}
 ];
 
 // ---------- layout ----------
 const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
-const COLW=182, NW=152, NH=34, GAP=42, TOP=70, PADX=14;
+const COLW=236, NW=206, NH=34, GAP=42, TOP=70, PADX=14;
 const cols = TIERS.map(t=>NODES.filter(n=>n.tier===t.id));
 const maxRows = Math.max(...cols.map(c=>c.length));
 const H = TOP + maxRows*GAP + 14, W = PADX*2 + TIERS.length*COLW - (COLW-NW);
@@ -337,7 +1197,7 @@ const edgeEls = EDGES.map(([a,b,type,note])=>{
   return {a,b,type,p};
 });
 
-const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5"};
+const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5",generated:"6 2"};
 NODES.forEach(n=>{
   const g=el("g",{class:"node"+(n.tier==="domain"?" domain":""),transform:`translate(${n.x},${n.y})`,tabindex:"0",role:"button","aria-label":`${n.label}, ${TIERS.find(t=>t.id===n.tier).name}`},gNodes);
   const col=`var(${TIERS.find(t=>t.id===n.tier).color})`;
@@ -352,12 +1212,13 @@ NODES.forEach(n=>{
   el("rect",{x:NW-21,y:NH-17,width:16,height:13,rx:3,class:"obox"},oa);
   el("path",{d:`M${NW-16.5},${NH-7.5} l6,-6 M${NW-14},${NH-13.5} h3.5 v3.5`,class:"oglyph"},oa);
   oa.addEventListener("click",e=>e.stopPropagation());
-  g.addEventListener("dblclick",()=>{location.href=VIEWS[n.id].p;});
+  g.addEventListener("dblclick",e=>{e.preventDefault();e.stopPropagation();openNode(n.id);});
   g.addEventListener("click",()=>select(n.id));
   g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id);}});
   n.g=g;
 });
 
+function openNode(id){ const v=VIEWS[id]; if(!v) return; window.location.assign(new URL(v.p, window.location.href).href); }
 // ---------- controls ----------
 const active=new Set(ETYPES.map(e=>e.id));
 const tg=document.getElementById("edgeToggles");
@@ -416,7 +1277,7 @@ function renderPanel(id,T){
   const ins=EDGES.filter(e=>e[1]===id).map(e=>({id:e[0],type:e[2]}));
   const outs=EDGES.filter(e=>e[0]===id).map(e=>({id:e[1],type:e[2]}));
   const fs=FINDINGS.filter(f=>f.nodes.includes(id));
-  const statusText={supplied:`v1.1 file · ${n.file}`,referenced:"Referenced, not supplied"}[n.status];
+  const statusText={supplied:`supplied file · ${n.file}`,referenced:"Referenced, not supplied",embedded:`declared in ontology-core-domain · ${n.file}`,generated:`generated from its core vocabulary · ${n.file}`}[n.status];
   document.getElementById("panel").innerHTML=`
     <span class="tierpill"><i class="dot" style="background:var(${tier.color})"></i>${tier.name}</span>
     <h2>${n.label}</h2>
@@ -424,8 +1285,8 @@ function renderPanel(id,T){
     <p style="font-size:12.5px;color:var(--muted)">${statusText}</p>
     ${n.stats&&n.stats.length?`<div class="stats">${n.stats.map(s=>`<span class="stat">${s}</span>`).join("")}</div>`:""}
     <p>${n.desc}</p>
-    <div class="rel"><h3>Explore this module</h3><div class="explore">${exploreLinks(n.id)}</div></div>
-    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related modules over ${T.edges.size} edges</div>
+    <div class="rel"><h3>Explore</h3><div class="explore">${exploreLinks(n.id)}</div></div>
+    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related vocabularies, taxonomies and ontologies over ${T.edges.size} edges</div>
     <div class="rel"><h3>Draws from</h3>${relList(ins)}</div>
     <div class="rel"><h3>Feeds into</h3>${relList(outs)}</div>
     ${fs.map(f=>`<div class="note"><b class="${f.sev==='Fixed'?'ok':''}">${f.sev}:</b> ${f.title}</div>`).join("")}`;
@@ -436,24 +1297,21 @@ document.getElementById("findings").innerHTML=FINDINGS.map((f,i)=>`<button class
 document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
   const f=FINDINGS[+b.dataset.f]; focusSet=f.nodes; render();
   const p=document.getElementById("panel");
-  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Modules involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
+  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
   document.querySelectorAll("#panel [data-go]").forEach(x=>x.onclick=()=>select(x.dataset.go));
   document.getElementById("graph").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 });
 
 // ledger
-const ledgerRows=[
-  ["Formal foundations","BFO 2020, OBO Relations Core (pinned by catalog-v001.xml)","1 of 2","14 BFO classes · 30 relations"],
-  ["Inherited sources","2012 Service Model, DQM vocabulary","via vocab","origins of vocabulary-core-servicemodel"],
-  ["Vocabularies","service model (new), mappings (new), 20 core schemes: asset, capability, event, requirements, domain, product, party, persona, location, time, lifecycle, valuestream, process, services, technical services, role, rules, compliance, issue, business operations","21 + mappings","888 concepts · 119 dc:subject links · 19 mappings"],
-  ["Domain Reference Model","ontology-core-domain (foundation); Ontology_Core_Bundle_1.1.ttl loads the full set for validation","1 of 1","21 relations · 20 reference classes · 12 BFO anchors · 13 shapes"],
-  ["Taxonomies","product, party, persona, location, time, lifecycle, valuestream, process, services, technical services, role, rules, compliance, issue","0 of 14","14 modules, should import the DRM"],
-  ["Core ontologies","Asset, Requirements, Event, Capability","4 of 4","103 named classes · each imports the DRM"],
-  ["Governance overlays","Data, Semantic, Analytics, AI, Overlay","5 of 5","93 classes · 10 core anchors"]
-];
-document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
+const ledgerRows=[["Formal foundations", "BFO 2020, OBO Relations Core (pinned by catalog-v001.xml)", "1 of 2", "BFO classes · 30 relations"], ["Core vocabularies", "21: vocabulary-core-asset, vocabulary-core-businessoperations, vocabulary-core-capability, vocabulary-core-compliance, vocabulary-core-domain, vocabulary-core-event, vocabulary-core-issue, vocabulary-core-lifecycle, vocabulary-core-location, vocabulary-core-party, vocabulary-core-persona, vocabulary-core-process, vocabulary-core-product, vocabulary-core-requirements, vocabulary-core-role, vocabulary-core-rules, vocabulary-core-servicemodel, vocabulary-core-services, vocabulary-core-technicalservices, vocabulary-core-time, vocabulary-core-valuestream", "21 of 21 + mappings", "888 concepts · 19 mappings"], ["Unifying ontology", "ontology-core-domain 1.1", "1 of 1", "31 classes · 21 relations · 13 shapes"], ["Core taxonomies", "taxonomy-core-businessoperations, taxonomy-core-compliance, taxonomy-core-issue, taxonomy-core-lifecycle, taxonomy-core-location, taxonomy-core-party, taxonomy-core-persona, taxonomy-core-process, taxonomy-core-product, taxonomy-core-role, taxonomy-core-rules, taxonomy-core-services, taxonomy-core-services-technicalservices, taxonomy-core-time, taxonomy-core-valuestream", "generated from 15 vocabularies", "763 classes · each imports ontology-core-domain"], ["Core ontologies", "ontology-core-asset, ontology-core-capability, ontology-core-event, ontology-core-requirements", "4 of 4", "103 classes · each imports ontology-core-domain"], ["Core governance ontologies", "ontology-core-governance-data, ontology-core-governance-semantic, ontology-core-governance-analytics, ontology-core-governance-ai, ontology-core-governance-overlay", "5 of 5", "93 classes"], ["Load bundle", "ontology-core-bundle", "1 of 1", "imports every core vocabulary-backed taxonomy and ontology"]];
+document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Vocabularies, taxonomies and ontologies</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
 
+function setTheme(t,save){ if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.th===t)); if(save){ try{ localStorage.setItem('dol-lineage-theme',t) }catch(e){} } }
+document.querySelectorAll('[data-th]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.th,true)));
+try{ const t=localStorage.getItem('dol-lineage-theme'); if(t) setTheme(t,false) }catch(e){}
 render();
 </script>
+
 
 </body></html>

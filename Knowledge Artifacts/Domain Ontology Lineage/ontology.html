@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="explorer.css">
+<script>try{const t=localStorage.getItem('dol-lineage-theme'); if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <style>
 .tabs{display:flex;gap:2px;padding:8px 10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
 .tab{appearance:none;border:0;background:transparent;padding:9px 13px 10px;font:500 14px var(--f-body);color:var(--ink-soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:inline-flex;gap:7px;align-items:center}
@@ -76,7 +77,7 @@ const nodeForIri = iri => IRI2NODE[iri.replace(/[#/]$/,"")];
 function taxRecord(tid){
   const refs = D.taxref[tid]||{}, ns = NODES[tid].iri;
   const rec = {id:tid, iri:ns, file:null, synthetic:true, classes:{}, props:{}, shapes:[], restrictions:[], disjoint:[], individuals:[], axioms:[], imports:[],
-    meta:{title:NODES[tid].label+" taxonomy", description:`Not supplied. This view collects the classes in ${ns} that the supplied modules declare or reference, and every SHACL shape, subclass axiom and property that touches them.`}};
+    meta:{title:NODES[tid].label+" taxonomy", description:`Not supplied. This view collects the classes in ${ns} that the supplied files declare or reference, and every SHACL shape, subclass axiom and property that touches them.`}};
   Object.entries(refs).forEach(([iri,e])=>{ rec.classes[iri] = {label:e.label, parents:(e.parents||[]).slice(), local:true, usedBy:e.usedBy, conceptKey:e.concept, declaredIn:e.declaredIn}; });
   // usage from other modules
   for(const [mid,o] of Object.entries(ONT)){
@@ -160,7 +161,7 @@ function head(){
       ${r.shapes.length?`<span class="stat"><b>${r.shapes.length}</b> SHACL shapes · <b>${sc}</b> constraints</span>`:""}
       ${r.individuals.length?`<span class="stat"><b>${r.individuals.length}</b> individuals</span>`:""}
       ${r.imports.length?`<span class="stat"><b>${r.imports.length}</b> imports</span>`:""}
-      ${M.incoming.length?`<span class="stat"><b>${M.incoming.length}</b> references from other modules</span>`:""}
+      ${M.incoming.length?`<span class="stat"><b>${M.incoming.length}</b> incoming references</span>`:""}
       ${m.version?`<span class="stat">version <b>${esc(m.version)}</b></span>`:""}${r.file?`<span class="stat">${esc(r.file)}</span>`:""}
     </div>${src}`;
 }
@@ -174,7 +175,7 @@ function tabs(){
     ["shapes","Shapes", r.shapes.length],
     ["props","Properties", Object.keys(r.props).length],
     ["inds","Individuals", r.individuals.length],
-    ["module","Module", 1]
+    ["module","About", 1]
   ].filter(t=>t[2]);
   if(!T.find(t=>t[0]===S.tab)) S.tab = T[0][0];
   document.getElementById("tabs").innerHTML = T.map(([k,l,n])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===S.tab}">${l}${k!=="module"?`<small>${n}</small>`:""}</button>`).join("");
@@ -236,8 +237,8 @@ function graphView(v){
     <span class="count" style="margin-left:auto">${M.edges.length>26?"Select a box to see its relation names · ":""}drag to rearrange</span><button class="btn" id="relayout">Re-layout</button></div>
     <div class="gwrap"><div class="svgwrap" id="gbox"></div></div>
     <div class="legend pad" style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);border-top:1px solid var(--line)">
-      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="${colorOf(M.id)}"/></svg>declared in this module</span>
-      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>from another module (colour = its tier)</span>
+      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="${colorOf(M.id)}"/></svg>declared here</span>
+      <span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>inherited or referenced (colour = its source)</span>
       ${M.nodes.some(n=>n.type==="prop")?`<span style="display:inline-flex;gap:6px;align-items:center"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="5" fill="none" stroke="var(--ink-soft)"/></svg>property</span>`:""}
     </div>`;
   v.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ S.kinds.has(b.dataset.k)?S.kinds.delete(b.dataset.k):S.kinds.add(b.dataset.k); b.setAttribute("aria-pressed",S.kinds.has(b.dataset.k)); paintGraph(); });
@@ -312,19 +313,21 @@ function search(v, ph, rerender){
 }
 function bindSearch(fn){ const q = document.getElementById("tq"); q.oninput = () => { S.q = q.value.trim(); fn(); }; }
 function classView(v){
-  v.innerHTML = search(v,"Filter classes") + `<div class="tablewrap" style="max-height:72vh"><table><thead><tr><th>Class</th><th>Parents</th><th>Definition</th><th class="num">Shapes</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+  const nInh = Object.values(M.rec.classes).filter(c=>c.via&&!c.local).length;
+  v.innerHTML = search(v,"Filter classes").replace('<span class="count" id="tcount">', nInh?`<span class="seg" role="group" aria-label="Classes shown"><button id="inh0" aria-pressed="${!S.inh}">Declared here</button><button id="inh1" aria-pressed="${!!S.inh}">With inherited (${nInh})</button></span><span class="count" id="tcount">`:'<span class="count" id="tcount">') + `<div class="tablewrap" style="max-height:72vh"><table><thead><tr><th>Class</th><th>Parents</th><th>Definition</th><th class="num">Shapes</th></tr></thead><tbody id="tb"></tbody></table></div>`;
   const all = Object.entries(M.rec.classes).sort((a,b)=>(M.mine.has(b[0])-M.mine.has(a[0])) || a[1].label.localeCompare(b[1].label));
   const fill = () => {
     const q = S.q.toLowerCase();
-    const rows = all.filter(([i,c])=>!q || c.label.toLowerCase().includes(q) || (c.comment||"").toLowerCase().includes(q));
+    const rows = all.filter(([i,c])=>(S.inh||M.mine.has(i)||!c.via||i===S.sel)).filter(([i,c])=>!q || c.label.toLowerCase().includes(q) || (c.comment||"").toLowerCase().includes(q));
     document.getElementById("tb").innerHTML = rows.map(([i,c])=>{
       const nsh = M.rec.shapes.filter(s=>s.target.includes(i)).length;
-      return `<tr data-row="${esc(i)}" class="${i===S.sel?"rowsel":""}"><td><b style="font-weight:${M.mine.has(i)?600:400}">${esc(c.label)}</b>${M.mine.has(i)?"":`<div class="count">${esc(X.label(c.owner||ownerOfIri(i)||"")||"external")}</div>`}</td><td>${c.parents.map(clink).join(" ")}</td><td class="dtxt">${esc((c.comment||"").slice(0,220))}${(c.comment||"").length>220?"…":""}</td><td class="num">${nsh||""}</td></tr>`;
+      return `<tr data-row="${esc(i)}" class="${i===S.sel?"rowsel":""}"><td><b style="font-weight:${M.mine.has(i)?600:400}">${esc(c.label)}</b>${M.mine.has(i)?"":`<div class="count">${c.via==="inherited"?"inherited from ":""}${esc(X.label(c.owner||ownerOfIri(i)||"")||"external")}</div>`}</td><td>${c.parents.map(clink).join(" ")}</td><td class="dtxt">${esc((c.comment||"").slice(0,220))}${(c.comment||"").length>220?"…":""}</td><td class="num">${nsh||""}</td></tr>`;
     }).join("");
     document.getElementById("tcount").textContent = `${rows.length} of ${all.length}`;
     wire(document.getElementById("tb"));
   };
   bindSearch(fill); fill();
+  [["inh0",false],["inh1",true]].forEach(([id,val])=>{ const b=document.getElementById(id); if(b) b.onclick=()=>{ S.inh=val; classView(v); }; });
 }
 function shapeView(v){
   v.innerHTML = `<div class="shapes">${M.rec.shapes.map(s=>`<article class="shape">
@@ -396,7 +399,7 @@ function moduleView(v){
       ${r.imports.length?`<div><h3>owl:imports</h3><div class="chips">${r.imports.map(i=>nodeForIri(i)?modLink(nodeForIri(i)):`<span class="lnk ext mono">${esc(i)}</span>`).join("")}</div></div>`:""}
       ${lid?`<div style="display:grid;gap:10px"><h3 style="margin:0">Draws from (lineage)</h3>${lists(grp(ins),0)||'<p class="empty">Nothing upstream.</p>'}</div>
       <div style="display:grid;gap:10px"><h3 style="margin:0">Feeds into (lineage)</h3>${lists(grp(outs),1)||'<p class="empty">Nothing downstream.</p>'}</div>`:""}
-      ${Object.keys(byMod).length?`<div><h3>How other modules use this one</h3>${Object.entries(byMod).map(([mid,xs])=>`<div style="margin:6px 0 10px"><div>${modLink(mid)} <span class="count">${xs.length} reference${xs.length>1?"s":""}</span></div><ul class="notes" style="margin-top:6px">${xs.slice(0,12).map(x=>`<li>${esc(x.label)} <span class="count">${x.kind}</span></li>`).join("")}${xs.length>12?`<li class="count">and ${xs.length-12} more</li>`:""}</ul></div>`).join("")}</div>`:""}
+      ${Object.keys(byMod).length?`<div><h3>How other taxonomies and ontologies use this one</h3>${Object.entries(byMod).map(([mid,xs])=>`<div style="margin:6px 0 10px"><div>${modLink(mid)} <span class="count">${xs.length} reference${xs.length>1?"s":""}</span></div><ul class="notes" style="margin-top:6px">${xs.slice(0,12).map(x=>`<li>${esc(x.label)} <span class="count">${x.kind}</span></li>`).join("")}${xs.length>12?`<li class="count">and ${xs.length-12} more</li>`:""}</ul></div>`).join("")}</div>`:""}
     </div>`;
 }
 
@@ -443,7 +446,7 @@ function panel(){
       ${pr.length?`<div class="sec"><h3>Properties</h3><div class="chips">${pr.map(([k,x])=>`<button class="lnk" data-sel="${esc(k)}">${esc(x.label)}<small>${x.domain.includes(i)?"domain":"range"}</small></button>`).join("")}</div></div>`:""}
       ${rs.length?`<div class="sec"><h3>OWL restrictions</h3>${rs.map(x=>`<p class="mono" style="font-size:12.5px">${esc(localName(x.prop))} ${esc(x.kind)} ${esc(/^https?:/.test(x.value)?classLabel(x.value):x.value)}</p>`).join("")}</div>`:""}
       ${dj.length?`<div class="sec"><h3>Disjoint with</h3><div class="chips">${dj.map(clink).join("")}</div></div>`:""}
-      ${inc.length?`<div class="sec"><h3>Used by other modules</h3><ul class="notes" style="margin:0;padding-left:18px;font-size:13px;color:var(--ink-soft)">${inc.slice(0,10).map(x=>`<li>${esc(x.label)} <span class="count">${esc(X.label(x.mid))}</span></li>`).join("")}</ul></div>`:""}
+      ${inc.length?`<div class="sec"><h3>Used by other taxonomies and ontologies</h3><ul class="notes" style="margin:0;padding-left:18px;font-size:13px;color:var(--ink-soft)">${inc.slice(0,10).map(x=>`<li>${esc(x.label)} <span class="count">${esc(X.label(x.mid))}</span></li>`).join("")}</ul></div>`:""}
       ${c.usedBy?`<div class="sec"><h3>Referenced by</h3><div class="chips">${c.usedBy.map(modLink).join("")}</div></div>`:""}
       <div class="gorow">${mine&&tree&&!r.synthetic?`<a class="go" href="${href("taxonomy",tree,keyOf(i))}">Show in hierarchy</a>`:""}${r.synthetic&&c.conceptKey?`<a class="go" href="${href("taxonomy",M.id,c.conceptKey)}">Show in hierarchy</a>`:""}
         ${sub&&sub[0]?`<a class="go" href="${href("vocabulary",sub[0],sub[1])}">Grounding concept</a>`:""}${ext?`<a class="go" href="${ext}">Open in ${esc(X.label(own))}</a>`:""}</div>
