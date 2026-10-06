@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hierarchy Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="explorer.css">
+<style>
+.outline{padding:10px 8px 16px;max-height:78vh;overflow:auto;font-size:14px}
+.outline ul{list-style:none;margin:0;padding-left:18px;border-left:1px solid var(--line)}
+.outline > ul{border-left:0;padding-left:4px}
+.outline li{margin:1px 0}
+.orow{display:flex;align-items:center;gap:4px;min-width:0}
+.tw{appearance:none;border:0;background:transparent;width:22px;height:22px;flex:none;cursor:pointer;color:var(--muted);border-radius:4px;display:grid;place-items:center}
+.tw:hover{background:var(--surface-2)}
+.tw svg{transition:transform .15s}
+.tw[aria-expanded="true"] svg{transform:rotate(90deg)}
+.tw.leaf{visibility:hidden}
+.olab{appearance:none;border:0;background:transparent;cursor:pointer;padding:3px 7px;border-radius:5px;font:inherit;color:var(--ink);text-align:left;display:inline-flex;gap:8px;align-items:baseline;min-width:0}
+.olab:hover{background:var(--surface-2)}
+.olab.sel{background:var(--ink);color:var(--bg)}
+.olab.sel .oc{color:var(--bg);opacity:.7}
+.olab.hit{background:var(--hl)}
+.olab.ghost{color:var(--muted);font-style:italic}
+.oc{font:11px var(--f-mono);color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);padding:8px 12px;border-top:1px solid var(--line)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.tn text.c{pointer-events:none}
+.levels{display:flex;gap:4px;align-items:end;height:34px}
+.levels i{display:block;width:16px;background:var(--t-tax);opacity:.8;border-radius:2px 2px 0 0;min-height:2px}
+.lvwrap{display:flex;gap:8px;align-items:center}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"></header>
+<main class="wrap">
+  <div class="head" id="head"></div>
+  <div class="work">
+    <section class="card" aria-label="Hierarchy">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Layout">
+          <button data-lay="h" aria-pressed="true">Horizontal</button><button data-lay="v" aria-pressed="false">Vertical</button><button data-lay="o" aria-pressed="false">Outline</button>
+        </div>
+        <span class="tlabel">Expand</span>
+        <div class="seg" role="group" aria-label="Expand to level"><button data-lv="1">1</button><button data-lv="2">2</button><button data-lv="3">3</button><button data-lv="99">All</button></div>
+        <input type="search" id="q" placeholder="Find in hierarchy" aria-label="Find in hierarchy">
+        <span class="count" id="hits"></span>
+        <span style="margin-left:auto;display:flex;gap:4px" id="zoombox"><button class="btn" id="zout" aria-label="Zoom out">−</button><button class="btn" id="zfit" title="Reset to 100%">100%</button><button class="btn" id="zall">Fit</button><button class="btn" id="zin" aria-label="Zoom in">+</button></span>
+      </div>
+      <div class="svgwrap" id="canvas"></div>
+      <div class="outline" id="outline" hidden></div>
+      <div class="legend" id="legend"></div>
+    </section>
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </div>
+</main>
+<script src="data/explorer-data.js"></script>
+<script src="explorer.js"></script>
+<script>
+const {D,VOC,ONT,esc,href,keyOf,boot,setKey,concept,colorOf,viewsFor,NODES,classHref,classLabel,localName,ALIAS} = X;
+const NS = "http://www.w3.org/2000/svg";
+let T = null, S = {lay:"h", collapsed:new Set(), sel:null, q:"", zoom:1};
+
+/* ---------- build a tree model for any module ---------- */
+function mk(key,label,type,extra={}){ return Object.assign({key,label,type,children:[]},extra); }
+function fromVocab(vid, taxid){
+  const v = VOC[vid], kids = {}, by = {};
+  v.concepts.forEach(c=>{ by[c[0]] = c; c[4].forEach(b=>(kids[b] ||= []).push(c)); });
+  const refs = taxid && D.taxref[taxid] || {};
+  const owlByConcept = {}, orphans = [];
+  Object.entries(refs).forEach(([iri,e])=>{ if(e.concept) (owlByConcept[e.concept] ||= []).push([iri,e]); else orphans.push([iri,e]); });
+  const build = c => {
+    const n = mk(c[0], c[1], "concept", {vid, c, owl:owlByConcept[c[0]]});
+    (kids[c[0]]||[]).sort((a,b)=>a[1].localeCompare(b[1])).forEach(k=>n.children.push(build(k)));
+    return n;
+  };
+  const roots = v.concepts.filter(c=>!c[4].length).map(build);
+  // OWL classes in the taxonomy namespace with no matching concept hang under their OWL parent's concept
+  orphans.forEach(([iri,e])=>{
+    let host = roots[0];
+    (e.parents||[]).forEach(pi=>{ const pe = refs[pi]; if(pe && pe.concept){ const f = find(roots, n=>n.key===pe.concept); if(f) host = f; } });
+    host.children.push(mk(keyOf(iri), e.label, "owlonly", {iri, e, ghost:true}));
+  });
+  return roots;
+}
+function find(roots, pred){ for(const r of roots){ if(pred(r)) return r; const f = find(r.children,pred); if(f) return f; } return null; }
+function fromOntology(mid){
+  const o = ONT[mid], groups = [];
+  const inSet = Object.entries(o.classes).filter(([i,c])=>c.local||c.anchored);
+  if(inSet.length){
+    const keep = new Set(inSet.map(([i])=>i));
+    inSet.forEach(([i,c])=>c.parents.forEach(p=>keep.add(p)));
+    const kids = {};
+    keep.forEach(i=>{ const c=o.classes[i]; (c&&c.parents.length&&(c.local||c.anchored)?c.parents:[]).forEach(p=>{ if(keep.has(p)) (kids[p] ||= []).push(i); }); });
+    const roots = [...keep].filter(i=>{ const c=o.classes[i]; return !(c&&(c.local||c.anchored)&&c.parents.some(p=>keep.has(p))); });
+    const seen = new Set();
+    const build = (i, stack) => {
+      const c = o.classes[i]||{label:classLabel(i),parents:[]};
+      const multi = seen.has(i); seen.add(i);
+      const n = mk(keyOf(i), c.label, "class", {iri:i, cls:c, mid, ghost:!(c.local||c.anchored), multi});
+      if(!multi && !stack.includes(i)) (kids[i]||[]).sort((a,b)=>(o.classes[a].label||"").localeCompare(o.classes[b].label||"")).forEach(k=>n.children.push(build(k, stack.concat(i))));
+      return n;
+    };
+    const rs = roots.sort((a,b)=>(o.classes[a]?.label||"").localeCompare(o.classes[b]?.label||"")).map(r=>build(r,[]));
+    groups.push(["Classes", rs]);
+  }
+  if(o.individuals.length){
+    const root = mk("_ind", "Named individuals", "group");
+    o.individuals.forEach(ind=>{
+      const segs = localName(ind.iri).split(":");
+      let cur = root;
+      segs.forEach((s,ix)=>{
+        const last = ix===segs.length-1;
+        const k = keyOf(segs.slice(0,ix+1).join(":"));
+        let ch = cur.children.find(x=>x.key===k);
+        if(!ch){ ch = mk(k, s.replace(/_/g," "), last?"ind":"group", last?{iri:ind.iri, ind}:{}); cur.children.push(ch); }
+        cur = ch;
+      });
+    });
+    const sort = n => { n.children.sort((a,b)=>(b.children.length>0)-(a.children.length>0) || a.label.localeCompare(b.label)); n.children.forEach(sort); };
+    sort(root);
+    groups.push(["Individuals", root.children.length>1?[root]:root.children]);
+  }
+  const props = Object.entries(o.props).filter(([i,p])=>!p.external);
+  if(props.some(([i,p])=>p.parents.length)){
+    const keep = new Set(props.map(([i])=>i)); props.forEach(([i,p])=>p.parents.forEach(x=>keep.add(x)));
+    const kids = {}; props.forEach(([i,p])=>p.parents.forEach(x=>(kids[x] ||= []).push(i)));
+    const seen = new Set();
+    const build = i => { const p = o.props[i]||{label:X.propLabel(i),parents:[]}; const multi = seen.has(i); seen.add(i);
+      const n = mk(keyOf(i), p.label, "prop", {iri:i, prop:p, mid, ghost:!o.props[i], multi});
+      if(!multi) (kids[i]||[]).sort((a,b)=>o.props[a].label.localeCompare(o.props[b].label)).forEach(k=>n.children.push(build(k))); return n; };
+    const roots = [...keep].filter(i=>!(o.props[i]&&o.props[i].parents.some(x=>keep.has(x)))).sort((a,b)=>X.propLabel(a).localeCompare(X.propLabel(b)));
+    groups.push(["Properties", roots.map(build)]);
+  }
+  if(groups.length===1) return groups[0][1];
+  return groups.map(([g,rs])=>Object.assign(mk("_g_"+g, g, "group"), {children:rs}));
+}
+function buildModel(id){
+  const v = VOC[id] ? id : null;
+  let roots, kind, note, title, sub;
+  if(v || id.startsWith("tax-")){
+    const vid = v || X.vocabFor(id);
+    const taxid = id.startsWith("tax-") ? id : X.ontFor(vid);
+    roots = fromVocab(vid, taxid && taxid.startsWith("tax-") ? taxid : null);
+    kind = id.startsWith("tax-") ? "Taxonomy" : "Vocabulary hierarchy";
+    title = X.label(id).replace(/ vocab$/,"");
+    sub = id.startsWith("tax-") ? `taxonomy-core-${id.slice(4)}` : VOC[vid].iri;
+    note = id.startsWith("tax-")
+      ? `<b>Source:</b> the taxonomy's OWL module was not supplied, so the hierarchy is drawn from <code>skos:broader</code> in its backing scheme, <a href="${href("vocabulary",vid)}">${esc(X.label(vid))}</a>. Concepts marked <span class="tag ok">OWL</span> are also OWL classes that the core modules reference.`
+      : `<b>Source:</b> <code>skos:broader</code> links in ${esc(VOC[vid].iri)}.`;
+  } else {
+    const mid = ALIAS[id]||id, o = ONT[mid];
+    roots = fromOntology(mid);
+    kind = "Class hierarchy";
+    title = X.label(mid);
+    sub = o.iri;
+    note = `<b>Source:</b> <code>rdfs:subClassOf</code>${o.individuals.length?", individual names (segments split on “:”)":""}${Object.values(o.props).some(p=>p.parents.length)?" and <code>rdfs:subPropertyOf</code>":""} in ${esc(o.file||"the files that reference it")}. Dashed boxes are classes from other modules; a dotted link marks a class that has more than one parent.`;
+  }
+  // index
+  let uid = 0; const all = [];
+  const walk = (n,d,parent) => { n.uid = ++uid; n.depth = d; n.parent = parent; all.push(n); n.children.forEach(c=>walk(c,d+1,n)); };
+  roots.forEach(r=>walk(r,0,null));
+  return {id, roots, all, kind, note, title, sub};
+}
+
+/* ---------- header ---------- */
+function head(){
+  const real = T.all.filter(n=>n.type!=="group");
+  const maxd = Math.max(0,...T.all.map(n=>n.depth));
+  const leaves = real.filter(n=>!n.children.length).length;
+  const perLevel = []; T.all.forEach(n=>perLevel[n.depth]=(perLevel[n.depth]||0)+1);
+  const mx = Math.max(...perLevel);
+  const owl = T.all.filter(n=>n.owl||n.type==="owlonly").length;
+  document.getElementById("head").innerHTML = `
+    <div class="eyebrow"><i class="dot" style="background:${colorOf(T.id)}"></i>${esc(T.kind)} · <span class="mono" style="text-transform:none;letter-spacing:0">${esc(T.sub)}</span></div>
+    <h1>${esc(T.title)}</h1>
+    <div class="lvwrap"><div class="stats">
+      <span class="stat"><b>${real.length}</b> nodes</span><span class="stat"><b>${maxd+1}</b> levels</span><span class="stat"><b>${leaves}</b> leaves</span>
+      <span class="stat">widest level <b>${mx}</b></span>${owl?`<span class="stat"><b>${owl}</b> referenced as OWL classes</span>`:""}
+    </div><div class="levels" title="Nodes per level">${perLevel.map((n,i)=>`<i style="height:${Math.max(2,n/mx*34)}px" title="Level ${i+1}: ${n}"></i>`).join("")}</div></div>
+    <div class="srcnote">${T.note}</div>`;
+}
+
+/* ---------- tree layout ---------- */
+function visibleKids(n){ return S.collapsed.has(n.uid) ? [] : n.children; }
+function layout(){
+  const H = S.lay==="h";
+  const NW = H?200:150, NH = H?30:44, DX = H?236:176, DY = H?36:96;
+  let slot = 0; const pos = [];
+  const place = (n) => {
+    const ks = visibleKids(n);
+    if(!ks.length){ n.s = slot++; }
+    else { ks.forEach(place); n.s = (ks[0].s + ks[ks.length-1].s)/2; }
+    pos.push(n);
+  };
+  T.roots.forEach(r=>{ place(r); slot += .4; });
+  pos.forEach(n=>{
+    if(H){ n.x = 16 + n.depth*DX; n.y = 16 + n.s*DY; }
+    else { n.x = 16 + n.s*DX; n.y = 16 + n.depth*DY; }
+  });
+  const maxX = Math.max(...pos.map(n=>n.x)) + NW + 30, maxY = Math.max(...pos.map(n=>n.y)) + NH + 24;
+  return {pos, NW, NH, W:maxX, Hh:maxY, H};
+}
+function wrapText(s, max){
+  const words = s.split(/\s+/), lines = [""];
+  words.forEach(w=>{ const L = lines[lines.length-1]; if((L+" "+w).trim().length>max && L) lines.push(w); else lines[lines.length-1] = (L+" "+w).trim(); });
+  if(lines.length>2){ lines.length = 2; lines[1] = lines[1].slice(0,max-1)+"…"; }
+  return lines.map(l=>l.length>max?l.slice(0,max-1)+"…":l);
+}
+const hits = () => { const q = S.q.toLowerCase(); return q ? new Set(T.all.filter(n=>n.label.toLowerCase().includes(q) || (n.c&&n.c[3].some(a=>a.toLowerCase().includes(q)))).map(n=>n.uid)) : new Set(); };
+function nodeColor(n){
+  if(n.type==="class") return colorOf(n.ghost && n.cls && n.cls.owner ? n.cls.owner : T.id);
+  if(n.type==="owlonly") return "var(--t-tax)";
+  if(n.type==="group") return "var(--muted)";
+  return colorOf(T.id);
+}
+function drawSvg(){
+  const L = layout(), hit = hits();
+  const svg = document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox",`0 0 ${L.W} ${L.Hh}`); svg.setAttribute("width",L.W*S.zoom); svg.setAttribute("height",L.Hh*S.zoom);
+  svg.setAttribute("role","tree"); svg.setAttribute("aria-label",T.title+" hierarchy");
+  let links = "", nodes = "";
+  L.pos.forEach(n=>{
+    visibleKids(n).forEach(c=>{
+      let d;
+      if(L.H){ const x1=n.x+L.NW, y1=n.y+L.NH/2, x2=c.x, y2=c.y+L.NH/2, mx=(x1+x2)/2; d=`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`; }
+      else { const x1=n.x+L.NW/2, y1=n.y+L.NH, x2=c.x+L.NW/2, y2=c.y, my=(y1+y2)/2; d=`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`; }
+      links += `<path class="tl${c.multi?" multi":""}" d="${d}"/>`;
+    });
+  });
+  L.pos.forEach(n=>{
+    const col = nodeColor(n), cls = ["tn"]; if(n.uid===S.sel) cls.push("sel"); if(hit.has(n.uid)) cls.push("hit"); if(n.ghost||n.multi) cls.push("ghost");
+    const tot = n.children.length;
+    let txt;
+    const lab = esc(n.label);
+    if(L.H){ const mx = (n.owl||n.type==="owlonly") ? 21 : 26; const s = n.label.length>mx ? esc(n.label.slice(0,mx-1))+"…" : lab; txt = `<text class="l" x="20" y="19">${s}</text>`; }
+    else { const ls = wrapText(n.label, 20); txt = ls.map((l,i)=>`<text class="l" x="${L.NW/2}" y="${ls.length===1?26:19+i*15}" text-anchor="middle">${esc(l)}</text>`).join(""); }
+    const dot = L.H ? `<circle cx="10" cy="${L.NH/2}" r="4" fill="${col}"/>` : `<rect x="0" y="0" width="${L.NW}" height="4" rx="2" fill="${col}" stroke="none"/>`;
+    const owl = (n.owl||n.type==="owlonly") ? (L.H?`<text class="c" x="${L.NW-14}" y="19" text-anchor="end">OWL</text>`:`<text class="c" x="${L.NW-6}" y="${L.NH-5}" text-anchor="end">OWL</text>`) : "";
+    let tog = "";
+    if(tot){
+      const open = !S.collapsed.has(n.uid);
+      const tx = L.H ? L.NW : L.NW/2, ty = L.H ? L.NH/2 : L.NH;
+      tog = `<g class="togg" data-t="${n.uid}" role="button" aria-label="${open?"Collapse":"Expand"} ${lab}"><circle class="tog" cx="${tx}" cy="${ty}" r="8"/><text class="togt" x="${tx}" y="${ty+4}">${open?"−":(tot>9?"+":tot)}</text></g>`;
+    }
+    nodes += `<g class="${cls.join(" ")}" transform="translate(${n.x},${n.y})" data-u="${n.uid}" tabindex="0" role="treeitem" aria-label="${lab}"><title>${lab}${n.c&&n.c[2]?" — "+esc(n.c[2]):""}</title><rect width="${L.NW}" height="${L.NH}" rx="6" stroke="${col}"/>${dot}${txt}${owl}${tog}</g>`;
+  });
+  svg.innerHTML = `<g>${links}</g><g>${nodes}</g>`;
+  const box = document.getElementById("canvas"); box.innerHTML = ""; box.appendChild(svg);
+  svg.querySelectorAll("[data-t]").forEach(g=>g.addEventListener("click",e=>{ e.stopPropagation(); toggle(+g.dataset.t); }));
+  svg.querySelectorAll(".tn").forEach(g=>{ g.addEventListener("click",()=>select(+g.dataset.u,false)); g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();select(+g.dataset.u,false);} if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const n=T.all[+g.dataset.u-1]; if(n.children.length){ const c=S.collapsed.has(n.uid); if((e.key==="ArrowRight")===c) toggle(n.uid);} } }); });
+  document.getElementById("hits").textContent = S.q ? `${hit.size} found` : "";
+}
+function drawOutline(){
+  const hit = hits();
+  const li = n => {
+    const open = !S.collapsed.has(n.uid), has = n.children.length;
+    const cls = ["olab"]; if(n.uid===S.sel) cls.push("sel"); if(hit.has(n.uid)) cls.push("hit"); if(n.ghost) cls.push("ghost");
+    return `<li role="treeitem" aria-expanded="${has?open:""}"><div class="orow"><button class="tw${has?"":" leaf"}" data-t="${n.uid}" aria-expanded="${open}" aria-label="Toggle ${esc(n.label)}"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M3 1.5 7 5 3 8.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button><button class="${cls.join(" ")}" data-u="${n.uid}"><span>${esc(n.label)}</span>${has?`<span class="oc">${n.children.length}</span>`:""}${n.owl||n.type==="owlonly"?`<span class="tag ok">OWL</span>`:""}${n.multi?`<span class="oc">also elsewhere</span>`:""}</button></div>${has&&open?`<ul role="group">${n.children.map(li).join("")}</ul>`:""}</li>`;
+  };
+  const box = document.getElementById("outline");
+  box.innerHTML = `<ul role="tree" aria-label="${esc(T.title)}">${T.roots.map(li).join("")}</ul>`;
+  box.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>toggle(+b.dataset.t));
+  box.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>select(+b.dataset.u,false));
+  document.getElementById("hits").textContent = S.q ? `${hit.size} found` : "";
+}
+function draw(){
+  const o = S.lay==="o";
+  document.getElementById("canvas").hidden = o; document.getElementById("outline").hidden = !o; document.getElementById("zoombox").hidden = o;
+  o ? drawOutline() : drawSvg();
+}
+function toggle(uid){ S.collapsed.has(uid) ? S.collapsed.delete(uid) : S.collapsed.add(uid); draw(); }
+function expandTo(level){ S.collapsed = new Set(T.all.filter(n=>n.children.length && n.depth>=level-1 && level<99).map(n=>n.uid)); draw(); }
+function reveal(n){ let p = n.parent; while(p){ S.collapsed.delete(p.uid); p = p.parent; } }
+function scrollTo(n){
+  requestAnimationFrame(()=>{
+    if(S.lay==="o"){ const b = document.querySelector(`#outline [data-u="${n.uid}"]`); if(b) b.scrollIntoView({block:"center",inline:"nearest"}); return; }
+    const box = document.getElementById("canvas"), g = box.querySelector(`[data-u="${n.uid}"]`); if(!g) return;
+    const r = g.getBoundingClientRect(), br = box.getBoundingClientRect();
+    box.scrollLeft += (r.left - br.left) - br.width/2 + r.width/2; box.scrollTop += (r.top - br.top) - br.height/2 + r.height/2;
+  });
+}
+function select(uid, center){
+  const n = T.all[uid-1]; if(!n) return;
+  S.sel = uid; reveal(n); draw(); panel(n);
+  if(n.type!=="group") setKey(T.id, n.key);
+  if(center) scrollTo(n);
+}
+
+/* ---------- detail panel ---------- */
+function crumbs(n){ const p=[]; let x=n.parent; while(x){ p.unshift(x); x=x.parent; } return p; }
+function panel(n){
+  const P = document.getElementById("panel"), path = crumbs(n);
+  const pathHtml = path.length?`<div class="sec"><h3>Path</h3><div class="path">${path.map(x=>`<button class="lnk" data-u="${x.uid}">${esc(x.label)}</button>`).join('<span class="sep">›</span>')}</div></div>`:"";
+  const kidsHtml = n.children.length?`<div class="sec"><h3>Children (${n.children.length})</h3><div class="chips">${n.children.slice(0,60).map(x=>`<button class="lnk${x.ghost?" ext":""}" data-u="${x.uid}">${esc(x.label)}${x.children.length?`<small>${x.children.length}</small>`:""}</button>`).join("")}${n.children.length>60?`<span class="empty">and ${n.children.length-60} more</span>`:""}</div></div>`:"";
+  let body = "";
+  if(n.type==="concept"){
+    const c = n.c, g = D.ground[n.vid+"|"+c[0]]||[];
+    body = `<span class="kind"><i class="dot" style="background:${colorOf(T.id)}"></i>skos:Concept · level ${n.depth+1}</span><h2>${esc(c[1])}</h2>
+      ${c[3].length?`<div class="chips">${c[3].map(a=>`<span class="tag">alt · ${esc(a)}</span>`).join("")}</div>`:""}
+      ${c[2]?`<p class="def">${esc(c[2])}</p>`:`<div class="note">No skos:definition.</div>`}${pathHtml}${kidsHtml}
+      ${n.owl?`<div class="sec"><h3>Referenced as OWL class</h3><div class="chips">${n.owl.map(([iri,e])=>`<a class="lnk" href="${href("ontology",T.id.startsWith("tax-")?T.id:X.ontFor(n.vid),keyOf(iri))}">${esc(localName(iri))}<small>used by ${e.usedBy.map(X.label).join(", ")}</small></a>`).join("")}</div></div>`:""}
+      ${g.length?`<div class="sec"><h3>Grounds OWL classes</h3><div class="chips">${g.map(([mid,iri,lab])=>`<a class="lnk" href="${href("ontology",mid,keyOf(iri))}"><i class="dot" style="background:${colorOf(mid)}"></i>${esc(lab)}</a>`).join("")}</div></div>`:""}
+      <div class="gorow"><a class="go" href="${href("vocabulary",n.vid,c[0])}">Open in vocabulary</a></div>
+      <div class="iri">${esc(VOC[n.vid].ns+c[0])}</div>`;
+  } else if(n.type==="class"){
+    const c = n.cls, own = c.local||c.anchored ? n.mid : (c.owner||null);
+    const sub = c.subjectRef;
+    const ch = classHref(n.iri);
+    body = `<span class="kind"><i class="dot" style="background:${nodeColor(n)}"></i>owl:Class${n.ghost?` · from ${esc(own?X.label(own):"outside the supplied files")}`:""}</span><h2>${esc(c.label)}</h2>
+      ${c.comment?`<p class="def">${esc(c.comment)}</p>${c.commentFrom==="vocab"?`<span class="tag">definition from the grounding concept</span>`:""}`:`<p class="empty">No definition in the files.</p>`}
+      ${pathHtml}${kidsHtml}
+      ${c.parents&&c.parents.length>1?`<div class="sec"><h3>All parents</h3><div class="chips">${c.parents.map(p=>`<span class="lnk ext">${esc(classLabel(p))}</span>`).join("")}</div></div>`:""}
+      <div class="gorow">${ch?`<a class="go" href="${ch}">Open in ontology</a>`:""}${sub?`<a class="go" href="${href("vocabulary",sub[0],sub[1])}">Grounding concept</a>`:""}</div>
+      <div class="iri">${esc(n.iri)}</div>`;
+  } else if(n.type==="owlonly"){
+    body = `<span class="kind"><i class="dot" style="background:var(--t-tax)"></i>OWL class with no concept</span><h2>${esc(n.label)}</h2>
+      <div class="note">This class is declared in the taxonomy namespace by ${n.e.usedBy.map(X.label).join(", ")}, but the backing scheme has no concept with this name.</div>${pathHtml}
+      <div class="gorow"><a class="go" href="${href("ontology",T.id.startsWith("tax-")?T.id:X.ontFor(T.id),keyOf(n.iri))}">Open in ontology</a></div><div class="iri">${esc(n.iri)}</div>`;
+  } else if(n.type==="ind"){
+    body = `<span class="kind"><i class="dot" style="background:${colorOf(T.id)}"></i>owl:NamedIndividual</span><h2>${esc(n.label)}</h2>${pathHtml}
+      <div class="gorow"><a class="go" href="${href("ontology",ALIAS[T.id]||T.id,keyOf(n.iri))}">Open in ontology</a></div><div class="iri">${esc(n.iri)}</div>`;
+  } else if(n.type==="prop"){
+    const p = n.prop;
+    body = `<span class="kind"><i class="dot" style="background:${colorOf(T.id)}"></i>${esc(p.kind||"")} property</span><h2>${esc(n.label)}</h2>${p.comment?`<p class="def">${esc(p.comment)}</p>`:""}${pathHtml}${kidsHtml}
+      <div class="gorow"><a class="go" href="${href("ontology",ALIAS[T.id]||T.id,keyOf(n.iri))}">Open in ontology</a></div><div class="iri">${esc(n.iri)}</div>`;
+  } else {
+    body = `<span class="kind">Group</span><h2>${esc(n.label)}</h2>${pathHtml}${kidsHtml}`;
+  }
+  P.innerHTML = body;
+  P.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>select(+b.dataset.u,true));
+}
+
+/* ---------- controls ---------- */
+document.querySelectorAll("[data-lay]").forEach(b=>b.onclick=()=>{ S.lay=b.dataset.lay; document.querySelectorAll("[data-lay]").forEach(x=>x.setAttribute("aria-pressed",x===b)); try{localStorage.setItem("tax-lay",S.lay)}catch(e){} draw(); if(S.sel) scrollTo(T.all[S.sel-1]); });
+document.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>expandTo(+b.dataset.lv));
+document.getElementById("q").oninput = e => {
+  S.q = e.target.value.trim();
+  if(S.q){ const h = hits(); T.all.filter(n=>h.has(n.uid)).forEach(reveal); }
+  draw();
+};
+document.getElementById("q").onkeydown = e => { if(e.key==="Enter"){ const h=[...hits()]; if(h.length) select(h[0],true); } };
+const setZoom = z => { S.zoom = Math.min(1.6,Math.max(.35,z)); document.getElementById("zfit").textContent = Math.round(S.zoom*100)+"%"; draw(); };
+document.getElementById("zin").onclick = () => setZoom(S.zoom+.15);
+document.getElementById("zout").onclick = () => setZoom(S.zoom-.15);
+document.getElementById("zfit").onclick = () => setZoom(1);
+document.getElementById("zall").onclick = () => { const L = layout(), box = document.getElementById("canvas"); setZoom(Math.min(1, (box.clientWidth-8)/L.W, Math.max(.35,(box.clientHeight-8)/L.Hh))); };
+try{ const l = localStorage.getItem("tax-lay"); if(l){ S.lay = l; document.querySelectorAll("[data-lay]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lay===l)); } }catch(e){}
+
+boot("taxonomy", (id,key)=>{
+  if(!T || T.id!==id){
+    T = buildModel(id); S.sel = null; S.q = ""; document.getElementById("q").value = "";
+    const lv = T.all.length>70 ? 3 : 99;
+    S.collapsed = new Set(T.all.filter(n=>n.children.length && n.depth>=lv-1 && lv<99).map(n=>n.uid));
+    head();
+    const types = new Set(T.all.map(n=>n.type));
+    document.getElementById("legend").innerHTML = [
+      `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="${colorOf(T.id)}"/></svg>${types.has("concept")?"concept":"declared here"}</span>`,
+      (T.all.some(n=>n.ghost)?`<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>from another module</span>`:""),
+      (T.all.some(n=>n.multi)?`<span><svg width="22" height="8"><path d="M1 4H21" stroke="var(--muted)" stroke-dasharray="3 3"/></svg>second parent</span>`:""),
+      (T.all.some(n=>n.owl||n.type==="owlonly")?`<span><span class="tag ok">OWL</span>also an OWL class in the core modules</span>`:""),
+      `<span>Select a box for details; use − / + on a box to fold it.</span>`].join("");
+  }
+  document.title = `${T.title} · Hierarchy Explorer`;
+  const target = key ? T.all.find(n=>n.key===key) : null;
+  const n = target || T.roots[0];
+  select(n.uid, !!target);
+  if(!target) document.getElementById("canvas").scrollTo(0,0);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vocabulary Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="explorer.css">
+<style>
+.branches{padding:14px 16px;display:grid;gap:4px 28px;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr))}
+.branches h2{grid-column:1/-1;font:600 11.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;justify-content:space-between;gap:10px}
+.brow{display:grid;grid-template-columns:minmax(110px,200px) minmax(0,1fr) 36px;gap:10px;align-items:center;appearance:none;border:0;background:transparent;padding:2px 4px;border-radius:6px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.brow:hover,.brow[aria-pressed="true"]{background:var(--surface-2)}
+.brow .bn{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bar{height:10px;border-radius:3px;background:var(--t-vocab);opacity:.85;min-width:3px}
+.brow .bc{font:12px var(--f-mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.list{max-height:72vh;overflow:auto;padding:4px 0 10px}
+.grp{font:600 11.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 16px 4px;position:sticky;top:0;background:var(--surface);z-index:1;display:flex;justify-content:space-between}
+.item{appearance:none;display:grid;gap:3px;width:100%;text-align:left;border:0;border-left:3px solid transparent;background:transparent;padding:8px 16px 9px 13px;cursor:pointer;font:inherit;color:inherit}
+.item:hover{background:var(--surface-2)}
+.item[aria-current="true"]{background:var(--surface-2);border-left-color:var(--t-vocab)}
+.item .t{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+.item .t b{font-weight:600;font-size:14.5px}
+.item .alt{font-size:12px;color:var(--muted)}
+.item .d{font-size:13px;color:var(--ink-soft);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item .d.none{color:var(--warn);font-style:italic}
+.item .ind{color:var(--muted);font-family:var(--f-mono);font-size:11px}
+mark{background:var(--hl);color:inherit;border-radius:2px}
+.alts{display:flex;flex-wrap:wrap;gap:5px}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"></header>
+<main class="wrap">
+  <div class="head" id="head"></div>
+  <section class="card branches" id="branches" aria-label="Top-level branches"></section>
+  <div class="work">
+    <section class="card" aria-label="Concepts">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="Search labels and definitions" aria-label="Search concepts">
+        <span class="tlabel">Order</span>
+        <div class="seg" role="group" aria-label="Order"><button id="o-az" aria-pressed="true">A–Z</button><button id="o-br" aria-pressed="false">By branch</button></div>
+        <span class="tlabel">Show</span>
+        <div class="seg" role="group" aria-label="Filter" id="filt"></div>
+        <span class="count" id="cnt"></span>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </div>
+</main>
+<script src="data/explorer-data.js"></script>
+<script src="explorer.js"></script>
+<script>
+const {D,VOC,esc,href,keyOf,boot,setKey,concept,label,colorOf,viewsFor,NODES} = X;
+const ground = D.ground;
+let S = {vid:null, key:null, q:"", order:"az", filter:"all", branch:null};
+const FILTERS = [["all","All"],["grounded","Grounded"],["mapped","Mapped"],["nodef","No definition"]];
+document.getElementById("filt").innerHTML = FILTERS.map(([k,l])=>`<button data-f="${k}" aria-pressed="${k==="all"}">${l}</button>`).join("");
+
+let M; // model for current vocab
+function model(vid){
+  const v = VOC[vid], kids = {}, by = {};
+  v.concepts.forEach(c=>{ by[c[0]] = c; c[4].forEach(b=>{ (kids[b] ||= []).push(c[0]); }); });
+  Object.values(kids).forEach(a=>a.sort((x,y)=>by[x][1].localeCompare(by[y][1])));
+  const roots = v.concepts.filter(c=>!c[4].length).map(c=>c[0]);
+  const depth = {}, l1 = {}, path = {};
+  const walk = (k,d,top,p) => { depth[k]=d; l1[k]=top; path[k]=p; (kids[k]||[]).forEach(ch=>walk(ch,d+1,d===0?ch:top,p.concat(k))); };
+  roots.forEach(r=>walk(r,0,null,[]));
+  const size = k => 1 + (kids[k]||[]).reduce((s,c)=>s+size(c),0);
+  const maps = {};
+  D.mappings.forEach(([a,ak,rel,b,bk])=>{
+    if(a===vid) (maps[ak] ||= []).push({vid:b,key:bk,rel});
+    if(b===vid) (maps[bk] ||= []).push({vid:a,key:ak,rel:rel==="broadMatch"?"narrowMatch":rel});
+  });
+  return {v, vid, kids, by, roots, depth, l1, path, size, maps};
+}
+
+function head(){
+  const v = M.v, n = v.concepts.length;
+  const nodef = v.concepts.filter(c=>!c[2]).length;
+  const alts = v.concepts.reduce((s,c)=>s+c[3].length,0);
+  const g = v.concepts.filter(c=>ground[M.vid+"|"+c[0]]).length;
+  const mp = Object.keys(M.maps).length;
+  const maxd = Math.max(...Object.values(M.depth));
+  const node = NODES[M.vid];
+  document.getElementById("head").innerHTML = `
+    <div class="eyebrow"><i class="dot" style="background:${colorOf(M.vid)}"></i>SKOS concept scheme · <span class="mono" style="text-transform:none;letter-spacing:0">${esc(v.iri)}</span></div>
+    <h1>${esc(node?node.label.replace(/ vocab$/," vocabulary"):v.label)}</h1>
+    <p class="lede">${esc(v.description)}</p>
+    <div class="stats">
+      <span class="stat"><b>${n}</b> concepts</span><span class="stat"><b>${M.kids[M.roots[0]]?M.kids[M.roots[0]].length:0}</b> top branches</span>
+      <span class="stat">depth <b>${maxd}</b></span><span class="stat"><b>${n-nodef}</b>/${n} defined</span>
+      <span class="stat"><b>${alts}</b> alt labels</span><span class="stat"><b>${g}</b> grounding OWL classes</span>
+      <span class="stat"><b>${mp}</b> mapped across schemes</span><span class="stat">modified <b>${esc(v.modified)}</b></span>
+      ${node&&node.file?`<span class="stat">${esc(node.file.split("/").pop())}</span>`:""}
+    </div>`;
+}
+
+function branches(){
+  const root = M.roots[0];
+  const list = (M.kids[root]||[]).map(k=>({k,n:M.size(k)})).sort((a,b)=>b.n-a.n);
+  const max = Math.max(1,...list.map(x=>x.n));
+  document.getElementById("branches").innerHTML = `<h2><span>Top-level branches under ${esc(M.by[root][1])}</span><span>concepts per branch</span></h2>`+
+    list.map(x=>`<button class="brow" data-b="${x.k}" aria-pressed="${S.branch===x.k}"><span class="bn">${esc(M.by[x.k][1])}</span><span class="bar" style="width:${(x.n/max*100).toFixed(1)}%"></span><span class="bc">${x.n}</span></button>`).join("");
+  document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{ S.branch = S.branch===b.dataset.b?null:b.dataset.b; branches(); list(); });
+}
+
+function hl(text){
+  const t = esc(text);
+  if(!S.q) return t;
+  const re = new RegExp("("+S.q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig");
+  return t.replace(re,"<mark>$1</mark>");
+}
+function visible(){
+  const q = S.q.toLowerCase();
+  return M.v.concepts.filter(c=>{
+    if(S.branch && !(c[0]===S.branch || M.path[c[0]].includes(S.branch))) return false;
+    if(S.filter==="grounded" && !ground[M.vid+"|"+c[0]]) return false;
+    if(S.filter==="mapped" && !M.maps[c[0]]) return false;
+    if(S.filter==="nodef" && c[2]) return false;
+    if(q && !(c[1].toLowerCase().includes(q) || c[2].toLowerCase().includes(q) || c[3].some(a=>a.toLowerCase().includes(q)))) return false;
+    return true;
+  });
+}
+function itemHtml(c, indent){
+  const g = ground[M.vid+"|"+c[0]], mp = M.maps[c[0]];
+  return `<button class="item" data-k="${c[0]}" aria-current="${c[0]===S.key}">
+    <span class="t">${indent?`<span class="ind">${"· ".repeat(indent)}</span>`:""}<b>${hl(c[1])}</b>${c[3].length?`<span class="alt">also ${hl(c[3].join(", "))}</span>`:""}
+      ${g?`<span class="tag ok" title="Grounds ${g.length} OWL class">OWL</span>`:""}${mp?`<span class="tag" title="Mapped to ${mp.length} concept in other schemes">${mp.length} map</span>`:""}</span>
+    <span class="d${c[2]?"":" none"}">${c[2]?hl(c[2]):"No definition"}</span></button>`;
+}
+function list(){
+  const vis = visible(), set = new Set(vis.map(c=>c[0]));
+  let html = "";
+  if(S.order==="az"){
+    const groups = {};
+    vis.forEach(c=>{ const L = (c[1][0]||"#").toUpperCase(); (groups[/[A-Z]/.test(L)?L:"#"] ||= []).push(c); });
+    Object.keys(groups).sort().forEach(L=>{ html += `<div class="grp"><span>${L}</span><span>${groups[L].length}</span></div>` + groups[L].map(c=>itemHtml(c,0)).join(""); });
+  } else {
+    const out = [];
+    const walk = (k) => { if(set.has(k)) out.push([M.by[k], M.depth[k]]); (M.kids[k]||[]).forEach(walk); };
+    M.roots.forEach(walk);
+    let cur = null;
+    out.forEach(([c,d])=>{
+      const top = d<=1 ? c[0] : M.l1[c[0]];
+      if(top!==cur){ cur = top; if(d>=1) html += `<div class="grp"><span>${esc(M.by[top][1])}</span><span>${M.size(top)}</span></div>`; }
+      html += itemHtml(c, Math.max(0,d-1));
+    });
+  }
+  const el = document.getElementById("list");
+  el.innerHTML = html || `<p class="empty" style="padding:16px">No concepts match. Clear the search or the branch filter.</p>`;
+  document.getElementById("cnt").textContent = `${vis.length} of ${M.v.concepts.length}`;
+  el.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>select(b.dataset.k));
+}
+
+function cl(vid,k,extra=""){
+  const c = concept(vid,k); if(!c) return "";
+  const same = vid===M.vid;
+  return same ? `<button class="lnk" data-go="${k}">${esc(c[1])}${extra}</button>`
+              : `<a class="lnk" href="${href("vocabulary",vid,k)}"><i class="dot" style="background:${colorOf(vid)}"></i>${esc(c[1])}${extra}</a>`;
+}
+function panel(){
+  const c = M.by[S.key], p = document.getElementById("panel");
+  if(!c){ p.innerHTML = `<p class="empty">Select a concept.</p>`; return; }
+  const path = M.path[c[0]];
+  const kids = M.kids[c[0]]||[];
+  const g = ground[M.vid+"|"+c[0]]||[];
+  const mp = M.maps[c[0]]||[];
+  const tree = viewsFor(M.vid).taxonomy;
+  p.innerHTML = `
+    <span class="kind"><i class="dot" style="background:${colorOf(M.vid)}"></i>skos:Concept · depth ${M.depth[c[0]]}</span>
+    <h2>${esc(c[1])}</h2>
+    ${c[3].length?`<div class="alts">${c[3].map(a=>`<span class="tag">alt · ${esc(a)}</span>`).join("")}</div>`:""}
+    ${c[2]?`<p class="def">${esc(c[2])}</p>`:`<div class="note">This concept has no skos:definition.</div>`}
+    ${c[5].map(n=>`<div class="note">${esc(n)}</div>`).join("")}
+    ${path.length?`<div class="sec"><h3>Broader path</h3><div class="path">${path.map(k=>cl(M.vid,k)).join('<span class="sep">›</span>')}</div></div>`:`<div class="sec"><h3>Position</h3><p>Top concept of the scheme.</p></div>`}
+    <div class="sec"><h3>Narrower (${kids.length})</h3>${kids.length?`<div class="chips">${kids.map(k=>cl(M.vid,k,`<small>${M.size(k)-1||""}</small>`)).join("")}</div>`:`<p class="empty">Leaf concept.</p>`}</div>
+    <div class="sec"><h3>Grounds OWL classes (dc:subject)</h3>${g.length?`<div class="chips">${g.map(([mid,iri,lab])=>`<a class="lnk" href="${href("ontology",mid,keyOf(iri))}"><i class="dot" style="background:${colorOf(mid)}"></i>${esc(lab)}<small>${esc(X.label(mid))}</small></a>`).join("")}</div>`:`<p class="empty">No OWL class points to this concept.</p>`}</div>
+    <div class="sec"><h3>Mappings to other schemes</h3>${mp.length?`<div class="chips">${mp.map(m=>cl(m.vid,m.key,`<small>${m.rel} · ${esc(X.label(m.vid).replace(/ vocab$/,""))}</small>`)).join("")}</div>`:`<p class="empty">None.</p>`}</div>
+    <div class="gorow">${tree?`<a class="go" href="${href("taxonomy",tree,c[0])}">Show in hierarchy</a>`:""}</div>
+    <div class="iri">${esc(M.v.ns+c[0])}</div>`;
+  p.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+function select(k){
+  S.key = k; setKey(M.vid,k); panel();
+  document.querySelectorAll("#list [data-k]").forEach(b=>b.setAttribute("aria-current", b.dataset.k===k));
+  const cur = document.querySelector(`#list [data-k="${k}"]`);
+  if(cur){ const L=document.getElementById("list"); const r=cur.getBoundingClientRect(), lr=L.getBoundingClientRect(); if(r.top<lr.top||r.bottom>lr.bottom) cur.scrollIntoView({block:"nearest"}); }
+}
+
+document.getElementById("q").oninput = e => { S.q = e.target.value.trim(); list(); };
+document.getElementById("o-az").onclick = () => { S.order="az"; document.getElementById("o-az").setAttribute("aria-pressed",true); document.getElementById("o-br").setAttribute("aria-pressed",false); list(); };
+document.getElementById("o-br").onclick = () => { S.order="br"; document.getElementById("o-br").setAttribute("aria-pressed",true); document.getElementById("o-az").setAttribute("aria-pressed",false); list(); };
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ S.filter=b.dataset.f; document.querySelectorAll("[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b)); list(); });
+
+boot("vocabulary", (vid,key)=>{
+  if(!M || M.vid!==vid){ M = model(vid); S.branch = null; }
+  S.vid = vid;
+  S.key = key && M.by[key] ? key : (S.key && M.by[S.key] ? S.key : M.roots[0]);
+  document.title = `${X.label(vid).replace(/ vocab$/,"")} · Vocabulary Explorer`;
+  head(); branches(); list(); panel();
+  if(key) select(S.key);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2659 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix mkt: <https://ontologies.verizon.com/ontology-domain-marketing/> .
+@prefix mktv: <https://vocabularies.verizon.com/domain-marketing/> .
+@prefix mktx: <https://ontologies.verizon.com/taxonomy-domain-marketing/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+mktx:
+  a owl:Ontology ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  <http://verizon.ontologies.com/terms/certified> false ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-domain-marketing/"^^xsd:anyURI ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "Structures for the marketing domain: the specialisations of the roots declared in ontology-domain-marketing, covering market roles, segments, PEO offerings and features, pricing models, channels, content formats, plans, market events and competitive moves, intelligence sources by authority tier, claim types and verdicts, intelligence products, win/loss reasons, metrics, customer dispositions, lifecycle stages, compliance rules, intelligence policies and issues."@en ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:title "Taxonomy | Domain | Marketing"@en ;
+  oslc:modifiedBy "wallkje" ;
+  owl:imports mkt: ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-domain-marketing/1.0> ;
+  owl:versionInfo "1.0" ;
+  rdfs:label "Taxonomy | Domain | Marketing"@en ;
+  skos:changeNote "1.0: initial version."@en ;
+  skos:editorialNote "Every class specialises a root declared in ontology-domain-marketing and so inherits its BFO anchor and shapes. Signal classes are defined by the market event they are about and share that event's vocabulary concept, so a reasoner classifies signals automatically."@en .
+
+mktx:AICapabilityLaunch
+  a owl:Class ;
+  dc11:subject mktv:fac72263-c7dc-51b9-91fc-a239edc573af ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "AI Capability Launch"@en ;
+  rdfs:subClassOf mktx:OfferingLaunch .
+
+mktx:AICapabilityLaunchSignal
+  a owl:Class ;
+  dc11:subject mktv:fac72263-c7dc-51b9-91fc-a239edc573af ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:AICapabilityLaunch
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a AI Capability Launch event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "AI Capability Launch Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:ASOOffering
+  a owl:Class ;
+  dc11:subject mktv:c7148dfb-5c4b-59d8-bbf7-2bdda7382845 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Administrative Services Offering"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:AccountPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/237630d0-3b46-516d-8d6b-e104cf4909b3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Account Plan"@en ;
+  rdfs:subClassOf mkt:MarketingPlanSpecification .
+
+mktx:AdvertisingSubstantiationRule
+  a owl:Class ;
+  dc11:subject mktv:e1323027-fd47-5dae-a826-31dded1cb9a1 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Advertising Substantiation Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:AdvisorComparison
+  a owl:Class ;
+  dc11:subject mktv:e7d77be1-8441-52d8-86ad-ac61108da24c ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Advisor Comparison"@en ;
+  rdfs:subClassOf mktx:Tier1Source .
+
+mktx:AffiliateRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/33d30e17-29d3-5be4-9a8a-0807df67624f> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Affiliate"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:AnalystReport
+  a owl:Class ;
+  dc11:subject mktv:cc5adb0f-d7bf-59c5-beb6-c74eec270404 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Analyst Report"@en ;
+  rdfs:subClassOf mktx:Tier1Source .
+
+mktx:Battlecard
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b7b73cd-00f6-5054-9f2f-4a4300ea5287> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Battlecard"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:BenefitsAdministrationFeature
+  a owl:Class ;
+  dc11:subject mktv:ef7bf7f2-0288-5f39-bcb8-c92f31e3b48e ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Benefits Administration"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:BenefitsReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0ce1f7a2-0647-5fc1-9edd-b2b2799837eb> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Benefits Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:BlogArticle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/22c750f7-0571-59b5-b9ce-52a59e27fb27> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Blog Article"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:BrandAwarenessScore
+  a owl:Class ;
+  dc11:subject mktv:f414304a-6e8b-5cd4-802f-57cd75c8d691 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Awareness Score"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:BrandGuideline
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2da0ebfa-09ed-527f-8bef-6f33386850a8> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Guideline"@en ;
+  rdfs:subClassOf mkt:BrandAsset .
+
+mktx:BrandStandardsBreach
+  a owl:Class ;
+  dc11:subject mktv:f5405711-5037-51a2-97e2-20d6eb4208ca ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Standards Breach"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:BrokerAdvisorRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2755d8d3-1600-55ce-ba1c-f0e0488f13cd> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker or Advisor"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:BrokerChannel
+  a owl:Class ;
+  dc11:subject mktv:f249aeb3-e24f-544d-ab24-b9cf0e8e542f ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker Channel"@en ;
+  rdfs:subClassOf mktx:RouteToMarket .
+
+mktx:BrokerInfluenceReason
+  a owl:Class ;
+  dc11:subject mktv:d092f955-92fd-5a25-86a2-dd0a7eb7fdbb ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker Influence Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:BrokerNotice
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8c7ae543-55e1-553d-a880-11501ab933ca> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker Notice"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:BundleExpansion
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9e6a80ce-b6cd-5977-858d-16056e734852> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Bundle Expansion"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:BundleExpansionSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9e6a80ce-b6cd-5977-858d-16056e734852> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:BundleExpansion
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Bundle Expansion event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Bundle Expansion Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:BuyingCenterRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0f3ecd6b-24fe-54f4-b433-c37048013424> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Buying Center Role"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:CampaignPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6299e165-91f4-50eb-89d9-cd91058b3fb8> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Campaign Plan"@en ;
+  rdfs:subClassOf mkt:MarketingPlanSpecification .
+
+mktx:CapabilityClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5d4f5c11-16b8-518f-9205-244b59ed0c55> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Capability Claim"@en ;
+  rdfs:subClassOf mkt:CompetitorClaim .
+
+mktx:CapitalEvent
+  a owl:Class ;
+  dc11:subject mktv:a8b970a5-f8a5-5315-af92-eddf35d608d7 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Capital Event"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:CapitalEventSignal
+  a owl:Class ;
+  dc11:subject mktv:a8b970a5-f8a5-5315-af92-eddf35d608d7 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:CapitalEvent
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Capital Event event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Capital Event Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:CardUsageRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2438f096-447c-5678-b02e-06e009ad8bb9> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Battlecard Usage Rate"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:CarrierRole
+  a owl:Class ;
+  dc11:subject mktv:e8f3ca06-1be2-567e-9988-07b15e313b33 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Insurance Carrier"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:CaseStudy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/20a34f03-f78b-5b63-bf1d-e4a8b27c7067> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Case Study"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:ChampionRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4f214356-f9ef-5f3a-9b30-3d903da27582> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Champion"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole .
+
+mktx:ChannelShift
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/029a9873-e845-5ab3-97ff-37b5a74f26c3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Channel Shift"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:ChannelShiftSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/029a9873-e845-5ab3-97ff-37b5a74f26c3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:ChannelShift
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Channel Shift event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Channel Shift Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:ChurnRisk
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4e50e61d-9c9b-51f8-9721-336deb407201> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Churn Risk"@en ;
+  rdfs:subClassOf mkt:CustomerDisposition .
+
+mktx:ClientActiveStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/47395fa8-e8ee-553f-b964-84d55467785a> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Active"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage .
+
+mktx:ClientAtRiskStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8c0c8c26-bfc3-5d8e-816d-2fcb37864e8d> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "At Risk"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage .
+
+mktx:ClientExitStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/735549af-fe8e-5242-aaf5-32ded5c38635> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Exit"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage .
+
+mktx:ClientLifecycleStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/029dab25-ab22-5ea2-866f-e46653d8e2af> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Lifecycle Stage"@en ;
+  rdfs:subClassOf mkt:MarketingLifecycleStage .
+
+mktx:ClientOnboardingStage
+  a owl:Class ;
+  dc11:subject mktv:f2cab472-e66b-5737-93f5-72f7935a16bc ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Onboarding"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage .
+
+mktx:ClientRenewalStage
+  a owl:Class ;
+  dc11:subject mktv:ee511725-bf33-568e-9ac7-470771a670a9 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Renewal"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage .
+
+mktx:ClientRetentionRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9c8c952b-bde3-5a94-ba6e-a618db485a88> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Retention Rate"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:ClientRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1d756ef3-1248-587b-aa37-b6b1310cb443> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:ClientTestimonial
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6755c27f-c39e-5ee3-90f6-a4efd44c6689> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Testimonial"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:ClosedLostStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ba91e18-c247-5b36-bb04-200709f839ed> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Closed-Lost"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:ClosedWonStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/01b7da2b-d8fc-5767-9f36-669c8fb06d50> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Closed-Won"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:CommercialEmailRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3e399bba-a164-5f80-b439-dd44ca3d3cd4> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Commercial Email Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:CompanyAnnouncement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/19e5c0a6-0b1f-597d-93e9-cb0f3ef0bd7d> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Company Announcement"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:CompetitiveAlert
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0df23106-77e4-575f-809f-ac74333f721c> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitive Alert"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:CompetitiveMove
+  a owl:Class ;
+  dc11:subject mktv:aa9156ab-5f57-5c76-9371-fd9ff56afa81 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitive Move"@en ;
+  rdfs:subClassOf mkt:MarketEvent .
+
+mktx:CompetitiveMoveSignal
+  a owl:Class ;
+  dc11:subject mktv:aa9156ab-5f57-5c76-9371-fd9ff56afa81 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:CompetitiveMove
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Competitive Move event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitive Move Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:CompetitiveWinRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/81e21b03-2fdd-594d-8870-0528bf720706> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitive Win Rate"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:CompetitorProfileDocument
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8afc5e48-c9da-571d-ad3d-db5bfa816ae6> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitor Profile"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:CompetitorRole
+  a owl:Class ;
+  dc11:subject mktv:e82121f7-eca8-5933-9588-aee563d27d71 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitor"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:ConsentViolation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/212df922-4d17-5699-a2e9-d161b6bf353b> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Consent Violation"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:ContactConsentRecord
+  a owl:Class ;
+  dc11:subject mktv:fe3a3cb8-fa0a-5838-9450-b851045fd1da ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Contact Consent Record"@en ;
+  rdfs:subClassOf mkt:MarketingDataAsset .
+
+mktx:ContentCalendar
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6f1a5aed-ace8-592d-98b7-a84ceb298eca> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Content Calendar"@en ;
+  rdfs:subClassOf mkt:MarketingPlanSpecification .
+
+mktx:CorrectedVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/101778e6-d686-5e5c-abc8-ba0b885b8ff1> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Corrected"@en ;
+  rdfs:subClassOf mkt:ReleasableVerdict .
+
+mktx:CostPerLead
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/55743a99-78dc-5217-af4b-f21faa559dfc> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Cost per Lead"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:CredentialChange
+  a owl:Class ;
+  dc11:subject mktv:ce36ee60-757c-514f-a858-d0cc651565b0 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Change"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:CredentialChangeSignal
+  a owl:Class ;
+  dc11:subject mktv:ce36ee60-757c-514f-a858-d0cc651565b0 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:CredentialChange
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Credential Change event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Change Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:CredentialClaim
+  a owl:Class ;
+  dc11:subject mktv:bc60fab0-bd86-5dce-b63c-39cda7ce27b0 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Claim"@en ;
+  rdfs:subClassOf mkt:CompetitorClaim .
+
+mktx:CredentialClaimRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2e402b1c-913b-5061-8c85-3aa8e28ccce0> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Claim Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:CredentialReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/094a81fc-3c47-5810-9e67-f598125dedd9> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:CustomQuotePricing
+  a owl:Class ;
+  dc11:subject mktv:fc27771c-75d5-5512-8a8b-a974f8b8a654 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Custom Quote"@en ;
+  rdfs:subClassOf mkt:PricingModel .
+
+mktx:CustomerAcquisitionCost
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1aae5b8d-52da-5a41-a3db-11b7956a3bdc> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Acquisition Cost"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:CustomerSentimentShift
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4d971cf3-35c9-5043-8c96-702e26187f10> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Sentiment Shift"@en ;
+  rdfs:subClassOf mkt:MarketEvent .
+
+mktx:CustomerSentimentShiftSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4d971cf3-35c9-5043-8c96-702e26187f10> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:CustomerSentimentShift
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Customer Sentiment Shift event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Sentiment Shift Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:DataLicenseTermRule
+  a owl:Class ;
+  dc11:subject mktv:e53d237c-fd4a-5980-8129-fac69cc92b7d ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Data Licence Term"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:DataProviderRole
+  a owl:Class ;
+  dc11:subject mktv:d90cd007-5ac9-5460-bccb-c933ca789a35 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Data Provider"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:DealLost
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ba91e18-c247-5b36-bb04-200709f839ed> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Deal Lost"@en ;
+  rdfs:subClassOf mktx:DealOutcome .
+
+mktx:DealOutcome
+  a owl:Class ;
+  dc11:subject mktv:b5b0d0dc-196f-5222-8e9d-f1e6027b1626 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Deal Outcome"@en ;
+  rdfs:subClassOf mkt:MarketEvent .
+
+mktx:DealOutcomeSignal
+  a owl:Class ;
+  dc11:subject mktv:b5b0d0dc-196f-5222-8e9d-f1e6027b1626 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:DealOutcome
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Deal Outcome event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Deal Outcome Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:DealWon
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/01b7da2b-d8fc-5767-9f36-669c8fb06d50> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Deal Won"@en ;
+  rdfs:subClassOf mktx:DealOutcome .
+
+mktx:DemandFunnelStage
+  a owl:Class ;
+  dc11:subject mktv:d5e4dac6-42a9-5346-9983-50754f0c6b51 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Demand Funnel Stage"@en ;
+  rdfs:subClassOf mkt:MarketingLifecycleStage .
+
+mktx:DirectMailChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/967d1996-bb80-5c5c-b489-a4b5d8f33ba4> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Direct Mail"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:DirectSalesChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8e2b89f2-db4c-551f-b774-80586e6c1ef7> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Direct Sales"@en ;
+  rdfs:subClassOf mktx:RouteToMarket .
+
+mktx:DownmarketMove
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56959b3f-a8e2-5979-8329-b48968f50b55> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Downmarket Move"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:DownmarketMoveSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56959b3f-a8e2-5979-8329-b48968f50b55> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:DownmarketMove
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Downmarket Move event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Downmarket Move Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:EarningsCallTranscript
+  a owl:Class ;
+  dc11:subject mktv:a7a99a0a-cf77-53e3-b401-40df29b7ce47 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Earnings Call Transcript"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:EconomicBuyerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2dde37c9-de46-5358-88a5-3d0813d7a9ac> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Economic Buyer"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole .
+
+mktx:EmailChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9b5dee00-13fa-5a69-afa8-8678a14b4aab> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Email"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:EmployeeSupportAssistantFeature
+  a owl:Class ;
+  dc11:subject mktv:d6002f54-e2ed-5988-a2ef-4154cc87115b ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employee Support Assistant"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:EmployerOfRecordOffering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/41cf1813-b55a-5d84-958c-031fa2cba9dc> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employer of Record Offering"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:EndUserRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7b12075b-3790-5cfe-a9d5-9189dcfdd9da> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "End User"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole .
+
+mktx:EndorsementTestimonialRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/95d212e6-a89f-57c1-9fbb-f7f45c33c181> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Endorsement & Testimonial Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:EnterpriseSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/33db6355-9670-50de-a57e-3cb77bf709b4> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Enterprise (over 5,000)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment .
+
+mktx:EvaluatorRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/156bfb66-0cf5-5401-947d-a9a84c804b1f> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Evaluator"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole .
+
+mktx:EventChannel
+  a owl:Class ;
+  dc11:subject mktv:be77e5c3-55c9-5e5d-a47a-a8d713f71184 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Events"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:ExecutiveBrief
+  a owl:Class ;
+  dc11:subject mktv:af2d0d4c-96d6-596c-8f87-886f9a257c6b ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Executive Brief"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:ExternalUsePolicy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/38ad4838-ffa6-5a48-969c-f4675dafab4e> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "External Use Policy"@en ;
+  rdfs:subClassOf mkt:IntelligencePolicy .
+
+mktx:FailedVerdict
+  a owl:Class ;
+  dc11:subject mktv:d513f2bc-785d-50f5-a47a-9605974cd77d ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Failed"@en ;
+  rdfs:subClassOf mkt:WithheldVerdict .
+
+mktx:FinancialResultsDisclosure
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/16d593db-3d19-5b38-9ea5-b366ce5e5ce1> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Financial Results Disclosure"@en ;
+  rdfs:subClassOf mkt:MarketEvent .
+
+mktx:FinancialResultsDisclosureSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/16d593db-3d19-5b38-9ea5-b366ce5e5ce1> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:FinancialResultsDisclosure
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Financial Results Disclosure event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Financial Results Disclosure Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:FormerClientRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5dac9c10-8ec2-5dc5-bec5-d1e9200d59a3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Former Client"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:FreshnessWindowPolicy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6703b754-ea2b-5669-96cb-95cc1ec910f3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Freshness Window Policy"@en ;
+  rdfs:subClassOf mkt:IntelligencePolicy .
+
+mktx:GeographicSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1255bb59-11c6-5213-97ad-dc879b3c1576> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Geographic Segment"@en ;
+  rdfs:subClassOf mkt:MarketSegment .
+
+mktx:GrowingSMBSegment
+  a owl:Class ;
+  dc11:subject mktv:b1267a1e-cb89-5176-9a0f-bbe4516aff61 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Growing SMB (50–149)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment .
+
+mktx:HCMSoftwareOffering
+  a owl:Class ;
+  dc11:subject mktv:fedf5617-a374-5d9f-abce-c0d9916ff4ab ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "HCM Software Offering"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:HRTechnologyFeature
+  a owl:Class ;
+  dc11:subject mktv:e6e478c3-2e2d-54f8-8697-bbe27d37ffcc ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "HR Technology Platform"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:HeldVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b365d29-6b93-5678-ab0a-0b6199ab6fe8> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Held"@en ;
+  rdfs:subClassOf mkt:WithheldVerdict .
+
+mktx:HiringBuildout
+  a owl:Class ;
+  dc11:subject mktv:c922ee76-f2b2-584f-8fc0-faadb2a95a33 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Hiring Build-Out"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:HiringBuildoutSignal
+  a owl:Class ;
+  dc11:subject mktv:c922ee76-f2b2-584f-8fc0-faadb2a95a33 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:HiringBuildout
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Hiring Build-Out event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Hiring Build-Out Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:IndustrySegment
+  a owl:Class ;
+  dc11:subject mktv:ff2438fb-3d69-5dea-8029-8363d5f6eb1c ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Industry Segment"@en ;
+  rdfs:subClassOf mkt:MarketSegment .
+
+mktx:InfluencerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3c92dd9f-a6e1-527e-991e-c4b7f04be195> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Influencer"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:InquiryStage
+  a owl:Class ;
+  dc11:subject mktv:df9672db-037f-5ca3-90f3-1d4b8d28e1fc ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Inquiry"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:IntelligenceEthicsRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/869a8089-fdbb-5a91-9139-25152bcaf204> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Intelligence Ethics Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:InteractiveTool
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5ebdc705-ceb3-5147-8c93-762069c41c02> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Interactive Tool"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:InternalSystemRecord
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/52abbcdc-a066-5dbb-97c3-84cbd607a248> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Internal System of Record"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:JobPosting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/05849ee0-c5ea-5dcf-b1a5-6809a619c762> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Job Posting"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:LandingPage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4484b416-520e-5a87-b68d-abbae4219692> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Landing Page"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:LandscapeMatrix
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6e0a15b8-439d-5241-8095-9d8fa36f8da7> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Landscape Matrix"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:LaunchPlan
+  a owl:Class ;
+  dc11:subject mktv:e36ad4d5-4fce-52e4-8e9d-04954d5915c3 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Launch Plan"@en ;
+  rdfs:subClassOf mkt:MarketingPlanSpecification .
+
+mktx:LeadConversionRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6f216ef3-932a-5bf8-b372-c8d525242a07> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Lead Conversion Rate"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:LeadRecord
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3729e5f1-d27b-58f1-846e-a6cd1ec08b89> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Lead Record"@en ;
+  rdfs:subClassOf mkt:MarketingDataAsset .
+
+mktx:LeadershipChange
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2caedfdc-cc9e-53b0-bfeb-1d8c0e6843b9> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Leadership Change"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:LeadershipChangeSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2caedfdc-cc9e-53b0-bfeb-1d8c0e6843b9> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:LeadershipChange
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Leadership Change event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Leadership Change Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:LeaveManagementFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3bc4ca6f-3b40-5a1c-bb9c-d8b7a3397f6e> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Leave Management"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:LicensedDataSource
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5ae1defc-cb85-5815-9d78-98bd330041ba> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Licensed Third-Party Data"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:MarketingEmail
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ba0dfc2-94d3-5735-869a-68073d647402> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Email"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:MarketingQualifiedLeadStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1daa1536-032f-56e0-8d14-71da5ad6b8c7> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Qualified Lead"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:MeanTimeBetweenHallucinations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6cac0be9-41ba-5905-84c9-870980a0f0cf> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Mean Time Between Hallucinations"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:MediaChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/22631daa-63d6-5453-a024-b386ae21264f> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Media Channel"@en ;
+  rdfs:subClassOf mkt:MarketingChannel .
+
+mktx:MessagingFramework
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56068a15-9528-56e6-9586-2a5ae83398a2> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Messaging Framework"@en ;
+  rdfs:subClassOf mkt:BrandAsset .
+
+mktx:MicroBusinessSegment
+  a owl:Class ;
+  dc11:subject mktv:b7c16aa4-14af-5ea0-9fa6-325211f44b8e ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Micro Business (1–4)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment .
+
+mktx:MidMarketSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/60916e2e-779c-53f5-92ad-b2edf044cfc2> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Mid-Market (150–5,000)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment .
+
+mktx:MinimumSamplePolicy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0aa52673-65d0-51a7-842c-5ac221c0d2c2> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Minimum Sample Policy"@en ;
+  rdfs:subClassOf mkt:IntelligencePolicy .
+
+mktx:NetPromoterScore
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/96d51171-83f6-5943-9312-9ceccca5a4dc> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Net Promoter Score"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:NurtureStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5ad8df56-5ca9-56c1-958e-d570216db7f4> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Nurture"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:OfferingAddOn
+  a owl:Class ;
+  dc11:subject mktv:fbbcef42-791a-5e4b-be0a-acb83ab7314d ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Add-On Offering"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:OfferingLaunch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5a46f7fe-c86b-5d5f-b2b9-820eb82188fa> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Offering Launch"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:OfferingLaunchSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5a46f7fe-c86b-5d5f-b2b9-820eb82188fa> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:OfferingLaunch
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Offering Launch event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Offering Launch Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:OnePager
+  a owl:Class ;
+  dc11:subject mktv:baca8809-3e2b-5a13-905a-8f2ae7386319 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "One-Pager"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:OpportunityRecord
+  a owl:Class ;
+  dc11:subject mktv:ccca4c77-0fd0-5eec-86a3-6a02bf5c45a4 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Opportunity Record"@en ;
+  rdfs:subClassOf mkt:MarketingDataAsset .
+
+mktx:OpportunityStage
+  a owl:Class ;
+  dc11:subject mktv:dbb7466e-fd76-569c-96f7-11af5888a00a ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Opportunity"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:PEOServiceBundle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/90745b8f-4718-5e94-ad31-3c8ac7d96ed1> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "PEO Service Bundle"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:PaidSearchChannel
+  a owl:Class ;
+  dc11:subject mktv:c31c69de-5d71-5441-9924-452d25d412ab ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Paid Search"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:PartnerChannel
+  a owl:Class ;
+  dc11:subject mktv:bc915b43-2eed-52a0-8493-ba3ad1ecef3e ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Partner Channel"@en ;
+  rdfs:subClassOf mktx:RouteToMarket .
+
+mktx:PayrollOffering
+  a owl:Class ;
+  dc11:subject mktv:fb53a164-a558-5e7e-9b15-3ed3a7d74533 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Payroll Offering"@en ;
+  rdfs:subClassOf mkt:Offering .
+
+mktx:PayrollTaxFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5835a14e-ab28-53b4-82a8-5452e27e5037> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Payroll & Tax Administration"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:PerEmployeePerMonthPricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9da1bc79-7f6f-51d2-8e89-1c3d6c60436a> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Per Employee per Month"@en ;
+  rdfs:subClassOf mkt:PricingModel .
+
+mktx:PercentOfPayrollPricing
+  a owl:Class ;
+  dc11:subject mktv:f6dbb2da-4ece-5415-9b94-68dcc9d35fed ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Percent of Payroll"@en ;
+  rdfs:subClassOf mkt:PricingModel .
+
+mktx:PipelineGenerated
+  a owl:Class ;
+  dc11:subject mktv:f2e0237a-bcfb-5063-bfb9-7514bc2fcba3 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing-Sourced Pipeline"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:PolicyLeakIssue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/62181711-bc1d-5266-aba0-d7fbb3a508ce> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Policy Leak"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:PressRelease
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/30b310fc-1985-5399-b2f1-de04176f6140> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Press Release"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:PriceReason
+  a owl:Class ;
+  dc11:subject mktv:cdf63d23-c72a-5077-afb5-74403be6dd55 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Price Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:PricingClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6ed66b19-b3e6-5e07-aebb-e3ed1a603778> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Pricing Claim"@en ;
+  rdfs:subClassOf mkt:CompetitorClaim .
+
+mktx:PricingComparison
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5f0d1da6-7546-5339-82eb-17aa5a7de2b8> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Pricing Comparison"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:PrivacyNoticeRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1782fb84-448c-5114-9a69-f9fd3a43200d> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Privacy Notice & Rights Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:ProspectRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9e3d538f-381b-5049-b723-5c3b6c838a63> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Prospect"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:ProvenanceRetentionPolicy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8f373ab7-3988-5137-8168-a600f7225ba8> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Provenance Retention Policy"@en ;
+  rdfs:subClassOf mkt:IntelligencePolicy .
+
+mktx:PublicRelationsChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/99fe2d5a-ae8a-5eb8-ae27-813a4545aba9> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Public Relations"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:PublishedPricePage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0c39b61d-49e0-5961-a9c2-6cf57b309130> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Published Price Page"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:PurchaseIntent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6de718d1-d22a-5d02-8221-cb2b2755066d> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Purchase Intent"@en ;
+  rdfs:subClassOf mkt:CustomerDisposition .
+
+mktx:ReferralPartnerRole
+  a owl:Class ;
+  dc11:subject mktv:cd37a254-8bb8-536f-b979-4a24e9898586 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Referral Partner"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:ReferralPropensity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5bd7370a-12ad-5bb4-938c-0714ca75012c> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Referral Propensity"@en ;
+  rdfs:subClassOf mkt:CustomerDisposition .
+
+mktx:RegulatorRegistry
+  a owl:Class ;
+  dc11:subject mktv:a9979aee-7139-5b4d-9db1-e711f3e718f1 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Regulator Registry"@en ;
+  rdfs:subClassOf mktx:Tier3Source .
+
+mktx:RegulatoryChange
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/83e80f9f-b672-5fe8-b119-93804e0c464f> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Regulatory Change"@en ;
+  rdfs:subClassOf mkt:MarketEvent .
+
+mktx:RegulatoryChangeSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/83e80f9f-b672-5fe8-b119-93804e0c464f> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:RegulatoryChange
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Regulatory Change event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Regulatory Change Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:ReportedOutcomeClaim
+  a owl:Class ;
+  dc11:subject mktv:ac9b0e4c-8081-5dbc-b90b-8f86d17d3b90 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Reported Outcome Claim"@en ;
+  rdfs:subClassOf mkt:CompetitorClaim .
+
+mktx:Repricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/03aebe7c-c4a5-54ab-8062-be927939f3fb> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Repricing"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:RepricingSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/03aebe7c-c4a5-54ab-8062-be927939f3fb> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:Repricing
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Repricing event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Repricing Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:ReputationIncident
+  a owl:Class ;
+  dc11:subject mktv:d93c7530-027c-51b2-a55d-51294110da1a ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Reputation Incident"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:ReviewSiteChannel
+  a owl:Class ;
+  dc11:subject mktv:fa4981e2-0851-5092-bb13-30c0a94d012b ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Review Sites"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:ReviewSitePage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/07b69497-a33a-5d9f-b7dc-d06721899863> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Review Site Page"@en ;
+  rdfs:subClassOf mktx:Tier1Source .
+
+mktx:RiskComplianceFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/15711ea0-b7b1-5008-a335-287fb06f528a> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Risk & Compliance Support"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:RouteToMarket
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/13aec3e6-22ce-5074-85dd-dbbeb3531259> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Route to Market"@en ;
+  rdfs:subClassOf mkt:MarketingChannel .
+
+mktx:SECFiling
+  a owl:Class ;
+  dc11:subject mktv:eb776c99-3b6a-5b5d-8de7-c0e03445ec32 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "SEC Filing"@en ;
+  rdfs:subClassOf mktx:Tier3Source .
+
+mktx:SalesAcceptedLeadStage
+  a owl:Class ;
+  dc11:subject mktv:eb55897c-cde2-55b2-831f-c42bcb198e05 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Sales Accepted Lead"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:SalesPresentation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6933f373-26a1-5f49-ba91-85cd8bff8e8c> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Sales Presentation"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:SalesQualifiedLeadStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6180917c-c979-5bf6-86dc-b55ce0f27ac3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Sales Qualified Lead"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage .
+
+mktx:ScaleClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7d96de14-005b-5258-9fa6-776bb8248ea5> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Scale Claim"@en ;
+  rdfs:subClassOf mkt:CompetitorClaim .
+
+mktx:SelfServeDigitalChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b0c7f02-d0fd-50bb-9937-52caef681f03> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Self-Serve Digital"@en ;
+  rdfs:subClassOf mktx:RouteToMarket .
+
+mktx:ServiceReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7656a933-a88d-5b8e-b9ec-0c563689b713> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Service Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:ShareOfVoice
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6bffbcb0-22c1-5f15-8e86-062447865504> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Share of Voice"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .
+
+mktx:SizeBandSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/75651b45-a900-5273-b405-00dbbb28205b> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employee Size Band Segment"@en ;
+  rdfs:subClassOf mkt:MarketSegment .
+
+mktx:SmallBusinessSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/42353ba6-83e9-57d9-98b5-17f9404f2247> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Small Business (5–49)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment .
+
+mktx:SocialMediaChannel
+  a owl:Class ;
+  dc11:subject mktv:a530a0f3-d749-568f-884f-420f8381328f ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Social Media"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:SocialPost
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6a1c3812-7fa4-5ffa-859a-1635a8a8acec> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Social Post"@en ;
+  rdfs:subClassOf mktx:Tier0Source .
+
+mktx:SourceAuthorityPolicy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/29878ef1-823d-574c-bf45-2b09f3762b69> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Source Authority Policy"@en ;
+  rdfs:subClassOf mkt:IntelligencePolicy .
+
+mktx:StaleIntelligenceIssue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8da3a7a3-9b90-5458-a133-f87866dd905a> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Stale Intelligence in Use"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:StatusQuoReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/070f8934-27c7-5545-ac6d-42824b827524> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Status Quo Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:TalentLearningFeature
+  a owl:Class ;
+  dc11:subject mktv:dcbc8250-27e8-5e21-b675-bee06a0e83a1 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Talent & Learning"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:TargetAccountList
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0f30d487-f44f-5d68-9252-474452992427> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Target Account List"@en ;
+  rdfs:subClassOf mkt:MarketingDataAsset .
+
+mktx:TargetAccountRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/089bb47e-c8e7-5c4e-be45-1fd1461d2330> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Target Account"@en ;
+  rdfs:subClassOf mktx:ProspectRole .
+
+mktx:TechnologyPartnerRole
+  a owl:Class ;
+  dc11:subject mktv:e99356d0-00fc-5292-bbbc-0b7e623a051a ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Technology Partner"@en ;
+  rdfs:subClassOf mkt:MarketRole .
+
+mktx:TechnologyReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/299d1b00-2160-516a-9e11-69d7809d0ec7> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Technology Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:TelemarketingConsentRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/952fd175-d5de-5360-90db-cb89b716cda3> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Telemarketing Consent Rule"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceRule .
+
+mktx:Tier0Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/47d7ec95-5a5b-5cc8-a4cb-a122a99eb1dd> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tier 0 · Unattributed"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:Tier1Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9d2cd0b3-36c6-57c3-b262-8ab02a260d5a> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tier 1 · Review or Analyst"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:Tier2Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9d20a6c0-9143-5962-a64a-ea3885805964> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tier 2 · Company or Press"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:Tier3Source
+  a owl:Class ;
+  dc11:subject mktv:feefdcc9-fb95-52c9-a05c-1e3b5f6febf4 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tier 3 · Filing or Regulator"@en ;
+  rdfs:subClassOf mkt:IntelligenceSource .
+
+mktx:TieredSubscriptionPricing
+  a owl:Class ;
+  dc11:subject mktv:a7d99648-b304-5d41-82ec-d6c096393f2b ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tiered Subscription"@en ;
+  rdfs:subClassOf mkt:PricingModel .
+
+mktx:TimingReason
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7e4e1c84-4cb4-5b0c-8667-23f9a7c13488> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Timing Reason"@en ;
+  rdfs:subClassOf mkt:WinLossReason .
+
+mktx:TrackerSite
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b3c9238-7813-5fd4-b087-229ac2003374> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Tracker Site"@en ;
+  rdfs:subClassOf mktx:Tier0Source .
+
+mktx:TradePressArticle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5b82d08f-02d8-51be-8e94-c41ec5eace25> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Trade Press Article"@en ;
+  rdfs:subClassOf mktx:Tier2Source .
+
+mktx:UnsubstantiatedClaimIssue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8f307360-9782-5a8d-b81a-d6555189ef82> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Unsubstantiated Claim"@en ;
+  rdfs:subClassOf mkt:MarketingIssue .
+
+mktx:UpmarketMove
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/184ba05e-11f3-50a6-9f20-8ff6ff20d765> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Upmarket Move"@en ;
+  rdfs:subClassOf mktx:CompetitiveMove .
+
+mktx:UpmarketMoveSignal
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/184ba05e-11f3-50a6-9f20-8ff6ff20d765> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf ( mkt:IntelligenceSignal [
+              a owl:Restriction ;
+              owl:onProperty obo:IAO_0000136 ;
+              owl:someValuesFrom mktx:UpmarketMove
+            ] )
+      ] ;
+  rdfs:comment "An intelligence signal that is about a Upmarket Move event."@en ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Upmarket Move Signal"@en ;
+  rdfs:subClassOf mkt:IntelligenceSignal .
+
+mktx:UsageBasedPricing
+  a owl:Class ;
+  dc11:subject mktv:e230ae99-e2eb-580b-b681-cff7cc2f873a ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Usage-Based Pricing"@en ;
+  rdfs:subClassOf mkt:PricingModel .
+
+mktx:VerifiedVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/846b8bf6-72e5-5959-bec6-d4a6297c1940> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Verified"@en ;
+  rdfs:subClassOf mkt:ReleasableVerdict .
+
+mktx:VideoContent
+  a owl:Class ;
+  dc11:subject mktv:fa11cbe0-27e4-56fb-8d97-ad8f748f48e3 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Video"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:WebinarRecording
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5d231c84-d016-5375-9f46-ace118a1db89> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Webinar Recording"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:WebsiteChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3b22778f-7c99-5be7-9644-e597ea5aaa7b> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Website"@en ;
+  rdfs:subClassOf mktx:MediaChannel .
+
+mktx:Whitepaper
+  a owl:Class ;
+  dc11:subject mktv:acdb9d4a-8e47-52c0-a613-26ce1b2c9e7c ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Whitepaper"@en ;
+  rdfs:subClassOf mkt:MarketingContent .
+
+mktx:WinLossReport
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8cbdc4a8-daae-50b9-b192-8b325918ff85> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Win/Loss Report"@en ;
+  rdfs:subClassOf mkt:IntelligenceProduct .
+
+mktx:WorkersCompensationFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8744a0c0-e71a-54fc-a759-848e37913609> ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Workers' Compensation"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:WorkforceAnalyticsFeature
+  a owl:Class ;
+  dc11:subject mktv:fb6b66a8-020d-5a62-b8dc-9dbce881e095 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Workforce Analytics & Reporting"@en ;
+  rdfs:subClassOf mkt:OfferingFeature .
+
+mktx:WorksiteEmployeeGrowth
+  a owl:Class ;
+  dc11:subject mktv:a65d93a8-570d-530a-ae8e-24eca75a2fe6 ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T17:00:00.000Z"^^xsd:dateTime ;
+  oslc:modifiedBy "wallkje" ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Worksite Employee Growth"@en ;
+  rdfs:subClassOf mkt:MarketingMetric .

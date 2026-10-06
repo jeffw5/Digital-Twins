@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marketing Ontology Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: control panel | graph canvas | details, as in the PEO Standards & Compliance Map. Details drops below under 1180px; everything stacks under 780px.
+   Colour carries the kind of node; tier colours match the lineage map. */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --sunk:#E8ECF0; --ink:#17212B; --muted:#5A6774; --line:#D3DAE1;
+  --sel:#C2255C; --link:#1F5FBF; --path:#D9480F;
+  --k-svc:#B83260; --k-proc:#7A3E9D; --k-tax:#2F7D3A; --k-taxci:#5B7F12; --k-drm:#A46C06; --k-core:#1F5BC4; --k-bfo:#8894A1; --k-rel:#6650C4; --k-ro:#4F5D6B; --k-concept:#0C7F80;
+  --c-process:#1F5BC4; --c-realizable:#0C7F80; --c-role:#7650C4; --c-disposition:#B7791F; --c-quality:#A23E86; --c-gdc:#2F7D3B; --c-aggregate:#C0601A; --c-continuant:#5A6774; --c-none:#B03A3A;
+  --m-obl:#0F7C86; --m-pro:#B42D3A; --m-per:#7650C4;
+  --s-current:#2F7D3B; --s-review:#3E6FA3; --s-revise:#B7791F; --s-draft:#7650C4; --s-withdrawn:#B03A3A; --s-series:#5A6774; --s-spec:#6B7785;
+  --l-inforce:#2F7D3B; --l-challenged:#B7791F; --l-preempted:#B03A3A; --l-rescinded:#6B7785;
+  --shadow:0 8px 28px rgba(23,33,43,.16);
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --sel:#F06595; --link:#7FAEF5; --path:#FF8A4C;
+  --k-svc:#F07BA0; --k-proc:#C39BE0; --k-tax:#6CC77A; --k-taxci:#B5D96A; --k-drm:#E0A93E; --k-core:#6EA0F5; --k-bfo:#7C8894; --k-rel:#A395F2; --k-ro:#A7B4C2; --k-concept:#3FC3C1;
+  --c-process:#6EA0F5; --c-realizable:#3FC3C1; --c-role:#A98BEA; --c-disposition:#E0A94C; --c-quality:#DE84C3; --c-gdc:#62BF70; --c-aggregate:#F0955A; --c-continuant:#95A2AF; --c-none:#E07A7A;
+  --m-obl:#46C3CC; --m-pro:#EE7A84; --m-per:#A98BEA;
+  --s-current:#62BF70; --s-review:#7FA9D8; --s-revise:#E0A94C; --s-draft:#A98BEA; --s-withdrawn:#E07A7A; --s-series:#95A2AF; --s-spec:#9AA6B2;
+  --l-inforce:#62BF70; --l-challenged:#E0A94C; --l-preempted:#E07A7A; --l-rescinded:#9AA6B2;
+  --shadow:0 8px 28px rgba(0,0,0,.5); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --sel:#F06595; --link:#7FAEF5; --path:#FF8A4C;
+  --k-svc:#F07BA0; --k-proc:#C39BE0; --k-tax:#6CC77A; --k-taxci:#B5D96A; --k-drm:#E0A93E; --k-core:#6EA0F5; --k-bfo:#7C8894; --k-rel:#A395F2; --k-ro:#A7B4C2; --k-concept:#3FC3C1;
+  --c-process:#6EA0F5; --c-realizable:#3FC3C1; --c-role:#A98BEA; --c-disposition:#E0A94C; --c-quality:#DE84C3; --c-gdc:#62BF70; --c-aggregate:#F0955A; --c-continuant:#95A2AF; --c-none:#E07A7A;
+  --m-obl:#46C3CC; --m-pro:#EE7A84; --m-per:#A98BEA;
+  --s-current:#62BF70; --s-review:#7FA9D8; --s-revise:#E0A94C; --s-draft:#A98BEA; --s-withdrawn:#E07A7A; --s-series:#95A2AF; --s-spec:#9AA6B2;
+  --l-inforce:#62BF70; --l-challenged:#E0A94C; --l-preempted:#E07A7A; --l-rescinded:#9AA6B2;
+  --shadow:0 8px 28px rgba(0,0,0,.5); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);padding-inline:16px;padding-block:0}
+.app{max-width:1640px;margin:0 auto;padding-block:16px 24px;display:flex;flex-direction:column;gap:12px;min-height:100%}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px}
+header h1{margin:0;font-size:1.35rem;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:3px 0 0;color:var(--muted);font-size:.84rem}
+code,.mono{font-family:var(--f-mono);font-size:.78rem}
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr) 350px;gap:12px;align-items:start;flex:1}
+@media (max-width:1180px){.grid{grid-template-columns:300px minmax(0,1fr)}.details{grid-column:1/-1}}
+@media (max-width:780px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+/* controls */
+.controls{display:flex;flex-direction:column;max-height:calc(100vh - 110px);overflow:auto;position:sticky;top:12px}
+@media (max-width:780px){.controls{max-height:none;position:static}}
+.controls details{border-bottom:1px solid var(--line)}
+.controls details:last-child{border-bottom:0}
+.controls summary{cursor:pointer;list-style:none;padding:10px 14px;font-weight:600;font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.controls summary::-webkit-details-marker{display:none}
+.controls summary::after{content:"+";font-size:1rem;letter-spacing:0}
+.controls details[open]>summary::after{content:"–"}
+.sec{padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+label.row{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.86rem}
+label.row .ct{margin-left:auto;font:500 .72rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.sw{width:12px;height:12px;border-radius:3px;flex:none;border:1.5px solid}
+.ls{width:24px;height:0;flex:none;border-top-width:1.6px}
+input[type=checkbox],input[type=radio]{accent-color:var(--sel);margin:0}
+input[type=search],input[type=text],input[type=number],select{font:inherit;font-size:.86rem;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;min-width:0}
+input[type=range]{width:100%;accent-color:var(--sel)}
+.lab{font-size:.76rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:500 .74rem var(--f-body);padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.chip[aria-pressed=false]{color:var(--muted);background:var(--sunk);text-decoration:line-through;text-decoration-color:var(--muted)}
+.chip .dot{width:8px;height:8px;border-radius:50%}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.preset{font:600 .78rem var(--f-body);text-align:left;padding:7px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.25}
+.preset small{display:block;font-weight:400;color:var(--muted);font-size:.7rem}
+.preset[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:600 .8rem var(--f-body);padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{flex:1;font:500 .8rem var(--f-body);padding:5px 6px;border:0;background:var(--surface);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.result{font-size:.82rem;color:var(--muted)}
+.result b{color:var(--ink)}
+.appl{display:flex;flex-direction:column;gap:6px;font-size:.82rem}
+.appl h4{margin:4px 0 0;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.appl ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.appl li{display:flex;gap:6px;align-items:baseline}
+.appl li .d{width:8px;height:8px;border-radius:50%;flex:none;transform:translateY(1px)}
+.appl li .n{font:500 .7rem var(--f-mono);color:var(--muted);margin-left:auto;white-space:nowrap}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,.node:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+/* canvas: toolbar strip + stage */
+.canvas{height:calc(100vh - 110px);min-height:520px;overflow:hidden;display:flex;flex-direction:column}
+@media (max-width:780px){.canvas{height:78vh;min-height:480px}}
+.ctool{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.ctool .right{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctool .seg button{padding:5px 10px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ctool .seg svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6}
+.ctool label{font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ctool select{width:auto;padding:4px 8px;font-size:.8rem}
+.stage{position:relative;flex:1;min-height:0}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.stage svg:active{cursor:grabbing}
+.stat{font:500 .74rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.stat span{background:var(--sunk);padding:3px 7px;border-radius:5px}
+.cbox rect{fill:color-mix(in srgb,var(--sunk) 55%,transparent);stroke:var(--line);stroke-width:1}
+.cbox text{font:600 11px var(--f-body);fill:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.cbox text .ct{font:500 10.5px var(--f-mono);letter-spacing:0;text-transform:none}
+.rankline{stroke:var(--line);stroke-dasharray:2 4}
+.ranklbl{font:500 10px var(--f-mono);fill:var(--muted)}
+/* list layout */
+.listview{position:absolute;inset:0;overflow:auto;padding:0 0 40px}
+.listview table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:640px}
+.listview thead th{position:sticky;top:0;z-index:1;background:var(--surface);text-align:left;font:600 .7rem var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+.listview thead th[aria-sort=ascending]::after{content:" ▲";font-size:.6rem}
+.listview thead th[aria-sort=descending]::after{content:" ▼";font-size:.6rem}
+.listview thead th.num,.listview td.num{text-align:right;font-variant-numeric:tabular-nums}
+.listview tr.grp td{background:var(--sunk);font:600 .72rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px;position:sticky;top:33px}
+.listview tr.grp td .ct{font:500 .72rem var(--f-mono);letter-spacing:0;text-transform:none;margin-left:6px}
+.listview tbody tr.it{cursor:pointer;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.listview tbody tr.it:hover{background:color-mix(in srgb,var(--sunk) 70%,transparent)}
+.listview tbody tr.it.sel{background:color-mix(in srgb,var(--sel) 12%,transparent)}
+.listview tbody tr.it.hi{box-shadow:inset 3px 0 0 var(--path)}
+.listview tbody tr.it.dim{opacity:.45}
+.listview td{padding:7px 10px;vertical-align:top}
+.listview td.name{font-weight:600;display:flex;gap:8px;align-items:baseline}
+.listview td.name .d{width:9px;height:9px;border-radius:2px;flex:none;border:1.5px solid;transform:translateY(1px)}
+.listview td.kind{color:var(--muted);white-space:nowrap}
+.listview td.facts{color:var(--muted);max-width:420px}
+.legend{position:absolute;left:10px;bottom:8px;z-index:2;display:flex;flex-wrap:wrap;gap:3px 11px;font-size:.72rem;color:var(--muted);background:color-mix(in srgb,var(--surface) 90%,transparent);padding:5px 9px;border-radius:6px;max-width:calc(100% - 20px);pointer-events:none}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;border:1.5px solid}
+text.nl{font:600 11.5px var(--f-body);fill:var(--ink);pointer-events:none}
+text.nl.small{font-size:10.5px;font-weight:500}
+text.el{font:500 10px var(--f-mono);fill:var(--muted);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+.node{cursor:pointer}
+.node .shape{stroke-width:1.5px}
+.node.sel .shape{stroke:var(--sel)!important;stroke-width:3px}
+.node.hov .shape{stroke-width:2.6px}
+.node.onpath .shape{stroke:var(--path)!important;stroke-width:3px}
+.node.dim,.edge.dim{opacity:.12}
+.edge path{fill:none}
+.edge.onpath path{stroke:var(--path)!important;stroke-width:2.6px;opacity:1;stroke-dasharray:none}
+.edge.hot path{stroke-width:2.2px;opacity:1}
+/* tooltip */
+.tip{position:fixed;z-index:10;max-width:360px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:12px 14px;pointer-events:none;font-size:.82rem;display:flex;flex-direction:column;gap:7px}
+.tip .k,.details .kind{font:600 .66rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tip h3{margin:0;font-size:.98rem;line-height:1.25}
+.tip p{margin:0}
+.tip .note,.note{color:var(--muted);border-left:2px solid var(--line);padding-left:8px;margin:0;font-size:.82rem}
+.note b{color:var(--ink);font-weight:600}
+.tip dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0}
+.tip dt{color:var(--muted);white-space:nowrap}
+.tip dd{margin:0;overflow-wrap:anywhere}
+.tip .foot{font-size:.7rem;color:var(--muted)}
+.pill{font:600 .66rem var(--f-body);letter-spacing:.02em;text-transform:none;padding:1px 7px;border-radius:999px;color:var(--surface);white-space:nowrap}
+.pill.ghost{background:transparent!important;color:var(--muted);border:1px solid var(--line)}
+/* details */
+.details{padding:16px;display:flex;flex-direction:column;gap:11px;max-height:calc(100vh - 110px);overflow:auto;position:sticky;top:12px}
+@media (max-width:1180px){.details{max-height:none;position:static}}
+.details h2{margin:0;font-size:1.15rem;line-height:1.25;text-wrap:balance}
+.iri{font:400 .72rem var(--f-mono);color:var(--muted);word-break:break-all}
+.def{margin:0;font-size:.9rem}
+dl.props{display:grid;grid-template-columns:minmax(84px,36%) minmax(0,1fr);gap:5px 10px;margin:0;font-size:.83rem}
+dl.props dt{color:var(--muted)}
+dl.props dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.shd{font:600 .7rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 0 -3px}
+.ref{background:none;border:0;padding:0;font:inherit;color:var(--link);cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--link) 35%,transparent);text-underline-offset:2px}
+a{color:var(--link)}
+.lit small{color:var(--muted);font-family:var(--f-mono);font-size:.68rem;margin-left:3px}
+.empty{color:var(--muted);font-size:.88rem;margin:0}
+footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 16px}
+
+.gnav{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.84rem}
+.gnav .crumb{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none}
+.gnav .crumb:hover{color:var(--ink)}
+.gnav .sep{color:var(--muted)}
+.gnav .views{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.gnav .views a,.gnav .views span{font:500 .8rem var(--f-body);padding:5px 11px;border-radius:999px;border:1px solid var(--line);color:var(--ink);text-decoration:none;background:var(--surface)}
+.gnav .views a:hover{border-color:var(--muted)}
+.gnav .views .on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.details .btns a.btn{text-decoration:none;font-weight:500}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="gnav" aria-label="Lineage navigation">
+    <a class="crumb" href="index.html"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2 4 7l5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Lineage map</a>
+    <span class="sep">/</span><b>Graph</b>
+    <span class="views" id="views"></span>
+  </nav>
+  <header>
+    <div>
+      <h1>Marketing Ontology Graph</h1>
+      <p>Services → processes → terms: ontology-domain-marketing, the two marketing taxonomies and vocabularies, the Domain Reference Model, BFO 2020 and BFO Relations · one graph built from the lineage data</p>
+    </div>
+    <div class="seg" role="group" aria-label="Theme">
+      <button id="th-auto" aria-pressed="true">Auto</button><button id="th-light" aria-pressed="false">Light</button><button id="th-dark" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <aside class="panel controls" aria-label="Controls">
+      <details open><summary>Views</summary><div class="sec"><div class="presets" id="presets"></div></div></details>
+
+      <details open><summary>Lineage check</summary><div class="sec">
+        <div class="lab"><span>Class, relation or concept</span></div>
+        <div class="two">
+          <input type="text" id="a-node" list="ents" placeholder="e.g. Repricing" aria-label="Class, relation or concept to trace">
+          <button class="btn primary" id="a-go">Trace</button>
+        </div>
+        <label class="row"><input type="checkbox" id="a-facets" checked> Include the processes and services it connects to</label>
+        <label class="row"><input type="checkbox" id="a-rules" checked> Include classes its rules point to</label>
+        <div class="appl" id="a-out"><span class="result">Pick a service, process or term to see its ancestry down to BFO, its concept, the processes and services it connects to, and the rules that bind it.</span></div>
+        <div class="btns" id="a-btns" hidden><button class="btn" id="a-only">Show only these</button><button class="btn" id="a-clear">Clear</button></div>
+      </div></details>
+
+      <details><summary>Explore</summary><div class="sec">
+        <input type="search" id="q" list="ents" placeholder="Find a node…" aria-label="Find a node">
+        <datalist id="ents"></datalist>
+        <label class="row"><input type="checkbox" id="focus"> Show only the selected node's neighbourhood</label>
+        <div><div class="lab"><span>Neighbourhood depth</span><span id="hops-v">1 hop</span></div>
+        <input type="range" id="hops" min="1" max="4" value="1" aria-label="Neighbourhood depth"></div>
+        <div class="btns"><button class="btn" id="expand">Show hidden neighbours</button><button class="btn" id="clear">Clear selection</button></div>
+      </div></details>
+
+      <details><summary>Layers</summary><div class="sec" id="layers"></div></details>
+      <details><summary>Relationships</summary><div class="sec" id="edges"></div></details>
+
+      <details><summary>Filter</summary><div class="sec">
+        <div class="lab"><span>BFO category</span></div><div class="chips" id="f-cat"></div>
+        <div class="lab"><span>Ontology class kind</span></div><div class="chips" id="f-facet"></div>
+        <div class="lab"><span>Marketing relations</span></div><div class="chips" id="f-rel"></div>
+        <label class="row"><input type="checkbox" id="f-new"> Classes and concepts new in 1.1 only</label>
+        <label class="row"><input type="checkbox" id="f-note"> Only classes re-homed from 1.0</label>
+      </div></details>
+
+      <details><summary>Path finder</summary><div class="sec">
+        <input type="text" id="p-from" list="ents" placeholder="From node" aria-label="Path from">
+        <input type="text" id="p-to" list="ents" placeholder="To node" aria-label="Path to">
+        <div class="btns"><button class="btn primary" id="p-go">Find shortest path</button><button class="btn" id="p-clear">Clear</button></div>
+        <div class="result" id="p-res">Trace how two nodes connect, e.g. Battlecard Service to Source Authority Tier.</div>
+      </div></details>
+
+      <details><summary>Display</summary><div class="sec">
+        <div class="seg" role="group" aria-label="Node style"><button data-style="pill" aria-pressed="true">Labelled boxes</button><button data-style="dot" aria-pressed="false">Dots by degree</button></div>
+        <label class="row"><input type="checkbox" id="lbl" checked> Node labels (dots view)</label>
+        <label class="row"><input type="checkbox" id="elbl"> Relationship labels</label>
+        <label class="row"><input type="checkbox" id="group" checked> Network: arrange by kind of node</label>
+        <label class="row"><input type="checkbox" id="hideiso"> Hide unconnected nodes</label>
+        <div><div class="lab"><span>Link length</span><span id="dist-v"></span></div><input type="range" id="dist" min="40" max="260" value="110" aria-label="Link length"></div>
+        <div><div class="lab"><span>Repulsion</span><span id="rep-v"></span></div><input type="range" id="rep" min="100" max="1400" value="520" aria-label="Repulsion"></div>
+        <div class="btns"><button class="btn" id="fit">Fit to view</button><button class="btn" id="reheat">Re-run layout</button><button class="btn" id="freeze" aria-pressed="false">Freeze</button><button class="btn" id="reset">Reset all</button></div>
+      </div></details>
+    </aside>
+
+    <section class="panel canvas" id="canvas">
+      <div class="ctool">
+        <div class="stat" id="stat"></div>
+        <div class="right">
+          <div class="seg" role="group" aria-label="Layout" id="layoutSeg">
+            <button data-layout="force" aria-pressed="true" title="Force-directed network"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="7" cy="12" r="2"/><path d="M5.7 4.5 10 5M5 5.7 6.4 10.2M11 6.8 8.3 10.5"/></svg>Network</button>
+            <button data-layout="cluster" aria-pressed="false" title="Nodes grouped in boxes"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="6" height="6" rx="1"/><rect x="8.5" y="1.5" width="6" height="4" rx="1"/><rect x="1.5" y="8.5" width="6" height="6" rx="1"/><rect x="8.5" y="6.5" width="6" height="8" rx="1"/></svg>Cluster</button>
+            <button data-layout="hier" aria-pressed="false" title="Layered hierarchy, parents above children"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1.5" width="4" height="3" rx=".6"/><rect x="1.5" y="11.5" width="4" height="3" rx=".6"/><rect x="10.5" y="11.5" width="4" height="3" rx=".6"/><path d="M8 4.5v3M3.5 11.5V7.5h9v4"/></svg>Hierarchy</button>
+            <button data-layout="list" aria-pressed="false" title="Sortable table"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5h9M5 8h9M5 12.5h9"/><circle cx="2.2" cy="3.5" r=".8"/><circle cx="2.2" cy="8" r=".8"/><circle cx="2.2" cy="12.5" r=".8"/></svg>List</button>
+          </div>
+          <label id="groupWrap" hidden>Group by <select id="groupBy" aria-label="Group by">
+            <option value="layer">Kind of node</option><option value="cat">BFO category</option>
+            <option value="branch">Marketing branch</option><option value="module">Module</option></select></label>
+          <label id="dirWrap" hidden>Direction <select id="hierDir" aria-label="Hierarchy direction"><option value="tb">Top → bottom</option><option value="lr">Left → right</option></select></label>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <svg id="svg" role="img" aria-label="Ontology graph"></svg>
+        <div class="listview" id="listview" hidden></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </section>
+
+    <aside class="panel details" id="details" aria-live="polite"></aside>
+  </div>
+  <footer>
+    <span>Upper layer: BFO 2020 (ISO/IEC 21838-2) through the Domain Reference Model.</span>
+    <span>Hover for attributes · click to pin · double-click to focus · drag · scroll to zoom</span>
+    <span id="ftr"></span>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script src="data/explorer-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+"use strict";
+/* ============ Store (from the lineage data) ============ */
+const D=window.EXPLORER_DATA, ONT=D.ontologies, VOC=D.vocab;
+const OBO='http://purl.obolibrary.org/obo/', XSD='http://www.w3.org/2001/XMLSchema#', OWLT='http://www.w3.org/2002/07/owl#Thing';
+const VZ='https://ontologies.verizon.com/', VR=VZ+'bfo-relations/';
+const local=x=>String(x).replace(/[\/#]+$/,'').split(/[\/#]/).pop();
+const keyOfIri=iri=>local(iri).replace(/[^A-Za-z0-9._-]+/g,'_').replace(/^_+|_+$/g,'')||'x';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NSP=[['mkt',VZ+'ontology-domain-marketing/'],['mkci',VZ+'taxonomy-domain-marketing-ci/'],['mktx',VZ+'taxonomy-domain-marketing/'],['vmci','https://vocabularies.verizon.com/domain-marketing-ci/'],['drm',VZ+'ontology-core-domain/'],['vzro',VR],['obo',OBO],
+  ['vmkt','https://vocabularies.verizon.com/domain-marketing/'],['vdom','https://vocabularies.verizon.com/core-domain/'],['owl','http://www.w3.org/2002/07/owl#'],['xsd',XSD]];
+const curie=x=>{for(const [p,ns] of NSP) if(x.startsWith(ns)) return p+':'+x.slice(ns.length); const m=/^https:\/\/ontologies\.verizon\.com\/([^/]+)\/(.*)$/.exec(x); return m?m[1].replace(/^(taxonomy|ontology)-core-/,'')+':'+m[2]:x};
+const MODNAME={mkt:'Ontology · Marketing',mktx:'Taxonomy · Marketing',mkci:'Taxonomy · Marketing CI','v-marketing-ci':'Vocabulary · Marketing CI',domain:'Domain Reference Model',bfo:'BFO 2020',vzro:'BFO Relations · marketing',ro:'OBO Relations Core','v-marketing':'Vocabulary · Marketing','v-domain':'Vocabulary · Core Domain'};
+const nodeLabel=id=>{const n=(D.lineage.nodes.find(n=>n.id===id)||{}); return n.label||MODNAME[id]||id};
+
+/* classes: local declarations first, then references */
+const CL=new Map();
+['mkt','mktx','mkci','domain','bfo'].forEach(mid=>Object.entries(ONT[mid].classes).forEach(([iri,c])=>{ if(c.local&&!CL.has(iri)) CL.set(iri,Object.assign({},c,{mid})) }));
+['mkt','mktx','mkci','domain','bfo','vzro'].forEach(mid=>Object.entries(ONT[mid].classes).forEach(([iri,c])=>{ if(!CL.has(iri)&&iri!==OWLT) CL.set(iri,Object.assign({},c,{mid:c.owner||mid,ext:true})) }));
+const parentsOf=i=>(CL.get(i)||{parents:[]}).parents||[];
+const supCache=new Map();
+function supers(c){ if(supCache.has(c)) return supCache.get(c); const seen=new Set(); const st=[c];
+  while(st.length){const x=st.pop(); parentsOf(x).forEach(p=>{if(!seen.has(p)){seen.add(p);st.push(p)}})} supCache.set(c,seen); return seen}
+function nearestBfo(c){ let front=[c]; const seen=new Set([c]);
+  while(front.length){ const hit=front.find(x=>x.startsWith(OBO+'BFO_')); if(hit) return hit; const nx=[]; front.forEach(x=>parentsOf(x).forEach(p=>{if(!seen.has(p)){seen.add(p);nx.push(p)}})); front=nx } return null }
+const CATOF={BFO_0000015:'process',BFO_0000003:'process',BFO_0000023:'role',BFO_0000016:'disposition',BFO_0000034:'disposition',BFO_0000017:'realizable',BFO_0000019:'quality',BFO_0000020:'quality',BFO_0000031:'gdc',BFO_0000027:'aggregate'};
+const CATS=[['process','Process / occurrent','var(--c-process)'],['realizable','Realizable (capability)','var(--c-realizable)'],['role','Role','var(--c-role)'],['disposition','Disposition','var(--c-disposition)'],['quality','Quality / characteristic','var(--c-quality)'],['gdc','Information (GDC)','var(--c-gdc)'],['aggregate','Object aggregate','var(--c-aggregate)'],['continuant','Other continuant','var(--c-continuant)'],['none','Not yet anchored','var(--c-none)']];
+const CATNAME=Object.fromEntries(CATS.map(c=>[c[0],c[1]]));
+const catOf=c=>{const b=nearestBfo(c); return b?(CATOF[local(b)]||'continuant'):'none'};
+
+/* concepts */
+const CONCEPT=new Map();
+Object.values(VOC).forEach(v=>v.concepts.forEach(c=>CONCEPT.set(v.ns+c[0],{vid:v.id,key:c[0],label:c[1],def:c[2],alt:c[3],broader:c[4].map(k=>v.ns+k),notes:c[5],isNew:!!c[6]})));
+const conceptOf=c=>c&&c.subjectRef&&VOC[c.subjectRef[0]]?VOC[c.subjectRef[0]].ns+c.subjectRef[1]:null;
+
+/* relations */
+const REL=new Map();
+[['vzro','vzro'],['domain','drm'],['ro','ro']].forEach(([mid,mod])=>Object.entries(ONT[mid].props).forEach(([iri,p])=>{ if(!REL.has(iri)&&p.kind!=='datatype') REL.set(iri,Object.assign({},p,{mid,mod})) }));
+const DPROPS=Object.entries(ONT.mkt.props);
+const relName=x=>(REL.get(x)||ONT.mkt.props[x]||{label:local(x)}).label;
+
+/* ============ Graph model ============ */
+const LAYERS=[
+  {id:'svc',name:'Services and capabilities',color:'var(--k-svc)'},
+  {id:'proc',name:'Processes',color:'var(--k-proc)'},
+  {id:'tax',name:'Marketing taxonomy terms',color:'var(--k-tax)'},
+  {id:'taxci',name:'CI taxonomy terms',color:'var(--k-taxci)'},
+  {id:'drm',name:'Domain Reference Model roots',color:'var(--k-drm)'},
+  {id:'core',name:'Core module classes',color:'var(--k-core)'},
+  {id:'bfo',name:'BFO 2020 categories',color:'var(--k-bfo)'},
+  {id:'rel',name:'Relations (BFO Relations, DRM, RO)',color:'var(--k-rel)'},
+  {id:'concept',name:'Vocabulary concepts (SKOS)',color:'var(--k-concept)'},
+];
+const ETYPES=[
+  {id:'sub',name:'Subclass of',style:'dash',color:'var(--muted)'},
+  {id:'service',name:'Service enabled by process / enables capability',style:'solid',color:'var(--k-svc)'},
+  {id:'uses',name:'Process creates, uses, targets… term',style:'solid',color:'var(--k-proc)'},
+  {id:'facet',name:'Same concept (service · capability · process)',style:'dot',color:'var(--k-svc)'},
+  {id:'shape',name:'SHACL constraint',style:'solid',color:'var(--k-core)'},
+  {id:'grounds',name:'Grounded in concept (dc:subject)',style:'dot',color:'var(--k-concept)'},
+  {id:'broader',name:'Broader concept',style:'solid',color:'var(--k-concept)'},
+  {id:'relsub',name:'Subproperty / closeMatch',style:'dash',color:'var(--k-rel)'},
+  {id:'inverse',name:'Inverse of',style:'dot',color:'var(--k-rel)'},
+  {id:'domrange',name:'Relation domain / range',style:'solid',color:'var(--k-bfo)'},
+];
+const N=new Map(); const E=[];
+const addN=(id,o)=>{ if(!N.has(id)) N.set(id,Object.assign({id},o)); return N.get(id)};
+const OD=VZ+'ontology-domain-marketing/', SVC_ROOTS=[OD+'MarketingService',OD+'MarketingCapability'];
+const layerOfClass=(iri,c)=>iri.startsWith(OBO+'BFO_')?'bfo':c.ext?(c.mid==='domain'?'drm':'core'):c.mid==='mkt'?((SVC_ROOTS.includes(iri)||[...supers(iri)].some(s=>SVC_ROOTS.includes(s)))?'svc':'proc'):c.mid==='mktx'?'tax':c.mid==='mkci'?'taxci':c.mid==='domain'?'drm':'core';
+CL.forEach((c,iri)=>{ const layer=layerOfClass(iri,c); if(layer==='bfo'&&!iri.startsWith(OBO+'BFO_')) return;
+  addN(iri,{text:c.label||local(iri),layer,module:c.ext?(c.mid||'core'):c.mid,kind:layer==='bfo'?'BFO class':layer==='drm'?'DRM root class':layer==='core'?'Core class':'Class',
+    cat:layer==='bfo'?(CATOF[local(iri)]||'continuant'):catOf(iri),isNew:!!(CONCEPT.get(conceptOf(c))||{}).isNew&&c.mid!=='domain',note:/Re-homed from/.test(c.comment||''),concept:conceptOf(c),ci:c.mid==='mkci'||(CONCEPT.get(conceptOf(c))||{}).vid==='v-marketing-ci'}) });
+CONCEPT.forEach((c,iri)=>addN(iri,{text:c.label,layer:'concept',module:c.vid,kind:c.vid==='v-domain'?'Core Domain concept':c.vid==='v-marketing-ci'?'CI concept':'Marketing concept',isNew:c.isNew,ci:c.vid==='v-marketing-ci'}));
+REL.forEach((p,iri)=>addN(iri,{text:p.label,layer:'rel',module:p.mid,kind:p.mod==='vzro'?'Marketing relation':p.mod==='drm'?'DRM relation':'RO relation',relmod:p.mod}));
+/* facets: classes that share one concept */
+const byConcept=new Map(); N.forEach(n=>{ if(n.concept&&['svc','proc','tax','taxci'].includes(n.layer)) (byConcept.get(n.concept)||byConcept.set(n.concept,[]).get(n.concept)).push(n) });
+N.forEach(n=>{ n.facet=n.layer==='svc'?(/Capability$/.test(n.id)?'capability':'service'):n.layer==='proc'?'process':'other' });
+/* marketing branch: topmost marketing ancestor on the first-parent path */
+const inMk=x=>N.has(x)&&['svc','proc','tax','taxci'].includes(N.get(x).layer);
+N.forEach(n=>{ if(!inMk(n.id)) return; let cur=n.id,g=0; while(g++<40){ const up=parentsOf(cur).find(inMk); if(!up) break; cur=up } n.branch=N.get(cur).text });
+
+const addE=(s,t,type,text,extra={})=>{ if(N.has(s)&&N.has(t)&&s!==t) E.push(Object.assign({id:`${type}|${s}|${t}|${text||''}`,source:s,target:t,type,text},extra))};
+CL.forEach((c,iri)=>parentsOf(iri).forEach(p=>addE(iri,p,'sub','subclass of')));
+byConcept.forEach(arr=>{ if(arr.length<2) return; const prim=arr.find(n=>n.layer==='proc')||arr.find(n=>n.layer==='svc'&&!/Capability$/.test(n.id))||arr[0]; arr.forEach(n=>{ if(n!==prim) addE(n.id,prim.id,'facet',/Capability$/.test(n.id)?'capability of':/Service$/.test(n.id)?'service of':'same concept') }) });
+N.forEach(n=>{ if(n.concept&&n.layer!=='concept') addE(n.id,n.concept,'grounds','dc:subject') });
+CONCEPT.forEach((c,iri)=>c.broader.forEach(b=>addE(iri,b,'broader','broader')));
+const SHAPES=[...ONT.mkt.shapes.map(s=>Object.assign({mid:'mkt'},s)),...ONT.domain.shapes.map(s=>Object.assign({mid:'domain'},s))];
+const pairN=new Map();
+const USEP=new Set(['ontology-core-domain/creates','ontology-core-domain/consumes','ontology-core-domain/modifies','ontology-core-domain/guides','ontology-core-domain/constrains','bfo-relations/targets','bfo-relations/promotes','bfo-relations/distributedThrough','bfo-relations/measures'].map(x=>VZ+x));
+const etypeFor=(t,path)=>{ const n=N.get(t); if(n&&n.layer==='svc') return 'service'; if(USEP.has(path)&&n&&['proc','tax','taxci'].includes(n.layer)) return 'uses'; return 'shape' };
+SHAPES.forEach(s=>s.target.filter(t=>t!==OWLT).forEach(t=>s.props.forEach(p=>{ if(!p.class) return; const k=[t,p.class].sort().join('|'); const n=pairN.get(k)||0; pairN.set(k,n+1); addE(t,p.class,etypeFor(t,p.path),relName(p.path),{curve:n?.18*n:0,path:p.path,shape:s.iri}) })));
+ONT.mktx.restrictions.forEach(r=>{ if(r.kind==='some') addE(r.cls,r.value,'defined',(REL.get(r.prop)||{label:local(r.prop)}).label+' some') });
+REL.forEach((p,iri)=>{ (p.parents||[]).forEach(x=>addE(iri,x,'relsub','subproperty of')); (p.closeMatch||p.close||[]).forEach(x=>addE(iri,x,'relsub','closeMatch'));
+  if(p.inverse&&iri<p.inverse) addE(iri,p.inverse,'inverse','inverse of');
+  (p.domain||[]).forEach(d=>addE(iri,d,'domrange','domain')); (p.range||[]).forEach(r=>{ if(!r.startsWith(XSD)) addE(iri,r,'domrange','range') }) });
+const ED=new Map(); E.forEach(e=>{ if(!ED.has(e.id)) ED.set(e.id,e)}); E.length=0; ED.forEach(e=>E.push(e));
+const relUse=new Map(); SHAPES.forEach(s=>s.props.forEach(p=>relUse.set(p.path,(relUse.get(p.path)||0)+1)));
+ONT.mktx.restrictions.forEach(r=>relUse.set(r.prop,(relUse.get(r.prop)||0)+1));
+
+/* ============ State ============ */
+const ciSet=()=>{ const s=new Set(); N.forEach(n=>{ if(n.ci&&n.layer!=='concept') s.add(n.id) }); E.forEach(e=>{ if(e.type==='uses'&&N.get(id(e.source)).ci) s.add(id(e.target)) }); return s };
+const PRESETS=[
+  {id:'services',name:'Service catalog',sub:'Each service, its enabling processes and capability',layers:['svc','proc'],edges:['service'],hideIso:true},
+  {id:'terms',name:'Process → terms',sub:'The terms each process creates, uses or targets',layers:['proc','tax','taxci'],edges:['uses'],hideIso:true,style:'dot'},
+  {id:'chain',name:'Service → process → term',sub:'The whole build order in one view',layers:['svc','proc','tax','taxci'],edges:['service','uses'],hideIso:true,style:'dot'},
+  {id:'ci',name:'Competitive intelligence',sub:'From the PEO Competitive Graph',only:ciSet,edges:['service','uses','sub']},
+  {id:'bfo',name:'Lineage to BFO',sub:'Every class down to its BFO category',layers:['svc','proc','tax','taxci','drm','core','bfo'],edges:['sub'],style:'dot'},
+  {id:'tax',name:'Marketing taxonomy',sub:'Term structures on the DRM roots',layers:['tax','drm','core','bfo'],edges:['sub'],hideIso:true,style:'dot'},
+  {id:'taxci',name:'CI taxonomy',sub:'Competitive intelligence term structures',layers:['taxci','tax'],edges:['sub'],hideIso:true},
+  {id:'rules',name:'SHACL rules',sub:'Constraints beyond process use',layers:['svc','proc','tax','taxci','drm','core'],edges:['shape'],hideIso:true},
+  {id:'rels',name:'Relations',sub:'New relations and their RO / BFO anchors',layers:['rel','bfo'],edges:['relsub','inverse','domrange'],hideIso:true},
+  {id:'vocab',name:'Vocabulary → ontology',sub:'Concepts and the classes they ground',layers:['concept','svc','proc'],edges:['broader','grounds'],style:'dot'},
+  {id:'all',name:'Everything',sub:'All layers; use dots and filters',layers:LAYERS.map(l=>l.id),edges:ETYPES.map(e=>e.id).filter(e=>e!=='grounds'),style:'dot'},
+];
+const RELMODS=[['vzro','Marketing (new)'],['drm','DRM'],['ro','RO core']];
+function freshState(){ return {layers:{},etypes:{},cats:new Set(CATS.map(c=>c[0])),facets:new Set(['process','capability','service']),relmods:new Set(RELMODS.map(r=>r[0])),newOnly:false,noteOnly:false,
+  style:'pill',labels:true,elabels:false,group:true,hideIso:false,dist:110,rep:520,focus:false,hops:1,preset:'services',only:null,layout:'force',groupBy:'layer',hierDir:'tb',sortKey:null,sortDir:1} }
+let S=freshState();
+let selected=null, hovered=null, path=null, forced=new Set(), frozen=false, applHi=null;
+function applyPreset(id){ const p=PRESETS.find(x=>x.id===id); S.preset=id; LAYERS.forEach(l=>S.layers[l.id]=p.layers?p.layers.includes(l.id):true); ETYPES.forEach(e=>S.etypes[e.id]=p.edges.includes(e.id));
+  S.only=p.only?p.only():null; forced.clear(); S.focus=false; path=null; applHi=null;
+  S.style=p.style&&S.layout!=='list'?p.style:'pill'; S.rep=p.style==='dot'?300:520; S.dist=p.style==='dot'?70:110; S.hideIso=!!p.hideIso }
+applyPreset('services');
+
+/* ============ Visibility ============ */
+const id=x=>typeof x==='string'?x:x.id;
+const isClassLayer=l=>['svc','proc','tax','taxci','drm','core'].includes(l);
+function baseVisible(n){ if(forced.has(n.id)) return true;
+  if(S.only) return S.only.has(n.id);
+  if(!S.layers[n.layer]) return false;
+  if(isClassLayer(n.layer)&&!S.cats.has(n.cat)) return false;
+  if((n.layer==='svc'||n.layer==='proc')&&!S.facets.has(n.facet)) return false;
+  if(n.layer==='rel'&&!S.relmods.has(n.relmod)) return false;
+  if(S.newOnly&&['svc','proc','tax','taxci','concept'].includes(n.layer)&&!n.isNew) return false;
+  if(S.noteOnly&&['svc','proc','tax','taxci'].includes(n.layer)&&!n.note) return false;
+  return true}
+function neighbourhood(start,hops,nodeOk,edgeOk){
+  const adj=new Map(); E.forEach(e=>{ if(!edgeOk(e)) return; const a=id(e.source),b=id(e.target);
+    if(!nodeOk(a)||!nodeOk(b)) return; (adj.get(a)||adj.set(a,[]).get(a)).push(b); (adj.get(b)||adj.set(b,[]).get(b)).push(a)});
+  const seen=new Set([start]); let front=[start];
+  for(let h=0;h<hops;h++){const nx=[]; front.forEach(x=>(adj.get(x)||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);nx.push(y)}})); front=nx}
+  return seen}
+function compute(){
+  let vis=new Set([...N.values()].filter(baseVisible).map(n=>n.id));
+  const eOk=e=>S.etypes[e.type];
+  if(S.focus&&selected&&N.has(selected)){ const all=new Set(N.keys()); vis=neighbourhood(selected,S.hops,x=>all.has(x)&&(vis.has(x)||S.layers[N.get(x).layer]),eOk) }
+  const nodes=[...vis].map(x=>N.get(x));
+  let edges=E.filter(e=>eOk(e)&&vis.has(id(e.source))&&vis.has(id(e.target)));
+  if(S.hideIso){ const deg=new Set(); edges.forEach(e=>{deg.add(id(e.source));deg.add(id(e.target))}); const keep=n=>deg.has(n.id)||forced.has(n.id)||n.id===selected; return {nodes:nodes.filter(keep),edges} }
+  return {nodes,edges};
+}
+
+/* ============ Rendering ============ */
+const svg=d3.select('#svg'), canvas=document.getElementById('stage'), listEl=document.getElementById('listview');
+const root=svg.append('g'); const gC=root.append('g'), gE=root.append('g'), gN=root.append('g');
+const zoom=d3.zoom().scaleExtent([.08,4]).on('zoom',e=>root.attr('transform',e.transform));
+svg.call(zoom).on('dblclick.zoom',null);
+const defs=svg.append('defs');
+const ET=Object.fromEntries(ETYPES.map(t=>[t.id,t]));
+[...ETYPES,{id:'path',color:'var(--path)'}].forEach(t=>defs.append('marker').attr('id','m-'+t.id).attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto-start-reverse').append('path').attr('d','M0,0L10,5L0,10z').style('fill',t.color));
+const dash={dash:'5 3',dot:'1.5 3',solid:null};
+function nodeColor(n){ if(n.layer==='rel') return n.relmod==='vzro'?'var(--k-rel)':n.relmod==='drm'?'var(--k-drm)':'var(--k-ro)'; return `var(--k-${n.layer})` }
+const W=()=>canvas.clientWidth, H=()=>canvas.clientHeight;
+function center(n){
+  switch(n.layer){
+    case 'bfo': return [.5,.1];
+    case 'rel': return [.14,.2];
+    case 'drm': return [.42,.28];
+    case 'core': return [.24,.36];
+    case 'svc': return [.55,.16];
+    case 'proc': return [.5,.45];
+    case 'taxci': return [.8,.78];
+    case 'tax': return [.42,.8];
+    case 'concept': return [.16,.74];
+  } return [.5,.5] }
+const sim=d3.forceSimulation().alphaDecay(.035)
+  .force('link',d3.forceLink().id(d=>d.id)).force('charge',d3.forceManyBody()).force('collide',d3.forceCollide()).force('x',d3.forceX()).force('y',d3.forceY());
+let degree=new Map(), cur={nodes:[],edges:[]}, eSel, nSel;
+const small=n=>n.layer==='concept'||n.layer==='tax'||n.layer==='rel';
+function sizeNode(n){
+  if(S.style==='pill'){ const txt=n.text.length>34?n.text.slice(0,32)+'…':n.text; n.disp=txt;
+    n.w=Math.max(34,txt.length*(small(n)?6.0:6.6)+20); n.h=small(n)?22:26; n.r=n.w/2 }
+  else { n.disp=n.text.length>30?n.text.slice(0,28)+'…':n.text; n.r=4.5+Math.sqrt(degree.get(n.id)||0)*2.6; n.w=n.h=n.r*2 } }
+function forces(){
+  sim.force('link').distance(e=>({sub:.55,broader:.6,facet:.4,relsub:.6,grounds:.8,service:.7,uses:.9}[e.type]||1)*S.dist).strength(e=>({sub:.7,broader:.5,facet:.8,relsub:.6,service:.6,uses:.25}[e.type]||.18));
+  sim.force('charge').strength(-S.rep);
+  sim.force('collide').radius(d=>S.style==='pill'?Math.max(d.w/2,14)+4:d.r+(S.labels?10:3)).strength(.85);
+  const g=S.group&&!S.focus&&!S.only;
+  sim.force('x').x(d=>g?W()*center(d)[0]:W()/2).strength(g?.07:.03);
+  sim.force('y').y(d=>g?H()*center(d)[1]:H()/2).strength(g?.14:.04);
+}
+function render(reheat=true){
+  hovered=null; hideTip();
+  cur=compute(); degree=new Map(); cur.edges.forEach(e=>{[id(e.source),id(e.target)].forEach(x=>degree.set(x,(degree.get(x)||0)+1))});
+  cur.nodes.forEach(n=>{ sizeNode(n); if(n.x===undefined){ const c=center(n); n.x=W()*c[0]+(Math.random()-.5)*140; n.y=H()*c[1]+(Math.random()-.5)*80 } });
+  eSel=gE.selectAll('g.edge').data(cur.edges,d=>d.id).join(en=>{const g=en.append('g').attr('class','edge'); g.append('path'); g.append('text').attr('class','el').attr('text-anchor','middle'); return g});
+  eSel.select('path').style('stroke',d=>ET[d.type].color).style('stroke-width',1.3).style('opacity',.62).style('stroke-dasharray',d=>dash[ET[d.type].style]).attr('marker-end',d=>`url(#m-${d.type})`);
+  nSel=gN.selectAll('g.node').data(cur.nodes,d=>d.id).join(en=>{
+    const g=en.append('g').attr('class','node').attr('tabindex',0).attr('role','button');
+    g.append('rect').attr('class','shape'); g.append('circle').attr('class','shape'); g.append('text').attr('class','nl');
+    g.on('mouseenter',(e,d)=>{hovered=d.id; showTip(d.id,e); highlight()}).on('mousemove',e=>moveTip(e))
+     .on('mouseleave',()=>{hovered=null; hideTip(); highlight()})
+     .on('focus',(e,d)=>{hovered=d.id; const r=e.target.getBoundingClientRect(); showTip(d.id,{clientX:r.right,clientY:r.top}); highlight()})
+     .on('blur',()=>{hovered=null; hideTip(); highlight()})
+     .on('click',(e,d)=>{e.stopPropagation(); select(d.id)})
+     .on('dblclick',(e,d)=>{e.stopPropagation(); selected=d.id; S.focus=true; S.only=null; syncControls(); render(); select(d.id)})
+     .on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault(); select(d.id)}})
+     .call(d3.drag().on('start',(e,d)=>{const f=S.layout==='force'; if(f&&!e.active&&!frozen)sim.alphaTarget(.2).restart(); d.fx=d.x; d.fy=d.y; hideTip()})
+       .on('drag',(e,d)=>{d.fx=e.x; d.fy=e.y; if(frozen||S.layout!=='force'){d.x=e.x; d.y=e.y; tick()}})
+       .on('end',(e,d)=>{const f=S.layout==='force'; if(f&&!e.active)sim.alphaTarget(0); if(f&&!frozen){d.fx=null; d.fy=null}}));
+    return g});
+  nSel.attr('aria-label',d=>`${d.text}, ${d.kind}`);
+  const pill=S.style==='pill';
+  const dashFor=d=>isClassLayer(d.layer)&&d.cat==='none'?'4 2':d.layer==='core'?'3 2':null;
+  nSel.select('rect').attr('display',pill?null:'none').attr('x',d=>-d.w/2).attr('y',d=>-d.h/2).attr('width',d=>d.w).attr('height',d=>d.h)
+    .attr('rx',d=>({concept:d.h/2,rel:d.h/2,bfo:1,drm:2}[d.layer]??5))
+    .style('fill',d=>`color-mix(in srgb, ${nodeColor(d)} ${d.layer==='bfo'?'8%':'17%'}, var(--surface))`).style('stroke',d=>nodeColor(d))
+    .style('stroke-dasharray',dashFor).style('stroke-width',d=>d.layer==='drm'||d.facet==='service'?2.4:null);
+  nSel.select('circle').attr('display',pill?'none':null).attr('r',d=>d.r).style('fill',d=>`color-mix(in srgb, ${nodeColor(d)} 55%, var(--surface))`).style('stroke',d=>nodeColor(d)).style('stroke-dasharray',dashFor);
+  nSel.select('text').text(d=>d.disp).attr('class',d=>'nl'+(small(d)?' small':''))
+    .attr('text-anchor',pill?'middle':'start').attr('x',d=>pill?0:d.r+4).attr('dy','.35em').attr('display',d=>(pill||S.labels)?null:'none');
+  sim.nodes(cur.nodes); sim.force('link').links(cur.edges); forces();
+  const list=S.layout==='list'; svg.style('display',list?'none':null); listEl.hidden=!list; document.getElementById('legend').hidden=list;
+  gC.selectAll('*').remove();
+  if(S.layout==='force'){ cur.nodes.forEach(n=>{ if(!frozen){n.fx=null;n.fy=null} }); if(reheat&&!frozen) sim.alpha(.8).restart(); else tick() }
+  else { sim.stop(); if(list) renderList(); else { const pos=S.layout==='cluster'?layoutCluster():layoutHier(); moveTo(pos,reheat) } }
+  highlight(); updateStat(); legend();
+}
+
+/* ============ Static layouts ============ */
+const GROUPORDER={layer:LAYERS.map(l=>l.id),cat:CATS.map(c=>c[0]).concat(['zz']),module:['mkt','mktx','mkci','domain','bfo','vzro','ro','v-marketing','v-marketing-ci','v-domain'],branch:[]};
+function groupOf(n){
+  switch(S.groupBy){
+    case 'cat': return isClassLayer(n.layer)||n.layer==='bfo'?n.cat:'zz';
+    case 'module': return n.module||'zz';
+    case 'branch': return n.branch||'zz';
+    default: return n.layer }
+}
+function groupLabel(k){ if(k==='zz') return S.groupBy==='branch'?'Outside the marketing modules':'No category (other kinds)';
+  if(S.groupBy==='layer') return (LAYERS.find(l=>l.id===k)||{name:k}).name;
+  if(S.groupBy==='cat') return CATNAME[k]||k;
+  if(S.groupBy==='module') return MODNAME[k]||nodeLabel(k);
+  return k }
+function groups(){ const m=new Map(); cur.nodes.forEach(n=>{const g=groupOf(n); (m.get(g)||m.set(g,[]).get(g)).push(n)});
+  const ord=GROUPORDER[S.groupBy]; return [...m.entries()].sort((a,b)=>{const ia=ord.indexOf(a[0]),ib=ord.indexOf(b[0]); if(a[0]==='zz') return 1; if(b[0]==='zz') return -1; return (ia<0?99:ia)-(ib<0?99:ib)||b[1].length-a[1].length}) }
+const itemW=n=>S.style==='pill'?n.w:n.r*2+(S.labels?Math.min(n.disp.length*6.1,160)+6:0);
+const itemH=n=>S.style==='pill'?n.h:Math.max(n.r*2,14);
+function layoutCluster(){
+  const pos=new Map(), boxes=[]; const TW=Math.max(W()-40,640), gapX=10, rowH=S.style==='pill'?34:26, pad=12, head=26;
+  let bx=20, by=20, shelfH=0;
+  groups().forEach(([g,ns])=>{
+    ns.sort((a,b)=>(degree.get(b.id)||0)-(degree.get(a.id)||0)||a.text.localeCompare(b.text));
+    const area=ns.reduce((s,n)=>s+(itemW(n)+gapX)*rowH,0); const inner=Math.min(TW-2*pad,Math.max(170,Math.sqrt(area)*1.7,Math.max(...ns.map(itemW))));
+    let x=0,y=0,rows=1,maxX=0; const place=[];
+    ns.forEach(n=>{ const w=itemW(n); if(x>0&&x+w>inner){x=0;y+=rowH;rows++} place.push([n,x+(S.style==='pill'?w/2:n.r),y+rowH/2]); x+=w+gapX; maxX=Math.max(maxX,x-gapX) });
+    const bw=maxX+2*pad, bh=head+rows*rowH+pad;
+    if(bx>20&&bx+bw>TW+20){ bx=20; by+=shelfH+16; shelfH=0 }
+    place.forEach(([n,x,y])=>pos.set(n.id,[bx+pad+x,by+head+y]));
+    boxes.push({g,x:bx,y:by,w:bw,h:bh,n:ns.length}); bx+=bw+16; shelfH=Math.max(shelfH,bh) });
+  const gb=gC.selectAll('g.cbox').data(boxes).join('g').attr('class','cbox');
+  gb.append('rect').attr('x',d=>d.x).attr('y',d=>d.y).attr('width',d=>d.w).attr('height',d=>d.h).attr('rx',8);
+  const t=gb.append('text').attr('x',d=>d.x+12).attr('y',d=>d.y+17); t.append('tspan').text(d=>groupLabel(d.g)); t.append('tspan').attr('class','ct').attr('dx',6).text(d=>d.n);
+  return pos }
+/* Which end of each relationship is the parent in the hierarchy (null = not hierarchical) */
+const PARENT={service:'s',uses:'s',sub:'t',broader:'t',facet:'t',relsub:'t',defined:'t',domrange:'t',grounds:'t',shape:null,inverse:null};
+const parentSide=e=>PARENT[e.type]||null;
+function layoutHier(){
+  const ids=cur.nodes.map(n=>n.id), parents=new Map(ids.map(i=>[i,new Set()])), kids=new Map(ids.map(i=>[i,new Set()]));
+  cur.edges.forEach(e=>{ const side=parentSide(e); if(!side) return; const s=e.source.id,t=e.target.id; const [p,c]=side==='t'?[t,s]:[s,t]; if(p===c) return; parents.get(c).add(p); kids.get(p).add(c) });
+  const rank=new Map(), state=new Map();
+  const rk=x=>{ if(rank.has(x)) return rank.get(x); if(state.get(x)==='v') return 0; state.set(x,'v'); let r=0; parents.get(x).forEach(p=>{r=Math.max(r,rk(p)+1)}); state.set(x,'d'); rank.set(x,r); return r };
+  ids.forEach(rk);
+  const loose=ids.filter(i=>!parents.get(i).size&&!kids.get(i).size);
+  const maxR=Math.max(0,...ids.filter(i=>!loose.includes(i)).map(i=>rank.get(i)));
+  loose.forEach(i=>rank.set(i,maxR+1));
+  const R=[]; ids.forEach(i=>{const r=rank.get(i); (R[r]=R[r]||[]).push(N.get(i))});
+  const ord=GROUPORDER.layer; R.forEach(row=>row&&row.sort((a,b)=>ord.indexOf(a.layer)-ord.indexOf(b.layer)||a.text.localeCompare(b.text)));
+  const idx=new Map(); R.forEach(row=>row&&row.forEach((n,i)=>idx.set(n.id,i/(row.length||1))));
+  for(let sweep=0;sweep<4;sweep++){
+    const down=sweep%2===0; const order=down?R.map((_,i)=>i):R.map((_,i)=>R.length-1-i);
+    order.forEach(r=>{ const row=R[r]; if(!row) return; const nb=down?parents:kids;
+      const bc=n=>{const a=[...nb.get(n.id)].map(x=>idx.get(x)).filter(v=>v!==undefined); return a.length?a.reduce((s,v)=>s+v,0)/a.length:idx.get(n.id)};
+      row.forEach(n=>n._bc=bc(n)); row.sort((a,b)=>a._bc-b._bc); row.forEach((n,i)=>idx.set(n.id,i/(row.length||1))) }) }
+  const lr=S.hierDir==='lr'; const pos=new Map(); const gap=S.style==='pill'?12:8;
+  const span=lr?Math.max(H()*1.3,600):Math.max(W()*1.1,820); const lineH=S.style==='pill'?34:26, rankGap=lr?28:40;
+  let off=30; const lines=[];
+  R.forEach((row,r)=>{ if(!row) return;
+    const chunks=[]; let c=[],w=0; const sz=n=>lr?itemH(n)+gap:itemW(n)+gap;
+    row.forEach(n=>{ if(c.length&&w+sz(n)>span){chunks.push([c,w]); c=[]; w=0} c.push(n); w+=sz(n) }); if(c.length) chunks.push([c,w]);
+    const bandStart=off;
+    chunks.forEach(([ch,cw])=>{ let a=-cw/2; const thick=lr?Math.max(...ch.map(itemW)):lineH;
+      ch.forEach(n=>{ const s=sz(n); const along=a+(s-gap)/2; a+=s;
+        pos.set(n.id, lr?[off+(S.style==='pill'?n.w/2:n.r),H()/2+along]:[W()/2+along,off+lineH/2]) });
+      off+=lr?thick+24:lineH });
+    const ps=row.map(n=>pos.get(n.id)); lines.push({r,loose:r===maxR+1&&loose.length>0,x:lr?Math.min(...ps.map(p=>p[0]))-6:Math.min(...ps.map(p=>p[0]))-(S.style==='pill'?row[0].w/2+14:20),y:lr?Math.min(...ps.map(p=>p[1]))-26:bandStart+lineH/2+3}); off+=rankGap });
+  const gl=gC.selectAll('g.rank').data(lines).join('g').attr('class','rank');
+  gl.append('text').attr('class','ranklbl').attr('x',d=>d.x).attr('y',d=>d.y).attr('text-anchor',lr?'start':'end').text(d=>d.loose?'not linked here':'level '+(d.r+1));
+  return pos }
+function moveTo(pos,animate){
+  const nodes=cur.nodes.filter(n=>pos.has(n.id)); const from=nodes.map(n=>[n.x,n.y]);
+  const done=()=>{ nodes.forEach(n=>{const p=pos.get(n.id); n.x=n.fx=p[0]; n.y=n.fy=p[1]}); tick(); fit() };
+  if(!animate||matchMedia('(prefers-reduced-motion: reduce)').matches){ done(); return }
+  const t0=performance.now(), Dur=550; const ease=d3.easeCubicInOut;
+  const tm=d3.timer(()=>{ const k=Math.min(1,(performance.now()-t0)/Dur), e=ease(k);
+    nodes.forEach((n,i)=>{const p=pos.get(n.id); n.x=from[i][0]+(p[0]-from[i][0])*e; n.y=from[i][1]+(p[1]-from[i][1])*e}); tick();
+    if(k>=1){ tm.stop(); done() } }) }
+
+/* ============ List layout ============ */
+function facts(n){ const x=n.id; const bits=[]; let d='';
+  if(isClassLayer(n.layer)||n.layer==='bfo'){ const c=CL.get(x)||{}; bits.push(CATNAME[n.cat], MODNAME[n.module]||nodeLabel(n.module)); if(n.isNew) bits.push('new in 1.1'); if(n.facet&&n.facet!=='other') bits.push(n.facet+' facet'); d=(c.comment||'').replace(/ Steward note:.*/,'') }
+  else if(n.layer==='concept'){ const c=CONCEPT.get(x); bits.push(MODNAME[c.vid], c.alt.length?'also '+c.alt.join(', '):''); d=c.def }
+  else if(n.layer==='rel'){ const p=REL.get(x); bits.push(n.kind, relUse.get(x)?relUse.get(x)+' uses in marketing':''); d=p.comment||'' }
+  return [bits.filter(Boolean).join(' · '), d.length>140?d.slice(0,138)+'…':d] }
+const COLS=[{k:'name',t:'Name'},{k:'kind',t:'Kind'},{k:'facts',t:'Key facts'},{k:'links',t:'Links',num:1}];
+function renderList(){
+  const val=(n,k)=>k==='name'?n.text.toLowerCase():k==='kind'?n.kind:k==='links'?(degree.get(n.id)||0):facts(n)[0];
+  const sorter=(a,b)=>{ if(!S.sortKey) return a.text.localeCompare(b.text); const va=val(a,S.sortKey), vb=val(b,S.sortKey); return (va>vb?1:va<vb?-1:0)*S.sortDir };
+  const rows=groups().map(([g,ns])=>{ ns.sort(sorter);
+    return `<tr class="grp"><td colspan="4">${esc(groupLabel(g))}<span class="ct">${ns.length}</span></td></tr>`+ns.map(n=>{ const [f,d]=facts(n); const c=nodeColor(n);
+      return `<tr class="it" data-id="${esc(n.id)}" tabindex="0"><td class="name"><span class="d" style="border-color:${c};background:color-mix(in srgb,${c} 25%,var(--surface))"></span><span>${esc(n.text)}</span></td><td class="kind">${esc(n.kind)}</td><td class="facts">${esc(f)}${d?`<br><span style="opacity:.85">${esc(d)}</span>`:''}</td><td class="num">${degree.get(n.id)||0}</td></tr>` }).join('') }).join('');
+  listEl.innerHTML=`<table><thead><tr>${COLS.map(c=>`<th data-k="${c.k}"${c.num?' class="num"':''} aria-sort="${S.sortKey===c.k?(S.sortDir>0?'ascending':'descending'):'none'}" tabindex="0">${c.t}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+listEl.addEventListener('click',e=>{ const th=e.target.closest('th'); if(th){ const k=th.dataset.k; if(S.sortKey===k) S.sortDir*=-1; else {S.sortKey=k; S.sortDir=k==='links'?-1:1} renderList(); highlight(); return }
+  const tr=e.target.closest('tr.it'); if(tr) select(tr.dataset.id) });
+listEl.addEventListener('keydown',e=>{ if(e.key!=='Enter'&&e.key!==' ') return; const tr=e.target.closest('tr.it'); const th=e.target.closest('th'); if(tr){e.preventDefault(); select(tr.dataset.id)} else if(th){e.preventDefault(); th.click()} });
+listEl.addEventListener('dblclick',e=>{ const tr=e.target.closest('tr.it'); if(tr){ selected=tr.dataset.id; S.focus=true; S.only=null; syncControls(); render(); select(tr.dataset.id) } });
+listEl.addEventListener('mouseover',e=>{ const tr=e.target.closest('tr.it'); if(tr&&tr.dataset.id!==hovered){ hovered=tr.dataset.id; showTip(hovered,e) } });
+listEl.addEventListener('mousemove',e=>{ if(hovered&&e.target.closest('tr.it')) moveTip(e) });
+listEl.addEventListener('mouseleave',()=>{ hovered=null; hideTip() });
+listEl.addEventListener('scroll',()=>{ hovered=null; hideTip() });
+function edgeEnd(from,to){ const dx=to.x-from.x, dy=to.y-from.y; const len=Math.hypot(dx,dy)||1;
+  if(S.style==='dot'){ const k=(to.r+3)/len; return [to.x-dx*k,to.y-dy*k] }
+  const sx=(to.w/2+3)/Math.abs(dx||1e-9), sy=(to.h/2+3)/Math.abs(dy||1e-9); const s=Math.min(sx,sy,1); return [to.x-dx*s,to.y-dy*s]}
+function tick(){ if(!eSel) return;
+  const hv=S.layout==='hier';
+  eSel.select('path').attr('d',d=>{ const s=d.source,t=d.target; const [x1,y1]=edgeEnd(t,s), [x2,y2]=edgeEnd(s,t); const cv=d.curve||0;
+    if(hv&&S.hierDir==='tb'){const my=(y1+y2)/2; return `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`}
+    if(hv){const mx=(x1+x2)/2; return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`}
+    return `M${x1},${y1} Q${(x1+x2)/2-(y2-y1)*cv},${(y1+y2)/2+(x2-x1)*cv} ${x2},${y2}`});
+  eSel.select('text').attr('x',d=>(d.source.x+d.target.x)/2).attr('y',d=>(d.source.y+d.target.y)/2-3);
+  nSel.attr('transform',d=>`translate(${d.x},${d.y})`) }
+sim.on('tick',tick);
+function highlight(){ if(!nSel) return;
+  const hiN=path?new Set(path.nodes):applHi, hiE=path?new Set(path.edges):null;
+  const f=hovered||selected; let nb=null;
+  if(!hiN&&f&&cur.nodes.some(n=>n.id===f)){ nb=new Set([f]); cur.edges.forEach(e=>{if(e.source.id===f)nb.add(e.target.id); if(e.target.id===f)nb.add(e.source.id)}) }
+  nSel.classed('sel',d=>d.id===selected).classed('hov',d=>d.id===hovered).classed('onpath',d=>!!hiN&&hiN.has(d.id))
+      .classed('dim',d=>hiN?!hiN.has(d.id)&&d.id!==hovered:nb?!nb.has(d.id):false);
+  eSel.classed('onpath',d=>!!hiE&&hiE.has(d.id)).classed('hot',d=>!hiN&&!!f&&(d.source.id===f||d.target.id===f))
+      .classed('dim',d=>hiE?!hiE.has(d.id):hiN?!(hiN.has(d.source.id)&&hiN.has(d.target.id)):nb?!(d.source.id===f||d.target.id===f):false);
+  eSel.select('path').attr('marker-end',d=>hiE&&hiE.has(d.id)?'url(#m-path)':`url(#m-${d.type})`);
+  eSel.select('text').text(d=>(S.elabels||(f&&(d.source.id===f||d.target.id===f)))&&d.text?d.text:'');
+  if(S.style==='dot'&&!S.labels) nSel.select('text').attr('display',d=>d.id===f||(nb&&nb.has(d.id))||(hiN&&hiN.has(d.id))?null:'none');
+  if(S.layout==='list') listEl.querySelectorAll('tr.it').forEach(tr=>{ const i=tr.dataset.id; tr.classList.toggle('sel',i===selected); tr.classList.toggle('hi',!!hiN&&hiN.has(i)); tr.classList.toggle('dim',!!hiN&&!hiN.has(i)) });
+}
+function legend(){ const L=document.getElementById('legend'); const vis=new Set(cur.nodes.map(n=>n.layer)); const items=[];
+  const sw=(c,t,dashY)=>`<span><i style="border-color:${c};background:color-mix(in srgb,${c} 20%,var(--surface))${dashY?';border-style:dashed':''}"></i>${t}</span>`;
+  LAYERS.forEach(l=>{ if(vis.has(l.id)&&l.id!=='rel') items.push(sw(l.color,l.name.replace(/ \(.*\)/,''))) });
+  if(vis.has('rel')) items.push(sw('var(--k-rel)','Marketing relation'),sw('var(--k-drm)','DRM relation'),sw('var(--k-ro)','RO relation'));
+  if(cur.nodes.some(n=>isClassLayer(n.layer)&&n.cat==='none')) items.push(sw('var(--muted)','Not yet anchored to BFO',1));
+  L.innerHTML=items.join('') }
+
+/* ============ Attribute summaries ============ */
+const pill=(c,t)=>`<span class="pill" style="background:${c}">${esc(t)}</span>`;
+const nm=x=>N.has(x)?N.get(x).text:local(x);
+const joinNames=arr=>arr.map(nm).join(', ');
+const shapesOn=x=>{ const anc=new Set([x,...supers(x)]); return SHAPES.filter(s=>s.target.some(t=>anc.has(t))).map(s=>({s,via:s.target.find(t=>anc.has(t))})) };
+const card=p=>{ const a=p.minCount,b=p.maxCount; return a==null&&b==null?'':` [${a==null?0:a}..${b==null?'*':b}]` };
+function summary(x){
+  const n=N.get(x); const out={kind:n?n.kind:'Resource',pills:'',title:n?n.text:local(x),def:'',rows:[],notes:[]};
+  if(!n) return out; const R=(k,v)=>{ if(v!==undefined&&v!==null&&v!=='') out.rows.push([k,String(v)])};
+  if(isClassLayer(n.layer)||n.layer==='bfo'){
+    const c=CL.get(x)||{}; const cm=(c.comment||'').split(' Steward note: ');
+    out.def=cm[0]; if(cm[1]) out.notes.push(['Steward note',cm[1]]);
+    out.pills=pill(nodeColor(n),MODNAME[n.module]||nodeLabel(n.module))+pill(`var(--c-${n.cat})`,CATNAME[n.cat])+(n.isNew?pill('var(--sel)','New in 1.1'):'');
+    R('Subclass of',joinNames(parentsOf(x)));
+    const kids=E.filter(e=>e.type==='sub'&&id(e.target)===x).map(e=>id(e.source)); R('Subclasses',kids.length>6?`${kids.length}: ${joinNames(kids.slice(0,6))}…`:joinNames(kids));
+    const b=nearestBfo(x); { const via=b&&b!==x?[...supers(x)].filter(s=>!s.startsWith(OBO)&&supers(s).has(b)).map(nm).slice(0,2):[]; R('BFO anchor',b?`${nm(b)}${via.length?' (via '+via.join(', ')+')':''}`:'Not yet anchored') }
+    if(n.concept){ const cc=CONCEPT.get(n.concept); R('Concept',cc?cc.label:''); const sib=(byConcept.get(n.concept)||[]).filter(s=>s.id!==x); R('Other facets',joinNames(sib.map(s=>s.id))) }
+    const outs=t=>E.filter(e=>e.type===t&&id(e.source)===x), ins=t=>E.filter(e=>e.type===t&&id(e.target)===x);
+    if(n.layer==='svc'){ R('Enabled by',joinNames(outs('service').filter(e=>e.text==='enabled by').map(e=>id(e.target)))); R('Enables',joinNames(outs('service').filter(e=>e.text==='enables').map(e=>id(e.target)))) }
+    if(n.layer==='proc'){ R('Enables services',joinNames(ins('service').filter(e=>N.get(id(e.source)).facet==='service').map(e=>id(e.source)))); const g={}; outs('uses').forEach(e=>(g[e.text]||(g[e.text]=[])).push(id(e.target))); Object.entries(g).forEach(([k,v])=>R(k.charAt(0).toUpperCase()+k.slice(1),joinNames(v))) }
+    if(n.layer==='tax'||n.layer==='taxci'){ const u=ins('uses'); R('Emerges from',u.map(e=>`${nm(id(e.source))} (${e.text})`).join('; ')) }
+    const sh=shapesOn(x).filter(({s})=>!/(Service|Capability)Shape$/.test(s.iri)&&!(n.layer==='proc'&&s.target.includes(x))); R('Rules',sh.map(({s,via})=>s.props.map(p=>`${relName(p.path)}${card(p)} → ${p.class?nm(p.class):p.datatype?'xsd:'+local(p.datatype):'any'}`).join('; ')+(via!==x?` (from ${nm(via)})`:'')).join(' · '));
+    const rs=ONT.mktx.restrictions.filter(r=>r.cls===x&&r.kind==='some'); R('Defined as',rs.map(r=>`Intelligence Signal that ${(REL.get(r.prop)||{label:local(r.prop)}).label} some ${nm(r.value)}`).join('; '));
+    R('Attributes',DPROPS.filter(([i,p])=>sh.some(({s})=>s.props.some(q=>q.path===i))).map(([i,p])=>p.label).join(', '));
+    if(n.layer==='bfo'){ const under=[...N.values()].filter(m=>inMk(m.id)&&supers(m.id).has(x)).length; R('Marketing classes beneath',under); out.def=out.def||'Upper-level category from Basic Formal Ontology (ISO/IEC 21838-2).' }
+    if(c.since) R('Since',c.since==='1.0'?'Version 1.0':'Version 1.1');
+  } else if(n.layer==='concept'){
+    const c=CONCEPT.get(x); out.def=c.def; out.pills=pill('var(--k-concept)',MODNAME[c.vid])+(c.isNew?pill('var(--sel)','New in 1.1'):'');
+    R('Also called',c.alt.join(', ')); R('Broader',joinNames(c.broader));
+    const nar=[...CONCEPT].filter(([i,o])=>o.broader.includes(x)).map(([i])=>i); R('Narrower',nar.length>6?`${nar.length}: ${joinNames(nar.slice(0,6))}…`:joinNames(nar));
+    R('Grounds classes',joinNames((byConcept.get(x)||[]).map(s=>s.id))); c.notes.forEach(t=>out.notes.push(['Note',t]));
+  } else if(n.layer==='rel'){
+    const p=REL.get(x); out.def=p.comment||''; out.pills=pill(nodeColor(n),n.kind)+((p.characteristics||[]).includes('SymmetricProperty')?pill('var(--muted)','Symmetric'):'');
+    R('Declared in',MODNAME[p.mid]); R('Subproperty of',joinNames(p.parents||[])); R('Inverse',p.inverse?nm(p.inverse):''); R('closeMatch',(p.closeMatch||p.close||[]).map(c=>N.has(c)?nm(c):curie(c)).join(', '));
+    R('Domain',joinNames(p.domain||[])); R('Range',(p.range||[]).map(r=>r.startsWith(XSD)?'xsd:'+local(r):nm(r)).join(', '));
+    R('Used in marketing',relUse.get(x)?`${relUse.get(x)} constraint${relUse.get(x)>1?'s':''}`:'');
+    const pr=(p.pairs||[]).filter(([a])=>a!==OWLT).slice(0,6); R('Connects',pr.map(([a,b])=>`${nm(a)} → ${nm(b)}`).join('; '));
+  }
+  return out;
+}
+
+/* ============ Lineage check ============ */
+const linOut=document.getElementById('a-out');
+let lastTrace=null;
+function trace(x){
+  const n=N.get(x); const anc=[...supers(x)].filter(a=>N.has(a)); const depth=a=>[...supers(a)].length;
+  anc.sort((a,b)=>depth(b)-depth(a));
+  const facetsOn=document.getElementById('a-facets').checked, rulesOn=document.getElementById('a-rules').checked;
+  const facets=[...new Set([...(n.concept?(byConcept.get(n.concept)||[]).filter(s=>s.id!==x).map(s=>s.id):[]),
+    ...E.filter(e=>(e.type==='uses'||e.type==='service')&&(id(e.source)===x||id(e.target)===x)).map(e=>id(e.source)===x?id(e.target):id(e.source)),
+    ...E.filter(e=>e.type==='service'&&E.some(u=>u.type==='uses'&&id(u.target)===x&&id(u.source)===id(e.target))).map(e=>id(e.source))])].filter(y=>y!==x);
+  const rules=shapesOn(x); const ruleTargets=[...new Set(rules.flatMap(({s})=>s.props.map(p=>p.class).filter(Boolean)))].filter(t=>N.has(t));
+  const set=new Set([x,...anc,...(facetsOn?facets:[]),...(rulesOn?ruleTargets:[])]); if(n.concept&&facetsOn) set.add(n.concept);
+  lastTrace={x,set};
+  const li=(y,note)=>`<li><span class="d" style="background:${nodeColor(N.get(y))}"></span><button class="ref" data-go="${esc(y)}">${esc(nm(y))}</button><span class="n">${esc(note||'')}</span></li>`;
+  const grp=(t,arr,f)=>arr.length?`<h4><span>${t}</span><span>${arr.length}</span></h4><ul>${arr.map(y=>li(y,f?f(y):'')).join('')}</ul>`:'';
+  const b=nearestBfo(x);
+  linOut.innerHTML=`<div class="result"><b>${esc(nm(x))}</b> ${b?`reaches BFO <b>${esc(nm(b))}</b> in ${anc.filter(a=>!a.startsWith(OBO)).length+1} step${anc.length?'s':''}`:'<b>does not reach BFO yet</b>'}.</div>`
+    +grp('Ancestry, down to BFO',[x,...anc],y=>N.get(y).kind.replace(' class',''))
+    +(n.concept?grp('Concept',[n.concept],()=>MODNAME[CONCEPT.get(n.concept).vid].replace('Vocabulary · ','')):'')
+    +grp('Connected services, processes and terms',facets,y=>N.get(y).layer==='svc'?N.get(y).facet:N.get(y).layer==='proc'?'process':'term')
+    +(rules.length?`<h4><span>Rules</span><span>${rules.reduce((s,r)=>s+r.s.props.length,0)}</span></h4><ul>${rules.flatMap(({s,via})=>s.props.map(p=>`<li><span class="d" style="background:var(--k-core)"></span><span>${esc(relName(p.path))}${esc(card(p))}</span><span class="n">${p.class?`<button class="ref" data-go="${esc(p.class)}">${esc(nm(p.class))}</button>`:esc(p.datatype?'xsd:'+local(p.datatype):'any')}${via!==x?' · from '+esc(nm(via)):''}</span></li>`)).join('')}</ul>`:'');
+  document.getElementById('a-btns').hidden=false;
+  applHi=set; path=null;
+  set.forEach(y=>{ const m=N.get(y); if(m&&!baseVisible(m)) forced.add(y) });
+  S.etypes.sub=true; if(facetsOn) {S.etypes.facet=true; S.etypes.grounds=true; S.etypes.service=true; S.etypes.uses=true} if(rulesOn) S.etypes.shape=true;
+  syncControls(); render(); select(x,{keepHi:true,center:true});
+}
+document.getElementById('a-go').onclick=()=>{ const x=resolve(document.getElementById('a-node').value); if(x) trace(x); else linOut.innerHTML='<span class="result">Pick a node from the suggestions.</span>' };
+document.getElementById('a-node').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('a-go').click() });
+document.getElementById('a-only').onclick=()=>{ if(!lastTrace) return; S.only=new Set(lastTrace.set); S.focus=false; syncControls(); render(); setTimeout(fit,900) };
+document.getElementById('a-clear').onclick=()=>{ applHi=null; S.only=null; lastTrace=null; document.getElementById('a-btns').hidden=true; linOut.innerHTML='<span class="result">Pick a service, process or term to see its ancestry down to BFO, its concept, the processes and services it connects to, and the rules that bind it.</span>'; render() };
+linOut.addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b) goTo(b.dataset.go)});
+
+/* ============ Tooltip ============ */
+const tip=document.getElementById('tip');
+function showTip(x,e){ const s=summary(x); const deg=degree.get(x)||0; const all=E.filter(ed=>id(ed.source)===x||id(ed.target)===x).length;
+  tip.innerHTML=`<div class="k">${esc(s.kind)} ${s.pills}</div><h3>${esc(s.title)}</h3>${s.def?`<p>${esc(s.def.length>320?s.def.slice(0,318)+'…':s.def)}</p>`:''}
+    ${s.rows.length?`<dl>${s.rows.slice(0,10).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v.length>220?v.slice(0,218)+'…':v)}</dd>`).join('')}</dl>`:''}
+    ${s.notes.slice(0,2).map(([k,v])=>`<p class="note"><b>${esc(k)}.</b> ${esc(v)}</p>`).join('')}
+    <div class="foot">${deg} visible link${deg===1?'':'s'}${all>deg?` · ${all-deg} hidden`:''} · click to pin · double-click to focus</div>`;
+  tip.hidden=false; moveTip(e)}
+function moveTip(e){ const pad=14, r=tip.getBoundingClientRect(); let x=e.clientX+pad, y=e.clientY+pad;
+  if(x+r.width>innerWidth-8) x=e.clientX-r.width-pad; if(y+r.height>innerHeight-8) y=Math.max(8,innerHeight-r.height-8);
+  tip.style.left=Math.max(8,x)+'px'; tip.style.top=y+'px'}
+function hideTip(){tip.hidden=true}
+
+/* ============ Details panel ============ */
+const det=document.getElementById('details');
+const ENAME=Object.fromEntries(ETYPES.map(t=>[t.id,t.name]));
+function explorerLinks(x){ const n=N.get(x); if(!n) return '';
+  const mid=n.module, k=keyOfIri(x), L=[];
+  if(['mkt','mktx','mkci','domain','bfo','vzro','ro'].includes(mid)) L.push([`ontology.html#${mid}~${k}`,'Open in ontology']);
+  if(['mkt','mktx','mkci','domain'].includes(mid)) L.push([`taxonomy.html#${mid}~${k}`,'Show in hierarchy']);
+  if(n.layer==='concept') L.push([`vocabulary.html#${mid}~${CONCEPT.get(x).key}`,'Open in vocabulary'],[`taxonomy.html#${mid}~${CONCEPT.get(x).key}`,'Show in hierarchy']);
+  else if(n.concept){ const c=CONCEPT.get(n.concept); if(c) L.push([`vocabulary.html#${c.vid}~${c.key}`,'Grounding concept']) }
+  return L.map(([h,t])=>`<a class="btn" href="${h}">${t}</a>`).join('') }
+function select(x,{center,keepHi}={}){
+  selected=x; path=null; if(!keepHi) applHi=applHi&&x&&applHi.has(x)?applHi:null;
+  if(S.focus) render(); else highlight();
+  setViews(x);
+  if(!x){ det.innerHTML=`<p class="empty">Hover any node to see its attributes and explanation. Click to pin it here with every link it has. Start with a view on the left, or trace a class in the lineage check.</p>`; return }
+  const s=summary(x);
+  const out=new Map(), inc=new Map();
+  E.forEach(e=>{ const a=id(e.source),b=id(e.target); if(a===x)(out.get(e.type)||out.set(e.type,[]).get(e.type)).push([b,e.text]); if(b===x)(inc.get(e.type)||inc.set(e.type,[]).get(e.type)).push([a,e.text]) });
+  const allLinks=E.filter(e=>id(e.source)===x||id(e.target)===x).length, vis=degree.get(x)||0;
+  const refs=arr=>{ const u=[]; const seen=new Set(); arr.forEach(([y,t])=>{ const k=y+'|'+t; if(seen.has(k)) return; seen.add(k); u.push([y,t]) }); return u.slice(0,40).map(([y,t])=>`<button class="ref" data-go="${esc(y)}">${esc(nm(y))}</button>${t&&!['subclass of','dc:subject','broader'].includes(t)?` <span class="mono">${esc(t)}</span>`:''}`).join(', ')+(u.length>40?' …':'') };
+  det.innerHTML=`<div class="kind">${esc(s.kind)} ${s.pills}</div><h2>${esc(s.title)}</h2>
+    <div class="iri">${esc(curie(x))}</div>
+    ${s.def?`<p class="def">${esc(s.def)}</p>`:''}${s.notes.map(([k,v])=>`<p class="note"><b>${esc(k)}.</b> ${esc(v)}</p>`).join('')}
+    <div class="btns"><button class="btn primary" id="d-focus">Focus neighbourhood</button>
+      ${allLinks>vis?`<button class="btn" id="d-expand">Show ${allLinks-vis} hidden link${allLinks-vis>1?'s':''}</button>`:''}
+      ${inMk(x)?`<button class="btn" id="d-trace">Trace lineage</button>`:''}
+      <button class="btn" id="d-center">Centre</button><button class="btn" id="d-from">Path from</button><button class="btn" id="d-to">Path to</button></div>
+    <div class="btns">${explorerLinks(x)}</div>
+    ${s.rows.length?`<div class="shd">Attributes</div><dl class="props">${s.rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`:''}
+    ${out.size?`<div class="shd">Links out</div><dl class="props">${[...out].map(([t,arr])=>`<dt>${esc(ENAME[t])}</dt><dd>${refs(arr)}</dd>`).join('')}</dl>`:''}
+    ${inc.size?`<div class="shd">Referenced by</div><dl class="props">${[...inc].map(([t,arr])=>`<dt>${esc(ENAME[t])} ←</dt><dd>${refs(arr)}</dd>`).join('')}</dl>`:''}`;
+  det.querySelector('#d-focus').onclick=()=>{S.focus=true; S.only=null; syncControls(); render()};
+  const ex=det.querySelector('#d-expand'); if(ex) ex.onclick=()=>expand(x);
+  const tr=det.querySelector('#d-trace'); if(tr) tr.onclick=()=>{ document.getElementById('a-node').value=entKey(x); openSec('a-go'); trace(x) };
+  det.querySelector('#d-center').onclick=()=>centerOn(x);
+  det.querySelector('#d-from').onclick=()=>{document.getElementById('p-from').value=entKey(x); openSec('p-go'); maybePath()};
+  det.querySelector('#d-to').onclick=()=>{document.getElementById('p-to').value=entKey(x); openSec('p-go'); maybePath()};
+  if(center) centerOn(x);
+}
+det.addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b) goTo(b.dataset.go)});
+function goTo(x){ const n=N.get(x); if(!n) return; if(!cur.nodes.includes(n)){ forced.add(x); if(S.focus) selected=x; render() } select(x,{center:true,keepHi:!!applHi}) }
+function expand(x){ E.forEach(e=>{const a=id(e.source),b=id(e.target); if(a===x||b===x){ forced.add(a); forced.add(b); if(!S.etypes[e.type]) S.etypes[e.type]=true }}); syncControls(); render(); select(x) }
+function centerOn(x){ if(S.layout==='list'){ const r=[...listEl.querySelectorAll('tr.it')].find(t=>t.dataset.id===x); if(r) r.scrollIntoView({block:'center'}); return } const n=N.get(x); if(!n||n.x===undefined) return; const t=d3.zoomTransform(svg.node()); const k=Math.max(t.k,1);
+  svg.transition().duration(450).call(zoom.transform,d3.zoomIdentity.translate(W()/2-n.x*k,H()/2-n.y*k).scale(k)) }
+function fit(){ if(S.layout==='list'){ const r=listEl.querySelector('tr.it.sel,tr.it.hi'); if(r) r.scrollIntoView({block:'center'}); return } if(!cur.nodes.length) return; const xs=cur.nodes.map(n=>n.x), ys=cur.nodes.map(n=>n.y);
+  const x0=Math.min(...xs)-80,x1=Math.max(...xs)+80,y0=Math.min(...ys)-40,y1=Math.max(...ys)+60;
+  const k=Math.min(1.8,.95*Math.min(W()/(x1-x0),H()/(y1-y0)));
+  svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(W()/2-k*(x0+x1)/2,H()/2-k*(y0+y1)/2).scale(k)) }
+const openSec=btnId=>{ const d=[...document.querySelectorAll('.controls details')].find(x=>x.querySelector('#'+btnId)); if(d) d.open=true };
+
+/* ============ Path finder ============ */
+const entKey=x=>`${N.get(x).text} — ${N.get(x).kind}`;
+const byKey=new Map(); [...N.values()].forEach(n=>byKey.set(entKey(n.id),n.id));
+document.getElementById('ents').innerHTML=[...byKey.keys()].sort((a,b)=>a.localeCompare(b)).map(k=>`<option value="${esc(k)}"></option>`).join('');
+function resolve(v){ if(!v) return null; if(byKey.has(v)) return byKey.get(v); const l=v.toLowerCase();
+  const hit=[...byKey.entries()].find(([k])=>k.toLowerCase().startsWith(l))||[...byKey.entries()].find(([k])=>k.toLowerCase().includes(l)); return hit&&hit[1]}
+const maybePath=()=>{ if(document.getElementById('p-from').value&&document.getElementById('p-to').value) findPath() };
+function findPath(){
+  const a=resolve(document.getElementById('p-from').value), b=resolve(document.getElementById('p-to').value), out=document.getElementById('p-res');
+  if(!a||!b){out.textContent='Pick two nodes from the suggestions.';return}
+  const adj=new Map(); E.forEach(e=>{const s=id(e.source),t=id(e.target); (adj.get(s)||adj.set(s,[]).get(s)).push([t,e]); (adj.get(t)||adj.set(t,[]).get(t)).push([s,e])});
+  const prev=new Map([[a,null]]); const q=[a];
+  while(q.length){const x=q.shift(); if(x===b) break; (adj.get(x)||[]).forEach(([y,e])=>{if(!prev.has(y)){prev.set(y,[x,e]);q.push(y)}})}
+  if(!prev.has(b)){out.innerHTML=`No connection between <b>${esc(nm(a))}</b> and <b>${esc(nm(b))}</b>.`; path=null; highlight(); return}
+  const nodes=[b], edges=[]; let c=b; while(prev.get(c)){const [p,e]=prev.get(c); edges.push(e); nodes.push(p); c=p} nodes.reverse(); edges.reverse();
+  nodes.forEach(n=>forced.add(n)); edges.forEach(e=>S.etypes[e.type]=true); S.focus=false; S.only=null; applHi=null; syncControls(); render();
+  path={nodes,edges:edges.map(e=>e.id)}; highlight();
+  out.innerHTML=`<b>${edges.length} step${edges.length>1?'s':''}:</b> `+nodes.map((n,i)=>esc(nm(n))+(i<edges.length?` <span class="mono">—${esc(edges[i].text||ET[edges[i].type].name.toLowerCase())}→</span> `:'')).join('');
+  setTimeout(fit,800) }
+
+/* ============ Controls ============ */
+document.getElementById('presets').innerHTML=PRESETS.map(p=>`<button class="preset" data-preset="${p.id}">${esc(p.name)}<small>${esc(p.sub)}</small></button>`).join('');
+const cnt=l=>[...N.values()].filter(n=>n.layer===l).length;
+document.getElementById('layers').innerHTML=LAYERS.map(l=>`<label class="row"><input type="checkbox" data-layer="${l.id}"><span class="sw" style="border-color:${l.color};background:color-mix(in srgb,${l.color} 22%,var(--surface))"></span>${esc(l.name)}<span class="ct">${cnt(l.id)}</span></label>`).join('');
+document.getElementById('edges').innerHTML=ETYPES.map(t=>`<label class="row"><input type="checkbox" data-et="${t.id}"><span class="ls" style="border-top-color:${t.color};border-top-style:${t.style==='solid'?'solid':t.style==='dash'?'dashed':'dotted'}"></span>${esc(t.name)}<span class="ct">${E.filter(e=>e.type===t.id).length}</span></label>`).join('');
+document.getElementById('f-cat').innerHTML=CATS.map(([k,l,c])=>`<button class="chip" data-cat="${k}"><span class="dot" style="background:${c}"></span>${esc(l)}</button>`).join('');
+document.getElementById('f-facet').innerHTML=[['service','Service'],['capability','Capability'],['process','Process']].map(([k,l])=>`<button class="chip" data-facet="${k}">${l}</button>`).join('');
+document.getElementById('f-rel').innerHTML=RELMODS.map(([k,l])=>`<button class="chip" data-relmod="${k}"><span class="dot" style="background:${k==='vzro'?'var(--k-rel)':k==='drm'?'var(--k-drm)':'var(--k-ro)'}"></span>${l}</button>`).join('');
+function syncControls(){
+  document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',S.preset===b.dataset.preset));
+  document.querySelectorAll('[data-layer]').forEach(i=>i.checked=!!S.layers[i.dataset.layer]);
+  document.querySelectorAll('[data-et]').forEach(i=>i.checked=!!S.etypes[i.dataset.et]);
+  document.querySelectorAll('[data-cat]').forEach(b=>b.setAttribute('aria-pressed',S.cats.has(b.dataset.cat)));
+  document.querySelectorAll('[data-facet]').forEach(b=>b.setAttribute('aria-pressed',S.facets.has(b.dataset.facet)));
+  document.querySelectorAll('[data-relmod]').forEach(b=>b.setAttribute('aria-pressed',S.relmods.has(b.dataset.relmod)));
+  document.querySelectorAll('[data-style]').forEach(b=>b.setAttribute('aria-pressed',S.style===b.dataset.style));
+  document.getElementById('f-new').checked=S.newOnly; document.getElementById('f-note').checked=S.noteOnly;
+  document.getElementById('focus').checked=S.focus; document.getElementById('hops').value=S.hops; document.getElementById('hops-v').textContent=`${S.hops} hop${S.hops>1?'s':''}`;
+  document.getElementById('lbl').checked=S.labels; document.getElementById('elbl').checked=S.elabels; document.getElementById('group').checked=S.group; document.getElementById('hideiso').checked=S.hideIso;
+  document.getElementById('dist').value=S.dist; document.getElementById('dist-v').textContent=S.dist+' px';
+  document.getElementById('rep').value=S.rep; document.getElementById('rep-v').textContent=S.rep;
+  document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',S.layout===b.dataset.layout));
+  document.getElementById('groupWrap').hidden=!['cluster','list'].includes(S.layout); document.getElementById('groupBy').value=S.groupBy;
+  document.getElementById('dirWrap').hidden=S.layout!=='hier'; document.getElementById('hierDir').value=S.hierDir;
+  ['freeze','dist','rep','group'].forEach(i=>{const el=document.getElementById(i); el.disabled=S.layout!=='force'});
+  document.getElementById('freeze').setAttribute('aria-pressed',frozen); document.getElementById('freeze').textContent=frozen?'Unfreeze':'Freeze';
+}
+function updateStat(){ const p=PRESETS.find(x=>x.id===S.preset);
+  document.getElementById('stat').innerHTML=`<span>${S.only&&lastTrace?'Lineage of '+esc(nm(lastTrace.x)):p?p.name:'Custom view'}</span><span>${cur.nodes.length} of ${N.size} nodes · ${cur.edges.length} links</span>`+(S.focus&&selected?`<span>Neighbourhood of ${esc(nm(selected))}</span>`:'') }
+const on=(sel,ev,fn)=>document.querySelectorAll(sel).forEach(el=>el.addEventListener(ev,fn));
+const custom=()=>{S.preset=null};
+on('[data-preset]','click',e=>{ selected=null; applyPreset(e.currentTarget.dataset.preset); N.forEach(n=>{delete n.x;delete n.y;n.fx=n.fy=null}); frozen=false; syncControls(); render(); select(null); if(S.layout==='force') setTimeout(fit,1500) });
+on('[data-layer]','change',e=>{custom(); S.only=null; S.layers[e.target.dataset.layer]=e.target.checked; if(!e.target.checked) [...forced].forEach(x=>{if(N.get(x).layer===e.target.dataset.layer)forced.delete(x)}); syncControls(); render()});
+on('[data-et]','change',e=>{custom(); S.etypes[e.target.dataset.et]=e.target.checked; syncControls(); render()});
+const tog=(set,k)=>set.has(k)?set.delete(k):set.add(k);
+on('[data-cat]','click',e=>{tog(S.cats,e.currentTarget.dataset.cat); syncControls(); render()});
+on('[data-facet]','click',e=>{tog(S.facets,e.currentTarget.dataset.facet); syncControls(); render()});
+on('[data-relmod]','click',e=>{tog(S.relmods,e.currentTarget.dataset.relmod); syncControls(); render()});
+on('[data-style]','click',e=>{S.style=e.currentTarget.dataset.style; syncControls(); render()});
+document.getElementById('f-new').onchange=e=>{S.newOnly=e.target.checked; render()};
+document.getElementById('f-note').onchange=e=>{S.noteOnly=e.target.checked; render()};
+document.getElementById('focus').onchange=e=>{S.focus=e.target.checked; S.only=null; render()};
+document.getElementById('hops').oninput=e=>{S.hops=+e.target.value; syncControls(); if(S.focus) render()};
+document.getElementById('lbl').onchange=e=>{S.labels=e.target.checked; render(false)};
+document.getElementById('elbl').onchange=e=>{S.elabels=e.target.checked; highlight()};
+document.getElementById('hideiso').onchange=e=>{S.hideIso=e.target.checked; render()};
+document.getElementById('group').onchange=e=>{S.group=e.target.checked; forces(); if(!frozen) sim.alpha(.8).restart()};
+document.getElementById('dist').oninput=e=>{S.dist=+e.target.value; syncControls(); forces(); if(!frozen) sim.alpha(.5).restart()};
+document.getElementById('rep').oninput=e=>{S.rep=+e.target.value; syncControls(); forces(); if(!frozen) sim.alpha(.5).restart()};
+document.getElementById('fit').onclick=fit;
+document.getElementById('reheat').onclick=()=>{ if(S.layout!=='force'){ render(); return } frozen=false; cur.nodes.forEach(n=>{n.fx=null;n.fy=null}); syncControls(); sim.alpha(1).restart()};
+document.getElementById('freeze').onclick=()=>{frozen=!frozen; if(frozen){sim.stop(); cur.nodes.forEach(n=>{n.fx=n.x;n.fy=n.y})} else {cur.nodes.forEach(n=>{n.fx=null;n.fy=null}); sim.alpha(.3).restart()} syncControls()};
+document.getElementById('reset').onclick=()=>{S=freshState(); try{localStorage.removeItem('mkt-graph-layout')}catch(e){} applyPreset('services'); forced.clear(); path=null; applHi=null; frozen=false; N.forEach(n=>{delete n.x;delete n.y;n.fx=n.fy=null}); syncControls(); select(null); render(); setTimeout(fit,1500)};
+document.getElementById('expand').onclick=()=>{ if(selected) expand(selected) };
+document.getElementById('clear').onclick=()=>{ S.focus=false; syncControls(); select(null); render() };
+document.getElementById('q').addEventListener('change',e=>{const x=resolve(e.target.value); if(x) goTo(x)});
+document.getElementById('p-go').onclick=findPath;
+document.getElementById('p-clear').onclick=()=>{path=null; document.getElementById('p-from').value=''; document.getElementById('p-to').value=''; document.getElementById('p-res').textContent='Trace how two nodes connect, e.g. Battlecard Service to Source Authority Tier.'; highlight()};
+svg.on('click',()=>{ if(path) return; select(null)}).on('mouseleave',()=>{hovered=null; hideTip(); highlight()});
+const setTheme=t=>{ if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+  ['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).setAttribute('aria-pressed',k===t)); try{localStorage.setItem('mkt-graph-theme',t)}catch(e){} };
+['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).onclick=()=>setTheme(k));
+try{ const t=localStorage.getItem('mkt-graph-theme'); if(t) setTheme(t) }catch(e){}
+try{ const l=localStorage.getItem('mkt-graph-layout'); if(['force','cluster','hier','list'].includes(l)) S.layout=l }catch(e){}
+let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{ if(S.layout==='force'){forces(); if(!frozen) sim.alpha(.3).restart()} else if(S.layout!=='list') render(false) },200)});
+on('[data-layout]','click',e=>{ const l=e.currentTarget.dataset.layout; if(l===S.layout) return; S.layout=l;
+  if(l==='force'){ cur.nodes.forEach(n=>{n.fx=null;n.fy=null}); frozen=false }
+  syncControls(); render(true); if(l==='force') setTimeout(fit,1400); if(l==='list') setTimeout(fit,50);
+  try{localStorage.setItem('mkt-graph-layout',l)}catch(err){} });
+document.getElementById('groupBy').onchange=e=>{ S.groupBy=e.target.value; render(true) };
+document.getElementById('hierDir').onchange=e=>{ S.hierDir=e.target.value; render(true) };
+
+/* ============ Explorer links and deep links ============ */
+const VIEWOF=x=>{ const n=N.get(x); return n?n.module:'mkt' };
+function setViews(x){
+  const mid=x?VIEWOF(x):hashMod, k=x?keyOfIri(x):'', ont=['mkt','mktx','mkci','domain','bfo','vzro','ro'].includes(mid)?mid:mid==='v-marketing'?'mkt':mid==='v-marketing-ci'?'mkci':mid==='v-domain'?'domain':'mkt';
+  const voc=mid.startsWith('v-')?mid:ont==='domain'?'v-domain':ont==='mkci'?'v-marketing-ci':'v-marketing';
+  const vk=x&&N.get(x).layer==='concept'?CONCEPT.get(x).key:'';
+  document.getElementById('views').innerHTML=`<a href="vocabulary.html#${voc}${vk?'~'+vk:''}">Vocabulary</a><a href="taxonomy.html#${ont}${k&&!vk?'~'+k:''}">Hierarchy</a><a href="ontology.html#${ont}${k&&!vk?'~'+k:''}">Ontology</a><span class="on" aria-current="page">Graph</span>`;
+  if(x){ const h='#'+mid+'~'+(vk||k); if(location.hash!==h) history.replaceState(null,'',h) }
+}
+const PRESET_FOR={mkt:'services',mktx:'tax',mkci:'ci',domain:'bfo',bfo:'bfo',vzro:'rels',ro:'rels','v-marketing':'vocab','v-marketing-ci':'ci','v-domain':'vocab'};
+let hashMod='mkt';
+function fromHash(){
+  const h=decodeURIComponent(location.hash.replace(/^#/,'')); if(!h) return null;
+  const i=h.indexOf('~'); const mid=i<0?h:h.slice(0,i), key=i<0?null:h.slice(i+1); hashMod=mid;
+  let target=null;
+  if(key){ if(VOC[mid]) target=VOC[mid].ns+key;
+    else target=[...N.values()].find(n=>n.module===mid&&keyOfIri(n.id)===key&&n.layer!=='concept')?.id||[...N.values()].find(n=>keyOfIri(n.id)===key&&n.layer!=='concept')?.id||null }
+  return {mid,target:target&&N.has(target)?target:null};
+}
+
+/* ============ Boot ============ */
+document.getElementById('ftr').textContent=`${N.size} nodes · ${E.length} links · built from the lineage data generated ${D.generated}`;
+const H0=fromHash();
+if(H0&&PRESET_FOR[H0.mid]){ applyPreset(PRESET_FOR[H0.mid]) }
+syncControls(); render();
+if(H0&&H0.target){ const tl=N.get(H0.target).layer; if(['svc','proc','tax','taxci'].includes(tl)){ applyPreset('chain'); selected=H0.target; S.focus=true; S.hops=2; S.etypes.sub=true; S.style='pill'; syncControls() } forced.add(H0.target); render(); setTimeout(()=>{ select(H0.target,{center:true}); fit() },1500) }
+else { select(null); }
+if(S.layout==='force'&&!(H0&&H0.target)) setTimeout(fit,1600);
+</script>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Marketing Ontology Lineage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: header + controls, then a left-to-right lineage graph (7 tiers) beside a detail panel; findings and tier ledger below. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eaeef3; --ink:#16202c; --ink-soft:#3c4757; --muted:#647083; --line:#d4dae3;
+  --t-found:#6650c4; --t-legacy:#a46c06; --t-vocab:#0c7f80; --t-tax:#2f7d3a; --t-core:#1f5bc4; --t-domain:#16202c; --t-domain-fg:#ffffff; --t-gov:#b83260;
+  --warn:#b45309; --warn-bg:#fdf3e4; --ok:#1d7a45; --ok-bg:#e7f4ec;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; --ok:#5fcf8c; --ok-bg:#15261c; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f141b; --surface:#161d27; --surface-2:#1d2633; --ink:#e7ecf3; --ink-soft:#b8c2cf; --muted:#8a96a7; --line:#2b3544;
+  --t-found:#a395f2; --t-legacy:#e0a93e; --t-vocab:#3fc3c1; --t-tax:#6cc77a; --t-core:#6ea0f5; --t-domain:#e7ecf3; --t-domain-fg:#0f141b; --t-gov:#f07ba0;
+  --warn:#f0b35a; --warn-bg:#2a2214; --ok:#5fcf8c; --ok-bg:#15261c; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;gap:24px}
+header{display:grid;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{max-width:72ch;color:var(--ink-soft);margin:0}
+.lede code,.mono{font-family:var(--f-mono);font-size:.88em}
+.controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group-label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13px/1 var(--f-body);padding:7px 10px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip[aria-pressed="false"]{color:var(--muted);background:transparent}
+.chip[aria-pressed="false"] svg{opacity:.35}
+.chip:focus-visible,.node:focus-visible,.find:focus-visible,.link:focus-visible{outline:2px solid var(--t-core);outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+@media (max-width:1100px){.main{grid-template-columns:minmax(0,1fr)}}
+.graph{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto;min-width:0}
+.graph svg{display:block}
+.collabel{font-family:var(--f-display);font-weight:700;font-size:14px;fill:var(--ink)}
+.colsub{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+.colband{fill:var(--surface-2)}
+.node{cursor:pointer;transition:opacity .18s}
+.node rect.box{fill:var(--surface);stroke-width:1.4}
+.node .lbl{font:500 12.5px var(--f-body);fill:var(--ink)}
+.node .meta{font:400 10.5px var(--f-mono);fill:var(--muted)}
+.node.sel rect.box{stroke-width:2.6}
+.node.domain rect.box{fill:var(--t-domain)}
+.node.domain .lbl{fill:var(--t-domain-fg);font-weight:600}
+.node.domain .meta{fill:var(--t-domain-fg);opacity:.75}
+.node.dim{opacity:.22}
+.node .warnmark{fill:var(--warn)}
+.edge{fill:none;stroke-width:1.3;opacity:.55;transition:opacity .18s}
+.edge.hot{opacity:1;stroke-width:2}
+.edge.dim{opacity:.07}
+.e-imports{stroke:var(--ink-soft)}
+.e-grounds{stroke:var(--t-vocab)}
+.e-inherits{stroke:var(--t-legacy);stroke-dasharray:5 4}
+.e-anchors{stroke:var(--t-gov);stroke-dasharray:1.5 3.5}
+.e-aligns{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
+.e-maps{stroke:var(--t-vocab);stroke-dasharray:2 3}
+.e-relates{stroke:var(--t-found);stroke-dasharray:8 3 2 3}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;display:grid;gap:14px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:1100px){.panel{position:static}}
+.panel h2{font-family:var(--f-display);font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
+.tierpill{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.iri{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-soft);word-break:break-all;background:var(--surface-2);padding:6px 8px;border-radius:6px}
+.stats{display:flex;flex-wrap:wrap;gap:6px}
+.stat{font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line);border-radius:5px;padding:3px 7px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.panel p{margin:0;color:var(--ink-soft);font-size:14px}
+.rel h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:600}
+.rel ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.link{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);font:500 12.5px var(--f-body);padding:4px 8px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.link:hover{background:var(--surface-2)}
+.link small{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.note:has(b.ok){background:var(--ok-bg)}
+.note{background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:13.5px;color:var(--ink)}
+.note b{color:var(--warn)}
+.lineage-count{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.openlink .obox{fill:var(--surface-2);stroke:var(--line)}
+.openlink .oglyph{fill:none;stroke:var(--ink-soft);stroke-width:1.5;stroke-linecap:round}
+.openlink:hover .obox,.openlink:focus-visible .obox{fill:var(--ink);stroke:var(--ink)}
+.openlink:hover .oglyph,.openlink:focus-visible .oglyph{stroke:var(--bg)}
+.openlink:focus-visible{outline:none}
+.explore{display:grid;gap:6px}
+.explore a{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:var(--surface)}
+.explore a:hover{border-color:var(--ink-soft);background:var(--surface-2)}
+.explore a.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.explore a.primary small{color:var(--bg);opacity:.75}
+.explore b{font-weight:600;font-size:14px}
+.explore small{grid-column:2;font-size:12px;color:var(--muted)}
+.explore svg{grid-row:span 2}
+.explore .arr{grid-row:1/span 2;grid-column:3}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--ink-soft);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+section.block{display:grid;gap:12px}
+section.block h2{font-family:var(--f-display);font-size:24px;margin:0}
+section.block > p{margin:0;color:var(--ink-soft);max-width:72ch}
+.findings{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:12px}
+.find{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:14px 16px;cursor:pointer;display:grid;gap:6px;font:inherit}
+.find:hover{border-color:var(--warn)}
+.find .sev.ok,.note b.ok{color:var(--ok)}
+.find .sev{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--warn)}
+.find strong{font-family:var(--f-display);font-size:16px;line-height:1.25;font-weight:600}
+.find span.body{font-size:13.5px;color:var(--ink-soft)}
+.ledger-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+tr:last-child td{border-bottom:none}
+td .mono{color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){.node,.edge{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Verizon Knowledge Fabric · ontology-domain-marketing v1.1 · draft</div>
+    <h1>Marketing Ontology Lineage</h1>
+    <p class="lede">How the marketing domain stands on the Domain Reference Model, BFO 2020 and the OBO Relations Core. The ontology was built first, as a catalog of 23 marketing services, each enabled by its supporting processes and enabling a matching capability. The terms each process creates, uses, changes, targets or promotes then became the classes of two marketing taxonomies, grounded in two marketing vocabularies: one for general marketing and one for competitive intelligence, whose services, processes and terms were surfaced from the PEO Competitive Graph. New relations are declared in BFO Relations first and then referenced. Edges come from the files: <code>owl:imports</code>, <code>dc:subject</code> grounding, subclass anchors, relation use in SHACL shapes and SKOS mappings. Select any node to trace its ancestry and descendants, then open its vocabulary, hierarchy, ontology or graph explorer from the panel. The small arrow on each node, or a double-click, opens that module’s main explorer.</p>
+  </header>
+
+  <div class="controls">
+    <div class="group" role="group" aria-label="Trace direction">
+      <span class="group-label">Trace</span>
+      <button class="chip" id="dir-up" data-dir="up" aria-pressed="false">Upstream</button>
+      <button class="chip" id="dir-both" data-dir="both" aria-pressed="true">Both</button>
+      <button class="chip" id="dir-down" data-dir="down" aria-pressed="false">Downstream</button>
+    </div>
+    <div class="group" role="group" aria-label="Edge types" id="edgeToggles">
+      <span class="group-label">Edges</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="graph" id="graph" aria-label="Lineage graph"></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <section class="block">
+    <h2>Resolution log</h2>
+    <p>How the package was built and what still needs a steward or files outside this package. Select an entry to highlight the modules involved.</p>
+    <div class="findings" id="findings"></div>
+  </section>
+
+  <section class="block">
+    <h2>Tier ledger</h2>
+    <p>Counts are taken from the marketing package and the DRM 1.1 file. The core modules were not supplied; they appear because marketing specialises their root classes or references them in shapes.</p>
+    <div class="ledger-wrap"><table id="ledger"></table></div>
+  </section>
+</div>
+
+<script>
+const TIERS = [{"id": "found", "name": "Formal foundations", "sub": "BFO 2020 · RO core + extension", "color": "--t-found"}, {"id": "vocab", "name": "Vocabularies", "sub": "SKOS · dc:subject", "color": "--t-vocab"}, {"id": "domain", "name": "Domain Reference Model", "sub": "ontology-core-domain", "color": "--t-domain"}, {"id": "core", "name": "Core modules", "sub": "roots marketing specialises", "color": "--t-core"}, {"id": "tax", "name": "Marketing taxonomies", "sub": "terms the processes need", "color": "--t-tax"}, {"id": "mont", "name": "Marketing ontology", "sub": "services and processes", "color": "--t-gov"}];
+const NODES = [
+{
+"id": "bfo",
+"label": "BFO 2020",
+"tier": "found",
+"status": "referenced",
+"iri": "http://purl.obolibrary.org/obo/bfo/2020/bfo.owl",
+"meta": "11 cats used",
+"stats": [
+"ISO/IEC 21838-2",
+"11 categories reached",
+"346 of 406 classes anchored"
+],
+"desc": "Basic Formal Ontology sets what kind of thing each marketing class is. Processes are occurrents; services' plans, content, claims, offerings and intelligence products are generically dependent continuants; market roles are roles; customer loyalty and churn risk are dispositions; perception measures are qualities; market segments and the market holon are object aggregates."
+},
+{
+"id": "ro",
+"label": "OBO Relations Core",
+"tier": "found",
+"status": "supplied",
+"file": "BFO Relations.owl",
+"iri": "http://purl.obolibrary.org/obo/ro/core.owl",
+"meta": "30 props",
+"stats": [
+"release 2024-04-24",
+"core content unchanged",
+"4 used by marketing shapes"
+],
+"desc": "The OBO Relation Ontology core, kept as published. Marketing shapes use its relations where they fit: has member, has part, realized in, role of."
+},
+{
+"id": "vzro",
+"label": "Marketing relations",
+"tier": "found",
+"status": "supplied",
+"file": "BFO Relations.owl",
+"iri": "https://ontologies.verizon.com/bfo-relations/",
+"meta": "12 + 10 inv",
+"stats": [
+"12 relations",
+"10 inverses",
+"IAO is about reused",
+"declared before use"
+],
+"desc": "Relations the marketing domain needs that RO core lacks, declared first in BFO Relations.owl and then referenced by the marketing ontology's shapes: competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens."
+},
+{
+"id": "v-domain",
+"label": "Core Domain vocab",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Core_Domain_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/core-domain",
+"meta": "22 concepts",
+"stats": [
+"22 concepts",
+"grounds the DRM Domain class"
+],
+"desc": "The business domains. Marketing sits under Commercial; its Marketing concept is the domain this package specialises, though no SKOS mapping yet joins it to the marketing scheme."
+},
+{
+"id": "v-marketing",
+"label": "Marketing vocab",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Domain_Marketing_1.1.ttl",
+"iri": "https://vocabularies.verizon.com/domain-marketing",
+"meta": "271 concepts",
+"stats": [
+"271 concepts",
+"190 new in 1.1",
+"81 concepts of 1.0 kept"
+],
+"desc": "Concepts for the marketing services, their enabling processes and every term those processes create, use, target or measure. Each term concept carries a scope note naming the processes it emerges from and the services they support. A service, its capability and its enabling process share one concept when the service has a single enabling process."
+},
+{
+"id": "v-marketing-ci",
+"label": "Marketing CI vocab",
+"tier": "vocab",
+"status": "supplied",
+"file": "Vocabulary_Domain_Marketing_CI_1.0.ttl",
+"iri": "https://vocabularies.verizon.com/domain-marketing-ci",
+"meta": "92 concepts",
+"stats": [
+"92 concepts",
+"surfaced from the PEO Competitive Graph",
+"broadMatch to marketing"
+],
+"desc": "Concepts for the competitive intelligence services, processes and terms, each surfaced from the PEO Competitive Graph and citing it as dct:source: the market holon, competitor facts, source authority tiers, threats and openings, exposure and pressure roll-ups, claim checks and verdicts, MTBH and the trip threshold, and battlecards. Its top concept, Competitive Intelligence, has a broadMatch to Marketing Insights & Analysis in the marketing vocabulary."
+},
+{
+"id": "domain",
+"label": "Domain Reference Model",
+"short": "Reference Model",
+"tier": "domain",
+"status": "supplied",
+"file": "Ontology_Core_Domain_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-core-domain/",
+"meta": "foundation",
+"stats": [
+"imports RO core + BFO 2020 only",
+"21 relations",
+"20 reference classes",
+"12 BFO anchors",
+"9 relations used by marketing"
+],
+"desc": "The unifying ontology and the DNA of the marketing domain. Its shapes set the pattern the marketing build follows: a Process enables Services, Services enable a Capability, a Process creates, modifies and consumes assets, and Rules guide and constrain a Process. Marketing specialises its roots and reuses 9 of its relations: constrains, consumes, creates, enabled by, enables, guides, has, modifies, type of."
+},
+{
+"id": "c-process",
+"label": "Process",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-process/",
+"meta": "121 below",
+"stats": [
+"1 class used",
+"121 marketing descendants"
+],
+"desc": "Marketing specialises Process: 121 marketing classes descend from it (121 in the ontology). BFO anchor: Process ⊑ process. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-services",
+"label": "Services",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-services/",
+"meta": "33 below",
+"stats": [
+"3 classes used",
+"33 marketing descendants",
+"1 shape refs"
+],
+"desc": "Marketing specialises Communications, Reporting, Services: 33 marketing classes descend from it (33 in the ontology). Communications, Reporting, Services not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-capability",
+"label": "Capability",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/ontology-core-capability/",
+"meta": "24 below",
+"stats": [
+"1 class used",
+"24 marketing descendants",
+"5 shape refs"
+],
+"desc": "Marketing specialises Capability: 24 marketing classes descend from it (24 in the ontology). BFO anchor: Capability ⊑ realizable entity. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-asset",
+"label": "Asset",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/ontology-core-asset/",
+"meta": "123 below",
+"stats": [
+"1 class used",
+"123 marketing descendants"
+],
+"desc": "Marketing specialises Digital Asset: 123 marketing classes descend from it (74 in the marketing taxonomy, 49 in the CI taxonomy). BFO anchor: Digital Asset ⊑ generically dependent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-role",
+"label": "Role",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-role/",
+"meta": "15 below",
+"stats": [
+"1 class used",
+"15 marketing descendants"
+],
+"desc": "Marketing specialises Role: 15 marketing classes descend from it (15 in the marketing taxonomy). BFO anchor: Role ⊑ role. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-event",
+"label": "Event",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/ontology-core-event/",
+"meta": "14 below",
+"stats": [
+"1 class used",
+"14 marketing descendants"
+],
+"desc": "Marketing specialises Event: 14 marketing classes descend from it (4 in the marketing taxonomy, 10 in the CI taxonomy). BFO anchor: Event ⊑ occurrent. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-rules",
+"label": "Rules",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-rules/",
+"meta": "26 below",
+"stats": [
+"1 class used",
+"26 marketing descendants"
+],
+"desc": "Marketing specialises Rules: 26 marketing classes descend from it (16 in the marketing taxonomy, 10 in the CI taxonomy). BFO anchor: Rules ⊑ generically dependent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-lifecycle",
+"label": "Lifecycle",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-lifecycle/",
+"meta": "13 below",
+"stats": [
+"1 class used",
+"13 marketing descendants"
+],
+"desc": "Marketing specialises Lifecycle: 13 marketing classes descend from it (13 in the marketing taxonomy). Lifecycle not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-issue",
+"label": "Issue",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-issue/",
+"meta": "6 below",
+"stats": [
+"1 class used",
+"6 marketing descendants"
+],
+"desc": "Marketing specialises Issue: 6 marketing classes descend from it (5 in the marketing taxonomy, 1 in the CI taxonomy). Issue not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-persona",
+"label": "Persona",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-persona/",
+"meta": "1 below",
+"stats": [
+"1 class used",
+"1 marketing descendants",
+"1 shape refs"
+],
+"desc": "Marketing specialises Persona: 1 marketing classes descend from it (1 in the marketing taxonomy). Persona not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-requirements",
+"label": "Requirements",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/ontology-core-requirements/",
+"meta": "1 below",
+"stats": [
+"1 class used",
+"1 marketing descendants"
+],
+"desc": "Marketing specialises Outcome: 1 marketing classes descend from it (1 in the marketing taxonomy). Outcome not yet anchored to BFO (steward decision pending in the DRM). Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-party",
+"label": "Party",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-party/",
+"meta": "3 refs",
+"stats": [
+"1 class used",
+"3 shape refs"
+],
+"desc": "Referenced in marketing shapes: Party. BFO anchor: Party ⊑ independent continuant. Root class declared in the Domain Reference Model; the module itself was not supplied."
+},
+{
+"id": "c-valuestream",
+"label": "Value Stream",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-valuestream/",
+"meta": "2 refs",
+"stats": [
+"1 class used",
+"2 shape refs"
+],
+"desc": "Referenced in marketing shapes: Marketing Brand Management. Marketing Brand Management not yet anchored to BFO (steward decision pending in the DRM). Not declared in the supplied files; marketing references it by IRI."
+},
+{
+"id": "c-businessoperations",
+"label": "Business Ops",
+"tier": "core",
+"status": "referenced",
+"iri": "https://ontologies.verizon.com/taxonomy-core-businessoperations/",
+"meta": "14 below",
+"stats": [
+"3 classes used",
+"14 marketing descendants"
+],
+"desc": "Marketing specialises Communications, Strategy, Technology: 14 marketing classes descend from it (11 in the ontology, 3 in the marketing taxonomy). Communications, Strategy, Technology not yet anchored to BFO (steward decision pending in the DRM). Not declared in the supplied files; marketing references it by IRI."
+},
+{
+"id": "mktx",
+"label": "Marketing Taxonomy",
+"tier": "tax",
+"status": "supplied",
+"file": "Taxonomy_Domain_Marketing_1.0.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-domain-marketing/",
+"meta": "166 cls",
+"stats": [
+"166 classes",
+"each used by a process",
+"imports the DRM",
+"20 classes re-homed from 1.0"
+],
+"desc": "The term structures that emerge from the marketing processes: plans, content, brand assets, market claims, data assets, technology, insights, metrics and measurements, offerings and features, market roles, segments, rules (segment definitions, pricing models, qualification criteria, partner incentives, compliance rules), channels, characteristics, market events, lifecycle stages, personas, issues and outcomes. Each class has a scope note naming the processes it emerges from. Direct BFO anchors: Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic."
+},
+{
+"id": "mkci",
+"label": "Marketing CI Taxonomy",
+"tier": "tax",
+"status": "supplied",
+"file": "Taxonomy_Domain_Marketing_CI_1.0.ttl",
+"iri": "https://ontologies.verizon.com/taxonomy-domain-marketing-ci/",
+"meta": "71 cls",
+"stats": [
+"71 classes",
+"from the PEO Competitive Graph",
+"imports the marketing taxonomy",
+"4 datatype properties"
+],
+"desc": "Competitive intelligence terms surfaced from the PEO Competitive Graph: the market holon; intelligence sources by authority tier (filing 3; company, press, transcript and broker 2; review and reference 1; tracker 0); competitor claims (scale, momentum, pricing, valuation, capability, channel, credential, segment focus); claim checks (source match, freshness, authority, conflict, contradiction, unsourced, misread source); verdicts (verified, stale corrected, held, failed); breaker results and trip threshold; threat and opening assessments; exposure and pressure scores; MTBH and failure rate; battlecards, landscape matrix, roll-up view and claim ledger; competitive moves; CPEO and ESAC credentials."
+},
+{
+"id": "mkt",
+"label": "Marketing Ontology",
+"tier": "mont",
+"status": "supplied",
+"file": "Ontology_Domain_Marketing_1.1.ttl",
+"iri": "https://ontologies.verizon.com/ontology-domain-marketing/",
+"meta": "23 svc · 121 proc",
+"stats": [
+"23 services",
+"23 capabilities",
+"121 processes",
+"95 process term shapes",
+"169 SHACL shapes",
+"v1.1"
+],
+"desc": "Built first, service by service. The catalog has 17 marketing services and 6 competitive intelligence services. Each service is enabled by its supporting processes and enables a matching capability, following the DRM pattern. Each process has a shape listing the terms it creates, uses, changes, targets or promotes (228 links in all); those terms live in the two marketing taxonomies. The competitive intelligence services and processes come from the PEO Competitive Graph: landscape, pricing intelligence, threat and opening analysis, claim verification (AI Circuit Breaker) and battlecards."
+}
+];
+// [from, to, type, note]
+const EDGES = [["bfo", "ro", "imports", "RO core imports BFO"], ["ro", "vzro", "relates", "extension declared in the same file; measures ⊑ IAO is about"], ["bfo", "vzro", "anchors", "information relations range over generically dependent continuant"], ["ro", "domain", "imports", "relations specialise RO"], ["bfo", "domain", "imports", "BFO 2020 by version IRI; 12 class anchors"], ["domain", "mktx", "imports", "taxonomy roots specialise the DRM roots"], ["domain", "mkci", "imports", "foundation"], ["mktx", "mkci", "imports", "CI terms specialise marketing roots"], ["domain", "mkt", "imports", "foundation; services, capabilities and processes"], ["mktx", "mkt", "imports", "process shapes point to these terms"], ["mkci", "mkt", "imports", "CI process shapes point to these terms"], ["ro", "mkt", "imports", "RO relations used in shapes: has member, has part, realized in, role of"], ["vzro", "mkt", "relates", "shapes use competes with, contradicts, creates opening for, distributed through, evidenced by, has pricing model, informs, is about, measured by, measures, promotes, supersedes, targets, threatens"], ["bfo", "mktx", "anchors", "Customer Disposition, Market Perception Quality, Market Segment, Marketing Characteristic anchored directly"], ["bfo", "mkci", "anchors", "Market anchored directly"], ["v-domain", "domain", "grounds", "1 dc:subject"], ["v-marketing", "mkt", "grounds", "139 dc:subject"], ["v-marketing", "mktx", "grounds", "166 dc:subject"], ["v-marketing-ci", "mkt", "grounds", "30 dc:subject"], ["v-marketing-ci", "mkci", "grounds", "71 dc:subject"], ["v-marketing-ci", "v-marketing", "maps", "Competitive Intelligence broadMatch Marketing Insights & Analysis; CI terms broadMatch their marketing parents"], ["domain", "c-process", "imports", "declares the root class; the module imports the DRM"], ["c-process", "mkt", "anchors", "1 direct subclass; 121 descendants"], ["domain", "c-services", "imports", "declares the root class; the module imports the DRM"], ["c-services", "mkt", "anchors", "5 direct subclasses; 33 descendants"], ["domain", "c-capability", "imports", "declares the root class; the module imports the DRM"], ["c-capability", "mkt", "anchors", "1 direct subclass; 24 descendants"], ["domain", "c-asset", "imports", "declares the root class; the module imports the DRM"], ["c-asset", "mktx", "anchors", "3 direct subclasses; 74 descendants"], ["domain", "c-role", "imports", "declares the root class; the module imports the DRM"], ["c-role", "mktx", "anchors", "1 direct subclass; 15 descendants"], ["domain", "c-event", "imports", "declares the root class; the module imports the DRM"], ["c-event", "mktx", "anchors", "1 direct subclass; 4 descendants"], ["domain", "c-rules", "imports", "declares the root class; the module imports the DRM"], ["c-rules", "mktx", "anchors", "1 direct subclass; 16 descendants"], ["domain", "c-lifecycle", "imports", "declares the root class; the module imports the DRM"], ["c-lifecycle", "mktx", "anchors", "1 direct subclass; 13 descendants"], ["domain", "c-issue", "imports", "declares the root class; the module imports the DRM"], ["c-issue", "mktx", "anchors", "1 direct subclass; 5 descendants"], ["domain", "c-persona", "imports", "declares the root class; the module imports the DRM"], ["c-persona", "mktx", "anchors", "1 direct subclass; 1 descendants"], ["c-persona", "mkt", "relates", "used in 1 shape constraints"], ["domain", "c-requirements", "imports", "declares the root class; the module imports the DRM"], ["c-requirements", "mktx", "anchors", "1 direct subclass; 1 descendants"], ["domain", "c-party", "imports", "declares the root class; the module imports the DRM"], ["c-party", "mkt", "relates", "used in 3 shape constraints"], ["domain", "c-valuestream", "imports", "core module, should import the DRM"], ["c-valuestream", "mkt", "relates", "used in 2 shape constraints"], ["domain", "c-businessoperations", "imports", "core module, should import the DRM"], ["c-businessoperations", "mkt", "anchors", "1 direct subclass; 11 descendants"], ["c-businessoperations", "mktx", "anchors", "2 direct subclasses; 3 descendants"]];
+const VIEWS = {"bfo": {"p": "ontology.html#bfo", "v": {"taxonomy": "taxonomy.html#bfo", "ontology": "ontology.html#bfo", "graph": "graph.html#bfo"}}, "ro": {"p": "ontology.html#ro", "v": {"taxonomy": "taxonomy.html#ro", "ontology": "ontology.html#ro", "graph": "graph.html#ro"}}, "vzro": {"p": "ontology.html#vzro", "v": {"taxonomy": "taxonomy.html#vzro", "ontology": "ontology.html#vzro", "graph": "graph.html#vzro"}}, "v-domain": {"p": "vocabulary.html#v-domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#v-domain", "ontology": "ontology.html#domain", "graph": "graph.html#v-domain"}}, "v-marketing": {"p": "vocabulary.html#v-marketing", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#v-marketing", "ontology": "ontology.html#mkt", "graph": "graph.html#v-marketing"}}, "v-marketing-ci": {"p": "vocabulary.html#v-marketing-ci", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#v-marketing-ci", "ontology": "ontology.html#mkci", "graph": "graph.html#v-marketing-ci"}}, "domain": {"p": "ontology.html#domain", "v": {"vocabulary": "vocabulary.html#v-domain", "taxonomy": "taxonomy.html#domain", "ontology": "ontology.html#domain", "graph": "graph.html#domain"}}, "mkt": {"p": "ontology.html#mkt", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mkt", "ontology": "ontology.html#mkt", "graph": "graph.html#mkt"}}, "mktx": {"p": "taxonomy.html#mktx", "v": {"vocabulary": "vocabulary.html#v-marketing", "taxonomy": "taxonomy.html#mktx", "ontology": "ontology.html#mktx", "graph": "graph.html#mktx"}}, "mkci": {"p": "taxonomy.html#mkci", "v": {"vocabulary": "vocabulary.html#v-marketing-ci", "taxonomy": "taxonomy.html#mkci", "ontology": "ontology.html#mkci", "graph": "graph.html#mkci"}}, "c-process": {"p": "ontology.html#domain~Process", "v": {"ontology": "ontology.html#domain~Process", "graph": "graph.html#domain~Process"}}, "c-services": {"p": "ontology.html#domain~Communications", "v": {"ontology": "ontology.html#domain~Communications", "graph": "graph.html#domain~Communications"}}, "c-capability": {"p": "ontology.html#domain~Capability", "v": {"ontology": "ontology.html#domain~Capability", "graph": "graph.html#domain~Capability"}}, "c-asset": {"p": "ontology.html#domain~DigitalAsset", "v": {"ontology": "ontology.html#domain~DigitalAsset", "graph": "graph.html#domain~DigitalAsset"}}, "c-role": {"p": "ontology.html#domain~Role", "v": {"ontology": "ontology.html#domain~Role", "graph": "graph.html#domain~Role"}}, "c-event": {"p": "ontology.html#domain~Event", "v": {"ontology": "ontology.html#domain~Event", "graph": "graph.html#domain~Event"}}, "c-rules": {"p": "ontology.html#domain~Rules", "v": {"ontology": "ontology.html#domain~Rules", "graph": "graph.html#domain~Rules"}}, "c-lifecycle": {"p": "ontology.html#domain~Lifecycle", "v": {"ontology": "ontology.html#domain~Lifecycle", "graph": "graph.html#domain~Lifecycle"}}, "c-issue": {"p": "ontology.html#domain~Issue", "v": {"ontology": "ontology.html#domain~Issue", "graph": "graph.html#domain~Issue"}}, "c-persona": {"p": "ontology.html#domain~Persona", "v": {"ontology": "ontology.html#domain~Persona", "graph": "graph.html#domain~Persona"}}, "c-requirements": {"p": "ontology.html#domain~Outcome", "v": {"ontology": "ontology.html#domain~Outcome", "graph": "graph.html#domain~Outcome"}}, "c-party": {"p": "ontology.html#domain~Party", "v": {"ontology": "ontology.html#domain~Party", "graph": "graph.html#domain~Party"}}, "c-valuestream": {"p": "ontology.html#mkt~MarketingBrandManagement", "v": {"ontology": "ontology.html#mkt~MarketingBrandManagement", "graph": "graph.html#mkt~MarketingBrandManagement"}}, "c-businessoperations": {"p": "ontology.html#mkt~Communications", "v": {"ontology": "ontology.html#mkt~Communications", "graph": "graph.html#mkt~Communications"}}};
+const ETYPES = [{"id": "imports", "label": "owl:imports"}, {"id": "grounds", "label": "vocabulary grounding"}, {"id": "anchors", "label": "subclass anchor"}, {"id": "relates", "label": "relations / shape use"}, {"id": "maps", "label": "vocabulary mapping"}];
+
+const FINDINGS = [
+{
+"sev": "Fixed",
+"title": "Built service-first",
+"body": "The ontology starts from a catalog of 23 marketing services. Each is enabled by its supporting processes and enables a matching capability, the pattern the Domain Reference Model's Process and Services shapes set. All 121 processes support at least one service.",
+"nodes": [
+"mkt",
+"domain",
+"c-services",
+"c-process",
+"c-capability"
+]
+},
+{
+"sev": "Fixed",
+"title": "Terms emerge from processes",
+"body": "Every process carries a shape saying what it creates, uses, changes, targets or promotes (228 links). Those terms are the classes of the two marketing taxonomies, and every one of the 237 taxonomy classes is used by at least one process. Each class and concept has a scope note naming its processes and the services they support.",
+"nodes": [
+"mkt",
+"mktx",
+"mkci",
+"v-marketing",
+"v-marketing-ci"
+]
+},
+{
+"sev": "Fixed",
+"title": "Competitive intelligence from the PEO Competitive Graph",
+"body": "Five CI services (landscape, pricing intelligence, threat and opening analysis, claim verification, battlecards), their processes and their terms were surfaced from the graph's threat graph, landscape matrix, AI Circuit Breaker and source list. Each CI class and concept cites the graph as dct:source. It is an input to the build, not a module in the lineage.",
+"nodes": [
+"mkci",
+"v-marketing-ci",
+"mkt"
+]
+},
+{
+"sev": "Fixed",
+"title": "Two vocabularies, two taxonomies",
+"body": "General marketing terms are in vocabulary-domain-marketing (271 concepts) and taxonomy-domain-marketing (166 classes). Competitive intelligence terms are in vocabulary-domain-marketing-ci (92 concepts) and taxonomy-domain-marketing-ci (71 classes), which builds on the marketing taxonomy's roots.",
+"nodes": [
+"v-marketing",
+"v-marketing-ci",
+"mktx",
+"mkci"
+]
+},
+{
+"sev": "Fixed",
+"title": "1.0 IRIs kept",
+"body": "Every 1.0 process keeps its IRI and concept. The 20 1.0 classes that are not processes (Brand Equity, Customer Loyalty, Marketing Plans, Market Targets and others) are now taxonomy classes; their 1.0 IRIs stay in the ontology as deprecated equivalent classes so existing data resolves.",
+"nodes": [
+"mkt",
+"mktx",
+"v-marketing"
+]
+},
+{
+"sev": "Fixed",
+"title": "Built on the Domain Reference Model",
+"body": "The package imports ontology-core-domain 1.1 in place of the retired upper ontology; shapes use the DRM relations; Lifecycle and Product Catalog are no longer subclasses of marketing processes.",
+"nodes": [
+"mkt",
+"domain",
+"ro",
+"bfo"
+]
+},
+{
+"sev": "Fixed",
+"title": "New relations declared in BFO Relations first",
+"body": "12 relations and their inverses are declared in BFO Relations.owl and then referenced by the marketing shapes. IAO 'is about' is reused under its OBO IRI.",
+"nodes": [
+"vzro",
+"ro",
+"mkt"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Anchor the remaining roots (60)",
+"body": "60 of 406 marketing classes do not reach BFO yet: Services 24, Marketing Channel 15, Lifecycle 13, Issue 6, Persona 1, Outcome 1. Services, Lifecycle, Issue, Persona and Outcome wait on the DRM steward decision; Marketing Channel needs one here.",
+"nodes": [
+"mkt",
+"c-services",
+"c-lifecycle",
+"c-issue",
+"c-persona",
+"c-requirements",
+"domain"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Confirm the service catalog",
+"body": "The service catalog was drafted from the 1.0 process areas, PEO marketing practice and the competitive graph. Review the service names, their boundaries and which processes enable each before certifying.",
+"nodes": [
+"mkt"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Removed CI content from the earlier draft",
+"body": "Win/loss analysis, the CI-001 to CI-005 policies, intelligence signal classes and decision records came from the Intelligence Fabric demo, not the competitive graph, and were removed. Add them back as services, processes and terms if they are wanted.",
+"nodes": [
+"mkci",
+"mkt"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Link the marketing schemes to Core Domain",
+"body": "Core Domain has a Marketing concept under Commercial; the marketing vocabulary has its own top concept Marketing. Add an exactMatch so the domain vocabularies hang off the core one.",
+"nodes": [
+"v-marketing",
+"v-domain"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Map RO core to the extended file",
+"body": "BFO Relations.owl still carries the RO core ontology IRI. Add a catalog entry that resolves it to the local file, or imports from purl.obolibrary.org will not see the marketing relations.",
+"nodes": [
+"vzro",
+"ro"
+]
+},
+{
+"sev": "Follow-up",
+"title": "Validate with a reasoner and SHACL engine",
+"body": "The package was checked with a purpose-built Turtle parser: references resolve, no BFO disjointness is violated, every service has an enabling process and every taxonomy class is used by a process. Run it through TopBraid or RDF4J and an OWL reasoner before certifying.",
+"nodes": [
+"mkt",
+"mktx",
+"mkci"
+]
+}
+];
+
+// ---------- layout ----------
+const byId = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const COLW=182, NW=152, NH=34, GAP=42, TOP=70, PADX=14;
+const cols = TIERS.map(t=>NODES.filter(n=>n.tier===t.id));
+const maxRows = Math.max(...cols.map(c=>c.length));
+const H = TOP + maxRows*GAP + 14, W = PADX*2 + TIERS.length*COLW - (COLW-NW);
+cols.forEach((c,ci)=>{
+  const off = (maxRows - c.length)*GAP/2;
+  c.forEach((n,ri)=>{ n.x = PADX + ci*COLW; n.y = TOP + off + ri*GAP; });
+});
+const warnNodes = new Set(FINDINGS.filter(f=>f.sev==="Follow-up").flatMap(f=>f.nodes.slice(0,1)));
+
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,role:"img","aria-label":"Ontology lineage graph"});
+document.getElementById("graph").appendChild(svg);
+
+TIERS.forEach((t,ci)=>{
+  const x=PADX+ci*COLW;
+  el("rect",{x:x-6,y:8,width:NW+12,height:H-16,rx:8,class:"colband",opacity:ci%2?0.55:0.9},svg);
+  const l=el("text",{x:x,y:30,class:"collabel"},svg); l.textContent=t.name;
+  const s=el("text",{x:x,y:46,class:"colsub"},svg); s.textContent=t.sub;
+});
+
+const gEdges=el("g",{},svg), gNodes=el("g",{},svg);
+const edgeEls = EDGES.map(([a,b,type,note])=>{
+  const A=byId[a],B=byId[b]; let d;
+  const ay=A.y+NH/2, by=B.y+NH/2;
+  if(B.x>A.x){const x1=A.x+NW,x2=B.x,dx=(x2-x1)*0.5;d=`M${x1},${ay} C${x1+dx},${ay} ${x2-dx},${by} ${x2},${by}`;}
+  else if(B.x===A.x){const x1=A.x+NW,b=Math.min(34,14+Math.abs(by-ay)/12);d=`M${x1},${ay} C${x1+b},${ay} ${x1+b},${by} ${x1},${by}`;}
+  else {const x1=A.x+NW,x2=B.x+NW;d=`M${x1},${ay} C${x1+60},${ay} ${x2+60},${by} ${x2},${by}`;}
+  const p=el("path",{d,class:"edge e-"+type},gEdges);
+  if(note){const t=el("title",{},p);t.textContent=`${A.label} → ${B.label}: ${note}`;}
+  return {a,b,type,p};
+});
+
+const statusStroke={supplied:"",referenced:"4 3",embedded:"1.5 2.5"};
+NODES.forEach(n=>{
+  const g=el("g",{class:"node"+(n.tier==="domain"?" domain":""),transform:`translate(${n.x},${n.y})`,tabindex:"0",role:"button","aria-label":`${n.label}, ${TIERS.find(t=>t.id===n.tier).name}`},gNodes);
+  const col=`var(${TIERS.find(t=>t.id===n.tier).color})`;
+  el("rect",{class:"box",width:NW,height:NH,rx:6,stroke:col,"stroke-dasharray":statusStroke[n.status]},g);
+  if(n.tier!=="domain") el("circle",{cx:12,cy:NH/2,r:4,fill:col},g);
+  const lx = n.tier==="domain"?10:22;
+  const t=el("text",{x:lx,y:15,class:"lbl"},g); t.textContent=n.short||n.label;
+  const m=el("text",{x:lx,y:27,class:"meta"},g); m.textContent=n.meta||(n.status==="referenced"?"referenced":"");
+  if(warnNodes.has(n.id)) el("path",{d:`M${NW-12},5 l4.5,8 h-9 z`,class:"warnmark"},g);
+  const oa=el("a",{href:VIEWS[n.id].p,class:"openlink","aria-label":`Open the ${n.label} explorer`},g);
+  const ot=el("title",{},oa); ot.textContent="Open explorer";
+  el("rect",{x:NW-21,y:NH-17,width:16,height:13,rx:3,class:"obox"},oa);
+  el("path",{d:`M${NW-16.5},${NH-7.5} l6,-6 M${NW-14},${NH-13.5} h3.5 v3.5`,class:"oglyph"},oa);
+  oa.addEventListener("click",e=>e.stopPropagation());
+  g.addEventListener("dblclick",()=>{location.href=VIEWS[n.id].p;});
+  g.addEventListener("click",()=>select(n.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id);}});
+  n.g=g;
+});
+
+// ---------- controls ----------
+const active=new Set(ETYPES.map(e=>e.id));
+const tg=document.getElementById("edgeToggles");
+const legend=document.getElementById("legend");
+const sample=(type)=>`<svg width="26" height="8" aria-hidden="true"><path d="M1,4 H25" class="edge e-${type}" style="opacity:1;stroke-width:2"/></svg>`;
+ETYPES.forEach(e=>{
+  const b=document.createElement("button");b.className="chip";b.id="edge-"+e.id;b.setAttribute("aria-pressed","true");
+  b.innerHTML=sample(e.id)+e.label;
+  b.onclick=()=>{active.has(e.id)?active.delete(e.id):active.add(e.id);b.setAttribute("aria-pressed",active.has(e.id));render();};
+  tg.appendChild(b);
+});
+legend.innerHTML = TIERS.map(t=>`<span><i class="dot" style="background:var(${t.color})"></i>${t.name}</span>`).join("")+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)"/></svg>supplied file</span>`+
+  `<span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>referenced, not supplied</span>`+
+  `<span><svg width="12" height="12"><path d="M1,11 L6,2 L11,11 z" fill="var(--warn)"/></svg>has an open follow-up</span>`;
+
+let dir="both", sel="mkt", focusSet=null;
+document.querySelectorAll("[data-dir]").forEach(b=>b.onclick=()=>{dir=b.dataset.dir;document.querySelectorAll("[data-dir]").forEach(x=>x.setAttribute("aria-pressed",x===b));focusSet=null;render();});
+
+function trace(id){
+  const nodes=new Set([id]), edges=new Set();
+  const walk=(start,up)=>{const stack=[start],seen=new Set([start]);
+    while(stack.length){const cur=stack.pop();
+      edgeEls.forEach((e,i)=>{if(!active.has(e.type))return;
+        const from=up?e.b:e.a,to=up?e.a:e.b;
+        if(from===cur){edges.add(i);nodes.add(to);if(!seen.has(to)){seen.add(to);stack.push(to);}}});}};
+  if(dir!=="down")walk(id,true);
+  if(dir!=="up")walk(id,false);
+  return {nodes,edges};
+}
+function select(id){sel=id;focusSet=null;render();}
+
+function render(){
+  let T;
+  if(focusSet){T={nodes:new Set(focusSet),edges:new Set(edgeEls.map((e,i)=>(active.has(e.type)&&focusSet.includes(e.a)&&focusSet.includes(e.b))?i:-1).filter(i=>i>=0))};}
+  else T=trace(sel);
+  edgeEls.forEach((e,i)=>{
+    e.p.style.display=active.has(e.type)?"":"none";
+    e.p.classList.toggle("hot",T.edges.has(i));e.p.classList.toggle("dim",!T.edges.has(i));
+  });
+  NODES.forEach(n=>{n.g.classList.toggle("dim",!T.nodes.has(n.id));n.g.classList.toggle("sel",!focusSet&&n.id===sel);});
+  if(!focusSet) renderPanel(sel,T);
+}
+
+function relList(ids){return ids.length?`<ul>${ids.map(({id,type})=>`<li><button class="link" data-go="${id}"><i class="dot" style="background:var(${TIERS.find(t=>t.id===byId[id].tier).color})"></i>${byId[id].label}<small>${type}</small></button></li>`).join("")}</ul>`:`<p style="font-size:13px">None in this map.</p>`;}
+
+const VIEWINFO={vocabulary:["Vocabulary","concepts, definitions, mappings"],taxonomy:["Hierarchy","horizontal, vertical and outline trees"],ontology:["Ontology","classes, shapes, properties, module"],graph:["Graph","network, cluster, hierarchy and list views"]};
+const VICON={graph:'<circle cx="4" cy="4" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="7" cy="12" r="2"/><path d="M5.7 4.5 10 5M5 5.7 6.4 10.2M11 6.8 8.3 10.5"/>',vocabulary:'<path d="M3 3h10v10H3z M6 6h4 M6 8.5h4 M6 11h2"/>',taxonomy:'<path d="M3 4h4 M7 4v8 M7 8h5 M7 12h5"/>',ontology:'<circle cx="4" cy="4" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><path d="M5.7 5 10 5.6 M4.6 6 5.6 10 M10.6 7.4 7.5 10.8"/>'};
+function exploreLinks(id){
+  const v=VIEWS[id]; if(!v) return "";
+  const order=Object.keys(v.v).sort((a,b)=>(v.v[b]===v.p)-(v.v[a]===v.p));
+  return order.map(k=>`<a href="${v.v[k]}" class="${v.v[k]===v.p?"primary":""}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">${VICON[k]}</svg><b>${VIEWINFO[k][0]}</b><small>${VIEWINFO[k][1]}</small><span class="arr" aria-hidden="true">→</span></a>`).join("");
+}
+function renderPanel(id,T){
+  const n=byId[id], tier=TIERS.find(t=>t.id===n.tier);
+  const ins=EDGES.filter(e=>e[1]===id).map(e=>({id:e[0],type:e[2]}));
+  const outs=EDGES.filter(e=>e[0]===id).map(e=>({id:e[1],type:e[2]}));
+  const fs=FINDINGS.filter(f=>f.nodes.includes(id));
+  const statusText={supplied:`supplied file · ${n.file}`,referenced:"Referenced, not supplied"}[n.status];
+  document.getElementById("panel").innerHTML=`
+    <span class="tierpill"><i class="dot" style="background:var(${tier.color})"></i>${tier.name}</span>
+    <h2>${n.label}</h2>
+    <div class="iri">${n.iri}</div>
+    <p style="font-size:12.5px;color:var(--muted)">${statusText}</p>
+    ${n.stats&&n.stats.length?`<div class="stats">${n.stats.map(s=>`<span class="stat">${s}</span>`).join("")}</div>`:""}
+    <p>${n.desc}</p>
+    <div class="rel"><h3>Explore this module</h3><div class="explore">${exploreLinks(n.id)}</div></div>
+    <div class="lineage-count">Trace (${dir}): ${T.nodes.size-1} related modules over ${T.edges.size} edges</div>
+    <div class="rel"><h3>Draws from</h3>${relList(ins)}</div>
+    <div class="rel"><h3>Feeds into</h3>${relList(outs)}</div>
+    ${fs.map(f=>`<div class="note"><b class="${f.sev==='Fixed'?'ok':''}">${f.sev}:</b> ${f.title}</div>`).join("")}`;
+  document.querySelectorAll("#panel [data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+
+document.getElementById("findings").innerHTML=FINDINGS.map((f,i)=>`<button class="find" data-f="${i}"><span class="sev ${f.sev==='Fixed'?'ok':''}">${f.sev}</span><strong>${f.title}</strong><span class="body">${f.body}</span></button>`).join("");
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
+  const f=FINDINGS[+b.dataset.f]; focusSet=f.nodes; render();
+  const p=document.getElementById("panel");
+  p.innerHTML=`<span class="tierpill" style="color:${f.sev==='Fixed'?'var(--ok)':'var(--warn)'}">${f.sev}</span><h2>${f.title}</h2><p>${f.body}</p><div class="rel"><h3>Modules involved</h3>${relList(f.nodes.map(id=>({id,type:TIERS.find(t=>t.id===byId[id].tier).name.toLowerCase()})))}</div>`;
+  document.querySelectorAll("#panel [data-go]").forEach(x=>x.onclick=()=>select(x.dataset.go));
+  document.getElementById("graph").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+});
+
+// ledger
+const ledgerRows=[["Formal foundations", "BFO 2020; OBO Relations Core; marketing relations extension (same file)", "1 of 2 files", "11 BFO categories used · 30 RO + 22 new relations"], ["Vocabularies", "Core Domain 1.1, Domain Marketing 1.1, Domain Marketing CI 1.0", "3 of 3", "22 + 271 + 92 concepts"], ["Domain Reference Model", "ontology-core-domain 1.1 (foundation)", "1 of 1", "21 relations · 9 used by marketing"], ["Core modules", "Process, Services, Capability, Asset, Role, Event, Rules, Lifecycle, Issue, Persona, Requirements, Party, Value Stream, Business Ops", "0 of 14", "roots declared in the DRM or referenced by IRI"], ["Marketing taxonomies", "taxonomy-domain-marketing 1.0, taxonomy-domain-marketing-ci 1.0", "2 of 2", "166 + 71 classes, each used by a process"], ["Marketing ontology", "ontology-domain-marketing 1.1", "1 of 1", "23 services · 23 capabilities · 121 processes · 169 shapes"]];
+document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
+
+render();
+{const g=document.getElementById("graph");g.scrollLeft=Math.max(0,byId[sel].x-g.clientWidth+NW+40);}
+</script>
+
+
+</body></html>
