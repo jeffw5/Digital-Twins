@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Marketing Ontology Graph</title>
+<script>try{const t=localStorage.getItem('mkt-lineage-theme'); if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -203,9 +204,6 @@ footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 1
     <div>
       <h1>Marketing Ontology Graph</h1>
       <p>Services → processes → terms: ontology-domain-marketing, the two marketing taxonomies and vocabularies, the Domain Reference Model, BFO 2020 and BFO Relations · one graph built from the lineage data</p>
-    </div>
-    <div class="seg" role="group" aria-label="Theme">
-      <button id="th-auto" aria-pressed="true">Auto</button><button id="th-light" aria-pressed="false">Light</button><button id="th-dark" aria-pressed="false">Dark</button>
     </div>
   </header>
 
@@ -877,10 +875,7 @@ document.getElementById('q').addEventListener('change',e=>{const x=resolve(e.tar
 document.getElementById('p-go').onclick=findPath;
 document.getElementById('p-clear').onclick=()=>{path=null; document.getElementById('p-from').value=''; document.getElementById('p-to').value=''; document.getElementById('p-res').textContent='Trace how two nodes connect, e.g. Battlecard Service to Source Authority Tier.'; highlight()};
 svg.on('click',()=>{ if(path) return; select(null)}).on('mouseleave',()=>{hovered=null; hideTip(); highlight()});
-const setTheme=t=>{ if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
-  ['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).setAttribute('aria-pressed',k===t)); try{localStorage.setItem('mkt-graph-theme',t)}catch(e){} };
-['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).onclick=()=>setTheme(k));
-try{ const t=localStorage.getItem('mkt-graph-theme'); if(t) setTheme(t) }catch(e){}
+try{const t=localStorage.getItem('mkt-lineage-theme'); if(t==='light'||t==='dark') document.documentElement.setAttribute('data-theme',t);}catch(e){}
 try{ const l=localStorage.getItem('mkt-graph-layout'); if(['force','cluster','hier','list'].includes(l)) S.layout=l }catch(e){}
 let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{ if(S.layout==='force'){forces(); if(!frozen) sim.alpha(.3).restart()} else if(S.layout!=='list') render(false) },200)});
 on('[data-layout]','click',e=>{ const l=e.currentTarget.dataset.layout; if(l===S.layout) return; S.layout=l;

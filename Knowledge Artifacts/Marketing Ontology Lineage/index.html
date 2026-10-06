@@ -113,12 +113,22 @@ th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu
 td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
 tr:last-child td{border-bottom:none}
 td .mono{color:var(--ink-soft)}
+.headrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px}
+.themeseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.themeseg button{appearance:none;border:0;background:transparent;color:var(--muted);font:500 12.5px/1 var(--f-body);padding:7px 12px;cursor:pointer}
+.themeseg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.themeseg button:focus-visible{outline:2px solid var(--t-core);outline-offset:-2px}
 @media (prefers-reduced-motion:reduce){.node,.edge{transition:none}}
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Verizon Knowledge Fabric · ontology-domain-marketing v1.1 · draft</div>
+    <div class="headrow">
+      <div class="eyebrow">Verizon Knowledge Fabric · ontology-domain-marketing v1.1 · draft</div>
+      <div class="themeseg" role="group" aria-label="Colour theme for all lineage pages">
+        <button type="button" data-th="auto" aria-pressed="true">Auto</button><button type="button" data-th="light" aria-pressed="false">Light</button><button type="button" data-th="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
     <h1>Marketing Ontology Lineage</h1>
     <p class="lede">How the marketing domain stands on the Domain Reference Model, BFO 2020 and the OBO Relations Core. The ontology was built first, as a catalog of 23 marketing services, each enabled by its supporting processes and enabling a matching capability. The terms each process creates, uses, changes, targets or promotes then became the classes of two marketing taxonomies, grounded in two marketing vocabularies: one for general marketing and one for competitive intelligence, whose services, processes and terms were surfaced from the PEO Competitive Graph. New relations are declared in BFO Relations first and then referenced. Edges come from the files: <code>owl:imports</code>, <code>dc:subject</code> grounding, subclass anchors, relation use in SHACL shapes and SKOS mappings. Select any node to trace its ancestry and descendants, then open its vocabulary, hierarchy, ontology or graph explorer from the panel. The small arrow on each node, or a double-click, opens that module’s main explorer.</p>
   </header>
@@ -788,6 +798,14 @@ document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{
 const ledgerRows=[["Formal foundations", "BFO 2020; OBO Relations Core; marketing relations extension (same file)", "1 of 2 files", "11 BFO categories used · 30 RO + 22 new relations"], ["Vocabularies", "Core Domain 1.1, Domain Marketing 1.1, Domain Marketing CI 1.0", "3 of 3", "22 + 271 + 92 concepts"], ["Domain Reference Model", "ontology-core-domain 1.1 (foundation)", "1 of 1", "21 relations · 9 used by marketing"], ["Core modules", "Process, Services, Capability, Asset, Role, Event, Rules, Lifecycle, Issue, Persona, Requirements, Party, Value Stream, Business Ops", "0 of 14", "roots declared in the DRM or referenced by IRI"], ["Marketing taxonomies", "taxonomy-domain-marketing 1.0, taxonomy-domain-marketing-ci 1.0", "2 of 2", "166 + 71 classes, each used by a process"], ["Marketing ontology", "ontology-domain-marketing 1.1", "1 of 1", "23 services · 23 capabilities · 121 processes · 169 shapes"]];
 document.getElementById("ledger").innerHTML=`<thead><tr><th>Tier</th><th>Modules</th><th>Files supplied</th><th>Size</th></tr></thead><tbody>${ledgerRows.map((r,i)=>`<tr><td><span class="tierpill" style="text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)"><i class="dot" style="background:var(${TIERS[i].color})"></i>${r[0]}</span></td><td>${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</tbody>`;
 
+/* ---------- theme: chosen here, followed by every lineage page ---------- */
+function setTheme(t,save){
+  if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.th===t));
+  if(save){ try{ localStorage.setItem('mkt-lineage-theme',t) }catch(e){} }
+}
+document.querySelectorAll('[data-th]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.th,true)));
+try{ const t=localStorage.getItem('mkt-lineage-theme'); if(t) setTheme(t,false) }catch(e){}
 render();
 {const g=document.getElementById("graph");g.scrollLeft=Math.max(0,byId[sel].x-g.clientWidth+NW+40);}
 </script>
