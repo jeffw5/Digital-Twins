@@ -1,0 +1,161 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix valu: <https://ontologies.verizon.com/taxonomy-core-valuestream/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+valu:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-valuestream: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Value Stream, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-valuestream> ;
+  dct:title "Taxonomy | Core | Value Stream"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-valuestream/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Value Stream"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example CustomerAcquisitionOnboarding, CustomerSupportServiceAssurance, DataAnalyticsInsights) resolve to declared classes."@en .
+
+valu:CustomerAcquisitionOnboarding
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/7b9ed32d-cc23-4946-84af-6250a0fe3ac4> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Customer Acquisition & Onboarding"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:CustomerSupportServiceAssurance
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/d71d12cf-d22a-452c-9bf0-58e9889e0d47> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Customer Support & Service Assurance"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:DataAnalyticsInsights
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/e66c3262-7c3f-4937-9072-440b18fc5dc3> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Data Analytics & Insights"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:InfrastructureFacilityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/442abb9f-d280-4d9c-96d7-51b7aafcd145> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Infrastructure & Facility Management"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:MarketingBrandManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/6634ec81-53d9-43a2-a1b5-85cf8ce28b0b> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Marketing & Brand Management"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:NetworkProvisioningMaintenance
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/3f512122-7b2c-4a08-a078-7a2879dabbe6> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Network Provisioning & Maintenance"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:OrderToCash
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/9b96301d-0729-4bd7-b7da-7ef4501253dd> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash"@en ;
+  rdfs:subClassOf valu:ValueStream ;
+  skos:altLabel "O2C"@en .
+
+valu:OrderToCashCustomerServiceSupport
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/354b12a8-736d-423b-b3e2-e10767dd5dde> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Customer Service & Support"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Customer Service & Support"@en .
+
+valu:OrderToCashInventoryManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/2b860441-47ac-4769-8f23-2b9926cd0c54> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Inventory Management"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Inventory Management"@en .
+
+valu:OrderToCashInvoicing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/07e5ee24-46ff-4a30-b4d5-65b7e5233b47> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Invoicing"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Invoicing"@en .
+
+valu:OrderToCashOrderFulfillment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/78901bd3-5c99-4752-bb57-458e88189de2> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Order Fulfillment"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Order Fulfillment"@en .
+
+valu:OrderToCashOrderManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/b20f9761-1f6c-47b0-9579-5cbb1196e768> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Order Management"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Order Management"@en .
+
+valu:OrderToCashPaymentProcessing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/16907b49-eae7-452c-803b-faa7b0582535> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Payment Processing"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Payment Processing"@en .
+
+valu:OrderToCashRevenueRecognition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/c3c510a0-22df-41a1-b129-54a24e46f46b> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Order to Cash Revenue Recognition"@en ;
+  rdfs:subClassOf valu:OrderToCash ;
+  skos:altLabel "O2C Revenue Recognition"@en .
+
+valu:ProductDevelopmentInnovation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/a754d753-80a0-4636-bfdc-1e9df96be5c0> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Product Development & Innovation"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:RegulatoryComplianceGovernance
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/0fc151dc-6e2c-4356-9140-8e3ea14da63a> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Regulatory Compliance & Governance"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:RevenueManagementBilling
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/c2a9d98f-fea3-4b9b-bb00-8065cbca3fa1> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Revenue Management & Billing"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:SupplyChainManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/fb50bc34-a0cb-483f-81f9-497d336fc530> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Supply Chain Management"@en ;
+  rdfs:subClassOf valu:ValueStream .
+
+valu:ValueStream
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-valuestream/d2bbbe96-dc61-42dd-a48c-faf38a3d65dd> ;
+  rdfs:isDefinedBy valu: ;
+  rdfs:label "Value Stream"@en .

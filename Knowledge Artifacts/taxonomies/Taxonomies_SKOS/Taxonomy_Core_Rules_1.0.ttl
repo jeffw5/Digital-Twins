@@ -1,0 +1,225 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Rules_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-rules/>.
+
+<https://ontologies.verizon.com/taxonomy-core-rules/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Rules"@en ;
+  skos:editorialNote "Verizon Knowledge Engineering acknowledges that subject area matter content contained within this taxonomy was created with the assistance of VZGPT (vzgpt.verizon.com). " ;
+  dct:description "The rules taxonomy categorizes business rules based on their purpose and execution.  It helps to define and constrain relationships between entities, ensuring data integrity, automate decision-making by evaluating conditions and executing actions based on predefined logic and control the order and execution of tasks within a business process, ensuring consistent and predictable outcomes."@en ;
+  dct:title "Taxonomy | Core | Rules"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-rules/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:48:13.959Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-10-01T20:15:44.738Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Rules .
+
+tx:ActionEnablerRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Action Enabler Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/bbb126d7-188f-4605-8c80-3c86a6c9c044> ;
+  skos:broader tx:DecisionLogic .
+
+tx:DecisionLogic
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Decision Logic"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832> ;
+  skos:narrower tx:ActionEnablerRule, tx:DerivationRule, tx:ConstraintRule, tx:Guideline ;
+  skos:broader tx:Rules .
+
+tx:ComputationRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Computation Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/f685d7bb-32de-49f1-80f0-82a6d833beac> ;
+  skos:broader tx:DerivationRule .
+
+tx:DerivationRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Derivation Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/7eddaa82-f972-4884-99e8-52312de04b8f> ;
+  skos:narrower tx:ComputationRule, tx:InferenceRule ;
+  skos:broader tx:DecisionLogic .
+
+tx:ConstraintRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Constraint Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d> ;
+  skos:broader tx:DecisionLogic ;
+  skos:narrower tx:MandatoryConstraint, tx:OperationConstraint, tx:StimulusResponse, tx:StructureConstraint .
+
+tx:Rules
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Rules"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-01T20:15:55.510Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab> ;
+  skos:narrower tx:DecisionLogic, tx:StructuralRule, tx:ProcessFlow ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-rules/> .
+
+tx:Facts
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Facts"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/c7175f30-31b8-4965-9b46-18751c6fa24c> ;
+  skos:broader tx:StructuralRule .
+
+tx:StructuralRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Structural Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/89500d88-a545-4741-905e-4753793d9c8d> ;
+  skos:narrower tx:Facts, tx:Terms ;
+  skos:broader tx:Rules .
+
+tx:Guideline
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Guideline"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/e5cb3a2a-5ad5-4830-9982-d136e55798c6> ;
+  skos:broader tx:DecisionLogic .
+
+tx:InferenceRule
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Inference Rule"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/dcfed8cd-9779-4e12-9c72-5179ea71dee8> ;
+  skos:broader tx:DerivationRule .
+
+tx:MandatoryConstraint
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Mandatory Constraint"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/1071b57a-5253-45bc-8974-35415e92e356> ;
+  skos:broader tx:ConstraintRule .
+
+tx:OperationConstraint
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Operation Constraint"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/35514d06-e3cf-4900-a5f4-c2e253383a39> ;
+  skos:broader tx:ConstraintRule .
+
+tx:ProcessFlow
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Process Flow"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/9cc87075-f802-4093-bba5-900c273d892f> ;
+  skos:broader tx:Rules .
+
+tx:StimulusResponse
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Stimulus & Response"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/ce981f6c-7c48-4772-99d8-a4908c45ac10> ;
+  skos:broader tx:ConstraintRule .
+
+tx:StructureConstraint
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Structure Constraint"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/61910c6f-c011-457d-85ad-c82ccb8abd5d> ;
+  skos:broader tx:ConstraintRule .
+
+tx:Terms
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-rules/> ;
+  skos:prefLabel "Terms"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:07:52.380Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:15:39.253Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/0fd5e62e-e537-4a24-bd32-3a061fa852d4> ;
+  skos:broader tx:StructuralRule .

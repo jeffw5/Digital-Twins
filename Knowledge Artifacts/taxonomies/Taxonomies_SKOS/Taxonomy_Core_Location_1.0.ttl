@@ -1,0 +1,296 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-location/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Location_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-location/>.
+
+<https://ontologies.verizon.com/taxonomy-core-location/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Location"@en ;
+  dct:description "The location taxonomy is a hierarchical framework for organizing and classifying different types of locations for efficient management and analysis of location data across various applications. It distinguishes between geospatial locations defined by coordinates, logical locations based on network addresses or functional roles, and physical locations representing tangible spaces like buildings or rooms."@en ;
+  dct:title "Taxonomy | Core | Location"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-location/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:47:04.122Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-05T03:16:15.031Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Location .
+
+tx:Province
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Province"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-30T14:56:31.874Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/eef13307-b492-4edf-8a7c-c802443e9125> ;
+  skos:broader tx:StreetAddress .
+
+tx:City
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "City"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f5b8528b-dde9-4080-955b-eecdd4cfface> ;
+  skos:broader tx:StreetAddress .
+
+tx:StreetAddress
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Street Address"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/5af72fe5-7b0f-4480-b2c9-f07447785dd5> ;
+  skos:narrower tx:Province, tx:City, tx:Region, tx:State, tx:StreetName, tx:StreetNumber, tx:ZipCode ;
+  skos:broader tx:Physical .
+
+tx:EmailAddress
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Email Address"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/80e160e8-dd62-497f-9cb5-1249fa5a16e5> ;
+  skos:broader tx:Logical .
+
+tx:Logical
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Logical"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f46b5be3-1baf-41ed-b7fc-eb73ad7e1ccd> ;
+  skos:narrower tx:EmailAddress, tx:InternationalizedResourceIdentifier, tx:PhoneNumber, tx:PortNumber, tx:UniformResourceIdentifier, tx:UniformResourceLocator ;
+  skos:broader tx:Location .
+
+tx:Geospatial
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Geospatial"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f0845aa9-60ea-45e6-896a-29e56fbf25ab> ;
+  skos:broader tx:Location ;
+  skos:narrower tx:Latitude, tx:Longitude, tx:Polygon .
+
+tx:Location
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Location"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/b7a8cc47-e0a0-4113-a645-b41a61312257> ;
+  skos:narrower tx:Logical, tx:Geospatial, tx:Physical ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-location/> .
+
+tx:InternationalizedResourceIdentifier
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Internationalized Resource Identifier"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/2766a1ad-59a1-43b1-a120-a9e94342c77f> ;
+  skos:broader tx:Logical .
+
+tx:Latitude
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Latitude"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/bfd19d59-610c-4d96-80e5-417c7811dcd6> ;
+  skos:broader tx:Geospatial .
+
+tx:Longitude
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Longitude"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/29278555-1ea1-4bc2-a37d-5017472a42b1> ;
+  skos:broader tx:Geospatial .
+
+tx:PhoneNumber
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Phone Number"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3a2302f9-68e4-474f-bd09-178f86e7c872> ;
+  skos:broader tx:Logical .
+
+tx:Physical
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Physical"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/761dce3a-87f7-4ef4-9908-c3f01636d494> ;
+  skos:narrower tx:StreetAddress, tx:PoBox ;
+  skos:broader tx:Location .
+
+tx:PoBox
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "PO Box"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3d44d544-787b-40d5-9aee-0424839a1abc> ;
+  skos:broader tx:Physical .
+
+tx:Polygon
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Polygon"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/762f882a-95a4-4ac8-9d74-9ee34d67dfa2> ;
+  skos:broader tx:Geospatial .
+
+tx:PortNumber
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Port Number"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/457dda6b-1302-49e9-b6b7-6f85da16846b> ;
+  skos:broader tx:Logical .
+
+tx:Region
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Region"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/6078c876-3e28-440c-9ffe-48e78dff42e2> ;
+  skos:broader tx:StreetAddress .
+
+tx:State
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "State"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3df8b9c7-0ca1-4759-a32a-2c0caedd6627> ;
+  skos:broader tx:StreetAddress .
+
+tx:StreetName
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Street Name"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/cd65ace1-cad6-46b4-800c-9090c30998cd> ;
+  skos:broader tx:StreetAddress .
+
+tx:StreetNumber
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Street Number"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f7532539-c846-4ded-bdff-92c391f4c491> ;
+  skos:broader tx:StreetAddress .
+
+tx:UniformResourceIdentifier
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Uniform Resource Identifier"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/8e9e3fae-6300-4204-8c8d-01e33e629d0e> ;
+  skos:broader tx:Logical .
+
+tx:UniformResourceLocator
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "Uniform Resource Locator"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f657d669-19b4-4a89-9cfe-cded57dfdd3c> ;
+  skos:broader tx:Logical .
+
+tx:ZipCode
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-location/> ;
+  skos:prefLabel "ZIP Code"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:52:10.059Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:24:41.232Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/4f68e741-bc0b-4946-9123-7cf042aef7dc> ;
+  skos:broader tx:StreetAddress .

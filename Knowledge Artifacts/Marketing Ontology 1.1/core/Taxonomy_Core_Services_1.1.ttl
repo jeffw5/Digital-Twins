@@ -1,0 +1,694 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix serv: <https://ontologies.verizon.com/taxonomy-core-services/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+serv:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-services: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Services, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-services> ;
+  dct:title "Taxonomy | Core | Services"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-services/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Services"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example 1VZDataServices, AccessManagement, Advertising) resolve to declared classes."@en .
+
+<https://ontologies.verizon.com/taxonomy-core-services/1VZDataServices>
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/e0d50c0c-65cb-4df7-9b48-283263eef047> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "1VZ Data Services"@en ;
+  rdfs:subClassOf serv:DataAnalyticServices .
+
+serv:AccessManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/7c070949-418e-43e2-b817-c2005c48e358> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Access Management"@en ;
+  rdfs:subClassOf serv:ExceptionMonitoring .
+
+serv:Advertising
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/6072ca0d-7c0c-48d7-a6e2-20903e9034d2> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Advertising"@en ;
+  rdfs:subClassOf serv:MarketingManagement .
+
+serv:ApprovalManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/b8af245e-fea8-45d1-8044-e1e94bf72c8c> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Approval Management"@en ;
+  rdfs:subClassOf serv:ExceptionMonitoring .
+
+serv:AvailabilityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3164b053-fb4c-48ed-a2f2-f2aecb1e0405> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Availability Management"@en ;
+  rdfs:subClassOf serv:OperationsManagement .
+
+serv:BusinessOperations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/4b86c227-1255-4156-bcd8-35ddb4d65ed3> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Business Operations"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:BusinessServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/8d970fb2-8f7d-4bf3-afb6-7dce7d68b2d1> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Business Services"@en ;
+  rdfs:subClassOf serv:Services .
+
+serv:CampaignManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/8779028e-ecc6-404d-a4d9-d3be848b10f7> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Campaign Management"@en ;
+  rdfs:subClassOf serv:MarketingManagement .
+
+serv:CapacityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/a381f0e5-70a8-4e89-884b-2c63a774addb> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Capacity Management"@en ;
+  rdfs:subClassOf serv:OperationsManagement .
+
+serv:CatalogServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/be4245dc-8626-4d96-ab44-8e25a9f09e31> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Catalog Services"@en ;
+  rdfs:subClassOf serv:DigitalAssetInventoryOnboarding .
+
+serv:CausalFactorAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/5ef9eef4-cbd4-49d9-8e16-4a1645f61c96> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Causal Factor Analysis"@en ;
+  rdfs:subClassOf serv:Investigation, serv:IssueManagement .
+
+serv:CertificationServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d3ccf443-ff03-4ebe-b807-be2229fb2eb6> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Certification Services"@en ;
+  rdfs:subClassOf serv:DigitalAssetInventoryOnboarding .
+
+serv:ChurnPredictionModeling
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3d8a90ff-4289-4be0-a943-8e9bf519fd02> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Churn Prediction Modeling"@en ;
+  rdfs:subClassOf serv:MarketingMonitoringMeasurement .
+
+serv:ClassificationServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3abfe899-7c0c-4e96-ab10-58fc7590aab5> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Classification Services"@en ;
+  rdfs:subClassOf serv:DigitalAssetInventoryOnboarding .
+
+serv:CommercialServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f3917088-c3df-4539-9410-e11530b0c9d2> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Commercial Services"@en ;
+  rdfs:subClassOf serv:BusinessServices .
+
+serv:Communication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/1dd41498-2dbe-434a-857d-9e80e65b437a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Communication"@en ;
+  rdfs:subClassOf serv:NetworkServices .
+
+serv:Communications
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f59420c3-c47a-48a3-a73a-9405a4081589> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Communications"@en ;
+  rdfs:subClassOf serv:ExperienceManagement .
+
+serv:CommunicationsEngagementManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/905ce2da-5a80-4767-8f1a-d4c61bc8f21a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Communications & Engagement Management"@en ;
+  rdfs:subClassOf serv:LifecycleStandards .
+
+serv:CompetitiveAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/7740e61e-194b-4e76-86d2-25b0b837d74a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Competitive Analysis"@en ;
+  rdfs:subClassOf serv:MarketingManagement .
+
+serv:CompetitiveBenchmarking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/652976ef-3c66-4daa-b6ba-84e1d15c4be7> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Competitive Benchmarking"@en ;
+  rdfs:subClassOf serv:CompetitiveAnalysis .
+
+serv:ContractManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/fd648694-b1ca-4f53-8887-49298cd58c19> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Contract Management"@en ;
+  rdfs:subClassOf serv:CommercialServices .
+
+serv:CustomerSegmentation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/5e2f16d7-6e6a-483e-ab27-2ba27923ee2c> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Customer Segmentation"@en ;
+  rdfs:subClassOf serv:MarketingMonitoringMeasurement .
+
+serv:CustomerServiceDisruption
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/70979989-cbd3-4ce8-a264-6fd5f7292d6b> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Customer Service Disruption"@en ;
+  rdfs:subClassOf serv:ExperienceManagement .
+
+serv:CustomerServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/b14b236f-657b-4e83-9bfe-e0496c174b79> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Customer Services"@en ;
+  rdfs:subClassOf serv:BusinessServices .
+
+serv:CustomerSupport
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/1e2059ca-0e52-4200-9637-2b78a4bb2516> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Customer Support"@en ;
+  rdfs:subClassOf serv:CustomerServices .
+
+serv:DataAnalyticServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f30a5781-2a77-4938-8a7d-aef538fb3e2f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Data & Analytic Services"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:DataInvestigations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d3cbdc2b-23e1-4c5d-abb5-2b378970aa12> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Data Investigations"@en ;
+  rdfs:subClassOf serv:DetectiveControls .
+
+serv:DataStewardship
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/08bdbaec-4b32-4891-91c9-348b35c1f952> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Data Stewardship"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:DefineLifecycleControls
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/a59e08f9-018a-4bdd-a460-92dd96bfa624> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Define Lifecycle Controls"@en ;
+  rdfs:subClassOf serv:LifecycleStandards .
+
+serv:DefineOperationalControls
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/7575926b-dbc1-43b7-843b-ba695b1c0625> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Define Operational Controls"@en ;
+  rdfs:subClassOf serv:LifecycleStandards .
+
+serv:DefinePolicyControls
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/82332cd2-d5d1-4dbc-b21f-c308a976225e> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Define Policy Controls"@en ;
+  rdfs:subClassOf serv:LifecycleStandards .
+
+serv:DefineTargetOperatingModel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/b2db9784-c14a-4248-9c66-a851f6e20530> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Define Target Operating Model"@en ;
+  rdfs:subClassOf serv:LifecycleStandards .
+
+serv:DemandManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f3a042ed-7f63-4b26-91d1-09af231404c7> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Demand Management"@en ;
+  rdfs:subClassOf serv:CommercialServices, serv:CustomerServices .
+
+serv:DetectiveControls
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/0f6629be-426b-4a8c-807f-c4f5c8720ef1> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Detective Controls"@en ;
+  rdfs:subClassOf serv:GovernanceServices .
+
+serv:Diagnostics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f306247d-a42c-4f6a-9438-379bdd51e90c> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Diagnostics"@en ;
+  rdfs:subClassOf serv:Investigation .
+
+serv:DigitalAssetInventoryOnboarding
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/934d5d67-a641-48df-8a24-dbeafa56efd3> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Digital Asset Inventory Onboarding"@en ;
+  rdfs:subClassOf serv:PreventiveControls .
+
+serv:DigitalAssetsOrderEntry
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/b53250cf-0621-414d-a411-da4ce8b9dc10> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Digital Assets Order Entry"@en ;
+  rdfs:subClassOf serv:DigitalAssetsOrderManagement .
+
+serv:DigitalAssetsOrderFulfillment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/8224dcd7-27ab-4887-88b6-ac2cea8ee2d5> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Digital Assets Order Fulfillment"@en ;
+  rdfs:subClassOf serv:DigitalAssetsOrderManagement .
+
+serv:DigitalAssetsOrderManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/541dd457-3e00-4da2-961f-5f0e357dfe96> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Digital Assets Order Management"@en ;
+  rdfs:subClassOf serv:PreventiveControls .
+
+serv:EnrichmentServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/fb8cacf5-ea6d-4bbf-811f-471f41718516> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Enrichment Services"@en ;
+  rdfs:subClassOf serv:DigitalAssetInventoryOnboarding .
+
+serv:Entertainment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/dc7c3182-b6d3-4f7c-8f47-bb052d5c33c3> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Entertainment"@en ;
+  rdfs:subClassOf serv:NetworkServices .
+
+serv:ExceptionMonitoring
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/cb908011-6278-4ddf-84d2-af2f33ff71e7> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Exception Monitoring"@en ;
+  rdfs:subClassOf serv:MeasurementServices .
+
+serv:ExperienceManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/e250e192-cc8a-4ca3-b6b2-e64dcaa740df> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Experience Management"@en ;
+  rdfs:subClassOf serv:CustomerServices .
+
+serv:FinancialAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/9bd90c7d-420f-40ac-b40c-d64f1b23a4cb> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Financial Analytics"@en ;
+  rdfs:subClassOf serv:DataAnalyticServices .
+
+serv:FinancialServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/50cf010d-373f-431d-b05c-5f91f567a182> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Financial Services"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:FunctionalServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d00bfe81-9c73-4da0-b114-e4fb97cd557c> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Functional Services"@en ;
+  rdfs:subClassOf serv:Services .
+
+serv:GovernanceServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/92bbfe73-e21c-4722-9702-f199bf0e30a5> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Governance Services"@en ;
+  rdfs:subClassOf serv:DataAnalyticServices .
+
+serv:ImpactAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/6eb616af-c5fe-4afa-9eba-d2e2c3abcbf4> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Impact Analysis"@en ;
+  rdfs:subClassOf serv:Investigation .
+
+serv:IncidentManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d58262d4-227e-4faa-ae8f-351735f93604> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Incident Management"@en ;
+  rdfs:subClassOf serv:CustomerServices .
+
+serv:IndustryStandards
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/32cd9f0d-86cc-4c6d-8290-fda12936afe4> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Industry Standards"@en ;
+  rdfs:subClassOf serv:CompetitiveAnalysis .
+
+serv:Innovation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/53d1833d-7a96-49b6-acb3-d17a4655d81d> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Innovation"@en ;
+  rdfs:subClassOf serv:CompetitiveAnalysis .
+
+serv:Investigation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f47a9eca-a450-4146-9ccf-0635c9473765> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Investigation"@en ;
+  rdfs:subClassOf serv:OperationsManagement .
+
+serv:IssueManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/54c92dbe-83cc-4e6c-ae19-3ef0bc2455ad> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Issue Management"@en ;
+  rdfs:subClassOf serv:DetectiveControls, serv:OperationsManagement .
+
+serv:IssueMitigation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/7976c177-7cef-48aa-a93a-e5c1d444cc8f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Issue Mitigation"@en ;
+  rdfs:subClassOf serv:IssueManagement .
+
+serv:IssueResolution
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3c17c473-c528-4dd6-b249-c594743f7c76> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Issue Resolution"@en ;
+  rdfs:subClassOf serv:IssueManagement .
+
+serv:JourneyMapping
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/af2ce8b3-45bf-400c-aeb1-9603536b8e83> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Journey Mapping"@en ;
+  rdfs:subClassOf serv:ExperienceManagement .
+
+serv:KnowledgeExploration
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/86729d8b-555a-4227-b51b-099bcf754677> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Knowledge Exploration"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:LifecycleManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/86151fbf-d47e-4f15-a679-f24c62f68626> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Lifecycle Management"@en ;
+  rdfs:subClassOf serv:PreventiveControls .
+
+serv:LifecycleStandards
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/6db69326-15e0-4898-bf25-4843f8c259d2> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Lifecycle Standards"@en ;
+  rdfs:subClassOf serv:GovernanceServices .
+
+serv:MarketDifferentiation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/2a4a7478-e54b-4413-a752-61b9271496d8> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Market Differentiation"@en ;
+  rdfs:subClassOf serv:CompetitiveAnalysis .
+
+serv:MarketingManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/862880b2-fe6e-4ed4-9148-09ed72d21400> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Marketing Management"@en ;
+  rdfs:subClassOf serv:CommercialServices .
+
+serv:MarketingMonitoringMeasurement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/838bfbfb-a2b6-404d-bb32-56fb7c8b54e6> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Marketing Monitoring & Measurement"@en ;
+  rdfs:subClassOf serv:MarketingManagement .
+
+serv:MeasurementServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/560babe9-09be-40a6-b477-a4c85df630a9> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Measurement Services"@en ;
+  rdfs:subClassOf serv:DetectiveControls, serv:OperationsManagement .
+
+serv:MetricsAsAService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/bd3d02cc-8b70-4894-a610-bdce49482b98> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Metrics as a Service"@en ;
+  rdfs:subClassOf serv:DataAnalyticServices .
+
+serv:MonitoringServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/6417287e-3b0d-46f8-b9bf-059fababf16d> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Monitoring Services"@en ;
+  rdfs:subClassOf serv:DetectiveControls, serv:OperationsManagement .
+
+serv:NetworkAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/ac2ff6e4-e1ea-469d-a8e1-9f1685f1d5b2> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Network Analytics"@en ;
+  rdfs:subClassOf serv:DataAnalyticServices .
+
+serv:NetworkServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/a847b80b-58a4-48e4-8a93-0744a540ecfc> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Network Services"@en ;
+  rdfs:subClassOf serv:BusinessServices .
+
+serv:NetworkSupport
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d54be5f7-9e90-48c6-81f1-0599c022e350> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Network Support"@en ;
+  rdfs:subClassOf serv:NetworkServices .
+
+serv:OnboardingManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/e013b208-b10d-4ad3-99d5-38a2b8b55c0a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Onboarding Management"@en ;
+  rdfs:subClassOf serv:ExceptionMonitoring .
+
+serv:OperationsManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/994db5b9-03f0-42cd-a96b-bc2fdec9760c> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Operations Management"@en ;
+  rdfs:subClassOf serv:BusinessOperations, serv:DetectiveControls .
+
+serv:OrderEntry
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/9a5776bd-7e54-4d76-b4f1-c6f9456adc22> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Order Entry"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:OrderFulfillment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/c684e827-8c1b-4963-88dd-c00c97182266> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Order Fulfillment"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:PolicyManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/a210ed79-0a37-4a9b-b34a-bae1f759b8f7> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Policy Management"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:PreventiveControls
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/5b91395c-a828-4106-84e9-c47f6083889f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Preventive Controls"@en ;
+  rdfs:subClassOf serv:GovernanceServices .
+
+serv:PricingManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/aee017a8-996d-479f-b1ca-51749542b90f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Pricing Management"@en ;
+  rdfs:subClassOf serv:CommercialServices .
+
+serv:ProcessRecasting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/b4940367-244a-41bc-ad17-b46dabc6869f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Process Recasting"@en ;
+  rdfs:subClassOf serv:OperationsManagement .
+
+serv:ProductCertification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/0de27793-602b-4e03-9da1-460a5f4dc6a4> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Product Certification"@en ;
+  rdfs:subClassOf serv:PreventiveControls .
+
+serv:ProductServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/cef5f6cd-e48c-45a0-85a5-b8ef63ddc3c8> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Product Services"@en ;
+  rdfs:subClassOf serv:BusinessServices .
+
+serv:ProfilingServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/562594c2-2ea9-4097-bf39-4cceed55c241> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Profiling Services"@en ;
+  rdfs:subClassOf serv:DigitalAssetInventoryOnboarding .
+
+serv:QualityOfService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/18e58e7d-3c3b-47cf-bcda-1eda9cee63cf> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Quality of Service"@en ;
+  rdfs:subClassOf serv:NetworkServices ;
+  skos:altLabel "QoS"@en .
+
+serv:RetailOperations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/f5bec479-73a7-4981-a4a5-1cc85fbf081d> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Retail Operations"@en ;
+  rdfs:subClassOf serv:CommercialServices .
+
+serv:RiskManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/19acad5b-c36a-41b4-b444-8d4475dda9c6> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Risk Management"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:SalesAccount
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/9d4a500b-ee39-42fc-b2ea-70428ee838e4> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Sales Account"@en ;
+  rdfs:subClassOf serv:SalesOperations .
+
+serv:SalesOperations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/ef345b4a-8d59-4f9a-9829-7aa77b329fa0> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Sales Operations"@en ;
+  rdfs:subClassOf serv:CommercialServices .
+
+serv:SalesServices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3049dd45-6c36-4831-8852-22041475c68e> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Sales Services"@en ;
+  rdfs:subClassOf serv:SalesOperations .
+
+serv:SearchDiscovery
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/ec2fcee3-b606-4686-b8f9-2653fcdb51fb> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Search & Discovery"@en ;
+  rdfs:subClassOf serv:DigitalAssetsOrderManagement .
+
+serv:SecurityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/38375569-16ce-4824-932c-53a7159cc3bb> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Security Management"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:ServiceActivation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/5a4d1e5c-dfc8-4520-8a99-cc6b9f7c613b> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Service Activation"@en ;
+  rdfs:subClassOf serv:NetworkServices .
+
+serv:ServiceLevelManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/c0c59e21-9009-406f-92dc-9392f49e260a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Service Level Management"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:ServicePlanning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/3444e17b-db62-473f-aa50-034df49bde2a> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Service Planning"@en ;
+  rdfs:subClassOf serv:NetworkServices .
+
+serv:ServiceResourceAssignment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/73e1778f-54ae-4e3e-a287-995bd6f5d822> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Service Resource Assignment"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:ServiceUsageTracking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/8b087152-1cb0-4ac8-bc9b-4b8d5eaf1755> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Service Usage Tracking"@en ;
+  rdfs:subClassOf serv:FunctionalServices .
+
+serv:Services
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/fd9504c5-bc85-4272-9dec-0899d435310f> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Services"@en .
+
+serv:SubscriptionManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/d8d96b81-95aa-486e-a4df-f9d8d3a2dc7d> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Subscription Management"@en ;
+  rdfs:subClassOf serv:CustomerServices .
+
+serv:ThirdPartyDataSharing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/c4f03c82-2ad9-4e43-a461-d5e8f4385ab3> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Third Party Data Sharing"@en ;
+  rdfs:subClassOf serv:PreventiveControls ;
+  skos:altLabel "3rd Party Data Sharing"@en .
+
+serv:ThreatManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-services/5d3bff6b-ad4c-40cf-9706-7756525053c1> ;
+  rdfs:isDefinedBy serv: ;
+  rdfs:label "Threat Management"@en ;
+  rdfs:subClassOf serv:FunctionalServices .

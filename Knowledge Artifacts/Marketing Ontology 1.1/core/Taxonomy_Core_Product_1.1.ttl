@@ -1,0 +1,502 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prod: <https://ontologies.verizon.com/taxonomy-core-product/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+prod:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-product: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Product, is not declared in ontology-core-domain yet."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-product> ;
+  dct:title "Taxonomy | Core | Product"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-product/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Product"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Accessories, AudioProducts, BusinessEquipment) resolve to declared classes."@en .
+
+prod:Accessories
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b993313e-a480-4ecd-ba6a-122fe6c8fc87> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Accessories"@en ;
+  rdfs:subClassOf prod:ProductCatalog .
+
+prod:AudioProducts
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/4de0cb1b-12c8-4ce4-b01e-328113067cf2> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Audio Products"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:BusinessEquipment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/33c6a5b9-dae6-492c-aabc-823bb7a4049d> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Business Equipment"@en ;
+  rdfs:subClassOf prod:ProductCatalog .
+
+prod:ChargersCables
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/fdf69db1-0546-4e1b-a76f-6bbe833be6d9> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Chargers & Cables"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:CompetitivePricingAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/38ce7546-aa8e-480e-9414-e7695991350a> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Competitive Pricing Analysis"@en ;
+  rdfs:subClassOf prod:PricingStrategy .
+
+prod:ComponentParts
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/10e89c14-067a-445b-846f-8fbb58fbd749> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Component Parts"@en ;
+  rdfs:subClassOf prod:PhysicalProduct .
+
+prod:Conceptualization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/28afeb77-ae25-4032-b6e5-e55506ee02d3> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Conceptualization"@en ;
+  rdfs:subClassOf prod:Development .
+
+prod:ConnectedDevices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/4213953c-9948-49c3-a35d-c7430355d508> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Connected Devices"@en ;
+  rdfs:subClassOf prod:ProductCatalog ;
+  skos:altLabel "IOT Devices"@en, "Internet of Things Devices"@en .
+
+prod:ConnectedHomeDevices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/6f7953d3-3abe-4199-9256-02897c05782a> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Connected Home Devices"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:Cost
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cccd0543-2b77-4ba9-8425-455f7e74199b> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Cost"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:CustomerPremisesEquipment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/33a3c292-14d8-4928-b4ef-8b4eff896f6d> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Customer Premises Equipment"@en ;
+  rdfs:subClassOf prod:ProductCatalog ;
+  skos:altLabel "CPE"@en .
+
+prod:DataFlow
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9c35d83d-e8f9-4ad7-82cf-80b6e02b5fa1> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Data Flow"@en ;
+  rdfs:subClassOf prod:ProductFunction .
+
+prod:Decline
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b9fd4735-f1cd-4148-973f-9befc955b975> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Decline"@en ;
+  rdfs:subClassOf prod:ProductLifecycle .
+
+prod:Design
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/bf70e8ee-55f2-47c3-bc30-cb93cc5e010b> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Design"@en ;
+  rdfs:subClassOf prod:Development .
+
+prod:Development
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/2a828e6e-a386-4094-9431-bff29903b82e> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Development"@en ;
+  rdfs:subClassOf prod:ProductLifecycle .
+
+prod:DiscountsPromotions
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/327c039d-596f-4a51-ba78-117056bfcdb3> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Discounts & Promotions"@en ;
+  rdfs:subClassOf prod:PricingStrategy .
+
+prod:FunctionalProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9b288faf-4708-4e92-aeb3-c707f073be16> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Functional Product"@en ;
+  rdfs:subClassOf prod:IndividualProduct .
+
+prod:GamingProducts
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/0863ecaa-c2a9-4deb-83cc-3ef009ac2e6e> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Gaming Products"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:Growth
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cf2fa273-8f0d-48f4-aaef-dd343ddcecd7> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Growth"@en ;
+  rdfs:subClassOf prod:ProductLifecycle .
+
+prod:Hum
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/f32ea0e0-7d77-4222-900c-035516292881> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Hum"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:IndividualProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1f14570a-2e65-43ee-9f25-4f4d090dffe2> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Individual Product"@en ;
+  rdfs:subClassOf prod:PhysicalProduct .
+
+prod:Introduction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/630b8e71-c979-4caa-8a4b-df85d041f86f> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Introduction"@en ;
+  rdfs:subClassOf prod:ProductLifecycle .
+
+prod:IterativeDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/7131d06c-03fe-45eb-9416-fc99997c3270> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Iterative Development"@en ;
+  rdfs:subClassOf prod:Development .
+
+prod:Laptop
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/45324bf9-ea97-4cb9-9538-2e61a2ad99d5> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Laptop"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:MarketingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/56338be9-c94d-41a7-a70e-b7780accb79c> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Marketing Strategy"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:Maturity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/ad79bbe7-4062-435f-bac8-bdce82916878> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Maturity"@en ;
+  rdfs:subClassOf prod:ProductLifecycle .
+
+prod:MobileHotspotDevices
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e6595f8d-8359-4862-b7a7-4ccf2c93eee3> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Mobile Hotspot Devices"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:NetworkInfrastructure
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c48ccacf-3ea4-4f18-a8e5-4faa2a242317> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Network Infrastructure"@en ;
+  rdfs:subClassOf prod:BusinessEquipment .
+
+prod:OfficeEquipment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d17ed6a0-e9a4-48dd-94cb-fa9e9e2a5c19> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Office Equipment"@en ;
+  rdfs:subClassOf prod:BusinessEquipment .
+
+prod:PhoneAttachments
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cdcc0024-4095-411a-9741-6b0704a00f32> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Phone Attachments"@en ;
+  rdfs:subClassOf prod:Accessories ;
+  skos:altLabel "Mobile Phone Attachments"@en, "Smartphone Attachments"@en .
+
+prod:PhoneCases
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9299fa9d-a770-4837-8c27-54e8ff980c2e> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Phone Cases"@en ;
+  rdfs:subClassOf prod:Accessories ;
+  skos:altLabel "Mobile Phone Cases"@en, "Smartphone Cases"@en .
+
+prod:PhysicalProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b2a2bb60-2889-4491-a1e0-b477b90db020> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Physical Product"@en ;
+  rdfs:subClassOf prod:Product .
+
+prod:PlatformInfrastructure
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1e8c437c-7f89-49de-90bf-8f073d8b81e9> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Platform Infrastructure"@en ;
+  rdfs:subClassOf prod:BusinessEquipment .
+
+prod:PricingModelsStructures
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e7b98a6e-fbbf-45b7-a002-f08630d63973> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Pricing Models & Structures"@en ;
+  rdfs:subClassOf prod:PricingStrategy .
+
+prod:PricingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/99d4084d-17f2-4085-8e1d-5063e8f2b9ea> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Pricing Strategy"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:Product
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/55d926af-8b7f-4286-ac78-c23147425325> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product"@en .
+
+prod:ProductBusinessDrivers
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/38949d9c-08d2-4418-8d7f-124371cac3ed> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Business Drivers"@en ;
+  rdfs:subClassOf prod:Product .
+
+prod:ProductCatalog
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c3497267-aaed-4001-94bd-b88b3cc98d7a> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Catalog"@en ;
+  rdfs:subClassOf prod:ProductCollection .
+
+prod:ProductCollection
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/aadffbd2-3117-4275-acde-cd1d290388ab> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Collection"@en ;
+  rdfs:subClassOf prod:PhysicalProduct .
+
+prod:ProductCompatibility
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1f082bdd-6ed2-4389-b62a-760c83dc0bfe> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Compatibility"@en ;
+  rdfs:subClassOf prod:ProductFeatures .
+
+prod:ProductConcept
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d0bf4e2d-69b1-4bd9-ab43-baaaba2608f8> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Concept"@en ;
+  rdfs:subClassOf prod:Product .
+
+prod:ProductFeatures
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/90e5ee79-97a9-479f-842e-da93ff13f264> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Features"@en ;
+  rdfs:subClassOf prod:ProductFunction .
+
+prod:ProductFunction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/6a225129-bada-45c7-847f-15fbcf2fb8ad> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Function"@en ;
+  rdfs:subClassOf prod:Product .
+
+prod:ProductInnovation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/36648585-d675-4be3-a635-6d5a2d843cda> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Innovation"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:ProductLifecycle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/2b983b53-8753-4ebd-98ec-115849d248c4> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Lifecycle"@en ;
+  rdfs:subClassOf prod:Product .
+
+prod:ProductReviewsRatings
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c023c13c-42cc-4977-905c-b346d5ae0ea1> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Reviews & Ratings"@en ;
+  rdfs:subClassOf prod:ProductFeatures .
+
+prod:ProductWarrantySupport
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/10cfae27-e8ae-453c-9720-dca4158e7a99> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Product Warranty & Support"@en ;
+  rdfs:subClassOf prod:ProductFeatures .
+
+prod:Prototyping
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e5120c3b-1c88-4e3b-9405-dd5d439df49a> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Prototyping"@en ;
+  rdfs:subClassOf prod:Development .
+
+prod:RevenueStream
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/f4b12089-f62d-4434-8d95-5a20829285af> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Revenue Stream"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:Roadmap
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d4c29a25-07fc-4743-8ffc-2a64aa972e84> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Roadmap"@en ;
+  rdfs:subClassOf prod:ProductFunction .
+
+prod:Routers
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/673b63c9-7bd2-48b2-b929-1924549da859> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Routers"@en ;
+  rdfs:subClassOf prod:CustomerPremisesEquipment .
+
+prod:SalesStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/76163810-ff6f-4a29-a982-4f00762ef9b6> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Sales Strategy"@en ;
+  rdfs:subClassOf prod:ProductBusinessDrivers .
+
+prod:ScreenProtectors
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/320a87ad-f039-4734-9e07-f69199b63a49> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Screen Protectors"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:SecurityCameras
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1a81fad1-aed0-4cf6-9255-d3313d32716f> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Security Cameras"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:SetTopBoxes
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1370fb71-70c3-482c-bfd9-3ff189217ea3> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Set-Top Boxes"@en ;
+  rdfs:subClassOf prod:CustomerPremisesEquipment .
+
+prod:SmartHomeProducts
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/df4d7681-6b9c-46ea-839a-49f74b934650> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Smart Home Products"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:Smartphone
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1aab7e8e-c693-4c8c-9617-4e2c5cfc4eac> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Smartphone"@en ;
+  rdfs:subClassOf prod:ProductCatalog ;
+  skos:altLabel "Cell Phone"@en, "Mobile Phone"@en .
+
+prod:Smartwatch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/66e3c61d-78d8-409d-ac0b-1d1515998940> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Smartwatch"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:SuppliedProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b9f4ec9b-19ac-4079-9a18-c531248c3085> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Supplied Product"@en ;
+  rdfs:subClassOf prod:IndividualProduct .
+
+prod:SystemArchitecture
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/127b0c52-4e5e-4481-978d-db9276eda4c9> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "System Architecture"@en ;
+  rdfs:subClassOf prod:ProductFunction .
+
+prod:Tablet
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/75840c61-e574-4b36-80c4-a132397b490a> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Tablet"@en ;
+  rdfs:subClassOf prod:ConnectedDevices .
+
+prod:TabletAccessories
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cab062c9-31e0-4457-9a45-6714306ce08d> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Tablet Accessories"@en ;
+  rdfs:subClassOf prod:Accessories .
+
+prod:TechnicalProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e22e9c45-079c-455d-905b-eead8d1ffdb2> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Technical Product"@en ;
+  rdfs:subClassOf prod:IndividualProduct .
+
+prod:Testing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/5f28b7b2-ffc6-417c-a5d2-ae705ddd8e24> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "Testing"@en ;
+  rdfs:subClassOf prod:Development .
+
+prod:USBModems
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b190ad9b-c990-4499-b0db-18def7ec5b83> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "USB Modems"@en ;
+  rdfs:subClassOf prod:CustomerPremisesEquipment ;
+  skos:altLabel "Modems"@en .
+
+prod:UserJourney
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/a59cd442-de32-4439-b6c9-4e17ad59d8ae> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "User Journey"@en ;
+  rdfs:subClassOf prod:ProductConcept .
+
+prod:UserPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/418b0699-b138-4ad8-be46-c2e497e4987e> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "User Persona"@en ;
+  rdfs:subClassOf prod:ProductConcept .
+
+prod:UserStory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cabbe213-8a00-488a-a236-738f6dfb3a55> ;
+  rdfs:isDefinedBy prod: ;
+  rdfs:label "User Story"@en ;
+  rdfs:subClassOf prod:ProductConcept .

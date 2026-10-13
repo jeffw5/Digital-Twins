@@ -1,0 +1,175 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-process/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Process_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-process/>.
+
+<https://ontologies.verizon.com/taxonomy-core-process/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Process"@en ;
+  dct:description "The process taxonomy organizes and defines the elements of a process, such as process steps (individual actions or tasks), observations (data gathered during the process) and measurements (quantifiable values derived from observations) to provide a structured understanding of how a process works."@en ;
+  dct:title "Taxonomy | Core | Process"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-process/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:47:40.095Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-24T21:05:05.084Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Process .
+
+tx:Observation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Observation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T17:10:43.841Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-03T19:18:50.589Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/e8891a11-8b8c-41b0-b7a7-8925cbc67373> ;
+  skos:broader tx:Process .
+
+tx:Outputs
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Outputs"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/79e0c69a-4ac3-4aa8-8db0-9a1d4b88bddf> ;
+  skos:broader tx:ProcessStep ;
+  skos:narrower tx:Approval .
+
+tx:Inputs
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Inputs"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/96859350-75b5-448b-92fa-4118a91c19b7> ;
+  skos:broader tx:ProcessStep .
+
+tx:Customer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Customer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/174e19f3-242b-4e90-ab72-6d3f4f394182> ;
+  skos:broader tx:ProcessStep .
+
+tx:Approval
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Approval"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:10:43.841Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:29:44.699Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/124c1729-adcd-471f-aef9-9420910552ea> ;
+  skos:broader tx:Outputs .
+
+tx:ProcessStep
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Process Step"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T17:10:43.841Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/46951ae7-a7b9-4353-a906-e1a3ffdceaac> ;
+  skos:narrower tx:Outputs, tx:Inputs, tx:Customer, tx:Supplier, tx:ProcessAction ;
+  skos:broader tx:Process .
+
+tx:Measurement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Measurement"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:15:59.510Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/d52fa6c2-e3cf-47bf-982c-c422728fb1d0> ;
+  skos:broader tx:Process .
+
+tx:Process
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Process"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T17:10:43.841Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/660e0439-8caa-4a1d-8881-92cd5dc9fafe> ;
+  skos:narrower tx:Observation, tx:ProcessStep, tx:Measurement ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-process/> .
+
+tx:Supplier
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Supplier"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/87fa6239-464d-465f-8909-2a520f2c12bf> ;
+  skos:broader tx:ProcessStep .
+
+tx:ProcessAction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Process Action"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/0090c042-fdc7-4a12-8657-a837806618b7> ;
+  skos:broader tx:ProcessStep ;
+  skos:narrower tx:DiscreteAction, tx:DecisionAction .
+
+tx:DiscreteAction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Discrete Action"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/e1376625-5449-44dd-9444-b15c41152038> ;
+  skos:broader tx:ProcessAction .
+
+tx:DecisionAction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-process/> ;
+  skos:prefLabel "Decision Action"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-24T19:46:49.385Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:13:04.371Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/bdcaf56b-bba9-4cdc-9c09-140a3cc2018c> ;
+  skos:broader tx:ProcessAction .

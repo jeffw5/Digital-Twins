@@ -1,0 +1,4316 @@
+@prefix asset: <https://ontologies.verizon.com/ontology-core-asset/> .
+@prefix bo: <https://ontologies.verizon.com/taxonomy-core-businessoperations/> .
+@prefix cap: <https://ontologies.verizon.com/ontology-core-capability/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+@prefix evt: <https://ontologies.verizon.com/ontology-core-event/> .
+@prefix issue: <https://ontologies.verizon.com/taxonomy-core-issue/> .
+@prefix lc: <https://ontologies.verizon.com/taxonomy-core-lifecycle/> .
+@prefix loc: <https://ontologies.verizon.com/taxonomy-core-location/> .
+@prefix mkci: <https://ontologies.verizon.com/taxonomy-domain-marketing-ci/> .
+@prefix mkt: <https://ontologies.verizon.com/ontology-domain-marketing/> .
+@prefix mktx: <https://ontologies.verizon.com/taxonomy-domain-marketing/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix party: <https://ontologies.verizon.com/taxonomy-core-party/> .
+@prefix persona: <https://ontologies.verizon.com/taxonomy-core-persona/> .
+@prefix proc: <https://ontologies.verizon.com/taxonomy-core-process/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix req: <https://ontologies.verizon.com/ontology-core-requirements/> .
+@prefix role: <https://ontologies.verizon.com/taxonomy-core-role/> .
+@prefix rules: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix svc: <https://ontologies.verizon.com/taxonomy-core-services/> .
+@prefix vs: <https://ontologies.verizon.com/taxonomy-core-valuestream/> .
+@prefix vzro: <https://ontologies.verizon.com/bfo-relations/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+mkt:
+  a owl:Ontology ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  <http://verizon.ontologies.com/terms/certified> false ;
+  dct:contributor "milsh69", "sherri.miller1@one.verizon.com", "wallkje" ;
+  dct:created "2024-09-27T18:40:00.503Z"^^xsd:dateTime ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:description "The marketing domain ontology, built service-first on ontology-core-domain (the Domain Reference Model). It declares the marketing service catalog, the processes that enable each service and the capability each service enables, and the SHACL shapes that say what each process creates, uses, changes, targets or promotes. The terms those shapes point to are declared in taxonomy-domain-marketing and taxonomy-domain-marketing-ci."@en ;
+  dct:language "en" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:title "Ontology | Domain | Marketing"@en ;
+  owl:imports <http://purl.obolibrary.org/obo/ro/core.owl>, <https://ontologies.verizon.com/ontology-core-bundle/>, bo:, cap:, drm:, mkci:, mktx:, party:, persona:, proc:, svc:, vs: ;
+  owl:priorVersion <https://ontologies.verizon.com/ontology-domain-marketing/1.0> ;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-domain-marketing/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Ontology | Domain | Marketing"@en ;
+  sh:declare [
+        sh:namespace "http://purl.obolibrary.org/obo/"^^xsd:anyURI ;
+        sh:prefix "obo"
+      ], [
+        sh:namespace "http://www.w3.org/2000/01/rdf-schema#"^^xsd:anyURI ;
+        sh:prefix "rdfs"
+      ], [
+        sh:namespace "https://ontologies.verizon.com/bfo-relations/"^^xsd:anyURI ;
+        sh:prefix "vzro"
+      ], [
+        sh:namespace "https://ontologies.verizon.com/taxonomy-domain-marketing-ci/"^^xsd:anyURI ;
+        sh:prefix "ci"
+      ] ;
+  skos:changeNote "1.1: classes that are not processes (for example Brand Equity, Customer Loyalty, Marketing Plans) moved to taxonomy-domain-marketing; their 1.0 IRIs remain here as deprecated equivalent classes."@en, "1.1: competitive intelligence services, processes and terms were surfaced from the PEO Competitive Graph."@en, "1.1: every core parent resolves to a class declared in the core: ontology-core-domain, ontology-core-asset, -capability, -event and -requirements, and the core taxonomies (taxonomy-core-*). The ontology imports each core taxonomy and ontology it uses directly, so the parent vocabularies, taxonomies and ontologies flow through."@en, "1.1: imports the Domain Reference Model 1.1 in place of the retired upper ontology; Lifecycle and Product Catalog are no longer subclasses of marketing processes."@en, "1.1: rebuilt service-first: 23 marketing services, each enabled by its processes and enabling a capability; 121 processes, each tied by a shape to the terms it creates, uses, changes, targets or promotes."@en ;
+  skos:editorialNote "Construction order: services, then the processes that enable them, then the terms each process needs. Terms live in the two marketing taxonomies and are grounded in the two marketing vocabularies."@en, "Verizon Knowledge Engineering acknowledges that subject area matter content contained within this ontology was created with the assistance of VZGPT (vzgpt.verizon.com)."@en, "Version 1.1 content not carried over from 1.0 (the service catalog, the processes added in 1.1, the taxonomy terms and their definitions, and the competitive intelligence layer) was drafted with the assistance of Claude (Anthropic) from the 1.0 files, the Domain Reference Model and the PEO Competitive Graph. It requires steward review before certification."@en ;
+  skos:historyNote "American marketing association | ama. (n.d.). American Marketing Association. Retrieved March 24, 2025, from https://www.ama.org/", "Barbu, E. (2006, December 14). An Ontology-based System for the Marketing Information Management. International workshop Formal Ontologies Meet Industry, Trento-Italy. https://pdfs.semanticscholar.org/380d/eed2304a68761c487872f03029643c07bc", "Kotler, P., & Keller, K. L. (2015). Marketing management (15. ed). Pearson." .
+
+dc11:subject
+  a owl:AnnotationProperty .
+
+dct:contributor
+  a owl:AnnotationProperty .
+
+dct:created
+  a owl:AnnotationProperty .
+
+dct:creator
+  a owl:AnnotationProperty .
+
+dct:description
+  a owl:AnnotationProperty .
+
+dct:language
+  a owl:AnnotationProperty .
+
+dct:modified
+  a owl:AnnotationProperty .
+
+dct:title
+  a owl:AnnotationProperty .
+
+<http://purl.org/ontology/bibo/status>
+  a owl:AnnotationProperty .
+
+<http://verizon.ontologies.com/terms/certified>
+  a owl:AnnotationProperty .
+
+skos:changeNote
+  a owl:AnnotationProperty .
+
+skos:definition
+  a owl:AnnotationProperty .
+
+skos:editorialNote
+  a owl:AnnotationProperty .
+
+skos:historyNote
+  a owl:AnnotationProperty .
+
+skos:scopeNote
+  a owl:AnnotationProperty .
+
+mkt:AccountBasedMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1b83a6b3-58f2-4ade-b0fb-5fac94e31508> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Account-Based Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Account-Based Marketing Service."@en .
+
+mkt:AccountBasedMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1b83a6b3-58f2-4ade-b0fb-5fac94e31508> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Account-Based Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Account-Based Marketing Service; realized in its enabling processes."@en .
+
+mkt:AccountBasedMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:AccountBasedMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:AccountBasedMarketingCapability .
+
+mkt:AccountBasedMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1b83a6b3-58f2-4ade-b0fb-5fac94e31508> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Account-Based Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that selects target accounts and coordinates personalized marketing to win them."@en .
+
+mkt:AccountBasedMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Account-Based Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:AccountBasedMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:AccountBasedMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:AccountBasedMarketingService .
+
+mkt:AccountSelectionPrioritization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5dbd9937-d0d8-4406-8f7c-7d2d1058f41f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Account Selection & Prioritization"@en ;
+  rdfs:subClassOf mkt:AccountBasedMarketing ;
+  skos:scopeNote "Supports: Account-Based Marketing Service."@en .
+
+mkt:AccountSelectionPrioritizationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Account Selection & Prioritization creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:TargetAccountList ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:TargetAccountRole ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:AccountSelectionPrioritization .
+
+mkt:Advertising
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1130172d-2f85-456e-bb67-af913cf701e7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Advertising"@en ;
+  rdfs:subClassOf mkt:MassCommunicationManagement ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:AdvertisingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Advertising creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:Advertisement ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:MediaChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:Advertising .
+
+mkt:AffiliateMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ebce415-4ff3-4d19-b232-ff498bf3e282> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Affiliate Marketing"@en ;
+  rdfs:subClassOf mkt:PerformanceMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:AffiliateMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Affiliate Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:AffiliateRole ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:AffiliateMarketing .
+
+mkt:BattlecardCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b25f4325-3b6d-5ff8-8374-ab897b1e081e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Battlecard Capability"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceCapability ;
+  skos:definition "The organization's ability to deliver the Battlecard Service; realized in its enabling processes."@en .
+
+mkt:BattlecardCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:BattlecardPublishing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:BattlecardCapability .
+
+mkt:BattlecardPublishing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b25f4325-3b6d-5ff8-8374-ab897b1e081e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Battlecard Publishing"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Battlecard Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:BattlecardPublishingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Battlecard Publishing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:ReleasableVerdict ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mkci:Battlecard
+            ] [
+              sh:class mkci:ClaimLedger
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:BattlecardPublishing .
+
+mkt:BattlecardService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b25f4325-3b6d-5ff8-8374-ab897b1e081e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Battlecard Service"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceService ;
+  skos:definition "The service that publishes sales-facing battlecards built only from claims that cleared verification."@en .
+
+mkt:BattlecardServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Battlecard Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:BattlecardCapability ;
+        sh:path drm:enables
+      ], [
+        sh:class mkt:BattlecardPublishing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:BattlecardService .
+
+mkt:BattlecardShape
+  a sh:NodeShape ;
+  rdfs:comment "A battlecard may contain only claims whose current verdict is releasable."@en ;
+  sh:property [
+        sh:class mktx:MarketClaim ;
+        sh:path obo:BFO_0000051
+      ] ;
+  sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Contains a claim without a current releasable verdict."@en ;
+        sh:prefixes mkt: ;
+        sh:select "SELECT $this ?value WHERE {\n  $this obo:BFO_0000051 ?value .\n  FILTER NOT EXISTS {\n    ?v obo:IAO_0000136 ?value ; a/rdfs:subClassOf* ci:ReleasableVerdict .\n    FILTER NOT EXISTS { ?newer vzro:supersedes ?v }\n  }\n}"
+      ] ;
+  sh:targetClass mkci:Battlecard .
+
+mkt:BrandAwareness
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/09941669-8dc7-4e24-b22a-25de7a160277> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:BrandAwareness ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Awareness"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:BrandAwareness. Kept so 1.0 data still resolves."@en .
+
+mkt:BrandEquity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a6a2f08f-4e0f-490a-a8fc-9d6dccc03721> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:BrandEquity ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Equity"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:BrandEquity. Kept so 1.0 data still resolves."@en .
+
+mkt:BrandIdentity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6c0978d7-ccae-442f-96dc-639c8d9993ad> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:BrandIdentity ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Identity"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:BrandIdentity. Kept so 1.0 data still resolves."@en .
+
+mkt:BrandIdentityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6af229e6-0ece-590f-b03c-71824b36f245> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Identity Management"@en ;
+  rdfs:subClassOf mkt:BrandManagement ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:BrandIdentityManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Brand Identity Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:BrandGuideline
+            ] [
+              sh:class mktx:BrandIdentity
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:BrandIdentityManagement .
+
+mkt:BrandLeadership
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7fe7b618-b5c2-4361-92f2-1c840544847d> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:BrandLeadership ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Leadership"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:BrandLeadership. Kept so 1.0 data still resolves."@en .
+
+mkt:BrandManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/aa3ccb93-1392-4376-b319-aaa5fbab660a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Management"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:BrandManagementCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/aa3ccb93-1392-4376-b319-aaa5fbab660a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Management Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Brand Management Service; realized in its enabling processes."@en .
+
+mkt:BrandManagementCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:BrandManagement ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:BrandManagementCapability .
+
+mkt:BrandManagementService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/aa3ccb93-1392-4376-b319-aaa5fbab660a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Management Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that defines, protects and grows the brand and its reputation."@en .
+
+mkt:BrandManagementServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Brand Management Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:BrandManagement ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:BrandManagementCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:BrandManagementService .
+
+mkt:BrandManagementShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class vs:MarketingBrandManagement ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:BrandManagement .
+
+mkt:BrandPerformanceTracking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/efe52749-a28a-5753-8c11-aa935e2bdc4d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Performance Tracking"@en ;
+  rdfs:subClassOf mkt:BrandManagement ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:BrandPerformanceTrackingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Brand Performance Tracking creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketPerceptionQuality ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingMeasurement ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:BrandPerformanceTracking .
+
+mkt:BrandPositioning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7ee232be-2817-4ee1-b84e-911ac5e744a0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Positioning"@en ;
+  rdfs:subClassOf mkt:BrandManagement ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:BrandPositioningShape
+  a sh:NodeShape ;
+  rdfs:comment "What Brand Positioning creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketSegment ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:PositioningClaim ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:BrandPositioning .
+
+mkt:BrandStandardsReview
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/abade489-e9a8-59f3-b5b5-c0457423994a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Brand Standards Review"@en ;
+  rdfs:subClassOf mkt:BrandManagement ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:BrandStandardsReviewShape
+  a sh:NodeShape ;
+  rdfs:comment "What Brand Standards Review creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:BrandStandardsBreach ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:BrandGuideline
+            ] [
+              sh:class mktx:MarketingContent
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:BrandStandardsReview .
+
+mkt:BreakerEvaluation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/af304e71-541e-5684-b34a-df2951dd18dc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Breaker Evaluation"@en ;
+  rdfs:subClassOf mkt:ClaimVerification ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:BreakerEvaluationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Breaker Evaluation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkci:BreakerTripThreshold
+            ] [
+              sh:class mkci:ClaimVerificationVerdict
+            ] ) ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mkci:ClaimFailureRate
+            ] [
+              sh:class mkci:MeanTimeBetweenHallucinations
+            ] [
+              sh:class mkci:VerificationRunResult
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:BreakerEvaluation .
+
+mkt:BrokerAdvisorMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d9d7f408-6a35-5e40-8021-0c140ad3d642> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Broker & Advisor Marketing"@en ;
+  rdfs:subClassOf mkt:ChannelPartnerMarketing ;
+  skos:scopeNote "Supports: Channel & Partner Marketing Service."@en .
+
+mkt:BrokerAdvisorMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Broker & Advisor Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:BrokerAdvisorRole ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:BrokerChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:BrokerAdvisorMarketing .
+
+mkt:BusinessMarketAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3c610ce9-9afd-4921-b3bc-112622b867ed> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Business Market Analysis"@en ;
+  rdfs:subClassOf mkt:MarketingAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:BusinessMarketAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Business Market Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:IndustrySegment
+            ] [
+              sh:class mktx:SizeBandSegment
+            ] ) ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:BusinessMarketAnalysis .
+
+mkt:BuyerPersonaDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2a69bb5b-ddd0-5134-8f21-bf08e29bcf06> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Buyer Persona Development"@en ;
+  rdfs:subClassOf mkt:ProductMarketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:BuyerPersonaDevelopmentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Buyer Persona Development creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:BuyerPersona ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:BuyingCenterRole
+            ] [
+              sh:class mktx:CustomerProfile
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:BuyerPersonaDevelopment .
+
+mkt:CampaignBudgeting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cc0fb27d-cf6c-41bf-8e2c-980b34565ca0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Budgeting"@en ;
+  rdfs:subClassOf mkt:CampaignManagement ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignBudgetingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Campaign Budgeting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CampaignBudget ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:CampaignBudgeting .
+
+mkt:CampaignExecution
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f1736f10-dc37-4557-a462-15185b44fbd8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Execution"@en ;
+  rdfs:subClassOf mkt:CampaignManagement ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignExecutionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Campaign Execution creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MediaChannel ;
+        sh:path vzro:distributedThrough
+      ], [
+        sh:class mktx:Offering ;
+        sh:path vzro:promotes
+      ], [
+        sh:or ( [
+              sh:class mktx:CampaignPlan
+            ] [
+              sh:class mktx:MarketingContent
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CampaignExecution .
+
+mkt:CampaignManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9de9432e-4f30-4d5c-bd38-bb5de6fd42f8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Management"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignManagementCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9de9432e-4f30-4d5c-bd38-bb5de6fd42f8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Management Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Campaign Management Service; realized in its enabling processes."@en .
+
+mkt:CampaignManagementCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:CampaignManagement ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:CampaignManagementCapability .
+
+mkt:CampaignManagementService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9de9432e-4f30-4d5c-bd38-bb5de6fd42f8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Management Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that plans, budgets, runs and optimizes marketing campaigns."@en .
+
+mkt:CampaignManagementServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Campaign Management Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:CampaignManagement ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:CampaignManagementCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:CampaignManagementService .
+
+mkt:CampaignOptimization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fbff0c7b-967e-56d5-b8fc-c5d5f4bcaf66> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Optimization"@en ;
+  rdfs:subClassOf mkt:CampaignManagement ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignOptimizationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Campaign Optimization creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CampaignPlan ;
+        sh:path drm:modifies
+      ], [
+        sh:class mktx:MarketingMeasurement ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CampaignOptimization .
+
+mkt:CampaignPartnerships
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/faefd029-3985-490f-85e9-9bf6e0ba7609> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Partnerships"@en ;
+  rdfs:subClassOf mkt:CampaignManagement ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignPartnershipsShape
+  a sh:NodeShape ;
+  rdfs:comment "What Campaign Partnerships creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:AffiliateRole
+            ] [
+              sh:class mktx:TechnologyPartnerRole
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CampaignPartnerships .
+
+mkt:CampaignPlanning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b8276c22-6c71-4907-8d93-df1434d5945c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Campaign Planning"@en ;
+  rdfs:subClassOf mkt:CampaignManagement ;
+  skos:scopeNote "Supports: Campaign Management Service."@en .
+
+mkt:CampaignPlanningShape
+  a sh:NodeShape ;
+  rdfs:comment "What Campaign Planning creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CampaignPlan ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:BuyerPersona
+            ] [
+              sh:class mktx:MarketSegment
+            ] ) ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:CampaignPlanning .
+
+mkt:ChannelManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3dbcf56f-849b-4860-b599-fd82851a47c3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Channel Management"@en ;
+  rdfs:subClassOf mkt:MarketingMix ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:ChannelManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Channel Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:BrokerAdvisorRole ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingChannel ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:ChannelManagement .
+
+mkt:ChannelPartnerMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ece05f19-7dc0-519e-b231-09bd0b058624> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Channel & Partner Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Channel & Partner Marketing Service."@en .
+
+mkt:ChannelPartnerMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ece05f19-7dc0-519e-b231-09bd0b058624> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Channel & Partner Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Channel & Partner Marketing Service; realized in its enabling processes."@en .
+
+mkt:ChannelPartnerMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:ChannelPartnerMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:ChannelPartnerMarketingCapability .
+
+mkt:ChannelPartnerMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ece05f19-7dc0-519e-b231-09bd0b058624> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Channel & Partner Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that markets to and through brokers, advisors and partners who recommend or resell the organization's offerings."@en .
+
+mkt:ChannelPartnerMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Channel & Partner Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:ChannelPartnerMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:ChannelPartnerMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:ChannelPartnerMarketingService .
+
+mkt:ClaimChecking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b777ceb1-39a9-5b10-b598-002b5f12fbe1> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Checking"@en ;
+  rdfs:subClassOf mkt:ClaimVerification ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:ClaimCheckingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Claim Checking creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:ClaimVerificationVerdict ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mkci:CompetitorClaim
+            ] [
+              sh:class mkci:IntelligenceSource
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ClaimChecking .
+
+mkt:ClaimCorrection
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/5b601fa0-0a1f-55f2-ac49-1cf260e6fbc6> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Correction"@en ;
+  rdfs:subClassOf mkt:ClaimVerification ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:ClaimCorrectionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Claim Correction creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorClaim ;
+        sh:path drm:modifies
+      ], [
+        sh:class mkci:CorrectedVerdict ;
+        sh:path drm:creates
+      ], [
+        sh:class mkci:StaleIntelligenceIssue ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ClaimCorrection .
+
+mkt:ClaimSubstantiation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d8051c17-1d9b-5007-8049-a4e5e5307e17> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Substantiation"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceReview ;
+  skos:scopeNote "Supports: Marketing Compliance Service."@en .
+
+mkt:ClaimSubstantiationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Claim Substantiation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketClaim ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:UnsubstantiatedClaim ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:ClaimSubstantiation .
+
+mkt:ClaimVerification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2aab623d-4df6-509f-aa33-4866fe70100d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Verification"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:ClaimVerificationCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/4c2f67a7-17e6-5302-b057-b4ba93077187> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Verification Capability"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceCapability ;
+  skos:definition "The organization's ability to deliver the Claim Verification Service; realized in its enabling processes."@en .
+
+mkt:ClaimVerificationCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:ClaimVerification
+            ] [
+              sh:class mkt:CompetitorBriefDrafting
+            ] ) ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:ClaimVerificationCapability .
+
+mkt:ClaimVerificationService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/4c2f67a7-17e6-5302-b057-b4ba93077187> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Claim Verification Service"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceService ;
+  skos:definition "The service that checks every claim in an AI-drafted competitor brief against dated sources before it is used, and holds the draft when too many claims fail."@en .
+
+mkt:ClaimVerificationServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Claim Verification Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:ClaimVerificationCapability ;
+        sh:path drm:enables
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class mkt:ClaimVerification
+            ] [
+              sh:class mkt:CompetitorBriefDrafting
+            ] ) ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:ClaimVerificationService .
+
+mkt:ClaimVerificationVerdictShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkci:ClaimCheckType ;
+        sh:path drm:typeOf
+      ], [
+        sh:class mktx:MarketClaim ;
+        sh:maxCount 1 ;
+        sh:minCount 1 ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mkci:ClaimVerificationVerdict .
+
+mkt:ClientAdvocacyProgram
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7ec6f534-b2dd-5c14-a7d9-39b400f7a47b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Client Advocacy Program"@en ;
+  rdfs:subClassOf mkt:CustomerRetentionGrowth ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:ClientAdvocacyProgramShape
+  a sh:NodeShape ;
+  rdfs:comment "What Client Advocacy Program creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CustomerLoyalty ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:CaseStudy
+            ] [
+              sh:class mktx:ClientTestimonial
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:ClientAdvocacyProgram .
+
+mkt:ClientEventManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/95eeb2ea-43b6-5bb3-901d-4a20bda5dc09> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Client Event Management"@en ;
+  rdfs:subClassOf mkt:EventMarketing ;
+  skos:scopeNote "Supports: Event Marketing Service."@en .
+
+mkt:ClientEventManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Client Event Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ClientRole ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:ClientEventManagement .
+
+mkt:ClientOnboardingCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cae64ddd-cacb-50c0-9fe7-95e370cb0200> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Client Onboarding Communication"@en ;
+  rdfs:subClassOf mkt:CustomerRetentionGrowth ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:ClientOnboardingCommunicationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Client Onboarding Communication creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ClientOnboardingStage ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:ClientOnboardingCommunication .
+
+mkt:CoMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d031fd2d-5f1d-571a-b096-1f1591abbbc9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Co-Marketing"@en ;
+  rdfs:subClassOf mkt:ChannelPartnerMarketing ;
+  skos:scopeNote "Supports: Channel & Partner Marketing Service."@en .
+
+mkt:CoMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Co-Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:PartnerChannel ;
+        sh:path vzro:distributedThrough
+      ], [
+        sh:class mktx:TechnologyPartnerRole ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CoMarketing .
+
+mkt:CompetitiveAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a4e391cc-a8c3-40f1-b56a-8cb5d8aa8ef8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Analysis"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence, mkt:MarketingAnalysis ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:CompetitiveAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Competitive Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorClaim ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingInsight ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:CompetitiveAnalysis .
+
+mkt:CompetitiveExposureRollup
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/d6548bc4-b43a-51e6-8846-c8fb62ecf499> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Exposure Roll-up"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkt:CompetitiveExposureRollupShape
+  a sh:NodeShape ;
+  rdfs:comment "What Competitive Exposure Roll-up creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkci:ExposureScore
+            ] [
+              sh:class mkci:PressureScore
+            ] [
+              sh:class mkci:RollupView
+            ] ) ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mkci:Market
+            ] [
+              sh:class mkci:ThreatAssessment
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CompetitiveExposureRollup .
+
+mkt:CompetitiveIntelligence
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f90e213e-e32a-5b36-9c79-20e0b0580f94> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Intelligence"@en ;
+  rdfs:subClassOf mkt:Marketing, mkt:MarketingInsightsAnalysis ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:CompetitiveIntelligenceCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f90e213e-e32a-5b36-9c79-20e0b0580f94> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Intelligence Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Competitive Intelligence Service; realized in its enabling processes."@en .
+
+mkt:CompetitiveIntelligenceCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:CompetitiveIntelligence ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:CompetitiveIntelligenceCapability .
+
+mkt:CompetitiveIntelligenceService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f90e213e-e32a-5b36-9c79-20e0b0580f94> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Intelligence Service"@en ;
+  rdfs:subClassOf mkt:MarketingService, svc:Reporting ;
+  skos:definition "The service that keeps a sourced, verified and connected picture of competitors and shows where they pressure the organization."@en .
+
+mkt:CompetitiveIntelligenceServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Competitive Intelligence Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:CompetitiveIntelligence ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:CompetitiveIntelligenceCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:CompetitiveIntelligenceService .
+
+mkt:CompetitiveLandscapeCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/c1ea488c-cc41-510e-8bab-261acf4d345a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Landscape Capability"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceCapability ;
+  skos:definition "The organization's ability to deliver the Competitive Landscape Service; realized in its enabling processes."@en .
+
+mkt:CompetitiveLandscapeCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:CompetitorProfiling
+            ] [
+              sh:class mkt:IntelligenceSourceCollection
+            ] [
+              sh:class mkt:LandscapeMatrixPublishing
+            ] [
+              sh:class mkt:MarketLandscapeMapping
+            ] ) ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:CompetitiveLandscapeCapability .
+
+mkt:CompetitiveLandscapeService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/c1ea488c-cc41-510e-8bab-261acf4d345a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Landscape Service"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceService ;
+  skos:definition "The service that maintains the market holon of competitors, product lines and features, profiles each competitor from dated sources and publishes the landscape matrix."@en .
+
+mkt:CompetitiveLandscapeServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Competitive Landscape Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:CompetitiveLandscapeCapability ;
+        sh:path drm:enables
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class mkt:CompetitorProfiling
+            ] [
+              sh:class mkt:IntelligenceSourceCollection
+            ] [
+              sh:class mkt:LandscapeMatrixPublishing
+            ] [
+              sh:class mkt:MarketLandscapeMapping
+            ] ) ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:CompetitiveLandscapeService .
+
+mkt:CompetitivePricingAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0c1b6dd9-24f3-5567-8ee9-2baf6894ab53> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Pricing Analysis"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence, mkt:PriceMarketResearch ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Competitive Pricing Intelligence Service, Market Research & Insights Service, Marketing Mix Management Service."@en .
+
+mkt:CompetitivePricingAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Competitive Pricing Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:PricingClaim ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mkci:Repricing
+            ] [
+              sh:class mktx:PricingModel
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CompetitivePricingAnalysis .
+
+mkt:CompetitivePricingIntelligenceCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0c1b6dd9-24f3-5567-8ee9-2baf6894ab53> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Pricing Intelligence Capability"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceCapability ;
+  skos:definition "The organization's ability to deliver the Competitive Pricing Intelligence Service; realized in its enabling processes."@en .
+
+mkt:CompetitivePricingIntelligenceCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:CompetitivePricingAnalysis ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:CompetitivePricingIntelligenceCapability .
+
+mkt:CompetitivePricingIntelligenceService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0c1b6dd9-24f3-5567-8ee9-2baf6894ab53> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitive Pricing Intelligence Service"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceService ;
+  skos:definition "The service that tracks competitors' published prices, custom-quote practices, third-party price estimates and repricing."@en .
+
+mkt:CompetitivePricingIntelligenceServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Competitive Pricing Intelligence Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:CompetitivePricingAnalysis ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:CompetitivePricingIntelligenceCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:CompetitivePricingIntelligenceService .
+
+mkt:CompetitorBriefDrafting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/04ed4e96-6ee8-5214-81f1-2c3220d4d67e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitor Brief Drafting"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:CompetitorBriefDraftingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Competitor Brief Drafting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorBrief ;
+        sh:path drm:creates
+      ], [
+        sh:class mkci:CompetitorProfile ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CompetitorBriefDrafting .
+
+mkt:CompetitorClaimShape
+  a sh:NodeShape ;
+  rdfs:comment "Every competitor fact cites at least one source."@en ;
+  sh:property [
+        sh:class mkci:IntelligenceSource ;
+        sh:minCount 1 ;
+        sh:path vzro:evidencedBy
+      ] ;
+  sh:targetClass mkci:CompetitorClaim .
+
+mkt:CompetitorProfiling
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/36d1620b-f0ec-5d5a-8076-d9710f1daeb3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Competitor Profiling"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkt:CompetitorProfilingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Competitor Profiling creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CompetitorRole ;
+        sh:path vzro:targets
+      ], [
+        sh:or ( [
+              sh:class mkci:CompetitiveMove
+            ] [
+              sh:class mkci:FinancialResultsDisclosure
+            ] [
+              sh:class mkci:IntelligenceSource
+            ] [
+              sh:class mkci:WorksiteEmployeeCount
+            ] ) ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mkci:CompetitorClaim
+            ] [
+              sh:class mkci:CompetitorProfile
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:CompetitorProfiling .
+
+mkt:ConsentPreferenceManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/73e2793b-3ba0-5f37-8fec-83857c48af4e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Consent & Preference Management"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceReview ;
+  skos:scopeNote "Supports: Marketing Compliance Service."@en .
+
+mkt:ConsentPreferenceManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Consent & Preference Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ConsentViolation ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:ContactConsentRecord ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:ConsentPreferenceManagement .
+
+mkt:ConsumerBehaviorAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6b6d05fd-f3b0-408a-911f-d8ce01557b09> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Consumer Behavior Analysis"@en ;
+  rdfs:subClassOf mkt:MarketingAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:ConsumerBehaviorAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Consumer Behavior Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CustomerDisposition ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:CustomerProfile ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ConsumerBehaviorAnalysis .
+
+mkt:ConsumerMarketAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ae59b143-cf9a-45df-802c-ddf096c914fd> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Consumer Market Analysis"@en ;
+  rdfs:subClassOf mkt:MarketingAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:ConsumerMarketAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Consumer Market Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:GeographicSegment ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:ConsumerMarketAnalysis .
+
+mkt:ContentCreation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a3e62777-2065-44ff-a43b-15d52c91bf2b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Creation"@en ;
+  rdfs:subClassOf mkt:ContentMarketing ;
+  skos:scopeNote "Supports: Content Marketing Service."@en .
+
+mkt:ContentCreationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Content Creation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingContent ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:BrandGuideline
+            ] [
+              sh:class mktx:MessagingFramework
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ContentCreation .
+
+mkt:ContentDistribution
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a6d34dde-87e5-4453-9330-4a38c73dea23> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Distribution"@en ;
+  rdfs:subClassOf mkt:ContentMarketing ;
+  skos:scopeNote "Supports: Content Marketing Service."@en .
+
+mkt:ContentDistributionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Content Distribution creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingContent ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MediaChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:ContentDistribution .
+
+mkt:ContentMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2c77d732-31d2-4655-8ae5-ddf8373131b7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Content Marketing Service."@en .
+
+mkt:ContentMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2c77d732-31d2-4655-8ae5-ddf8373131b7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Content Marketing Service; realized in its enabling processes."@en .
+
+mkt:ContentMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:ContentMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:ContentMarketingCapability .
+
+mkt:ContentMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2c77d732-31d2-4655-8ae5-ddf8373131b7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that plans, creates and distributes marketing content."@en .
+
+mkt:ContentMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Content Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:ContentMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:ContentMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:ContentMarketingService .
+
+mkt:ContentPlanning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f91752b2-1c80-4fc3-84c7-8078f72dbb96> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Content Planning"@en ;
+  rdfs:subClassOf mkt:ContentMarketing ;
+  skos:scopeNote "Supports: Content Marketing Service."@en .
+
+mkt:ContentPlanningShape
+  a sh:NodeShape ;
+  rdfs:comment "What Content Planning creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ContentCalendar ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:ContentPlanning .
+
+mkt:ConversionRateOptimization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/90b3cdfa-2a6e-4a74-a412-844f8575081a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Conversion Rate Optimization"@en ;
+  rdfs:subClassOf mkt:PerformanceMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:ConversionRateOptimizationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Conversion Rate Optimization creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:LandingPage ;
+        sh:path drm:modifies
+      ], [
+        sh:class mktx:MarketingMeasurement ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ConversionRateOptimization .
+
+mkt:CreatesOpeningForShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class cap:Capability
+            ] [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path vzro:createsOpeningFor
+      ] ;
+  sh:targetSubjectsOf vzro:createsOpeningFor .
+
+mkt:CrossFunctionalTeamCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/de82a838-8ac9-4959-aa06-0511630bfe39> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Cross-Functional Team Communication"@en ;
+  rdfs:subClassOf mkt:InternalCommunication ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:CrossSellUpsellMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/bc3f2604-6613-5921-9332-ea746bffdd42> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Cross-Sell & Upsell Marketing"@en ;
+  rdfs:subClassOf mkt:CustomerRetentionGrowth ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CrossSellUpsellMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Cross-Sell & Upsell Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ClientRole ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:OfferingAddOn ;
+        sh:path vzro:promotes
+      ] ;
+  sh:targetClass mkt:CrossSellUpsellMarketing .
+
+mkt:CustomerEngagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/88b75c12-7bcb-4dfe-a5aa-4a8138e4b3a2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Engagement"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CustomerEngagementCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/88b75c12-7bcb-4dfe-a5aa-4a8138e4b3a2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Engagement Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Customer Engagement Service; realized in its enabling processes."@en .
+
+mkt:CustomerEngagementCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:CustomerEngagement ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:CustomerEngagementCapability .
+
+mkt:CustomerEngagementService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/88b75c12-7bcb-4dfe-a5aa-4a8138e4b3a2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Engagement Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that engages clients after the sale: onboarding, renewal, expansion, advocacy and feedback."@en .
+
+mkt:CustomerEngagementServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Customer Engagement Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:CustomerEngagement ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:CustomerEngagementCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:CustomerEngagementService .
+
+mkt:CustomerFeedback
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/16afcb8f-84bb-4c4e-a846-bb2a31e23a7a> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:CustomerFeedback ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Feedback"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:CustomerFeedback. Kept so 1.0 data still resolves."@en .
+
+mkt:CustomerFeedbackManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a5414b7f-cf73-521c-bf3f-df2ba66d52eb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Feedback Management"@en ;
+  rdfs:subClassOf mkt:CustomerEngagement ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CustomerFeedbackManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Customer Feedback Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CustomerFeedback ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:CustomerSatisfaction ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CustomerFeedbackManagement .
+
+mkt:CustomerJourney
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4ccf2e27-2212-4494-a836-91d13b7bba96> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Journey"@en ;
+  rdfs:subClassOf mkt:CustomerEngagement ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CustomerJourneyShape
+  a sh:NodeShape ;
+  rdfs:comment "What Customer Journey creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ClientLifecycleStage ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:CustomerJourneyMap ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:CustomerJourney .
+
+mkt:CustomerLoyalty
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/24792731-1aa4-4d91-ab8e-65c57775f282> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:CustomerLoyalty ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Loyalty"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:CustomerLoyalty. Kept so 1.0 data still resolves."@en .
+
+mkt:CustomerProfile
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56ce535c-6807-4769-9f09-43c78951bbc7> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:CustomerProfile ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Profile"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:CustomerProfile. Kept so 1.0 data still resolves."@en .
+
+mkt:CustomerReferral
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/645b0285-5594-448b-9d1a-5a313c13b2ff> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Referral"@en ;
+  rdfs:subClassOf mkt:CustomerEngagement ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CustomerReferralShape
+  a sh:NodeShape ;
+  rdfs:comment "What Customer Referral creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ReferralPartnerRole ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:ReferralPropensity ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:CustomerReferral .
+
+mkt:CustomerRetentionGrowth
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e977a5a6-0db0-40fa-b6f0-a9f3f72d94de> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Retention & Growth"@en ;
+  rdfs:subClassOf mkt:CustomerEngagement ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:CustomerSatisfaction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ebe07f6d-3706-4a46-a785-d88446c20d86> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:CustomerSatisfaction ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Satisfaction"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:CustomerSatisfaction. Kept so 1.0 data still resolves."@en .
+
+mkt:CustomerValue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1d358e94-9464-4e27-965a-a7c8215aea5e> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:CustomerValue ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Customer Value"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:CustomerValue. Kept so 1.0 data still resolves."@en .
+
+mkt:DemandForecasting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ea31c3ca-6a46-4d29-855c-0b0197431e7c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Demand Forecasting"@en ;
+  rdfs:subClassOf mkt:MarketingInsightsAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:DemandForecastingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Demand Forecasting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingMeasurement ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:IndustryTrends
+            ] [
+              sh:class mktx:MarketDemographics
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:DemandForecasting .
+
+mkt:DemandGeneration
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d89ba0e8-bd96-525f-8eff-781f8155511c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Demand Generation"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Demand Generation Service."@en .
+
+mkt:DemandGenerationCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d89ba0e8-bd96-525f-8eff-781f8155511c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Demand Generation Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Demand Generation Service; realized in its enabling processes."@en .
+
+mkt:DemandGenerationCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:DemandGeneration ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:DemandGenerationCapability .
+
+mkt:DemandGenerationService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d89ba0e8-bd96-525f-8eff-781f8155511c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Demand Generation Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that creates interest among target buyers and turns it into qualified sales opportunities."@en .
+
+mkt:DemandGenerationServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Demand Generation Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:DemandGeneration ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:DemandGenerationCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:DemandGenerationService .
+
+mkt:DirectMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/47bea7d2-1078-47f2-b290-1e8fdd76b567> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Direct Marketing"@en ;
+  rdfs:subClassOf mkt:PersonalCommunicationManagement ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:DirectMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Direct Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ContactConsentRecord ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingEmail ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:DirectMailChannel
+            ] [
+              sh:class mktx:EmailChannel
+            ] ) ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:DirectMarketing .
+
+mkt:EventMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/29dfa16c-4466-5733-b4f9-aba75f030335> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Event Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Event Marketing Service."@en .
+
+mkt:EventMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/29dfa16c-4466-5733-b4f9-aba75f030335> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Event Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Event Marketing Service; realized in its enabling processes."@en .
+
+mkt:EventMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:EventMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:EventMarketingCapability .
+
+mkt:EventMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/29dfa16c-4466-5733-b4f9-aba75f030335> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Event Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that plans and runs in-person and virtual events for prospects, clients and partners."@en .
+
+mkt:EventMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Event Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:EventMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:EventMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:EventMarketingService .
+
+mkt:HeldClaimReview
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/8a999c7a-bc0d-5133-998e-494ed8e59d1c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Held Claim Review"@en ;
+  rdfs:subClassOf mkt:ClaimVerification ;
+  skos:scopeNote "Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkt:HeldClaimReviewShape
+  a sh:NodeShape ;
+  rdfs:comment "What Held Claim Review creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:ClaimVerificationVerdict ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mkci:HeldVerdict
+            ] [
+              sh:class mkci:IndustryCredential
+            ] [
+              sh:class mkci:RegulatorRegistry
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:HeldClaimReview .
+
+mkt:IdealCustomerProfileDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/693e2b14-27eb-4006-9dde-0e698e3e76be> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Ideal Customer Profile Development"@en ;
+  rdfs:subClassOf mkt:AccountBasedMarketing ;
+  skos:scopeNote "Supports: Account-Based Marketing Service."@en .
+
+mkt:IdealCustomerProfileDevelopmentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Ideal Customer Profile Development creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:IdealCustomerProfile ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:IdealCustomerProfileDevelopment .
+
+mkt:IndustryTrends
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/53d87868-3b01-4197-9bda-d60aeb93d37a> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:IndustryTrends ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Industry Trends"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:IndustryTrends. Kept so 1.0 data still resolves."@en .
+
+mkt:InfluencerDiscoveryVetting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b73f281f-101a-4a33-8d66-0c41dbf8ce1c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Influencer Discovery & Vetting"@en ;
+  rdfs:subClassOf mkt:InfluencerMarketing ;
+  skos:scopeNote "Supports: Influencer Marketing Service."@en .
+
+mkt:InfluencerDiscoveryVettingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Influencer Discovery & Vetting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:InfluencerRole ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:InfluencerDiscoveryVetting .
+
+mkt:InfluencerMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ddefa3f-1361-436b-8a9d-4e320b93fd82> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Influencer Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Influencer Marketing Service."@en .
+
+mkt:InfluencerMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ddefa3f-1361-436b-8a9d-4e320b93fd82> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Influencer Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Influencer Marketing Service; realized in its enabling processes."@en .
+
+mkt:InfluencerMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:InfluencerMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:InfluencerMarketingCapability .
+
+mkt:InfluencerMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ddefa3f-1361-436b-8a9d-4e320b93fd82> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Influencer Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that finds, vets and works with influencers who sway buyers in the organization's markets."@en .
+
+mkt:InfluencerMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Influencer Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:InfluencerMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:InfluencerMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:InfluencerMarketingService .
+
+mkt:InfluencerRelationshipManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2c28b1a4-cbb2-4317-8a02-b7e18b0ee55b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Influencer Relationship Management"@en ;
+  rdfs:subClassOf mkt:InfluencerMarketing ;
+  skos:scopeNote "Supports: Influencer Marketing Service."@en .
+
+mkt:InfluencerRelationshipManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Influencer Relationship Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:InfluencerRole ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:Offering ;
+        sh:path vzro:promotes
+      ] ;
+  sh:targetClass mkt:InfluencerRelationshipManagement .
+
+mkt:IntegratedMarketingCommunicationManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3e73720d-afe0-4bcd-80d6-8d056d02a995> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Integrated Marketing Communication Management"@en ;
+  rdfs:subClassOf mkt:MarketingCommunications ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:IntegratedMarketingCommunicationManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Integrated Marketing Communication Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MessagingFramework ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:IntegratedMarketingCommunicationManagement .
+
+mkt:IntelligenceSourceCollection
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/5688829e-69a5-5bb1-9f1d-37eae2f0f772> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Intelligence Source Collection"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkt:IntelligenceSourceCollectionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Intelligence Source Collection creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:IntelligenceSource ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:IntelligenceSourceCollection .
+
+mkt:IntelligenceSourceShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:datatype xsd:date ;
+        sh:minCount 1 ;
+        sh:path mkci:retrievedOn
+      ], [
+        sh:datatype xsd:integer ;
+        sh:maxCount 1 ;
+        sh:maxInclusive 3 ;
+        sh:minCount 1 ;
+        sh:minInclusive 0 ;
+        sh:path mkci:authorityTier
+      ] ;
+  sh:targetClass mkci:IntelligenceSource .
+
+mkt:InteractiveMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4bc814fb-6df3-4b40-ac43-6dca0ed985bf> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Interactive Marketing"@en ;
+  rdfs:subClassOf mkt:PersonalCommunicationManagement ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:InteractiveMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Interactive Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:InteractiveTool
+            ] [
+              sh:class mktx:LandingPage
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:InteractiveMarketing .
+
+mkt:InternalCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e318e1c8-4680-483d-aba9-4351d1079f2c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Internal Communication"@en ;
+  rdfs:subClassOf mkt:MarketingCommunications ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:InternalCommunicationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Internal Communication creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingContent ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:InternalCommunication .
+
+mkt:LandscapeMatrixPublishing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/376bef6e-ae4a-54bd-b857-faa4b0bcd53a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Landscape Matrix Publishing"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkt:LandscapeMatrixPublishingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Landscape Matrix Publishing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorProfile ;
+        sh:path drm:consumes
+      ], [
+        sh:class mkci:LandscapeMatrix ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:LandscapeMatrixPublishing .
+
+mkt:LeadGeneration
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2704ebff-5a7a-57c9-bf58-15a26c387f6a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Lead Generation"@en ;
+  rdfs:subClassOf mkt:DemandGeneration ;
+  skos:scopeNote "Supports: Demand Generation Service."@en .
+
+mkt:LeadGenerationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Lead Generation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:LeadRecord ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:ProspectRole ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:LeadGeneration .
+
+mkt:LeadNurturing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/32b54f1d-d85c-5785-8a53-26c7cc00b9e0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Lead Nurturing"@en ;
+  rdfs:subClassOf mkt:DemandGeneration ;
+  skos:scopeNote "Supports: Demand Generation Service."@en .
+
+mkt:LeadNurturingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Lead Nurturing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:DemandFunnelStage ;
+        sh:path drm:modifies
+      ], [
+        sh:or ( [
+              sh:class mktx:LeadRecord
+            ] [
+              sh:class mktx:MarketingContent
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:LeadNurturing .
+
+mkt:LeadQualificationHandoff
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ff493d62-d7a3-5709-852a-605bd4632c6f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Lead Qualification & Handoff"@en ;
+  rdfs:subClassOf mkt:DemandGeneration ;
+  skos:scopeNote "Supports: Demand Generation Service."@en .
+
+mkt:LeadQualificationHandoffShape
+  a sh:NodeShape ;
+  rdfs:comment "What Lead Qualification & Handoff creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:LeadQualificationCriteria ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:OpportunityRecord ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:LeadQualificationHandoff .
+
+mkt:LeadScoring
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/51f9e501-3d7c-53c9-aeae-90c064b14d07> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Lead Scoring"@en ;
+  rdfs:subClassOf mkt:DemandGeneration ;
+  skos:scopeNote "Supports: Demand Generation Service."@en .
+
+mkt:LeadScoringShape
+  a sh:NodeShape ;
+  rdfs:comment "What Lead Scoring creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:LeadRecord ;
+        sh:path drm:modifies
+      ], [
+        sh:or ( [
+              sh:class mktx:LeadQualificationCriteria
+            ] [
+              sh:class mktx:PurchaseIntent
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:LeadScoring .
+
+mkt:MarketClaimShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mktx:MarketClaim ;
+        sh:path vzro:contradicts
+      ], [
+        sh:class mktx:MarketClaim ;
+        sh:path vzro:supersedes
+      ], [
+        sh:minCount 1 ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mktx:MarketClaim .
+
+mkt:MarketDemographics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2a16cc54-d671-4596-8b59-813fd7b57463> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketDemographics ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Demographics"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketDemographics. Kept so 1.0 data still resolves."@en .
+
+mkt:MarketLandscapeMapping
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/9402025f-969b-5a59-a6f4-c2b60167d3f4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Landscape Mapping"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkt:MarketLandscapeMappingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Market Landscape Mapping creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:Market ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:CompetitorRole
+            ] [
+              sh:class mktx:Offering
+            ] [
+              sh:class mktx:OfferingFeature
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketLandscapeMapping .
+
+mkt:MarketResearch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8b190f71-f459-4a69-bd22-9534d2f456b6> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Research"@en ;
+  rdfs:subClassOf mkt:MarketingInsightsAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:MarketResearchInsightsCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/97941bd5-0d80-4155-93ec-39925ebb2b03> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Research & Insights Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Market Research & Insights Service; realized in its enabling processes."@en .
+
+mkt:MarketResearchInsightsCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:MarketingInsightsAnalysis ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketResearchInsightsCapability .
+
+mkt:MarketResearchInsightsService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/97941bd5-0d80-4155-93ec-39925ebb2b03> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Research & Insights Service"@en ;
+  rdfs:subClassOf mkt:MarketingService, svc:Reporting ;
+  skos:definition "The service that researches markets, buyers and trends and turns the findings into insights for marketing and sales decisions."@en .
+
+mkt:MarketResearchInsightsServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Market Research & Insights Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketResearchInsightsCapability ;
+        sh:path drm:enables
+      ], [
+        sh:class mkt:MarketingInsightsAnalysis ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:MarketResearchInsightsService .
+
+mkt:MarketResearchShape
+  a sh:NodeShape ;
+  rdfs:comment "What Market Research creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:CustomerFeedback ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:MarketDemographics
+            ] [
+              sh:class mktx:MarketingInsight
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:MarketResearch .
+
+mkt:MarketRoleShape
+  a sh:NodeShape ;
+  rdfs:comment "A market role is borne by a party."@en ;
+  sh:property [
+        sh:class party:Party ;
+        sh:minCount 1 ;
+        sh:path obo:RO_0000081
+      ] ;
+  sh:targetClass mktx:MarketRole .
+
+mkt:MarketSegmentShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class party:Party ;
+        sh:path obo:RO_0002351
+      ] ;
+  sh:targetClass mktx:MarketSegment .
+
+mkt:MarketSegments
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2bce37b3-dc28-47cc-9576-e624b6a79316> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Segments"@en ;
+  rdfs:subClassOf mkt:MarketingInsightsAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:MarketSegmentsShape
+  a sh:NodeShape ;
+  rdfs:comment "What Market Segments creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketDemographics ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:MarketSegmentDefinition
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:MarketSegments .
+
+mkt:MarketShape
+  a sh:NodeShape ;
+  rdfs:comment "The market holon has competing parties as members."@en ;
+  sh:property [
+        sh:class party:Party ;
+        sh:path obo:RO_0002351
+      ] ;
+  sh:targetClass mkci:Market .
+
+mkt:MarketTargets
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b99b5c22-9918-4109-b827-3afe40ed08db> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketTargets ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Market Targets"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketTargets. Kept so 1.0 data still resolves."@en .
+
+mkt:Marketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/747cff66-c9c1-4e4f-a756-c5d0d4dc25ff> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing"@en ;
+  rdfs:subClassOf proc:Process .
+
+mkt:MarketingAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d154aa63-164e-401d-8779-884045553239> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Analysis"@en ;
+  rdfs:subClassOf mkt:MarketingInsightsAnalysis ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:MarketingAnalysisShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Analysis creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingDataAsset ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingInsight ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:MarketingAnalysis .
+
+mkt:MarketingAnalyticsCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8af51c51-a9a9-55c6-87cd-54b73c7a4344> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Analytics & Reporting Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Marketing Analytics & Reporting Service; realized in its enabling processes."@en .
+
+mkt:MarketingAnalyticsCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:MarketingAnalyticsMetrics
+            ] [
+              sh:class mkt:MarketingAttribution
+            ] ) ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketingAnalyticsCapability .
+
+mkt:MarketingAnalyticsMetrics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f643decd-8a5c-48dd-a1ed-201728e8e49b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Analytics & Metrics"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingAnalyticsMetricsShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Analytics & Metrics creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingDataAsset ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:MarketingInsight
+            ] [
+              sh:class mktx:MarketingMeasurement
+            ] [
+              sh:class mktx:MarketingMetric
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:MarketingAnalyticsMetrics .
+
+mkt:MarketingAnalyticsService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8af51c51-a9a9-55c6-87cd-54b73c7a4344> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Analytics & Reporting Service"@en ;
+  rdfs:subClassOf mkt:MarketingService, svc:Reporting ;
+  skos:definition "The service that defines marketing metrics, measures performance and attributes pipeline and revenue to marketing."@en .
+
+mkt:MarketingAnalyticsServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Marketing Analytics & Reporting Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketingAnalyticsCapability ;
+        sh:path drm:enables
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class mkt:MarketingAnalyticsMetrics
+            ] [
+              sh:class mkt:MarketingAttribution
+            ] ) ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:MarketingAnalyticsService .
+
+mkt:MarketingAttribution
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/98929221-86be-54c7-916b-0deb7563bbd4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Attribution"@en ;
+  rdfs:subClassOf mkt:MarketingAnalyticsMetrics ;
+  skos:scopeNote "Supports: Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingAttributionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Attribution creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingMeasurement ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:LeadRecord
+            ] [
+              sh:class mktx:OpportunityRecord
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketingAttribution .
+
+mkt:MarketingAutomation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/75da5b4e-add9-4ac4-8cac-2c9cc312c64e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Automation"@en ;
+  rdfs:subClassOf mkt:MarketingTechnologyManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingAutomationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Automation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingEmail ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:LeadRecord
+            ] [
+              sh:class mktx:MarketingTechnology
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketingAutomation .
+
+mkt:MarketingBudgeting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0b8f636d-adea-525a-ae65-ede1cfde1299> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Budgeting"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingBudgetingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Budgeting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingBudget ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:MarketingPlan ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketingBudgeting .
+
+mkt:MarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c1480290-d1b5-5775-ab0f-ee8c88dedf11> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Capability"@en ;
+  rdfs:subClassOf cap:Capability .
+
+mkt:MarketingCommunications
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0a1c74d0-5f4b-48a2-9e5b-d28ab5421d4f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Communications"@en ;
+  rdfs:subClassOf bo:Communications, mkt:Marketing ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:MarketingCommunicationsCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0a1c74d0-5f4b-48a2-9e5b-d28ab5421d4f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Communications Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Marketing Communications Service; realized in its enabling processes."@en .
+
+mkt:MarketingCommunicationsCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:MarketingCommunications ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketingCommunicationsCapability .
+
+mkt:MarketingCommunicationsService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0a1c74d0-5f4b-48a2-9e5b-d28ab5421d4f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Communications Service"@en ;
+  rdfs:subClassOf mkt:MarketingService, svc:Communications ;
+  skos:definition "The service that delivers advertising, promotions, public relations, direct and internal marketing communications."@en .
+
+mkt:MarketingCommunicationsServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Marketing Communications Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketingCommunications ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:MarketingCommunicationsCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:MarketingCommunicationsService .
+
+mkt:MarketingComplianceCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f1af1ad1-2a34-5626-8ed1-0a04371b0218> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Compliance Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Marketing Compliance Service; realized in its enabling processes."@en .
+
+mkt:MarketingComplianceCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:MarketingComplianceReview ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketingComplianceCapability .
+
+mkt:MarketingComplianceReview
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f1af1ad1-2a34-5626-8ed1-0a04371b0218> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Compliance Review"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Marketing Compliance Service."@en .
+
+mkt:MarketingComplianceService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f1af1ad1-2a34-5626-8ed1-0a04371b0218> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Compliance Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that reviews marketing claims, regulated content and contact data use against legal, regulatory and policy rules."@en .
+
+mkt:MarketingComplianceServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Marketing Compliance Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketingComplianceCapability ;
+        sh:path drm:enables
+      ], [
+        sh:class mkt:MarketingComplianceReview ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:MarketingComplianceService .
+
+mkt:MarketingContentShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class persona:Persona
+            ] ) ;
+        sh:path vzro:targets
+      ], [
+        sh:or ( [
+              sh:class mktx:Offering
+            ] [
+              sh:class mktx:BrandAsset
+            ] ) ;
+        sh:path vzro:promotes
+      ] ;
+  sh:targetClass mktx:MarketingContent .
+
+mkt:MarketingInsightShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:Marketing
+            ] [
+              sh:class mktx:MarketingPlanSpecification
+            ] ) ;
+        sh:path vzro:informs
+      ] ;
+  sh:targetClass mktx:MarketingInsight .
+
+mkt:MarketingInsightsAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/97941bd5-0d80-4155-93ec-39925ebb2b03> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Insights & Analysis"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Market Research & Insights Service."@en .
+
+mkt:MarketingManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/870d4039-8cdb-4680-9e45-53e870e936eb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Management"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingManagementShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class vs:MarketingBrandManagement ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:MarketingManagement .
+
+mkt:MarketingMix
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1c5e53db-dffa-4f63-bd0f-a5e47ccccfea> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Mix"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:MarketingMixCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1c5e53db-dffa-4f63-bd0f-a5e47ccccfea> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Mix Management Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Marketing Mix Management Service; realized in its enabling processes."@en .
+
+mkt:MarketingMixCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:MarketingMix ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketingMixCapability .
+
+mkt:MarketingMixService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1c5e53db-dffa-4f63-bd0f-a5e47ccccfea> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Mix Management Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that manages the offerings, prices and routes to market the organization brings to buyers."@en .
+
+mkt:MarketingMixServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Marketing Mix Management Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketingMix ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:MarketingMixCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:MarketingMixService .
+
+mkt:MarketingOutcomeShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mktx:MarketingMetric ;
+        sh:minCount 1 ;
+        sh:path vzro:measuredBy
+      ] ;
+  sh:targetClass mktx:MarketingOutcome .
+
+mkt:MarketingPlanning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8bdc8f3b-28bc-501a-a19f-1cb5ecf2e1ab> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Planning"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingPlanningShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Planning creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingPlan ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:MarketingStrategy ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketingPlanning .
+
+mkt:MarketingPlans
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e4a4d58a-44d9-4308-9ba7-8c813cd2689a> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketingPlan ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Plan"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketingPlan. Kept so 1.0 data still resolves."@en .
+
+mkt:MarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c1480290-d1b5-5775-ab0f-ee8c88dedf11> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Service"@en ;
+  rdfs:subClassOf svc:Services .
+
+mkt:MarketingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3bde0f6b-a872-47f6-bc54-0c38021ddc12> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketingStrategy ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Strategy"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketingStrategy. Kept so 1.0 data still resolves."@en .
+
+mkt:MarketingStrategyDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5d856693-7802-567f-871e-b558b60b4911> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Strategy Development"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingStrategyDevelopmentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Strategy Development creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketSegment ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:MarketingStrategy ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:MarketingInsight
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:MarketingStrategyDevelopment .
+
+mkt:MarketingStrategyPlanningCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/870d4039-8cdb-4680-9e45-53e870e936eb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Strategy & Planning Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Marketing Strategy & Planning Service; realized in its enabling processes."@en .
+
+mkt:MarketingStrategyPlanningCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:MarketingManagement ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:MarketingStrategyPlanningCapability .
+
+mkt:MarketingStrategyPlanningService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/870d4039-8cdb-4680-9e45-53e870e936eb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Strategy & Planning Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that sets marketing strategy, plans and budgets, and keeps marketing risks under control."@en .
+
+mkt:MarketingStrategyPlanningServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Marketing Strategy & Planning Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:MarketingManagement ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:MarketingStrategyPlanningCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:MarketingStrategyPlanningService .
+
+mkt:MarketingSystems
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d206ba69-57a9-4d7b-8d2a-691a06584717> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketingSystems ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Systems"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketingSystems. Kept so 1.0 data still resolves."@en .
+
+mkt:MarketingTechnology
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ac496fe2-4fb5-4412-8dcf-6b3b2dcd44b8> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:MarketingTechnology ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Technology"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:MarketingTechnology. Kept so 1.0 data still resolves."@en .
+
+mkt:MarketingTechnologyManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fccd074d-262d-5203-a249-230e1ce9c9ea> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Marketing Technology Management"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:MarketingTechnologyManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Marketing Technology Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingTechnology ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:MarketingTechnologyManagement .
+
+mkt:MassCommunicationManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c1464dc1-2902-42e5-b393-159b0253b184> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Mass Communication Management"@en ;
+  rdfs:subClassOf mkt:MarketingCommunications ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:MessagingDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3c0a5d37-9433-5c8c-993d-b6b15be542b2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Messaging Development"@en ;
+  rdfs:subClassOf mkt:ProductMarketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:MessagingDevelopmentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Messaging Development creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ValueProposition ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:MessagingFramework
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:MessagingDevelopment .
+
+mkt:NativeAdvertising
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cd2596a4-f978-4d37-9297-15cd8e382263> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Native Advertising"@en ;
+  rdfs:subClassOf mkt:PerformanceMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:NativeAdvertisingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Native Advertising creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:Advertisement ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:NativeAdvertising .
+
+mkt:OfferingDefinition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ef6d1361-2297-55d8-b513-7610dc16ef65> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Offering Definition"@en ;
+  rdfs:subClassOf mkt:ProductManagement ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:OfferingDefinitionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Offering Definition creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketSegment ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:OfferingFeature ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:Offering
+            ] [
+              sh:class mktx:ProductStrategy
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:OfferingDefinition .
+
+mkt:OfferingShape
+  a sh:NodeShape ;
+  rdfs:comment "Product lines nest features and roll up to their competitor."@en ;
+  sh:property [
+        sh:class mktx:MarketSegment ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:MarketingChannel ;
+        sh:path vzro:distributedThrough
+      ], [
+        sh:class mktx:Offering ;
+        sh:path vzro:competesWith
+      ], [
+        sh:class mktx:OfferingFeature ;
+        sh:path obo:BFO_0000051
+      ], [
+        sh:class mktx:PricingModel ;
+        sh:path vzro:hasPricingModel
+      ], [
+        sh:class svc:Services ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mktx:Offering .
+
+mkt:OpeningAssessmentShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkci:IntelligenceSource ;
+        sh:minCount 1 ;
+        sh:path vzro:evidencedBy
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class cap:Capability
+            ] [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mkci:OpeningAssessment .
+
+mkt:OpeningIdentification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b9d6a8d2-c78f-52cb-a9fa-bd215484d1de> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Opening Identification"@en ;
+  rdfs:subClassOf mkt:ThreatOpeningAssessment ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkt:OpeningIdentificationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Opening Identification creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorClaim ;
+        sh:path drm:consumes
+      ], [
+        sh:class mkci:OpeningAssessment ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:OpeningIdentification .
+
+mkt:PaidSearchAdvertising
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2664cdef-4535-4acc-b5ca-6f86eab3fabf> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Paid Search Advertising"@en ;
+  rdfs:subClassOf mkt:SearchEngineMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:PaidSearchAdvertisingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Paid Search Advertising creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:PaidSearchChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:PaidSearchAdvertising .
+
+mkt:PartnerEnablement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5e702cb8-0235-505d-8630-84c46bef1b1d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Partner Enablement"@en ;
+  rdfs:subClassOf mkt:ChannelPartnerMarketing ;
+  skos:scopeNote "Supports: Channel & Partner Marketing Service."@en .
+
+mkt:PartnerEnablementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Partner Enablement creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingContent ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:ReferralPartnerRole
+            ] [
+              sh:class mktx:TechnologyPartnerRole
+            ] ) ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:PartnerEnablement .
+
+mkt:PartnerIncentiveManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/764bcf2c-9965-504f-a1ad-23600f1930d5> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Partner Incentive Management"@en ;
+  rdfs:subClassOf mkt:ChannelPartnerMarketing ;
+  skos:scopeNote "Supports: Channel & Partner Marketing Service."@en .
+
+mkt:PartnerIncentiveManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Partner Incentive Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:BrokerAdvisorRole ;
+        sh:path vzro:targets
+      ], [
+        sh:class mktx:PartnerIncentiveRule ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:PartnerIncentiveManagement .
+
+mkt:PerformanceMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ac73d4a5-81f0-4200-8384-cea348b55128> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Performance Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:PerformanceMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ac73d4a5-81f0-4200-8384-cea348b55128> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Performance Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Performance Marketing Service; realized in its enabling processes."@en .
+
+mkt:PerformanceMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:PerformanceMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:PerformanceMarketingCapability .
+
+mkt:PerformanceMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ac73d4a5-81f0-4200-8384-cea348b55128> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Performance Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that buys and optimizes paid, search, social and affiliate media against measurable results."@en .
+
+mkt:PerformanceMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Performance Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:PerformanceMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:PerformanceMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:PerformanceMarketingService .
+
+mkt:PersonalCommunicationManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4f5a66ca-4c9d-4c48-af1d-7cf1088eb9c9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Personal Communication Management"@en ;
+  rdfs:subClassOf mkt:MarketingCommunications ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:PersonalizedContent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cb743b96-3f4f-42b7-a55a-bcb4f1d94a15> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Personalized Content"@en ;
+  rdfs:subClassOf mkt:AccountBasedMarketing ;
+  skos:scopeNote "Supports: Account-Based Marketing Service."@en .
+
+mkt:PersonalizedContentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Personalized Content creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:TargetAccountRole ;
+        sh:path vzro:targets
+      ], [
+        sh:or ( [
+              sh:class mktx:AccountPlan
+            ] [
+              sh:class mktx:MarketingContent
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:PersonalizedContent .
+
+mkt:PriceMarketResearch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8df322cc-9d23-48f6-9f9f-5996a900f468> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Price Market Research"@en ;
+  rdfs:subClassOf mkt:PricingManagement ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:PriceMarketResearchShape
+  a sh:NodeShape ;
+  rdfs:comment "What Price Market Research creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingInsight ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:PricePerception ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:PriceMarketResearch .
+
+mkt:PricePerception
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/db2f47e0-b1c4-4b89-9e60-e41105902bb2> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:PricePerception ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Price Perception"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:PricePerception. Kept so 1.0 data still resolves."@en .
+
+mkt:PriceSetting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0eeeac5a-4370-55f0-80a8-942934657c2a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Price Setting"@en ;
+  rdfs:subClassOf mkt:PricingManagement ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:PriceSettingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Price Setting creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:Offering ;
+        sh:path drm:modifies
+      ], [
+        sh:class mktx:PricingModel ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:PricingStrategy
+            ] [
+              sh:class mktx:PricingTactics
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:PriceSetting .
+
+mkt:PricingManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9bac7486-5428-4cc5-9c4a-beda41f86f36> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Pricing Management"@en ;
+  rdfs:subClassOf mkt:MarketingMix ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:PricingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8f50961e-5450-4279-b5fa-6309bb0a418f> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:PricingStrategy ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Pricing Strategy"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:PricingStrategy. Kept so 1.0 data still resolves."@en .
+
+mkt:PricingTactics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/da2b6aff-ecb9-4450-abba-df151501bc6a> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:PricingTactics ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Pricing Tactics"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:PricingTactics. Kept so 1.0 data still resolves."@en .
+
+mkt:ProductLaunchManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5d83e0b2-ab2f-55a4-a06d-554312725a66> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Launch Management"@en ;
+  rdfs:subClassOf mkt:ProductMarketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:ProductLaunchManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Product Launch Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:Offering ;
+        sh:path vzro:promotes
+      ], [
+        sh:or ( [
+              sh:class mktx:LaunchPlan
+            ] [
+              sh:class mktx:PressRelease
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:ProductLaunchManagement .
+
+mkt:ProductManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b5ed5e7b-2816-46c9-b1df-894c9299bbeb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Management"@en ;
+  rdfs:subClassOf mkt:MarketingMix ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:ProductMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a4d20cbf-ff9e-57a8-83a6-693bc080dea0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Marketing"@en ;
+  rdfs:subClassOf mkt:Marketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:ProductMarketingCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a4d20cbf-ff9e-57a8-83a6-693bc080dea0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Marketing Capability"@en ;
+  rdfs:subClassOf mkt:MarketingCapability ;
+  skos:definition "The organization's ability to deliver the Product Marketing Service; realized in its enabling processes."@en .
+
+mkt:ProductMarketingCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:class mkt:ProductMarketing ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:ProductMarketingCapability .
+
+mkt:ProductMarketingService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a4d20cbf-ff9e-57a8-83a6-693bc080dea0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Marketing Service"@en ;
+  rdfs:subClassOf mkt:MarketingService ;
+  skos:definition "The service that positions offerings, writes their messaging, launches them and equips sales to sell them."@en .
+
+mkt:ProductMarketingServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Product Marketing Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:ProductMarketing ;
+        sh:minCount 1 ;
+        sh:path drm:enabledBy
+      ], [
+        sh:class mkt:ProductMarketingCapability ;
+        sh:path drm:enables
+      ] ;
+  sh:targetClass mkt:ProductMarketingService .
+
+mkt:ProductStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9f08bbc2-5301-4c60-92ac-6d885af81c96> ;
+  owl:deprecated true ;
+  owl:equivalentClass mktx:ProductStrategy ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Product Strategy"@en ;
+  skos:editorialNote "Deprecated in 1.1: re-homed to taxonomy-domain-marketing as mktx:ProductStrategy. Kept so 1.0 data still resolves."@en .
+
+mkt:PublicRelations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7e7f6d28-df4b-56df-959e-018c57fcbff1> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Public Relations"@en ;
+  rdfs:subClassOf mkt:MassCommunicationManagement ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:PublicRelationsShape
+  a sh:NodeShape ;
+  rdfs:comment "What Public Relations creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:PressRelease ;
+        sh:path drm:creates
+      ], [
+        sh:class mktx:PublicRelationsChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:PublicRelations .
+
+mkt:ReferralProgramManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/81010b91-8383-5aa2-8bab-21845303dd89> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Referral Program Management"@en ;
+  rdfs:subClassOf mkt:CustomerReferral ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:RegulatedContentReview
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cb8ecfa4-1300-5850-b0ec-5e1faa6ea027> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Regulated Content Review"@en ;
+  rdfs:subClassOf mkt:MarketingComplianceReview ;
+  skos:scopeNote "Supports: Marketing Compliance Service."@en .
+
+mkt:RegulatedContentReviewShape
+  a sh:NodeShape ;
+  rdfs:comment "What Regulated Content Review creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mktx:MarketingComplianceRule
+            ] [
+              sh:class mktx:MarketingContent
+            ] [
+              sh:class mktx:RegulatoryChange
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:RegulatedContentReview .
+
+mkt:RenewalMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2fade038-fd9a-5e4b-8587-10a7e2a71ec7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Renewal Marketing"@en ;
+  rdfs:subClassOf mkt:CustomerRetentionGrowth ;
+  skos:scopeNote "Supports: Customer Engagement Service."@en .
+
+mkt:RenewalMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Renewal Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ChurnRisk ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:ClientRenewalStage ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:RenewalMarketing .
+
+mkt:ReputationManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/51ccc985-9722-473b-8cf8-ce7910f692be> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Reputation Management"@en ;
+  rdfs:subClassOf mkt:BrandManagement ;
+  skos:scopeNote "Supports: Brand Management Service."@en .
+
+mkt:ReputationManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Reputation Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:PressRelease ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:CustomerSentimentShift
+            ] [
+              sh:class mktx:ReputationIncident
+            ] ) ;
+        sh:path drm:consumes
+      ] ;
+  sh:targetClass mkt:ReputationManagement .
+
+mkt:RiskIdentificationMitigation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8be949fb-6933-4398-8d17-48aee5d33090> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Risk Identification & Mitigation"@en ;
+  rdfs:subClassOf mkt:MarketingManagement ;
+  skos:scopeNote "Supports: Marketing Strategy & Planning Service."@en .
+
+mkt:RiskIdentificationMitigationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Risk Identification & Mitigation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:MarketingIssue ;
+        sh:path drm:consumes
+      ], [
+        sh:class mktx:MarketingPlan ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:RiskIdentificationMitigation .
+
+mkt:SalesEnablement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9b110994-b3d7-5337-a3d4-2ab99446a02d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Sales Enablement"@en ;
+  rdfs:subClassOf mkt:ProductMarketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:SalesEnablementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Sales Enablement creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:Battlecard ;
+        sh:path drm:consumes
+      ], [
+        sh:or ( [
+              sh:class mktx:CaseStudy
+            ] [
+              sh:class mktx:OnePager
+            ] [
+              sh:class mktx:SalesPresentation
+            ] ) ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:SalesEnablement .
+
+mkt:SalesPromotions
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f47777c8-0c53-4bf1-9974-f64b38765284> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Sales Promotions"@en ;
+  rdfs:subClassOf mkt:MassCommunicationManagement ;
+  skos:scopeNote "Supports: Marketing Communications Service."@en .
+
+mkt:SalesPromotionsShape
+  a sh:NodeShape ;
+  rdfs:comment "What Sales Promotions creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:Offering ;
+        sh:path vzro:promotes
+      ], [
+        sh:class mktx:Promotion ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:SalesPromotions .
+
+mkt:SearchEngineMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2ba3a327-7a8b-436e-80bf-0219fe9577aa> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Search Engine Marketing"@en ;
+  rdfs:subClassOf mkt:PerformanceMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:SearchEngineOptimization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7a86916c-230c-4297-985c-c316dbafbb39> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Search Engine Optimization"@en ;
+  rdfs:subClassOf mkt:SearchEngineMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:SearchEngineOptimizationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Search Engine Optimization creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:WebsiteChannel ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:SearchEngineOptimization .
+
+mkt:ServiceManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1a111c6e-c8de-4493-951f-fcb88c6f764f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Service Management"@en ;
+  rdfs:subClassOf mkt:ProductManagement ;
+  skos:scopeNote "Supports: Marketing Mix Management Service."@en .
+
+mkt:ServiceManagementShape
+  a sh:NodeShape ;
+  rdfs:comment "What Service Management creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:OfferingFeature ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:ServiceManagement .
+
+mkt:SocialMediaMarketing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2edfb9a7-7d96-45db-9c56-d897c73a98f5> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Social Media Marketing"@en ;
+  rdfs:subClassOf mkt:PerformanceMarketing ;
+  skos:scopeNote "Supports: Performance Marketing Service."@en .
+
+mkt:SocialMediaMarketingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Social Media Marketing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:SocialMediaChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:SocialMediaMarketing .
+
+mkt:ThreatAssessmentShape
+  a sh:NodeShape ;
+  rdfs:comment "A threat names what it weakens, how badly, and the sources behind it."@en ;
+  sh:property [
+        sh:class mkci:IntelligenceSource ;
+        sh:minCount 1 ;
+        sh:path vzro:evidencedBy
+      ], [
+        sh:datatype xsd:integer ;
+        sh:maxCount 1 ;
+        sh:maxInclusive 3 ;
+        sh:minCount 1 ;
+        sh:minInclusive 1 ;
+        sh:path mkci:severityScore
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class cap:Capability
+            ] [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mkci:ThreatAssessment .
+
+mkt:ThreatOpeningAnalysisCapability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/388e2fe0-7c12-5401-9aeb-61659dc955fd> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Threat & Opening Analysis Capability"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceCapability ;
+  skos:definition "The organization's ability to deliver the Threat & Opening Analysis Service; realized in its enabling processes."@en .
+
+mkt:ThreatOpeningAnalysisCapabilityShape
+  a sh:NodeShape ;
+  rdfs:comment "Polymorphism pivot: the capability is realized in the processes that enable its service."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:CompetitiveExposureRollup
+            ] [
+              sh:class mkt:ThreatOpeningAssessment
+            ] ) ;
+        sh:path obo:BFO_0000054
+      ] ;
+  sh:targetClass mkt:ThreatOpeningAnalysisCapability .
+
+mkt:ThreatOpeningAnalysisService
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/388e2fe0-7c12-5401-9aeb-61659dc955fd> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Threat & Opening Analysis Service"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligenceService ;
+  skos:definition "The service that traces which of the organization's capabilities, segments and positioning claims each competitor pressures, scores the threats, and rolls them up to the market."@en .
+
+mkt:ThreatOpeningAnalysisServiceShape
+  a sh:NodeShape ;
+  rdfs:comment "The Threat & Opening Analysis Service is enabled by its supporting processes and enables the matching capability."@en ;
+  sh:property [
+        sh:class mkt:ThreatOpeningAnalysisCapability ;
+        sh:path drm:enables
+      ], [
+        sh:minCount 1 ;
+        sh:or ( [
+              sh:class mkt:CompetitiveExposureRollup
+            ] [
+              sh:class mkt:ThreatOpeningAssessment
+            ] ) ;
+        sh:path drm:enabledBy
+      ] ;
+  sh:targetClass mkt:ThreatOpeningAnalysisService .
+
+mkt:ThreatOpeningAssessment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/71dd82eb-1788-5bfe-a74c-42bc0f1bf6a2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Threat & Opening Assessment"@en ;
+  rdfs:subClassOf mkt:CompetitiveIntelligence ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkt:ThreatSeverityScoring
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/51d86b34-229f-56bb-8679-4bcdd515080b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Threat Severity Scoring"@en ;
+  rdfs:subClassOf mkt:ThreatOpeningAssessment ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkt:ThreatSeverityScoringShape
+  a sh:NodeShape ;
+  rdfs:comment "What Threat Severity Scoring creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:ThreatAssessment ;
+        sh:path drm:modifies
+      ] ;
+  sh:targetClass mkt:ThreatSeverityScoring .
+
+mkt:ThreatTracing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/161c4426-ce60-5454-ba43-934d69714ecf> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Threat Tracing"@en ;
+  rdfs:subClassOf mkt:ThreatOpeningAssessment ;
+  skos:scopeNote "Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkt:ThreatTracingShape
+  a sh:NodeShape ;
+  rdfs:comment "What Threat Tracing creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mkci:CompetitorClaim ;
+        sh:path drm:consumes
+      ], [
+        sh:class mkci:ThreatAssessment ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:ThreatTracing .
+
+mkt:ThreatensShape
+  a sh:NodeShape ;
+  rdfs:comment "Competitor product lines and features threaten the organization's capabilities, segments and positioning claims."@en ;
+  sh:property [
+        sh:or ( [
+              sh:class cap:Capability
+            ] [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path vzro:threatens
+      ] ;
+  sh:targetSubjectsOf vzro:threatens .
+
+mkt:TradeShowParticipation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d6408682-7070-51f2-9765-6b2a68327ab8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Trade Show Participation"@en ;
+  rdfs:subClassOf mkt:EventMarketing ;
+  skos:scopeNote "Supports: Event Marketing Service."@en .
+
+mkt:TradeShowParticipationShape
+  a sh:NodeShape ;
+  rdfs:comment "What Trade Show Participation creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:EventChannel ;
+        sh:path vzro:distributedThrough
+      ] ;
+  sh:targetClass mkt:TradeShowParticipation .
+
+mkt:ValuePropositionDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b341b14b-7e60-5fa7-80ed-6c6d1003463c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Value Proposition Development"@en ;
+  rdfs:subClassOf mkt:ProductMarketing ;
+  skos:scopeNote "Supports: Product Marketing Service."@en .
+
+mkt:ValuePropositionDevelopmentShape
+  a sh:NodeShape ;
+  rdfs:comment "What Value Proposition Development creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:ValueProposition ;
+        sh:path drm:creates
+      ], [
+        sh:or ( [
+              sh:class mktx:BuyerPersona
+            ] [
+              sh:class mktx:MarketSegment
+            ] ) ;
+        sh:path vzro:targets
+      ] ;
+  sh:targetClass mkt:ValuePropositionDevelopment .
+
+mkt:VerificationRunResultShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkci:ClaimVerificationVerdict ;
+        sh:path drm:has
+      ], [
+        sh:class mkci:CompetitorBrief ;
+        sh:minCount 1 ;
+        sh:path obo:IAO_0000136
+      ] ;
+  sh:targetClass mkci:VerificationRunResult .
+
+mkt:WebinarProduction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/695d147f-055d-54a6-a7c0-1272fde05d85> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mkt: ;
+  rdfs:label "Webinar Production"@en ;
+  rdfs:subClassOf mkt:EventMarketing ;
+  skos:scopeNote "Supports: Event Marketing Service."@en .
+
+mkt:WebinarProductionShape
+  a sh:NodeShape ;
+  rdfs:comment "What Webinar Production creates, uses, changes, targets or promotes. These are the terms that emerge from the process."@en ;
+  sh:property [
+        sh:class mktx:WebinarRecording ;
+        sh:path drm:creates
+      ] ;
+  sh:targetClass mkt:WebinarProduction .
+
+mkt:ci_BreakerTripThresholdConstrainsShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:BattlecardPublishing
+            ] [
+              sh:class mkt:BreakerEvaluation
+            ] ) ;
+        sh:path drm:constrains
+      ] ;
+  sh:targetClass mkci:BreakerTripThreshold .
+
+mkt:ci_ClaimCheckTypeGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkt:ClaimChecking ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mkci:ClaimCheckType .
+
+mkt:ci_ExposureScoreMeasuresShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class cap:Capability
+            ] [
+              sh:class mktx:MarketSegment
+            ] [
+              sh:class mktx:PositioningClaim
+            ] ) ;
+        sh:path vzro:measures
+      ] ;
+  sh:targetClass mkci:ExposureScore .
+
+mkt:ci_PressureScoreMeasuresShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mktx:CompetitorRole ;
+        sh:path vzro:measures
+      ] ;
+  sh:targetClass mkci:PressureScore .
+
+mkt:ci_SourceAuthorityTierGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:ClaimChecking
+            ] [
+              sh:class mkt:IntelligenceSourceCollection
+            ] ) ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mkci:SourceAuthorityTier .
+
+mkt:x_LeadQualificationCriteriaGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:LeadQualificationHandoff
+            ] [
+              sh:class mkt:LeadScoring
+            ] ) ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mktx:LeadQualificationCriteria .
+
+mkt:x_MarketSegmentDefinitionGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:MarketSegments
+            ] [
+              sh:class mkt:MarketingStrategyDevelopment
+            ] ) ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mktx:MarketSegmentDefinition .
+
+mkt:x_MarketingComplianceRuleConstrainsShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkt:Marketing ;
+        sh:path drm:constrains
+      ] ;
+  sh:targetClass mktx:MarketingComplianceRule .
+
+mkt:x_MarketingMeasurementMeasuresShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:Marketing
+            ] [
+              sh:class mktx:MarketingCharacteristic
+            ] [
+              sh:class mktx:MarketingOutcome
+            ] ) ;
+        sh:path vzro:measures
+      ] ;
+  sh:targetClass mktx:MarketingMeasurement .
+
+mkt:x_PartnerIncentiveRuleGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:class mkt:BrokerAdvisorMarketing ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mktx:PartnerIncentiveRule .
+
+mkt:x_PricingModelGuidesShape
+  a sh:NodeShape ;
+  sh:property [
+        sh:or ( [
+              sh:class mkt:CompetitivePricingAnalysis
+            ] [
+              sh:class mkt:PriceSetting
+            ] ) ;
+        sh:path drm:guides
+      ] ;
+  sh:targetClass mktx:PricingModel .

@@ -1,0 +1,17 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex: <https://ontologies.verizon.com/edge-test/> .
+
+ex: a owl:Ontology ;
+  rdfs:label "Edge Test"@en .
+
+ex:Event a owl:Class ;
+  rdfs:label "Event"@en .
+
+ex:Trigger a owl:Class ;
+  rdfs:label "Trigger"@en .
+
+ex:initiatedBy a owl:ObjectProperty ;
+  rdfs:label "initiated by"@en ;
+  rdfs:domain ex:Event ;
+  rdfs:range ex:Trigger .

@@ -1,0 +1,2211 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Services_Technical_Services_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/>.
+
+<https://ontologies.verizon.com/taxonomy-core-services-technicalservices/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Services | Technical Services"@en ;
+  rdfs:comment "Component Design for Verizon Knowledge Fabric"@en ;
+  dct:description "The technical service taxonomy categorizes crucial technical functions within Verizon to enable a streamlined service delivery and enhanced user experience."@en ;
+  dct:title "Taxonomy | Core | Services | Technical Services"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-services-technicalservices/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "VZDev", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:48:57.600Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  owl:versionInfo "1.0" ;
+  dc11:creator """Jeffrey Wallk
+Sherri Anderson""" ;
+  dc11:title "Composit Ontologies for Verizon Knowledge Fabric" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:TechnicalServices .
+
+tx:ExtensionsBuild
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Extensions Build"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/de62d555-c097-4e94-8070-20bb46dc725a> ;
+  skos:broader tx:PerformanceManagement ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:AI_Models>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Analytics>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Aggregation>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Sources>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Modeling_and_Analysis>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Recommendation_Engine>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Semantic_Data_Mapping>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Social_Network_Analysis> .
+
+tx:DataAssetInventory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Asset Inventory"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:28:54.995Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ef95a365-20bb-4296-9f84-b68949e91156> ;
+  skos:broader tx:DataAssetValuation .
+
+tx:DataAssetValuation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Asset Valuation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:28:54.995Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/afea2e59-f9f4-4424-95fc-3c37bb2b01ad> ;
+  skos:narrower tx:DataAssetInventory, tx:DataAssetInvestment, tx:DataAssetPrioritization, tx:DataAssetQuantification ;
+  skos:broader tx:DataOperations .
+
+tx:DataAssetInvestment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Asset Investment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:28:54.995Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4957503e-0029-48ba-881f-32a138cafe34> ;
+  skos:broader tx:DataAssetValuation .
+
+tx:DataAssetPrioritization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Asset Prioritization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:28:54.995Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bf0f4da8-472c-44de-8a18-2b87175d9f37> ;
+  skos:broader tx:DataAssetValuation .
+
+tx:DataAssetQuantification
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Asset Quantification"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:28:54.995Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/74d21341-dbee-4004-b44d-4de8f9715b84> ;
+  skos:broader tx:DataAssetValuation .
+
+tx:DataSecurityPolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Security Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f482d58f-0a74-4ea9-ab14-7a76c09178b2> ;
+  skos:broader tx:PolicyManagement ;
+  skos:narrower tx:DataAvailability, tx:DataConfidentiality .
+
+tx:AccountManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Account Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e4c86d5c-ee7a-493c-900c-9c43d2674f84> ;
+  skos:broader tx:AuthorizationManagement .
+
+tx:AuthorizationManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Authorization Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ab11a0ba-12ee-462d-a954-0bae55d9efdf> ;
+  skos:narrower tx:AccountManagement, tx:Provisioning, tx:DispositionManagement, tx:PrivilegeManagement ;
+  skos:broader tx:SecurityManagement .
+
+tx:ApiSupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "API Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fe785203-98fe-4e46-a8e4-6b802b1e1c2b> ;
+  skos:broader tx:SemanticKnowledgeLayer .
+
+tx:SemanticKnowledgeLayer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Semantic Knowledge Layer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e713aa94-6a52-497e-9fa5-439f84352764> ;
+  skos:narrower tx:ApiSupport, tx:RelationalDatabaseToResourceDescriptionFrameworkIntegration, tx:SecuritySupport, tx:SqlQueries ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:ArchitectureAlignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Architecture Alignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/854d0ed7-f764-43ad-a14e-68e249e59429> ;
+  skos:broader tx:SecurityManagement ;
+  skos:narrower tx:EntityLifecyclePattern, tx:IdentityLifecyclePattern, tx:RoleLifecyclePattern .
+
+tx:SecurityManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Security Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d385efb0-54ec-4ede-8caa-9f787799d20b> ;
+  skos:narrower tx:AuthorizationManagement, tx:ArchitectureAlignment, tx:PolicyManagement, tx:IdentityManagement, tx:CredentialManagement, tx:ProtectionManagement, tx:DataManagement, tx:ReportingAnalytics, tx:ThreatManagement ;
+  skos:broader tx:TechnicalServices .
+
+tx:ArchivalServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Archival Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8f9f767c-d19d-48b2-ad78-89f8a555b7c0> ;
+  skos:broader tx:StorageManagementServices .
+
+tx:StorageManagementServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Storage Management Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/deced774-1131-4b9e-b78a-3c3e5aced2ce> ;
+  skos:narrower tx:ArchivalServices, tx:DisposalServices, tx:RetentionServices ;
+  skos:broader tx:ComputingService .
+
+tx:AssetSecurityPolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Asset Security Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/88b4cd18-dac6-4cc3-96ca-868dbbb7ab5a> ;
+  skos:broader tx:PolicyManagement .
+
+tx:PolicyManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Policy Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/cac64e8f-0ac2-46cd-8eff-f144911a404d> ;
+  skos:narrower tx:DataSecurityPolicies, tx:AssetSecurityPolicies, tx:PolicyEnforcement, tx:CorporatePolicies, tx:LawsCitationsCompliance, tx:NetworkSecurityPolicies, tx:PhysicalSecurityPolicies, tx:QualityPolicies ;
+  skos:broader tx:SecurityManagement .
+
+tx:AugmentedSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Augmented Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c4038c8e-ddaf-40ee-9075-3119c67523a4> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:EnterpriseSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Enterprise Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e6e1313c-a028-4f7c-97f7-535366633b78> ;
+  skos:narrower tx:AugmentedSearch, tx:BooleanSearch, tx:IntelligentSearch, tx:PhoneticSearch, tx:SemanticSearch, tx:TokenBasedSearch ;
+  skos:broader tx:TechnicalServices .
+
+tx:AutoTaggingSemanticExtension
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Auto Tagging & Semantic Extension"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/dfc3eb44-2561-4b5a-ae88-84d46fbe6ef6> ;
+  skos:broader tx:BuildTaxonomies .
+
+tx:BuildTaxonomies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Build Taxonomies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/977a16f9-b49e-4786-be3f-d5baac7c5f21> ;
+  skos:narrower tx:AutoTaggingSemanticExtension, tx:BuildAssociatedTaxonomies, tx:OrganizeEntitiesIntoHierarchies, tx:SkosBasedVocabularies ;
+  skos:broader tx:TaxonomyManagement .
+
+tx:BehavioralAdaptation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Behavioral Adaptation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/07f814be-48df-484d-82ca-591139b537b6> ;
+  skos:broader tx:PresentationServices .
+
+tx:PresentationServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Presentation Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/2e1e48b2-6d61-4667-8680-27bee49aca50> ;
+  skos:narrower tx:BehavioralAdaptation, tx:CustomerFeedback, tx:DigitalUserExperience, tx:ExperientialJourneyDesign, tx:FormGeneration, tx:HumanCenteredDesign, tx:PersonaTailoring, tx:SessionManagement, tx:TransactionalJourneyDesign, tx:TranslationServices ;
+  skos:broader tx:TechnicalServices .
+
+tx:BooleanSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Boolean Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3ab772c6-ade8-45ca-87cd-7994df8fb814> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:BuildAssociatedTaxonomies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Build Associated Taxonomies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8031bea1-5ab7-4a8d-a92a-de8e9047806d> ;
+  skos:broader tx:BuildTaxonomies .
+
+tx:TaxonomyManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Taxonomy Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a5524d13-309e-4af4-a0e3-126d68f5d2e5> ;
+  skos:narrower tx:BuildTaxonomies, tx:ManageTaxonomies ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:CentralizedAdministration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Centralized Administration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/0e664b07-ad12-438e-b429-bc288be04162> ;
+  skos:broader tx:IdentityManagement .
+
+tx:IdentityManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/53f243a0-ef43-4965-8b76-662bf0c8b1bb> ;
+  skos:narrower tx:CentralizedAdministration, tx:DelegatedAdministration, tx:GroupAdministration, tx:IdentityFederation, tx:IdentityMediation, tx:IdentityPropogation, tx:IdentityQualificationApproval, tx:IdentityRegistration ;
+  skos:broader tx:SecurityManagement .
+
+tx:CertificationManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Certification Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f6e38058-4bc7-45a4-a2e6-929fd4a29569> ;
+  skos:broader tx:ReleaseManagement .
+
+tx:ReleaseManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Release Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/db57ae42-36ea-421d-8b31-2ae4375e94bd> ;
+  skos:narrower tx:CertificationManagement ;
+  skos:broader tx:TechnicalServices .
+
+tx:ChangeManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Change Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e117c500-3b6f-45f0-810d-4026789c11ce> ;
+  skos:broader tx:QualityEngineering .
+
+tx:QualityEngineering
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Quality Engineering"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ae80b132-e174-4db6-a00a-baecde30bf2f> ;
+  skos:narrower tx:ChangeManagement ;
+  skos:broader tx:TechnicalServices .
+
+tx:ComponentAccess
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Component Access"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6040fb14-ad31-4a79-9c56-83978578f109> ;
+  skos:broader tx:DataPublishing .
+
+tx:DataPublishing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Publishing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/2f7c10b0-eb98-4f61-b535-30dc78d3dd1f> ;
+  skos:narrower tx:ComponentAccess, tx:ContentAccess, tx:DataAccess, tx:DirectoryMaintenance, tx:LocationAccess, tx:SystemAccess ;
+  skos:broader tx:DataManagement .
+
+tx:ComputingService
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Computing Service"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/aba8daf8-4c77-4b32-9b23-202a4e799896> ;
+  skos:narrower tx:StorageManagementServices ;
+  skos:broader tx:PlatformOperations .
+
+tx:PlatformOperations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Platform Operations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9dce96e9-fa64-41a1-9a49-d20b38d1ffaf> ;
+  skos:narrower tx:ComputingService ;
+  skos:broader tx:TechnicalServices .
+
+tx:ConnectionServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Connection Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3d4c26ec-c6e5-46ce-98ef-421e48f0a263> ;
+  skos:broader tx:DataIntegrationService .
+
+tx:DataIntegrationService
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Integration Service"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/769a21fa-6e03-417c-8735-b12e82c43878> ;
+  skos:narrower tx:ConnectionServices, tx:DataExtraction, tx:DataLoading, tx:DataTransformation ;
+  skos:broader tx:DataEngineering .
+
+tx:ConstraintManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Constraint Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e47ced5a-e22f-4602-96fd-d384ad55bd37> ;
+  skos:broader tx:PolicyEnforcement .
+
+tx:PolicyEnforcement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Policy Enforcement"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/da641280-c2b1-4951-912c-c9acc856945d> ;
+  skos:narrower tx:ConstraintManagement, tx:RulesManagement ;
+  skos:broader tx:PolicyManagement .
+
+tx:ContentAccess
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Content Access"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b53c212b-6ce5-4331-afaf-8f3f0550c5a3> ;
+  skos:broader tx:DataPublishing .
+
+tx:ContextAlignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Context Alignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e70bb6b1-6f03-49dd-8be6-284d2623715f> ;
+  skos:broader tx:MetadataManagement .
+
+tx:MetadataManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Metadata Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1fa11b21-48db-4961-a43a-5988892b665a> ;
+  skos:narrower tx:ContextAlignment, tx:ContextCapture, tx:ContextToEntityMapping ;
+  skos:broader tx:DataManagement .
+
+tx:ContextCapture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Context Capture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f46f3e33-bca0-4656-a9da-7e172dd64d33> ;
+  skos:broader tx:MetadataManagement .
+
+tx:ContextToEntityMapping
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Context to Entity Mapping"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/386de1c5-ac0e-485d-8e79-fa009283a8b7> ;
+  skos:broader tx:MetadataManagement .
+
+tx:Continuity
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Continuity"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d22818d4-338d-4010-8b18-60105c07f52f> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:PerformanceManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Performance Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/69b880de-2e82-4655-8797-00574ac6a6c7> ;
+  skos:narrower tx:ExtensionsBuild, tx:Continuity, tx:KnowledgeGraphSupport, tx:LinearScaling, tx:LocationBasedIntelligence, tx:SemanticMappingSupport, tx:ShaclConstraints ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:CorporatePolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Corporate Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b02becb8-86a8-4383-b642-0e1c6cb81a21> ;
+  skos:broader tx:PolicyManagement .
+
+tx:CreateReadUpdateDeleteProvisioning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Create Read Update Delete Provisioning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fd7f94d5-f0e7-4a43-8a29-63ec4323a7b9> ;
+  skos:broader tx:Provisioning .
+
+tx:Provisioning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Provisioning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/483540df-a22a-4819-943d-32c679a058c7> ;
+  skos:narrower tx:CreateReadUpdateDeleteProvisioning, tx:ServicesProvisioning, tx:SystemsProvisioning ;
+  skos:broader tx:AuthorizationManagement .
+
+tx:CredentialAssignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Credential Assignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3c26476a-3e56-4349-976b-a7849ce3f55f> ;
+  skos:broader tx:CredentialManagement .
+
+tx:CredentialManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Credential Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/7fdd1a6e-3f7f-4d8b-8724-ba297a6d0395> ;
+  skos:narrower tx:CredentialAssignment, tx:CredentialCollection, tx:CredentialValidation, tx:DigitalSignature ;
+  skos:broader tx:SecurityManagement .
+
+tx:CredentialCollection
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Credential Collection"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/11326ab4-b3b1-4cc9-8d9f-2a4f09ff3851> ;
+  skos:broader tx:CredentialManagement .
+
+tx:CredentialValidation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Credential Validation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/807bdb36-0144-4705-8862-3c28f503d07a> ;
+  skos:broader tx:CredentialManagement .
+
+tx:CustomerFeedback
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Customer Feedback"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bf671b4c-80f4-4085-9447-3af50e587737> ;
+  skos:broader tx:PresentationServices .
+
+tx:DataAccess
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Access"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fde4891b-e35c-4d44-976f-49745c5eb3ea> ;
+  skos:broader tx:DataPublishing .
+
+tx:DataAccessLayer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Access Layer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/dfe848e3-bb2c-4a52-bf10-339d44d574ac> ;
+  skos:broader tx:DataServices .
+
+tx:DataServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6da9fb84-8f39-4edb-b2b0-092489a5ee57> ;
+  skos:narrower tx:DataAccessLayer, tx:DataAcquisition, tx:DataQualityManagement, tx:DataDispositioning, tx:DataManagementRules, tx:DataModelingServices, tx:DatabaseManagement ;
+  skos:broader tx:TechnicalServices .
+
+tx:DataAcquisition
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Acquisition"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8cbf9d6d-6ada-4711-b40a-8b65c294e9bf> ;
+  skos:broader tx:DataServices ;
+  skos:narrower tx:ExternalDataSourcing, tx:InternalDataSourcing .
+
+tx:DataOperations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Operations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/82ab126d-a1a4-47f9-87f0-71f5c2698cd8> ;
+  skos:narrower tx:DataAssetValuation, tx:DataQualityManagement ;
+  skos:broader tx:TechnicalServices .
+
+tx:DataAvailability
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Availability"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/0b4c9837-2542-437c-a424-3bf295cfba0a> ;
+  skos:broader tx:DataSecurityPolicies .
+
+tx:DataCategorization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Categorization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3fefe324-40c8-4d7a-abe1-26d3f1e8e29d> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:ProtectionManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Protection Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d2da0891-50d0-492f-833f-4e16f8d31391> ;
+  skos:narrower tx:DataCategorization, tx:DataMasking, tx:DataReleasability, tx:Decryption, tx:EncryptionAtRest, tx:EncryptionInMotion, tx:ResourceProtection, tx:TemporalConstraintTimer, tx:TokenAssignment, tx:TokenManagement ;
+  skos:broader tx:SecurityManagement .
+
+tx:DataCleansing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Cleansing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b2ceb81c-1116-4f79-839b-1c781dd9ea96> ;
+  skos:broader tx:DataQualityManagement .
+
+tx:DataQualityManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Quality Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9dfa3702-14b4-4c5d-a7c1-8a6a242c7223> ;
+  skos:narrower tx:DataCleansing, tx:DataProfiling, tx:DataValidation ;
+  skos:broader tx:DataOperations, tx:DataServices .
+
+tx:DataConfidentiality
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Confidentiality"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/76d5086b-f8a5-4767-8fab-ccbb9e41484f> ;
+  skos:broader tx:DataSecurityPolicies .
+
+tx:DataDispositioning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Dispositioning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3556a5c2-abca-4d35-956b-90d47e2a5a21> ;
+  skos:broader tx:DataServices ;
+  skos:narrower tx:DataIssueRemediation .
+
+tx:DataEngineering
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Engineering"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ffb499fb-4287-42dd-b5e1-33f73496fabb> ;
+  skos:narrower tx:DataIntegrationService, tx:SocialEngineeringCommunication, tx:MethodologyAdherence ;
+  skos:broader tx:TechnicalServices .
+
+tx:TechnicalServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Technical Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a61ef64d-e4e8-4ea3-84b2-f47509dd57e0> ;
+  skos:narrower tx:SecurityManagement, tx:EnterpriseSearch, tx:PresentationServices, tx:ReleaseManagement, tx:QualityEngineering, tx:PlatformOperations, tx:DataServices, tx:DataOperations, tx:DataEngineering, tx:KnowledgeEngineering, tx:ProcessManagement, tx:SystemsOperations, tx:WorkflowAutomation ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> .
+
+tx:DataExtraction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Extraction"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/006a3fb3-5865-470f-8088-1d535c412d1b> ;
+  skos:broader tx:DataIntegrationService .
+
+tx:DataIntegrity
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Integrity"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/86e53219-9452-4fa6-a432-0c4ec55106a0> ;
+  skos:broader tx:DataManagement ;
+  skos:narrower tx:Identities .
+
+tx:DataManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e1f26e06-f169-4980-b2fe-7828cc238f39> ;
+  skos:narrower tx:DataPublishing, tx:MetadataManagement, tx:DataIntegrity, tx:DataMapping, tx:DirectoryManagement, tx:RegistryManagement ;
+  skos:broader tx:SecurityManagement .
+
+tx:DataIssueRemediation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Issue Remediation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b639aae3-4217-4263-9f8c-d988122d1a9b> ;
+  skos:broader tx:DataDispositioning .
+
+tx:DataLoading
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Loading"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f66feb6e-52d0-4a34-b7cb-b29a393bf3db> ;
+  skos:broader tx:DataIntegrationService .
+
+tx:DataManagementRules
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Management Rules"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e76660b0-fc01-4e9c-9e0a-3db132a7517f> ;
+  skos:broader tx:DataServices .
+
+tx:DataMapping
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Mapping"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/02bd87d6-83e0-421c-8b23-ec5d0a906567> ;
+  skos:broader tx:DataManagement ;
+  skos:narrower tx:IdentitiesToEntities, tx:IdentitiesToRoles, tx:SourceToTargetIdentities .
+
+tx:DataMasking
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Masking"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b0476db7-3b3b-418d-b15b-63aa581eb97d> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:DataModelingServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Modeling Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/82845ed2-4709-429c-87fc-5a46b6c8972a> ;
+  skos:broader tx:DataServices .
+
+tx:DataProfiling
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Profiling"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a5633b71-0ce6-4dfe-8dd4-09b435b05959> ;
+  skos:broader tx:DataQualityManagement .
+
+tx:DataReleasability
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Releasability"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/409d2f5e-c800-4792-8a10-84e1808f380c> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:DataTransformation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Transformation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c7bfaa98-035c-4dd8-920d-eb1d0012103f> ;
+  skos:broader tx:DataIntegrationService .
+
+tx:DataValidation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Validation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ca28a415-ed21-4057-a6d8-6a941ad56fb0> ;
+  skos:broader tx:DataQualityManagement .
+
+tx:DatabaseManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Database Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/593348a3-038f-4692-9d6b-ad5c2de81bbb> ;
+  skos:broader tx:DataServices ;
+  skos:narrower tx:IndexingServices .
+
+tx:Decryption
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Decryption"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/2d2ee7b2-5575-4ac3-85ff-531df2d82e15> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:DelegatedAdministration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Delegated Administration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1fa6221a-aed7-44e8-88b5-f3a17b078712> ;
+  skos:broader tx:IdentityManagement .
+
+tx:DigitalSignature
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Digital Signature"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bebc8526-f4b9-43e5-b2fb-ab469d6dd06e> ;
+  skos:broader tx:CredentialManagement .
+
+tx:DigitalUserExperience
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Digital User Experience"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c1df1682-eca0-4232-85e0-e045b9e2ae15> ;
+  skos:broader tx:PresentationServices .
+
+tx:DirectoryMaintenance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Directory Maintenance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/792ed6d5-bdb6-4c93-a8b0-05153bbbedb6> ;
+  skos:broader tx:DataPublishing .
+
+tx:DirectoryManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Directory Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/02384c3f-b8f2-4b39-b435-d6abf375779d> ;
+  skos:broader tx:DataManagement ;
+  skos:narrower tx:ExternalEntities, tx:InternalEntities .
+
+tx:DisposalServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Disposal Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bb644d45-640f-49de-bd20-05f9eb03d789> ;
+  skos:broader tx:StorageManagementServices .
+
+tx:DispositionManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Disposition Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e6c689b2-5934-407f-8db4-bf6ea39fd3e0> ;
+  skos:broader tx:AuthorizationManagement .
+
+tx:DomainExpertise
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Domain Expertise"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/15d0e693-6a35-4d66-a6d7-e999c40d865f> ;
+  skos:broader tx:SocialEngineeringCommunication .
+
+tx:SocialEngineeringCommunication
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Social Engineering & Communication"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/22b5b0c2-28fd-42d8-b22d-99a829125635> ;
+  skos:narrower tx:DomainExpertise, tx:TechnicalExpertise ;
+  skos:broader tx:DataEngineering .
+
+tx:DomainOntologies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Domain Ontologies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6213fa53-b42a-4e20-a6af-4be4f0a6893b> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:KnowledgeEngineering
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Knowledge Engineering"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/711b448d-651f-4104-9b4e-91bd6a1f8124> ;
+  skos:narrower tx:SemanticKnowledgeLayer, tx:TaxonomyManagement, tx:PerformanceManagement, tx:DomainOntologies, tx:VocabularyManagement, tx:VisualizationManagement, tx:KnowledgeGraphs, tx:KnowledgePlatforming, tx:OntologyManagement, tx:RelationshipManagement, tx:Taxonomies, tx:UnifiedContent ;
+  skos:broader tx:TechnicalServices .
+
+tx:EdgeCategorization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Edge Categorization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/2b4e40ef-dd7b-498e-ba3a-b860022b3448> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:VocabularyManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Vocabulary Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ef6fa823-7e36-46b2-b73a-bf2bb113e4c5> ;
+  skos:narrower tx:EdgeCategorization, tx:InferencingRules, tx:InstantiateMathSymbolics, tx:IriConstruction, tx:PersistedIdentifierCreation, tx:PropertyAssignment, tx:SemanticAssociation, tx:TermMining, tx:TextAnalysisTermExtraction, tx:WeightAssignment ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:EncryptionAtRest
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Encryption at Rest"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/828bd8c0-2866-49be-b095-09b6f8bfd425> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:EncryptionInMotion
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Encryption in Motion"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c9839634-f5d1-4b0f-bfee-055d87245100> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:EntityLifecyclePattern
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Entity Lifecycle Pattern"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c155f863-7786-48a6-93d7-da19b7f3ed0c> ;
+  skos:broader tx:ArchitectureAlignment .
+
+tx:ExperientialJourneyDesign
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Experiential Journey Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4e3b03bb-2eda-41e3-8f7a-62c397d58581> ;
+  skos:broader tx:PresentationServices .
+
+tx:ExposureAnalysis
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Exposure Analysis"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f84fa1a1-7fdc-424c-8a19-6bb987577629> ;
+  skos:broader tx:ReportingAnalytics .
+
+tx:ReportingAnalytics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Reporting & Analytics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/cc49d8ca-7735-41fe-b2eb-90f064118c46> ;
+  skos:narrower tx:ExposureAnalysis, tx:PredictiveAnalytics, tx:ResolutionAssessment ;
+  skos:broader tx:SecurityManagement .
+
+tx:ExternalDataSourcing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "External Data Sourcing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4c7a5334-cad8-451b-a008-3ca45de602ba> ;
+  skos:broader tx:DataAcquisition .
+
+tx:ExternalEntities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "External Entities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/5c490c10-1880-408a-90f9-e4702cf2af65> ;
+  skos:broader tx:DirectoryManagement .
+
+tx:Filtering
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Filtering"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/760c3a5e-4bd0-4e3b-9847-b1499ad652f2> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:VisualizationManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Visualization Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ca3dcd7d-8da0-4994-8706-571aab632dc0> ;
+  skos:narrower tx:Filtering, tx:HierarchicalMaps, tx:NaturalLanguageQuery, tx:VisualExploration, tx:VisualMaps, tx:VisualOptimization ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:FormGeneration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Form Generation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/00b54dc7-5139-4a3e-8e48-c5e2b097fbf6> ;
+  skos:broader tx:PresentationServices .
+
+tx:GroupAdministration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Group Administration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/054df16e-5f50-4883-bbde-84f87f88a0e6> ;
+  skos:broader tx:IdentityManagement .
+
+tx:HierarchicalMaps
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Hierarchical Maps"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/12c63573-5bff-4ef6-bc38-2b9650e93690> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:HumanCenteredDesign
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Human Centered Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b34172a5-fdf9-4d4e-b082-7227a77a14df> ;
+  skos:broader tx:PresentationServices .
+
+tx:Identities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/95ccbdb5-8bab-4fe9-86e1-076ce68dea75> ;
+  skos:broader tx:DataIntegrity .
+
+tx:IdentitiesToEntities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identities to Entities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/2cd92661-25c7-46d9-be80-43cbf640be8d> ;
+  skos:broader tx:DataMapping .
+
+tx:IdentitiesToRoles
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identities to Roles"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/68ccc5df-1cee-4e18-9700-89bbb8c42a06> ;
+  skos:broader tx:DataMapping .
+
+tx:IdentityFederation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Federation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ea13b6c3-ce36-4054-82c3-933be72fb76a> ;
+  skos:broader tx:IdentityManagement .
+
+tx:IdentityLifecyclePattern
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Lifecycle Pattern"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4834cc72-be05-4f9f-b0f5-aaae4793034b> ;
+  skos:broader tx:ArchitectureAlignment .
+
+tx:IdentityMediation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Mediation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bef954e5-1e39-4378-905d-26b0307b11c1> ;
+  skos:broader tx:IdentityManagement .
+
+tx:IdentityPropogation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Propogation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f1e9e484-d26f-4dc5-b25d-21d1123b1b1c> ;
+  skos:broader tx:IdentityManagement .
+
+tx:IdentityQualificationApproval
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Qualification & Approval"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/7ebbd59d-df3a-494c-9ad4-c09b1e69c118> ;
+  skos:broader tx:IdentityManagement .
+
+tx:IdentityRegistration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Identity Registration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/078bb625-c9e5-4069-b799-209a78aa38dd> ;
+  skos:broader tx:IdentityManagement .
+
+tx:Implementation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Implementation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/eeadd343-1142-409e-80fb-0d40b90ed636> ;
+  skos:broader tx:MethodologyAdherence .
+
+tx:MethodologyAdherence
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Methodology Adherence"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e7bd94b0-dbad-4c67-b2a5-ed0af0a6e89b> ;
+  skos:narrower tx:Implementation, tx:KnowledgeCapture, tx:MappingValidation, tx:MeasurementValidation, tx:QueryValidation ;
+  skos:broader tx:DataEngineering .
+
+tx:IndexingServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Indexing Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/de3b9d67-c283-4cde-a101-39d075e6e1ee> ;
+  skos:broader tx:DatabaseManagement .
+
+tx:InferenceManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Inference Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9e24823d-9cd0-466e-a12a-b353fee717ff> ;
+  skos:broader tx:ManageTaxonomies .
+
+tx:ManageTaxonomies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Manage Taxonomies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/5a1a6d3a-f15b-4000-ac2c-e1bb89936a19> ;
+  skos:narrower tx:InferenceManagement, tx:PolymorphicMeaning ;
+  skos:broader tx:TaxonomyManagement .
+
+tx:InferencingRules
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Inferencing Rules"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/0ea00cf5-cb92-4dc4-9f26-f9416eac0912> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:InstantiateMathSymbolics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Instantiate Math Symbolics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1e12462b-9437-407d-9d1c-c9b1dbb961fc> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:IntelligentSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Intelligent Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e4c630a9-1f64-4724-bf80-467ce7a7a8f1> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:InternalDataSourcing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Internal Data Sourcing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d9670c8a-eadb-4af4-914d-c5089cf4511c> ;
+  skos:broader tx:DataAcquisition .
+
+tx:InternalEntities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Internal Entities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1079ab1d-1b1a-4f4e-80f9-6f358f7e0b06> ;
+  skos:broader tx:DirectoryManagement ;
+  skos:narrower tx:LogicalLocation, tx:PhysicalLocation .
+
+tx:Investigation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Investigation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d6f8830b-389a-447c-872d-ff567b56fe24> ;
+  skos:broader tx:ThreatManagement .
+
+tx:ThreatManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Threat Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9bd16586-4f37-48eb-b0ce-3211a90cb34d> ;
+  skos:narrower tx:Investigation, tx:Mitigation, tx:Monitoring, tx:Prevention, tx:Training ;
+  skos:broader tx:SecurityManagement .
+
+tx:IriConstruction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "IRI Construction"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/061c9d9a-aeee-4591-bb9b-c30fcf13736e> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:KnowledgeCapture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Knowledge Capture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/61b323da-969b-4501-96cc-0e032232a6e6> ;
+  skos:broader tx:MethodologyAdherence ;
+  skos:narrower tx:OntologyDiscovery, tx:TaxonomyDiscovery, tx:VocabularyDiscovery .
+
+tx:KnowledgeGraphSupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Knowledge Graph Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9499cdd7-8421-4430-88e3-07984c925e74> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:KnowledgeGraphs
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Knowledge Graphs"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/78719d71-afda-42f8-8073-2bd906c0014c> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:KnowledgePlatforming
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Knowledge Platforming"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/88bab6a3-28b7-49bd-9592-3c2670d883d2> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:LawsCitationsCompliance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Laws & Citations Compliance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/02c543d7-79ac-4864-b5dc-afb6a1f43b3c> ;
+  skos:broader tx:PolicyManagement .
+
+tx:LinearScaling
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Linear Scaling"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/3b27133d-4503-4dd1-b829-36e8db6e5437> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:LocationAccess
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Location Access"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8cc72028-fd22-44b0-ad37-77fb8746022c> ;
+  skos:broader tx:DataPublishing .
+
+tx:LocationBasedIntelligence
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Location Based Intelligence"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/da37ed73-4020-4391-8721-dbff1e038bf9> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:LogicalLocation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Logical Location"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1bc9fe3a-a7be-4c5f-8bbf-9c1996f1c111> ;
+  skos:broader tx:InternalEntities .
+
+tx:MappingValidation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Mapping Validation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e6dec3de-6d40-4b4a-9e0e-5e1509a29752> ;
+  skos:broader tx:MethodologyAdherence .
+
+tx:MeasurementValidation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Measurement Validation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d62ffb5e-7b4b-44fc-a5e1-8f85c0d8a224> ;
+  skos:broader tx:MethodologyAdherence .
+
+tx:Mitigation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Mitigation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e0745264-eb8a-418c-9b32-19343acbeaa3> ;
+  skos:broader tx:ThreatManagement .
+
+tx:Monitoring
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Monitoring"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4da76f53-8a1c-42d0-9394-12b94cf35e7c> ;
+  skos:broader tx:ThreatManagement .
+
+tx:NaturalLanguageQuery
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Natural Language Query"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9273d8aa-b81d-4d78-8673-379a62bd65b3> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:NetworkSecurityPolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Network Security Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fe46ca8a-5ca6-4e03-8181-e265921c0cf9> ;
+  skos:broader tx:PolicyManagement .
+
+tx:OntologyDiscovery
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Ontology Discovery"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f51b7cdc-2da5-4213-a7d8-cb3bd614ae73> ;
+  skos:broader tx:KnowledgeCapture .
+
+tx:OntologyManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Ontology Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8eef41f8-1ad8-4145-b7e2-28cae9caf4ea> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:OrganizeEntitiesIntoHierarchies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Organize Entities into Hierarchies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/4ac2cb48-b7c1-4b75-95f6-88c9e2b3975b> ;
+  skos:broader tx:BuildTaxonomies .
+
+tx:PersistedIdentifierCreation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Persisted Identifier Creation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/da88dafe-768c-4aad-8a39-7152064a5c04> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:PersonaTailoring
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Persona Tailoring"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c5339e2a-975b-4202-b508-03af4f59e387> ;
+  skos:broader tx:PresentationServices .
+
+tx:PhoneticSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Phonetic Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/08343742-70f4-42e4-9091-2e73aa2d8381> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:PhysicalLocation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Physical Location"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e7e334d8-6faa-4392-959a-7af15542a728> ;
+  skos:broader tx:InternalEntities .
+
+tx:PhysicalSecurityPolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Physical Security Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c14eaf4e-e8c3-4345-90f1-6ba9f49c8df5> ;
+  skos:broader tx:PolicyManagement .
+
+tx:PolymorphicMeaning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Polymorphic Meaning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/cf9e842a-8bb5-4511-9d74-54c2ac1e6761> ;
+  skos:broader tx:ManageTaxonomies .
+
+tx:PredictiveAnalytics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Predictive Analytics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/1d1668fc-d15a-432d-bf67-200bddf266c7> ;
+  skos:broader tx:ReportingAnalytics .
+
+tx:Prevention
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Prevention"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/0c861202-1e1b-4121-8861-7a5e1d19f336> ;
+  skos:broader tx:ThreatManagement .
+
+tx:PrivilegeManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Privilege Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/23285b49-1884-41f4-90fe-167bcd5cd016> ;
+  skos:broader tx:AuthorizationManagement .
+
+tx:ProcessManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Process Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6e46fe00-66e1-480c-b3b9-149b4a932327> ;
+  skos:broader tx:TechnicalServices ;
+  skos:narrower tx:ProcessManagementRules, tx:ProcessModelingServices .
+
+tx:ProcessManagementRules
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Process Management Rules"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a2585f9b-0d44-4078-97a4-26369576fa60> ;
+  skos:broader tx:ProcessManagement .
+
+tx:ProcessModelingServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Process Modeling Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a50d6992-42d2-44e8-8771-dd0ed14c9cf9> ;
+  skos:broader tx:ProcessManagement .
+
+tx:PropertyAssignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Property Assignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/547027e1-f5f1-48f6-aff4-2cdc781cdf18> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:QualityPolicies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Quality Policies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/0e6a8e30-e706-4d4e-8fe9-5daeb1442e70> ;
+  skos:broader tx:PolicyManagement .
+
+tx:QueryValidation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Query Validation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/07d8c571-0bfa-4b17-a9b4-e16f8f9ec3e1> ;
+  skos:broader tx:MethodologyAdherence .
+
+tx:RegistryManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Registry Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ee836557-c3da-4b0f-a307-24b35e163310> ;
+  skos:broader tx:DataManagement .
+
+tx:RelationalDatabaseToResourceDescriptionFrameworkIntegration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Relational Database to Resource Description Framework Integration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/37105ff7-9502-471b-b57d-f9ae5ef73166> ;
+  skos:broader tx:SemanticKnowledgeLayer .
+
+tx:RelationshipManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Relationship Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d4f22a41-869f-440b-ad60-1e1eefd4a1a9> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:ResolutionAssessment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Resolution Assessment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ddc89e24-4c6e-4a6b-9140-bfcfa0996e97> ;
+  skos:broader tx:ReportingAnalytics .
+
+tx:ResourceProtection
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Resource Protection"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9ceec408-a40e-44f1-9664-e031be737b4a> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:RetentionServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Retention Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/31cc69b5-b879-4a2f-bd7e-93be77785491> ;
+  skos:broader tx:StorageManagementServices .
+
+tx:RoleLifecyclePattern
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Role Lifecycle Pattern"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/ad73ba11-830b-4803-8fd8-59880c5857cc> ;
+  skos:broader tx:ArchitectureAlignment .
+
+tx:RulesManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Rules Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/30c3971a-ae30-4341-ae8c-0b09f35c42a3> ;
+  skos:broader tx:PolicyEnforcement .
+
+tx:SecuritySupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Security Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f3034bdc-b071-4937-a29a-60de83ec1cf5> ;
+  skos:broader tx:SemanticKnowledgeLayer .
+
+tx:SemanticAssociation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Semantic Association"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c2ea441d-2a2f-4250-ad8c-147e664fd7f3> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:SemanticMappingSupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Semantic Mapping Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/dfd194f3-2a54-48ad-93c2-6cd7a536a762> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:SemanticSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Semantic Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/b46b1c0b-96af-4c74-810e-de4c04af91da> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:ServicesProvisioning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Services Provisioning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/61efaae0-cd9b-41af-a7ef-9da1ad6b48e5> ;
+  skos:broader tx:Provisioning .
+
+tx:SessionManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Session Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/be7b189a-8638-40eb-b111-590dc444bd64> ;
+  skos:broader tx:PresentationServices .
+
+tx:ShaclConstraints
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "SHACL Constraints"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/990a4f78-3c2e-49fa-9be9-9a42a8e80865> ;
+  skos:broader tx:PerformanceManagement .
+
+tx:SkosBasedVocabularies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "SKOS Based Vocabularies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/14a4da1c-ac60-4a0d-9a97-84cee81768c6> ;
+  skos:broader tx:BuildTaxonomies .
+
+tx:SourceToTargetIdentities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Source to Target Identities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/570ab88d-c8a3-4a8a-8395-808fc5fa1e2d> ;
+  skos:broader tx:DataMapping .
+
+tx:SqlQueries
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "SQL Queries"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d19dd287-eadd-4f64-ad02-ca948fe290b5> ;
+  skos:broader tx:SemanticKnowledgeLayer .
+
+tx:SystemAccess
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "System Access"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d972a7b6-e091-407e-a761-beb5e997d4fa> ;
+  skos:broader tx:DataPublishing .
+
+tx:SystemsOperations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Systems Operations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/932b4670-e6b9-45f7-882c-f26f9b6e71d9> ;
+  skos:broader tx:TechnicalServices .
+
+tx:SystemsProvisioning
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Systems Provisioning"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-20T20:16:04.980Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/bb9ffa4f-4133-47de-800f-eda7980a5799> ;
+  skos:broader tx:Provisioning .
+
+tx:Taxonomies
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Taxonomies"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/a83fbb7f-0d74-43d7-a5ee-74bd3a84be22> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:TaxonomyDiscovery
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Taxonomy Discovery"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/589f6d24-b9cb-4a07-9967-58a01b1af907> ;
+  skos:broader tx:KnowledgeCapture .
+
+tx:TechnicalExpertise
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Technical Expertise"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/961910c0-33f9-43e7-b36a-99003d9f0e2a> ;
+  skos:broader tx:SocialEngineeringCommunication .
+
+tx:TemporalConstraintTimer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Temporal Constraint Timer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d5a5b4eb-7344-485e-90be-8a33391524a8> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:TermMining
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Term Mining"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6571718d-ba41-4a2d-9ff7-8b45ca8b5fa1> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:TextAnalysisTermExtraction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Text Analysis & Term Extraction"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/f68ac19d-8986-4018-a1e3-5dd53508c01a> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:TokenAssignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Token Assignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fd397e18-0879-4145-a16d-4ae4ecc7e1b3> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:TokenBasedSearch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Token Based Search"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c6c70486-9d68-4f15-a34f-b7a6e8576cdc> ;
+  skos:broader tx:EnterpriseSearch .
+
+tx:TokenManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Token Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/e8140a79-f719-4b95-94a7-d228ad65d861> ;
+  skos:broader tx:ProtectionManagement .
+
+tx:Training
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Training"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/8d715475-bc5f-4304-8b53-b58a34c073d7> ;
+  skos:broader tx:ThreatManagement .
+
+tx:TransactionalJourneyDesign
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Transactional Journey Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/fbfcc76b-3f4c-4a64-b074-13fe07610fc5> ;
+  skos:broader tx:PresentationServices .
+
+tx:TranslationServices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Translation Services"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/6f4093e3-009d-42f6-b9c5-77d298021c2a> ;
+  skos:broader tx:PresentationServices .
+
+tx:UnifiedContent
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Unified Content"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/59c0eed4-4e26-4634-84cd-5c151b28e235> ;
+  skos:broader tx:KnowledgeEngineering .
+
+tx:VisualExploration
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Visual Exploration"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/15e70203-2b8d-410a-bd91-3238f427b2dd> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:VisualMaps
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Visual Maps"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/d540f8cd-83c7-4f37-8958-ded53981730a> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:VisualOptimization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Visual Optimization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/9a7588ec-fe3e-465b-987d-7463b8ab854a> ;
+  skos:broader tx:VisualizationManagement .
+
+tx:VocabularyDiscovery
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Vocabulary Discovery"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/73518449-cf11-43ea-8e5a-8a368e75b7c1> ;
+  skos:broader tx:KnowledgeCapture .
+
+tx:WeightAssignment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Weight Assignment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/c448b75e-b22a-44f2-8ee7-e5c34fd80684> ;
+  skos:broader tx:VocabularyManagement .
+
+tx:WorkflowAutomation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Workflow Automation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T20:24:25.113Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-technicalservices/64bee15a-d3ec-4750-ae02-c6d09ba27e3e> ;
+  skos:broader tx:TechnicalServices .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:AI_Models>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "AI Models"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Analytics>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Analytics"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Aggregation>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Aggregation"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Sources>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Data Sources"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Modeling_and_Analysis>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Modeling and Analysis"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Recommendation_Engine>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Recommendation Engine"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Semantic_Data_Mapping>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Semantic Data Mapping"@en ;
+  skos:broader tx:ExtensionsBuild .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Social_Network_Analysis>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-services-technicalservices/> ;
+  skos:prefLabel "Social Network Analysis"@en ;
+  skos:broader tx:ExtensionsBuild .

@@ -1,0 +1,335 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-time/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Time_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-time/>.
+
+<https://ontologies.verizon.com/taxonomy-core-time/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Time"@en ;
+  dct:description "The time taxonomy categorizes our understanding of time into three distinct concepts. Absolute time refers to a fixed and universal timeline, often measured with units like seconds, minutes, and hours. In contrast, relative time describes the temporal relationships between events, such as “before,” “after,” or “during.” Lastly, episodic time focuses on our personal experiences and memories, which are inherently subjective and organized around significant events in our lives."@en ;
+  dct:title "Taxonomy | Core | Time"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-time/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:48:43.948Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-05T03:25:28.581Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Time .
+
+tx:Absolute
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Absolute"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/72332317-d200-429b-af8d-611a7eb5715a> ;
+  skos:broader tx:Time ;
+  skos:narrower tx:Day, tx:Hour, tx:Minute, tx:Month, tx:Quarter, tx:Second, tx:Week, tx:Year .
+
+tx:Time
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Time"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/77bf78dd-7407-440f-9dd0-3c24166b83c6> ;
+  skos:narrower tx:Absolute, tx:Relative, tx:Episodic ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-time/> .
+
+tx:BiWeekly
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Bi-Weekly"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4de01266-60f6-49db-b6da-72e7d60e7890> ;
+  skos:broader tx:MultiplePeriods .
+
+tx:MultiplePeriods
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Multiple Periods"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2bfbedc5-4ffb-4998-8095-a7c323ed0f28> ;
+  skos:narrower tx:BiWeekly ;
+  skos:broader tx:Episodic .
+
+tx:Current
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Current"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/f10d44ad-6ed6-440e-8ac0-7d3388e45820> ;
+  skos:broader tx:Relative .
+
+tx:Relative
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Relative"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/f718507c-5350-4c66-8374-7d13465b5e8a> ;
+  skos:narrower tx:Current, tx:Future, tx:Past ;
+  skos:broader tx:Time .
+
+tx:Daily
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Daily"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/191771ac-e4fa-4d67-8faf-45b078f38631> ;
+  skos:broader tx:FullPeriod .
+
+tx:FullPeriod
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Full Period"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/1c133810-1a39-498a-986e-6422200e2cb2> ;
+  skos:narrower tx:Daily, tx:Weekly, tx:Yearly ;
+  skos:broader tx:Episodic .
+
+tx:Day
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Day"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/a2d7b192-637d-4200-804b-b8007263b0dd> ;
+  skos:broader tx:Absolute .
+
+tx:Episodic
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Episodic"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/68e361fd-5562-4d47-8d3a-32b8235eda67> ;
+  skos:narrower tx:MultiplePeriods, tx:FullPeriod, tx:PartialPeriod ;
+  skos:broader tx:Time .
+
+tx:Future
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Future"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/93bdcf9c-f805-4cf2-bfe6-1cb0cc72ea65> ;
+  skos:broader tx:Relative .
+
+tx:Hour
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Hour"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/e3551dd5-95b0-48cb-af70-0bd089406c5d> ;
+  skos:broader tx:Absolute .
+
+tx:MidYear
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Mid Year"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/af987dcc-bbe5-4ba9-aca1-4545c846f4e3> ;
+  skos:broader tx:PartialPeriod .
+
+tx:PartialPeriod
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Partial Period"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2583b763-c651-45e1-92c0-22055117e8bc> ;
+  skos:narrower tx:MidYear, tx:TwicePerWeek ;
+  skos:broader tx:Episodic .
+
+tx:Minute
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Minute"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/a3220a43-3816-4a4a-9800-176bdb0aa54c> ;
+  skos:broader tx:Absolute .
+
+tx:Month
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Month"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/7ec9aa92-6eea-4094-bd6c-fe3d1d792415> ;
+  skos:broader tx:Absolute .
+
+tx:Past
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Past"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2d3e7b89-e149-487b-85d1-f681fd9372b3> ;
+  skos:broader tx:Relative .
+
+tx:Quarter
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Quarter"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/bb4bd712-c222-45b9-a194-a26b07973a88> ;
+  skos:broader tx:Absolute .
+
+tx:Second
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Second"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4e59312c-9a88-40e6-8f8a-e64e0b1376d4> ;
+  skos:broader tx:Absolute ;
+  skos:narrower tx:Subsecond .
+
+tx:Subsecond
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Subsecond"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-10T18:45:03.605Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/11a2e6e6-5a3e-4615-bf70-a27480df21ba> ;
+  skos:broader tx:Second .
+
+tx:TwicePerWeek
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Twice Per Week"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4fd7d2aa-07ae-44ba-b0f1-5de5a06be578> ;
+  skos:broader tx:PartialPeriod .
+
+tx:Week
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Week"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/bf0ebf6b-2868-432e-a769-40730fdd0c4f> ;
+  skos:broader tx:Absolute .
+
+tx:Weekly
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Weekly"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/e85b62ce-84a7-4dff-b792-1ee5eeb965ed> ;
+  skos:broader tx:FullPeriod .
+
+tx:Year
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Year"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/73a7dda6-94b3-4540-90a4-7cc7da103527> ;
+  skos:broader tx:Absolute .
+
+tx:Yearly
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-time/> ;
+  skos:prefLabel "Yearly"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:15:35.208Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:36:42.198Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/8bde4ab4-264f-4974-986e-b6e8b1a1e3d6> ;
+  skos:broader tx:FullPeriod .

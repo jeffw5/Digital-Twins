@@ -1,0 +1,286 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-lifecycle/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Lifecycle_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/>.
+
+<https://ontologies.verizon.com/taxonomy-core-lifecycle/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Lifecycle"@en ;
+  dct:description "The lifecycle taxonomy categorizes the different stages of an asset or system’s lifespan to provide a structured approach to managing assets throughout their entire lifecycle."@en ;
+  dct:title "Taxonomy | Core | Lifecycle"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-lifecycle/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", " Sherri Anderson" ;
+  dct:modified "2025-09-30T19:46:52.239Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-24T15:52:54.904Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Lifecycle .
+
+tx:Lifecycle
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Lifecycle"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T18:10:39.327Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/709e43d0-b78f-44d6-8eb8-f0b847714548> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:narrower tx:DesignTime, tx:RunTime, tx:Retire, tx:Inventory, tx:Acquire .
+
+tx:Build
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Build"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:28:41.557Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/d28a6862-9637-41e9-a7b6-98a28ebada9e> ;
+  skos:broader tx:DesignTime ;
+  skos:narrower tx:Deliver, tx:Design, tx:Develop, tx:Discover, tx:Define .
+
+tx:DesignTime
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Design Time"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T15:55:20.813Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/77875272-d519-4c43-abc6-6685950add2c> ;
+  skos:narrower tx:Build, tx:Buy ;
+  skos:broader tx:Lifecycle .
+
+tx:Buy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Buy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:28:41.557Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/26128b60-ae12-4fdb-85b1-205625b38dd8> ;
+  skos:broader tx:DesignTime .
+
+tx:Deliver
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Deliver"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:03:59.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/2372d4ef-6e07-4640-a419-633dd897f816> ;
+  skos:broader tx:Build .
+
+tx:Deploy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Deploy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/839a2926-1df0-4dc4-b99e-b8601c31d718> ;
+  skos:broader tx:RunTime .
+
+tx:RunTime
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Run Time"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T15:55:20.813Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/e5de7e16-c529-4a88-9745-7bdfbcff3173> ;
+  skos:narrower tx:Deploy, tx:Execute, tx:Support ;
+  skos:broader tx:Lifecycle .
+
+tx:Design
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:03:59.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/25d2c216-326b-4b51-b78e-96b97abd8601> ;
+  skos:broader tx:Build .
+
+tx:Destroy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Destroy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:06:53.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/2b545d8d-6ff4-4a2b-b745-d09a79ec8476> ;
+  skos:broader tx:Retire .
+
+tx:Retire
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Retire"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/b456ab22-49a3-47cd-b8d1-0c67c95a6394> ;
+  skos:narrower tx:Destroy, tx:Remove ;
+  skos:broader tx:Lifecycle .
+
+tx:Develop
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Develop"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:03:59.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/9d728f55-dfff-4307-ad3f-0162fbef8c2c> ;
+  skos:broader tx:Build .
+
+tx:Discover
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Discover"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:03:59.134Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/13e8066a-6358-4f76-b326-1cf6deade2c8> ;
+  skos:broader tx:Build .
+
+tx:Execute
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Execute"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/d0969576-9905-440e-836b-0e5bc7ce7a2f> ;
+  skos:broader tx:RunTime .
+
+tx:Improve
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Improve"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/c856511a-84d5-4893-82e2-c09f811d0ed0> ;
+  skos:broader tx:Support .
+
+tx:Support
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/bea78473-dc15-467b-a239-7b1e43e7a5cb> ;
+  skos:narrower tx:Improve ;
+  skos:broader tx:RunTime .
+
+tx:Inventory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Inventory"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:28:41.557Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/dd09f4de-be41-4abc-874d-3938234345b2> ;
+  skos:broader tx:Lifecycle ;
+  skos:narrower tx:Publish, tx:Warehouse .
+
+tx:Publish
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Publish"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:28:41.557Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/426634ed-6aad-4744-9937-0830581cb325> ;
+  skos:broader tx:Inventory .
+
+tx:Remove
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Remove"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T22:06:53.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/ab47b881-a377-41c2-bbb7-b19048aa2d36> ;
+  skos:broader tx:Retire .
+
+tx:Warehouse
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Warehouse"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/09b8effc-caf3-4c0a-b9c3-48c45714b816> ;
+  skos:broader tx:Inventory .
+
+tx:Acquire
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Acquire"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:28:41.557Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/f0d5b35d-2e6c-411e-ac23-a7ae660c5994> ;
+  skos:broader tx:Lifecycle .
+
+tx:Define
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-lifecycle/> ;
+  skos:prefLabel "Define"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "wallkje" ;
+  dct:modified "2025-04-21T14:45:12.599Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-24T21:53:27.949Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/eca18431-8e54-48be-a23a-6f137d6333e4> ;
+  skos:broader tx:Build .

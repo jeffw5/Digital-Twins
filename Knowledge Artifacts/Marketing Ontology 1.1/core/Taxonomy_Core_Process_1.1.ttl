@@ -1,0 +1,104 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix proc: <https://ontologies.verizon.com/taxonomy-core-process/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+proc:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-process: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Process, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-process> ;
+  dct:title "Taxonomy | Core | Process"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-process/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Process"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Approval, Customer, DecisionAction) resolve to declared classes."@en .
+
+proc:Approval
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/124c1729-adcd-471f-aef9-9420910552ea> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Approval"@en ;
+  rdfs:subClassOf proc:Outputs .
+
+proc:Customer
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/174e19f3-242b-4e90-ab72-6d3f4f394182> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Customer"@en ;
+  rdfs:subClassOf proc:ProcessStep .
+
+proc:DecisionAction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/bdcaf56b-bba9-4cdc-9c09-140a3cc2018c> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Decision Action"@en ;
+  rdfs:subClassOf proc:ProcessAction .
+
+proc:DiscreteAction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/e1376625-5449-44dd-9444-b15c41152038> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Discrete Action"@en ;
+  rdfs:subClassOf proc:ProcessAction .
+
+proc:Inputs
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/96859350-75b5-448b-92fa-4118a91c19b7> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Inputs"@en ;
+  rdfs:subClassOf proc:ProcessStep .
+
+proc:Measurement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/d52fa6c2-e3cf-47bf-982c-c422728fb1d0> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Measurement"@en ;
+  rdfs:subClassOf proc:Process .
+
+proc:Observation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/e8891a11-8b8c-41b0-b7a7-8925cbc67373> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Observation"@en ;
+  rdfs:subClassOf proc:Process .
+
+proc:Outputs
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/79e0c69a-4ac3-4aa8-8db0-9a1d4b88bddf> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Outputs"@en ;
+  rdfs:subClassOf proc:ProcessStep .
+
+proc:Process
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/660e0439-8caa-4a1d-8881-92cd5dc9fafe> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Process"@en .
+
+proc:ProcessAction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/0090c042-fdc7-4a12-8657-a837806618b7> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Process Action"@en ;
+  rdfs:subClassOf proc:ProcessStep .
+
+proc:ProcessStep
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/46951ae7-a7b9-4353-a906-e1a3ffdceaac> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Process Step"@en ;
+  rdfs:subClassOf proc:Process .
+
+proc:Supplier
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-process/87fa6239-464d-465f-8909-2a520f2c12bf> ;
+  rdfs:isDefinedBy proc: ;
+  rdfs:label "Supplier"@en ;
+  rdfs:subClassOf proc:ProcessStep .

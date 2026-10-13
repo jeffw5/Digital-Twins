@@ -1,0 +1,167 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix life: <https://ontologies.verizon.com/taxonomy-core-lifecycle/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+life:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-lifecycle: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Lifecycle, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-lifecycle> ;
+  dct:title "Taxonomy | Core | Lifecycle"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-lifecycle/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Lifecycle"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Acquire, Build, Buy) resolve to declared classes."@en .
+
+life:Acquire
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/f0d5b35d-2e6c-411e-ac23-a7ae660c5994> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Acquire"@en ;
+  rdfs:subClassOf life:Lifecycle .
+
+life:Build
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/d28a6862-9637-41e9-a7b6-98a28ebada9e> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Build"@en ;
+  rdfs:subClassOf life:DesignTime .
+
+life:Buy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/26128b60-ae12-4fdb-85b1-205625b38dd8> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Buy"@en ;
+  rdfs:subClassOf life:DesignTime .
+
+life:Define
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/eca18431-8e54-48be-a23a-6f137d6333e4> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Define"@en ;
+  rdfs:subClassOf life:Build .
+
+life:Deliver
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/2372d4ef-6e07-4640-a419-633dd897f816> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Deliver"@en ;
+  rdfs:subClassOf life:Build .
+
+life:Deploy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/839a2926-1df0-4dc4-b99e-b8601c31d718> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Deploy"@en ;
+  rdfs:subClassOf life:RunTime .
+
+life:Design
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/25d2c216-326b-4b51-b78e-96b97abd8601> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Design"@en ;
+  rdfs:subClassOf life:Build .
+
+life:DesignTime
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/77875272-d519-4c43-abc6-6685950add2c> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Design Time"@en ;
+  rdfs:subClassOf life:Lifecycle .
+
+life:Destroy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/2b545d8d-6ff4-4a2b-b745-d09a79ec8476> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Destroy"@en ;
+  rdfs:subClassOf life:Retire .
+
+life:Develop
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/9d728f55-dfff-4307-ad3f-0162fbef8c2c> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Develop"@en ;
+  rdfs:subClassOf life:Build .
+
+life:Discover
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/13e8066a-6358-4f76-b326-1cf6deade2c8> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Discover"@en ;
+  rdfs:subClassOf life:Build .
+
+life:Execute
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/d0969576-9905-440e-836b-0e5bc7ce7a2f> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Execute"@en ;
+  rdfs:subClassOf life:RunTime .
+
+life:Improve
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/c856511a-84d5-4893-82e2-c09f811d0ed0> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Improve"@en ;
+  rdfs:subClassOf life:Support .
+
+life:Inventory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/dd09f4de-be41-4abc-874d-3938234345b2> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Inventory"@en ;
+  rdfs:subClassOf life:Lifecycle .
+
+life:Lifecycle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/709e43d0-b78f-44d6-8eb8-f0b847714548> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Lifecycle"@en .
+
+life:Publish
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/426634ed-6aad-4744-9937-0830581cb325> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Publish"@en ;
+  rdfs:subClassOf life:Inventory .
+
+life:Remove
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/ab47b881-a377-41c2-bbb7-b19048aa2d36> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Remove"@en ;
+  rdfs:subClassOf life:Retire .
+
+life:Retire
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/b456ab22-49a3-47cd-b8d1-0c67c95a6394> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Retire"@en ;
+  rdfs:subClassOf life:Lifecycle .
+
+life:RunTime
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/e5de7e16-c529-4a88-9745-7bdfbcff3173> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Run Time"@en ;
+  rdfs:subClassOf life:Lifecycle .
+
+life:Support
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/bea78473-dc15-467b-a239-7b1e43e7a5cb> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Support"@en ;
+  rdfs:subClassOf life:RunTime .
+
+life:Warehouse
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-lifecycle/09b8effc-caf3-4c0a-b9c3-48c45714b816> ;
+  rdfs:isDefinedBy life: ;
+  rdfs:label "Warehouse"@en ;
+  rdfs:subClassOf life:Inventory .

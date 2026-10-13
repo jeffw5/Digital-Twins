@@ -1,0 +1,2790 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix sm: <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#> .
+@prefix dqm: <http://purl.org/dqm-vocabulary/v1/dqm#> .
+@prefix cap: <https://ontologies.verizon.com/ontology-core-capability/> .
+@prefix evt: <https://ontologies.verizon.com/ontology-core-event/> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+@prefix loc: <https://ontologies.verizon.com/taxonomy-core-location/> .
+@prefix tim: <https://ontologies.verizon.com/taxonomy-core-time/> .
+@prefix proc: <https://ontologies.verizon.com/taxonomy-core-process/> .
+
+# Working combined model. Source modules: vocabulary-core-servicemodel, ontology-core-capability, ontology-core-event (1.1).
+
+<https://ontologies.verizon.com/working/core-servicemodel-capability-event/>
+  a owl:Ontology ;
+  rdfs:label "Working Model | Service Model + Capability + Event"@en ;
+  dct:description "Single-file working copy for viewing in a model editor: vocabulary-core-servicemodel (with derived class hierarchy), ontology-core-capability and ontology-core-event 1.1. Event relations from the SHACL shapes are also expressed as OWL allValuesFrom restrictions. The modular source files remain authoritative."@en ;
+  owl:versionInfo "1.1-working" ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:source <https://ontologies.verizon.com/vocabulary-core-servicemodel/>, <https://ontologies.verizon.com/ontology-core-capability/>, <https://ontologies.verizon.com/ontology-core-event/> .
+
+sm:definition
+  a owl:AnnotationProperty .
+
+sm:Lifecycle
+  a owl:AnnotationProperty .
+
+sm:Identifier
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Name .
+
+sm:Device
+  a owl:AnnotationProperty .
+
+sm:Name
+  a owl:AnnotationProperty .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:WRBA>
+  rdfs:comment "Wireline Revenue Business Analytics" ;
+  a owl:Class ;
+  rdfs:label "WRBA"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Acronym
+  a owl:AnnotationProperty .
+
+sm:Abbreviation
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Name .
+
+sm:Associated_Concepts
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Name .
+
+sm:Change
+  a owl:AnnotationProperty .
+
+sm:Change_Date
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Change .
+
+sm:Change_Time
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Change .
+
+sm:Customer
+  a owl:AnnotationProperty .
+
+sm:Customer_Address
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Customer .
+
+sm:Customer_ID
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Customer .
+
+sm:Customer_Name
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Customer .
+
+sm:Device_Compatibility
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Device .
+
+sm:Device_Name
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Device .
+
+sm:Device_OS
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Device .
+
+sm:Gate
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Lifecycle .
+
+sm:Network_Coverage
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Network_Equipment .
+
+sm:Network_Equipment
+  a owl:AnnotationProperty .
+
+sm:Network_Speed
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Network_Equipment .
+
+sm:Network_Type
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Network_Equipment .
+
+sm:Phase
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Lifecycle .
+
+sm:Subscription
+  a owl:AnnotationProperty .
+
+sm:Subscription_Cost
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Subscription .
+
+sm:Subscription_Name
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Subscription .
+
+sm:Subscription_Type
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Subscription .
+
+sm:Synonym
+  a owl:AnnotationProperty .
+
+sm:Version
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Change .
+
+sm:Version_Number
+  a owl:AnnotationProperty ;
+  rdfs:subPropertyOf sm:Change .
+
+sm:Initiated_By
+  rdfs:subPropertyOf sm:Event ;
+  a owl:ObjectProperty ;
+  rdfs:label "Initiated By"@en .
+
+sm:Initiates
+  rdfs:subPropertyOf sm:Event ;
+  a owl:ObjectProperty ;
+  rdfs:label "Initiates"@en .
+
+sm:Enabled_By
+  owl:inverseOf sm:Enables ;
+  rdfs:subPropertyOf sm:Feature ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enabled By"@en .
+
+sm:Supported_By
+  owl:inverseOf sm:Supports ;
+  rdfs:subPropertyOf sm:Process ;
+  a owl:ObjectProperty ;
+  rdfs:label "Supported By"@en .
+
+dqm:basedOn
+  owl:inverseOf dqm:hasScore ;
+  a owl:ObjectProperty ;
+  rdfs:label "basedOn"@en .
+
+dqm:ruleOfIdentification
+  owl:inverseOf dqm:ruleViolation ;
+  a owl:ObjectProperty ;
+  rdfs:label "ruleOfIdentification"@en .
+
+dqm:appliesFor
+  owl:inverseOf dqm:hasRequirement ;
+  a owl:ObjectProperty ;
+  rdfs:label "appliesFor"@en .
+
+sm:EventShape
+  a sh:NodeShape ;
+  sh:targetClass sm:Event .
+
+sm:Compliant_with
+  rdfs:subPropertyOf sm:Feature ;
+  a owl:ObjectProperty ;
+  rdfs:label "Compliant with"@en .
+
+sm:Delivers
+  rdfs:subPropertyOf sm:Feature ;
+  a owl:ObjectProperty ;
+  rdfs:label "Delivers"@en .
+
+sm:Enables
+  rdfs:subPropertyOf sm:Feature ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enables"@en .
+
+sm:Operates_within
+  rdfs:subPropertyOf sm:Feature ;
+  a owl:ObjectProperty ;
+  rdfs:label "Operates within"@en .
+
+sm:Supports
+  rdfs:subPropertyOf sm:Process ;
+  a owl:ObjectProperty ;
+  rdfs:label "Supports"@en .
+
+sm:Unit
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Unit"@en .
+
+sm:Enabled_by_Service
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enabled by Service"@en .
+
+dqm:hasCondition3
+  rdfs:subPropertyOf dqm:hasCondition ;
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition3"@en .
+
+dqm:equals
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "equals"@en .
+
+dqm:validFrom
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "validFrom"@en .
+
+dqm:hasCondition5
+  rdfs:subPropertyOf dqm:hasCondition ;
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition5"@en .
+
+dqm:lastModified
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "lastModified"@en .
+
+dqm:testedProperty2
+  rdfs:subPropertyOf dqm:testedProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty2"@en .
+
+sm:Enables_Service
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enables Service"@en .
+
+dqm:addValue
+  rdfs:subPropertyOf dqm:cleansingProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "addValue"@en .
+
+dqm:testedProperty1
+  rdfs:subPropertyOf dqm:testedProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty1"@en .
+
+dqm:notEqualTo
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "notEqualTo"@en .
+
+dqm:hasCondition2
+  rdfs:subPropertyOf dqm:hasCondition ;
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition2"@en .
+
+dqm:newValue
+  rdfs:subPropertyOf dqm:cleansingProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "newValue"@en .
+
+dqm:currentValue
+  rdfs:subPropertyOf dqm:cleansingProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "currentValue"@en .
+
+dqm:hasCondition1
+  rdfs:subPropertyOf dqm:hasCondition ;
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition1"@en .
+
+sm:Maximizes
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Maximizes"@en .
+
+sm:Minimizes
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Minimizes"@en .
+
+dqm:reqSource
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "reqSource"@en .
+
+dqm:hasCondition4
+  rdfs:subPropertyOf dqm:hasCondition ;
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition4"@en .
+
+dqm:referenceProperty4
+  rdfs:subPropertyOf dqm:referenceProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty4"@en .
+
+dqm:addProperty
+  rdfs:subPropertyOf dqm:cleansingProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "addProperty"@en .
+
+dqm:referenceProperty1
+  rdfs:subPropertyOf dqm:referenceProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty1"@en .
+
+dqm:reqDescription
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "reqDescription"@en .
+
+dqm:referenceProperty5
+  rdfs:subPropertyOf dqm:referenceProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty5"@en .
+
+dqm:importance
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "importance"@en .
+
+dqm:cleansing
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "cleansing"@en .
+
+dqm:validUntil
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "validUntil"@en .
+
+dqm:greaterThan
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "greaterThan"@en .
+
+dqm:testedProperty3
+  rdfs:subPropertyOf dqm:testedProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty3"@en .
+
+dqm:reqName
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "reqName"@en .
+
+dqm:startsWith
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "startsWith"@en .
+
+dqm:lessThan
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "lessThan"@en .
+
+dqm:confidence
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "confidence"@en .
+
+dqm:endsWith
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "endsWith"@en .
+
+sm:Enables_Process
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enables Process"@en .
+
+dqm:contains
+  rdfs:subPropertyOf dqm:operatedValue ;
+  a owl:ObjectProperty ;
+  rdfs:label "contains"@en .
+
+dqm:assessment
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "assessment"@en .
+
+dqm:taskDependent
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "taskDependent"@en .
+
+dqm:testedProperty4
+  rdfs:subPropertyOf dqm:testedProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty4"@en .
+
+sm:Enabled_By_Process
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enabled By Process"@en .
+
+dqm:referenceProperty3
+  rdfs:subPropertyOf dqm:referenceProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty3"@en .
+
+dqm:testedProperty5
+  rdfs:subPropertyOf dqm:testedProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty5"@en .
+
+dqm:filtering
+  rdfs:subPropertyOf dqm:reqMetadata ;
+  a owl:ObjectProperty ;
+  rdfs:label "filtering"@en .
+
+dqm:referenceProperty2
+  rdfs:subPropertyOf dqm:referenceProperty ;
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty2"@en .
+
+<http://www.co-ode.org/ontologies/ont.owl#Enabled_By_Value_Stream>
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enabled By Value Stream"@en .
+
+<http://www.co-ode.org/ontologies/ont.owl#Enables_Supply_Chain>
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enables Supply Chain"@en .
+
+sm:Amount
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Amount"@en .
+
+sm:Consumes
+  rdfs:subPropertyOf sm:Process ;
+  a owl:ObjectProperty ;
+  rdfs:label "Consumes"@en .
+
+sm:Direction
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Direction"@en .
+
+sm:Enables_Value_Stream
+  rdfs:subPropertyOf sm:Service_Enablers ;
+  a owl:ObjectProperty ;
+  rdfs:label "Enables Value Stream"@en .
+
+sm:Increased_By
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Increased By"@en .
+
+sm:Increases
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Increases"@en .
+
+sm:Integrates_With_Service
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Integrates With Service"@en .
+
+sm:Measured_By
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Measured By"@en .
+
+sm:Measures
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Measures"@en .
+
+sm:Provides
+  rdfs:subPropertyOf sm:Process ;
+  a owl:ObjectProperty ;
+  rdfs:label "Provides"@en .
+
+sm:Provides_Service
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Provides Service"@en .
+
+sm:Reduced_By
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Reduced By"@en .
+
+sm:Reduces
+  rdfs:subPropertyOf sm:Metric ;
+  a owl:ObjectProperty ;
+  rdfs:label "Reduces"@en .
+
+sm:Requires_Device
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Requires Device"@en .
+
+sm:Service_Cost
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Service Cost"@en .
+
+sm:Service_Description
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Service Description"@en .
+
+sm:Service_ID
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Service ID"@en .
+
+sm:Service_Name
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Service Name"@en .
+
+sm:Subscribes_To
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Subscribes To"@en .
+
+sm:Supports_Service
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Supports Service"@en .
+
+sm:Uses_Service
+  rdfs:subPropertyOf sm:Service ;
+  a owl:ObjectProperty ;
+  rdfs:label "Uses Service"@en .
+
+<http://www.co-ode.org/ontologies/ont.owl#Contains_Event>
+  rdfs:range sm:Event ;
+  a owl:ObjectProperty ;
+  rdfs:label "Contains Event"@en .
+
+sm:Application
+  a owl:Class ;
+  rdfs:label "Application"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:FRR>
+  a owl:Class ;
+  rdfs:label "FRR"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:Finance_Looker>
+  a owl:Class ;
+  rdfs:label "Finance Looker"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:HR-Cognos>
+  a owl:Class ;
+  rdfs:label "HR-Cognos"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:HR-Qlik>
+  a owl:Class ;
+  rdfs:label "HR-Qlik"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:Oracle_EPM>
+  a owl:Class ;
+  rdfs:label "Oracle EPM"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:TAX_Qlick>
+  a owl:Class ;
+  rdfs:label "TAX Qlick"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Application:Anaplan/GNT>
+  a owl:Class ;
+  rdfs:label "Anaplan/GNT"@en ;
+  rdfs:subClassOf sm:Application ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Artifact
+  a owl:Class ;
+  rdfs:label "Artifact"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define>
+  a owl:Class ;
+  rdfs:label "Define"@en ;
+  rdfs:subClassOf sm:Artifact ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Business_Continuity_Planning>
+  a owl:Class ;
+  rdfs:label "Business Continuity Planning"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Capability_Maps>
+  a owl:Class ;
+  rdfs:label "Capability Maps"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Defect_Log>
+  a owl:Class ;
+  rdfs:label "Defect Log"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Inspections>
+  a owl:Class ;
+  rdfs:label "Inspections"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Measurement>
+  a owl:Class ;
+  rdfs:label "Measurement"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Test_Scope_and_Planning>
+  a owl:Class ;
+  rdfs:label "Test Scope and Planning"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Use_Cases>
+  a owl:Class ;
+  rdfs:label "Use Cases"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Feature_Decomposition_(FFs_to_NFFs_to_Stories)>
+  a owl:Class ;
+  rdfs:label "Feature Decomposition (FFs to NFFs to Stories)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Feature_Matrix_(FFs_to_Services_&_Outcomes)>
+  a owl:Class ;
+  rdfs:label "Feature Matrix (FFs to Services & Outcomes)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Persona_Maps_(Desired_Outcomes)>
+  a owl:Class ;
+  rdfs:label "Persona Maps (Desired Outcomes)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Requirements_Mapping_&_Traceability>
+  a owl:Class ;
+  rdfs:label "Requirements Mapping & Traceability"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Service_Gaps_(Providers_&_Partners)>
+  a owl:Class ;
+  rdfs:label "Service Gaps (Providers & Partners)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define:Service_Maps_(Delivered_Outcomes)>
+  a owl:Class ;
+  rdfs:label "Service Maps (Delivered Outcomes)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Define> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design>
+  a owl:Class ;
+  rdfs:label "Design"@en ;
+  rdfs:subClassOf sm:Artifact ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:ARB_Remediation>
+  a owl:Class ;
+  rdfs:label "ARB Remediation"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:ARB_Review>
+  a owl:Class ;
+  rdfs:label "ARB Review"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Defect_Log>
+  a owl:Class ;
+  rdfs:label "Defect Log"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Design_for_Complexity_and_Continuity_at_Scale>
+  a owl:Class ;
+  rdfs:label "Design for Complexity and Continuity at Scale"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Design_for_Continuous_Improvement_and_Adaptation>
+  a owl:Class ;
+  rdfs:label "Design for Continuous Improvement and Adaptation"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Design_for_Sustainability_and_Operational_Resiliency>
+  a owl:Class ;
+  rdfs:label "Design for Sustainability and Operational Resiliency"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Inspection>
+  a owl:Class ;
+  rdfs:label "Inspection"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Solution_Architecture>
+  a owl:Class ;
+  rdfs:label "Solution Architecture"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Solution_Design>
+  a owl:Class ;
+  rdfs:label "Solution Design"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design:Design_for_Integration_&_Interoperability>
+  a owl:Class ;
+  rdfs:label "Design for Integration & Interoperability"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Design> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop>
+  a owl:Class ;
+  rdfs:label "Develop"@en ;
+  rdfs:subClassOf sm:Artifact ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE>
+  a owl:Class ;
+  rdfs:label "DE"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Data_Acquisition>
+  a owl:Class ;
+  rdfs:label "Data Acquisition"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Data_Destruction>
+  a owl:Class ;
+  rdfs:label "Data Destruction"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Data_Transformations>
+  a owl:Class ;
+  rdfs:label "Data Transformations"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Policy_Enforcement>
+  a owl:Class ;
+  rdfs:label "Policy Enforcement"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Asset_Management_(Data,_Products,_Models)>
+  a owl:Class ;
+  rdfs:label "Asset Management (Data, Products, Models)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Data_Access_&_Delivery>
+  a owl:Class ;
+  rdfs:label "Data Access & Delivery"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE:Data_Warehousing_(RT,_Batch,_Archival)>
+  a owl:Class ;
+  rdfs:label "Data Warehousing (RT, Batch, Archival)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:DE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE>
+  a owl:Class ;
+  rdfs:label "KE"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:RDB_Mapping_to_RDF>
+  a owl:Class ;
+  rdfs:label "RDB Mapping to RDF"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:Semantic_Extension>
+  a owl:Class ;
+  rdfs:label "Semantic Extension"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:Integration,_Mastering_&_Mapping_at_Scale>
+  a owl:Class ;
+  rdfs:label "Integration, Mastering & Mapping at Scale"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:Ontology_Design,_Modeling_&_Optimization>
+  a owl:Class ;
+  rdfs:label "Ontology Design, Modeling & Optimization"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:Structured_Vocabulary_Design_&_Extension>
+  a owl:Class ;
+  rdfs:label "Structured Vocabulary Design & Extension"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE:Taxonomy_Modeling_&_Optimization>
+  a owl:Class ;
+  rdfs:label "Taxonomy Modeling & Optimization"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:KE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE>
+  a owl:Class ;
+  rdfs:label "SE"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Change_Control_Log>
+  a owl:Class ;
+  rdfs:label "Change Control Log"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Continuous_Verification_and_Validation>
+  a owl:Class ;
+  rdfs:label "Continuous Verification and Validation"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Defect_Log>
+  a owl:Class ;
+  rdfs:label "Defect Log"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Documentation_Standards>
+  a owl:Class ;
+  rdfs:label "Documentation Standards"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Inspections>
+  a owl:Class ;
+  rdfs:label "Inspections"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Auditing_&_Instrumentation_(logs)>
+  a owl:Class ;
+  rdfs:label "Auditing & Instrumentation (logs)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:CI_/_CD_(Checkin,_Regression_Test,_Code_Analysis,_CCM)>
+  a owl:Class ;
+  rdfs:label "CI / CD (Checkin, Regression Test, Code Analysis, CCM)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Error_Management,_Dispositioning,_&_Resiliency>
+  a owl:Class ;
+  rdfs:label "Error Management, Dispositioning, & Resiliency"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Event_&_Orchestration_Management>
+  a owl:Class ;
+  rdfs:label "Event & Orchestration Management"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Runbook_(SOPs)>
+  a owl:Class ;
+  rdfs:label "Runbook (SOPs)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE:Testing_(Functional,_System/Integration,_Performance,_UAT)>
+  a owl:Class ;
+  rdfs:label "Testing (Functional, System/Integration, Performance, UAT)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Develop:SE> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover>
+  a owl:Class ;
+  rdfs:label "Discover"@en ;
+  rdfs:subClassOf sm:Artifact ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Bundling_and_Prioritization>
+  a owl:Class ;
+  rdfs:label "Bundling and Prioritization"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Defect_Log>
+  a owl:Class ;
+  rdfs:label "Defect Log"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Inspection>
+  a owl:Class ;
+  rdfs:label "Inspection"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Customer_Needs_(Jobs_To_Be_Done)>
+  a owl:Class ;
+  rdfs:label "Customer Needs (Jobs To Be Done)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Design_Thinking_(Outcome_Discovery)>
+  a owl:Class ;
+  rdfs:label "Design Thinking (Outcome Discovery)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Future_State_Planning_(Outcome_Gaps)>
+  a owl:Class ;
+  rdfs:label "Future State Planning (Outcome Gaps)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Impact_Analysis_(Strategy_&_Operations)>
+  a owl:Class ;
+  rdfs:label "Impact Analysis (Strategy & Operations)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover:Persona_Mapping_(Desired_Outcomes)>
+  a owl:Class ;
+  rdfs:label "Persona Mapping (Desired Outcomes)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Artifact:Discover> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Communication
+  a owl:Class ;
+  rdfs:label "Communication"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Communication:Email>
+  a owl:Class ;
+  rdfs:label "Email"@en ;
+  rdfs:subClassOf sm:Communication ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Communication:Push_Notification>
+  a owl:Class ;
+  rdfs:label "Push Notification"@en ;
+  rdfs:subClassOf sm:Communication ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Communication:SMS>
+  a owl:Class ;
+  rdfs:label "SMS"@en ;
+  rdfs:subClassOf sm:Communication ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Compliance_Outcome
+  a owl:Class ;
+  rdfs:label "Compliance Outcome"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Application_reusability>
+  a owl:Class ;
+  rdfs:label "Application reusability"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Control_Monitoring>
+  a owl:Class ;
+  rdfs:label "Control Monitoring"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Control_Performance>
+  a owl:Class ;
+  rdfs:label "Control Performance"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Data_Retention_Standards>
+  a owl:Class ;
+  rdfs:label "Data Retention Standards"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Data_Security_Controls_Validation>
+  a owl:Class ;
+  rdfs:label "Data Security Controls Validation"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Enterprise_data_inventory>
+  a owl:Class ;
+  rdfs:label "Enterprise data inventory"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Privacy_and_security_policy_controls>
+  a owl:Class ;
+  rdfs:label "Privacy and security policy controls"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Know_your_Data_(KYD)_Laws_&_Regulations>
+  a owl:Class ;
+  rdfs:label "Know your Data (KYD) Laws & Regulations"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcome:Limited_Use_&_Purpose_for_SPI_(Data_Sharing_Standards)>
+  a owl:Class ;
+  rdfs:label "Limited Use & Purpose for SPI (Data Sharing Standards)"@en ;
+  rdfs:subClassOf sm:Compliance_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Compliance_Outcomes
+  a owl:Class ;
+  rdfs:label "Compliance Outcomes"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcomes:3rd_Party_Data_Governance>
+  a owl:Class ;
+  rdfs:label "3rd Party Data Governance"@en ;
+  rdfs:subClassOf sm:Compliance_Outcomes ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Compliance_Outcomes:3rd_Party_Data_Usage>
+  a owl:Class ;
+  rdfs:label "3rd Party Data Usage"@en ;
+  rdfs:subClassOf sm:Compliance_Outcomes ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Content
+  a owl:Class ;
+  rdfs:label "Content"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Content:Dashboard>
+  a owl:Class ;
+  rdfs:label "Dashboard"@en ;
+  rdfs:subClassOf sm:Content ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Content:Spreadsheet>
+  a owl:Class ;
+  rdfs:label "Spreadsheet"@en ;
+  rdfs:subClassOf sm:Content ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Content:storyboard>
+  a owl:Class ;
+  rdfs:label "storyboard"@en ;
+  rdfs:subClassOf sm:Content ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Content:visual_maps>
+  a owl:Class ;
+  rdfs:label "visual maps"@en ;
+  rdfs:subClassOf sm:Content ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Corporate_Outcome
+  a owl:Class ;
+  rdfs:label "Corporate Outcome"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Improving_profit_over_revenue>
+  a owl:Class ;
+  rdfs:label "Improving profit over revenue"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Monitor_and_Measure_Adoption>
+  a owl:Class ;
+  rdfs:label "Monitor and Measure Adoption"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Op_Ex_Reduction_year_over_year>
+  a owl:Class ;
+  rdfs:label "Op Ex Reduction year over year"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Data_Accountability_&_Manageability>
+  a owl:Class ;
+  rdfs:label "Data Accountability & Manageability"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Improve_speed_of_service_by_10_Percent_each_year_(corporate_agility)>
+  a owl:Class ;
+  rdfs:label "Improve speed of service by 10 Percent each year (corporate agility)"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Reduce_lag_from_strategy_to_execution_(reduce_decision_cycle_time)>
+  a owl:Class ;
+  rdfs:label "Reduce lag from strategy to execution (reduce decision cycle time)"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corporate_Outcome:Remove_silos_and_redundancy_by_10_Percent_(Productivity_and_Collaboration)>
+  a owl:Class ;
+  rdfs:label "Remove silos and redundancy by 10 Percent (Productivity and Collaboration)"@en ;
+  rdfs:subClassOf sm:Corporate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Corportate_Outcome
+  a owl:Class ;
+  rdfs:label "Corportate Outcome"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Corportate_Outcome:Monitor_Service_Levels_SLAs>
+  a owl:Class ;
+  rdfs:label "Monitor Service Levels SLAs"@en ;
+  rdfs:subClassOf sm:Corportate_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Customer_Outcome
+  a owl:Class ;
+  rdfs:label "Customer Outcome"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Cataloging_and_classification>
+  a owl:Class ;
+  rdfs:label "Cataloging and classification"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Central_Marketplace_to_publish_and_subscribe_to_Trusted_Products>
+  a owl:Class ;
+  rdfs:label "Central Marketplace to publish and subscribe to Trusted Products"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Discoverability>
+  a owl:Class ;
+  rdfs:label "Discoverability"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Guidance_on_how_to_deal_with_sensitive_data>
+  a owl:Class ;
+  rdfs:label "Guidance on how to deal with sensitive data"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Inconsistent_definitions_of_terms_measures_and_metrics>
+  a owl:Class ;
+  rdfs:label "Inconsistent definitions of terms measures and metrics"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Know_your_Data>
+  a owl:Class ;
+  rdfs:label "Know your Data"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Metrics_generation_teams_surprised_with_changes_upstream>
+  a owl:Class ;
+  rdfs:label "Metrics generation teams surprised with changes upstream"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Reference_data_management_across_enterprise>
+  a owl:Class ;
+  rdfs:label "Reference data management across enterprise"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Reusable_products_for_analysis_and_reporting>
+  a owl:Class ;
+  rdfs:label "Reusable products for analysis and reporting"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Self_Serve_data_products>
+  a owl:Class ;
+  rdfs:label "Self Serve data products"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Translation_from_technical_to_business>
+  a owl:Class ;
+  rdfs:label "Translation from technical to business"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Trusted_data_easy_to_find>
+  a owl:Class ;
+  rdfs:label "Trusted data easy to find"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Understability>
+  a owl:Class ;
+  rdfs:label "Understability"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Mission>
+  a owl:Class ;
+  rdfs:label "Mission"@en ;
+  rdfs:subClassOf sm:Customer_Outcome ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Mission:Ease_of_doing_analytics_and_Building_products>
+  a owl:Class ;
+  rdfs:label "Ease of doing analytics and Building products"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Customer_Outcome:Mission> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal>
+  a owl:Class ;
+  rdfs:label "D&A Goal"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Analytics_as_a_Service>
+  a owl:Class ;
+  rdfs:label "Analytics as a Service"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Enable_Self_Serve_Data_Products>
+  a owl:Class ;
+  rdfs:label "Enable Self Serve Data Products"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Industrialze_Advanced_Analytics>
+  a owl:Class ;
+  rdfs:label "Industrialze Advanced Analytics"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Seamless_Data_Governance>
+  a owl:Class ;
+  rdfs:label "Seamless Data Governance"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Establish_Best_In_Classs_Data_&_Analytics>
+  a owl:Class ;
+  rdfs:label "Establish Best In Classs Data & Analytics"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal:Unify_Data_&_Analytics>
+  a owl:Class ;
+  rdfs:label "Unify Data & Analytics"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#D&A_Goal> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Data_Protection
+  a owl:Class ;
+  rdfs:label "Data Protection"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Protection:Encryption>
+  a owl:Class ;
+  rdfs:label "Encryption"@en ;
+  rdfs:subClassOf sm:Data_Protection ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Protection:Masking>
+  a owl:Class ;
+  rdfs:label "Masking"@en ;
+  rdfs:subClassOf sm:Data_Protection ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Protection:Obfuscation>
+  a owl:Class ;
+  rdfs:label "Obfuscation"@en ;
+  rdfs:subClassOf sm:Data_Protection ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Protection:Tokenization>
+  a owl:Class ;
+  rdfs:label "Tokenization"@en ;
+  rdfs:subClassOf sm:Data_Protection ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:FF
+  a owl:Class ;
+  rdfs:label "FF"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion>
+  a owl:Class ;
+  rdfs:label "Data Ingestion"@en ;
+  rdfs:subClassOf sm:FF ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Ability_to_consume_Structured_RDB>
+  a owl:Class ;
+  rdfs:label "Ability to consume Structured RDB"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Ability_to_consume_Unstructured_CSV>
+  a owl:Class ;
+  rdfs:label "Ability to consume Unstructured CSV"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Ability_to_consume_semantics_from_3rd_Party_API>
+  a owl:Class ;
+  rdfs:label "Ability to consume semantics from 3rd Party API"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Ability_to_generate_interim_ODS_using_ETL>
+  a owl:Class ;
+  rdfs:label "Ability to generate interim ODS using ETL"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Ability_to_generate_relational_structure_from_CSV>
+  a owl:Class ;
+  rdfs:label "Ability to generate relational structure from CSV"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion:Create_and_Load_Persona_Data>
+  a owl:Class ;
+  rdfs:label "Create and Load Persona Data"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#FF:Data_Ingestion> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:KG_Extensions
+  a owl:Class ;
+  rdfs:label "KG Extensions"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:AI_Models>
+  a owl:Class ;
+  rdfs:label "AI Models"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Analytics>
+  a owl:Class ;
+  rdfs:label "Analytics"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Aggregation>
+  a owl:Class ;
+  rdfs:label "Data Aggregation"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Data_Sources>
+  a owl:Class ;
+  rdfs:label "Data Sources"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Modeling_and_Analysis>
+  a owl:Class ;
+  rdfs:label "Modeling and Analysis"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Recommendation_Engine>
+  a owl:Class ;
+  rdfs:label "Recommendation Engine"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Semantic_Data_Mapping>
+  a owl:Class ;
+  rdfs:label "Semantic Data Mapping"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#KG_Extensions:Social_Network_Analysis>
+  a owl:Class ;
+  rdfs:label "Social Network Analysis"@en ;
+  rdfs:subClassOf sm:KG_Extensions ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Persona
+  a owl:Class ;
+  rdfs:label "Persona"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:AI_Engineer>
+  a owl:Class ;
+  rdfs:label "AI Engineer"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Analytic_Engineer>
+  a owl:Class ;
+  rdfs:label "Analytic Engineer"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Analytic_Platform_Owner>
+  a owl:Class ;
+  rdfs:label "Analytic Platform Owner"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:App_Custodians_Data_Policy>
+  a owl:Class ;
+  rdfs:label "App Custodians Data Policy"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Application_Custodian>
+  a owl:Class ;
+  rdfs:label "Application Custodian"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:BI_Team_leads>
+  a owl:Class ;
+  rdfs:label "BI Team leads"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:BI_Teeam_Lead>
+  a owl:Class ;
+  rdfs:label "BI Teeam Lead"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:DBAs>
+  a owl:Class ;
+  rdfs:label "DBAs"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Database_Admin_Engineering>
+  a owl:Class ;
+  rdfs:label "Database Admin Engineering"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Tool
+  a owl:Class ;
+  rdfs:label "Tool"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:ARQ>
+  a owl:Class ;
+  rdfs:label "ARQ"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:BW>
+  a owl:Class ;
+  rdfs:label "BW"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:ESSBASE>
+  a owl:Class ;
+  rdfs:label "ESSBASE"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:Hperion_Planning>
+  a owl:Class ;
+  rdfs:label "Hperion Planning"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:REVD>
+  a owl:Class ;
+  rdfs:label "REVD"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:ROC>
+  a owl:Class ;
+  rdfs:label "ROC"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:SAP_HANA>
+  a owl:Class ;
+  rdfs:label "SAP HANA"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:SCBI>
+  a owl:Class ;
+  rdfs:label "SCBI"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:ThoughtSpot>
+  a owl:Class ;
+  rdfs:label "ThoughtSpot"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:VRR_Wireless>
+  a owl:Class ;
+  rdfs:label "VRR Wireless"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:eHANA>
+  a owl:Class ;
+  rdfs:label "eHANA"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Tool:Analplan/GTS>
+  a owl:Class ;
+  rdfs:label "Analplan/GTS"@en ;
+  rdfs:subClassOf sm:Tool ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance>
+  a owl:Class ;
+  rdfs:label "Governance"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Asset_Owner>
+  a owl:Class ;
+  rdfs:label "Asset Owner"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Business_Steward>
+  a owl:Class ;
+  rdfs:label "Business Steward"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Data_Custodian>
+  a owl:Class ;
+  rdfs:label "Data Custodian"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Domain_Owner>
+  a owl:Class ;
+  rdfs:label "Domain Owner"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Domain_Steward>
+  a owl:Class ;
+  rdfs:label "Domain Steward"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Service_Owner>
+  a owl:Class ;
+  rdfs:label "Service Owner"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance:Technical_Steward>
+  a owl:Class ;
+  rdfs:label "Technical Steward"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Asset
+  a owl:Class ;
+  rdfs:label "Asset"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Asset:AI_Model>
+  a owl:Class ;
+  rdfs:label "AI Model"@en ;
+  rdfs:subClassOf sm:Asset ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Asset:AI_Model:Model_for_Churn>
+  a owl:Class ;
+  rdfs:label "Model for Churn"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Asset:AI_Model> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Data_Domain
+  a owl:Class ;
+  rdfs:label "Data Domain"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Domain:_Data_Steward>
+  a owl:Class ;
+  rdfs:label "Data Steward"@en ;
+  rdfs:subClassOf sm:Data_Domain ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Domain:_Data_Steward:John_Smith>
+  a owl:Class ;
+  rdfs:label "John Smith"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Data_Domain:_Data_Steward> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Governance
+  a owl:Class ;
+  rdfs:label "Governance"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls>
+  a owl:Class ;
+  rdfs:label "Controls"@en ;
+  rdfs:subClassOf sm:Governance ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Access_controls_for_sensitive_reports>
+  a owl:Class ;
+  rdfs:label "Access controls for sensitive reports"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Alerts_and_notifications_for_deviations_from_expected_values>
+  a owl:Class ;
+  rdfs:label "Alerts and notifications for deviations from expected values"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Audit_trails_to_monitor_data_access_and_changes_to_any_component,_content,_or_context_(metadata,_connective_tissue,_rules)>
+  a owl:Class ;
+  rdfs:label "Audit trails to monitor data access and changes to any component, content, or context (metadata, connective tissue, rules)"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Automated_data_deletion_processes>
+  a owl:Class ;
+  rdfs:label "Automated data deletion processes"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Bias_detection_and_mitigation_strategies>
+  a owl:Class ;
+  rdfs:label "Bias detection and mitigation strategies"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Change_Management_procedures_for_system_updates>
+  a owl:Class ;
+  rdfs:label "Change Management procedures for system updates"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Collaboration_features_with_audit_trails>
+  a owl:Class ;
+  rdfs:label "Collaboration features with audit trails"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Compliance_reporting_for_regulatory_bodies>
+  a owl:Class ;
+  rdfs:label "Compliance reporting for regulatory bodies"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_&_Analytic_Sampling_to_monitor_compliance_exposures>
+  a owl:Class ;
+  rdfs:label "Data & Analytic Sampling to monitor compliance exposures"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_encryption_in_transit_and_at_rest_to_protect_data_from_unauthorized_access>
+  a owl:Class ;
+  rdfs:label "Data encryption in transit and at rest to protect data from unauthorized access"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_lineage_tracking_to_trace_data_changes>
+  a owl:Class ;
+  rdfs:label "Data lineage tracking to trace data changes"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_profiling_and_cleansing_processes_to_maintain_data_accuracy.>
+  a owl:Class ;
+  rdfs:label "Data profiling and cleansing processes to maintain data accuracy."@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_retention_policies_for_compliance_and_legal_requirements>
+  a owl:Class ;
+  rdfs:label "Data retention policies for compliance and legal requirements"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Explanation_audit_trails_for_transparency>
+  a owl:Class ;
+  rdfs:label "Explanation audit trails for transparency"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Governance_framework_for_ethical_AI_and_analytics>
+  a owl:Class ;
+  rdfs:label "Governance framework for ethical AI and analytics"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Historical_data_tracking_to_analyze_trends>
+  a owl:Class ;
+  rdfs:label "Historical data tracking to analyze trends"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Incident_response_plan_for_data_breaches_and_system_failures>
+  a owl:Class ;
+  rdfs:label "Incident response plan for data breaches and system failures"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Incorporate_releasability_rules_within_DBTs,_metrics,_analytics,_and_visual_controls_for_UX_slicing_&_data_extraction>
+  a owl:Class ;
+  rdfs:label "Incorporate releasability rules within DBTs, metrics, analytics, and visual controls for UX slicing & data extraction"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Internal_audits_for_control_effectiveness>
+  a owl:Class ;
+  rdfs:label "Internal audits for control effectiveness"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Knowledge_graphs_to_provide_contextual_informatio>
+  a owl:Class ;
+  rdfs:label "Knowledge graphs to provide contextual informatio"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Maintenance_of_a_semantic_knowledge_layer_to_provide_Unified_context>
+  a owl:Class ;
+  rdfs:label "Maintenance of a semantic knowledge layer to provide Unified context"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Natural_language_processing_(NLP)_for_automated_explanations>
+  a owl:Class ;
+  rdfs:label "Natural language processing (NLP) for automated explanations"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Performance_monitoring_and_optimization>
+  a owl:Class ;
+  rdfs:label "Performance monitoring and optimization"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Real-time_monitoring_of_key_metrics_and_KPIs>
+  a owl:Class ;
+  rdfs:label "Real-time monitoring of key metrics and KPIs"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Redaction_capabilities_for_sharing_sensitive_data>
+  a owl:Class ;
+  rdfs:label "Redaction capabilities for sharing sensitive data"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_backups_and_disaster_recovery_procedures>
+  a owl:Class ;
+  rdfs:label "Regular backups and disaster recovery procedures"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_compliance_audits_and_assessments>
+  a owl:Class ;
+  rdfs:label "Regular compliance audits and assessments"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_model_retraining_and_updating>
+  a owl:Class ;
+  rdfs:label "Regular model retraining and updating"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Release_management_for_new_features>
+  a owl:Class ;
+  rdfs:label "Release management for new features"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Report_scheduling_and_distribution_controls>
+  a owl:Class ;
+  rdfs:label "Report scheduling and distribution controls"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Resource_allocation_controls>
+  a owl:Class ;
+  rdfs:label "Resource allocation controls"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Role-based_access_control_(RBAC)_to_limit_access_to_authorized_users>
+  a owl:Class ;
+  rdfs:label "Role-based access control (RBAC) to limit access to authorized users"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Scalability_planning_to_handle_increased_user_demand>
+  a owl:Class ;
+  rdfs:label "Scalability planning to handle increased user demand"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Secure_data_sharing_options_with_access_controls>
+  a owl:Class ;
+  rdfs:label "Secure data sharing options with access controls"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Semantic_metadata_for_unstructured_content>
+  a owl:Class ;
+  rdfs:label "Semantic metadata for unstructured content"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Taxonomy_and_ontology_management_for_structured_data>
+  a owl:Class ;
+  rdfs:label "Taxonomy and ontology management for structured data"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Testing_and_validation_procedures_for_AI_models>
+  a owl:Class ;
+  rdfs:label "Testing and validation procedures for AI models"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Validation_rules_to_ensure_data_consistency_and_integrity>
+  a owl:Class ;
+  rdfs:label "Validation rules to ensure data consistency and integrity"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_analytics_models_and_algorithms>
+  a owl:Class ;
+  rdfs:label "Version control for analytics models and algorithms"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_data_assets_and_analytical_content>
+  a owl:Class ;
+  rdfs:label "Version control for data assets and analytical content"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Visualization_versioning_and_approval_processes>
+  a owl:Class ;
+  rdfs:label "Visualization versioning and approval processes"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Outcomes
+  a owl:Class ;
+  rdfs:label "Outcomes"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance>
+  a owl:Class ;
+  rdfs:label "Governance"@en ;
+  rdfs:subClassOf sm:Outcomes ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance:Enable_Data-Driven_Decision_Making>
+  a owl:Class ;
+  rdfs:label "Enable Data-Driven Decision Making"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance:Establish_healthy_service_Culture_enabled_by_data_literacy>
+  a owl:Class ;
+  rdfs:label "Establish healthy service Culture enabled by data literacy"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance:Improve_Reputation_and_Increase_Trust_in_Data>
+  a owl:Class ;
+  rdfs:label "Improve Reputation and Increase Trust in Data"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance:Optimize_Data_Sharing_&_Accessibility>
+  a owl:Class ;
+  rdfs:label "Optimize Data Sharing & Accessibility"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance:Reduce_operating_coss_and_improve_Op_Ex>
+  a owl:Class ;
+  rdfs:label "Reduce operating coss and improve Op Ex"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Outcomes:Governance> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Executive_Leader_(CXO)>
+  a owl:Class ;
+  rdfs:label "Executive Leader (CXO)"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Persona:Sales_Market_President>
+  a owl:Class ;
+  rdfs:label "Sales Market President"@en ;
+  rdfs:subClassOf sm:Persona ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Service
+  a owl:Class, owl:ObjectProperty ;
+  rdfs:label "Service"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Emergency_911>
+  a owl:Class ;
+  rdfs:label "Emergency 911"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Government>
+  a owl:Class ;
+  rdfs:label "Government"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Government:FAA>
+  a owl:Class ;
+  rdfs:label "FAA"@en ;
+  rdfs:subClassOf <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Government> ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Home_Automation>
+  a owl:Class ;
+  rdfs:label "Home Automation"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Private_Network>
+  a owl:Class ;
+  rdfs:label "Private Network"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:SMB_Broadband>
+  a owl:Class ;
+  rdfs:label "SMB Broadband"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Voice>
+  a owl:Class ;
+  rdfs:label "Voice"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Wireless>
+  a owl:Class ;
+  rdfs:label "Wireless"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Service:Wireline>
+  a owl:Class ;
+  rdfs:label "Wireline"@en ;
+  rdfs:subClassOf sm:Service ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+sm:Event
+  a owl:Class, owl:ObjectProperty ;
+  rdfs:label "Event"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/vocabulary-core-servicemodel/> .
+
+dqm:cleansingProperty
+  a owl:ObjectProperty ;
+  rdfs:label "cleansingProperty"@en .
+
+dqm:hasCondition
+  a owl:ObjectProperty ;
+  rdfs:label "hasCondition"@en .
+
+dqm:hasRequirement
+  a owl:ObjectProperty ;
+  rdfs:label "hasRequirement"@en .
+
+dqm:hasScore
+  a owl:ObjectProperty ;
+  rdfs:label "hasScore"@en .
+
+dqm:operatedValue
+  a owl:ObjectProperty ;
+  rdfs:label "operatedValue"@en .
+
+dqm:referenceProperty
+  a owl:ObjectProperty ;
+  rdfs:label "referenceProperty"@en .
+
+dqm:reqMetadata
+  a owl:ObjectProperty ;
+  rdfs:label "reqMetadata"@en .
+
+dqm:ruleViolation
+  a owl:ObjectProperty ;
+  rdfs:label "ruleViolation"@en .
+
+dqm:testedProperty
+  a owl:ObjectProperty ;
+  rdfs:label "testedProperty"@en .
+
+sm:Feature
+  a owl:ObjectProperty ;
+  rdfs:label "Feature"@en .
+
+sm:Metric
+  a owl:ObjectProperty ;
+  rdfs:label "Metric"@en .
+
+sm:Process
+  a owl:ObjectProperty ;
+  rdfs:label "Process"@en .
+
+sm:Service_Enablers
+  a owl:ObjectProperty ;
+  rdfs:label "Service Enablers"@en .
+
+rdfs:label
+  a owl:AnnotationProperty .
+
+rdfs:comment
+  a owl:AnnotationProperty .
+
+owl:versionInfo
+  a owl:AnnotationProperty .
+
+dc11:contributor
+  a owl:AnnotationProperty .
+
+dc11:creator
+  a owl:AnnotationProperty .
+
+dc11:rights
+  a owl:AnnotationProperty .
+
+dc11:subject
+  a owl:AnnotationProperty .
+
+dc11:title
+  a owl:AnnotationProperty .
+
+dct:license
+  a owl:AnnotationProperty .
+
+cap:ArtificialIntelligenceMachineLearning
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Artificial Intelligence & Machine Learning"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/ebec0ac7-b9ca-4386-8aed-9a104ec9f2fa> .
+
+cap:TechnicalCapability
+  a owl:Class ;
+  rdfs:subClassOf cap:Capability ;
+  rdfs:label "Technical Capability"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/0e790a36-fb48-4f96-a9f8-e55f1fa99ae7> .
+
+cap:BillingAccountingManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Billing & Accounting Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/adb1faa6-aaeb-4f02-a84c-8714bcc9cea7> .
+
+cap:FunctionalCapability
+  a owl:Class ;
+  rdfs:subClassOf cap:Capability ;
+  rdfs:label "Functional Capability"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/f55ca509-135c-4e8b-9f8b-0cdca5b5cd1a> .
+
+cap:BusinessCapability
+  a owl:Class ;
+  rdfs:subClassOf cap:Capability ;
+  rdfs:label "Business Capability"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/a9f0e92c-69ec-420b-8ada-921031cff506> .
+
+cap:Capability
+  a owl:Class ;
+  rdfs:label "Capability"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/fb72da4d-4eb4-4690-86e7-dec31096cbe0> .
+
+cap:BusinessIntelligence
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Business Intelligence"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/04fcea37-e9ed-48b7-917f-71d293b9321c> .
+
+cap:BusinessMarketplace
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Business Marketplace"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/6d6a83f9-c418-4907-b16c-644dcf1fe386> .
+
+cap:CloudDataLakehouse
+  a owl:Class ;
+  rdfs:subClassOf cap:DataLakeManagement ;
+  rdfs:label "Cloud Data Lakehouse"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/9881fe12-3aee-4f89-b89d-c639ec8c35db> .
+
+cap:DataLakeManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:StorageManagement ;
+  rdfs:label "Data Lake Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/fd2b3060-3f83-4534-9707-ee0cc681154b> .
+
+cap:CustomerRelationshipManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Customer Relationship Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/94103774-efbe-473b-b761-64c515e00113> .
+
+cap:DataArchitecture
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Architecture"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/b671bd99-30da-4aa0-8935-5de3e7c879aa> .
+
+cap:DataCatalog
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Catalog"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/a52efc2e-c37a-4c17-9a1c-d38c5134b3af> .
+
+cap:DataDictionary
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Data Dictionary"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/96dde8da-6834-4118-b55c-d2a8005400ac> .
+
+cap:DataManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/ba7e6b25-f08a-4564-95d0-261341cdd8da> .
+
+cap:DataDiscovery
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Discovery"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/d686b92a-9a95-4e31-b181-95211fb3f5f1> .
+
+cap:DataFabric
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Fabric"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/2e992962-b829-4064-a982-bab8ff56dc7a> .
+
+cap:DataIntegration
+  a owl:Class ;
+  rdfs:subClassOf cap:Integration ;
+  rdfs:label "Data Integration"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/788e1214-6555-4fac-ae09-345810ab8e29> .
+
+cap:Integration
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Integration"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/9b9aeddc-f0df-4d74-bda3-95a469885852> .
+
+cap:StorageManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Storage Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/b9be4013-7b5f-4eab-bb45-1268a2955fef> .
+
+cap:DataLineageManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Lineage Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/82238678-b36a-4ce8-88c7-e34c126b3b54> .
+
+cap:DataMarketplace
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Marketplace"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/4f24d758-0571-4977-904b-3036fb6171fc> .
+
+cap:DataMasking
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Data Masking"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/85276846-9e6b-430b-a1af-0b5aab5f3a06> .
+
+cap:DataModeling
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Data Modeling"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/8140f000-0a90-4499-8948-455a93ffc27a> .
+
+cap:DataPrivacy
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Data Privacy"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/1c8e3a8b-af50-454d-9070-64dfd27ce070> .
+
+cap:DataProcessIntegration
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data & Process Integration"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/f521e592-59ae-48a3-b42b-56bd1cf1f4d0> .
+
+cap:DataQualityCapability
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Quality Capability"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/35cb4c73-f80f-4db6-9dc9-750d2b5acb45> .
+
+cap:DataReporting
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Reporting"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/9bfe9579-a30a-4c79-b8b5-c24c505b5f77> .
+
+cap:DataScience
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Data Science"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/4f4d34f8-3578-4315-8e71-b9de9018825f> .
+
+cap:DataSecurity
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Data Security"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/aae1e57d-1ab4-4b27-8a65-254cc87a0884> .
+
+cap:DataSubsetting
+  a owl:Class ;
+  rdfs:subClassOf cap:TestDataManagement ;
+  rdfs:label "Data Subsetting"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/2b68b32f-9c43-4160-b5e4-07ed48b34cef> .
+
+cap:TestDataManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Test Data Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/d740f2c3-a822-4723-8ab5-a81179251707> .
+
+cap:DatabaseManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:DataManagement ;
+  rdfs:label "Database Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/e32ee234-35e5-4fbe-a347-7bae4f29e367> .
+
+cap:DigitalAssetManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Digital Asset Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/81cb11a5-91f0-4336-b807-1b5a8722262b> .
+
+cap:MasterDataManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Master Data Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/0cb2cfc0-0712-4a97-bad8-dc8190243632> .
+
+cap:MetricManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:TechnicalCapability ;
+  rdfs:label "Metric Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/792ff73f-fd20-4f2a-835b-49fa954660e6> .
+
+cap:OnPremisesDataLakehouse
+  a owl:Class ;
+  rdfs:subClassOf cap:DataLakeManagement ;
+  rdfs:label "On Premises Data Lakehouse"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/1108dd72-9202-4d57-8852-2f3ea423908a> .
+
+cap:OrderManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Order Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/c8905008-2e0e-40b7-aa87-9c068644d580> .
+
+cap:ProcessIntegration
+  a owl:Class ;
+  rdfs:subClassOf cap:Integration ;
+  rdfs:label "Process Integration"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/bc55e274-5860-4d84-8f50-91e09e27ceea> .
+
+cap:ProductDataSyndication
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Product Data Syndication"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/f2f47038-84d8-4563-ba66-c82f589736d8> .
+
+cap:ProductInformationManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Product Information Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/66dde6af-0090-4c1a-9ee5-7fb91eed9f51> .
+
+cap:ProductManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Product Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/daf9ec41-7881-4fb3-847e-c9d1abb2e7f8> .
+
+cap:ResourceManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Resource Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/1b5987d8-751d-4f6c-a1f2-b7cafd70970f> .
+
+cap:RiskManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Risk Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/7dd00d00-6fc4-4422-894f-eee0a98a1cf4> .
+
+cap:ServiceActivationManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Service Activation Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/a2007c3c-da06-4b7d-b78d-a507802243cc> .
+
+cap:ServiceAssuranceManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Service Assurance Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/b0608ff9-e1d1-4822-b631-73b0ffabba66> .
+
+cap:ServicePortfolioManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:FunctionalCapability ;
+  rdfs:label "Service Portfolio Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/90de7ed2-eedf-4d81-abed-a4c11baeb45b> .
+
+cap:ServiceProvisioningManagement
+  a owl:Class ;
+  rdfs:subClassOf cap:BusinessCapability ;
+  rdfs:label "Service Provisioning Management"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/82b30123-84aa-49d3-8fdc-679106d5497f> .
+
+cap:SyntheticDataGeneration
+  a owl:Class ;
+  rdfs:subClassOf cap:TestDataManagement ;
+  rdfs:label "Synthetic Data Generation"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-capability/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-16T16:45:17.708Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-capability/86585b93-21fd-44e3-9fb0-3462e00e25b2> .
+
+evt:Event
+  a owl:Class ;
+  rdfs:subClassOf evt:Events, _:wr0_1803, _:wr1_1810, _:wr2_1817, _:wr2_1824, _:wr2_1831 ;
+  rdfs:label "Event"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T17:00:42.330Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-01T20:18:37.686Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-event/efff0dc6-e5c3-4115-9530-3b4d3c2ac462> .
+
+evt:Trigger
+  a owl:Class ;
+  rdfs:subClassOf evt:Events, _:wr3_1838 ;
+  rdfs:label "Trigger"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:modified "2025-04-17T13:47:06.434Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-event/9a20b917-0e76-49d0-aff7-2b8945698b1d> .
+
+evt:DiscreteValue
+  a owl:Class ;
+  rdfs:subClassOf evt:EventState ;
+  rdfs:label "Discrete Value"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:modified "2025-04-17T13:47:06.434Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-event/468f43ec-b8d7-43da-aea4-58f2e3808748> .
+
+evt:Events
+  a owl:Class ;
+  rdfs:label "Events"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-17T13:47:06.434Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-04-01T19:40:18.573Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-event/947282e3-8021-459d-bbfa-4fd63affbb41> .
+
+evt:EventState
+  a owl:Class ;
+  rdfs:subClassOf evt:Events, _:we0 ;
+  rdfs:label "Event State"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "wallkje" ;
+  dct:modified "2026-10-05T12:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-event/f407fce6-0343-4fb2-8622-e91946e3f7ae> .
+
+_:we0
+  a owl:Restriction ;
+  owl:onProperty evt:stateValue ;
+  owl:cardinality "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
+
+evt:stateValue
+  a owl:DatatypeProperty ;
+  rdfs:label "state value"@en ;
+  rdfs:domain evt:EventState ;
+  rdfs:comment "The observed value of an event state. Replaces the ThinkHome realStateValue property used in v1.0."@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-event/> ;
+  rdfs:range xsd:string .
+
+evt:EventShape
+  a sh:NodeShape ;
+  sh:targetClass evt:Event ;
+  sh:property _:we1, _:we2, _:we3, _:we4, _:we5 .
+
+_:we1
+  sh:path drm:occursIn ;
+  sh:class loc:Location .
+
+_:we2
+  sh:path drm:occursWhen ;
+  sh:class tim:Time .
+
+_:we3
+  sh:path drm:initiatedBy ;
+  sh:class evt:Trigger .
+
+_:we4
+  sh:path drm:has ;
+  sh:class evt:EventState .
+
+_:we5
+  sh:path drm:generates ;
+  sh:class proc:Process .
+
+evt:EventStateShape
+  a sh:NodeShape ;
+  sh:targetClass evt:EventState ;
+  sh:property _:we6 .
+
+_:we6
+  sh:path evt:stateValue ;
+  sh:minCount "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+  sh:maxCount "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+evt:TriggerShape
+  a sh:NodeShape ;
+  sh:targetClass evt:Trigger ;
+  sh:property _:we7 .
+
+_:we7
+  sh:path drm:initiates ;
+  sh:class evt:Event .
+
+drm:occursIn
+  a owl:ObjectProperty ;
+  rdfs:label "occurs in"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Event ;
+  rdfs:range loc:Location .
+
+_:wr0_1803
+  a owl:Restriction ;
+  owl:onProperty drm:occursIn ;
+  owl:allValuesFrom loc:Location .
+
+drm:occursWhen
+  a owl:ObjectProperty ;
+  rdfs:label "occurs when"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Event ;
+  rdfs:range tim:Time .
+
+_:wr1_1810
+  a owl:Restriction ;
+  owl:onProperty drm:occursWhen ;
+  owl:allValuesFrom tim:Time .
+
+drm:initiatedBy
+  a owl:ObjectProperty ;
+  rdfs:label "initiated by"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Event ;
+  rdfs:range evt:Trigger .
+
+_:wr2_1817
+  a owl:Restriction ;
+  owl:onProperty drm:initiatedBy ;
+  owl:allValuesFrom evt:Trigger .
+
+drm:has
+  a owl:ObjectProperty ;
+  rdfs:label "has"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Event ;
+  rdfs:range evt:EventState .
+
+_:wr2_1824
+  a owl:Restriction ;
+  owl:onProperty drm:has ;
+  owl:allValuesFrom evt:EventState .
+
+drm:generates
+  a owl:ObjectProperty ;
+  rdfs:label "generates"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Event ;
+  rdfs:range proc:Process .
+
+_:wr2_1831
+  a owl:Restriction ;
+  owl:onProperty drm:generates ;
+  owl:allValuesFrom proc:Process .
+
+drm:initiates
+  a owl:ObjectProperty ;
+  rdfs:label "initiates"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-domain/> ;
+  rdfs:domain evt:Trigger ;
+  rdfs:range evt:Event .
+
+_:wr3_1838
+  a owl:Restriction ;
+  owl:onProperty drm:initiates ;
+  owl:allValuesFrom evt:Event .
+
+loc:Location
+  a owl:Class ;
+  rdfs:label "Location"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-location/> .
+
+tim:Time
+  a owl:Class ;
+  rdfs:label "Time"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-time/> .
+
+proc:Process
+  a owl:Class ;
+  rdfs:label "Process"@en ;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-process/> .

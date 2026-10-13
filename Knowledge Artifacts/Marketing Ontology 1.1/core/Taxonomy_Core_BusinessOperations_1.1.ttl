@@ -1,0 +1,561 @@
+@prefix busi: <https://ontologies.verizon.com/taxonomy-core-businessoperations/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+busi:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-businessoperations: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Business Operations, is equivalent to Business Operations in taxonomy-core-services (core mappings: skos:exactMatch)."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-businessoperations> ;
+  dct:title "Taxonomy | Core | Business Operations"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>, <https://ontologies.verizon.com/taxonomy-core-services/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-businessoperations/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Business Operations"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example AnalyticsReporting, ArtificialIntelligence, Benchmarking) resolve to declared classes."@en .
+
+busi:AnalyticsReporting
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/c7b54735-efb8-45b5-ac99-94ddb3c404c9> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Analytics & Reporting"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:ArtificialIntelligence
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/7814b86e-1ad0-472c-b90f-6630f788966b> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Artificial Intelligence"@en ;
+  rdfs:subClassOf busi:Technology ;
+  skos:altLabel "AI"@en .
+
+busi:Benchmarking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/6a12cbb1-f550-4059-a0dc-e9562f05a8a0> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Benchmarking"@en ;
+  rdfs:subClassOf busi:PerformanceMeasurement .
+
+busi:BusinessModelCanvas
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/4c4cdf34-f512-4815-84f6-715dbc5ff3b8> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Business Model Canvas"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:BusinessOperations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/471884fa-9501-4cf1-9729-2f1fb89866ef> ;
+  owl:equivalentClass <https://ontologies.verizon.com/taxonomy-core-services/BusinessOperations> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Business Operations"@en .
+
+busi:Channels
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/f18b24d7-f604-403a-8187-1c44f41eca43> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Channels"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:CircularEconomy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/bc020ffa-fbca-4e77-99b8-9314c701fa10> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Circular Economy"@en ;
+  rdfs:subClassOf busi:Sustainability .
+
+busi:CloudComputing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/c86b416e-a5f3-4cbf-b325-10133a0f76d4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Cloud Computing"@en ;
+  rdfs:subClassOf busi:Technology .
+
+busi:Communications
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/b801e4e1-0e24-4d6f-b4b2-d165c156e092> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Communications"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:CompetitiveAdvantage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a06d4b81-f2df-407d-950a-2cab2c5b33b4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Competitive Advantage"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:CompetitiveAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/68db00ba-503e-46ad-9459-5b3ce2ff1acd> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Competitive Analysis"@en ;
+  rdfs:subClassOf busi:CompetitiveAdvantage .
+
+busi:ContinuousImprovement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/72f4eca3-a17e-499b-9919-daee3c4c1e9e> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Continuous Improvement"@en ;
+  rdfs:subClassOf busi:QualityManagement .
+
+busi:CoreCompetencies
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/68798bc3-1def-4168-a9ce-6e270798a530> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Core Competencies"@en ;
+  rdfs:subClassOf busi:CompetitiveAdvantage .
+
+busi:CorporateSocialResponsibility
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/d083811b-47e9-45c5-8ad2-7e459eb0cdc8> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Corporate Social Responsibility"@en ;
+  rdfs:subClassOf busi:Sustainability ;
+  skos:altLabel "CSR"@en .
+
+busi:CostLeadership
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/9aeb73f0-fe5e-45cd-9ec7-7a2a9394de69> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Cost Leadership"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:CostStructure
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/16c4aef5-967d-4428-b716-3487e742cf1a> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Cost Structure"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:CrisisCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/8503fa32-d707-411f-a45a-9ca6861f6b83> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Crisis Communication"@en ;
+  rdfs:subClassOf busi:Communications .
+
+busi:CustomerRelationships
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/c98faac9-06c5-41c8-9c60-3aa6e2ae4d2d> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Customer Relationships"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:CustomerSegmentation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/4ce27546-1e58-453b-ab28-f5b76ddddec8> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Customer Segmentation"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:DataAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/3f4c9fc5-a5d1-409d-bd86-39c460ed6bde> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Analysis"@en ;
+  rdfs:subClassOf busi:PerformanceMeasurement .
+
+busi:DataAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/679babf5-6223-40e0-b909-8b2a953be051> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Analytics"@en ;
+  rdfs:subClassOf busi:AnalyticsReporting .
+
+busi:DataCleaning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/665bf2e4-e776-460f-9dae-1baa97983ba4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Cleaning"@en ;
+  rdfs:subClassOf busi:DataAnalysis .
+
+busi:DataCollection
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/c6966cdb-da71-48a9-980e-cb535ed1ed39> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Collection"@en ;
+  rdfs:subClassOf busi:DataAnalysis .
+
+busi:DataPreparation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/29486144-cb2b-496e-8c5a-edf25fb95ce4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Preparation"@en ;
+  rdfs:subClassOf busi:DataAnalysis .
+
+busi:DataStorage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/9c8ab48a-1c23-49ef-a1d8-8b32406c848c> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Storage"@en ;
+  rdfs:subClassOf busi:Technology .
+
+busi:DataVisualization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/f678426c-c019-4857-ae04-00ec03f7f7f3> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Data Visualization"@en ;
+  rdfs:subClassOf busi:AnalyticsReporting .
+
+busi:DescriptiveAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a28d4923-d1a2-4e3e-82bf-2edb78e5f469> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Descriptive Analytics"@en ;
+  rdfs:subClassOf busi:DataAnalytics .
+
+busi:DiagnosticAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a54484f6-76fc-4e59-bb93-a5dc624d8218> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Diagnostic Analytics"@en ;
+  rdfs:subClassOf busi:DataAnalytics .
+
+busi:Differentiation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/6b5fb385-c3b0-401a-85ff-33c4503346f9> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Differentiation"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:Diversification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/63962f0d-8f3f-460b-bd9e-81ffb69ad7f7> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Diversification"@en ;
+  rdfs:subClassOf busi:GrowthStrategies .
+
+busi:EconomicSustainability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/9f01173d-1d3f-40ff-adf9-04f1fcca7a22> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Economic Sustainability"@en ;
+  rdfs:subClassOf busi:Sustainability .
+
+busi:EnvironmentalSustainability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/70c2e8c0-d36b-4f65-8bf5-731c92a3a44f> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Environmental Sustainability"@en ;
+  rdfs:subClassOf busi:Sustainability .
+
+busi:ExternalAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/cdd4a730-ef7f-41b3-bb68-2c8f2d76dba9> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "External Analysis"@en ;
+  rdfs:subClassOf busi:SWOTAnalysis .
+
+busi:ExternalCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/67a7db80-f1e0-4745-8551-5f1611f7c1ae> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "External Communication"@en ;
+  rdfs:subClassOf busi:Communications .
+
+busi:Focus
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/439cad88-25c3-4db7-9f42-5ad34d0c5a8f> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Focus"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:GrowthStrategies
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/329421f3-240c-4543-8735-490e2e3f6ee7> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Growth Strategies"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:Hardware
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/b368dac9-cfd3-49c0-a94d-113328325917> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Hardware"@en ;
+  rdfs:subClassOf busi:Technology .
+
+busi:InboundLogistics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/e563e811-b289-4838-ab4a-65c7c2575e75> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Inbound Logistics"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:InternalAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/d23b1291-0d92-4df3-b1ce-25f3c5de08a3> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Internal Analysis"@en ;
+  rdfs:subClassOf busi:SWOTAnalysis .
+
+busi:InternalCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/fe4af696-05fe-45a3-b49e-5b4dc20efb1c> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Internal Communication"@en ;
+  rdfs:subClassOf busi:Communications .
+
+busi:KeyActivities
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/62b538ac-a074-4571-aa40-049f1c5896ab> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Key Activities"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:KeyPartnerships
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/7e91c25c-e8ee-4bc7-9782-c0202fc23974> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Key Partnerships"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:KeyPerformanceIndicators
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/bcc93cf8-1999-4b27-a9e0-a95d3f41350b> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Key Performance Indicators"@en ;
+  rdfs:subClassOf busi:PerformanceMeasurement ;
+  skos:altLabel "KPIs"@en .
+
+busi:KeyResources
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/84a86a09-fa05-4fc6-a343-213d46a4ebff> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Key Resources"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:MarketDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/991eafb4-9c80-4e0f-b47d-4910b5108c50> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Market Development"@en ;
+  rdfs:subClassOf busi:GrowthStrategies .
+
+busi:MarketPenetration
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/8e9ee2ae-55bb-48a1-8d27-a48b1b4f9b61> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Market Penetration"@en ;
+  rdfs:subClassOf busi:GrowthStrategies .
+
+busi:MarketingSales
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/b25e26d1-3a33-4835-a72a-a6d2fc681405> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Marketing & Sales"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:Networking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/9d2f6488-5f36-4050-9ed1-be9db854a410> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Networking"@en ;
+  rdfs:subClassOf busi:Technology .
+
+busi:OperationalEfficiency
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a148ee29-3073-4cd8-8ac8-9039444e3ba6> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Operational Efficiency"@en ;
+  rdfs:subClassOf busi:Strategy .
+
+busi:Operations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/ff37ec7c-8f02-41f5-9e34-9d2b425264ea> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Operations"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:OutboundLogistics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/1577be73-bef0-4d2d-9d1c-4cdd82a4237e> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Outbound Logistics"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:PerformanceMeasurement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/d406a8fe-6855-4d7c-b908-e97b4b618c5b> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Performance Measurement"@en ;
+  rdfs:subClassOf busi:AnalyticsReporting .
+
+busi:PredictiveAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/6de0e05c-2f56-44f8-bac6-088ac0e5fd07> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Predictive Analytics"@en ;
+  rdfs:subClassOf busi:DataAnalytics .
+
+busi:PrescriptiveAnalytics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a915f4bd-40e8-41d6-8d08-0cc5f5ef8e3d> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Prescriptive Analytics"@en ;
+  rdfs:subClassOf busi:DataAnalytics .
+
+busi:ProcessOptimization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/6d6a4cc9-0c28-4194-8d6f-d0c3dda283fc> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Process Optimization"@en ;
+  rdfs:subClassOf busi:OperationalEfficiency .
+
+busi:ProductDevelopment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/450b1083-fffe-44d1-bb6f-aa4c53b0360d> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Product Development"@en ;
+  rdfs:subClassOf busi:GrowthStrategies .
+
+busi:QualityAssurance
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/5959ef60-6ea9-4157-a3d7-11aa8ea8e4ca> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Quality Assurance"@en ;
+  rdfs:subClassOf busi:QualityManagement ;
+  skos:altLabel "QA"@en .
+
+busi:QualityControl
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/a42f7de6-1888-4a32-9221-0c625adba1d4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Quality Control"@en ;
+  rdfs:subClassOf busi:QualityManagement ;
+  skos:altLabel "QC"@en .
+
+busi:QualityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/0328ccfa-06e1-47c7-9248-26274925b52c> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Quality Management"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:QualityPlanning
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/b3ffadd4-3c6f-4734-945b-b0559463c3af> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Quality Planning"@en ;
+  rdfs:subClassOf busi:QualityManagement .
+
+busi:ResourceAllocation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/f20891d3-0862-4cb4-95d5-6f2ebfa53874> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Resource Allocation"@en ;
+  rdfs:subClassOf busi:OperationalEfficiency .
+
+busi:RevenueStreams
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/ae61a173-f7d0-48cb-9684-e7aa4a495c1e> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Revenue Streams"@en ;
+  rdfs:subClassOf busi:BusinessModelCanvas .
+
+busi:SWOTAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/0bcea8b9-7281-462f-becb-33e4b3054864> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "SWOT Analysis"@en ;
+  rdfs:subClassOf busi:Strategy ;
+  skos:altLabel "Strengths Weaknesses Opportunities Threats Analysis"@en .
+
+busi:Service
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/82e34c6b-0ab1-45fe-8f6e-ada43cb9073e> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Service"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:SocialSustainability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/7807f97b-28bc-47ae-9cf9-82b5555cd1a3> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Social Sustainability"@en ;
+  rdfs:subClassOf busi:Sustainability .
+
+busi:Software
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/78ba4804-dad4-4d86-80ae-65aa9d058ed3> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Software"@en ;
+  rdfs:subClassOf busi:Technology .
+
+busi:StrategicFit
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/7fa2fe41-58cd-4f19-8b96-2a9750f3fc63> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Strategic Fit"@en ;
+  rdfs:subClassOf busi:SWOTAnalysis .
+
+busi:Strategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/4a20b83d-abf8-45a4-9b24-5af6d83533b2> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Strategy"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:SupportActivities
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/ea5ee7f7-0e3e-467a-b18e-56147e8c8848> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Support Activities"@en ;
+  rdfs:subClassOf busi:ValueChainAnalysis .
+
+busi:Sustainability
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/09e149aa-70de-49a5-91c6-844da1118196> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Sustainability"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:SustainableAdvantage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/71dfcc0a-9084-4364-b054-57747c300c35> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Sustainable Advantage"@en ;
+  rdfs:subClassOf busi:CompetitiveAdvantage .
+
+busi:Technology
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/5cd56576-7417-4dc0-9e42-895676b52fd4> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Technology"@en ;
+  rdfs:subClassOf busi:BusinessOperations .
+
+busi:TotalQualityManagement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/af3fa458-2e54-4e55-a424-acbe464e4b8c> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Total Quality Management"@en ;
+  rdfs:subClassOf busi:QualityManagement ;
+  skos:altLabel "TQM"@en .
+
+busi:ValueChainAnalysis
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/17476194-3c29-4d18-8121-4e04b9fd5d7c> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Value Chain Analysis"@en ;
+  rdfs:subClassOf busi:Strategy ;
+  skos:altLabel "VCA"@en .
+
+busi:ValueProposition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/3a111d4b-fef9-4ff6-8f4e-20dc21de28bc> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Value Proposition"@en ;
+  rdfs:subClassOf busi:CompetitiveAdvantage .
+
+busi:WasteReduction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-businessoperations/574a1bd9-d70b-4ae9-81f9-8aa3ea18284a> ;
+  rdfs:isDefinedBy busi: ;
+  rdfs:label "Waste Reduction"@en ;
+  rdfs:subClassOf busi:OperationalEfficiency .

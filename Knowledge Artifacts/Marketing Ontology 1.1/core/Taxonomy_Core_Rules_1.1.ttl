@@ -1,0 +1,132 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rule: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+rule:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-rules: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Rules, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-rules> ;
+  dct:title "Taxonomy | Core | Rules"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-rules/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Rules"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example ActionEnablerRule, ComputationRule, ConstraintRule) resolve to declared classes."@en .
+
+rule:ActionEnablerRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/bbb126d7-188f-4605-8c80-3c86a6c9c044> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Action Enabler Rule"@en ;
+  rdfs:subClassOf rule:DecisionLogic .
+
+rule:ComputationRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/f685d7bb-32de-49f1-80f0-82a6d833beac> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Computation Rule"@en ;
+  rdfs:subClassOf rule:DerivationRule .
+
+rule:ConstraintRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/178a3efb-9f2f-48b4-bc32-6e95f242db1d> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Constraint Rule"@en ;
+  rdfs:subClassOf rule:DecisionLogic .
+
+rule:DecisionLogic
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/010f06d3-b29c-422f-8383-e2d63c6a2832> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Decision Logic"@en ;
+  rdfs:subClassOf rule:Rules .
+
+rule:DerivationRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/7eddaa82-f972-4884-99e8-52312de04b8f> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Derivation Rule"@en ;
+  rdfs:subClassOf rule:DecisionLogic .
+
+rule:Facts
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/c7175f30-31b8-4965-9b46-18751c6fa24c> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Facts"@en ;
+  rdfs:subClassOf rule:StructuralRule .
+
+rule:Guideline
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/e5cb3a2a-5ad5-4830-9982-d136e55798c6> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Guideline"@en ;
+  rdfs:subClassOf rule:DecisionLogic .
+
+rule:InferenceRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/dcfed8cd-9779-4e12-9c72-5179ea71dee8> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Inference Rule"@en ;
+  rdfs:subClassOf rule:DerivationRule .
+
+rule:MandatoryConstraint
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/1071b57a-5253-45bc-8974-35415e92e356> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Mandatory Constraint"@en ;
+  rdfs:subClassOf rule:ConstraintRule .
+
+rule:OperationConstraint
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/35514d06-e3cf-4900-a5f4-c2e253383a39> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Operation Constraint"@en ;
+  rdfs:subClassOf rule:ConstraintRule .
+
+rule:ProcessFlow
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/9cc87075-f802-4093-bba5-900c273d892f> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Process Flow"@en ;
+  rdfs:subClassOf rule:Rules .
+
+rule:Rules
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/b8563bde-d252-4a91-8a5e-19c68aeca2ab> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Rules"@en .
+
+rule:StimulusResponse
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/ce981f6c-7c48-4772-99d8-a4908c45ac10> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Stimulus & Response"@en ;
+  rdfs:subClassOf rule:ConstraintRule .
+
+rule:StructuralRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/89500d88-a545-4741-905e-4753793d9c8d> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Structural Rule"@en ;
+  rdfs:subClassOf rule:Rules .
+
+rule:StructureConstraint
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/61910c6f-c011-457d-85ad-c82ccb8abd5d> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Structure Constraint"@en ;
+  rdfs:subClassOf rule:ConstraintRule .
+
+rule:Terms
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-rules/0fd5e62e-e537-4a24-bd32-3a061fa852d4> ;
+  rdfs:isDefinedBy rule: ;
+  rdfs:label "Terms"@en ;
+  rdfs:subClassOf rule:StructuralRule .

@@ -1,0 +1,139 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-issue/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Issue_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-issue/>.
+
+<https://ontologies.verizon.com/taxonomy-core-issue/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Issue"@en ;
+  dct:description "The issue taxonomy is a system for classifying and organizing issues helping to understand how teams track, prioritize and resolve issues effectively."@en ;
+  dct:title "Taxonomy | Core | Issue"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-issue/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "VZDev", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:46:27.929Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-11T15:39:32.903Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Issue .
+
+tx:Defect
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Defect"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-11T15:45:54.825Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/86d58597-5a5c-47e6-ac8e-381b4bbd36bf> ;
+  skos:broader tx:Issue ;
+  skos:narrower tx:Major, tx:Minor .
+
+tx:Issue
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Issue"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-11T15:45:54.825Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a> ;
+  skos:narrower tx:Defect, tx:Problem, tx:Request ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-issue/> .
+
+tx:Incident
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Incident"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-11T15:45:54.825Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/65c8c83a-f4b6-4f7e-8a70-0cda08962bb6> ;
+  skos:broader tx:Problem .
+
+tx:Problem
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Problem"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-11T15:45:54.825Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/59bff6f8-1846-4afc-9d2a-15e8254e3b82> ;
+  skos:narrower tx:Incident ;
+  skos:broader tx:Issue .
+
+tx:Major
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Major"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T13:21:04.503Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/2238f3ea-708b-4d0a-a6fe-0393f3c74f15> ;
+  skos:broader tx:Defect .
+
+tx:Minor
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Minor"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T13:21:04.503Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/53763e91-fe23-4609-b179-13bfaa87c5ef> ;
+  skos:broader tx:Defect .
+
+tx:Needs
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Needs"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T13:24:21.249Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/7b06ba32-215a-45ee-90eb-e8ded38777dd> ;
+  skos:broader tx:Request .
+
+tx:Request
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Request"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-11T15:45:54.825Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/e9cee37a-9a70-43d7-a1d6-2a125bddae63> ;
+  skos:narrower tx:Needs, tx:Question ;
+  skos:broader tx:Issue .
+
+tx:Question
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-issue/> ;
+  skos:prefLabel "Question"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:29:54.642Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T13:22:02.499Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/07e3e717-6ff3-4e02-8bac-ffeea6257ad5> ;
+  skos:broader tx:Request .

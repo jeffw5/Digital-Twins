@@ -1,0 +1,312 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-reference-domain/> .
+
+# SKOS taxonomy generated from Taxonomy_Reference_Domain.ttl. Scheme <https://ontologies.verizon.com/taxonomy-reference-domain/>.
+
+<https://ontologies.verizon.com/taxonomy-reference-domain/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Reference | Domain"@en ;
+  dct:description "The domain reference taxonomy categorizes and organizes information related to business operations. It encompasses key domains such as commercial aspects, corporate structure, network infrastructure, and supply chain management, providing a comprehensive view of an organization’s operational landscape. This taxonomy facilitates data analysis, knowledge management, and decision-making by standardizing terminology and relationships between different business areas."@en ;
+  dct:title "Taxonomy | Reference | Domain"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-reference-domain/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:49:12.946Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the reference taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-15T06:15:42.901Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Domain .
+
+tx:FleetManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Fleet Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-27T17:02:33.132Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/6927fb41-ed8e-46ac-a2aa-96488a9fd57a> ;
+  skos:broader tx:Logistics .
+
+tx:Logistics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Logistics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-27T18:36:01.343Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/d9c22468-2bfc-4ef2-8ca2-7621cb115264> ;
+  skos:narrower tx:FleetManagement ;
+  skos:broader tx:SupplyChain .
+
+tx:RealEstate
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Real Estate"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-27T17:02:33.132Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/43813f8c-329c-4bff-9af6-740e046ff98e> ;
+  skos:broader tx:Facilities .
+
+tx:Compliance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Compliance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/dd579740-0a5d-441b-bb5a-0f8ff919301e> ;
+  skos:broader tx:Corporate ;
+  skos:narrower tx:Governance .
+
+tx:CustomerSupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Customer Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:26:19.501Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/159ae53f-9735-477d-a355-0478c723a89a> ;
+  skos:broader tx:Commercial .
+
+tx:Facilities
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Facilities"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/fbeb9b28-0f79-4936-9d0e-22dadebd1132> ;
+  skos:narrower tx:RealEstate ;
+  skos:broader tx:Corporate .
+
+tx:Finance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Finance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/f546fc67-1ee1-41a0-b9ad-81866a00d4c0> ;
+  skos:broader tx:Corporate .
+
+tx:HumanResource
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Human Resource"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/f560b5c4-6e0a-447a-8b23-8d291d730a89> ;
+  skos:broader tx:Corporate .
+
+tx:Legal
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Legal"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/78da7ebf-6afb-4a14-b19c-b1274d9580bd> ;
+  skos:broader tx:Corporate .
+
+tx:Marketing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Marketing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/8f583d14-c84f-4a9f-a343-f1166e4b8c85> ;
+  skos:broader tx:Commercial .
+
+tx:Network
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Network"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/1ddb92bd-2222-466d-a719-87ddd2c885d6> ;
+  skos:broader tx:Domain .
+
+tx:Procurement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Procurement"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/67237c65-32e6-47df-b932-3b00ce3eea79> ;
+  skos:broader tx:Corporate .
+
+tx:Sales
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Sales"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/68664f8e-b60d-4652-b52f-dac1fe17fe9b> ;
+  skos:broader tx:Commercial ;
+  skos:narrower tx:RetailSales, tx:SalesOperations .
+
+tx:SupplyChain
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Supply Chain"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/ef9af9fb-0da6-463e-bee8-f48349ee9b3f> ;
+  skos:narrower tx:Logistics ;
+  skos:broader tx:Domain .
+
+tx:InformationTechnology
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Information Technology"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/a9ad6844-4fff-40ec-a5f3-a36f6d8e7700> ;
+  skos:broader tx:Corporate .
+
+tx:Commercial
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Commercial"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T15:00:35.691Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/109e8ff8-0ab4-41a5-be46-0b3fadf1462e> ;
+  skos:narrower tx:CustomerSupport, tx:Marketing, tx:Sales ;
+  skos:broader tx:Domain .
+
+tx:Domain
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Domain"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T15:00:35.691Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/cbbdf6cc-4d02-4205-85e5-1eadbf014603> ;
+  skos:narrower tx:Network, tx:SupplyChain, tx:Commercial, tx:Corporate ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-reference-domain/> .
+
+tx:Corporate
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Corporate"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T15:00:35.691Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:26:19.501Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/2e13f1fa-bc0f-48a9-8d21-4c903104b50f> ;
+  skos:narrower tx:Compliance, tx:Facilities, tx:Finance, tx:HumanResource, tx:Legal, tx:Procurement, tx:InformationTechnology, tx:Security ;
+  skos:broader tx:Domain .
+
+tx:RetailSales
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Retail Sales"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:26:19.501Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/18d3e937-6f93-4220-808c-ed08c598c741> ;
+  skos:broader tx:Sales .
+
+tx:Risk
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Risk"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/4428642a-e53f-45f1-9d0f-dfcba65c18f0> ;
+  skos:broader tx:Security .
+
+tx:SalesOperations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Sales Operations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:26:19.501Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/4f08f636-c9e1-4126-bed9-7dafbefec198> ;
+  skos:broader tx:Sales .
+
+tx:Security
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Security"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-15T06:20:17.890Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-domain/03e60d27-4816-4237-b734-416ccad982e0> ;
+  skos:narrower tx:Risk ;
+  skos:broader tx:Corporate .
+
+tx:Governance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-reference-domain/> ;
+  skos:prefLabel "Governance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T20:18:32.445Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-04-24T20:14:32.913Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/domain-governance/c9acfeb0-23ff-405d-a44c-443fc264851d> ;
+  skos:broader tx:Compliance .

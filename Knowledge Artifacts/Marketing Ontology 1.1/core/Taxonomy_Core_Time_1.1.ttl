@@ -1,0 +1,195 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <https://ontologies.verizon.com/taxonomy-core-time/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+time:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-time: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Time, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-time> ;
+  dct:title "Taxonomy | Core | Time"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-time/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Time"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Absolute, BiWeekly, Current) resolve to declared classes."@en .
+
+time:Absolute
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/72332317-d200-429b-af8d-611a7eb5715a> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Absolute"@en ;
+  rdfs:subClassOf time:Time .
+
+time:BiWeekly
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4de01266-60f6-49db-b6da-72e7d60e7890> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Bi-Weekly"@en ;
+  rdfs:subClassOf time:MultiplePeriods .
+
+time:Current
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/f10d44ad-6ed6-440e-8ac0-7d3388e45820> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Current"@en ;
+  rdfs:subClassOf time:Relative .
+
+time:Daily
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/191771ac-e4fa-4d67-8faf-45b078f38631> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Daily"@en ;
+  rdfs:subClassOf time:FullPeriod .
+
+time:Day
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/a2d7b192-637d-4200-804b-b8007263b0dd> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Day"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Episodic
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/68e361fd-5562-4d47-8d3a-32b8235eda67> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Episodic"@en ;
+  rdfs:subClassOf time:Time .
+
+time:FullPeriod
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/1c133810-1a39-498a-986e-6422200e2cb2> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Full Period"@en ;
+  rdfs:subClassOf time:Episodic .
+
+time:Future
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/93bdcf9c-f805-4cf2-bfe6-1cb0cc72ea65> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Future"@en ;
+  rdfs:subClassOf time:Relative .
+
+time:Hour
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/e3551dd5-95b0-48cb-af70-0bd089406c5d> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Hour"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:MidYear
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/af987dcc-bbe5-4ba9-aca1-4545c846f4e3> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Mid Year"@en ;
+  rdfs:subClassOf time:PartialPeriod .
+
+time:Minute
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/a3220a43-3816-4a4a-9800-176bdb0aa54c> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Minute"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Month
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/7ec9aa92-6eea-4094-bd6c-fe3d1d792415> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Month"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:MultiplePeriods
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2bfbedc5-4ffb-4998-8095-a7c323ed0f28> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Multiple Periods"@en ;
+  rdfs:subClassOf time:Episodic .
+
+time:PartialPeriod
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2583b763-c651-45e1-92c0-22055117e8bc> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Partial Period"@en ;
+  rdfs:subClassOf time:Episodic .
+
+time:Past
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/2d3e7b89-e149-487b-85d1-f681fd9372b3> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Past"@en ;
+  rdfs:subClassOf time:Relative .
+
+time:Quarter
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/bb4bd712-c222-45b9-a194-a26b07973a88> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Quarter"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Relative
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/f718507c-5350-4c66-8374-7d13465b5e8a> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Relative"@en ;
+  rdfs:subClassOf time:Time .
+
+time:Second
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4e59312c-9a88-40e6-8f8a-e64e0b1376d4> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Second"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Subsecond
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/11a2e6e6-5a3e-4615-bf70-a27480df21ba> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Subsecond"@en ;
+  rdfs:subClassOf time:Second .
+
+time:Time
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/77bf78dd-7407-440f-9dd0-3c24166b83c6> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Time"@en .
+
+time:TwicePerWeek
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/4fd7d2aa-07ae-44ba-b0f1-5de5a06be578> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Twice Per Week"@en ;
+  rdfs:subClassOf time:PartialPeriod .
+
+time:Week
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/bf0ebf6b-2868-432e-a769-40730fdd0c4f> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Week"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Weekly
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/e85b62ce-84a7-4dff-b792-1ee5eeb965ed> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Weekly"@en ;
+  rdfs:subClassOf time:FullPeriod .
+
+time:Year
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/73a7dda6-94b3-4540-90a4-7cc7da103527> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Year"@en ;
+  rdfs:subClassOf time:Absolute .
+
+time:Yearly
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-time/8bde4ab4-264f-4974-986e-b6e8b1a1e3d6> ;
+  rdfs:isDefinedBy time: ;
+  rdfs:label "Yearly"@en ;
+  rdfs:subClassOf time:FullPeriod .

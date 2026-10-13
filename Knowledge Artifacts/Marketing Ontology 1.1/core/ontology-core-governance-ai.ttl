@@ -1,0 +1,248 @@
+@base <https://www.enablingvalue.com/ontology-core-governance-ai#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix aig: <https://www.enablingvalue.com/ontology-core-governance-ai#> .
+@prefix dg: <https://www.enablingvalue.com/ontology-core-governance-data#> .
+
+### Ontology
+<https://www.enablingvalue.com/ontology-core-governance-ai>
+    rdf:type owl:Ontology ;
+    owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ,
+        <https://ontologies.verizon.com/ontology-core-asset/> ,
+        <https://www.enablingvalue.com/ontology-core-governance-data> ;
+    owl:versionIRI <https://www.enablingvalue.com/ontology-core-governance-ai/1.1> ;
+    owl:versionInfo "1.1" ;
+    rdfs:label "AI Governance Ontology"@en ;
+    rdfs:comment "Models governance of AI systems including risk classification, documentation, and EU AI Act compliance."@en .
+
+### -------------------------------------------------------
+### Classes
+### -------------------------------------------------------
+
+aig:AISystem
+    rdf:type owl:Class ;
+    rdfs:label "AI System"@en ;
+    rdfs:comment "A machine-based system that generates outputs such as predictions, recommendations, or decisions to influence real or virtual environments."@en .
+
+aig:GenerativeAISystem
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:AISystem ;
+    rdfs:label "Generative AI System"@en ;
+    rdfs:comment "An AI system that produces novel content such as text, images, audio, or code."@en .
+
+aig:DecisionSupportSystem
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:AISystem ;
+    rdfs:label "Decision Support System"@en ;
+    rdfs:comment "An AI system that augments human decision-making with recommendations or risk scores."@en .
+
+aig:AutonomousSystem
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:AISystem ;
+    rdfs:label "Autonomous System"@en ;
+    rdfs:comment "An AI system that executes actions or decisions without direct human intervention at the point of operation."@en .
+
+aig:TrainingDataset
+    rdf:type owl:Class ;
+    rdfs:subClassOf dg:DataAsset ;
+    rdfs:label "Training Dataset"@en ;
+    rdfs:comment "A data asset used to train an AI system, subject to demographic characterization, limitation documentation, and bias tracking."@en .
+
+aig:ValidationDataset
+    rdf:type owl:Class ;
+    rdfs:subClassOf dg:DataAsset ;
+    rdfs:label "Validation Dataset"@en ;
+    rdfs:comment "A held-out data asset used to evaluate model performance and generalization during development."@en .
+
+aig:TestDataset
+    rdf:type owl:Class ;
+    rdfs:subClassOf dg:DataAsset ;
+    rdfs:label "Test Dataset"@en ;
+    rdfs:comment "An independent data asset used for final evaluation of a trained and validated model prior to deployment."@en .
+
+aig:RiskClassification
+    rdf:type owl:Class ;
+    rdfs:label "Risk Classification"@en ;
+    rdfs:comment "A regulatory risk tier assigned to an AI system that determines applicable compliance obligations."@en .
+
+aig:UnacceptableRisk
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:RiskClassification ;
+    rdfs:label "Unacceptable Risk"@en ;
+    rdfs:comment "The highest EU AI Act risk tier; systems in this class are prohibited from deployment."@en .
+
+aig:HighRisk
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:RiskClassification ;
+    rdfs:label "High Risk"@en ;
+    rdfs:comment "A risk tier requiring conformity assessment, technical documentation, human oversight, and EU database registration."@en .
+
+aig:LimitedRisk
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:RiskClassification ;
+    rdfs:label "Limited Risk"@en ;
+    rdfs:comment "A risk tier requiring transparency obligations such as disclosure that content is AI-generated."@en .
+
+aig:MinimalRisk
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:RiskClassification ;
+    rdfs:label "Minimal Risk"@en ;
+    rdfs:comment "A risk tier with no mandatory obligations; voluntary codes of conduct are encouraged."@en .
+
+aig:TechnicalDocumentation
+    rdf:type owl:Class ;
+    rdfs:label "Technical Documentation"@en ;
+    rdfs:comment "A structured record demonstrating an AI system's design, architecture, dataset characteristics, performance, and human oversight measures."@en .
+
+aig:ConformityAssessment
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:TechnicalDocumentation ;
+    rdfs:label "Conformity Assessment"@en ;
+    rdfs:comment "A formal procedure evaluating whether an AI system meets applicable regulatory requirements prior to market placement."@en .
+
+aig:FRIA
+    rdf:type owl:Class ;
+    rdfs:label "Fundamental Rights Impact Assessment"@en ;
+    rdfs:comment "An assessment evaluating potential impacts of an AI system on fundamental rights, with attention to marginalized and vulnerable groups."@en .
+
+aig:HumanOversightMeasure
+    rdf:type owl:Class ;
+    rdfs:label "Human Oversight Measure"@en ;
+    rdfs:comment "A mechanism enabling human operators to monitor, interrupt, override, or correct an AI system's outputs or actions."@en .
+
+aig:AuditLog
+    rdf:type owl:Class ;
+    rdfs:label "Audit Log"@en ;
+    rdfs:comment "An automatically generated record of AI system events, inputs, outputs, and decisions retained for traceability and anomaly detection."@en .
+
+aig:AIGovernanceRole
+    rdf:type owl:Class ;
+    rdfs:label "AI Governance Role"@en ;
+    rdfs:comment "An accountable organizational role within an AI governance program."@en .
+
+aig:AIProvider
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:AIGovernanceRole ;
+    rdfs:label "AI Provider"@en ;
+    rdfs:comment "An entity that develops or places an AI system on the market, bearing primary regulatory compliance responsibility."@en .
+
+aig:AIDeployer
+    rdf:type owl:Class ;
+    rdfs:subClassOf aig:AIGovernanceRole ;
+    rdfs:label "AI Deployer"@en ;
+    rdfs:comment "An entity that puts an AI system into use within its own operations, subject to specific use-case compliance obligations."@en .
+
+### -------------------------------------------------------
+### Object Properties
+### -------------------------------------------------------
+
+aig:trainedOn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "trained on"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:TrainingDataset ;
+    rdfs:comment "Relates an AI system to the training dataset used in its development."@en .
+
+aig:validatedOn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "validated on"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:ValidationDataset ;
+    rdfs:comment "Relates an AI system to the dataset used for performance validation."@en .
+
+aig:testedOn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "tested on"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:TestDataset ;
+    rdfs:comment "Relates an AI system to the dataset used for final independent evaluation."@en .
+
+aig:requiresDocumentation
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "requires documentation"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:TechnicalDocumentation ;
+    rdfs:comment "Relates an AI system to the technical documentation required for regulatory conformity."@en .
+
+aig:hasRiskClassification
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "has risk classification"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:RiskClassification ;
+    rdfs:comment "Relates an AI system to its assigned regulatory risk tier."@en .
+
+aig:subjectToFRIA
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "subject to FRIA"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:FRIA ;
+    rdfs:comment "Relates an AI system to a required Fundamental Rights Impact Assessment."@en .
+
+aig:hasOversightMeasure
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "has oversight measure"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:HumanOversightMeasure ;
+    rdfs:comment "Relates an AI system to the human oversight mechanisms applied to it."@en .
+
+aig:generatesLog
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "generates log"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:AuditLog ;
+    rdfs:comment "Relates an AI system to the audit log it automatically produces during operation."@en .
+
+aig:providedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "provided by"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:AIProvider ;
+    rdfs:comment "Relates an AI system to the entity responsible for its development and regulatory compliance."@en .
+
+aig:deployedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "deployed by"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range aig:AIDeployer ;
+    rdfs:comment "Relates an AI system to the entity that operates it within a specific use context."@en .
+
+### -------------------------------------------------------
+### Datatype Properties
+### -------------------------------------------------------
+
+aig:requiresFRIA
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "requires FRIA"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Boolean flag indicating whether a Fundamental Rights Impact Assessment is mandated for this system."@en .
+
+aig:hasLogRetentionPeriod
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has log retention period"@en ;
+    rdfs:domain aig:AuditLog ;
+    rdfs:range xsd:duration ;
+    rdfs:comment "Minimum retention duration for audit logs; EU AI Act requires at least 6 months."@en .
+
+aig:hasIntendedPurpose
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has intended purpose"@en ;
+    rdfs:domain aig:AISystem ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Description of the intended use case and operational context as declared by the provider."@en .
+
+aig:hasBiasAssessment
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has bias assessment"@en ;
+    rdfs:domain aig:TrainingDataset ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Description of bias evaluation methods and findings applied to the training dataset."@en .
+
+### -------------------------------------------------------
+### Anchors to the Verizon core (v1.1)
+### -------------------------------------------------------
+
+aig:AISystem rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset> .
+aig:AIGovernanceRole rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-role/Role> .

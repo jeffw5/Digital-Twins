@@ -1,0 +1,263 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/> a owl:Ontology;
+  rdfs:label "Ontology | Core | Requirements"@en;
+  dct:title "Ontology | Core | Requirements"@en;
+  dct:description "This ontology defines the core concept of requirements, including their attributes, relationships, and how they drive the development of products or services."@en;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-core-requirements/1.1>;
+  owl:versionInfo "1.1";
+  owl:priorVersion <https://ontologies.verizon.com/ontology-core-requirements/1.0>;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:created "2024-09-15T18:09:54.500Z"^^xsd:dateTime;
+  dct:modified "2026-10-05T16:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  <http://verizon.ontologies.com/terms/certified> false;
+  skos:changeNote "v1.1: removed seven reflexive subClassOf axioms; NonFunctionalFeature is now a subclass of Feature and disjoint with FunctionalFeature; shapes moved from metaphacts paths to upper-ontology paths; duplicate metaphacts Persona constraint on JobExecutor removed. Now imported by ontology-core-domain.";
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>,
+    <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  skos:changeNote "v1.1 (DRM): the separate upper ontology is retired. Its relations are declared in the Domain Reference Model (ontology-core-domain), which this module now imports as its foundation; shape paths use the ontology-core-domain relation IRIs."@en .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Job> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirements>;
+  rdfs:label "Job"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/2ab2ea5a-5ecb-48e9-a7a4-64d06119e138> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Outcome> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirements>;
+  rdfs:label "Outcome"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/283cd894-3584-4447-9815-22f59f2f061e> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JobStep> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/FunctionalJob>;
+  rdfs:label "Job Step"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/33087d9e-be26-462a-b3db-d2dcddd2ba25> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JourneyStep> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Journey>;
+  rdfs:label "Journey Step"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:51:49.189Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/0d130ca1-26eb-413f-b9a3-f73fef9ee8d2> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Journey> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirements>;
+  rdfs:label "Journey"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:51:49.189Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/3b454a89-5434-4e7f-a51e-1d17550a7759> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/EmotionalJob> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Job>;
+  rdfs:label "Emotional Job"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/092575d9-169a-4322-a8a4-4728f96d5ea6> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/EmotionalJobShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:provides;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Outcome>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/EmotionalJob> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Feature> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Specification>;
+  rdfs:label "Feature"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/b79344bf-c413-4583-a8af-1c1591dabb14> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Specification> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirement>;
+  rdfs:label "Specification"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/4d4390b0-418b-4bea-b355-340e91622342> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/FunctionalFeature> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Feature>;
+  rdfs:label "Functional Feature"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/1214aac9-132b-4381-b4b0-3c84e8580689> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/FunctionalJob> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Job>;
+  rdfs:label "Functional Job"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/b34bf931-5c70-478d-bbdd-577e9297d182> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JobExecutor> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Need>;
+  rdfs:label "Job Executor"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-24T17:03:09.324Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:19:31.436Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/1986c190-476d-402a-a711-252821b2537d> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Need> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirement>;
+  rdfs:label "Need"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/992a1b49-8271-46d4-8eac-f499938720d4> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JobExecutorShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:performs;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Job>
+    ], [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Outcome>
+    ], [
+      sh:path drm:hasRelated;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-persona/Persona>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/JobExecutor> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JobShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:is;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Journey>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/Job> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JobStepShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:is;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/JourneyStep>
+    ], [
+      sh:path drm:provides;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Outcome>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/JobStep> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JourneyShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:is;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Job>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/Journey> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/JourneyStepShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:is;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/JobStep>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/JourneyStep> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Requirement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirements>;
+  rdfs:label "Requirement"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/b9a65d87-727f-4107-ba2b-44ccdb15d213> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/NonFunctionalFeature> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Feature>;
+  rdfs:label "Non-Functional Feature"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:36:54.778Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/16b9b4df-9a64-49d0-aa90-c0fa9eec2c02> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/SupportingJob> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Job>;
+  rdfs:label "Supporting Job"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-15T18:13:14.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/8af040ce-0ccc-4847-877c-aded9e9d3441> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/SupportingJobShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:provides;
+      sh:class <https://ontologies.verizon.com/ontology-core-requirements/Outcome>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-requirements/SupportingJob> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/Requirements> a owl:Class;
+  rdfs:label "Requirements"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-requirements/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-17T13:53:08.688Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2025-04-01T18:13:34.428Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-requirements/98211579-8e2d-4063-bc6d-d6f33c2b3b5c> .
+
+<https://ontologies.verizon.com/ontology-core-requirements/FunctionalFeature> owl:disjointWith <https://ontologies.verizon.com/ontology-core-requirements/NonFunctionalFeature> .

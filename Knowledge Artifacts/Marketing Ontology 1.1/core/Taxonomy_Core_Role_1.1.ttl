@@ -1,0 +1,55 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix role: <https://ontologies.verizon.com/taxonomy-core-role/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+role:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-role: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Role, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-role> ;
+  dct:title "Taxonomy | Core | Role"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-role/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Role"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Consumer, Customer, Partner) resolve to declared classes."@en .
+
+role:Consumer
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/004e2c18-a604-4e1b-8b85-f3de8eb7be42> ;
+  rdfs:isDefinedBy role: ;
+  rdfs:label "Consumer"@en ;
+  rdfs:subClassOf role:Role .
+
+role:Customer
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/b02b9c5e-c98f-48b1-bde3-359fb0b15bb7> ;
+  rdfs:isDefinedBy role: ;
+  rdfs:label "Customer"@en ;
+  rdfs:subClassOf role:Role .
+
+role:Partner
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/9b451b16-ef35-4690-b407-86770c8af8ad> ;
+  rdfs:isDefinedBy role: ;
+  rdfs:label "Partner"@en ;
+  rdfs:subClassOf role:Role .
+
+role:Provider
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/981b96d9-5593-403b-9963-b960273d623c> ;
+  rdfs:isDefinedBy role: ;
+  rdfs:label "Provider"@en ;
+  rdfs:subClassOf role:Role .
+
+role:Role
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/f85e8978-696d-4d40-a560-f98a2756e814> ;
+  rdfs:isDefinedBy role: ;
+  rdfs:label "Role"@en .

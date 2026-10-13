@@ -1,0 +1,230 @@
+@prefix gov:   <https://www.enablingvalue.com/ontology-core-governance-overlay#> .
+@prefix domain: <https://ontologies.verizon.com/ontology-core-domain/> .
+@prefix comp:  <https://ontologies.verizon.com/taxonomy-core-compliance/> .
+@prefix rules: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+@prefix party: <https://ontologies.verizon.com/taxonomy-core-party/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+
+# =============================================================================
+# GOVERNANCE OVERLAY  (deontic layer)
+#
+# Namespaces (v1.1): bound directly to the Verizon core. Constraint and Rule
+# align to taxonomy-core-compliance and taxonomy-core-rules; stewards are
+# taxonomy-core-party Parties.
+#
+# Design thesis: governance is NOT a domain module beside Finance/SupplyChain.
+# It is a cross-cutting overlay. Every governance instrument — a statute, an
+# ISO/IEEE standard, a discipline's body of practice, a corporate policy —
+# is a NormativeSource that emits NormativeRequirement(s); each requirement is
+# operationalizedBy a Constraint (SHACL) or Rule (SWRL) that appliesTo elements
+# of the IPO frame (Process / Service / Input / Output / Capability).
+# =============================================================================
+
+<https://www.enablingvalue.com/ontology-core-governance-overlay> a owl:Ontology ;
+    owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+    rdfs:label "Governance Overlay Ontology" ;
+    owl:versionIRI <https://www.enablingvalue.com/ontology-core-governance-overlay/1.1> ;
+    owl:versionInfo "1.1" ;
+    owl:imports domain: ;
+    rdfs:comment "Deontic overlay binding normative sources to the deterministic semantic layer." .
+
+# -----------------------------------------------------------------------------
+# 1. NORMATIVE SOURCES  (what authorizes a requirement to exist)
+# -----------------------------------------------------------------------------
+
+gov:NormativeSource a owl:Class ;
+    rdfs:label "Normative Source" ;
+    rdfs:comment "Anything that can legitimately give rise to a governance requirement." .
+
+gov:Law a owl:Class ;
+    rdfs:subClassOf gov:NormativeSource ;
+    rdfs:label "Law" ;
+    rdfs:comment "Statute or regulation with legal force (e.g. SOX, GDPR, Basel III)." .
+
+gov:Standard a owl:Class ;
+    rdfs:subClassOf gov:NormativeSource ;
+    rdfs:label "Standard" ;
+    rdfs:comment "Published consensus standard (ISO, IEEE, IEC, W3C, etc.)." .
+
+gov:Discipline a owl:Class ;
+    rdfs:subClassOf gov:NormativeSource ;
+    rdfs:label "Discipline" ;
+    rdfs:comment "A body of professional practice that defines methods and quality criteria (data engineering, analytic engineering, knowledge engineering, prompt engineering, systems engineering, business architecture, product management, physical/chemical/biological/industrial engineering)." .
+
+gov:Policy a owl:Class ;
+    rdfs:subClassOf gov:NormativeSource ;
+    rdfs:label "Policy" ;
+    rdfs:comment "Corporate-specific rule or constraint set internally." .
+
+# Standards bodies and discipline working groups as first-class nodes
+gov:StandardsBody a owl:Class ;
+    rdfs:label "Standards Body" ;
+    rdfs:comment "Issuing organization for a Standard (ISO, IEEE, ...)." .
+
+gov:WorkingGroup a owl:Class ;
+    rdfs:label "Working Group" ;
+    rdfs:comment "A sub-unit of a Discipline that contributes guidance. Systems engineering decomposes into 52 of these." .
+
+gov:Method a owl:Class ;
+    rdfs:label "Method" ;
+    rdfs:comment "A prescribed practice emitted by a Discipline." .
+
+gov:QualityCriterion a owl:Class ;
+    rdfs:label "Quality Criterion" ;
+    rdfs:comment "A measurable 'good practice' criterion emitted by a Discipline; promotable into a NormativeRequirement." .
+
+# -----------------------------------------------------------------------------
+# 2. REQUIREMENTS  (the deontic content, source-neutral)
+# -----------------------------------------------------------------------------
+
+gov:NormativeRequirement a owl:Class ;
+    rdfs:label "Normative Requirement" ;
+    rdfs:comment "A source-neutral obligation/permission/prohibition that must hold over some scope of the IPO frame." .
+
+gov:DeonticModality a owl:Class ;
+    rdfs:label "Deontic Modality" ;
+    rdfs:comment "The force of a requirement." .
+
+gov:Obligation   a gov:DeonticModality ; rdfs:label "Obligation" .
+gov:Prohibition  a gov:DeonticModality ; rdfs:label "Prohibition" .
+gov:Permission   a gov:DeonticModality ; rdfs:label "Permission" .
+
+# -----------------------------------------------------------------------------
+# 3. OPERATIONALIZATION  (the executable, deterministic form)
+#    Constraint == SHACL (validation)   |   Rule == SWRL (inference)
+#    Both are PROJECTIONS of SME-authored rows in the relational repository.
+# -----------------------------------------------------------------------------
+
+gov:GovernanceArtifact a owl:Class ;
+    rdfs:label "Governance Artifact" ;
+    rdfs:comment "Executable form of a requirement, compiled from the relational repository." .
+
+gov:Constraint a owl:Class ;
+    rdfs:subClassOf gov:GovernanceArtifact ;
+    rdfs:label "Constraint" ;
+    rdfs:comment "A SHACL shape that validates conformance. Aligns to taxonomy-core-compliance Compliance." ;
+    skos:closeMatch comp:Compliance .
+
+gov:Rule a owl:Class ;
+    rdfs:subClassOf gov:GovernanceArtifact ;
+    rdfs:label "Rule" ;
+    rdfs:comment "A SWRL rule that derives new facts (e.g. classifies a variance as material). Aligns to taxonomy-core-rules Rules." ;
+    skos:closeMatch rules:Rules .
+
+gov:RepositoryEntry a owl:Class ;
+    rdfs:label "Repository Entry" ;
+    rdfs:comment "The system-of-record row in the SME-managed relational repository from which a Constraint/Rule was projected. Carries authoring lineage." .
+
+gov:GovernanceStatus a owl:Class ;
+    rdfs:label "Governance Status" .
+gov:Draft     a gov:GovernanceStatus ; rdfs:label "Draft" .
+gov:Approved  a gov:GovernanceStatus ; rdfs:label "Approved" .
+gov:Active    a gov:GovernanceStatus ; rdfs:label "Active" .
+gov:Retired   a gov:GovernanceStatus ; rdfs:label "Retired" .
+
+# -----------------------------------------------------------------------------
+# OBJECT PROPERTIES — the relational spine
+# -----------------------------------------------------------------------------
+
+gov:mandates a owl:ObjectProperty ;
+    rdfs:label "mandates" ;
+    rdfs:domain gov:NormativeSource ;
+    rdfs:range  gov:NormativeRequirement ;
+    rdfs:comment "A source gives rise to a requirement." .
+
+gov:hasModality a owl:ObjectProperty ;
+    rdfs:label "has modality" ;
+    rdfs:domain gov:NormativeRequirement ;
+    rdfs:range  gov:DeonticModality .
+
+gov:operationalizedBy a owl:ObjectProperty ;
+    rdfs:label "operationalized by" ;
+    rdfs:domain gov:NormativeRequirement ;
+    rdfs:range  gov:GovernanceArtifact ;
+    rdfs:comment "Links the deontic requirement to its checkable SHACL/SWRL form." .
+
+gov:realizesRequirement a owl:ObjectProperty ;
+    owl:inverseOf gov:operationalizedBy ;
+    rdfs:label "realizes requirement" ;
+    rdfs:domain gov:GovernanceArtifact ;
+    rdfs:range  gov:NormativeRequirement .
+
+gov:appliesTo a owl:ObjectProperty ;
+    rdfs:label "applies to" ;
+    rdfs:domain gov:GovernanceArtifact ;
+    rdfs:comment "Binds an artifact to the IPO-frame element it governs (a taxonomy-core-process Process, taxonomy-core-services Services, input/output type, or ontology-core-capability Capability)." .
+    # range intentionally open (owl:Thing) to span the core IPO frame.
+
+gov:stewardedBy a owl:ObjectProperty ;
+    rdfs:label "stewarded by" ;
+    rdfs:domain gov:GovernanceArtifact ;
+    rdfs:range  party:Party ;
+    rdfs:comment "The business SME accountable for this artifact (a taxonomy-core-party Party playing a taxonomy-core-role Role)." .
+
+gov:sourcedFromRepoEntry a owl:ObjectProperty ;
+    rdfs:label "sourced from repo entry" ;
+    rdfs:domain gov:GovernanceArtifact ;
+    rdfs:range  gov:RepositoryEntry ;
+    rdfs:comment "Lineage to the SME-authored relational row this artifact was compiled from." .
+
+gov:hasStatus a owl:ObjectProperty ;
+    rdfs:label "has status" ;
+    rdfs:domain gov:GovernanceArtifact ;
+    rdfs:range  gov:GovernanceStatus .
+
+gov:citesSource a owl:ObjectProperty ;
+    rdfs:label "cites source" ;
+    rdfs:domain gov:NormativeRequirement ;
+    rdfs:range  gov:NormativeSource .
+
+# Discipline structure
+gov:hasWorkingGroup a owl:ObjectProperty ;
+    rdfs:label "has working group" ;
+    rdfs:domain gov:Discipline ;
+    rdfs:range  gov:WorkingGroup .
+
+gov:emitsMethod a owl:ObjectProperty ;
+    rdfs:label "emits method" ;
+    rdfs:domain gov:Discipline ;
+    rdfs:range  gov:Method .
+
+gov:emitsCriterion a owl:ObjectProperty ;
+    rdfs:label "emits criterion" ;
+    rdfs:domain gov:Discipline ;
+    rdfs:range  gov:QualityCriterion .
+
+gov:promotedToRequirement a owl:ObjectProperty ;
+    rdfs:label "promoted to requirement" ;
+    rdfs:domain gov:QualityCriterion ;
+    rdfs:range  gov:NormativeRequirement ;
+    rdfs:comment "The extra hop that turns a discipline's quality criterion into an enforceable requirement." .
+
+gov:issuedBy a owl:ObjectProperty ;
+    rdfs:label "issued by" ;
+    rdfs:domain gov:Standard ;
+    rdfs:range  gov:StandardsBody .
+
+# -----------------------------------------------------------------------------
+# DATA PROPERTIES
+# -----------------------------------------------------------------------------
+
+gov:citation a owl:DatatypeProperty ;
+    rdfs:label "citation" ; rdfs:domain gov:NormativeSource ; rdfs:range xsd:string ;
+    rdfs:comment "Human-readable reference, e.g. 'Sarbanes-Oxley Act §404'." .
+
+gov:requirementText a owl:DatatypeProperty ;
+    rdfs:label "requirement text" ; rdfs:domain gov:NormativeRequirement ; rdfs:range xsd:string .
+
+gov:repoEntryId a owl:DatatypeProperty ;
+    rdfs:label "repo entry id" ; rdfs:domain gov:RepositoryEntry ; rdfs:range xsd:string ;
+    rdfs:comment "Primary key of the row in the relational governance repository." .
+
+gov:authoredBy a owl:DatatypeProperty ;
+    rdfs:label "authored by" ; rdfs:domain gov:RepositoryEntry ; rdfs:range xsd:string .
+
+gov:effectiveDate a owl:DatatypeProperty ;
+    rdfs:label "effective date" ; rdfs:domain gov:GovernanceArtifact ; rdfs:range xsd:date .

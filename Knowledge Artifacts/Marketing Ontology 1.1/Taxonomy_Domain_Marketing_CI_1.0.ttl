@@ -1,0 +1,994 @@
+@prefix asset: <https://ontologies.verizon.com/ontology-core-asset/> .
+@prefix bo: <https://ontologies.verizon.com/taxonomy-core-businessoperations/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix evt: <https://ontologies.verizon.com/ontology-core-event/> .
+@prefix issue: <https://ontologies.verizon.com/taxonomy-core-issue/> .
+@prefix lc: <https://ontologies.verizon.com/taxonomy-core-lifecycle/> .
+@prefix mkci: <https://ontologies.verizon.com/taxonomy-domain-marketing-ci/> .
+@prefix mktx: <https://ontologies.verizon.com/taxonomy-domain-marketing/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix persona: <https://ontologies.verizon.com/taxonomy-core-persona/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix req: <https://ontologies.verizon.com/ontology-core-requirements/> .
+@prefix role: <https://ontologies.verizon.com/taxonomy-core-role/> .
+@prefix rules: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vs: <https://ontologies.verizon.com/taxonomy-core-valuestream/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+mkci:
+  a owl:Ontology ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  <http://verizon.ontologies.com/terms/certified> false ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:description "Term structures for competitive intelligence, surfaced from the PEO Competitive Graph: the market holon, intelligence sources by authority tier, competitor claims, claim checks and verdicts, verification results, threat and opening assessments, roll-up scores, MTBH, intelligence products, competitive moves and PEO credentials."@en ;
+  dct:language "en" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:title "Taxonomy | Domain | Marketing | Competitive Intelligence"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>, mktx: ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-domain-marketing-ci/1.0> ;
+  owl:versionInfo "1.0" ;
+  rdfs:label "Taxonomy | Domain | Marketing | Competitive Intelligence"@en ;
+  skos:changeNote "1.0: initial version. Every class was surfaced from the PEO Competitive Graph and cites it as dct:source."@en ;
+  skos:editorialNote "Version 1.1 content not carried over from 1.0 (the service catalog, the processes added in 1.1, the taxonomy terms and their definitions, and the competitive intelligence layer) was drafted with the assistance of Claude (Anthropic) from the 1.0 files, the Domain Reference Model and the PEO Competitive Graph. It requires steward review before certification."@en .
+
+dc11:subject
+  a owl:AnnotationProperty .
+
+dct:contributor
+  a owl:AnnotationProperty .
+
+dct:created
+  a owl:AnnotationProperty .
+
+dct:creator
+  a owl:AnnotationProperty .
+
+dct:description
+  a owl:AnnotationProperty .
+
+dct:language
+  a owl:AnnotationProperty .
+
+dct:modified
+  a owl:AnnotationProperty .
+
+dct:source
+  a owl:AnnotationProperty .
+
+dct:title
+  a owl:AnnotationProperty .
+
+<http://purl.org/ontology/bibo/status>
+  a owl:AnnotationProperty .
+
+<http://verizon.ontologies.com/terms/certified>
+  a owl:AnnotationProperty .
+
+skos:changeNote
+  a owl:AnnotationProperty .
+
+skos:definition
+  a owl:AnnotationProperty .
+
+skos:editorialNote
+  a owl:AnnotationProperty .
+
+skos:scopeNote
+  a owl:AnnotationProperty .
+
+mkci:AICapabilityLaunch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/09de534e-9ca1-5d89-9ac4-06da0e674fdb> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "AI Capability Launch"@en ;
+  rdfs:subClassOf mkci:OfferingLaunch ;
+  skos:definition "A competitor introduces AI assistants or agents for clients, employees or recruiting."@en .
+
+mkci:AuthorityCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/1d30108b-85f8-505e-83da-67de49c7c4b0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Authority"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "The supporting source has enough authority for the claim."@en .
+
+mkci:Battlecard
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b2fa0aea-9c03-5dd1-b60f-7363c7506b96> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Battlecard"@en ;
+  rdfs:subClassOf mkci:IntelligenceProduct, mktx:MarketingContent ;
+  skos:definition "A sales-facing summary built only from claims that cleared verification."@en ;
+  skos:scopeNote "Emerges from: created by Battlecard Publishing; used by Sales Enablement. Supports: Battlecard Service, Competitive Intelligence Service, Market Research & Insights Service, Product Marketing Service."@en .
+
+mkci:BreakerTripThreshold
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f3b6e194-d636-5fa0-9eae-e3536b6eadd9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Breaker Trip Threshold"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "The claim failure rate above which the Circuit Breaker trips and holds the draft."@en ;
+  skos:scopeNote "Emerges from: constrains Battlecard Publishing; constrains, used by Breaker Evaluation. Supports: Battlecard Service, Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:BrokerNotice
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/98dac94c-7c85-5541-977a-e581be3811ee> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Broker Notice"@en ;
+  rdfs:subClassOf mkci:Tier2Source ;
+  skos:definition "A notice from a provider to brokers about pricing, products or compensation."@en .
+
+mkci:BundleExpansion
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/d03eef0e-5533-5a3c-b071-a9a6e00df3a9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Bundle Expansion"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor sells HR alongside IT, spend or other products on one platform."@en .
+
+mkci:CPEOCertification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/ba8ff295-9cf0-5a9e-a32c-95c1dc75b4d0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "CPEO Certification"@en ;
+  rdfs:subClassOf mkci:IndustryCredential ;
+  skos:definition "IRS certification as a Certified Professional Employer Organization."@en .
+
+mkci:CapabilityClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f6f45b95-4946-50bc-9217-852c4051b293> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Capability Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about what a competitor's product line or feature can do, including AI moves."@en .
+
+mkci:CapitalEvent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/1b3f3701-9b9c-508d-8924-7556aeea4b9a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Capital Event"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A funding round, acquisition or listing that changes a competitor's resources."@en .
+
+mkci:ChannelClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/337c04b4-d48d-53e4-898e-c306f54a5861> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Channel Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about how a competitor sells, such as broker compensation."@en .
+
+mkci:ChannelShift
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2affd165-5fa9-5c67-bc9a-3ea45dae7f76> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Channel Shift"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor changes how it pays or works with brokers."@en .
+
+mkci:ClaimCheckType
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/7186cb2f-c8a8-5bfe-9852-20ffc5f1906d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Claim Check Type"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "A test applied to a claim during verification."@en ;
+  skos:scopeNote "Emerges from: guides Claim Checking. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:ClaimFailureRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b946977b-c633-509c-98fe-7cfa0c827218> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Claim Failure Rate"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The share of claims in a draft that failed verification."@en ;
+  skos:scopeNote "Emerges from: created by Breaker Evaluation. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:ClaimLedger
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/aac25962-d3f9-51b1-a906-2e1a209b33ce> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Claim Ledger"@en ;
+  rdfs:subClassOf mkci:IntelligenceProduct ;
+  skos:definition "The record of every claim in a brief with its check, verdict, finding and sources."@en ;
+  skos:scopeNote "Emerges from: created by Battlecard Publishing. Supports: Battlecard Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:ClaimVerificationVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/47680a80-17a3-502d-89a7-74e435a9e5a0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Claim Verification Verdict"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "The recorded result of checking one claim."@en ;
+  skos:scopeNote "Emerges from: used by Breaker Evaluation; created by Claim Checking; created by Held Claim Review. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:CompanyAnnouncement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0a34ff78-21df-533c-a84d-61ed0a3954d9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Company Announcement"@en ;
+  rdfs:subClassOf mkci:Tier2Source ;
+  skos:definition "A press release or media-center post from the company itself."@en .
+
+mkci:CompetitiveMove
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/505f948f-9baa-5cb4-b67b-3cab466383e2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Competitive Move"@en ;
+  rdfs:subClassOf mktx:MarketEvent ;
+  skos:definition "An action a competitor takes that changes its position in the market."@en ;
+  skos:scopeNote "Emerges from: used by Competitor Profiling. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:CompetitorBrief
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/028da6a2-c776-5e11-87a0-64c4dfa794ca> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Competitor Brief"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A draft narrative about one competitor, often AI-drafted, made of individual claims that must be checked before use."@en ;
+  skos:scopeNote "Emerges from: created by Competitor Brief Drafting. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:CompetitorClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/ff2c931c-2631-5ca8-905a-f40c195f3c61> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Competitor Claim"@en ;
+  rdfs:subClassOf mktx:MarketClaim ;
+  skos:definition "A claim about a competitor or its offerings, tied to the sources that support it."@en ;
+  skos:scopeNote "Emerges from: used by Claim Checking; changed by Claim Correction; used by Competitive Analysis; created by Competitor Profiling; used by Opening Identification; used by Threat Tracing. Supports: Claim Verification Service, Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:CompetitorProfile
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/d64fcbbe-b33a-5f6e-aaf8-646c6313573b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Competitor Profile"@en ;
+  rdfs:subClassOf mktx:MarketingInsight ;
+  skos:definition "The current facts about one competitor: scale, momentum, pricing signal, recent move, AI move and where it sells."@en ;
+  skos:scopeNote "Emerges from: used by Competitor Brief Drafting; created by Competitor Profiling; used by Landscape Matrix Publishing. Supports: Claim Verification Service, Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:ConflictCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/d614d07a-dc99-588f-87a8-1b7c61300ef7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Conflict"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "Sources of similar authority disagree."@en .
+
+mkci:ContradictionCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/80a4cb0f-c171-5670-a5ca-488da2944b0e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Contradiction"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "A higher-authority fact contradicts the claim."@en .
+
+mkci:CorrectedVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/df68e453-9f51-5af3-8ded-b82fbaa4696e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Stale → Corrected"@en ;
+  rdfs:subClassOf mkci:ReleasableVerdict ;
+  skos:definition "The claim was out of date and was replaced with the current fact. Released as Updated."@en ;
+  skos:scopeNote "Emerges from: created by Claim Correction. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:CredentialClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/27bc0869-8b84-5abd-94df-88933764e4a5> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Credential Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim that a party holds or lacks a certification or accreditation, such as CPEO or ESAC."@en .
+
+mkci:DraftClearedResult
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/eac25e72-2031-542a-ad4b-281923c8a1c5> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Breaker Closed · Draft Cleared"@en ;
+  rdfs:subClassOf mkci:VerificationRunResult ;
+  skos:definition "The failure rate is within the threshold; the draft is cleared with failed claims removed."@en .
+
+mkci:DraftHeldResult
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/ed7ecce1-c99a-58aa-bbae-5a4f257076ea> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Breaker Tripped · Draft Held"@en ;
+  rdfs:subClassOf mkci:VerificationRunResult ;
+  skos:definition "The failure rate exceeds the threshold; the draft is held and only cleared claims are released."@en .
+
+mkci:ESACAccreditation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/71ff1270-ca6a-58c1-a866-f7f4f3f08a7f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "ESAC Accreditation"@en ;
+  rdfs:subClassOf mkci:IndustryCredential ;
+  skos:definition "Accreditation by the Employer Services Assurance Corporation."@en .
+
+mkci:EarningsCallTranscript
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/dd9f0574-2b1e-5b08-b04c-098f100f148b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Earnings Call Transcript"@en ;
+  rdfs:subClassOf mkci:Tier2Source ;
+  skos:definition "A transcript of a company's results call."@en .
+
+mkci:ExposureScore
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/54cf3cf8-2e8e-529d-9a9a-3bcafd53d598> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Exposure Score"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The sum of threat severity aimed at one of the organization's capabilities, segments or positioning claims."@en ;
+  skos:scopeNote "Emerges from: created by Competitive Exposure Roll-up. Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:FailedVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/45de7b5d-7625-5f1d-9e04-5442f7454fcd> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Failed"@en ;
+  rdfs:subClassOf mkci:WithheldVerdict ;
+  skos:definition "The claim is unsupported, contradicted or misread, and is removed."@en .
+
+mkci:FinancialResultsDisclosure
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/ebb5e5f4-f892-5ea5-8def-83a98e6a2c88> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Financial Results Disclosure"@en ;
+  rdfs:subClassOf mktx:MarketEvent ;
+  skos:definition "A party reports worksite employees, revenue, margin or guidance for a period."@en ;
+  skos:scopeNote "Emerges from: used by Competitor Profiling. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:FreshnessCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/39646700-1e6d-5cea-8825-cf93de71a770> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Freshness"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "The fact is still current on the check date."@en .
+
+mkci:HeldVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2ec6e2af-da41-5a43-b668-6034ce52f323> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Held: Conflict"@en ;
+  rdfs:subClassOf mkci:WithheldVerdict ;
+  skos:definition "Sources disagree or support is weak; a person must decide. Shown as Verify first."@en ;
+  skos:scopeNote "Emerges from: used by Held Claim Review. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:IndustryCredential
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/5dfac1b1-d1c7-5b76-b893-48910b70006f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Industry Credential"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A certification or accreditation a PEO can hold."@en ;
+  skos:scopeNote "Emerges from: used by Held Claim Review. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:IntelligenceProduct
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/88e440f0-d429-58ae-b7be-36ce3a7e1bfa> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Intelligence Product"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A finished competitive intelligence deliverable."@en .
+
+mkci:IntelligenceSource
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/d958fd7a-1323-57c3-8f1d-a7f70dedd136> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Intelligence Source"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A dated public or internal document from which a competitor fact is taken. Its kind sets the authority tier the Circuit Breaker uses."@en ;
+  skos:scopeNote "Emerges from: used by Claim Checking; used by Competitor Profiling; created by Intelligence Source Collection. Supports: Claim Verification Service, Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:LandscapeMatrix
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/a0ead080-6d06-52ac-86f7-fdda76019cba> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Landscape Matrix"@en ;
+  rdfs:subClassOf mkci:IntelligenceProduct ;
+  skos:definition "The holon's facts flattened into a table of competitors by scale, momentum, where it sells, pricing signal, recent move and AI move, each cell cited."@en ;
+  skos:scopeNote "Emerges from: created by Landscape Matrix Publishing. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:Market
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/8a1974cd-0077-5b06-99c5-7df16bd18529> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Market"@en ;
+  rdfs:subClassOf obo:BFO_0000027 ;
+  skos:definition "The market holon: the set of competing parties, including the organization, that sell to the same buyers. Competitors, their product lines and features nest inside it, so facts roll up to the market."@en ;
+  skos:scopeNote "Emerges from: used by Competitive Exposure Roll-up; created by Market Landscape Mapping. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:MeanTimeBetweenHallucinations
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0fc2c08c-d3d6-58df-86a7-2bd3c695bd41> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Mean Time Between Hallucinations"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "Claims checked for each claim that fails verification."@en ;
+  skos:scopeNote "Emerges from: created by Breaker Evaluation. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:MisreadSourceCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/ad896bc8-1ec5-552d-bb5b-782684af9b85> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Misread Source"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "The claim misstates what its source says."@en .
+
+mkci:MomentumClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/0b73bdf6-9e15-540d-b377-8c82f9c0b8e3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Momentum Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about a competitor's direction, such as worksite employee growth, attrition or segment revenue growth."@en .
+
+mkci:OfferingLaunch
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/9de49253-55f8-5e3f-8c22-75069392ad89> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Offering Launch"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor introduces a new product line or feature."@en .
+
+mkci:OpeningAssessment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/8bacae70-0b52-5291-ba6c-0ac633ea9793> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Opening Assessment"@en ;
+  rdfs:subClassOf mktx:MarketingInsight ;
+  skos:definition "A sourced statement that a competitor's weakness or move leaves room the organization can use."@en ;
+  skos:scopeNote "Emerges from: created by Opening Identification. Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:PressArticle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/e95d9ca3-c47d-5048-a93e-4dc5832170a8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Press Article"@en ;
+  rdfs:subClassOf mkci:Tier2Source ;
+  skos:definition "An article in reputable business or trade media."@en .
+
+mkci:PressureScore
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/4d89875b-744d-5062-be3a-b5dd4ac5ef50> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Pressure Score"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The sum of threat severity from every feature and product line of one competitor."@en ;
+  skos:scopeNote "Emerges from: created by Competitive Exposure Roll-up. Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:PricingClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/e6ca9d00-96a7-5e85-9309-bb45839f9878> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Pricing Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about a competitor's price, pricing model or pricing practice."@en ;
+  skos:scopeNote "Emerges from: created by Competitive Pricing Analysis. Supports: Competitive Intelligence Service, Competitive Pricing Intelligence Service, Market Research & Insights Service, Marketing Mix Management Service."@en .
+
+mkci:ReferenceEntry
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/e0843482-cb36-5884-a163-2189ae85e15f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Reference Entry"@en ;
+  rdfs:subClassOf mkci:Tier1Source ;
+  skos:definition "An entry in an encyclopedia or other reference work that describes a company."@en .
+
+mkci:RegulatorRegistry
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/81120a92-70ef-5d72-8e4e-07898dcd1e43> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Regulator Registry"@en ;
+  rdfs:subClassOf mkci:Tier3Source ;
+  skos:definition "A public list kept by a regulator, such as the IRS list of certified PEOs."@en ;
+  skos:scopeNote "Emerges from: used by Held Claim Review. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:ReleasableVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/e96e70f0-5246-5928-9f9d-e73a25258245> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Releasable Verdict"@en ;
+  rdfs:subClassOf mkci:ClaimVerificationVerdict ;
+  skos:definition "A verdict that lets the claim reach the battlecard."@en ;
+  skos:scopeNote "Emerges from: used by Battlecard Publishing. Supports: Battlecard Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:Repricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b97999ca-f7bd-59c5-8422-f5a8f4b5382a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Repricing"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor raises, lowers or restructures its prices."@en ;
+  skos:scopeNote "Emerges from: used by Competitive Pricing Analysis. Supports: Competitive Intelligence Service, Competitive Pricing Intelligence Service, Market Research & Insights Service, Marketing Mix Management Service."@en .
+
+mkci:ReviewSitePage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/90aafec8-92d4-58b6-af03-e5b11ff39206> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Review or Advisor Page"@en ;
+  rdfs:subClassOf mkci:Tier1Source ;
+  skos:definition "A review, comparison or pricing estimate published by a review site or PEO advisor."@en .
+
+mkci:RollupView
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/1a8adb5c-b4e5-5cb0-b436-911d64ce4567> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Exposure & Pressure Roll-up"@en ;
+  rdfs:subClassOf mkci:IntelligenceProduct ;
+  skos:definition "The market-level summary of where the organization is exposed and who presses hardest."@en ;
+  skos:scopeNote "Emerges from: created by Competitive Exposure Roll-up. Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:SECFiling
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/4866d23d-36f6-5bd9-ad10-d0fa8dba11c8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "SEC Filing"@en ;
+  rdfs:subClassOf mkci:Tier3Source ;
+  skos:definition "A filing with the U.S. Securities and Exchange Commission, such as a 10-K or 8-K."@en .
+
+mkci:SalesCapacityExpansion
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/960a2b6b-d7cc-5a9b-9083-7a0cc272f36c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Sales Capacity Expansion"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor adds sales reps or broker partners."@en .
+
+mkci:ScaleClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/c2115694-84eb-5175-88a4-b35e78211599> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Scale Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about a competitor's size, such as average worksite employees or revenue."@en .
+
+mkci:SegmentFocusClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2124c5fd-7a40-5c19-9a0f-20a13cb55d28> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Segment Focus Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about where a competitor sells, such as its employee-size sweet spot."@en .
+
+mkci:SourceAuthorityTier
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/effb510e-9a56-5d62-94a2-df1e1677181b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Source Authority Tier"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "The rule that ranks source kinds from 0 (tracker) to 3 (filing) and decides which may support a claim."@en ;
+  skos:scopeNote "Emerges from: guides Claim Checking; guides Intelligence Source Collection. Supports: Claim Verification Service, Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:SourceMatchCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/bf36486d-69a9-539d-ada7-f834e3cfb968> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Source Match"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "The claim matches what a dated source says."@en .
+
+mkci:StaleIntelligenceIssue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/30307794-f554-5d68-a7f2-c55687da8937> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Stale Intelligence in Use"@en ;
+  rdfs:subClassOf mktx:MarketingIssue ;
+  skos:definition "A superseded fact still appearing in a battlecard or brief."@en ;
+  skos:scopeNote "Emerges from: used by Claim Correction. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:ThreatAssessment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/7ba51a12-bbe8-5609-983b-1f2401863768> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Threat Assessment"@en ;
+  rdfs:subClassOf mktx:MarketingInsight ;
+  skos:definition "A sourced statement that a competitor's product line or feature weakens one of the organization's capabilities, segments or positioning claims, with a severity of high, medium or low."@en ;
+  skos:scopeNote "Emerges from: used by Competitive Exposure Roll-up; changed by Threat Severity Scoring; created by Threat Tracing. Supports: Competitive Intelligence Service, Market Research & Insights Service, Threat & Opening Analysis Service."@en .
+
+mkci:Tier0Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2f946d41-0c76-5997-9d0b-b66914387b74> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Tier 0 · Tracker"@en ;
+  rdfs:subClassOf mkci:IntelligenceSource ;
+  skos:definition "An unattributed or aggregated claim, such as an IPO-tracker site; authority 0. It can start an investigation but cannot support a claim."@en .
+
+mkci:Tier1Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/afafeefa-37fc-5011-abd6-b70e983a7747> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Tier 1 · Review or Reference"@en ;
+  rdfs:subClassOf mkci:IntelligenceSource ;
+  skos:definition "Third-party commentary or a reference entry; authority 1. Useful for estimates, never the only support for a claim."@en .
+
+mkci:Tier2Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/907be143-e7d2-5366-b910-50f92513a209> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Tier 2 · Company, Press, Transcript or Broker"@en ;
+  rdfs:subClassOf mkci:IntelligenceSource ;
+  skos:definition "An attributed statement by a company, its executives, reputable press or a broker notice; authority 2."@en .
+
+mkci:Tier3Source
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/cd8c8e35-6d70-5c89-98c5-d716705a16c3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Tier 3 · Filing"@en ;
+  rdfs:subClassOf mkci:IntelligenceSource ;
+  skos:definition "A legally accountable disclosure or regulator record; authority 3."@en .
+
+mkci:UnsourcedCheck
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/6278649a-29ee-593b-8a09-59ca4a5a4312> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Unsourced"@en ;
+  rdfs:subClassOf mkci:ClaimCheckType ;
+  skos:definition "No source supports the claim."@en .
+
+mkci:UpmarketMove
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/2dc47823-c0dc-5ac5-89dd-c45bc738815d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Upmarket Move"@en ;
+  rdfs:subClassOf mkci:CompetitiveMove ;
+  skos:definition "A competitor starts targeting larger clients, for example through an acquisition."@en .
+
+mkci:ValuationClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/bc294d73-38ef-5fec-b0f5-03c124f6c6a7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Valuation Claim"@en ;
+  rdfs:subClassOf mkci:CompetitorClaim ;
+  skos:definition "A claim about a competitor's valuation, funding or listing plans."@en .
+
+mkci:VerificationRunResult
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/33ea6a55-d270-5821-8a7b-a0da3e25fbbe> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Verification Run Result"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "The outcome of checking a whole draft brief."@en ;
+  skos:scopeNote "Emerges from: created by Breaker Evaluation. Supports: Claim Verification Service, Competitive Intelligence Service, Market Research & Insights Service."@en .
+
+mkci:VerifiedVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/7350b0a3-e6f7-5bab-a6dd-3fbe4f9a4c95> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Verified"@en ;
+  rdfs:subClassOf mkci:ReleasableVerdict ;
+  skos:definition "The claim matches a dated source of sufficient authority. Released as Use."@en .
+
+mkci:WithheldVerdict
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/b94b73ed-002e-5b1d-8c78-48b1761f8931> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Withheld Verdict"@en ;
+  rdfs:subClassOf mkci:ClaimVerificationVerdict ;
+  skos:definition "A verdict that keeps the claim off the battlecard until resolved."@en .
+
+mkci:WorksiteEmployeeCount
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing-ci/f08c7aeb-e4c6-507d-bb08-17ba36424952> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:source "PEO Competitive Graph (peo-competitive-graph.html), public sources retrieved through Sept 30, 2026"@en ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "Average Worksite Employees"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The average number of paid worksite employees a PEO co-employs in a period; the main scale measure in the PEO market."@en ;
+  skos:scopeNote "Emerges from: used by Competitor Profiling. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mkci:authorityTier
+  a owl:DatatypeProperty, owl:FunctionalProperty ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "authority tier"@en ;
+  rdfs:range xsd:integer ;
+  skos:definition "Source authority used by claim verification: 0 tracker, 1 review or reference, 2 company, press, transcript or broker, 3 filing."@en .
+
+mkci:effectiveOn
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "effective on"@en ;
+  rdfs:range xsd:date ;
+  skos:definition "The date a competitive move, such as a price change, takes effect."@en .
+
+mkci:retrievedOn
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "retrieved on"@en ;
+  rdfs:range xsd:date ;
+  skos:definition "The date a source was retrieved for a fact."@en .
+
+mkci:severityScore
+  a owl:DatatypeProperty, owl:FunctionalProperty ;
+  rdfs:isDefinedBy mkci: ;
+  rdfs:label "severity score"@en ;
+  rdfs:range xsd:integer ;
+  skos:definition "Threat severity: 3 high, 2 medium, 1 low."@en .

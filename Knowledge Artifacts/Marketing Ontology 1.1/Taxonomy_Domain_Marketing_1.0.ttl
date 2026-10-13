@@ -1,0 +1,2022 @@
+@prefix asset: <https://ontologies.verizon.com/ontology-core-asset/> .
+@prefix bo: <https://ontologies.verizon.com/taxonomy-core-businessoperations/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix evt: <https://ontologies.verizon.com/ontology-core-event/> .
+@prefix issue: <https://ontologies.verizon.com/taxonomy-core-issue/> .
+@prefix lc: <https://ontologies.verizon.com/taxonomy-core-lifecycle/> .
+@prefix mktx: <https://ontologies.verizon.com/taxonomy-domain-marketing/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix persona: <https://ontologies.verizon.com/taxonomy-core-persona/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix req: <https://ontologies.verizon.com/ontology-core-requirements/> .
+@prefix role: <https://ontologies.verizon.com/taxonomy-core-role/> .
+@prefix rules: <https://ontologies.verizon.com/taxonomy-core-rules/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vs: <https://ontologies.verizon.com/taxonomy-core-valuestream/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+mktx:
+  a owl:Ontology ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  <http://verizon.ontologies.com/terms/certified> false ;
+  dct:contributor "wallkje" ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:description "Term structures that emerge from the marketing processes: plans, content, brand assets, claims, data, metrics, offerings and features, market roles, segments, rules, channels, characteristics, market events, lifecycle stages, personas, issues and outcomes. Each root specialises a Domain Reference Model root."@en ;
+  dct:language "en" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:title "Taxonomy | Domain | Marketing"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>, asset:, bo:, evt:, issue:, lc:, persona:, req:, role:, rules: ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-domain-marketing/1.0> ;
+  owl:versionInfo "1.0" ;
+  rdfs:label "Taxonomy | Domain | Marketing"@en ;
+  skos:changeNote "1.0: every root specialises a class declared in the core taxonomies and ontologies, which this taxonomy imports: for example Marketing Outcome specialises Outcome (ontology-core-requirements), Marketing Strategy specialises Strategy and Marketing Technology specialises Technology (taxonomy-core-businessoperations)."@en, "1.0: initial version, built from the terms the marketing processes create, use, change, target or promote."@en ;
+  skos:editorialNote "Version 1.1 content not carried over from 1.0 (the service catalog, the processes added in 1.1, the taxonomy terms and their definitions, and the competitive intelligence layer) was drafted with the assistance of Claude (Anthropic) from the 1.0 files, the Domain Reference Model and the PEO Competitive Graph. It requires steward review before certification."@en .
+
+dc11:subject
+  a owl:AnnotationProperty .
+
+dct:contributor
+  a owl:AnnotationProperty .
+
+dct:created
+  a owl:AnnotationProperty .
+
+dct:creator
+  a owl:AnnotationProperty .
+
+dct:description
+  a owl:AnnotationProperty .
+
+dct:language
+  a owl:AnnotationProperty .
+
+dct:modified
+  a owl:AnnotationProperty .
+
+dct:title
+  a owl:AnnotationProperty .
+
+<http://purl.org/ontology/bibo/status>
+  a owl:AnnotationProperty .
+
+<http://verizon.ontologies.com/terms/certified>
+  a owl:AnnotationProperty .
+
+skos:changeNote
+  a owl:AnnotationProperty .
+
+skos:definition
+  a owl:AnnotationProperty .
+
+skos:editorialNote
+  a owl:AnnotationProperty .
+
+skos:scopeNote
+  a owl:AnnotationProperty .
+
+mktx:ASOOffering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c7148dfb-5c4b-59d8-bbf7-2bdda7382845> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Administrative Services Offering"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "HR and payroll administration without co-employment."@en .
+
+mktx:AccountPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/237630d0-3b46-516d-8d6b-e104cf4909b3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Account Plan"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "A plan for winning or growing one target account."@en ;
+  skos:scopeNote "Emerges from: created by Personalized Content. Supports: Account-Based Marketing Service."@en .
+
+mktx:Advertisement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c6f3f6e4-88bc-5336-97df-69b10c346381> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Advertisement"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A paid message placed in a media channel."@en ;
+  skos:scopeNote "Emerges from: created by Advertising; created by Native Advertising. Supports: Marketing Communications Service, Performance Marketing Service."@en .
+
+mktx:AdvertisingSubstantiationRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e1323027-fd47-5dae-a826-31dded1cb9a1> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Advertising Substantiation Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "Factual and comparative claims must be truthful and supported by evidence."@en .
+
+mktx:AffiliateRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/33d30e17-29d3-5be4-9a8a-0807df67624f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Affiliate"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a party paid for each visitor, lead or customer its marketing brings."@en ;
+  skos:scopeNote "Emerges from: used by Affiliate Marketing; used by Campaign Partnerships. Supports: Campaign Management Service, Performance Marketing Service."@en .
+
+mktx:BenefitsAdministrationFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ef7bf7f2-0288-5f39-bcb8-c92f31e3b48e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Benefits Administration"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Sponsoring or administering health and other benefit plans."@en .
+
+mktx:BlogArticle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/22c750f7-0571-59b5-b9ce-52a59e27fb27> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Blog Article"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A short article published on the organization's blog."@en .
+
+mktx:BrandAsset
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ab47f791-2e62-5fcb-b319-e7d1741b67a8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Asset"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "An information artifact that defines or expresses the brand."@en .
+
+mktx:BrandAwareness
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/09941669-8dc7-4e24-b22a-25de7a160277> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Awareness"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "How widely the brand is recognised or recalled in its market."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:BrandAwareness), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:BrandAwarenessScore
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f414304a-6e8b-5cd4-802f-57cd75c8d691> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Awareness Score"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The share of a surveyed audience that recognises or recalls the brand."@en .
+
+mktx:BrandEquity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a6a2f08f-4e0f-490a-a8fc-9d6dccc03721> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Equity"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "The value the brand adds to an offering in buyers' eyes."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:BrandEquity), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:BrandGuideline
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2da0ebfa-09ed-527f-8bef-6f33386850a8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Guideline"@en ;
+  rdfs:subClassOf mktx:BrandAsset ;
+  skos:definition "Rules for using the brand's name, logo, colour, type and voice."@en ;
+  skos:scopeNote "Emerges from: created by Brand Identity Management; used by Brand Standards Review; used by Content Creation. Supports: Brand Management Service, Content Marketing Service."@en .
+
+mktx:BrandIdentity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6c0978d7-ccae-442f-96dc-639c8d9993ad> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Identity"@en ;
+  rdfs:subClassOf mktx:BrandAsset ;
+  skos:definition "The visual and verbal elements that identify the brand, such as its name, logo and voice."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:BrandIdentity), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: created by Brand Identity Management. Supports: Brand Management Service."@en .
+
+mktx:BrandLeadership
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7fe7b618-b5c2-4361-92f2-1c840544847d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Leadership"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "The degree to which the brand is seen as the leader in its category."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:BrandLeadership), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:BrandStandardsBreach
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f5405711-5037-51a2-97e2-20d6eb4208ca> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Brand Standards Breach"@en ;
+  rdfs:subClassOf mktx:MarketingIssue ;
+  skos:definition "Content released that departs from brand guidelines."@en ;
+  skos:scopeNote "Emerges from: created by Brand Standards Review. Supports: Brand Management Service."@en .
+
+mktx:BrokerAdvisorRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2755d8d3-1600-55ce-ba1c-f0e0488f13cd> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker or Advisor"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of an intermediary who recommends a provider to buyers and may be paid by the provider."@en ;
+  skos:scopeNote "Emerges from: targeted by Broker & Advisor Marketing; used by Channel Management; targeted by Partner Incentive Management. Supports: Channel & Partner Marketing Service, Marketing Mix Management Service."@en .
+
+mktx:BrokerChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f249aeb3-e24f-544d-ab24-b9cf0e8e542f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Broker Channel"@en ;
+  rdfs:subClassOf mktx:RouteToMarket ;
+  skos:definition "Sold through benefits brokers and advisors."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Broker & Advisor Marketing. Supports: Channel & Partner Marketing Service."@en .
+
+mktx:BuyerPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/92ca8e78-ea2f-541e-9b0e-43e344e5b485> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Buyer Persona"@en ;
+  rdfs:subClassOf persona:Persona ;
+  skos:definition "A research-based description of a typical buyer or influencer in a target account."@en ;
+  skos:scopeNote "Emerges from: created by Buyer Persona Development; targeted by Campaign Planning; targeted by Value Proposition Development. Supports: Campaign Management Service, Product Marketing Service."@en .
+
+mktx:BuyingCenterRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0f3ecd6b-24fe-54f4-b433-c37048013424> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Buying Center Role"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role a person plays in an organization's purchase decision."@en ;
+  skos:scopeNote "Emerges from: used by Buyer Persona Development. Supports: Product Marketing Service."@en .
+
+mktx:CampaignBudget
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d2efafb1-2377-5019-8e8c-79072b575c9e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Campaign Budget"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "The spend allocated to one campaign."@en ;
+  skos:scopeNote "Emerges from: created by Campaign Budgeting. Supports: Campaign Management Service."@en .
+
+mktx:CampaignPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6299e165-91f4-50eb-89d9-cd91058b3fb8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Campaign Plan"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "A plan for one campaign: goal, audience, message, channels and timeline."@en ;
+  skos:scopeNote "Emerges from: used by Campaign Execution; changed by Campaign Optimization; created by Campaign Planning. Supports: Campaign Management Service."@en .
+
+mktx:CaseStudy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/20a34f03-f78b-5b63-bf1d-e4a8b27c7067> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Case Study"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A story of how a named client used an offering and the results it got."@en ;
+  skos:scopeNote "Emerges from: created by Client Advocacy Program; created by Sales Enablement. Supports: Customer Engagement Service, Product Marketing Service."@en .
+
+mktx:ChampionRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4f214356-f9ef-5f3a-9b30-3d903da27582> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Champion"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole ;
+  skos:definition "The buying center role of the person who argues for the purchase inside the buying organization."@en .
+
+mktx:ChurnRisk
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4e50e61d-9c9b-51f8-9721-336deb407201> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Churn Risk"@en ;
+  rdfs:subClassOf mktx:CustomerDisposition ;
+  skos:definition "A client's tendency to end its contract."@en ;
+  skos:scopeNote "Emerges from: used by Renewal Marketing. Supports: Customer Engagement Service."@en .
+
+mktx:ClientActiveStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/47395fa8-e8ee-553f-b964-84d55467785a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Active"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage ;
+  skos:definition "A live client using its services."@en .
+
+mktx:ClientAtRiskStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8c0c8c26-bfc3-5d8e-816d-2fcb37864e8d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "At Risk"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage ;
+  skos:definition "A client showing signs it may leave."@en .
+
+mktx:ClientLifecycleStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/029dab25-ab22-5ea2-866f-e46653d8e2af> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Lifecycle Stage"@en ;
+  rdfs:subClassOf mktx:MarketingLifecycleStage ;
+  skos:definition "A stage in a client's relationship with the organization after the sale."@en ;
+  skos:scopeNote "Emerges from: used by Customer Journey. Supports: Customer Engagement Service."@en .
+
+mktx:ClientOnboardingStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f2cab472-e66b-5737-93f5-72f7935a16bc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Onboarding"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage ;
+  skos:definition "From signature through first payroll and benefits enrollment."@en ;
+  skos:scopeNote "Emerges from: targeted by Client Onboarding Communication. Supports: Customer Engagement Service."@en .
+
+mktx:ClientRenewalStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ee511725-bf33-568e-9ac7-470771a670a9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Renewal"@en ;
+  rdfs:subClassOf mktx:ClientLifecycleStage ;
+  skos:definition "A client approaching contract or benefit plan renewal."@en ;
+  skos:scopeNote "Emerges from: targeted by Renewal Marketing. Supports: Customer Engagement Service."@en .
+
+mktx:ClientRetentionRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9c8c952b-bde3-5a94-ba6e-a618db485a88> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Retention Rate"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The share of clients at the start of a period still active at its end."@en .
+
+mktx:ClientRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1d756ef3-1248-587b-aa37-b6b1310cb443> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a party with a current contract for the organization's offerings."@en ;
+  skos:scopeNote "Emerges from: targeted by Client Event Management; targeted by Cross-Sell & Upsell Marketing. Supports: Customer Engagement Service, Event Marketing Service."@en .
+
+mktx:ClientTestimonial
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6755c27f-c39e-5ee3-90f6-a4efd44c6689> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Client Testimonial"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A client's statement endorsing the organization, used with permission."@en ;
+  skos:scopeNote "Emerges from: created by Client Advocacy Program. Supports: Customer Engagement Service."@en .
+
+mktx:ClosedLostStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b171c43-8e12-5c9d-b4ec-ba2f8b4f7ac4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Closed-Lost"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "The buyer chose a competitor or no change."@en .
+
+mktx:ClosedWonStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1d5e3da7-aade-5ca7-b413-267b1dc2aee0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Closed-Won"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "The buyer chose the organization."@en .
+
+mktx:CommercialEmailRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3e399bba-a164-5f80-b439-dd44ca3d3cd4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Commercial Email Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "Rules on commercial email content and opt-out."@en .
+
+mktx:CompetitorRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e82121f7-eca8-5933-9588-aee563d27d71> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Competitor"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a party whose offerings contend for the same buyers as the organization's."@en ;
+  skos:scopeNote "Emerges from: targeted by Competitor Profiling; used by Market Landscape Mapping. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service."@en .
+
+mktx:ConsentViolation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/212df922-4d17-5699-a2e9-d161b6bf353b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Consent Violation"@en ;
+  rdfs:subClassOf mktx:MarketingIssue ;
+  skos:definition "A contact reached without consent or against recorded preferences."@en ;
+  skos:scopeNote "Emerges from: created by Consent & Preference Management. Supports: Marketing Compliance Service."@en .
+
+mktx:ContactConsentRecord
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fe3a3cb8-fa0a-5838-9450-b851045fd1da> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Contact Consent Record"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "A record of the consent and communication preferences a contact has given."@en ;
+  skos:scopeNote "Emerges from: changed by Consent & Preference Management; used by Direct Marketing. Supports: Marketing Communications Service, Marketing Compliance Service."@en .
+
+mktx:ContentCalendar
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6f1a5aed-ace8-592d-98b7-a84ceb298eca> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Content Calendar"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "A schedule of planned content by date and channel."@en ;
+  skos:scopeNote "Emerges from: created by Content Planning. Supports: Content Marketing Service."@en .
+
+mktx:CostPerLead
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/55743a99-78dc-5217-af4b-f21faa559dfc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Cost per Lead"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "Marketing spend divided by the number of leads it produced."@en .
+
+mktx:CredentialClaimRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2e402b1c-913b-5061-8c85-3aa8e28ccce0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Credential Claim Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "A certification or accreditation cited in marketing must match the issuing body's current public record."@en .
+
+mktx:CustomQuotePricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fc27771c-75d5-5512-8a8b-a974f8b8a654> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Custom Quote"@en ;
+  rdfs:subClassOf mktx:PricingModel ;
+  skos:definition "Pricing set for each prospect and not published."@en .
+
+mktx:CustomerAcquisitionCost
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1aae5b8d-52da-5a41-a3db-11b7956a3bdc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Acquisition Cost"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "Sales and marketing spend divided by the number of new clients won."@en .
+
+mktx:CustomerDisposition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a98c4a87-b784-5804-b41f-bc628c5ac420> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Disposition"@en ;
+  rdfs:subClassOf mktx:MarketingCharacteristic, obo:BFO_0000016 ;
+  skos:definition "A tendency of a customer to act in a certain way, such as to buy, stay, leave or refer."@en ;
+  skos:scopeNote "Emerges from: created by Consumer Behavior Analysis. Supports: Market Research & Insights Service."@en .
+
+mktx:CustomerEngagementLevel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/dc9d8550-1e7b-51eb-98d6-bba4fd1619df> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Engagement Level"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "How actively a client interacts with the organization."@en .
+
+mktx:CustomerFeedback
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/16afcb8f-84bb-4c4e-a846-bb2a31e23a7a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Feedback"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "What clients say about the organization in surveys, reviews and service contacts."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:CustomerFeedback), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: created by Customer Feedback Management; used by Market Research. Supports: Customer Engagement Service, Market Research & Insights Service."@en .
+
+mktx:CustomerJourneyMap
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0a1117d0-c3f4-5fc5-8274-0a2f452b5bb3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Journey Map"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "A description of the stages, touchpoints and needs a client goes through with the organization."@en ;
+  skos:scopeNote "Emerges from: created by Customer Journey. Supports: Customer Engagement Service."@en .
+
+mktx:CustomerLoyalty
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/24792731-1aa4-4d91-ab8e-65c57775f282> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Loyalty"@en ;
+  rdfs:subClassOf mktx:CustomerDisposition ;
+  skos:definition "A client's tendency to keep choosing the organization."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:CustomerLoyalty), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Client Advocacy Program. Supports: Customer Engagement Service."@en .
+
+mktx:CustomerProfile
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56ce535c-6807-4769-9f09-43c78951bbc7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Profile"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "A description of a client or customer group: firmographics, needs and behaviour."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:CustomerProfile), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Buyer Persona Development; used by Consumer Behavior Analysis. Supports: Market Research & Insights Service, Product Marketing Service."@en .
+
+mktx:CustomerSatisfaction
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ebe07f6d-3706-4a46-a785-d88446c20d86> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Satisfaction"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "How well the organization meets clients' expectations."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:CustomerSatisfaction), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Customer Feedback Management. Supports: Customer Engagement Service."@en .
+
+mktx:CustomerSentimentShift
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4d971cf3-35c9-5043-8c96-702e26187f10> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Sentiment Shift"@en ;
+  rdfs:subClassOf mktx:MarketEvent ;
+  skos:definition "A change in what clients say about a provider in reviews, surveys or social media."@en ;
+  skos:scopeNote "Emerges from: used by Reputation Management. Supports: Brand Management Service."@en .
+
+mktx:CustomerValue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1d358e94-9464-4e27-965a-a7c8215aea5e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Customer Value"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "The benefit clients perceive relative to what they pay."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:CustomerValue), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:DemandFunnelStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d5e4dac6-42a9-5346-9983-50754f0c6b51> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Demand Funnel Stage"@en ;
+  rdfs:subClassOf mktx:MarketingLifecycleStage ;
+  skos:definition "A stage a lead or opportunity passes through on the way to a sale."@en ;
+  skos:scopeNote "Emerges from: changed by Lead Nurturing. Supports: Demand Generation Service."@en .
+
+mktx:DirectMailChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/967d1996-bb80-5c5c-b489-a4b5d8f33ba4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Direct Mail"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Printed material mailed to contacts."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Direct Marketing. Supports: Marketing Communications Service."@en .
+
+mktx:DirectSalesChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8e2b89f2-db4c-551f-b774-80586e6c1ef7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Direct Sales"@en ;
+  rdfs:subClassOf mktx:RouteToMarket ;
+  skos:definition "Sold by the provider's own sales team."@en .
+
+mktx:EconomicBuyerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2dde37c9-de46-5358-88a5-3d0813d7a9ac> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Economic Buyer"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole ;
+  skos:definition "The buying center role of the person who approves the spend."@en .
+
+mktx:EmailChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9b5dee00-13fa-5a69-afa8-8678a14b4aab> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Email"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Messages sent to contacts' inboxes."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Direct Marketing. Supports: Marketing Communications Service."@en .
+
+mktx:EmployeeSupportAssistantFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d6002f54-e2ed-5988-a2ef-4154cc87115b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employee Support Assistant"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "An AI or human channel that answers client and employee HR questions."@en .
+
+mktx:EmployerOfRecordOffering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/41cf1813-b55a-5d84-958c-031fa2cba9dc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employer of Record Offering"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "The provider is the legal employer of workers where the client has no entity."@en .
+
+mktx:EndUserRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7b12075b-3790-5cfe-a9d5-9189dcfdd9da> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "End User"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole ;
+  skos:definition "The buying center role of a person who will use the offering day to day."@en .
+
+mktx:EndorsementTestimonialRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/95d212e6-a89f-57c1-9fbb-f7f45c33c181> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Endorsement & Testimonial Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "Rules on reviews, testimonials and endorsements, including disclosure of material connections."@en .
+
+mktx:EvaluatorRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/156bfb66-0cf5-5401-947d-a9a84c804b1f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Evaluator"@en ;
+  rdfs:subClassOf mktx:BuyingCenterRole ;
+  skos:definition "The buying center role of a person who assesses the options against requirements."@en .
+
+mktx:EventChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/be77e5c3-55c9-5e5d-a47a-a8d713f71184> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Events"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "In-person and virtual events."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Trade Show Participation. Supports: Event Marketing Service."@en .
+
+mktx:GeographicSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1255bb59-11c6-5213-97ad-dc879b3c1576> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Geographic Segment"@en ;
+  rdfs:subClassOf mktx:MarketSegment ;
+  skos:definition "A market segment whose members are grouped by location."@en ;
+  skos:scopeNote "Emerges from: targeted by Consumer Market Analysis. Supports: Market Research & Insights Service."@en .
+
+mktx:GrowingSMBSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b1267a1e-cb89-5176-9a0f-bbe4516aff61> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Growing SMB (50–149)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment ;
+  skos:definition "Businesses with 50 to 149 employees."@en .
+
+mktx:HCMSoftwareOffering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fedf5617-a374-5d9f-abce-c0d9916ff4ab> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "HCM Software Offering"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "Human capital management software, sold with or without services."@en .
+
+mktx:HRServiceFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1b075b24-3652-5537-8d22-2f9c1ca11573> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "HR Service & Advice"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Access to HR specialists who advise the client and its employees."@en .
+
+mktx:HRTechnologyFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e6e478c3-2e2d-54f8-8697-bbe27d37ffcc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "HR Technology Platform"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "The software clients and employees use for HR and payroll tasks."@en .
+
+mktx:IdealCustomerProfile
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f6ef5d98-2b6f-575e-bb44-2ecdcca40a3f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Ideal Customer Profile"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "The firmographic and behavioural description of the accounts most likely to buy and stay."@en ;
+  skos:scopeNote "Emerges from: created by Ideal Customer Profile Development. Supports: Account-Based Marketing Service."@en .
+
+mktx:IndustrySegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ff2438fb-3d69-5dea-8029-8363d5f6eb1c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Industry Segment"@en ;
+  rdfs:subClassOf mktx:MarketSegment ;
+  skos:definition "A market segment whose members are grouped by industry, coded to NAICS."@en ;
+  skos:scopeNote "Emerges from: targeted by Business Market Analysis. Supports: Market Research & Insights Service."@en .
+
+mktx:IndustryTrends
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/53d87868-3b01-4197-9bda-d60aeb93d37a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Industry Trends"@en ;
+  rdfs:subClassOf mktx:MarketEvent ;
+  skos:definition "A pattern of change unfolding in an industry."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:IndustryTrends), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Demand Forecasting. Supports: Market Research & Insights Service."@en .
+
+mktx:InfluencerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3c92dd9f-a6e1-527e-991e-c4b7f04be195> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Influencer"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a person with an audience whose opinion sways buyers."@en ;
+  skos:scopeNote "Emerges from: targeted by Influencer Discovery & Vetting; used by Influencer Relationship Management. Supports: Influencer Marketing Service."@en .
+
+mktx:InquiryStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/df9672db-037f-5ca3-90f3-1d4b8d28e1fc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Inquiry"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "A contact has responded but is not yet qualified."@en .
+
+mktx:InteractiveTool
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5ebdc705-ceb3-5147-8c93-762069c41c02> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Interactive Tool"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A calculator, assessment or configurator that buyers use themselves."@en ;
+  skos:scopeNote "Emerges from: created by Interactive Marketing. Supports: Marketing Communications Service."@en .
+
+mktx:LandingPage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4484b416-520e-5a87-b68d-abbae4219692> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Landing Page"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A web page built for one campaign or offer, usually with a form."@en ;
+  skos:scopeNote "Emerges from: changed by Conversion Rate Optimization; created by Interactive Marketing. Supports: Marketing Communications Service, Performance Marketing Service."@en .
+
+mktx:LaunchPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e36ad4d5-4fce-52e4-8e9d-04954d5915c3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Launch Plan"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "A plan for bringing a new or changed offering to market."@en ;
+  skos:scopeNote "Emerges from: created by Product Launch Management. Supports: Product Marketing Service."@en .
+
+mktx:LeadConversionRate
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6f216ef3-932a-5bf8-b372-c8d525242a07> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Lead Conversion Rate"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The share of marketing-qualified leads that become sales-qualified."@en .
+
+mktx:LeadQualificationCriteria
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5307cdbe-2f88-500f-91ed-7e3fe440daad> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Lead Qualification Criteria"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "The agreed fit and engagement thresholds a lead must meet to move to sales."@en ;
+  skos:scopeNote "Emerges from: guides, used by Lead Qualification & Handoff; guides, used by Lead Scoring. Supports: Demand Generation Service."@en .
+
+mktx:LeadRecord
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3729e5f1-d27b-58f1-846e-a6cd1ec08b89> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Lead Record"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "A record of a person or company that has shown interest, with source and stage."@en ;
+  skos:scopeNote "Emerges from: created by Lead Generation; used by Lead Nurturing; changed by Lead Scoring; used by Marketing Attribution; used by Marketing Automation. Supports: Demand Generation Service, Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mktx:LeaveManagementFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3bc4ca6f-3b40-5a1c-bb9c-d8b7a3397f6e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Leave Management"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Administering employee leaves of absence."@en .
+
+mktx:MarketClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/430f133a-41fe-5479-93b5-9eb9c4953288> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Claim"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A single assertion about a market, a competitor, an offering or the organization itself, stated so it can be checked against sources."@en ;
+  skos:scopeNote "Emerges from: used by Claim Substantiation. Supports: Marketing Compliance Service."@en .
+
+mktx:MarketDemographics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/2a16cc54-d671-4596-8b59-813fd7b57463> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Demographics"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "Statistical data about the population of a market."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketDemographics), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Demand Forecasting; created by Market Research; used by Market Segments. Supports: Market Research & Insights Service."@en .
+
+mktx:MarketEvent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c3d895fe-54cc-5aa8-9188-114b8f1ed0ef> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Event"@en ;
+  rdfs:subClassOf evt:Event ;
+  skos:definition "Something that happens in a market that marketing tracks."@en .
+
+mktx:MarketPerceptionQuality
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/db727589-96ce-59cb-b52c-cce063032db0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Perception Quality"@en ;
+  rdfs:subClassOf mktx:MarketingCharacteristic, obo:BFO_0000019 ;
+  skos:definition "How a customer or market perceives a brand, offering or price at a given time."@en ;
+  skos:scopeNote "Emerges from: used by Brand Performance Tracking. Supports: Brand Management Service."@en .
+
+mktx:MarketRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e22a46ef-8cf7-5396-996b-3c6f22e26287> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Role"@en ;
+  rdfs:subClassOf role:Role ;
+  skos:definition "A role a party bears in a market relative to the organization. One party can bear several."@en .
+
+mktx:MarketSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c67a6c53-e028-5e45-be7c-c2117d6d8be6> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Segment"@en ;
+  rdfs:subClassOf obo:BFO_0000027 ;
+  skos:definition "A group of actual or potential customers who share characteristics set out in a market segment definition."@en ;
+  skos:scopeNote "Emerges from: targeted by Brand Positioning; targeted by Campaign Planning; created by Market Segments; targeted by, used by Marketing Strategy Development; targeted by Offering Definition; targeted by Value Proposition Development. Supports: Brand Management Service, Campaign Management Service, Market Research & Insights Service, Marketing Mix Management Service, Marketing Strategy & Planning Service, Product Marketing Service."@en .
+
+mktx:MarketSegmentDefinition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c5fba23f-8f3e-5dbb-a228-12452a61a3cf> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Segment Definition"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "The criteria that decide which parties belong to a market segment."@en ;
+  skos:scopeNote "Emerges from: created by, guides Market Segments; guides Marketing Strategy Development. Supports: Market Research & Insights Service, Marketing Strategy & Planning Service."@en .
+
+mktx:MarketTargets
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b99b5c22-9918-4109-b827-3afe40ed08db> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Market Targets"@en ;
+  rdfs:subClassOf mktx:MarketSegment ;
+  skos:definition "The market segments selected to be reached."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketTargets), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:MarketingAsset
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6fd88e02-2577-5b52-a391-34af38f169b2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Asset"@en ;
+  rdfs:subClassOf asset:DigitalAsset ;
+  skos:definition "An information artifact that a marketing process creates, uses or changes."@en .
+
+mktx:MarketingBudget
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d572ffae-7358-5a00-bcfa-5df47ede3ba0> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Budget"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "The allocation of marketing spend across programs, channels and periods."@en ;
+  skos:scopeNote "Emerges from: created by Marketing Budgeting. Supports: Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b64cbfb1-83b1-5dac-b372-43c11c010a66> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Channel"@en ;
+  skos:definition "A route or medium through which an offering or message reaches buyers."@en ;
+  skos:editorialNote "Not yet anchored to BFO: its members span more than one BFO category. Steward decision pending."@en ;
+  skos:scopeNote "Emerges from: changed by Channel Management. Supports: Marketing Mix Management Service."@en .
+
+mktx:MarketingCharacteristic
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/7b29a0a6-3610-5b94-8b86-f6dd8a4a616e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Characteristic"@en ;
+  rdfs:subClassOf obo:BFO_0000020 ;
+  skos:definition "A characteristic of a customer, brand or market that marketing tries to change and measures."@en .
+
+mktx:MarketingComplianceRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b287cb6c-a24d-56dd-a710-d51fbd7cfec9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Compliance Rule"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "A legal, regulatory or policy rule that constrains marketing content, contact data or intelligence gathering."@en ;
+  skos:scopeNote "Emerges from: constrains Marketing; used by Regulated Content Review. Supports: Marketing Compliance Service."@en .
+
+mktx:MarketingContent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/64ce6a1e-4d30-5d32-9838-8f5b609d7d50> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Content"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "Content produced to inform, persuade or engage an audience."@en ;
+  skos:scopeNote "Emerges from: used by Brand Standards Review; used by Campaign Execution; created by Content Creation; used by Content Distribution; created by Internal Communication; used by Lead Nurturing; created by Partner Enablement; created by Personalized Content; used by Regulated Content Review. Supports: Account-Based Marketing Service, Brand Management Service, Campaign Management Service, Channel & Partner Marketing Service, Content Marketing Service, Demand Generation Service, Marketing Communications Service, Marketing Compliance Service."@en .
+
+mktx:MarketingDataAsset
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9924dbd4-015d-5710-819d-0d60d5cc9837> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Data Asset"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A data set or record that describes customers, prospects, contacts or markets."@en ;
+  skos:scopeNote "Emerges from: used by Marketing Analysis; used by Marketing Analytics & Metrics. Supports: Market Research & Insights Service, Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingEmail
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1ba0dfc2-94d3-5735-869a-68073d647402> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Email"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "An email written to promote, inform or nurture."@en ;
+  skos:scopeNote "Emerges from: created by Direct Marketing; created by Marketing Automation. Supports: Marketing Communications Service, Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingInsight
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f01afd4c-d01e-5da8-9f54-9c48fdeca92b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Insight"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A conclusion drawn from research, analysis or measurement that bears on a marketing or sales decision."@en ;
+  skos:scopeNote "Emerges from: created by Competitive Analysis; created by Market Research; created by Marketing Analysis; created by Marketing Analytics & Metrics; used by Marketing Strategy Development; created by Price Market Research. Supports: Competitive Intelligence Service, Market Research & Insights Service, Marketing Analytics & Reporting Service, Marketing Mix Management Service, Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingIssue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/bbe2508d-ad3b-5972-a00d-ad20d09de051> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Issue"@en ;
+  rdfs:subClassOf issue:Issue ;
+  skos:definition "A problem that arises in or from marketing work."@en ;
+  skos:scopeNote "Emerges from: used by Risk Identification & Mitigation. Supports: Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingLifecycleStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b4bf9aac-c95f-5e06-bcdf-d03b45668765> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Lifecycle Stage"@en ;
+  rdfs:subClassOf lc:Lifecycle ;
+  skos:definition "A stage in a lifecycle that marketing manages."@en .
+
+mktx:MarketingMeasurement
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/29e1422c-3e0a-5c31-98e2-775ddb5cd1e9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Measurement"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A value of a marketing metric for a given scope and period."@en ;
+  skos:scopeNote "Emerges from: created by Brand Performance Tracking; used by Campaign Optimization; used by Conversion Rate Optimization; created by Demand Forecasting; created by Marketing Analytics & Metrics; created by Marketing Attribution. Supports: Brand Management Service, Campaign Management Service, Market Research & Insights Service, Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service, Performance Marketing Service."@en .
+
+mktx:MarketingMetric
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c613b92f-7b12-5bd5-8525-21b813394153> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Metric"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A released, versioned definition of how a marketing quantity is calculated."@en ;
+  skos:scopeNote "Emerges from: created by Marketing Analytics & Metrics. Supports: Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingOutcome
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e804774e-8533-540e-9046-501219c89e6f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Outcome"@en ;
+  rdfs:subClassOf req:Outcome ;
+  skos:definition "A target result that marketing commits to, measured by a marketing metric at set checkpoints."@en .
+
+mktx:MarketingPlan
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e4a4d58a-44d9-4308-9ba7-8c813cd2689a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Plan"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "The plan of marketing programs, timing and owners that carries out the strategy."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketingPlans), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Marketing Budgeting; created by Marketing Planning; changed by Risk Identification & Mitigation. Supports: Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingPlanSpecification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c19f51b2-de01-5952-819f-6ba49add7d66> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Plan Specification"@en ;
+  rdfs:subClassOf mktx:MarketingAsset ;
+  skos:definition "A plan that sets marketing objectives and the actions, budget and timing to reach them."@en .
+
+mktx:MarketingQualifiedLeadStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1daa1536-032f-56e0-8d14-71da5ad6b8c7> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Qualified Lead"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "Meets marketing's fit and engagement criteria."@en .
+
+mktx:MarketingRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0ac9b1e8-30f7-5c14-80bb-83f02062bb51> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Rule"@en ;
+  rdfs:subClassOf rules:Rules ;
+  skos:definition "A rule that guides or constrains how a marketing process is carried out."@en .
+
+mktx:MarketingSourcedPipeline
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e6b8b36a-50d9-5e8e-a8eb-e1cf1965e6a3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing-Sourced Pipeline"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The value of new opportunities that marketing sourced in a period."@en .
+
+mktx:MarketingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3bde0f6b-a872-47f6-bc54-0c38021ddc12> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Strategy"@en ;
+  rdfs:subClassOf bo:Strategy, mktx:MarketingPlanSpecification ;
+  skos:definition "The chosen marketing objectives, target segments and positioning."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketingStrategy), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Marketing Planning; created by Marketing Strategy Development. Supports: Marketing Strategy & Planning Service."@en .
+
+mktx:MarketingSystems
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d206ba69-57a9-4d7b-8d2a-691a06584717> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Systems"@en ;
+  rdfs:subClassOf mktx:MarketingTechnology ;
+  skos:definition "The specific marketing applications in use, such as the marketing automation platform and CRM."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketingSystems), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en .
+
+mktx:MarketingTechnology
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ac496fe2-4fb5-4412-8dcf-6b3b2dcd44b8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Marketing Technology"@en ;
+  rdfs:subClassOf bo:Technology, mktx:MarketingAsset ;
+  skos:definition "The software marketing uses to plan, run and measure its work."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:MarketingTechnology), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Marketing Automation; changed by Marketing Technology Management. Supports: Marketing Strategy & Planning Service."@en .
+
+mktx:MediaChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/22631daa-63d6-5453-a024-b386ae21264f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Media Channel"@en ;
+  rdfs:subClassOf mktx:MarketingChannel ;
+  skos:definition "A medium through which marketing communicates with an audience."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Advertising; used as a channel by Campaign Execution; used as a channel by Content Distribution. Supports: Campaign Management Service, Content Marketing Service, Marketing Communications Service."@en .
+
+mktx:MessagingFramework
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/56068a15-9528-56e6-9586-2a5ae83398a2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Messaging Framework"@en ;
+  rdfs:subClassOf mktx:BrandAsset ;
+  skos:definition "The approved positioning, messages and proof points for each audience."@en ;
+  skos:scopeNote "Emerges from: used by Content Creation; used by Integrated Marketing Communication Management; created by Messaging Development. Supports: Content Marketing Service, Marketing Communications Service, Product Marketing Service."@en .
+
+mktx:MidMarketSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/60916e2e-779c-53f5-92ad-b2edf044cfc2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Mid-Market (150–5,000)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment ;
+  skos:definition "Businesses with 150 to 5,000 employees."@en .
+
+mktx:NetPromoterScore
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/96d51171-83f6-5943-9312-9ceccca5a4dc> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Net Promoter Score"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The share of promoters minus the share of detractors among surveyed clients."@en .
+
+mktx:Offering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/b5f8e451-b70e-555d-908d-5c698f3ac634> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Offering"@en ;
+  rdfs:subClassOf asset:DigitalAsset ;
+  skos:definition "A specification of what is sold to a buyer, including its services, features, terms and price."@en ;
+  skos:scopeNote "Emerges from: promoted by Campaign Execution; promoted by Influencer Relationship Management; used by Market Landscape Mapping; created by Offering Definition; changed by Price Setting; promoted by Product Launch Management; promoted by Sales Promotions. Supports: Campaign Management Service, Competitive Intelligence Service, Competitive Landscape Service, Influencer Marketing Service, Market Research & Insights Service, Marketing Communications Service, Marketing Mix Management Service, Product Marketing Service."@en .
+
+mktx:OfferingAddOn
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fbbcef42-791a-5e4b-be0a-acb83ab7314d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Add-On Offering"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "An offering bought on top of a base offering."@en ;
+  skos:scopeNote "Emerges from: promoted by Cross-Sell & Upsell Marketing. Supports: Customer Engagement Service."@en .
+
+mktx:OfferingFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/df840fc9-351e-5834-9a9a-cfed1f117a51> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Offering Feature"@en ;
+  rdfs:subClassOf asset:DigitalAsset ;
+  skos:definition "A named function or service element that is part of an offering."@en ;
+  skos:scopeNote "Emerges from: used by Market Landscape Mapping; used by Offering Definition; changed by Service Management. Supports: Competitive Intelligence Service, Competitive Landscape Service, Market Research & Insights Service, Marketing Mix Management Service."@en .
+
+mktx:OnePager
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/baca8809-3e2b-5a13-905a-8f2ae7386319> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "One-Pager"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A single-page summary of an offering."@en ;
+  skos:scopeNote "Emerges from: created by Sales Enablement. Supports: Product Marketing Service."@en .
+
+mktx:OpportunityRecord
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ccca4c77-0fd0-5eec-86a3-6a02bf5c45a4> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Opportunity Record"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "A sales system record of a potential deal, with stage, value and competitors present."@en ;
+  skos:scopeNote "Emerges from: created by Lead Qualification & Handoff; used by Marketing Attribution. Supports: Demand Generation Service, Marketing Analytics & Reporting Service, Marketing Strategy & Planning Service."@en .
+
+mktx:OpportunityStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/dbb7466e-fd76-569c-96f7-11af5888a00a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Opportunity"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "A qualified deal being actively pursued."@en .
+
+mktx:PEOServiceBundle
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/90745b8f-4718-5e94-ad31-3c8ac7d96ed1> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "PEO Service Bundle"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "An offering in which the provider co-employs the client's workers and bundles payroll, benefits, workers' compensation, compliance and HR services."@en .
+
+mktx:PaidSearchChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/c31c69de-5d71-5441-9924-452d25d412ab> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Paid Search"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Sponsored results on search engine pages."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Paid Search Advertising. Supports: Performance Marketing Service."@en .
+
+mktx:PartnerChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/bc915b43-2eed-52a0-8493-ba3ad1ecef3e> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Partner Channel"@en ;
+  rdfs:subClassOf mktx:RouteToMarket ;
+  skos:definition "Sold with or through a technology or alliance partner."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Co-Marketing. Supports: Channel & Partner Marketing Service."@en .
+
+mktx:PartnerIncentiveRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/02a344b7-07ba-553e-afcc-31dcaf1d9d40> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Partner Incentive Rule"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "How brokers and partners are paid for business they bring, such as a flat fee or a percentage of admin revenue."@en ;
+  skos:scopeNote "Emerges from: guides Broker & Advisor Marketing; created by Partner Incentive Management. Supports: Channel & Partner Marketing Service."@en .
+
+mktx:PayrollOffering
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fb53a164-a558-5e7e-9b15-3ed3a7d74533> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Payroll Offering"@en ;
+  rdfs:subClassOf mktx:Offering ;
+  skos:definition "Payroll processing and tax filing only."@en .
+
+mktx:PayrollTaxFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5835a14e-ab28-53b4-82a8-5452e27e5037> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Payroll & Tax Administration"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Paying worksite employees and filing employment taxes."@en .
+
+mktx:PerEmployeePerMonthPricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9da1bc79-7f6f-51d2-8e89-1c3d6c60436a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Per Employee per Month"@en ;
+  rdfs:subClassOf mktx:PricingModel ;
+  skos:definition "A flat fee for each worksite employee each month."@en .
+
+mktx:PercentOfPayrollPricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/f6dbb2da-4ece-5415-9b94-68dcc9d35fed> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Percent of Payroll"@en ;
+  rdfs:subClassOf mktx:PricingModel ;
+  skos:definition "A fee set as a percentage of gross payroll."@en .
+
+mktx:PositioningClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/99e1462b-5250-5611-a336-f5e15235c09d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Positioning Claim"@en ;
+  rdfs:subClassOf mktx:BrandAsset, mktx:MarketClaim ;
+  skos:definition "A claim the organization makes about itself or its offerings to set them apart, such as “Your full HR department”."@en ;
+  skos:scopeNote "Emerges from: created by Brand Positioning; created by Messaging Development. Supports: Brand Management Service, Product Marketing Service."@en .
+
+mktx:PressRelease
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/30b310fc-1985-5399-b2f1-de04176f6140> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Press Release"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "An official announcement issued to the media."@en ;
+  skos:scopeNote "Emerges from: created by Product Launch Management; created by Public Relations; created by Reputation Management. Supports: Brand Management Service, Marketing Communications Service, Product Marketing Service."@en .
+
+mktx:PricePerception
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/db2f47e0-b1c4-4b89-9e60-e41105902bb2> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Price Perception"@en ;
+  rdfs:subClassOf mktx:MarketPerceptionQuality ;
+  skos:definition "How buyers judge an offering's price."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:PricePerception), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: used by Price Market Research. Supports: Marketing Mix Management Service."@en .
+
+mktx:PricingModel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/35849eca-6560-5ce4-8f59-c630e0fad078> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Pricing Model"@en ;
+  rdfs:subClassOf mktx:MarketingRule ;
+  skos:definition "A rule for how an offering's price is calculated."@en ;
+  skos:scopeNote "Emerges from: guides, used by Competitive Pricing Analysis; guides, used by Price Setting. Supports: Competitive Intelligence Service, Competitive Pricing Intelligence Service, Market Research & Insights Service, Marketing Mix Management Service."@en .
+
+mktx:PricingStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8f50961e-5450-4279-b5fa-6309bb0a418f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Pricing Strategy"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "The chosen approach to pricing an offering for its segments."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:PricingStrategy), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: created by Price Setting. Supports: Marketing Mix Management Service."@en .
+
+mktx:PricingTactics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/da2b6aff-ecb9-4450-abba-df151501bc6a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Pricing Tactics"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "Short-term pricing actions such as discounts, promotions and price changes."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:PricingTactics), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: created by Price Setting. Supports: Marketing Mix Management Service."@en .
+
+mktx:PrivacyNoticeRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/1782fb84-448c-5114-9a69-f9fd3a43200d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Privacy Notice & Rights Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "Notice, consent and data-rights rules for personal data used in marketing."@en .
+
+mktx:ProductStrategy
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9f08bbc2-5301-4c60-92ac-6d885af81c96> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Product Strategy"@en ;
+  rdfs:subClassOf mktx:MarketingPlanSpecification ;
+  skos:definition "The plan for which offerings to build, keep or retire and for whom."@en ;
+  skos:editorialNote "Re-homed from ontology-domain-marketing 1.0 (mkt:ProductStrategy), where it was filed under a process. The 1.0 IRI stays in the ontology as a deprecated equivalent class."@en ;
+  skos:scopeNote "Emerges from: created by Offering Definition. Supports: Marketing Mix Management Service."@en .
+
+mktx:Promotion
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/db210529-41c0-5b86-a11a-851d43a6401d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Promotion"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A time-limited offer, such as a discount or incentive, that encourages purchase."@en ;
+  skos:scopeNote "Emerges from: created by Sales Promotions. Supports: Marketing Communications Service."@en .
+
+mktx:ProspectRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9e3d538f-381b-5049-b723-5c3b6c838a63> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Prospect"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a party the organization is trying to win as a client."@en ;
+  skos:scopeNote "Emerges from: targeted by Lead Generation. Supports: Demand Generation Service."@en .
+
+mktx:PublicRelationsChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/99fe2d5a-ae8a-5eb8-ae27-813a4545aba9> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Earned Media"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Earned coverage in news and trade media."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Public Relations. Supports: Marketing Communications Service."@en .
+
+mktx:PublishedTierPricing
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/9daf960e-7fb3-5584-9209-be483ab91fc3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Published Tier Pricing"@en ;
+  rdfs:subClassOf mktx:PricingModel ;
+  skos:definition "Published tiers, each with a set price and set of features."@en .
+
+mktx:PurchaseIntent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6de718d1-d22a-5d02-8221-cb2b2755066d> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Purchase Intent"@en ;
+  rdfs:subClassOf mktx:CustomerDisposition ;
+  skos:definition "A prospect's tendency to buy within a period."@en ;
+  skos:scopeNote "Emerges from: used by Lead Scoring. Supports: Demand Generation Service."@en .
+
+mktx:ReferralPartnerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/cd37a254-8bb8-536f-b979-4a24e9898586> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Referral Partner"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a party that refers prospects to the organization."@en ;
+  skos:scopeNote "Emerges from: targeted by Customer Referral; targeted by Partner Enablement. Supports: Channel & Partner Marketing Service, Customer Engagement Service."@en .
+
+mktx:ReferralPropensity
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5bd7370a-12ad-5bb4-938c-0714ca75012c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Referral Propensity"@en ;
+  rdfs:subClassOf mktx:CustomerDisposition ;
+  skos:definition "A client's tendency to recommend the organization."@en ;
+  skos:scopeNote "Emerges from: used by Customer Referral. Supports: Customer Engagement Service."@en .
+
+mktx:RegulatoryChange
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/83e80f9f-b672-5fe8-b119-93804e0c464f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Regulatory Change"@en ;
+  rdfs:subClassOf mktx:MarketEvent ;
+  skos:definition "A new or changed law, regulation or certification rule that affects the market."@en ;
+  skos:scopeNote "Emerges from: used by Regulated Content Review. Supports: Marketing Compliance Service."@en .
+
+mktx:ReputationIncident
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/d93c7530-027c-51b2-a55d-51294110da1a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Reputation Incident"@en ;
+  rdfs:subClassOf mktx:MarketingIssue ;
+  skos:definition "An event that harms or threatens public perception of the brand."@en ;
+  skos:scopeNote "Emerges from: used by Reputation Management. Supports: Brand Management Service."@en .
+
+mktx:ReviewSiteChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fa4981e2-0851-5092-bb13-30c0a94d012b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Review Sites"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Third-party sites where buyers read reviews and comparisons."@en .
+
+mktx:RiskComplianceFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/15711ea0-b7b1-5008-a335-287fb06f528a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Risk & Compliance Support"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Helping clients follow employment law and manage employment liability."@en .
+
+mktx:RouteToMarket
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/13aec3e6-22ce-5074-85dd-dbbeb3531259> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Route to Market"@en ;
+  rdfs:subClassOf mktx:MarketingChannel ;
+  skos:definition "How an offering is sold to a buyer."@en .
+
+mktx:SalesPresentation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6933f373-26a1-5f49-ba91-85cd8bff8e8c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Sales Presentation"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A slide deck sellers use with prospects."@en ;
+  skos:scopeNote "Emerges from: created by Sales Enablement. Supports: Product Marketing Service."@en .
+
+mktx:SalesQualifiedLeadStage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6180917c-c979-5bf6-86dc-b55ce0f27ac3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Sales Qualified Lead"@en ;
+  rdfs:subClassOf mktx:DemandFunnelStage ;
+  skos:definition "Sales has confirmed need, budget and authority."@en .
+
+mktx:SelfServeDigitalChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/4b0c7f02-d0fd-50bb-9937-52caef681f03> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Self-Serve Digital"@en ;
+  rdfs:subClassOf mktx:RouteToMarket ;
+  skos:definition "Bought online without a salesperson."@en .
+
+mktx:ShareOfVoice
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/6bffbcb0-22c1-5f15-8e86-062447865504> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Share of Voice"@en ;
+  rdfs:subClassOf mktx:MarketingMetric ;
+  skos:definition "The organization's share of all mentions or impressions in its market."@en .
+
+mktx:SizeBandSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/75651b45-a900-5273-b405-00dbbb28205b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Employee Size Band Segment"@en ;
+  rdfs:subClassOf mktx:MarketSegment ;
+  skos:definition "A market segment whose members are grouped by number of employees."@en ;
+  skos:scopeNote "Emerges from: targeted by Business Market Analysis. Supports: Market Research & Insights Service."@en .
+
+mktx:SmallBusinessSegment
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/42353ba6-83e9-57d9-98b5-17f9404f2247> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Small Business (5–49)"@en ;
+  rdfs:subClassOf mktx:SizeBandSegment ;
+  skos:definition "Businesses with 5 to 49 employees."@en .
+
+mktx:SocialMediaChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/a530a0f3-d749-568f-884f-420f8381328f> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Social Media"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "Organic and paid posts on social platforms."@en ;
+  skos:scopeNote "Emerges from: used as a channel by Social Media Marketing. Supports: Performance Marketing Service."@en .
+
+mktx:TargetAccountList
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/0f30d487-f44f-5d68-9252-474452992427> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Target Account List"@en ;
+  rdfs:subClassOf mktx:MarketingDataAsset ;
+  skos:definition "The list of accounts selected for account-based marketing."@en ;
+  skos:scopeNote "Emerges from: created by Account Selection & Prioritization. Supports: Account-Based Marketing Service."@en .
+
+mktx:TargetAccountRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/089bb47e-c8e7-5c4e-be45-1fd1461d2330> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Target Account"@en ;
+  rdfs:subClassOf mktx:ProspectRole ;
+  skos:definition "The role of a prospect selected for account-based marketing."@en ;
+  skos:scopeNote "Emerges from: targeted by Account Selection & Prioritization; targeted by Personalized Content. Supports: Account-Based Marketing Service."@en .
+
+mktx:TechnologyPartnerRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/e99356d0-00fc-5292-bbbc-0b7e623a051a> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Technology Partner"@en ;
+  rdfs:subClassOf mktx:MarketRole ;
+  skos:definition "The role of a software company whose platform the organization embeds, resells or co-markets."@en ;
+  skos:scopeNote "Emerges from: used by Campaign Partnerships; used by Co-Marketing; targeted by Partner Enablement. Supports: Campaign Management Service, Channel & Partner Marketing Service."@en .
+
+mktx:TelemarketingConsentRule
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/952fd175-d5de-5360-90db-cb89b716cda3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Telemarketing Consent Rule"@en ;
+  rdfs:subClassOf mktx:MarketingComplianceRule ;
+  skos:definition "Consent rules for marketing calls and texts."@en .
+
+mktx:UnsubstantiatedClaim
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/ba49a5cb-b7d5-5c5e-8416-57c9de79cfc1> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Unsubstantiated Claim"@en ;
+  rdfs:subClassOf mktx:MarketingIssue ;
+  skos:definition "A claim used or about to be used without supporting evidence."@en ;
+  skos:scopeNote "Emerges from: created by Claim Substantiation. Supports: Marketing Compliance Service."@en .
+
+mktx:ValueProposition
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/69f97d14-b941-54e6-8fd2-f89bd137c8a8> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Value Proposition"@en ;
+  rdfs:subClassOf mktx:BrandAsset ;
+  skos:definition "A statement of the benefits an offering delivers to a segment and why they beat the alternatives."@en ;
+  skos:scopeNote "Emerges from: used by Messaging Development; created by Value Proposition Development. Supports: Product Marketing Service."@en .
+
+mktx:VideoContent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/fa11cbe0-27e4-56fb-8d97-ad8f748f48e3> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Video"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "Marketing content in video form."@en .
+
+mktx:WebinarRecording
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/5d231c84-d016-5375-9f46-ace118a1db89> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Webinar Recording"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A recorded webinar made available on demand."@en ;
+  skos:scopeNote "Emerges from: created by Webinar Production. Supports: Event Marketing Service."@en .
+
+mktx:WebsiteChannel
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/3b22778f-7c99-5be7-9644-e597ea5aaa7b> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Website"@en ;
+  rdfs:subClassOf mktx:MediaChannel ;
+  skos:definition "The organization's own web pages."@en ;
+  skos:scopeNote "Emerges from: changed by Search Engine Optimization. Supports: Performance Marketing Service."@en .
+
+mktx:Whitepaper
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/acdb9d4a-8e47-52c0-a613-26ce1b2c9e7c> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Whitepaper"@en ;
+  rdfs:subClassOf mktx:MarketingContent ;
+  skos:definition "A long-form guide or report on a topic buyers care about."@en .
+
+mktx:WorkersCompensationFeature
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/domain-marketing/8744a0c0-e71a-54fc-a759-848e37913609> ;
+  dct:created "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  dct:creator "wallkje" ;
+  dct:modified "2026-10-05T21:00:00.000Z"^^xsd:dateTime ;
+  rdfs:isDefinedBy mktx: ;
+  rdfs:label "Workers' Compensation"@en ;
+  rdfs:subClassOf mktx:OfferingFeature ;
+  skos:definition "Workplace injury insurance and claims handling."@en .

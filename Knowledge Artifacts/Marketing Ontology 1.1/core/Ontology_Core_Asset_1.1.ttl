@@ -1,0 +1,464 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix drm: <https://ontologies.verizon.com/ontology-core-domain/> .
+
+<https://ontologies.verizon.com/ontology-core-asset/> a owl:Ontology;
+  rdfs:label "Ontology | Core | Asset"@en;
+  dct:title "Ontology | Core | Asset"@en;
+  dct:description "This ontology defines the core concept of an asset, including its attributes and relationships. This is foundational for managing and tracking assets within the organization."@en;
+  owl:versionIRI <https://ontologies.verizon.com/ontology-core-asset/1.1>;
+  owl:versionInfo "1.1";
+  owl:priorVersion <https://ontologies.verizon.com/ontology-core-asset/1.0>;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:created "2024-09-24T15:52:20.458Z"^^xsd:dateTime;
+  dct:modified "2026-10-05T16:00:00.000Z"^^xsd:dateTime;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  <http://verizon.ontologies.com/terms/certified> false;
+  skos:changeNote "v1.1: SystemEngineering now points to its own core-asset vocabulary concept, System Engineering (b5f33aea-30d7-4585-b1e2-b074d1126cec), instead of sharing SolutionArchitecture's; imports the party, persona, lifecycle and valuestream taxonomies that its subclass axioms and shapes already reference.";
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/>,
+    <https://ontologies.verizon.com/taxonomy-core-product/>,
+    <https://ontologies.verizon.com/taxonomy-core-party/>,
+    <https://ontologies.verizon.com/taxonomy-core-persona/>,
+    <https://ontologies.verizon.com/taxonomy-core-lifecycle/>,
+    <https://ontologies.verizon.com/taxonomy-core-valuestream/>;
+  skos:changeNote "v1.1 (DRM): the separate upper ontology is retired. Its relations are declared in the Domain Reference Model (ontology-core-domain), which this module now imports as its foundation; shape paths use the ontology-core-domain relation IRIs."@en .
+
+<https://ontologies.verizon.com/ontology-core-asset/BusinessSpecification> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Business Specification"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/8d89cb4e-903c-4c20-947b-9b0f146a9879> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DataEngineering> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Data Engineering"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/d7d371b8-4e0f-4165-bcd9-1938046e4208> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DesignSpecification> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Design Specification"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/83e2c72e-decc-475c-bb20-dc4493fa450e> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DesignThinking> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Design Thinking"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/a971048e-2285-492c-800a-f9bfd1e48c01> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DetectiveControls> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Detective Controls"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/0e13fdd1-573a-4d40-813c-0b38b0cfdc6c> .
+
+<https://ontologies.verizon.com/ontology-core-asset/FeatureDecomposition> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Feature Decomposition"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/26000665-c910-417f-ae04-fccad216a664> .
+
+<https://ontologies.verizon.com/ontology-core-asset/KnowledgeEngineering> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Knowledge Engineering"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/39241a57-f639-44a9-9f72-370ebc2eb72f> .
+
+<https://ontologies.verizon.com/ontology-core-asset/OperationalReadiness> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Operational Readiness"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/aa5579f3-0917-4a38-86da-c28bd68e7366> .
+
+<https://ontologies.verizon.com/ontology-core-asset/PreventativeControls> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Preventative Controls"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/9976e7c6-eacf-446c-8b92-a518d9206aa4> .
+
+<https://ontologies.verizon.com/ontology-core-asset/QualityEngineering> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Quality Engineering"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/1930e697-e58d-40df-9cf1-8690d01eb672> .
+
+<https://ontologies.verizon.com/ontology-core-asset/ServiceLevelAgreement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Service Level Agreement"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/a952ed76-42f9-41b3-8543-1b09c67640ce> .
+
+<https://ontologies.verizon.com/ontology-core-asset/SolutionArchitecture> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Solution Architecture"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/328eef65-790d-46b3-8ab9-00f3f2c7b6d1> .
+
+<https://ontologies.verizon.com/ontology-core-asset/SystemEngineering> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "System Engineering"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/b5f33aea-30d7-4585-b1e2-b074d1126cec> .
+
+<https://ontologies.verizon.com/ontology-core-asset/ValueMap> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Value Map"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/dfa428fb-44c7-46fb-a57c-9ee2dc1f2cd8> .
+
+<https://ontologies.verizon.com/ontology-core-asset/AnalyticProduct> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Analytics>;
+  rdfs:label "Analytic Product"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/76cd666f-18b6-4c98-8b2d-5a99c73a7516> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Analytics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Analytics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/fc59ce1f-e82c-4200-a1a7-9edf7d7e1659> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DigitalAsset> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Asset>;
+  rdfs:label "Digital Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:06:34.595Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/b44e4528-1bda-4d81-83d0-a131c67e91ea> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Artifact> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Artifact"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/6b2d0163-0da7-42fd-a85c-4e68b1286475> .
+
+<https://ontologies.verizon.com/ontology-core-asset/ArtificialIntelligenceAgent> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/AutonomousAgent>;
+  rdfs:label "Artificial Intelligence Agent"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:22:58.937Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/24c56c7f-4b09-4fa9-b268-b873bb13e5bd> .
+
+<https://ontologies.verizon.com/ontology-core-asset/AutonomousAgent> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAgent>;
+  rdfs:label "Autonomous Agent"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:22:58.937Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/3de71a43-42fa-465f-b3ec-ae1780f845c6> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Asset> a owl:Class;
+  rdfs:label "Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:06:34.595Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/4aa9f255-9e29-40ff-aebd-6c114fa6ca9d> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DigitalAgent> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Digital Agent"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:22:58.937Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/50e499ba-4f51-4dbf-a027-f7ce4c181fe7> .
+
+<https://ontologies.verizon.com/ontology-core-asset/BiologicalAsset> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Asset>;
+  rdfs:label "Biological Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:29:49.449Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:06:34.595Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/82ebfde3-15a0-4f98-936a-ffd7cbdb34db> .
+
+<https://ontologies.verizon.com/ontology-core-asset/BusinessIntelligenceAgent> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/AutonomousAgent>;
+  rdfs:label "Business Intelligence Agent"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:22:58.937Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/e7b4a789-9275-46f9-801a-5c62e67dfc3c> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Data> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/9e9394f3-329c-4244-a710-6f6bf45c1d4e> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DataProduct> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Data>;
+  rdfs:label "Data Product"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/830f6dd5-72ff-44c3-b106-2598df1ee35c> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Document> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Document"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/4b8bd181-2b91-49cb-b6f9-7cfef31e9b11> .
+
+<https://ontologies.verizon.com/ontology-core-asset/HumanAsset> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Person>, <https://ontologies.verizon.com/ontology-core-asset/BiologicalAsset>;
+  rdfs:label "Human Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:26:51.877Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:06:34.595Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/1e5acb30-6de4-432b-9c05-9833ef1947eb> .
+
+<https://ontologies.verizon.com/ontology-core-asset/IntellectualProperty> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Intellectual Property"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/c44d63e7-fec2-472c-aa2e-cd3884a8deeb> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Media> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Media"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/d4fbd4d0-b2f9-44a9-ab23-6ba796b63c1f> .
+
+<https://ontologies.verizon.com/ontology-core-asset/OperationalStandardOperatingProcedure>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Artifact>;
+  rdfs:label "Operational Standard Operating Procedure"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T20:47:11.594Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/af3a7c79-9e89-4861-951d-6005a8257acd> .
+
+<https://ontologies.verizon.com/ontology-core-asset/PhysicalAsset> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-product/IndividualProduct>,
+    <https://ontologies.verizon.com/ontology-core-asset/Asset>;
+  rdfs:label "Physical Asset"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:06:34.595Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/a568be6f-1a74-471d-b879-8d1523468dc3> .
+
+<https://ontologies.verizon.com/ontology-core-asset/Semantics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/DigitalAsset>;
+  rdfs:label "Semantics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/ontology-core-asset/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "wallkje";
+  dct:creator "wallkje";
+  dct:modified "2025-04-16T16:27:56.077Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-24T17:33:22.282Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-asset/8b6df11b-0183-4781-a58c-d66a370a22ff> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:guides;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/Asset>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-persona/Persona> .
+
+<https://ontologies.verizon.com/ontology-core-asset/AnalyticProductShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-valuestream/DataAnalyticsInsights>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/AnalyticProduct> .
+
+<https://ontologies.verizon.com/ontology-core-asset/AssetShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:has;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/Asset> .
+
+<https://ontologies.verizon.com/ontology-core-asset/DataProductShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:enables;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-valuestream/DataAnalyticsInsights>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/DataProduct> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/PartyShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:assignedTo;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-persona/Persona>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/Party> .
+
+<https://ontologies.verizon.com/taxonomy-core-valuestream/DataAnalyticsInsightsShape>
+  a sh:NodeShape;
+  sh:property [
+      sh:path drm:enabledBy;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/AnalyticProduct>
+    ], [
+      sh:path drm:enabledBy;
+      sh:class <https://ontologies.verizon.com/ontology-core-asset/DataProduct>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-valuestream/DataAnalyticsInsights> .
+
+<https://ontologies.verizon.com/ontology-core-asset/BiologicalAssetShape> a sh:NodeShape;
+  sh:property [
+      sh:path drm:typeOf;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-party/Party>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/ontology-core-asset/BiologicalAsset> .
+
+<https://ontologies.verizon.com/taxonomy-core-valuestream/DataAnalyticsInsights> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/Persona> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:26:13.534Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Party> <http://open-services.net/ns/core#modifiedBy>
+    "milsh69";
+  dct:contributor "milsh69";
+  dct:modified "2025-04-24T16:29:49.449Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .

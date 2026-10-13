@@ -1,0 +1,88 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-role/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Role_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-role/>.
+
+<https://ontologies.verizon.com/taxonomy-core-role/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Role"@en ;
+  dct:description "The role taxonomy clarifies the relationships between entities involved in a service or transaction.  "@en ;
+  dct:title "Taxonomy | Core | Role"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-role/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:48:05.360Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-05T03:37:44.143Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Role .
+
+tx:Consumer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-role/> ;
+  skos:prefLabel "Consumer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:56:04.801Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:39:22.088Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/004e2c18-a604-4e1b-8b85-f3de8eb7be42> ;
+  skos:broader tx:Role .
+
+tx:Role
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-role/> ;
+  skos:prefLabel "Role"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:56:04.801Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:39:22.088Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/f85e8978-696d-4d40-a560-f98a2756e814> ;
+  skos:narrower tx:Consumer, tx:Customer, tx:Partner, tx:Provider ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-role/> .
+
+tx:Customer
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-role/> ;
+  skos:prefLabel "Customer"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:56:04.801Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:39:22.088Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/b02b9c5e-c98f-48b1-bde3-359fb0b15bb7> ;
+  skos:broader tx:Role .
+
+tx:Partner
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-role/> ;
+  skos:prefLabel "Partner"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:56:04.801Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:39:22.088Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/9b451b16-ef35-4690-b407-86770c8af8ad> ;
+  skos:broader tx:Role .
+
+tx:Provider
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-role/> ;
+  skos:prefLabel "Provider"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T14:56:04.801Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:39:22.088Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-role/981b96d9-5593-403b-9963-b960273d623c> ;
+  skos:broader tx:Role .

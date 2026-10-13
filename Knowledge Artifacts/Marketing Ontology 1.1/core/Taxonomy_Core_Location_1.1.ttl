@@ -1,0 +1,182 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix loca: <https://ontologies.verizon.com/taxonomy-core-location/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+loca:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-location: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Location, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-location> ;
+  dct:title "Taxonomy | Core | Location"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-location/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Location"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example City, EmailAddress, Geospatial) resolve to declared classes."@en .
+
+loca:City
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f5b8528b-dde9-4080-955b-eecdd4cfface> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "City"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:EmailAddress
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/80e160e8-dd62-497f-9cb5-1249fa5a16e5> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Email Address"@en ;
+  rdfs:subClassOf loca:Logical ;
+  skos:altLabel "Electronic Mail Address"@en .
+
+loca:Geospatial
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f0845aa9-60ea-45e6-896a-29e56fbf25ab> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Geospatial"@en ;
+  rdfs:subClassOf loca:Location .
+
+loca:InternationalizedResourceIdentifier
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/2766a1ad-59a1-43b1-a120-a9e94342c77f> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Internationalized Resource Identifier"@en ;
+  rdfs:subClassOf loca:Logical ;
+  skos:altLabel "IRI"@en .
+
+loca:Latitude
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/bfd19d59-610c-4d96-80e5-417c7811dcd6> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Latitude"@en ;
+  rdfs:subClassOf loca:Geospatial .
+
+loca:Location
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/b7a8cc47-e0a0-4113-a645-b41a61312257> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Location"@en ;
+  skos:altLabel "Place"@en .
+
+loca:Logical
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f46b5be3-1baf-41ed-b7fc-eb73ad7e1ccd> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Logical"@en ;
+  rdfs:subClassOf loca:Location .
+
+loca:Longitude
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/29278555-1ea1-4bc2-a37d-5017472a42b1> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Longitude"@en ;
+  rdfs:subClassOf loca:Geospatial .
+
+loca:POBox
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3d44d544-787b-40d5-9aee-0424839a1abc> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "PO Box"@en ;
+  rdfs:subClassOf loca:Physical ;
+  skos:altLabel "Post Office Box"@en .
+
+loca:PhoneNumber
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3a2302f9-68e4-474f-bd09-178f86e7c872> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Phone Number"@en ;
+  rdfs:subClassOf loca:Logical ;
+  skos:altLabel "Telephone Number"@en .
+
+loca:Physical
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/761dce3a-87f7-4ef4-9908-c3f01636d494> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Physical"@en ;
+  rdfs:subClassOf loca:Location .
+
+loca:Polygon
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/762f882a-95a4-4ac8-9d74-9ee34d67dfa2> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Polygon"@en ;
+  rdfs:subClassOf loca:Geospatial .
+
+loca:PortNumber
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/457dda6b-1302-49e9-b6b7-6f85da16846b> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Port Number"@en ;
+  rdfs:subClassOf loca:Logical .
+
+loca:Province
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/eef13307-b492-4edf-8a7c-c802443e9125> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Province"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:Region
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/6078c876-3e28-440c-9ffe-48e78dff42e2> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Region"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:State
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/3df8b9c7-0ca1-4759-a32a-2c0caedd6627> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "State"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:StreetAddress
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/5af72fe5-7b0f-4480-b2c9-f07447785dd5> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Street Address"@en ;
+  rdfs:subClassOf loca:Physical ;
+  skos:altLabel "Address"@en .
+
+loca:StreetName
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/cd65ace1-cad6-46b4-800c-9090c30998cd> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Street Name"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:StreetNumber
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f7532539-c846-4ded-bdff-92c391f4c491> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Street Number"@en ;
+  rdfs:subClassOf loca:StreetAddress .
+
+loca:UniformResourceIdentifier
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/8e9e3fae-6300-4204-8c8d-01e33e629d0e> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Uniform Resource Identifier"@en ;
+  rdfs:subClassOf loca:Logical ;
+  skos:altLabel "URI"@en .
+
+loca:UniformResourceLocator
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/f657d669-19b4-4a89-9cfe-cded57dfdd3c> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "Uniform Resource Locator"@en ;
+  rdfs:subClassOf loca:Logical ;
+  skos:altLabel "URL"@en .
+
+loca:ZIPCode
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-location/4f68e741-bc0b-4946-9123-7cf042aef7dc> ;
+  rdfs:isDefinedBy loca: ;
+  rdfs:label "ZIP Code"@en ;
+  rdfs:subClassOf loca:StreetAddress .

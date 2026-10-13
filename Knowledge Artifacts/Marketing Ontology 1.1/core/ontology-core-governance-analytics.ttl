@@ -1,0 +1,205 @@
+@base <https://www.enablingvalue.com/ontology-core-governance-analytics#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ag: <https://www.enablingvalue.com/ontology-core-governance-analytics#> .
+@prefix dg: <https://www.enablingvalue.com/ontology-core-governance-data#> .
+
+### Ontology
+<https://www.enablingvalue.com/ontology-core-governance-analytics>
+    rdf:type owl:Ontology ;
+    owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ,
+        <https://ontologies.verizon.com/ontology-core-asset/> ,
+        <https://ontologies.verizon.com/ontology-core-requirements/> ,
+        <https://www.enablingvalue.com/ontology-core-governance-data> ;
+    owl:versionIRI <https://www.enablingvalue.com/ontology-core-governance-analytics/1.1> ;
+    owl:versionInfo "1.1" ;
+    rdfs:label "Analytics Governance Ontology"@en ;
+    rdfs:comment "Models governance of the analytic model lifecycle, infrastructure, and strategic alignment."@en .
+
+### -------------------------------------------------------
+### Classes
+### -------------------------------------------------------
+
+ag:AnalyticModel
+    rdf:type owl:Class ;
+    rdfs:label "Analytic Model"@en ;
+    rdfs:comment "A statistical or machine-learning model derived from data to support business decisions."@en .
+
+ag:PredictiveModel
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:AnalyticModel ;
+    rdfs:label "Predictive Model"@en ;
+    rdfs:comment "An analytic model that forecasts future outcomes from historical data patterns."@en .
+
+ag:DescriptiveModel
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:AnalyticModel ;
+    rdfs:label "Descriptive Model"@en ;
+    rdfs:comment "An analytic model that summarizes historical data to describe past behavior or current state."@en .
+
+ag:PrescriptiveModel
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:AnalyticModel ;
+    rdfs:label "Prescriptive Model"@en ;
+    rdfs:comment "An analytic model that recommends optimal actions given predicted outcomes and constraints."@en .
+
+ag:ModelLifecycleStage
+    rdf:type owl:Class ;
+    rdfs:label "Model Lifecycle Stage"@en ;
+    rdfs:comment "A discrete phase in the governance lifecycle of an analytic model."@en .
+
+ag:BuildStage
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:ModelLifecycleStage ;
+    rdfs:label "Build Stage"@en ;
+    rdfs:comment "The phase in which a model is developed, trained, and initially validated."@en .
+
+ag:DeployStage
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:ModelLifecycleStage ;
+    rdfs:label "Deploy Stage"@en ;
+    rdfs:comment "The phase in which a validated model is released into a production operational system."@en .
+
+ag:MonitorStage
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:ModelLifecycleStage ;
+    rdfs:label "Monitor Stage"@en ;
+    rdfs:comment "The phase in which a deployed model is observed for drift, degradation, or anomalous output."@en .
+
+ag:RefreshStage
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:ModelLifecycleStage ;
+    rdfs:label "Refresh Stage"@en ;
+    rdfs:comment "The phase in which model parameters are updated with new data without full retraining."@en .
+
+ag:RetireStage
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:ModelLifecycleStage ;
+    rdfs:label "Retire Stage"@en ;
+    rdfs:comment "The phase in which a model is decommissioned and removed from production."@en .
+
+ag:AnalyticInfrastructure
+    rdf:type owl:Class ;
+    rdfs:label "Analytic Infrastructure"@en ;
+    rdfs:comment "Technical systems and platforms supporting model development, management, and deployment."@en .
+
+ag:TrainingPlatform
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:AnalyticInfrastructure ;
+    rdfs:label "Training Platform"@en ;
+    rdfs:comment "Infrastructure dedicated to model training, including compute resources and ML frameworks."@en .
+
+ag:ServingPlatform
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:AnalyticInfrastructure ;
+    rdfs:label "Serving Platform"@en ;
+    rdfs:comment "Infrastructure that hosts deployed models and serves inference requests at scale."@en .
+
+ag:GovernanceBody
+    rdf:type owl:Class ;
+    rdfs:label "Analytics Governance Body"@en ;
+    rdfs:comment "An organizational structure with authority over analytic strategy, prioritization, and standards."@en .
+
+ag:AnalyticsGovernanceCommittee
+    rdf:type owl:Class ;
+    rdfs:subClassOf ag:GovernanceBody ;
+    rdfs:label "Analytics Governance Committee"@en ;
+    rdfs:comment "A federated committee that prioritizes analytic projects and approves model deployment."@en .
+
+ag:BusinessRequirement
+    rdf:type owl:Class ;
+    rdfs:label "Business Requirement"@en ;
+    rdfs:comment "An operational or strategic goal that justifies the development and deployment of an analytic model."@en .
+
+ag:ModelValidationResult
+    rdf:type owl:Class ;
+    rdfs:label "Model Validation Result"@en ;
+    rdfs:comment "The documented outcome of a model validation process capturing metrics, test results, and approval status."@en .
+
+### -------------------------------------------------------
+### Object Properties
+### -------------------------------------------------------
+
+ag:deployedOn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "deployed on"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range ag:AnalyticInfrastructure ;
+    rdfs:comment "Relates an analytic model to the infrastructure on which it is operationally deployed."@en .
+
+ag:oversees
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "oversees"@en ;
+    rdfs:domain ag:AnalyticsGovernanceCommittee ;
+    rdfs:range ag:AnalyticModel ;
+    rdfs:comment "Relates a governance committee to the analytic models under its oversight."@en .
+
+ag:alignedTo
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "aligned to"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range ag:BusinessRequirement ;
+    rdfs:comment "Relates an analytic model to the business requirement that justified its development."@en .
+
+ag:trainedOn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "trained on"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range dg:DataAsset ;
+    rdfs:comment "Relates an analytic model to the data asset used as its training source."@en .
+
+ag:hasLifecycleStage
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "has lifecycle stage"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range ag:ModelLifecycleStage ;
+    rdfs:comment "Relates an analytic model to its current lifecycle stage."@en .
+
+ag:hasValidationResult
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "has validation result"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range ag:ModelValidationResult ;
+    rdfs:comment "Relates an analytic model to its documented validation outcome."@en .
+
+ag:prioritizedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "prioritized by"@en ;
+    rdfs:domain ag:BusinessRequirement ;
+    rdfs:range ag:AnalyticsGovernanceCommittee ;
+    rdfs:comment "Relates a business requirement to the committee responsible for its prioritization."@en .
+
+### -------------------------------------------------------
+### Datatype Properties
+### -------------------------------------------------------
+
+ag:hasModelVersion
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has model version"@en ;
+    rdfs:domain ag:AnalyticModel ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Version identifier for the analytic model."@en .
+
+ag:hasPerformanceScore
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has performance score"@en ;
+    rdfs:domain ag:ModelValidationResult ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Numeric score representing model performance against a validation dataset."@en .
+
+ag:isApproved
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "is approved"@en ;
+    rdfs:domain ag:ModelValidationResult ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Indicates whether the model has been formally approved for deployment."@en .
+
+### -------------------------------------------------------
+### Anchors to the Verizon core (v1.1)
+### -------------------------------------------------------
+
+ag:AnalyticModel rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Analytics> .
+ag:BusinessRequirement rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-requirements/Requirement> .
+ag:GovernanceBody rdfs:subClassOf dg:GovernanceBody .

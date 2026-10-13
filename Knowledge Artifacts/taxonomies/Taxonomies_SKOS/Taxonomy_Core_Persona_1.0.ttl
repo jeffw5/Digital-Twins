@@ -1,0 +1,587 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-persona/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Persona_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-persona/>.
+
+<https://ontologies.verizon.com/taxonomy-core-persona/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Persona"@en ;
+  dct:description "The persona taxonomy categorizes data types used to understand individual users and work together to create comprehensive user profiles for personalized experiences."@en ;
+  dct:title "Taxonomy | Core | Persona"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-persona/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:47:26.396Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-05T00:04:05.311Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Persona .
+
+tx:AnalyticEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Analytic Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/5e56d869-7d73-4c32-a988-1512566e0231> ;
+  skos:broader tx:PersonaType .
+
+tx:PersonaType
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Type"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a6234f22-178a-48c8-b5e0-7360b938fea5> ;
+  skos:narrower tx:AnalyticEngineeringPersona, tx:DataEngineeringPersona, tx:KnowledgeEngineeringPersona, tx:PlatformEngineeringPersona, tx:QualityEngineeringPersona, tx:SystemsEngineeringPersona, tx:UxEngineeringPersona ;
+  skos:broader tx:PersonaData .
+
+tx:BrowsingHistory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Browsing History"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/284215b7-5537-4898-9b56-b01b38f76705> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:PriorHistoryData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Prior History Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/2d4d3b9f-4ff5-436c-a94d-609cb19e057a> ;
+  skos:narrower tx:BrowsingHistory, tx:FeedbackRating, tx:InteractionTimestamp, tx:SearchHistory, tx:SelectionHistory, tx:UserJourneyData ;
+  skos:broader tx:Persona .
+
+tx:DataEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Data Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ec35a2e3-a2b6-43fd-94f1-84fb0489c4f7> ;
+  skos:broader tx:PersonaType .
+
+tx:DevicePlatformData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Device & Platform Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d0dfc92c-83ac-4dff-8d7b-815603cecd49> ;
+  skos:broader tx:UserBehaviorData .
+
+tx:UserBehaviorData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "User Behavior Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/3423633b-c884-490a-9294-6d96e0213c69> ;
+  skos:narrower tx:DevicePlatformData, tx:EngagementMetric, tx:EventTracking, tx:NavigationPattern, tx:SessionData ;
+  skos:broader tx:Persona .
+
+tx:EngagementMetric
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Engagement Metric"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f836c828-f661-4538-8847-ffd16c58c2c4> ;
+  skos:broader tx:UserBehaviorData .
+
+tx:EventTracking
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Event Tracking"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b1287dd3-4090-4cb4-8d42-75a4f546f4ac> ;
+  skos:broader tx:UserBehaviorData .
+
+tx:FeedbackRating
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Feedback & Rating"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d95e5ad2-5820-4af4-acff-bc942068ff3a> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:InteractionTimestamp
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Interaction Timestamp"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f6222ad9-3f34-4be5-af31-633507a5d60e> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:KnowledgeEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Knowledge Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb269191-1951-4d04-996a-4a7a9f45c067> ;
+  skos:broader tx:PersonaType .
+
+tx:NavigationPattern
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Navigation Pattern"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a24f7d1a-b1a8-4e13-b407-458d4c76f271> ;
+  skos:broader tx:UserBehaviorData .
+
+tx:Persona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/c8cb38ee-f506-4864-920d-e7523e513081> ;
+  skos:narrower tx:PriorHistoryData, tx:UserBehaviorData, tx:PersonaData, tx:ProfileData, tx:PersonalizationData, tx:PreferenceData ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-persona/> .
+
+tx:PersonaData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a3d2fe72-1825-4011-b18e-52af69c57a26> ;
+  skos:narrower tx:PersonaType, tx:PersonaDemographics, tx:PersonaEthnographics, tx:PersonaIndustry, tx:PersonaRole ;
+  skos:broader tx:Persona .
+
+tx:PersonaDemographics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Demographics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/3e87eafc-efb1-492d-851d-3013806d5eaf> ;
+  skos:broader tx:PersonaData .
+
+tx:PersonaEmail
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Email"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b47d1578-adc2-406d-8e26-9d1142ea50e6> ;
+  skos:broader tx:ProfileData .
+
+tx:ProfileData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Profile Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/87cf7f38-1342-4f49-baeb-dbc78f1a3642> ;
+  skos:narrower tx:PersonaEmail, tx:PersonaLanguage, tx:PersonaLocation, tx:PersonaName, tx:PersonaOrganization, tx:PersonaPhone, tx:PersonaUserIdentifier ;
+  skos:broader tx:Persona .
+
+tx:PersonaEthnographics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Ethnographics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/598c506d-75b5-44c2-8a5e-c7ca3371f6e9> ;
+  skos:broader tx:PersonaData .
+
+tx:PersonaIndustry
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Industry"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/1f114a06-410b-4e1e-b690-5631bfb4da95> ;
+  skos:broader tx:PersonaData .
+
+tx:PersonaLanguage
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Language"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb3c0dad-8c31-42b5-876c-1964c03bdfb1> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonaLocation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Location"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/adecd254-eae3-4322-aadb-6baec57afa50> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonaName
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Name"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/7e5e9d9d-6a85-4d82-9301-e2d3aecc86d4> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonaOrganization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Organization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/8b20a1ff-9142-48cf-8465-078b0cf76b60> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonaPhone
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Phone"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/bc96db83-f32b-4a09-b43f-1618eb5b9756> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonaRole
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona Role"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/e5e3f6a4-957f-43b5-b30b-6deb4a56a035> ;
+  skos:broader tx:PersonaData .
+
+tx:PersonaUserIdentifier
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Persona User Identifier"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/99d9304f-cee0-4ef0-9146-25c461c39ed2> ;
+  skos:broader tx:ProfileData .
+
+tx:PersonalizationAlgorithm
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Personalization Algorithm"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/08a655ff-a474-4996-bbe2-d16b0af9a978> ;
+  skos:broader tx:PersonalizationData .
+
+tx:PersonalizationData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Personalization Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eddfaabf-a96b-427c-9f95-9dfbe8691c47> ;
+  skos:narrower tx:PersonalizationAlgorithm, tx:RecommendationHistory, tx:UserSegmentData ;
+  skos:broader tx:Persona .
+
+tx:PlatformEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Platform Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a0309f92-1bc5-4b26-b686-14078c417eaf> ;
+  skos:broader tx:PersonaType .
+
+tx:PreferenceAccessibility
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preference Accessibility"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb85a804-8bd4-4e3a-9bda-6a9f75ff534a> ;
+  skos:broader tx:PreferenceData .
+
+tx:PreferenceData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preference Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/962276ab-523b-424b-9880-2e3e889adb7e> ;
+  skos:narrower tx:PreferenceAccessibility, tx:PreferenceNotification, tx:PreferencePrivacySettings, tx:PreferredCommunication, tx:PreferredContent, tx:PreferredTopics ;
+  skos:broader tx:Persona .
+
+tx:PreferenceNotification
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preference Notification"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ba45097d-c089-4311-bd57-8a97a82abf07> ;
+  skos:broader tx:PreferenceData .
+
+tx:PreferencePrivacySettings
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preference Privacy Settings"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/1f5a6dbc-b6d1-4c64-baa9-d28dfba15cf4> ;
+  skos:broader tx:PreferenceData .
+
+tx:PreferredCommunication
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preferred Communication"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/4e87eeb3-dff4-4edb-bf40-41f6364be385> ;
+  skos:broader tx:PreferenceData .
+
+tx:PreferredContent
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preferred Content"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/9b3d0e88-4153-4329-84bd-054452801bd2> ;
+  skos:broader tx:PreferenceData .
+
+tx:PreferredTopics
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Preferred Topics"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/fe2aaf2e-bd47-4389-9e85-ba170315029d> ;
+  skos:broader tx:PreferenceData .
+
+tx:QualityEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Quality Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/0451339d-9f69-428b-933d-6ba2b8cba13f> ;
+  skos:broader tx:PersonaType .
+
+tx:RecommendationHistory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Recommendation History"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/2104de0b-074e-466c-8a1c-db6e34cb9685> ;
+  skos:broader tx:PersonalizationData .
+
+tx:SearchHistory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Search History"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f8b72c80-ee5a-4693-bacf-5ec73121f4d2> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:SelectionHistory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Selection History"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/6f8667ff-d297-4d39-92db-a29eeed22f27> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:SessionData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Session Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/072e4a19-ecfe-4f3e-9652-c7838977a00e> ;
+  skos:broader tx:UserBehaviorData .
+
+tx:SystemsEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "Systems Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d5e9a085-d512-4533-b6ea-39160c3298ff> ;
+  skos:broader tx:PersonaType .
+
+tx:UserJourneyData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "User Journey Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b8f1894f-4461-4e3f-8623-935ff400f6fd> ;
+  skos:broader tx:PriorHistoryData .
+
+tx:UserSegmentData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "User Segment Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ab0e51ed-92fd-4dfd-85e7-9a81b4e9a3e0> ;
+  skos:broader tx:PersonalizationData .
+
+tx:UxEngineeringPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-persona/> ;
+  skos:prefLabel "UX Engineering Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:creator "VZDev" ;
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/8e501d1a-56e5-4b48-a175-a6325b4ba91f> ;
+  skos:broader tx:PersonaType .

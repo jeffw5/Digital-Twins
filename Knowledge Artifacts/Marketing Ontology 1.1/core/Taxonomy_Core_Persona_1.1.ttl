@@ -1,0 +1,345 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pers: <https://ontologies.verizon.com/taxonomy-core-persona/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+pers:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-persona: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Persona, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-persona> ;
+  dct:title "Taxonomy | Core | Persona"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-persona/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Persona"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example AnalyticEngineeringPersona, BrowsingHistory, DataEngineeringPersona) resolve to declared classes."@en .
+
+pers:AnalyticEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/5e56d869-7d73-4c32-a988-1512566e0231> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Analytic Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType .
+
+pers:BrowsingHistory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/284215b7-5537-4898-9b56-b01b38f76705> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Browsing History"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:DataEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ec35a2e3-a2b6-43fd-94f1-84fb0489c4f7> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Data Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType .
+
+pers:DevicePlatformData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d0dfc92c-83ac-4dff-8d7b-815603cecd49> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Device & Platform Data"@en ;
+  rdfs:subClassOf pers:UserBehaviorData .
+
+pers:EngagementMetric
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f836c828-f661-4538-8847-ffd16c58c2c4> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Engagement Metric"@en ;
+  rdfs:subClassOf pers:UserBehaviorData .
+
+pers:EventTracking
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b1287dd3-4090-4cb4-8d42-75a4f546f4ac> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Event Tracking"@en ;
+  rdfs:subClassOf pers:UserBehaviorData .
+
+pers:FeedbackRating
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d95e5ad2-5820-4af4-acff-bc942068ff3a> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Feedback & Rating"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:InteractionTimestamp
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f6222ad9-3f34-4be5-af31-633507a5d60e> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Interaction Timestamp"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:KnowledgeEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb269191-1951-4d04-996a-4a7a9f45c067> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Knowledge Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType ;
+  skos:altLabel "KE Persona"@en .
+
+pers:NavigationPattern
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a24f7d1a-b1a8-4e13-b407-458d4c76f271> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Navigation Pattern"@en ;
+  rdfs:subClassOf pers:UserBehaviorData .
+
+pers:Persona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/c8cb38ee-f506-4864-920d-e7523e513081> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona"@en .
+
+pers:PersonaData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a3d2fe72-1825-4011-b18e-52af69c57a26> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:PersonaDemographics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/3e87eafc-efb1-492d-851d-3013806d5eaf> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Demographics"@en ;
+  rdfs:subClassOf pers:PersonaData .
+
+pers:PersonaEmail
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b47d1578-adc2-406d-8e26-9d1142ea50e6> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Email"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonaEthnographics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/598c506d-75b5-44c2-8a5e-c7ca3371f6e9> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Ethnographics"@en ;
+  rdfs:subClassOf pers:PersonaData .
+
+pers:PersonaIndustry
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/1f114a06-410b-4e1e-b690-5631bfb4da95> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Industry"@en ;
+  rdfs:subClassOf pers:PersonaData .
+
+pers:PersonaLanguage
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb3c0dad-8c31-42b5-876c-1964c03bdfb1> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Language"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonaLocation
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/adecd254-eae3-4322-aadb-6baec57afa50> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Location"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonaName
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/7e5e9d9d-6a85-4d82-9301-e2d3aecc86d4> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Name"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonaOrganization
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/8b20a1ff-9142-48cf-8465-078b0cf76b60> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Organization"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonaPhone
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/bc96db83-f32b-4a09-b43f-1618eb5b9756> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Phone"@en ;
+  rdfs:subClassOf pers:ProfileData ;
+  skos:altLabel "Persona Phone Number"@en .
+
+pers:PersonaRole
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/e5e3f6a4-957f-43b5-b30b-6deb4a56a035> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Role"@en ;
+  rdfs:subClassOf pers:PersonaData .
+
+pers:PersonaType
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a6234f22-178a-48c8-b5e0-7360b938fea5> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona Type"@en ;
+  rdfs:subClassOf pers:PersonaData .
+
+pers:PersonaUserIdentifier
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/99d9304f-cee0-4ef0-9146-25c461c39ed2> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Persona User Identifier"@en ;
+  rdfs:subClassOf pers:ProfileData .
+
+pers:PersonalizationAlgorithm
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/08a655ff-a474-4996-bbe2-d16b0af9a978> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Personalization Algorithm"@en ;
+  rdfs:subClassOf pers:PersonalizationData .
+
+pers:PersonalizationData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eddfaabf-a96b-427c-9f95-9dfbe8691c47> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Personalization Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:PlatformEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/a0309f92-1bc5-4b26-b686-14078c417eaf> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Platform Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType .
+
+pers:PreferenceAccessibility
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/eb85a804-8bd4-4e3a-9bda-6a9f75ff534a> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preference Accessibility"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PreferenceData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/962276ab-523b-424b-9880-2e3e889adb7e> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preference Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:PreferenceNotification
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ba45097d-c089-4311-bd57-8a97a82abf07> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preference Notification"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PreferencePrivacySettings
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/1f5a6dbc-b6d1-4c64-baa9-d28dfba15cf4> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preference Privacy Settings"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PreferredCommunication
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/4e87eeb3-dff4-4edb-bf40-41f6364be385> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preferred Communication"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PreferredContent
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/9b3d0e88-4153-4329-84bd-054452801bd2> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preferred Content"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PreferredTopics
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/fe2aaf2e-bd47-4389-9e85-ba170315029d> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Preferred Topics"@en ;
+  rdfs:subClassOf pers:PreferenceData .
+
+pers:PriorHistoryData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/2d4d3b9f-4ff5-436c-a94d-609cb19e057a> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Prior History Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:ProfileData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/87cf7f38-1342-4f49-baeb-dbc78f1a3642> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Profile Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:QualityEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/0451339d-9f69-428b-933d-6ba2b8cba13f> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Quality Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType .
+
+pers:RecommendationHistory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/2104de0b-074e-466c-8a1c-db6e34cb9685> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Recommendation History"@en ;
+  rdfs:subClassOf pers:PersonalizationData .
+
+pers:SearchHistory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/f8b72c80-ee5a-4693-bacf-5ec73121f4d2> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Search History"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:SelectionHistory
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/6f8667ff-d297-4d39-92db-a29eeed22f27> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Selection History"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:SessionData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/072e4a19-ecfe-4f3e-9652-c7838977a00e> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Session Data"@en ;
+  rdfs:subClassOf pers:UserBehaviorData .
+
+pers:SystemsEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/d5e9a085-d512-4533-b6ea-39160c3298ff> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "Systems Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType .
+
+pers:UXEngineeringPersona
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/8e501d1a-56e5-4b48-a175-a6325b4ba91f> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "UX Engineering Persona"@en ;
+  rdfs:subClassOf pers:PersonaType ;
+  skos:altLabel "User Experience Engineering Persona"@en .
+
+pers:UserBehaviorData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/3423633b-c884-490a-9294-6d96e0213c69> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "User Behavior Data"@en ;
+  rdfs:subClassOf pers:Persona .
+
+pers:UserJourneyData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/b8f1894f-4461-4e3f-8623-935ff400f6fd> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "User Journey Data"@en ;
+  rdfs:subClassOf pers:PriorHistoryData .
+
+pers:UserSegmentData
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-persona/ab0e51ed-92fd-4dfd-85e7-9a81b4e9a3e0> ;
+  rdfs:isDefinedBy pers: ;
+  rdfs:label "User Segment Data"@en ;
+  rdfs:subClassOf pers:PersonalizationData .

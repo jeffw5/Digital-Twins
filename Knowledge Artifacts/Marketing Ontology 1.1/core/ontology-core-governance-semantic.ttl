@@ -1,0 +1,251 @@
+@base <https://www.enablingvalue.com/ontology-core-governance-semantic#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sg: <https://www.enablingvalue.com/ontology-core-governance-semantic#> .
+@prefix dg: <https://www.enablingvalue.com/ontology-core-governance-data#> .
+
+### Ontology
+<https://www.enablingvalue.com/ontology-core-governance-semantic>
+    rdf:type owl:Ontology ;
+    owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ,
+        <https://ontologies.verizon.com/ontology-core-asset/> ,
+        <https://www.enablingvalue.com/ontology-core-governance-data> ;
+    owl:versionIRI <https://www.enablingvalue.com/ontology-core-governance-semantic/1.1> ;
+    owl:versionInfo "1.1" ;
+    rdfs:label "Semantic Governance Ontology"@en ;
+    rdfs:comment "Models governance of meaning, vocabularies, and mappings to ensure semantic interoperability across systems."@en .
+
+### -------------------------------------------------------
+### Classes
+### -------------------------------------------------------
+
+sg:SemanticArtefact
+    rdf:type owl:Class ;
+    rdfs:label "Semantic Artefact"@en ;
+    rdfs:comment "A machine-actionable formalization of a conceptualization, ranging from loose taxonomies to heavyweight description logics."@en .
+
+sg:Taxonomy
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticArtefact ;
+    rdfs:label "Taxonomy"@en ;
+    rdfs:comment "A hierarchical classification of concepts organized by subsumption or parthood relationships."@en .
+
+sg:Thesaurus
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticArtefact ;
+    rdfs:label "Thesaurus"@en ;
+    rdfs:comment "A controlled vocabulary organizing terms into equivalence, hierarchical, and associative relationships."@en .
+
+sg:FormalOntology
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticArtefact ;
+    rdfs:label "Formal Ontology"@en ;
+    rdfs:comment "A formal explicit specification of a shared conceptualization expressed in a logic-based language such as OWL."@en .
+
+sg:KnowledgeGraph
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticArtefact ;
+    rdfs:label "Knowledge Graph"@en ;
+    rdfs:comment "A graph-structured knowledge base integrating entities, relationships, and semantic annotations at scale."@en .
+
+sg:BusinessGlossary
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticArtefact ;
+    rdfs:label "Business Glossary"@en ;
+    rdfs:comment "A curated collection of approved business terms, definitions, owners, and lineage aligning business language with data logic."@en .
+
+sg:BusinessTerm
+    rdf:type owl:Class ;
+    rdfs:label "Business Term"@en ;
+    rdfs:comment "A standardized, approved definition of a business concept bridging business language and underlying data assets."@en .
+
+sg:PreferredTerm
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:BusinessTerm ;
+    rdfs:label "Preferred Term"@en ;
+    rdfs:comment "The authoritative approved label for a business concept within the enterprise glossary."@en .
+
+sg:SynonymTerm
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:BusinessTerm ;
+    rdfs:label "Synonym Term"@en ;
+    rdfs:comment "An alternative label for a business concept that maps to a preferred term."@en .
+
+sg:DeprecatedTerm
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:BusinessTerm ;
+    rdfs:label "Deprecated Term"@en ;
+    rdfs:comment "A retired business term superseded by a preferred term, retained for legacy mapping and lineage."@en .
+
+sg:SemanticMapping
+    rdf:type owl:Class ;
+    rdfs:label "Semantic Mapping"@en ;
+    rdfs:comment "A formal correspondence between concepts or terms across two or more semantic artefacts."@en .
+
+sg:ExactMapping
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticMapping ;
+    rdfs:label "Exact Mapping"@en ;
+    rdfs:comment "A mapping asserting that two concepts from different artefacts have equivalent meaning."@en .
+
+sg:BroadMapping
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticMapping ;
+    rdfs:label "Broad Mapping"@en ;
+    rdfs:comment "A mapping asserting that the source concept is more specific than the target concept."@en .
+
+sg:NarrowMapping
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticMapping ;
+    rdfs:label "Narrow Mapping"@en ;
+    rdfs:comment "A mapping asserting that the source concept is broader than the target concept."@en .
+
+sg:MappingRepository
+    rdf:type owl:Class ;
+    rdfs:label "Mapping Repository"@en ;
+    rdfs:comment "A governed repository providing crosswalks, alignments, and translations between semantic artefacts and metadata standards."@en .
+
+sg:SemanticGovernanceRole
+    rdf:type owl:Class ;
+    rdfs:label "Semantic Governance Role"@en ;
+    rdfs:comment "An accountable organizational role within a semantic governance program."@en .
+
+sg:DomainSteward
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticGovernanceRole ;
+    rdfs:label "Domain Steward"@en ;
+    rdfs:comment "A subject matter expert who validates meaning, reviews glossary definitions, and approves business terms within a domain."@en .
+
+sg:OntologyEngineer
+    rdf:type owl:Class ;
+    rdfs:subClassOf sg:SemanticGovernanceRole ;
+    rdfs:label "Ontology Engineer"@en ;
+    rdfs:comment "A technical specialist responsible for design, development, and maintenance of semantic artefacts."@en .
+
+sg:SemanticGovernanceCouncil
+    rdf:type owl:Class ;
+    rdfs:label "Semantic Governance Council"@en ;
+    rdfs:comment "A cross-functional body with authority to approve semantic standards, resolve definitional conflicts, and govern the enterprise vocabulary lifecycle."@en .
+
+### -------------------------------------------------------
+### Object Properties
+### -------------------------------------------------------
+
+sg:definesMeaningOf
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "defines meaning of"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range dg:DataAsset ;
+    rdfs:comment "Connects a business term to the data asset whose meaning it formally defines."@en .
+
+sg:containedIn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "contained in"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range sg:BusinessGlossary ;
+    rdfs:comment "Relates a business term to the glossary in which it is formally registered."@en .
+
+sg:maintainedIn
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "maintained in"@en ;
+    rdfs:domain sg:SemanticArtefact ;
+    rdfs:range sg:MappingRepository ;
+    rdfs:comment "Relates a semantic artefact to the repository where its mappings and alignments are managed."@en .
+
+sg:approvedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "approved by"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range sg:DomainSteward ;
+    rdfs:comment "Relates a business term to the domain steward who approved its definition."@en .
+
+sg:governedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "governed by"@en ;
+    rdfs:domain sg:BusinessGlossary ;
+    rdfs:range sg:SemanticGovernanceCouncil ;
+    rdfs:comment "Relates a business glossary to the council with oversight authority over its lifecycle."@en .
+
+sg:hasMappingTo
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "has mapping to"@en ;
+    rdfs:domain sg:SemanticArtefact ;
+    rdfs:range sg:SemanticMapping ;
+    rdfs:comment "Relates a semantic artefact to a mapping aligning one of its concepts to a concept in another artefact."@en .
+
+sg:mappingSource
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "mapping source"@en ;
+    rdfs:domain sg:SemanticMapping ;
+    rdfs:range sg:BusinessTerm ;
+    rdfs:comment "The source concept in a semantic mapping relationship."@en .
+
+sg:mappingTarget
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "mapping target"@en ;
+    rdfs:domain sg:SemanticMapping ;
+    rdfs:range sg:BusinessTerm ;
+    rdfs:comment "The target concept in a semantic mapping relationship."@en .
+
+sg:replacedBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "replaced by"@en ;
+    rdfs:domain sg:DeprecatedTerm ;
+    rdfs:range sg:PreferredTerm ;
+    rdfs:comment "Relates a deprecated term to the preferred term that supersedes it."@en .
+
+sg:engineeredBy
+    rdf:type owl:ObjectProperty ;
+    rdfs:label "engineered by"@en ;
+    rdfs:domain sg:SemanticArtefact ;
+    rdfs:range sg:OntologyEngineer ;
+    rdfs:comment "Relates a semantic artefact to the engineer responsible for its construction and maintenance."@en .
+
+### -------------------------------------------------------
+### Datatype Properties
+### -------------------------------------------------------
+
+sg:hasLineage
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has lineage"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Tracks provenance and transformation lineage between a business term, metadata standards, and downstream reporting assets."@en .
+
+sg:hasDefinition
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has definition"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range xsd:string ;
+    rdfs:comment "The approved natural-language definition of a business term as recorded in the enterprise glossary."@en .
+
+sg:hasEffectiveDate
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has effective date"@en ;
+    rdfs:domain sg:BusinessTerm ;
+    rdfs:range xsd:date ;
+    rdfs:comment "The date from which a business term's definition is considered authoritative and in force."@en .
+
+sg:hasMappingConfidence
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has mapping confidence"@en ;
+    rdfs:domain sg:SemanticMapping ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Confidence score (0.0–1.0) indicating the strength of evidence for the semantic mapping."@en .
+
+sg:hasVersionIRI
+    rdf:type owl:DatatypeProperty ;
+    rdfs:label "has version IRI"@en ;
+    rdfs:domain sg:SemanticArtefact ;
+    rdfs:range xsd:anyURI ;
+    rdfs:comment "The versioned IRI uniquely identifying a specific published release of a semantic artefact."@en .
+
+### -------------------------------------------------------
+### Anchors to the Verizon core (v1.1)
+### -------------------------------------------------------
+
+sg:SemanticArtefact rdfs:subClassOf <https://ontologies.verizon.com/ontology-core-asset/Semantics> .
+sg:SemanticGovernanceRole rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-role/Role> .
+sg:SemanticGovernanceCouncil rdfs:subClassOf dg:GovernanceBody .

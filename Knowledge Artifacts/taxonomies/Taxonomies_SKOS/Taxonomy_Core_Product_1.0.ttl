@@ -1,0 +1,853 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Product_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-product/>.
+
+<https://ontologies.verizon.com/taxonomy-core-product/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Product"@en ;
+  skos:editorialNote "Verizon Knowledge Engineering acknowledges that subject area matter content contained within this taxonomy was created with the assistance of VZGPT (vzgpt.verizon.com). " ;
+  skos:historyNote "Goodrelations—W3c wiki. (n.d.). Retrieved March 24, 2025, from https://www.w3.org/wiki/GoodRelations", "Schema.org—Schema.org. (n.d.). Retrieved March 24, 2025, from https://schema.org/" ;
+  dct:description "The product taxonomy organizes products based on shared characteristics. This structured categorization, ranging from broad concepts (business driver) to specific details (physical attributes), helps to understand how products are utilized across the organization. "@en ;
+  dct:title "Taxonomy | Core | Product"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-product/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:47:53.034Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  dct:created "2024-09-24T15:52:38.882Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Product, tx:Development, tx:Growth, tx:Decline, tx:Introduction, tx:Maturity .
+
+tx:ProductInnovation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Innovation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/36648585-d675-4be3-a635-6d5a2d843cda> ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:Product
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T19:52:56.624Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-01T20:13:51.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/55d926af-8b7f-4286-ac78-c23147425325> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:narrower tx:ProductConcept, tx:ProductFunction, tx:ProductBusinessDrivers, tx:PhysicalProduct .
+
+tx:Cost
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Cost"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cccd0543-2b77-4ba9-8425-455f7e74199b> ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:Design
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/bf70e8ee-55f2-47c3-bc30-cb93cc5e010b> ;
+  skos:broader tx:Development .
+
+tx:RevenueStream
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Revenue Stream"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/f4b12089-f62d-4434-8d95-5a20829285af> ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:Conceptualization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Conceptualization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/28afeb77-ae25-4032-b6e5-e55506ee02d3> ;
+  skos:broader tx:Development .
+
+tx:Development
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Development"@en ;
+  skos:broadMatch <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-22T17:44:42.908Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/2a828e6e-a386-4094-9431-bff29903b82e> ;
+  skos:narrower tx:Design, tx:Conceptualization, tx:IterativeDevelopment, tx:Prototyping, tx:Testing ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+tx:Growth
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Growth"@en ;
+  skos:broadMatch <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-22T17:44:42.908Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cf2fa273-8f0d-48f4-aaef-dd343ddcecd7> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+tx:Accessories
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Accessories"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b993313e-a480-4ecd-ba6a-122fe6c8fc87> ;
+  skos:broader tx:ProductCatalog ;
+  skos:narrower tx:AudioProducts, tx:ChargersCables, tx:GamingProducts, tx:PhoneAttachments, tx:PhoneCases, tx:ScreenProtectors, tx:SmartHomeProducts, tx:TabletAccessories .
+
+tx:ProductCatalog
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Catalog"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c3497267-aaed-4001-94bd-b88b3cc98d7a> ;
+  skos:narrower tx:Accessories, tx:BusinessEquipment, tx:ConnectedDevices, tx:CustomerPremisesEquipment, tx:Smartphone ;
+  skos:broader tx:ProductCollection .
+
+tx:AudioProducts
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Audio Products"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/4de0cb1b-12c8-4ce4-b01e-328113067cf2> ;
+  skos:broader tx:Accessories .
+
+tx:BusinessEquipment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Business Equipment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:13:38.195Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/33c6a5b9-dae6-492c-aabc-823bb7a4049d> ;
+  skos:broader tx:ProductCatalog ;
+  skos:narrower tx:NetworkInfrastructure, tx:OfficeEquipment, tx:PlatformInfrastructure .
+
+tx:ChargersCables
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Chargers & Cables"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/fdf69db1-0546-4e1b-a76f-6bbe833be6d9> ;
+  skos:broader tx:Accessories .
+
+tx:CompetitivePricingAnalysis
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Competitive Pricing Analysis"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/38ce7546-aa8e-480e-9414-e7695991350a> ;
+  skos:broader tx:PricingStrategy .
+
+tx:PricingStrategy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Pricing Strategy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/99d4084d-17f2-4085-8e1d-5063e8f2b9ea> ;
+  skos:narrower tx:CompetitivePricingAnalysis, tx:DiscountsPromotions, tx:PricingModelsStructures ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:ConnectedDevices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Connected Devices"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/4213953c-9948-49c3-a35d-c7430355d508> ;
+  skos:broader tx:ProductCatalog ;
+  skos:narrower tx:ConnectedHomeDevices, tx:Hum, tx:Laptop, tx:MobileHotspotDevices, tx:SecurityCameras, tx:Smartwatch, tx:Tablet .
+
+tx:ConnectedHomeDevices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Connected Home Devices"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/6f7953d3-3abe-4199-9256-02897c05782a> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:CustomerPremisesEquipment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Customer Premises Equipment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/33a3c292-14d8-4928-b4ef-8b4eff896f6d> ;
+  skos:broader tx:ProductCatalog ;
+  skos:narrower tx:Routers, tx:SetTopBoxes, tx:UsbModems .
+
+tx:DataFlow
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Data Flow"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9c35d83d-e8f9-4ad7-82cf-80b6e02b5fa1> ;
+  skos:broader tx:ProductFunction .
+
+tx:Decline
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Decline"@en ;
+  skos:broadMatch <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-22T17:44:42.908Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b9fd4735-f1cd-4148-973f-9befc955b975> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+tx:DiscountsPromotions
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Discounts & Promotions"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/327c039d-596f-4a51-ba78-117056bfcdb3> ;
+  skos:broader tx:PricingStrategy .
+
+tx:FunctionalProduct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Functional Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9b288faf-4708-4e92-aeb3-c707f073be16> ;
+  skos:broader tx:IndividualProduct .
+
+tx:IndividualProduct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Individual Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1f14570a-2e65-43ee-9f25-4f4d090dffe2> ;
+  skos:narrower tx:FunctionalProduct, tx:SuppliedProduct, tx:TechnicalProduct ;
+  skos:broader tx:PhysicalProduct .
+
+tx:GamingProducts
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Gaming Products"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/0863ecaa-c2a9-4deb-83cc-3ef009ac2e6e> ;
+  skos:broader tx:Accessories .
+
+tx:Hum
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Hum"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/f32ea0e0-7d77-4222-900c-035516292881> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:Introduction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Introduction"@en ;
+  skos:broadMatch <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-22T17:44:42.908Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/630b8e71-c979-4caa-8a4b-df85d041f86f> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+tx:IterativeDevelopment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Iterative Development"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/7131d06c-03fe-45eb-9416-fc99997c3270> ;
+  skos:broader tx:Development .
+
+tx:Laptop
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Laptop"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/45324bf9-ea97-4cb9-9538-2e61a2ad99d5> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:MarketingStrategy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Marketing Strategy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/56338be9-c94d-41a7-a70e-b7780accb79c> ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:Maturity
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Maturity"@en ;
+  skos:broadMatch <https://ontologies.verizon.com/taxonomy-core-lifecycle/Lifecycle> ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-22T17:44:42.908Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/ad79bbe7-4062-435f-bac8-bdce82916878> ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-product/> .
+
+tx:MobileHotspotDevices
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Mobile Hotspot Devices"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e6595f8d-8359-4862-b7a7-4ccf2c93eee3> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:NetworkInfrastructure
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Network Infrastructure"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:13:38.195Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c48ccacf-3ea4-4f18-a8e5-4faa2a242317> ;
+  skos:broader tx:BusinessEquipment .
+
+tx:OfficeEquipment
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Office Equipment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:13:38.195Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d17ed6a0-e9a4-48dd-94cb-fa9e9e2a5c19> ;
+  skos:broader tx:BusinessEquipment .
+
+tx:PhoneAttachments
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Phone Attachments"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cdcc0024-4095-411a-9741-6b0704a00f32> ;
+  skos:broader tx:Accessories .
+
+tx:PhoneCases
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Phone Cases"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/9299fa9d-a770-4837-8c27-54e8ff980c2e> ;
+  skos:broader tx:Accessories .
+
+tx:PlatformInfrastructure
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Platform Infrastructure"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:13:38.195Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1e8c437c-7f89-49de-90bf-8f073d8b81e9> ;
+  skos:broader tx:BusinessEquipment .
+
+tx:PricingModelsStructures
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Pricing Models & Structures"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e7b98a6e-fbbf-45b7-a002-f08630d63973> ;
+  skos:broader tx:PricingStrategy .
+
+tx:ProductCollection
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Collection"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/aadffbd2-3117-4275-acde-cd1d290388ab> ;
+  skos:narrower tx:ProductCatalog ;
+  skos:broader tx:PhysicalProduct .
+
+tx:ProductCompatibility
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Compatibility"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1f082bdd-6ed2-4389-b62a-760c83dc0bfe> ;
+  skos:broader tx:ProductFeatures .
+
+tx:ProductReviewsRatings
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Reviews & Ratings"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/c023c13c-42cc-4977-905c-b346d5ae0ea1> ;
+  skos:broader tx:ProductFeatures .
+
+tx:ProductWarrantySupport
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Warranty & Support"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/10cfae27-e8ae-453c-9720-dca4158e7a99> ;
+  skos:broader tx:ProductFeatures .
+
+tx:Prototyping
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Prototyping"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e5120c3b-1c88-4e3b-9405-dd5d439df49a> ;
+  skos:broader tx:Development .
+
+tx:Roadmap
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Roadmap"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d4c29a25-07fc-4743-8ffc-2a64aa972e84> ;
+  skos:broader tx:ProductFunction .
+
+tx:Routers
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Routers"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/673b63c9-7bd2-48b2-b929-1924549da859> ;
+  skos:broader tx:CustomerPremisesEquipment .
+
+tx:SalesStrategy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Sales Strategy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/76163810-ff6f-4a29-a982-4f00762ef9b6> ;
+  skos:broader tx:ProductBusinessDrivers .
+
+tx:ScreenProtectors
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Screen Protectors"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/320a87ad-f039-4734-9e07-f69199b63a49> ;
+  skos:broader tx:Accessories .
+
+tx:SecurityCameras
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Security Cameras"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1a81fad1-aed0-4cf6-9255-d3313d32716f> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:SetTopBoxes
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Set-Top Boxes"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1370fb71-70c3-482c-bfd9-3ff189217ea3> ;
+  skos:broader tx:CustomerPremisesEquipment .
+
+tx:SmartHomeProducts
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Smart Home Products"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/df4d7681-6b9c-46ea-839a-49f74b934650> ;
+  skos:broader tx:Accessories .
+
+tx:Smartphone
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Smartphone"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/1aab7e8e-c693-4c8c-9617-4e2c5cfc4eac> ;
+  skos:broader tx:ProductCatalog .
+
+tx:Smartwatch
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Smartwatch"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/66e3c61d-78d8-409d-ac0b-1d1515998940> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:SuppliedProduct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Supplied Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b9f4ec9b-19ac-4079-9a18-c531248c3085> ;
+  skos:broader tx:IndividualProduct .
+
+tx:SystemArchitecture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "System Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/127b0c52-4e5e-4481-978d-db9276eda4c9> ;
+  skos:broader tx:ProductFunction .
+
+tx:Tablet
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Tablet"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/75840c61-e574-4b36-80c4-a132397b490a> ;
+  skos:broader tx:ConnectedDevices .
+
+tx:TabletAccessories
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Tablet Accessories"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cab062c9-31e0-4457-9a45-6714306ce08d> ;
+  skos:broader tx:Accessories .
+
+tx:TechnicalProduct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Technical Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-26T14:01:07.420Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/e22e9c45-079c-455d-905b-eead8d1ffdb2> ;
+  skos:broader tx:IndividualProduct .
+
+tx:Testing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Testing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:20:49.090Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/5f28b7b2-ffc6-417c-a5d2-ae705ddd8e24> ;
+  skos:broader tx:Development .
+
+tx:UsbModems
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "USB Modems"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-10T16:25:32.326Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b190ad9b-c990-4499-b0db-18def7ec5b83> ;
+  skos:broader tx:CustomerPremisesEquipment .
+
+tx:UserJourney
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "User Journey"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/a59cd442-de32-4439-b6c9-4e17ad59d8ae> ;
+  skos:broader tx:ProductConcept .
+
+tx:UserPersona
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "User Persona"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/418b0699-b138-4ad8-be46-c2e497e4987e> ;
+  skos:broader tx:ProductConcept .
+
+tx:UserStory
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "User Story"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/cabbe213-8a00-488a-a236-738f6dfb3a55> ;
+  skos:broader tx:ProductConcept .
+
+tx:ProductConcept
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Concept"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T19:52:56.624Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/d0bf4e2d-69b1-4bd9-ab43-baaaba2608f8> ;
+  skos:narrower tx:UserJourney, tx:UserPersona, tx:UserStory ;
+  skos:broader tx:Product .
+
+tx:ProductFunction
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Function"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T19:52:56.624Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/6a225129-bada-45c7-847f-15fbcf2fb8ad> ;
+  skos:narrower tx:DataFlow, tx:Roadmap, tx:SystemArchitecture, tx:ProductFeatures ;
+  skos:broader tx:Product .
+
+tx:ProductBusinessDrivers
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Business Drivers"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/38949d9c-08d2-4418-8d7f-124371cac3ed> ;
+  skos:narrower tx:ProductInnovation, tx:Cost, tx:RevenueStream, tx:PricingStrategy, tx:MarketingStrategy, tx:SalesStrategy ;
+  skos:broader tx:Product .
+
+tx:ComponentParts
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Component Parts"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/10e89c14-067a-445b-846f-8fbb58fbd749> ;
+  skos:broader tx:PhysicalProduct .
+
+tx:PhysicalProduct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Physical Product"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T19:52:56.624Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/b2a2bb60-2889-4491-a1e0-b477b90db020> ;
+  skos:narrower tx:IndividualProduct, tx:ProductCollection, tx:ComponentParts ;
+  skos:broader tx:Product .
+
+tx:ProductFeatures
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-product/> ;
+  skos:prefLabel "Product Features"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T19:24:48.248Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-12-05T20:59:01.237Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-product/90e5ee79-97a9-479f-842e-da93ff13f264> ;
+  skos:narrower tx:ProductCompatibility, tx:ProductReviewsRatings, tx:ProductWarrantySupport ;
+  skos:broader tx:ProductFunction .

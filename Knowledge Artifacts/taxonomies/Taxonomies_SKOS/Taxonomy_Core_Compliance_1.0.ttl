@@ -1,0 +1,1305 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix tx: <https://ontologies.verizon.com/taxonomy-core-compliance/> .
+
+# SKOS taxonomy generated from Taxonomy_Core_Compliance_1.0.ttl. Scheme <https://ontologies.verizon.com/taxonomy-core-compliance/>.
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/>
+  a skos:ConceptScheme ;
+  skos:prefLabel "Taxonomy | Core | Compliance"@en ;
+  dct:description "The compliance taxonomy organizes and categorizes Verizon’s compliance obligations to effectively manage compliance risks, streamline audits and ensure adherence to relevant legal and ethical requirements."@en ;
+  dct:title "Taxonomy | Core | Compliance"@en ;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-compliance/"^^<http://www.w3.org/2001/XMLSchema#anyURI> ;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com" ;
+  dct:contributor "milsh69", "VZDev", "wallkje", "sherri.miller1@one.verizon.com" ;
+  dct:creator "Jeffrey Wallk", "Sherri Anderson" ;
+  dct:modified "2025-09-30T19:46:13.587Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft> ;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources." ;
+  owl:versionInfo "1.0" ;
+  <http://verizon.ontologies.com/terms/certified> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+  skos:hasTopConcept tx:Compliance .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Business_Architecture>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Business Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/83edac2a-aa7c-4395-ab82-22422c7aa9fa> ;
+  skos:broader <https://ontologies.verizon.com/taxonomy-core-compliance/03BusinessDataArchitecture> .
+
+tx:VisualizationReportingControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Visualization & Reporting Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/812ffc3f-a4dd-4233-915d-c2dcc6174f03> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Access_controls_for_sensitive_reports>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Report_scheduling_and_distribution_controls>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Visualization_versioning_and_approval_processes> .
+
+tx:MetricsKpiMonitoringControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Metrics & KPI Monitoring Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/af5caf4d-68ab-4cfe-af16-94c7de7c175d> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Alerts_and_notifications_for_deviations_from_expected_values>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Historical_data_tracking_to_analyze_trends>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Real-time_monitoring_of_key_metrics_and_KPIs> .
+
+tx:DataAccessControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Access Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/4ff44fb2-4857-40fe-8222-e714af6ccca5> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Audit_trails_to_monitor_data_access_and_changes_to_any_component,_content,_or_context_(metadata,_connective_tissue,_rules)>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_encryption_in_transit_and_at_rest_to_protect_data_from_unauthorized_access>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Role-based_access_control_(RBAC)_to_limit_access_to_authorized_users> .
+
+tx:DataRetentionDeletionControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Retention & Deletion Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/de1f4be2-a7a0-4238-a389-d8166e647fe4> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Automated_data_deletion_processes>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_retention_policies_for_compliance_and_legal_requirements> .
+
+tx:EthicalAiAnalyticsControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Ethical AI & Analytics Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/44d3aef7-10c0-4f3e-830a-f8091b08141b> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Bias_detection_and_mitigation_strategies>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Governance_framework_for_ethical_AI_and_analytics> .
+
+tx:ChangeManagementControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Change Management Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/5dd15969-1ed6-45f7-bfe3-aa382f0c148c> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Change_Management_procedures_for_system_updates>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Release_management_for_new_features>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_analytics_models_and_algorithms> .
+
+tx:DataSharingCollaborationControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Sharing & Collaboration Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/8fed3302-10f5-47d6-8d95-fd78ae2bae98> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Collaboration_features_with_audit_trails>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Redaction_capabilities_for_sharing_sensitive_data>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Secure_data_sharing_options_with_access_controls> .
+
+tx:ComplianceAuditsControlsReporting
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Compliance Audits & Controls Reporting"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/989086fc-fab9-4bb8-a957-77ed9fda57a9> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Compliance_reporting_for_regulatory_bodies>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Internal_audits_for_control_effectiveness>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_compliance_audits_and_assessments> .
+
+tx:DataPrivacyDataProtectionControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Privacy & Data Protection Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/fb087ee7-4262-4e17-a272-d081a3631738> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_&_Analytic_Sampling_to_monitor_compliance_exposures>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Incorporate_releasability_rules_within_DBTs,_metrics,_analytics,_and_visual_controls_for_UX_slicing_&_data_extraction> .
+
+tx:DataQualityControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Quality Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6bc3e6b9-82c3-424d-b84d-2e8de7b46db5> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_lineage_tracking_to_trace_data_changes>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_profiling_and_cleansing_processes_to_maintain_data_accuracy.>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Validation_rules_to_ensure_data_consistency_and_integrity>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_data_assets_and_analytical_content> .
+
+tx:ExplanationContextualRelevanceControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Explanation & Contextual Relevance Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c156259b-3452-4f1d-967e-7a3648435477> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Explanation_audit_trails_for_transparency>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Knowledge_graphs_to_provide_contextual_informatio>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Natural_language_processing_(NLP)_for_automated_explanations> .
+
+tx:SemanticKnowledgeControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Semantic Knowledge Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/db5e00bb-0489-475c-b0f0-b8af326d8e51> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Maintenance_of_a_semantic_knowledge_layer_to_provide_Unified_context>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Semantic_metadata_for_unstructured_content>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Taxonomy_and_ontology_management_for_structured_data> .
+
+tx:PerformanceScalabilityControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Performance & Scalability Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/85d53a60-7212-4f28-b177-9ae15af8830d> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Performance_monitoring_and_optimization>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Resource_allocation_controls>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Scalability_planning_to_handle_increased_user_demand> .
+
+tx:AnalyticsAiModelControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Analytics & AI Model Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/ab1ed7f8-8b92-4ff5-9a40-2fc655bdad55> ;
+  skos:broader tx:Controls ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_model_retraining_and_updating>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Testing_and_validation_procedures_for_AI_models>, <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_analytics_models_and_algorithms> .
+
+tx:EnterpriseStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Enterprise Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/4337f9bc-6a30-4933-8278-ac4c2cbe45bf> ;
+  skos:broader tx:Documentation ;
+  skos:narrower tx:MetricsGovernanceStandards, tx:ModelManagementResponsibleAiStandards, tx:ThirdPartyDataGovernanceStandards, tx:ArchitectureStandard, tx:KnowledgeEngineeringStandard, tx:VerizonIntegratedSecurityFramework .
+
+tx:InternationalStandardsOrganization
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "International Standards Organization"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/a8e782ae-aa03-49bc-8c25-69e566ad9d2d> ;
+  skos:broader tx:IndustryStandards ;
+  skos:narrower tx:Iso13250TopicMaps, tx:Iso19763MetamodelFrameworkForInteroperability, tx:Iso25964InternationalStandardForThesauri, tx:Iso5964MultilingualThesauri .
+
+tx:ArtificialIntelligenceRiskManagementFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Artificial Intelligence Risk Management Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/eda5ddbf-4e1c-4d3c-b985-12befb785fcb> ;
+  skos:broader tx:NationalInstituteOfStandardsTechnology .
+
+tx:NationalInstituteOfStandardsTechnology
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "National Institute of Standards & Technology"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/94721bea-a86f-4608-8858-c834ec06c81e> ;
+  skos:narrower tx:ArtificialIntelligenceRiskManagementFramework, tx:CybersecurityFramework, tx:PrivacyFramework, tx:RiskManagementFramework ;
+  skos:broader tx:IndustryStandards .
+
+tx:OpenDigitalArchitecture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Open Digital Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/ca94cc98-a6bf-49a2-9412-a6abd259e569> ;
+  skos:broader tx:TmForumStandards ;
+  skos:narrower tx:InformationSystems, tx:DeploymentRuntime, tx:Governance, tx:Implementation, tx:BusinessArchitectures .
+
+tx:CapabilityFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Capability Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/006bd828-aa00-44e9-b3ef-c91e4ef34b8e> ;
+  skos:broader tx:BusinessArchitectures .
+
+tx:CybersecurityFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Cybersecurity Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/2e31c669-1157-474f-905d-20c896eb5f25> ;
+  skos:broader tx:NationalInstituteOfStandardsTechnology .
+
+tx:DamaDmbok2DataManagementFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "DAMA-DMBOK2 Data Management Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/83b6b24b-7018-4938-b63a-fba5ceebea9e> ;
+  skos:broader tx:IndustryStandards ;
+  skos:narrower tx:DataGovernance .
+
+tx:DataArchitecture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/3034c77f-aaac-484f-be37-b37c377ce69e> ;
+  skos:broader tx:InformationSystems .
+
+tx:InformationSystems
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Information Systems"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/dc010011-ca44-4b6e-9975-59660abc69a5> ;
+  skos:narrower tx:DataArchitecture, tx:FunctionalArchitecture, tx:FunctionalFramework, tx:InformationFramework ;
+  skos:broader tx:OpenDigitalArchitecture .
+
+tx:DataArchitectures
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Architectures"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/3f6f1b52-0089-4b3e-8b1c-b96877820eca> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataGovernance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Governance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/326f2d80-1546-47b3-98ec-0143ba5b5553> ;
+  skos:narrower tx:DataArchitectures, tx:DataIntegrationInteroperability, tx:DataModelingDesign, tx:DataQuality, tx:DataSecurity, tx:DataStorageOperations, tx:DataWarehousingBusinessIntelligence, tx:DocumentContentManagement, tx:Metadata, tx:ReferenceMasterData ;
+  skos:broader tx:DamaDmbok2DataManagementFramework .
+
+tx:DataIntegrationInteroperability
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Integration & Interoperability"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c3ff2ebb-1710-4dc4-bb6f-11846c30fdd9> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataLifecycleControls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Lifecycle Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T19:37:28.192Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6150a26b-49ed-4eec-b357-fa30f2f4ca78> ;
+  skos:broader tx:Controls .
+
+tx:DataModelingDesign
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Modeling & Design"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/da939dbc-aefd-4c2c-b114-52de16f00b74> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataQuality
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Quality"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6672e26f-8e8a-4e9f-840a-19a851b2c522> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataSecurity
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Security"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/bf486ec8-cdad-4b9e-a4d5-2e112a128a03> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataStorageOperations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Storage & Operations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/774a88a5-c91f-4dc7-8669-9316ac7873cb> ;
+  skos:broader tx:DataGovernance .
+
+tx:DataWarehousingBusinessIntelligence
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Warehousing & Business Intelligence"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/d21466e8-f657-419a-a9a6-af25dd09d697> ;
+  skos:broader tx:DataGovernance .
+
+tx:DeploymentRuntime
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Deployment & Runtime"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/190156dc-d2a4-4b38-a590-7a482a3a29c9> ;
+  skos:broader tx:OpenDigitalArchitecture ;
+  skos:narrower tx:OperationsFrameworks .
+
+tx:DocumentContentManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Document & Content Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/49337415-6eb9-4f42-8b18-45035f5d4d56> ;
+  skos:broader tx:DataGovernance .
+
+tx:FunctionalArchitecture
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Functional Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/a23c15d6-1fe9-44b7-a8e9-c69d8f7e3bdc> ;
+  skos:broader tx:InformationSystems .
+
+tx:FunctionalFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Functional Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/aaf0d9bb-87e5-4aa9-a145-3ae867b8c81a> ;
+  skos:broader tx:InformationSystems .
+
+tx:Governance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Governance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/713a759f-9a0f-4288-aea3-61f1f905ba93> ;
+  skos:broader tx:OpenDigitalArchitecture .
+
+tx:Implementation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Implementation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6c628c1e-609f-4aa2-a483-de28c297d190> ;
+  skos:broader tx:OpenDigitalArchitecture ;
+  skos:narrower tx:OpenApIs .
+
+tx:InformationFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Information Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/4bf72a4c-227d-4c29-b9b7-cbc29404c9fb> ;
+  skos:broader tx:InformationSystems .
+
+tx:Metadata
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Metadata"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/9ce495a3-83f7-428b-af0a-a4cbb5031979> ;
+  skos:broader tx:DataGovernance .
+
+tx:MetricsGovernanceStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Metrics Governance Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6efd50c9-a4c1-4eea-a607-462385eed5ab> ;
+  skos:broader tx:EnterpriseStandards .
+
+tx:ModelManagementResponsibleAiStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Model Management & Responsible AI Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/64ae83a4-6cde-4409-968f-e13ee2d9a038> ;
+  skos:broader tx:EnterpriseStandards .
+
+tx:OpenApIs
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Open APIs"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/358f0fe2-63c5-45d1-9012-7eca83166594> ;
+  skos:broader tx:Implementation .
+
+tx:TmForumStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "TMForum Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/64334678-80bd-49cc-a723-8f326b9337cc> ;
+  skos:narrower tx:OpenDigitalArchitecture ;
+  skos:broader tx:IndustryStandards .
+
+tx:OperationsFrameworks
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Operations Frameworks"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/a2eb7db5-114f-48fe-822f-06a8a39804fe> ;
+  skos:broader tx:DeploymentRuntime .
+
+tx:PrivacyFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Privacy Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/8f14a912-e6ce-4848-a97e-37cd8f0979d0> ;
+  skos:broader tx:NationalInstituteOfStandardsTechnology .
+
+tx:ProcessFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Process Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/593ae8bc-c628-4613-b660-1c58a5ac9c3a> ;
+  skos:broader tx:BusinessArchitectures .
+
+tx:ReferenceMasterData
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Reference & Master Data"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-28T15:32:54.915Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/b974b117-11d9-4e07-89ae-d3b3369ee7b9> ;
+  skos:broader tx:DataGovernance .
+
+tx:RiskManagementFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Risk Management Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c5fa0cb8-742b-42c2-8f10-acce0608ff36> ;
+  skos:broader tx:NationalInstituteOfStandardsTechnology .
+
+tx:ThirdPartyDataGovernanceStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Third Party Data Governance Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c2d712d3-386a-4fb3-bde0-2d2da27c7861> ;
+  skos:broader tx:EnterpriseStandards .
+
+tx:ValueStreamFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Value Stream Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c812f7ed-b76b-4601-a48e-af0d938849c3> ;
+  skos:broader tx:BusinessArchitectures .
+
+tx:DataArchitectureServiceModel
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Architecture Service Model"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "The “design of information content” including the identification of data domains, establishment of taxonomies, alignment with contractual obligations, documentation of metadata and designation of CDEs" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/891a315d-a73e-46d3-b7eb-8ef265a19b40> ;
+  skos:broader <https://ontologies.verizon.com/taxonomy-core-compliance/03BusinessDataArchitecture> .
+
+tx:Controls
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Controls"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/b6a4e481-cac8-4d3a-99d4-36a734e4cc69> ;
+  skos:narrower tx:VisualizationReportingControls, tx:MetricsKpiMonitoringControls, tx:DataAccessControls, tx:DataRetentionDeletionControls, tx:EthicalAiAnalyticsControls, tx:ChangeManagementControls, tx:DataSharingCollaborationControls, tx:ComplianceAuditsControlsReporting, tx:DataPrivacyDataProtectionControls, tx:DataQualityControls, tx:ExplanationContextualRelevanceControls, tx:SemanticKnowledgeControls, tx:PerformanceScalabilityControls, tx:AnalyticsAiModelControls, tx:DataLifecycleControls ;
+  skos:broader tx:Compliance .
+
+tx:ArchitectureStandard
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Architecture Standard"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/8aa6c566-8bd2-41a5-a218-3666c6e6b251> ;
+  skos:broader tx:EnterpriseStandards .
+
+tx:Regulation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Regulation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/37eaf243-4abb-4d7f-b3a2-c30d7e2b36b2> ;
+  skos:broader tx:Compliance ;
+  skos:narrower tx:CaliforniaConsumerPrivacyAct, tx:GeneralDataProtectionRegulation, tx:PersonalDataProtectionAct, tx:ProtectionOfPersonalInformationAct .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/03BusinessDataArchitecture>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "03. Business & Data Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/182b6732-26dc-476c-a1ec-344faa06093a> ;
+  skos:narrower <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Business_Architecture>, tx:DataArchitectureServiceModel ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+tx:Documentation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Documentation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/604bd6c2-02d5-4dd1-84b4-9a53b2f553f8> ;
+  skos:narrower tx:EnterpriseStandards, tx:IndustryStandards ;
+  skos:broader tx:Compliance .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/01DataStrategyBusinessCase>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "01. Data Strategy & Business Case"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/2c37bd2d-473b-4087-9051-97db718a4a14> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel ;
+  skos:narrower tx:DataManagementBusinessCase, tx:DataManagementStrategy .
+
+tx:DataManagementCapabilityAssessmentModel
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Management Capability Assessment Model"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/20b26afb-bda4-4a46-92b6-bb7afcd0e4d4> ;
+  skos:narrower <https://ontologies.verizon.com/taxonomy-core-compliance/03BusinessDataArchitecture>, <https://ontologies.verizon.com/taxonomy-core-compliance/01DataStrategyBusinessCase>, <https://ontologies.verizon.com/taxonomy-core-compliance/02DataManagementProgramFunding>, <https://ontologies.verizon.com/taxonomy-core-compliance/04DataTechnologyArchitecture>, <https://ontologies.verizon.com/taxonomy-core-compliance/05DataQualityManagement>, <https://ontologies.verizon.com/taxonomy-core-compliance/06DataGovernance>, <https://ontologies.verizon.com/taxonomy-core-compliance/07DataControlEnvironment>, <https://ontologies.verizon.com/taxonomy-core-compliance/08AnalyticsManagement>, <https://ontologies.verizon.com/taxonomy-core-compliance/09KnowledgeManagement>, <https://ontologies.verizon.com/taxonomy-core-compliance/10ArtificialIntelligenceManagement> ;
+  skos:broader tx:IndustryStandards .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/02DataManagementProgramFunding>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "02. Data Management Program & Funding"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "The mechanism for EDM implementation. Stakeholder engagement. Communications program and education on the concepts of data CONTENT management. Engagement model and operational routines" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/82f2687c-8ee1-47f9-81b1-5ddceac1c25d> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/04DataTechnologyArchitecture>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "04. Data & Technology Architecture"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "The “design of physical architecture” including the platforms and tools in support of data management implementation. This is domain of IT and defines how data is acquired, stored, integrated and distributed" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/c8db5edc-19e6-4078-a3b7-e14dbad67c67> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/05DataQualityManagement>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "05. Data Quality Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "Deliver to business users data that is fit-for-purpose. The goal is data that users trust and have confidence in to be exactly what they expect it to be without the need for reconciliation and data transformation" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/677dda7d-17d1-4a01-8126-bc891f3bc159> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/06DataGovernance>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "06. Data Governance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "The rules of engagement for implementation of the data management program. The focus is on implementation of policies, standards and operational procedures necessary to ensure that stakeholders “behave" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/54c77a44-bfb4-4605-a3e8-2e1a8f14457c> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/07DataControlEnvironment>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "07. Data Control Environment"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "Coordination of the components into a cohesive operational model; ensure that controls are in place for consistency across the lifecycle; align with organizational privacy and security policies" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/8bf118e0-b4b2-4222-b7fb-adf44a685339> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/08AnalyticsManagement>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "08. Analytics Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/f4659ecd-6baf-45f5-a047-7361d8152ade> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/09KnowledgeManagement>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "09. Knowledge Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/cd4fc57c-7e0a-42ef-b1e8-c09d4524bfe8> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+<https://ontologies.verizon.com/taxonomy-core-compliance/10ArtificialIntelligenceManagement>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "10. Artificial Intelligence Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/dbb32d94-84a0-4f50-bc10-abaf8ac3241c> ;
+  skos:broader tx:DataManagementCapabilityAssessmentModel .
+
+tx:BusinessArchitectures
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Business Architectures"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-03-25T18:25:45.787Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/12042bb8-b08a-4dc4-a35e-3450fa28c02a> ;
+  skos:narrower tx:CapabilityFramework, tx:ProcessFramework, tx:ValueStreamFramework ;
+  skos:broader tx:OpenDigitalArchitecture .
+
+tx:CaliforniaConsumerPrivacyAct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "California Consumer Privacy Act"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/9f022ad9-ad4b-4041-887b-feff6378354e> ;
+  skos:broader tx:Regulation .
+
+tx:CommunityRelations
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Community Relations"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/36c98433-013f-4d48-adcc-a267b934014a> ;
+  skos:broader tx:SocialImpact .
+
+tx:SocialImpact
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Social Impact"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/53b4f725-8f4c-455c-b1d5-f5cfcf32b121> ;
+  skos:narrower tx:CommunityRelations, tx:PublicSafety ;
+  skos:broader tx:Compliance .
+
+tx:Compliance
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Compliance"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-24T20:04:18.837Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-02T18:03:28.133Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/fdb5a5c0-b1c9-4028-a266-999a4cc8530a> ;
+  skos:narrower tx:Controls, tx:Regulation, tx:Documentation, tx:SocialImpact, tx:Environmental, tx:Guideline, tx:Licensing ;
+  skos:topConceptOf <https://ontologies.verizon.com/taxonomy-core-compliance/> .
+
+tx:IndustryStandards
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Industry Standards"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2024-10-16T18:19:22.052Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/bbc5dbcb-2e4a-4a25-90d5-d84cbfc515a7> ;
+  skos:narrower tx:InternationalStandardsOrganization, tx:NationalInstituteOfStandardsTechnology, tx:DamaDmbok2DataManagementFramework, tx:TmForumStandards, tx:DataManagementCapabilityAssessmentModel ;
+  skos:broader tx:Documentation .
+
+tx:DataManagementBusinessCase
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Management Business Case"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "The justification for the data management program. The mechanism for ensuring sufficient and sustainable capital. The approach for measuring the costs and benefits of EDM" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/039f44f5-cb41-4e73-8a8c-0dd817705715> ;
+  skos:broader <https://ontologies.verizon.com/taxonomy-core-compliance/01DataStrategyBusinessCase> .
+
+tx:DataManagementStrategy
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data Management Strategy"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  <http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#definition> "Defines the long term goal of the data management program. The blueprint to gain internal alignment among stakeholders and to define how the organization will approach the management of data content" ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/78703de7-f030-4176-b49b-a90e8b5f4a67> ;
+  skos:broader <https://ontologies.verizon.com/taxonomy-core-compliance/01DataStrategyBusinessCase> .
+
+tx:EnergyConsumption
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Energy Consumption"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/b144ddb9-35c6-4187-af63-dfed1e36673e> ;
+  skos:broader tx:Environmental .
+
+tx:Environmental
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Environmental"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/dc57e767-99ba-4a03-bdf6-0877162e1095> ;
+  skos:narrower tx:EnergyConsumption, tx:WasteManagement ;
+  skos:broader tx:Compliance .
+
+tx:GeneralDataProtectionRegulation
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "General Data Protection Regulation"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/b297d8a3-83be-49b3-b85e-0435bb67a841> ;
+  skos:broader tx:Regulation .
+
+tx:Guideline
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Guideline"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/6da955c8-2496-49df-ba12-0a9bd51f615c> ;
+  skos:broader tx:Compliance .
+
+tx:Iso13250TopicMaps
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "ISO 13250 Topic Maps"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/908ed996-2d4e-42af-a489-4d1ac109c359> ;
+  skos:broader tx:InternationalStandardsOrganization .
+
+tx:Iso19763MetamodelFrameworkForInteroperability
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "ISO 19763 Metamodel Framework for Interoperability"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/872ee1bd-ab54-4389-9cea-3fde5ff19d06> ;
+  skos:broader tx:InternationalStandardsOrganization .
+
+tx:Iso25964InternationalStandardForThesauri
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "ISO 25964 International Standard for Thesauri"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/ba6e4202-1693-4745-a0aa-f12dfaaf06bc> ;
+  skos:broader tx:InternationalStandardsOrganization .
+
+tx:Iso5964MultilingualThesauri
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "ISO 5964 Multilingual Thesauri"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/4d04e334-7c32-48a7-ac1a-45fbab207d77> ;
+  skos:broader tx:InternationalStandardsOrganization .
+
+tx:KnowledgeEngineeringStandard
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Knowledge Engineering Standard"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69", "VZDev" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/ade6f58d-6187-48ec-b3f9-c430ac77e7c7> ;
+  skos:broader tx:EnterpriseStandards .
+
+tx:Licensing
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Licensing"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/a1785331-ea7b-4289-a682-53826e3887bf> ;
+  skos:broader tx:Compliance .
+
+tx:PersonalDataProtectionAct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Personal Data Protection Act"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/a7c44921-1a36-4d19-8741-bfb1e943d011> ;
+  skos:broader tx:Regulation .
+
+tx:ProtectionOfPersonalInformationAct
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Protection of Personal Information Act"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/ae6df571-a943-4242-8194-914c3a316aa1> ;
+  skos:broader tx:Regulation .
+
+tx:PublicSafety
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Public Safety"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/38c9244c-e161-465a-8271-11bb5c3ee579> ;
+  skos:broader tx:SocialImpact .
+
+tx:WasteManagement
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Waste Management"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:modified "2025-04-21T17:03:16.361Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/65f0ddb1-a73f-41f7-bf76-8809cdf34d20> ;
+  skos:broader tx:Environmental .
+
+tx:VerizonIntegratedSecurityFramework
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Verizon Integrated Security Framework"@en ;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69" ;
+  dct:contributor "milsh69" ;
+  dct:creator "milsh69" ;
+  dct:modified "2025-04-28T19:23:56.416Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dct:created "2025-04-28T19:22:45.987Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+  dc11:subject <https://vocabularies.verizon.com/core-compliance/0db86d3b-66f3-4b2e-bb98-f2e8f1842829> ;
+  skos:broader tx:EnterpriseStandards .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Access_controls_for_sensitive_reports>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Access controls for sensitive reports"@en ;
+  skos:broader tx:VisualizationReportingControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Alerts_and_notifications_for_deviations_from_expected_values>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Alerts and notifications for deviations from expected values"@en ;
+  skos:broader tx:MetricsKpiMonitoringControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Audit_trails_to_monitor_data_access_and_changes_to_any_component,_content,_or_context_(metadata,_connective_tissue,_rules)>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Audit trails to monitor data access and changes to any component, content, or context (metadata, connective tissue, rules)"@en ;
+  skos:broader tx:DataAccessControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Automated_data_deletion_processes>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Automated data deletion processes"@en ;
+  skos:broader tx:DataRetentionDeletionControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Bias_detection_and_mitigation_strategies>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Bias detection and mitigation strategies"@en ;
+  skos:broader tx:EthicalAiAnalyticsControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Change_Management_procedures_for_system_updates>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Change Management procedures for system updates"@en ;
+  skos:broader tx:ChangeManagementControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Collaboration_features_with_audit_trails>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Collaboration features with audit trails"@en ;
+  skos:broader tx:DataSharingCollaborationControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Compliance_reporting_for_regulatory_bodies>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Compliance reporting for regulatory bodies"@en ;
+  skos:broader tx:ComplianceAuditsControlsReporting .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_&_Analytic_Sampling_to_monitor_compliance_exposures>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data & Analytic Sampling to monitor compliance exposures"@en ;
+  skos:broader tx:DataPrivacyDataProtectionControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_encryption_in_transit_and_at_rest_to_protect_data_from_unauthorized_access>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data encryption in transit and at rest to protect data from unauthorized access"@en ;
+  skos:broader tx:DataAccessControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_lineage_tracking_to_trace_data_changes>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data lineage tracking to trace data changes"@en ;
+  skos:broader tx:DataQualityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_profiling_and_cleansing_processes_to_maintain_data_accuracy.>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data profiling and cleansing processes to maintain data accuracy."@en ;
+  skos:broader tx:DataQualityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Data_retention_policies_for_compliance_and_legal_requirements>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Data retention policies for compliance and legal requirements"@en ;
+  skos:broader tx:DataRetentionDeletionControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Explanation_audit_trails_for_transparency>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Explanation audit trails for transparency"@en ;
+  skos:broader tx:ExplanationContextualRelevanceControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Governance_framework_for_ethical_AI_and_analytics>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Governance framework for ethical AI and analytics"@en ;
+  skos:broader tx:EthicalAiAnalyticsControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Historical_data_tracking_to_analyze_trends>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Historical data tracking to analyze trends"@en ;
+  skos:broader tx:MetricsKpiMonitoringControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Incorporate_releasability_rules_within_DBTs,_metrics,_analytics,_and_visual_controls_for_UX_slicing_&_data_extraction>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Incorporate releasability rules within DBTs, metrics, analytics, and visual controls for UX slicing & data extraction"@en ;
+  skos:broader tx:DataPrivacyDataProtectionControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Internal_audits_for_control_effectiveness>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Internal audits for control effectiveness"@en ;
+  skos:broader tx:ComplianceAuditsControlsReporting .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Knowledge_graphs_to_provide_contextual_informatio>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Knowledge graphs to provide contextual informatio"@en ;
+  skos:broader tx:ExplanationContextualRelevanceControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Maintenance_of_a_semantic_knowledge_layer_to_provide_Unified_context>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Maintenance of a semantic knowledge layer to provide Unified context"@en ;
+  skos:broader tx:SemanticKnowledgeControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Natural_language_processing_(NLP)_for_automated_explanations>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Natural language processing (NLP) for automated explanations"@en ;
+  skos:broader tx:ExplanationContextualRelevanceControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Performance_monitoring_and_optimization>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Performance monitoring and optimization"@en ;
+  skos:broader tx:PerformanceScalabilityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Real-time_monitoring_of_key_metrics_and_KPIs>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Real-time monitoring of key metrics and KPIs"@en ;
+  skos:broader tx:MetricsKpiMonitoringControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Redaction_capabilities_for_sharing_sensitive_data>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Redaction capabilities for sharing sensitive data"@en ;
+  skos:broader tx:DataSharingCollaborationControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_compliance_audits_and_assessments>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Regular compliance audits and assessments"@en ;
+  skos:broader tx:ComplianceAuditsControlsReporting .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Regular_model_retraining_and_updating>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Regular model retraining and updating"@en ;
+  skos:broader tx:AnalyticsAiModelControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Release_management_for_new_features>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Release management for new features"@en ;
+  skos:broader tx:ChangeManagementControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Report_scheduling_and_distribution_controls>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Report scheduling and distribution controls"@en ;
+  skos:broader tx:VisualizationReportingControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Resource_allocation_controls>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Resource allocation controls"@en ;
+  skos:broader tx:PerformanceScalabilityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Role-based_access_control_(RBAC)_to_limit_access_to_authorized_users>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Role-based access control (RBAC) to limit access to authorized users"@en ;
+  skos:broader tx:DataAccessControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Scalability_planning_to_handle_increased_user_demand>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Scalability planning to handle increased user demand"@en ;
+  skos:broader tx:PerformanceScalabilityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Secure_data_sharing_options_with_access_controls>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Secure data sharing options with access controls"@en ;
+  skos:broader tx:DataSharingCollaborationControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Semantic_metadata_for_unstructured_content>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Semantic metadata for unstructured content"@en ;
+  skos:broader tx:SemanticKnowledgeControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Taxonomy_and_ontology_management_for_structured_data>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Taxonomy and ontology management for structured data"@en ;
+  skos:broader tx:SemanticKnowledgeControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Testing_and_validation_procedures_for_AI_models>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Testing and validation procedures for AI models"@en ;
+  skos:broader tx:AnalyticsAiModelControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Validation_rules_to_ensure_data_consistency_and_integrity>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Validation rules to ensure data consistency and integrity"@en ;
+  skos:broader tx:DataQualityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_analytics_models_and_algorithms>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Version control for analytics models and algorithms"@en ;
+  skos:broader tx:AnalyticsAiModelControls, tx:ChangeManagementControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Version_control_for_data_assets_and_analytical_content>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Version control for data assets and analytical content"@en ;
+  skos:broader tx:DataQualityControls .
+
+<http://www.semanticweb.org/jeffrey/ontologies/2012/9/service.model#Governance:Controls:Visualization_versioning_and_approval_processes>
+  a skos:Concept ;
+  skos:inScheme <https://ontologies.verizon.com/taxonomy-core-compliance/> ;
+  skos:prefLabel "Visualization versioning and approval processes"@en ;
+  skos:broader tx:VisualizationReportingControls .

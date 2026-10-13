@@ -1,0 +1,83 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix issu: <https://ontologies.verizon.com/taxonomy-core-issue/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+issu:
+  a owl:Ontology ;
+  dct:creator "Jeffrey Wallk" ;
+  dct:description "The OWL class rendering of vocabulary-core-issue: one class per concept, rdfs:subClassOf following skos:broader, each class grounded in its concept by dc:subject. Its root, Issue, is the root class ontology-core-domain declares; this taxonomy adds the classes beneath it."@en ;
+  dct:modified "2026-10-06T00:00:00.000Z"^^xsd:dateTime ;
+  dct:source <https://vocabularies.verizon.com/core-issue/> ;
+  dct:title "Taxonomy | Core | Issue"@en ;
+  owl:imports <https://ontologies.verizon.com/ontology-core-domain/> ;
+  owl:versionIRI <https://ontologies.verizon.com/taxonomy-core-issue/1.1> ;
+  owl:versionInfo "1.1" ;
+  rdfs:label "Taxonomy | Core | Issue"@en ;
+  skos:changeNote "1.1: generated from the core vocabulary so the class IRIs that ontology-core-domain and the core ontologies already use (for example Defect, Incident, Issue) resolve to declared classes."@en .
+
+issu:Defect
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/86d58597-5a5c-47e6-ac8e-381b4bbd36bf> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Defect"@en ;
+  rdfs:subClassOf issu:Issue .
+
+issu:Incident
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/65c8c83a-f4b6-4f7e-8a70-0cda08962bb6> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Incident"@en ;
+  rdfs:subClassOf issu:Problem .
+
+issu:Issue
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/3d2e49bb-6acf-4101-af41-46b31cfe6a7a> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Issue"@en .
+
+issu:MajorDefect
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/2238f3ea-708b-4d0a-a6fe-0393f3c74f15> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Major Defect"@en ;
+  rdfs:subClassOf issu:Defect .
+
+issu:MinorDefect
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/53763e91-fe23-4609-b179-13bfaa87c5ef> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Minor Defect"@en ;
+  rdfs:subClassOf issu:Defect .
+
+issu:Needs
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/7b06ba32-215a-45ee-90eb-e8ded38777dd> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Needs"@en ;
+  rdfs:subClassOf issu:Request .
+
+issu:Problem
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/59bff6f8-1846-4afc-9d2a-15e8254e3b82> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Problem"@en ;
+  rdfs:subClassOf issu:Issue .
+
+issu:Question
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/07e3e717-6ff3-4e02-8bac-ffeea6257ad5> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Question"@en ;
+  rdfs:subClassOf issu:Request .
+
+issu:Request
+  a owl:Class ;
+  dc11:subject <https://vocabularies.verizon.com/core-issue/e9cee37a-9a70-43d7-a1d6-2a125bddae63> ;
+  rdfs:isDefinedBy issu: ;
+  rdfs:label "Request"@en ;
+  rdfs:subClassOf issu:Issue .
