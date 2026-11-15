@@ -174,4 +174,80 @@
     }, { threshold: 0.6 });
     io.observe(el);
   });
+
+  /* v2 */
+  /* ---------- Grouped menu ---------- */
+  var subs = Array.prototype.slice.call(document.querySelectorAll("[data-sub]"));
+  function closeSubs(except) {
+    subs.forEach(function (b) {
+      if (b === except) return;
+      b.setAttribute("aria-expanded", "false");
+      b.parentElement.classList.remove("open");
+    });
+  }
+  subs.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var open = !b.parentElement.classList.contains("open");
+      closeSubs(b);
+      b.parentElement.classList.toggle("open", open);
+      b.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+  document.addEventListener("click", function (e) { if (!e.target.closest(".has-sub")) closeSubs(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    var openBtn = document.querySelector(".has-sub.open [data-sub]");
+    closeSubs();
+    if (openBtn) openBtn.focus();
+  });
+
+  /* ---------- Careers: Apply links prefill the role ---------- */
+  var roleSel = document.querySelector("[data-role-select]");
+  document.querySelectorAll("[data-role]").forEach(function (a) {
+    a.addEventListener("click", function () {
+      if (!roleSel) return;
+      var want = a.getAttribute("data-role");
+      Array.prototype.forEach.call(roleSel.options, function (o, i) { if (o.textContent === want) roleSel.selectedIndex = i; });
+    });
+  });
+
+  /* ---------- Shop cart (mock, kept in the page only) ---------- */
+  var cartEl = document.querySelector("[data-cart]");
+  if (cartEl) {
+    var cart = [];
+    var list = cartEl.querySelector("[data-cart-list]"), empty = cartEl.querySelector("[data-cart-empty]"),
+      totalEl = cartEl.querySelector("[data-cart-total]"), cmsg = cartEl.querySelector("[data-cart-msg]");
+    var drawCart = function () {
+      var n = 0, sum = 0;
+      list.textContent = "";
+      cart.forEach(function (it, i) {
+        n += it.qty; sum += it.qty * it.price;
+        var li = document.createElement("li"), left = document.createElement("span"), right = document.createElement("span"), rm = document.createElement("button");
+        left.textContent = it.qty + " × " + it.name;
+        right.textContent = "$" + it.qty * it.price;
+        rm.type = "button"; rm.textContent = "Remove"; rm.setAttribute("aria-label", "Remove " + it.name);
+        rm.addEventListener("click", function () { cart.splice(i, 1); cmsg.textContent = ""; drawCart(); });
+        right.appendChild(rm); li.appendChild(left); li.appendChild(right); list.appendChild(li);
+      });
+      empty.hidden = cart.length > 0;
+      totalEl.textContent = "$" + sum;
+      document.querySelectorAll("[data-cart-count]").forEach(function (c) { c.textContent = n; });
+    };
+    document.querySelectorAll("[data-add]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var name = b.getAttribute("data-name"), price = Number(b.getAttribute("data-price"));
+        var hit = cart.filter(function (it) { return it.name === name; })[0];
+        if (hit) hit.qty += 1; else cart.push({ name: name, price: price, qty: 1 });
+        cmsg.textContent = "";
+        b.textContent = "Added";
+        setTimeout(function () { b.textContent = "Add to cart"; }, 900);
+        drawCart();
+      });
+    });
+    cartEl.querySelector("[data-checkout]").addEventListener("click", function () {
+      cmsg.textContent = cart.length ? "Mockup only: this would open secure checkout with [store provider]." : "Add an item first.";
+    });
+    cartEl.querySelector("[data-cart-clear]").addEventListener("click", function () { cart = []; cmsg.textContent = ""; drawCart(); });
+    drawCart();
+  }
 })();
