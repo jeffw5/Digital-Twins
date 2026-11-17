@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HR Services Architecture Map v2</title>
+<title>Business Model - HR Services v2.0</title>
+<script>
+(function(){
+  var t=null;
+  try{ t=localStorage.getItem('hrmap-theme'); }catch(e){}
+  if(t!=='light' && t!=='dark'){ t=(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'; }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -135,6 +143,11 @@ header{
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.brand-version{
+  font-family:var(--font-mono); font-size:0.72rem; font-weight:600; letter-spacing:0.02em;
+  color:var(--accent); background:var(--accent-soft); border-radius:4px;
+  padding:0.12rem 0.4rem; margin-left:0.4rem; vertical-align:0.2em;
+}
 .brand-sub{
   font-size:0.72rem;
   color:var(--muted);
@@ -142,11 +155,21 @@ header{
   text-transform:uppercase;
   white-space:nowrap;
 }
+.header-right{ display:flex; align-items:center; gap:1.3rem; flex:none; }
 .header-stats{
   display:flex;
   gap:1.4rem;
   flex:none;
 }
+.theme-toggle{
+  display:inline-flex; align-items:center; gap:0.4rem;
+  border:1px solid var(--border); background:var(--surface-2); color:var(--ink-soft);
+  border-radius:6px; padding:0.4rem 0.7rem; font-size:0.74rem; font-weight:600;
+  cursor:pointer; white-space:nowrap; transition:border-color 0.15s, color 0.15s;
+}
+.theme-toggle:hover{ border-color:var(--accent); color:var(--ink); }
+.theme-toggle:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.theme-toggle svg{ width:15px; height:15px; flex:none; }
 .stat{
   display:flex;
   flex-direction:column;
@@ -328,6 +351,7 @@ svg#stage.grabbing{ cursor:grabbing; }
 .node .label{
   font-family:var(--font-body); font-weight:600; fill:var(--ink);
   pointer-events:none; transition:opacity 0.2s;
+  paint-order:stroke; stroke:var(--paper); stroke-width:3px; stroke-linejoin:round;
 }
 .node.dim .core{ opacity:0.14; }
 .node.dim .label{ opacity:0; }
@@ -352,8 +376,6 @@ svg#stage.grabbing{ cursor:grabbing; }
   max-width:240px; line-height:1.35; box-shadow:var(--shadow-panel);
   opacity:0; transform:translate(-50%,-100%); transition:opacity 0.1s;
 }
-:root:not([data-theme="light"]) .tooltip{ background:#eef1f5; color:#11151c; }
-:root[data-theme="dark"] .tooltip{ background:#eef1f5; color:#11151c; }
 .tooltip.show{ opacity:1; }
 .tooltip .tt-type{
   font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase;
@@ -380,36 +402,7 @@ svg#stage.grabbing{ cursor:grabbing; }
   padding:0.4rem 0.65rem; opacity:0.85;
 }
 
-/* ---------- Inspector panel ---------- */
-.inspector{
-  width:360px; flex:none; background:var(--surface); border-left:1px solid var(--border);
-  display:flex; flex-direction:column; overflow-y:auto;
-}
-.insp-empty{
-  padding:2.2rem 1.4rem; text-align:center; color:var(--muted); font-size:0.85rem;
-}
-.insp-empty svg{ width:34px; height:34px; margin-bottom:0.75rem; opacity:0.5; }
-
-.insp-header{
-  padding:1.1rem 1.25rem 0.9rem; border-bottom:1px solid var(--border);
-}
-.insp-breadcrumb{
-  display:flex; flex-wrap:wrap; gap:0.3rem; align-items:center;
-  font-family:var(--font-mono); font-size:0.62rem; color:var(--muted);
-  text-transform:uppercase; letter-spacing:0.03em; margin-bottom:0.5rem;
-}
-.insp-breadcrumb span:not(:last-child)::after{ content:"/"; margin-left:0.3rem; color:var(--border); }
-.insp-type-pill{
-  display:inline-flex; align-items:center; gap:0.3rem;
-  font-family:var(--font-mono); font-size:0.62rem; font-weight:600; text-transform:uppercase;
-  letter-spacing:0.04em; padding:0.15rem 0.45rem; border-radius:4px; margin-bottom:0.5rem;
-}
-.insp-title{
-  font-family:var(--font-display); font-size:1.28rem; font-weight:600; line-height:1.2;
-}
-
-.insp-section{ padding:1rem 1.25rem; border-bottom:1px solid var(--border); }
-.insp-section:last-child{ border-bottom:none; }
+/* ---------- Shared chips / section titles (Values & Privacy view) ---------- */
 .insp-section-title{
   font-size:0.66rem; font-weight:700; color:var(--muted); text-transform:uppercase;
   letter-spacing:0.06em; margin-bottom:0.6rem;
@@ -420,47 +413,13 @@ svg#stage.grabbing{ cursor:grabbing; }
   border-radius:4px; background:var(--surface-2); border:1px solid var(--border);
   color:var(--ink-soft);
 }
-.stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; }
-.stat-tile{
-  background:var(--surface-2); border:1px solid var(--border); border-radius:6px;
-  padding:0.55rem 0.5rem; text-align:center;
-}
-.stat-tile b{ display:block; font-family:var(--font-mono); font-size:1.05rem; font-variant-numeric:tabular-nums; }
-.stat-tile span{ font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em; }
-
-.proc-list{ display:flex; flex-direction:column; gap:0.5rem; }
-.proc-item{
-  border:1px solid var(--border); border-radius:6px; padding:0.55rem 0.65rem;
-  background:var(--surface-2); cursor:pointer;
-}
-.proc-item:hover{ border-color:var(--accent); }
-.proc-item-name{ font-size:0.8rem; font-weight:600; margin-bottom:0.3rem; }
-.proc-item-ops{ display:flex; flex-wrap:wrap; gap:0.3rem; }
 .op-tag{
   font-family:var(--font-mono); font-size:0.62rem; padding:0.12rem 0.4rem;
   border-radius:3px; background:var(--surface); border:1px solid var(--border); color:var(--muted);
 }
 
-.child-list{ display:flex; flex-direction:column; gap:0.3rem; }
-.child-row{
-  display:flex; align-items:center; gap:0.5rem; padding:0.4rem 0.5rem;
-  border-radius:5px; cursor:pointer; font-size:0.8rem;
-}
-.child-row:hover{ background:var(--surface-2); }
-.child-row .dot{ width:7px; height:7px; border-radius:50%; flex:none; }
-.child-count{ margin-left:auto; font-family:var(--font-mono); font-size:0.65rem; color:var(--muted); }
-
-.oparea-list{ display:flex; flex-direction:column; gap:0.45rem; }
-.oparea-item{
-  border:1px solid var(--border); border-radius:6px; padding:0.5rem 0.65rem; cursor:pointer;
-  background:var(--surface-2);
-}
-.oparea-item.active-filter{ border-color:var(--accent); background:var(--accent-soft); }
-.oparea-name{ font-size:0.76rem; font-weight:600; margin-bottom:0.2rem; }
-.oparea-desc{ font-size:0.68rem; color:var(--muted); line-height:1.4; }
-
 /* ---------- Tree view ---------- */
-#view-tree{ display:none; flex:1; overflow:auto; padding:1.75rem; }
+#view-tree{ display:none; position:absolute; inset:0; overflow:auto; padding:1.75rem; }
 .tree-shell{
   max-width:880px; margin:0 auto; background:var(--surface); border:1px solid var(--border);
   border-radius:10px; padding:1.5rem 1.75rem 2rem; box-shadow:var(--shadow-panel);
@@ -482,18 +441,82 @@ ul.tnode-list ul{ list-style:none; margin:0.2rem 0 0.2rem 1.1rem; padding-left:0
 .tnode.dim{ opacity:0.32; }
 .tnode.selected{ background:var(--accent-soft); }
 .tchildren{ display:none; }
+.tnode.flash{ box-shadow:0 0 0 2px var(--accent); }
+
+/* ---------- List view side panel: Service Line breakdown ---------- */
+.list-panel{
+  display:none; width:380px; flex:none; background:var(--surface);
+  border-left:1px solid var(--border); flex-direction:column; min-height:0;
+}
+.list-panel.show{ display:flex; }
+.lp-head{ padding:1.05rem 1.2rem 0.9rem; border-bottom:1px solid var(--border); flex:none; }
+.lp-kicker{
+  font-family:var(--font-mono); font-size:0.62rem; color:var(--muted);
+  text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.3rem;
+}
+.lp-title{ font-family:var(--font-display); font-size:1.22rem; font-weight:600; line-height:1.2; }
+.lp-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-top:0.8rem; }
+.lp-stat{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:6px;
+  padding:0.45rem 0.4rem; text-align:center;
+}
+.lp-stat b{ display:block; font-family:var(--font-mono); font-size:1rem; font-variant-numeric:tabular-nums; }
+.lp-stat span{ font-size:0.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; }
+.lp-actions{ display:flex; gap:0.4rem; margin-top:0.75rem; flex-wrap:wrap; }
+.lp-btn{
+  font-size:0.68rem; font-weight:600; padding:0.25rem 0.55rem; border-radius:4px;
+  border:1px solid var(--border); background:var(--surface-2); color:var(--ink-soft); cursor:pointer;
+}
+.lp-btn:hover{ border-color:var(--accent); color:var(--ink); }
+.lp-body{ flex:1; overflow-y:auto; padding:0.6rem 0.9rem 1.4rem; }
+.lp-domain{
+  display:flex; align-items:center; gap:0.45rem; margin:0.9rem 0.3rem 0.4rem;
+  font-family:var(--font-display); font-size:0.95rem; font-weight:600; color:var(--ink-soft);
+}
+.lp-domain:first-child{ margin-top:0.3rem; }
+.lp-domain .dot, .lp-sl .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+.lp-sl{
+  border:1px solid var(--border); border-left:3px solid var(--sl-color, var(--accent));
+  border-radius:6px; background:var(--surface-2); margin-bottom:0.5rem;
+}
+.lp-sl.selected{ box-shadow:0 0 0 1px var(--accent); }
+.lp-sl > summary{
+  list-style:none; cursor:pointer; padding:0.55rem 0.65rem; display:flex; gap:0.5rem; align-items:flex-start;
+}
+.lp-sl > summary::-webkit-details-marker{ display:none; }
+.lp-sl > summary .twisty{ width:11px; height:11px; flex:none; margin-top:0.2rem; color:var(--muted); transition:transform 0.15s; }
+.lp-sl[open] > summary .twisty{ transform:rotate(90deg); }
+.lp-sl-text{ flex:1; min-width:0; }
+.lp-sl-name{ font-size:0.8rem; font-weight:700; line-height:1.3; }
+.lp-sl-count{ font-family:var(--font-mono); font-size:0.62rem; color:var(--muted); margin-top:0.15rem; }
+.lp-svc-list{ list-style:none; margin:0; padding:0 0.65rem 0.6rem 1.55rem; display:flex; flex-direction:column; gap:0.45rem; }
+.lp-svc-name{
+  font-size:0.76rem; font-weight:600; line-height:1.3; cursor:pointer; padding:0.15rem 0.3rem;
+  border-radius:4px; display:flex; gap:0.4rem; align-items:baseline;
+}
+.lp-svc-name:hover{ background:var(--surface); }
+.lp-svc-name .n{ margin-left:auto; font-family:var(--font-mono); font-size:0.6rem; color:var(--muted); font-weight:500; flex:none; }
+.lp-proc-list{
+  list-style:none; margin:0.2rem 0 0 0.35rem; padding:0 0 0 0.6rem;
+  border-left:1px solid var(--border); display:flex; flex-direction:column; gap:0.1rem;
+}
+.lp-proc{
+  font-size:0.7rem; color:var(--ink-soft); line-height:1.35; padding:0.15rem 0.3rem;
+  border-radius:4px; cursor:pointer;
+}
+.lp-proc:hover{ background:var(--surface); color:var(--ink); }
+.lp-svc-name.selected, .lp-proc.selected{ background:var(--accent-soft); color:var(--ink); }
+.lp-proc.dim{ opacity:0.35; }
+@media (max-width: 900px){ .list-panel{ width:300px; } }
 .tchildren.open{ display:block; }
 
 
 /* ---------- v2: chips, indicators, Values & Privacy view ---------- */
-.chip.nav, .chip.principle, .chip.safeguard{ cursor:pointer; display:inline-flex; align-items:center; gap:0.35rem; }
-.chip.nav:hover, .chip.principle:hover, .chip.safeguard:hover{ border-color:var(--accent); color:var(--ink); }
+.chip.nav{ cursor:pointer; display:inline-flex; align-items:center; gap:0.35rem; }
+.chip.nav:hover{ border-color:var(--accent); color:var(--ink); }
 .chip.nav.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--ink); }
 .chip .dot{ width:6px; height:6px; border-radius:50%; flex:none; }
-.chip.principle em{ font-style:normal; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); }
-.chip.safeguard{ border-style:dashed; }
 .chip.reg{ font-size:0.64rem; }
-.insp-note{ font-size:0.78rem; line-height:1.5; color:var(--ink-soft); }
 .ind-card{ border:1px solid var(--border); border-radius:6px; padding:0.5rem 0.6rem; background:var(--surface-2); }
 .ind-name{ font-size:0.8rem; font-weight:600; }
 .ind-formula{ font-family:var(--font-mono); font-size:0.66rem; color:var(--muted); margin:0.2rem 0 0.35rem; line-height:1.45; }
@@ -550,10 +573,6 @@ ul.tnode-list ul{ list-style:none; margin:0.2rem 0 0.2rem 1.1rem; padding-left:0
 ::-webkit-scrollbar-thumb:hover{ background:var(--muted); }
 
 a{ color:var(--accent); }
-
-@media (max-width: 980px){
-  .inspector{ position:absolute; right:0; top:0; bottom:0; box-shadow:var(--shadow-panel); }
-}
 </style>
 
 
@@ -571,6 +590,8 @@ a{ color:var(--accent); }
 <symbol id="ic-hub" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4" fill="currentColor"/><circle cx="5" cy="18" r="2.4" fill="currentColor"/><circle cx="19" cy="18" r="2.4" fill="currentColor"/><line x1="12" y1="7.4" x2="6.2" y2="16" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="7.4" x2="17.8" y2="16" stroke="currentColor" stroke-width="1.6"/><line x1="7.4" y1="18" x2="16.6" y2="18" stroke="currentColor" stroke-width="1.6"/></symbol>
 <symbol id="ic-cursor" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
 <symbol id="ic-rearrange" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.1" fill="currentColor"/><circle cx="12" cy="18.5" r="2.1" fill="currentColor"/><circle cx="19" cy="6" r="2.1" fill="currentColor"/><path d="M5 8.3v3a4 4 0 0 0 4 4h1.3M19 8.3v3a4 4 0 0 1-4 4h-1.3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="ic-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 </defs>
 </svg>
 
@@ -578,11 +599,13 @@ a{ color:var(--accent); }
   <div class="brand">
     <svg class="brand-mark" width="26" height="26" viewBox="0 0 24 24"><use href="#ic-hub"/></svg>
     <div class="brand-text">
-      <div class="brand-title">HR Services &amp; PEO Architecture Map</div>
-      <div class="brand-sub">v2.0 &middot; L1&ndash;L3 &plus; processes &middot; service lines, values &amp; privacy</div>
+      <div class="brand-title">Business Model - HR Services <span class="brand-version">v2.0</span></div>
     </div>
   </div>
-  <div class="header-stats" id="header-stats"></div>
+  <div class="header-right">
+    <div class="header-stats" id="header-stats"></div>
+    <button class="theme-toggle" id="theme-toggle" type="button" onclick="toggleTheme()"><svg><use id="theme-icon" href="#ic-moon"/></svg><span id="theme-text">Dark</span></button>
+  </div>
 </header>
 
 <div class="controls-bar">
@@ -604,14 +627,13 @@ a{ color:var(--accent); }
     <button data-mode="force" onclick="setView('force')">Force</button>
     <button data-mode="radial" class="active" onclick="setView('radial')">Radial</button>
     <button data-mode="cluster" onclick="setView('cluster')">Cluster</button>
-    <button data-mode="hierarchical" onclick="setView('hierarchical')">Hierarchical</button>
     <button data-mode="values" onclick="setView('values')">Values &amp; Privacy</button>
   </div>
 
   <div class="slider-field">
     <div class="slider-labels"><span>Detail depth</span><b id="detail-label">Services</b></div>
     <input type="range" id="detail-slider" min="1" max="4" value="3" step="1">
-    <div class="tick-row"><span>Domains</span><span>Contexts</span><span>Services</span><span>Processes</span></div>
+    <div class="tick-row"><span>Domains</span><span>Service Lines</span><span>Services</span><span>Processes</span></div>
   </div>
 
   <div class="slider-field" id="spacing-field">
@@ -661,13 +683,7 @@ a{ color:var(--accent); }
     <div class="tooltip" id="tooltip"></div>
   </div>
 
-  <div class="inspector" id="inspector">
-    <div class="insp-empty" id="insp-empty">
-      <svg viewBox="0 0 24 24"><use href="#ic-hub"/></svg>
-      <div>Select a domain, sub-domain, service, or process to inspect its relationships &mdash; ontology concepts, processes, operational areas, service lines, the values it promotes, and the privacy safeguards that govern it.</div>
-    </div>
-    <div id="insp-content" style="display:none;"></div>
-  </div>
+  <aside class="list-panel" id="list-panel" aria-label="Service Line breakdown"></aside>
 </div>
 
 <script id="model-json" type="application/json">
@@ -6160,7 +6176,7 @@ Object.values(NODES).forEach(n=>{
   }
 });
 
-const TYPE_LABELS = {root:'Enterprise Model', domain:'Business Domain', subdomain:'Bounded Context', service:'Domain Service', process:'Business Process'};
+const TYPE_LABELS = {root:'Enterprise Model', domain:'Business Domain', subdomain:'Service Line', service:'Domain Service', process:'Business Process'};
 
 /* ---------------- Shared geometry helpers ---------------- */
 const svgns = 'http://www.w3.org/2000/svg';
@@ -6227,88 +6243,96 @@ function radialLinkPath(a, b){
 }
 
 /* =================================================================
-   LAYOUT 2 — Hierarchical (top-down tidy tree, org-chart style)
+   LAYOUT 2 — Cluster (left-to-right dendrogram, elbow connectors)
+   Every label is shown in full and wraps (at every level) after
+   CLUSTER_WRAP characters; columns and rows are sized from the measured
+   text so nothing is truncated or overlaps.
    ================================================================= */
-const HROW_GAP_BASE = 132;
-let HROW_GAP = HROW_GAP_BASE;
-let lastHierDepth = null;
-
-/* Leaf count "capped" at a given max depth — nodes at maxDepth are treated
-   as leaves for spacing purposes even if they have hidden deeper children,
-   so the layout only reserves as much room as is currently visible. */
-function leafCountCapped(id, maxDepth){
-  const rec = NODES[id];
-  if(rec.depth >= maxDepth || rec.childIds.length===0) return 1;
-  return rec.childIds.reduce((s,cid)=>s+leafCountCapped(cid,maxDepth),0);
-}
-
-function layoutHierarchical(maxDepth){
-  const total = leafCountCapped(ROOT_ID, maxDepth);
-  const fullWidth = Math.max(760, total * 26) * spacingMult;
-  function place(id, x0, x1, depth){
-    const rec = NODES[id];
-    const cx = (x0+x1)/2;
-    rec.pos.hierarchical = { x:cx, y:(depth-2)*HROW_GAP };
-    if(rec.childIds.length && depth < maxDepth){
-      const tot = leafCountCapped(id, maxDepth);
-      let cursor = x0;
-      rec.childIds.forEach(cid=>{
-        const span = (x1-x0) * (leafCountCapped(cid,maxDepth)/tot);
-        place(cid, cursor, cursor+span, depth+1);
-        cursor += span;
-      });
-    }
-  }
-  place(ROOT_ID, -fullWidth/2, fullWidth/2, 0);
-  lastHierDepth = maxDepth;
-}
-layoutHierarchical(4);
-
-function verticalLinkPath(a, b){
-  const pa = getPos(NODES[a]), pb = getPos(NODES[b]);
-  const midY = (pa.y + pb.y) / 2;
-  const c0 = {x:pa.x, y:midY}, c1 = {x:pb.x, y:midY};
-  return {
-    d: `M ${pa.x} ${pa.y} C ${c0.x} ${c0.y}, ${c1.x} ${c1.y}, ${pb.x} ${pb.y}`,
-    mid: bezierPoint(pa, c0, c1, pb, 0.5)
-  };
-}
-
-/* =================================================================
-   LAYOUT 3 — Cluster (left-to-right dendrogram, elbow connectors)
-   ================================================================= */
-const CCOL_GAP_BASE = 178;
-let CCOL_GAP = CCOL_GAP_BASE;
+const CLUSTER_WRAP = 25;
+const CLUSTER_WRAP_TYPES = new Set(['root','domain','subdomain','service','process']);  // every level wraps
+const CLUSTER_LINK_SPAN = 120;              // horizontal room for the connector + its relation pill
+const CLUSTER_GROUP_PAD = {0:0, 1:20, 2:12, 3:4};
 let lastClusterDepth = null;
+let clusterBounds = null;
+
+const measureCtx = document.createElement('canvas').getContext('2d');
+function textWidth(str, size){
+  measureCtx.font = `600 ${size}px "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+  return measureCtx.measureText(str).width;
+}
+function wrapLabel(str, max){
+  const lines = []; let cur = '';
+  str.split(/\s+/).filter(Boolean).forEach(word=>{
+    while(word.length > max){                     // hard-break a single over-long token
+      if(cur){ lines.push(cur); cur=''; }
+      lines.push(word.slice(0,max)); word = word.slice(max);
+    }
+    if(!cur) cur = word;
+    else if((cur+' '+word).length <= max) cur += ' '+word;
+    else { lines.push(cur); cur = word; }
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+function clusterLineHeight(depth){ return LABEL_SIZE[depth]*1.25; }
 
 function layoutCluster(maxDepth){
-  const total = leafCountCapped(ROOT_ID, maxDepth);
-  const fullHeight = Math.max(560, total * 20) * spacingMult;
-  function place(id, y0, y1, depth){
-    const rec = NODES[id];
-    const cy = (y0+y1)/2;
-    rec.pos.cluster = { x:(depth-2)*CCOL_GAP, y:cy };
-    if(rec.childIds.length && depth < maxDepth){
-      const tot = leafCountCapped(id, maxDepth);
-      let cursor = y0;
-      rec.childIds.forEach(cid=>{
-        const span = (y1-y0) * (leafCountCapped(cid,maxDepth)/tot);
-        place(cid, cursor, cursor+span, depth+1);
-        cursor += span;
-      });
+  /* 1 — label metrics */
+  const colLabelW = {};
+  Object.values(NODES).forEach(n=>{
+    if(n.depth > maxDepth) return;
+    const lines = CLUSTER_WRAP_TYPES.has(n.type) ? wrapLabel(n.label, CLUSTER_WRAP) : [n.label];
+    n.clusterLines = lines;
+    n.clusterLabelW = Math.max(...lines.map(l=>textWidth(l, LABEL_SIZE[n.depth])));
+    n.clusterLabelH = lines.length * clusterLineHeight(n.depth);
+    colLabelW[n.depth] = Math.max(colLabelW[n.depth]||0, n.clusterLabelW);
+  });
+
+  /* 2 — column x positions sized to the widest label in the previous column */
+  const colX = {0:0};
+  for(let d=1; d<=maxDepth; d++){
+    colX[d] = colX[d-1] + NODE_R[d-1] + 8 + colLabelW[d-1] + 6 + CLUSTER_LINK_SPAN*spacingMult + NODE_R[d] + 2;
+  }
+  const totalW = colX[maxDepth] + NODE_R[maxDepth] + 8 + (colLabelW[maxDepth]||0);
+
+  /* 3 — row heights: each node reserves room for its own (wrapped) label
+         or for its visible children, whichever is taller */
+  function blockH(id){
+    const n = NODES[id];
+    const own = Math.max(n.clusterLabelH, NODE_R[n.depth]*2) + 9*spacingMult;
+    if(n.depth >= maxDepth || !n.childIds.length){ n._blockH = own; return own; }
+    const kids = n.childIds.reduce((s,c)=>s+blockH(c),0) + (CLUSTER_GROUP_PAD[n.depth]||0)*spacingMult;
+    n._blockH = Math.max(own, kids);
+    return n._blockH;
+  }
+  const totalH = blockH(ROOT_ID);
+
+  function place(id, y0){
+    const n = NODES[id];
+    n.pos.cluster = { x: colX[n.depth] - totalW/2, y: y0 + n._blockH/2 - totalH/2 };
+    if(n.depth < maxDepth && n.childIds.length){
+      const kidsH = n.childIds.reduce((s,c)=>s+NODES[c]._blockH,0);
+      let cursor = y0 + (n._blockH - kidsH)/2;
+      n.childIds.forEach(c=>{ place(c, cursor); cursor += NODES[c]._blockH; });
     }
   }
-  place(ROOT_ID, -fullHeight/2, fullHeight/2, 0);
+  place(ROOT_ID, 0);
+  clusterBounds = { w: totalW, h: totalH };
   lastClusterDepth = maxDepth;
 }
-layoutCluster(4);
 
+/* Connector leaves the parent after the end of its label, bends halfway
+   across the gap, and enters the child from the left. */
 function elbowLinkPath(a, b){
-  const pa = getPos(NODES[a]), pb = getPos(NODES[b]);
-  const midX = (pa.x + pb.x) / 2;
+  const A = NODES[a], B = NODES[b];
+  const pa = getPos(A), pb = getPos(B);
+  const ex = pb.x - NODE_R[B.depth] - 2;
+  let sx = pa.x + NODE_R[A.depth] + 8 + (A.clusterLabelW||0) + 6;
+  if(sx > ex - 24) sx = pa.x + NODE_R[A.depth];   // node was dragged out of column order
+  const bend = (sx + ex) / 2;
   return {
-    d: `M ${pa.x} ${pa.y} H ${midX} V ${pb.y} H ${pb.x}`,
-    mid: {x:midX, y:(pa.y+pb.y)/2}
+    d: `M ${sx} ${pa.y} H ${bend} V ${pb.y} H ${ex}`,
+    mid: {x:bend, y:(pa.y+pb.y)/2}
   };
 }
 
@@ -6428,15 +6452,14 @@ function bezierPoint(p0, c0, c1, p1, t){
 /* =================================================================
    View-mode plumbing
    ================================================================= */
-const LINK_PATH_FN = { radial:radialLinkPath, hierarchical:verticalLinkPath, cluster:elbowLinkPath, force:straightLinkPath };
+const LINK_PATH_FN = { radial:radialLinkPath, cluster:elbowLinkPath, force:straightLinkPath };
 /* Every visible node gets a label automatically. Radial keeps domain (depth 1)
    off the node itself since the curved sector-rim label already names it. */
-const LABEL_DEPTHS = { radial:[0,2,3,4], hierarchical:[0,1,2,3,4], cluster:[0,1,2,3,4], force:[0,1,2,3,4] };
+const LABEL_DEPTHS = { radial:[0,2,3,4], cluster:[0,1,2,3,4], force:[0,1,2,3,4] };
 /* Relation label shown at the midpoint of each edge, keyed by the child's depth. */
 const EDGE_LABELS = { 1:'hasDomain', 2:'hasSubDomain', 3:'providesService', 4:'executedByProcess' };
 const CANVAS_HINTS = {
   radial: 'drag node to reposition &middot; drag canvas to pan &middot; scroll to zoom',
-  hierarchical: 'drag node to reposition &middot; drag canvas to pan &middot; scroll to zoom',
   cluster: 'drag node to reposition &middot; drag canvas to pan &middot; scroll to zoom',
   force: 'drag node to pin in place (dashed ring) &middot; double-click to release &middot; scroll to zoom'
 };
@@ -6558,7 +6581,6 @@ function anyDescendantProcessMatches(id, procSet){
 }
 
 function syncLayoutDepth(){
-  if(viewMode==='hierarchical' && lastHierDepth!==currentDetail) layoutHierarchical(currentDetail);
   if(viewMode==='cluster' && lastClusterDepth!==currentDetail) layoutCluster(currentDetail);
 }
 
@@ -6651,18 +6673,26 @@ function render(){
     }
 
     if(labelDepths.includes(n.depth)){
-      let lx=0, ly=r+13, anchor='middle';
-      if(viewMode==='radial'){
-        const gap = r + 15;
-        const s = Math.sin(n.radialAngle);
-        anchor = s > 0.22 ? 'start' : (s < -0.22 ? 'end' : 'middle');
-        const padded = gap + (anchor==='middle' ? 3 : 0);
-        lx = padded*Math.sin(n.radialAngle); ly = -padded*Math.cos(n.radialAngle)+4;
-      } else if(viewMode==='cluster'){
-        anchor='start'; lx = r+8; ly = 4;
+      if(viewMode==='cluster'){
+        /* full text, pre-wrapped at CLUSTER_WRAP chars for every level */
+        const lines = n.clusterLines || [n.label];
+        const lh = clusterLineHeight(n.depth);
+        const lx = r + 8;
+        const y0 = LABEL_SIZE[n.depth]*0.35 - (lines.length-1)*lh/2;
+        const t = el('text', {x:lx, y:y0, class:'label', 'text-anchor':'start', 'font-size':LABEL_SIZE[n.depth]}, g);
+        lines.forEach((ln,i)=>{ const ts = el('tspan', {x:lx, y:y0 + i*lh}, t); ts.textContent = ln; });
+      } else {
+        let lx=0, ly=r+13, anchor='middle';
+        if(viewMode==='radial'){
+          const gap = r + 15;
+          const s = Math.sin(n.radialAngle);
+          anchor = s > 0.22 ? 'start' : (s < -0.22 ? 'end' : 'middle');
+          const padded = gap + (anchor==='middle' ? 3 : 0);
+          lx = padded*Math.sin(n.radialAngle); ly = -padded*Math.cos(n.radialAngle)+4;
+        }
+        const t = el('text', {x:lx, y:ly, class:'label', 'text-anchor':anchor, 'font-size':LABEL_SIZE[n.depth]}, g);
+        t.textContent = truncate(n.label, 22);
       }
-      const t = el('text', {x:lx, y:ly, class:'label', 'text-anchor':anchor, 'font-size':LABEL_SIZE[n.depth]}, g);
-      t.textContent = truncate(n.label, viewMode==='cluster'?24:22);
     }
   });
 
@@ -6758,6 +6788,13 @@ function resetView(){
   syncLayoutDepth();
   if(viewMode==='radial'){
     scale = Math.min(1, 640/(RING_R[currentDetail]+80));
+  } else if(viewMode==='cluster' && clusterBounds){
+    const fitW = (vw-80)/clusterBounds.w, fitH = (vh-80)/clusterBounds.h;
+    scale = Math.min(fitW, fitH, 1.15);
+    if(scale < 0.55){                      // too small to read: fit width, start at the top
+      scale = Math.max(0.15, Math.min(fitW, 1));
+      ty = -vh/2 + 40 + (clusterBounds.h/2)*scale;
+    }
   } else {
     const vis = collectVisible();
     let maxAbsX = 60, maxAbsY = 60;
@@ -6813,7 +6850,7 @@ function renderStats(){
   if(box.dataset.built) return;
   box.dataset.built = '1';
   const s = MODEL.stats;
-  const entries = [['serviceLines','Service lines'],['domains','Domains'],['subdomains','Contexts'],['services','Services'],['processes','Processes'],['operationalAreas','Op. Areas'],['principles','Values & obj.']];
+  const entries = [['serviceLines','Core svc lines'],['domains','Domains'],['subdomains','Service Lines'],['services','Services'],['processes','Processes'],['operationalAreas','Op. Areas'],['principles','Values & obj.']];
   box.innerHTML = entries.map(([k,label])=>`<div class="stat"><b>${s[k]}</b><span>${label}</span></div>`).join('');
 }
 
@@ -6837,218 +6874,42 @@ const opSelect = document.getElementById('oparea-filter');
 opSelect.addEventListener('change', ()=>{
   opAreaFilter = opSelect.value;
   if(viewMode==='list') renderTree(); else if(viewMode==='values') renderValuesView(); else render();
-  if(selectedId) renderInspector(selectedId);
 });
 
-/* ---------------- Selection + Inspector ---------------- */
+/* ---------------- Selection ---------------- */
 function selectNode(id){
   selectedId = id;
   if(viewMode==='list') renderTree(); else render();
-  renderInspector(id);
 }
 
-function renderInspector(id){
-  const emptyEl = document.getElementById('insp-empty');
-  const contentEl = document.getElementById('insp-content');
-  if(!id){ emptyEl.style.display='flex'; contentEl.style.display='none'; return; }
-  const n = NODES[id];
-  emptyEl.style.display='none'; contentEl.style.display='block';
-
-  const crumbLabels = n.ancestry.map(aid=>NODES[aid].label.replace(' Domain','').replace(' Bounded Context',''));
-  const typeLabel = (TYPE_LABELS[n.type]||n.type) + (n.type==='domain'?' &middot; L1':n.type==='subdomain'?' &middot; L2':n.type==='service'?' &middot; L3':'');
-  const color = n.type==='root' ? 'var(--accent)' : domainColor(n.domainId);
-
-  let html = `
-    <div class="insp-header">
-      <div class="insp-breadcrumb">${crumbLabels.map(c=>`<span>${c}</span>`).join('')}</div>
-      <div class="insp-type-pill" style="background:${swap(color,0.14)}; color:${color}">${typeLabel}</div>
-      <div class="insp-title">${n.label}</div>
-    </div>
-  `;
-
-  if(n.type==='root'){
-    const s = MODEL.stats;
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Scope</div>
-      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
-        <div class="stat-tile"><b>${s.domains}</b><span>Domains</span></div>
-        <div class="stat-tile"><b>${s.subdomains}</b><span>Contexts</span></div>
-        <div class="stat-tile"><b>${s.services}</b><span>Services</span></div>
-        <div class="stat-tile"><b>${s.processes}</b><span>Processes</span></div>
-        <div class="stat-tile"><b>${s.serviceLines}</b><span>Svc lines</span></div>
-        <div class="stat-tile"><b>${s.principles}</b><span>Values/obj.</span></div>
-        <div class="stat-tile"><b>${s.indicators}</b><span>Indicators</span></div>
-        <div class="stat-tile"><b>${s.safeguards}</b><span>Safeguards</span></div>
-      </div>
-    </div>`;
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Business Domains</div>
-      <div class="child-list">
-        ${n.childIds.map(cid=>{
-          const c = NODES[cid];
-          return `<div class="child-row" onclick="selectNode('${cid}')"><span class="dot" style="background:${domainColor(cid)}"></span>${c.label}<span class="child-count">${countByType(cid,'service')} svc</span></div>`;
-        }).join('')}
-      </div>
-    </div>`;
+/* Jump from anywhere (search, Values & Privacy chips) to a node on the map. */
+let lastMapView = 'radial';
+function focusNode(id){
+  if(!NODES[id]) return;
+  if(viewMode==='values') setView(lastMapView);
+  const targetDepth = NODES[id].depth;
+  if(viewMode!=='list' && targetDepth > currentDetail){
+    currentDetail = targetDepth;
+    detailSlider.value = targetDepth;
+    detailLabelEl.textContent = DETAIL_LABELS[targetDepth];
+    if(viewMode==='cluster') resetView();
+    if(viewMode==='force') reheatForce();
   }
-
-  if(n.type==='domain' || n.type==='subdomain'){
-    const subCount = n.type==='domain' ? n.childIds.length : 0;
-    const svcCount = countByType(n.id,'service');
-    const procCount = countByType(n.id,'process');
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Scope</div>
-      <div class="stat-grid">
-        ${n.type==='domain' ? `<div class="stat-tile"><b>${subCount}</b><span>Contexts</span></div>` : ''}
-        <div class="stat-tile"><b>${svcCount}</b><span>Services</span></div>
-        <div class="stat-tile"><b>${procCount}</b><span>Processes</span></div>
-      </div>
-    </div>`;
-    html += `<div class="insp-section">
-      <div class="insp-section-title">${n.type==='domain'?'Bounded Contexts':'Domain Services'}</div>
-      <div class="child-list">
-        ${n.childIds.map(cid=>{
-          const c = NODES[cid];
-          const cnt = c.type==='service' ? '' : `<span class="child-count">${countByType(cid,'service')} svc</span>`;
-          return `<div class="child-row" onclick="selectNode('${cid}')"><span class="dot" style="background:${color}"></span>${c.label}${cnt}</div>`;
-        }).join('')}
-      </div>
-    </div>`;
-  }
-
-  if(n.type==='service'){
-    if(n.comment){
-      html += `<div class="insp-section"><div class="insp-note">${n.comment}</div></div>`;
-    }
-    const lines = [...(SVC_TO_LINES[n.id]||[])];
-    if(lines.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Core Service Lines</div>
-        <div class="chip-row">${lines.map(l=>`<span class="chip nav ${opAreaFilter===l?'on':''}" onclick="toggleOpAreaLens('${l}')" title="Toggle lens">${SERVICE_LINES[l].label.replace(/ \(.*\)$/,'')}</span>`).join('')}</div>
-      </div>`;
-    }
-    if(n.promotes.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Promotes Values &amp; Objectives</div>
-        <div class="chip-row">${n.promotes.map(p=>`<span class="chip principle" onclick="openPrinciple('${p.id}')">${p.label}<em>${principleKindLabel(PRINCIPLES[p.id])}</em></span>`).join('')}</div>
-      </div>`;
-    }
-    const inds = SVC_TO_INDICATORS[n.id]||[];
-    if(inds.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Collects Indicators</div>
-        <div class="proc-list">${inds.map(indicatorCardHTML).join('')}</div>
-      </div>`;
-    }
-    if(n.safeguards.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Governed By Privacy Safeguards</div>
-        <div class="chip-row">${n.safeguards.map(g=>`<span class="chip safeguard" onclick="openSafeguard('${g.id}')">${g.label}</span>`).join('')}</div>
-      </div>`;
-    }
-    if(n.complements.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Complements Services</div>
-        <div class="child-list">${n.complements.map(c=>`<div class="child-row" onclick="selectNode('${c.id}')"><span class="dot" style="background:${domainColor(NODES[c.id].domainId)}"></span>${c.label}</div>`).join('')}</div>
-      </div>`;
-    }
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Mapped Ontology Concepts</div>
-      <div class="chip-row">${(n.concepts||[]).map(c=>`<span class="chip">${c.label}</span>`).join('')}</div>
-    </div>`;
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Executing Business Processes</div>
-      <div class="proc-list">
-        ${n.childIds.map(pid=>{
-          const p = NODES[pid];
-          const ops = (p.operations||[]).map(o=>`<span class="op-tag">${o.label}</span>`).join('');
-          return `<div class="proc-item" onclick="selectNode('${pid}')"><div class="proc-item-name">${p.label}</div><div class="proc-item-ops">${ops}</div></div>`;
-        }).join('')}
-      </div>
-    </div>`;
-  }
-
-  if(n.type==='process'){
-    const svcId = n.parentId;
-    const svc = NODES[svcId];
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Realizes Domain Service</div>
-      <div class="child-row" onclick="selectNode('${svcId}')" style="cursor:pointer; padding:0.5rem 0.6rem; background:var(--surface-2); border-radius:6px;">
-        <span class="dot" style="background:${color}"></span>${svc.label}
-      </div>
-    </div>`;
-    html += `<div class="insp-section">
-      <div class="insp-section-title">Supported By Operational Areas</div>
-      <div class="chip-row">${(n.operations||[]).map(o=>`<span class="chip">${o.label}</span>`).join('') || '<span class="chip">&mdash;</span>'}</div>
-    </div>`;
-    if(n.enforces.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Enforces Privacy Safeguards</div>
-        <div class="chip-row">${n.enforces.map(g=>`<span class="chip safeguard" onclick="openSafeguard('${g.id}')">${g.label}</span>`).join('')}</div>
-      </div>`;
-    }
-    if(n.safeguards.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Governed By Privacy Safeguards</div>
-        <div class="chip-row">${n.safeguards.map(g=>`<span class="chip safeguard" onclick="openSafeguard('${g.id}')">${g.label}</span>`).join('')}</div>
-      </div>`;
-    }
-    if(svc.concepts && svc.concepts.length){
-      html += `<div class="insp-section">
-        <div class="insp-section-title">Related Ontology Concepts</div>
-        <div class="chip-row">${svc.concepts.map(c=>`<span class="chip">${c.label}</span>`).join('')}</div>
-      </div>`;
-    }
-  }
-
-  html += `<div class="insp-section">
-    <div class="insp-section-title">Core Service Lines &middot; click for lens</div>
-    <div class="oparea-list">
-      ${MODEL.serviceLines.map(o=>`
-        <div class="oparea-item ${opAreaFilter===o.id?'active-filter':''}" onclick="toggleOpAreaLens('${o.id}')">
-          <div class="oparea-name">${o.label}</div>
-          <div class="oparea-desc">${OPAREA_TO_PROCESSES[o.id].length} processes${o.comment?' &middot; '+o.comment:''}</div>
-        </div>`).join('')}
-    </div>
-  </div>`;
-  html += `<div class="insp-section">
-    <div class="insp-section-title">Operational Areas Reference</div>
-    <div class="oparea-list">
-      ${MODEL.operationalAreas.map(o=>`
-        <div class="oparea-item ${opAreaFilter===o.id?'active-filter':''}" onclick="toggleOpAreaLens('${o.id}')">
-          <div class="oparea-name">${o.label}</div>
-          <div class="oparea-desc">${o.comment||''}</div>
-        </div>`).join('')}
-    </div>
-  </div>`;
-
-  contentEl.innerHTML = html;
+  selectNode(id);
+  if(viewMode==='list') revealInTree(id); else panToNode(id);
 }
 
 function toggleOpAreaLens(id){
   opAreaFilter = (opAreaFilter===id) ? '' : id;
   opSelect.value = opAreaFilter;
   if(viewMode==='list') renderTree(); else if(viewMode==='values') renderValuesView(); else render();
-  if(selectedId) renderInspector(selectedId);
-}
-
-function countByType(id, type){
-  const rec = NODES[id];
-  if(rec.type===type) return 1;
-  let c = 0;
-  rec.childIds.forEach(cid=>{ c += countByType(cid, type); });
-  return c;
-}
-
-function swap(colorVar, alpha){
-  return `color-mix(in srgb, ${colorVar} ${Math.round(alpha*100)}%, transparent)`;
 }
 
 /* ---------------- Detail slider ---------------- */
 const detailSlider = document.getElementById('detail-slider');
 const detailLabelEl = document.getElementById('detail-label');
 const detailFieldEl = detailSlider.closest('.slider-field');
-const DETAIL_LABELS = {1:'Domains',2:'Contexts',3:'Services',4:'Processes'};
+const DETAIL_LABELS = {1:'Domains',2:'Service Lines',3:'Services',4:'Processes'};
 detailSlider.addEventListener('input', ()=>{
   currentDetail = parseInt(detailSlider.value,10);
   detailLabelEl.textContent = DETAIL_LABELS[currentDetail];
@@ -7067,12 +6928,9 @@ spacingSlider.addEventListener('input', ()=>{
 });
 function applySpacing(){
   computeRingR();
-  HROW_GAP = HROW_GAP_BASE * spacingMult;
-  CCOL_GAP = CCOL_GAP_BASE * spacingMult;
   buildRingGrid();
   buildSectors();
   layoutRadialSubtree(ROOT_ID, 0, 2*Math.PI, 0);
-  lastHierDepth = null;
   lastClusterDepth = null;
   if(viewMode==='list' || viewMode==='values') return;
   // Deliberately do NOT call resetView() here: fitting the new (larger or
@@ -7087,11 +6945,13 @@ function applySpacing(){
 /* ---------------- View switch ---------------- */
 function setView(mode){
   viewMode = mode;
+  if(mode==='radial' || mode==='cluster' || mode==='force') lastMapView = mode;
   document.querySelectorAll('#view-toggle button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
   const isPanel = mode==='list' || mode==='values';
   document.getElementById('view-map').style.display = isPanel ? 'none' : 'block';
   document.getElementById('view-tree').style.display = mode==='list' ? 'block' : 'none';
   document.getElementById('view-values').style.display = mode==='values' ? 'block' : 'none';
+  document.getElementById('list-panel').classList.toggle('show', mode==='list');
   detailFieldEl.classList.toggle('disabled', isPanel);
   spacingFieldEl.classList.toggle('disabled', isPanel);
 
@@ -7108,6 +6968,7 @@ function setView(mode){
     stopForce();
   }
 
+  fitStage();
   if(mode==='list'){
     renderTree();
   } else if(mode==='values'){
@@ -7118,9 +6979,11 @@ function setView(mode){
   }
 }
 
+const treeOpen = new Set();   // ids of expanded rows in the List view
 function renderTree(){
   const target = document.getElementById('tree-target');
   target.innerHTML = `<ul class="tnode-list">${MODEL.tree.map(d=>treeNodeHTML(d)).join('')}</ul>`;
+  renderListPanel();
 }
 function treeNodeHTML(n){
   const rec = NODES[n.id];
@@ -7135,26 +6998,126 @@ function treeNodeHTML(n){
   }
   const selCls = n.id===selectedId ? ' selected' : '';
   const dimCls = dim ? ' dim' : '';
+  const openCls = treeOpen.has(n.id) ? ' open' : '';
 
   if(!hasKids){
-    return `<li><div class="tnode${selCls}${dimCls}" onclick="selectNode('${n.id}')"><span class="dot" style="background:${color}"></span><span class="name">${n.label}</span></div></li>`;
+    return `<li><div class="tnode${selCls}${dimCls}" data-id="${n.id}" onclick="selectNode('${n.id}')"><span class="dot" style="background:${color}"></span><span class="name">${n.label}</span></div></li>`;
   }
   return `<li>
-    <div class="tnode${selCls}${dimCls}" onclick="toggleTwisty(this,'${n.id}')">
-      <svg class="twisty"><use href="#ic-chevron"/></svg>
+    <div class="tnode${selCls}${dimCls}" data-id="${n.id}" onclick="toggleTwisty('${n.id}')">
+      <svg class="twisty${openCls}"><use href="#ic-chevron"/></svg>
       <span class="dot" style="background:${color}"></span>
       <span class="name">${n.label}</span>
       ${countLabel}
     </div>
-    <ul class="tchildren">${n.children.map(c=>treeNodeHTML(c)).join('')}</ul>
+    <ul class="tchildren${openCls}">${n.children.map(c=>treeNodeHTML(c)).join('')}</ul>
   </li>`;
 }
-function toggleTwisty(elm, id){
-  const kids = elm.nextElementSibling;
-  const tw = elm.querySelector('.twisty');
-  kids.classList.toggle('open');
-  tw.classList.toggle('open');
+function toggleTwisty(id){
+  if(treeOpen.has(id)) treeOpen.delete(id); else treeOpen.add(id);
   selectNode(id);
+}
+
+/* Expand the tree down to a node, select it and scroll it into view. */
+function revealInTree(id){
+  const n = NODES[id]; if(!n) return;
+  n.ancestry.forEach(a=>treeOpen.add(a));
+  selectNode(id);
+  const row = document.querySelector(`#tree-target .tnode[data-id="${id}"]`);
+  if(row){
+    row.scrollIntoView({behavior:'smooth', block:'center'});
+    row.classList.add('flash'); setTimeout(()=>row.classList.remove('flash'), 1100);
+  }
+}
+
+/* ---------------- List view side panel ----------------
+   Breakdown of Services and Processes under each Service Line (L2),
+   scoped to whatever is selected in the list. */
+function serviceLinesInScope(){
+  const n = selectedId ? NODES[selectedId] : null;
+  if(!n || n.type==='root') return Object.values(NODES).filter(x=>x.type==='subdomain');
+  if(n.type==='domain') return n.childIds.map(id=>NODES[id]);
+  if(n.type==='subdomain') return [n];
+  if(n.type==='service') return [NODES[n.parentId]];
+  return [NODES[NODES[n.parentId].parentId]];          // process
+}
+function renderListPanel(){
+  const panel = document.getElementById('list-panel');
+  if(viewMode!=='list'){ return; }
+  const sel = selectedId ? NODES[selectedId] : null;
+  const lines = serviceLinesInScope();
+  const svcIds = lines.flatMap(l=>l.childIds);
+  const procCount = svcIds.reduce((s,id)=>s+NODES[id].childIds.length, 0);
+  const lensSet = opAreaFilter ? new Set(OPAREA_TO_PROCESSES[opAreaFilter]||[]) : null;
+  const many = lines.length > 1;
+
+  let title = 'All Service Lines';
+  if(sel){
+    if(sel.type==='domain') title = sel.label;
+    else title = lines[0].label;
+  }
+
+  let html = `<div class="lp-head">
+    <div class="lp-kicker">Service Line breakdown${opAreaFilter ? ' &middot; lens: '+lensLabel(opAreaFilter).replace(/ \(.*\)$/,'') : ''}</div>
+    <div class="lp-title">${title}</div>
+    <div class="lp-stats">
+      <div class="lp-stat"><b>${lines.length}</b><span>Service Line${lines.length===1?'':'s'}</span></div>
+      <div class="lp-stat"><b>${svcIds.length}</b><span>Services</span></div>
+      <div class="lp-stat"><b>${procCount}</b><span>Processes</span></div>
+    </div>
+    <div class="lp-actions">
+      ${sel ? `<button class="lp-btn" onclick="selectNode(null)">Show all Service Lines</button>` : ''}
+      ${many ? `<button class="lp-btn" onclick="setPanelOpen(true)">Expand all</button><button class="lp-btn" onclick="setPanelOpen(false)">Collapse all</button>` : ''}
+    </div>
+  </div><div class="lp-body">`;
+
+  let lastDomain = null;
+  lines.forEach(sl=>{
+    const color = domainColor(sl.domainId);
+    if(many && sl.domainId!==lastDomain){
+      lastDomain = sl.domainId;
+      html += `<div class="lp-domain"><span class="dot" style="background:${color}"></span>${NODES[sl.domainId].label.replace(' Domain','')}</div>`;
+    }
+    const nProc = sl.childIds.reduce((s,id)=>s+NODES[id].childIds.length,0);
+    const open = !many || panelOpenDefault;
+    html += `<details class="lp-sl${sel && sel.id===sl.id ? ' selected':''}" style="--sl-color:${color}" ${open?'open':''}>
+      <summary>
+        <svg class="twisty"><use href="#ic-chevron"/></svg>
+        <div class="lp-sl-text">
+          <div class="lp-sl-name">${sl.label}</div>
+          <div class="lp-sl-count">${sl.childIds.length} services &middot; ${nProc} processes</div>
+        </div>
+      </summary>
+      <ol class="lp-svc-list">
+        ${sl.childIds.map(sid=>{
+          const sv = NODES[sid];
+          return `<li>
+            <div class="lp-svc-name${selectedId===sid?' selected':''}" onclick="revealInTree('${sid}')">${sv.label}<span class="n">${sv.childIds.length}</span></div>
+            <ul class="lp-proc-list">
+              ${sv.childIds.map(pid=>{
+                const pr = NODES[pid];
+                const dim = lensSet && !lensSet.has(pid);
+                return `<li class="lp-proc${selectedId===pid?' selected':''}${dim?' dim':''}" onclick="revealInTree('${pid}')">${pr.label}</li>`;
+              }).join('')}
+            </ul>
+          </li>`;
+        }).join('')}
+      </ol>
+    </details>`;
+  });
+  html += `</div>`;
+  const prevScroll = panel.querySelector('.lp-body') ? panel.querySelector('.lp-body').scrollTop : 0;
+  const prevKey = panel.dataset.scope, key = lines.map(l=>l.id).join(',');
+  panel.innerHTML = html;
+  panel.dataset.scope = key;
+  if(prevKey===key) panel.querySelector('.lp-body').scrollTop = prevScroll;
+  const selRow = panel.querySelector('.lp-svc-name.selected, .lp-proc.selected');
+  if(selRow && prevKey!==key) selRow.scrollIntoView({block:'nearest'});
+}
+let panelOpenDefault = true;
+function setPanelOpen(open){
+  panelOpenDefault = open;
+  document.querySelectorAll('#list-panel details.lp-sl').forEach(d=>d.open = open);
 }
 
 /* ---------------- Search ---------------- */
@@ -7179,17 +7142,9 @@ searchResults.addEventListener('click', (e)=>{
   const item = e.target.closest('.search-result-item');
   if(!item || !item.dataset.id) return;
   const id = item.dataset.id;
-  const targetDepth = NODES[id].depth;
-  if(viewMode==='values') setView('radial');
-  if(viewMode!=='list' && targetDepth > currentDetail){
-    currentDetail = targetDepth;
-    detailSlider.value = targetDepth;
-    detailLabelEl.textContent = DETAIL_LABELS[targetDepth];
-  }
-  selectNode(id);
   searchResults.classList.remove('open');
   searchInput.value = NODES[id].label;
-  if(viewMode!=='list') panToNode(id);
+  focusNode(id);
 });
 document.addEventListener('click', (e)=>{
   if(!e.target.closest('.search-box')) searchResults.classList.remove('open');
@@ -7224,17 +7179,7 @@ function indicatorCardHTML(i){
 }
 function svcChip(c){
   const col = NODES[c.id] ? domainColor(NODES[c.id].domainId) : 'var(--muted)';
-  return `<span class="chip nav" onclick="selectNode('${c.id}')"><span class="dot" style="background:${col}"></span>${c.label}</span>`;
-}
-function openPrinciple(id){
-  if(viewMode!=='values') setView('values');
-  const elx = document.getElementById('pr-'+id);
-  if(elx){ elx.scrollIntoView({behavior:'smooth', block:'start'}); elx.classList.add('flash'); setTimeout(()=>elx.classList.remove('flash'),1200); }
-}
-function openSafeguard(id){
-  if(viewMode!=='values') setView('values');
-  const elx = document.getElementById('sg-'+id);
-  if(elx){ elx.scrollIntoView({behavior:'smooth', block:'start'}); elx.classList.add('flash'); setTimeout(()=>elx.classList.remove('flash'),1200); }
+  return `<span class="chip nav" onclick="focusNode('${c.id}')" title="Show on map"><span class="dot" style="background:${col}"></span>${c.label}</span>`;
 }
 function renderValuesView(){
   const t = document.getElementById('values-target');
@@ -7309,9 +7254,30 @@ function renderValuesView(){
   t.innerHTML = html;
 }
 
+/* ---------------- Light / dark theme ---------------- */
+function syncThemeButton(){
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.getElementById('theme-icon').setAttribute('href', dark ? '#ic-sun' : '#ic-moon');
+  document.getElementById('theme-text').textContent = dark ? 'Light' : 'Dark';
+  const btn = document.getElementById('theme-toggle');
+  btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  btn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('hrmap-theme', next); }catch(e){}
+  syncThemeButton();
+}
+syncThemeButton();
+
 /* ---------------- Init ---------------- */
 fitStage();
 setView('radial');
+/* Cluster columns are sized from measured text; re-measure once web fonts arrive. */
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>{ lastClusterDepth = null; if(viewMode==='cluster'){ syncLayoutDepth(); render(); } });
+}
 </script>
 
 </body>
