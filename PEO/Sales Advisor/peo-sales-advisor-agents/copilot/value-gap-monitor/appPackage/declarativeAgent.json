@@ -1,0 +1,32 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Value-Gap Monitor${{APP_NAME_SUFFIX}}",
+    "description": "Value-Gap Monitor: Gap, no gap, or not enough data. Runs the hosted agent under its circuit breaker and cites every result.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "text": "Which Client Admin job steps are furthest from their targets this month?"
+        },
+        {
+            "text": "Is time to a binding quote improving for HR Specialists?"
+        },
+        {
+            "text": "Which desired outcomes still have no baseline?"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

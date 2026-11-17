@@ -1,0 +1,32 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Decision Impact Tracker${{APP_NAME_SUFFIX}}",
+    "description": "Decision Impact Tracker: Which downstream effects a decision caused. Runs the hosted agent under its circuit breaker and cites every result.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "text": "What happened after prospects chose to run a growth scenario?"
+        },
+        {
+            "text": "Which recorded decisions moved deals to the next stage?"
+        },
+        {
+            "text": "Show decisions with no bound outcome"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

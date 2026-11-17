@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insperity Compass &amp; Copilot</title>
+<style>
+:root{
+  color-scheme:light;
+  --navy:#0B1F3A;--navy2:#12305A;--navy-soft:#1C3A63;
+  --gold:#C8A951;--gold-hi:#E4C572;--gold-ink:#7E6319;
+  --ice:#EDF2F8;--ice2:#F6F9FC;--surface:#FFFFFF;
+  --ink:#20344B;--muted:#5E7188;--hair:#D8E1EC;
+  --compass:#8A6D1F;--compass-bg:#FBF3DF;
+  --keel:#2E6E8E;--keel-bg:#E3EFF5;
+  --copilot:#2E7D5B;--copilot-bg:#E6F1EC;
+  --inf:#7A5AA6;--reg:#B23A3A;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{font-family:var(--sans);color:var(--ink);background:var(--ice);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:15px}
+h1,h2,h3,h4{margin:0;font-weight:600;text-wrap:balance;color:var(--navy)}
+p{margin:0}
+a{color:var(--navy2)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* header */
+header.top{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+.top .wrap{display:flex;align-items:center;gap:14px;padding-block:12px;flex-wrap:wrap}
+.brandmark{width:32px;height:32px;flex:0 0 auto}
+.brandtext .k{font-family:var(--serif);font-size:19px;color:#fff}
+.brandtext .s{font-size:11px;color:#9db4d4;letter-spacing:.06em;text-transform:uppercase}
+.top .spacer{flex:1}
+.applinks{display:flex;gap:8px;flex-wrap:wrap}
+.applink{font-size:12px;font-weight:600;text-decoration:none;color:var(--navy);background:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:5px 12px}
+.applink:hover{background:var(--gold-hi)}
+nav.toc{background:var(--ice2);border-bottom:1px solid var(--hair);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:7px;scrollbar-width:thin}
+nav.toc a{font-size:12.5px;white-space:nowrap;text-decoration:none;color:var(--muted);padding:5px 10px;border-radius:6px}
+nav.toc a:hover{background:#fff;color:var(--navy)}
+
+main{padding-block:28px 60px}
+section{margin-top:44px;scroll-margin-top:56px}
+.sechead{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.secno{font-family:var(--serif);color:var(--gold-ink);font-size:15px;font-variant-numeric:tabular-nums}
+.sechead h2{font-family:var(--serif);font-size:26px;font-weight:600}
+.lede{color:var(--muted);max-width:74ch;margin-bottom:18px}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--gold-ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+.hero h1{font-family:var(--serif);font-size:clamp(28px,4vw,40px);line-height:1.15;margin:8px 0 16px}
+.hero h1 .c1{color:var(--compass)}.hero h1 .c2{color:var(--copilot)}.hero h1 .c3{color:var(--keel)}
+.vision{background:var(--navy);color:#E7EEF7;border-radius:10px;padding:20px 22px;font-family:var(--serif);font-size:17px;line-height:1.55}
+.vision .eyebrow{color:var(--gold);font-family:var(--sans);display:block;margin-bottom:8px}
+.principles{display:grid;gap:8px}
+.pr{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:10px 12px}
+.pr b{display:block;color:var(--navy);font-size:14px}
+.pr span{font-size:13px;color:var(--muted)}
+.pr i{font-style:normal;font-family:var(--serif);font-size:20px;color:var(--gold-ink);line-height:1.1}
+.note{font-size:12.5px;color:var(--muted)}
+
+/* tables */
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--hair);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--hair)}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy2);background:var(--ice2);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:600;color:var(--navy);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.was{color:var(--muted)}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:4px;white-space:nowrap;vertical-align:1px}
+.t-compass{background:var(--compass-bg);color:var(--compass)}
+.t-keel{background:var(--keel-bg);color:var(--keel)}
+.t-copilot{background:var(--copilot-bg);color:var(--copilot)}
+.t-new{background:#EDE7F4;color:var(--inf)}
+.t-isp{background:var(--ice);color:var(--navy2);font-family:var(--mono);font-weight:600;font-size:10.5px}
+
+/* beneficiaries */
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:16px}
+.card h3{font-family:var(--serif);font-size:17px;margin-bottom:4px}
+.card .who{font-size:12px;color:var(--muted);margin-bottom:10px}
+.card ul{margin:0;padding-left:18px;font-size:13.5px;display:grid;gap:6px}
+
+/* layers */
+.stack{display:grid;gap:0}
+.band{border-radius:10px;padding:16px 18px;border:1px solid}
+.band.compass{background:var(--compass-bg);border-color:#E6D3A0}
+.band.copilot{background:var(--copilot-bg);border-color:#BCDACB}
+.band.keel{background:var(--keel-bg);border-color:#B7D2E0;border-width:2px}
+.band.sor{background:var(--surface);border-color:var(--hair)}
+.bandhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}
+.bandhead h3{font-family:var(--serif);font-size:20px}
+.band.compass h3{color:var(--compass)}.band.copilot h3{color:var(--copilot)}.band.keel h3{color:var(--keel)}
+.bandhead .role{font-size:13px;color:var(--muted)}
+.comps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.comp{background:rgba(255,255,255,.75);border:1px solid rgba(11,31,58,.08);border-radius:8px;padding:10px 12px;font-size:13px}
+.comp b{display:block;color:var(--navy);font-size:13.5px;margin-bottom:2px}
+.link{display:flex;justify-content:center;gap:28px;padding-block:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.link span::before{content:"↕ ";color:var(--navy-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;background:var(--ice2);border:1px solid var(--hair);border-radius:999px;padding:3px 10px}
+
+/* planes */
+.planes{display:grid;grid-template-columns:150px minmax(0,1fr) 150px;gap:10px}
+.rail{border-radius:10px;padding:12px;font-size:12.5px;background:var(--navy);color:#DCE6F2;display:flex;flex-direction:column;gap:8px}
+.rail h4{color:var(--gold);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.rail p{color:#B9C8DA}
+.rows{display:grid;gap:8px}
+.plane{display:grid;grid-template-columns:170px minmax(0,1fr);border:1px solid var(--hair);border-radius:10px;background:var(--surface);overflow:hidden}
+.plane .pl{padding:12px;font-size:13px;font-weight:600;color:var(--navy);border-right:1px solid var(--hair);background:var(--ice2)}
+.plane .pl small{display:block;font-weight:400;color:var(--muted);font-size:11.5px;margin-top:2px}
+.plane .pc{padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plane.compass .pl{background:var(--compass-bg);color:var(--compass);border-right-color:#E6D3A0}
+.plane.keel .pl{background:var(--keel-bg);color:var(--keel);border-right-color:#B7D2E0}
+.plane.copilot .pl{background:var(--copilot-bg);color:var(--copilot);border-right-color:#BCDACB}
+.box{font-size:12.5px;border:1px solid var(--hair);border-radius:6px;padding:4px 9px;background:#fff}
+.box em{font-style:normal;color:var(--muted);font-size:11.5px}
+.box.pa{border-color:#B7D2E0;background:var(--keel-bg)}
+
+/* ADRs */
+.adrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.adr{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:14px 16px}
+.adr .id{font-family:var(--mono);font-size:11.5px;color:var(--gold-ink);font-weight:700}
+.adr h4{font-size:15px;margin:3px 0 6px}
+.adr p{font-size:13.5px}
+.adr p.cons{color:var(--muted);font-size:12.5px;margin-top:6px}
+
+/* port table toggle */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.toolbar label{font-size:12px;font-weight:600;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:8px;overflow:hidden;background:#fff;flex-wrap:wrap}
+.seg button{font:inherit;font-size:12.5px;padding:6px 12px;border:0;background:#fff;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+td.adapter{background:#FBFCFE}
+.fixed{color:var(--keel);font-weight:600}
+
+/* flow */
+.flow{display:grid;gap:8px;counter-reset:st}
+.st{display:grid;grid-template-columns:40px minmax(0,1fr) 160px;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:12px 14px}
+.st .n{font-family:var(--serif);font-size:20px;color:var(--gold-ink);font-variant-numeric:tabular-nums}
+.st p{font-size:13.5px}
+.st p b{color:var(--navy)}
+.st .ms{font-size:11.5px;color:var(--muted);border-left:1px solid var(--hair);padding-left:10px}
+.st .ms b{display:block;color:var(--navy2);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.st.fixed-step{border-color:#B7D2E0;background:linear-gradient(90deg,var(--keel-bg),#fff 45%)}
+.ask{background:var(--navy);color:#fff;border-radius:10px;padding:14px 18px;font-family:var(--serif);font-size:17px;margin-bottom:10px}
+.ask small{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+
+/* timeline */
+.tl{overflow-x:auto;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:10px}
+.tl svg{display:block;min-width:900px;width:100%;height:auto}
+.phases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.phase{background:var(--surface);border:1px solid var(--hair);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.phase .ph{background:var(--navy);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.phase .ph h3{color:#fff;font-family:var(--serif);font-size:18px}
+.phase .ph span{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.04em}
+.phase .body{padding:12px 16px;display:grid;gap:10px;font-size:13.5px}
+.phase .lane{display:grid;grid-template-columns:78px minmax(0,1fr);gap:10px}
+.phase .lane .tag{justify-self:start;margin-top:2px}
+.phase ul{margin:0;padding-left:16px;display:grid;gap:3px}
+.phase .value{background:var(--ice2);border-top:1px solid var(--hair);padding:10px 16px;font-size:13px}
+.phase .value b{color:var(--navy)}
+.phase .gate{border-top:1px solid var(--hair);padding:10px 16px;font-size:12.5px;color:var(--muted);margin-top:auto}
+.phase .gate b{color:var(--gold-ink)}
+
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.list{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:14px 16px}
+.list h3{font-family:var(--serif);font-size:17px;margin-bottom:8px}
+.list ul{margin:0;padding-left:18px;display:grid;gap:8px;font-size:13.5px}
+.list li b{color:var(--navy)}
+
+footer{border-top:1px solid var(--hair);margin-top:48px;padding-top:16px;font-size:12px;color:var(--muted)}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .planes{grid-template-columns:1fr}
+  .rail{flex-direction:row;flex-wrap:wrap;align-items:baseline}
+  .phases,.adrs,.two{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .wrap{padding-inline:16px}
+  .grid4{grid-template-columns:1fr}
+  .plane{grid-template-columns:1fr}
+  .plane .pl{border-right:0;border-bottom:1px solid var(--hair)}
+  .st{grid-template-columns:32px minmax(0,1fr)}
+  .st .ms{grid-column:2;border-left:0;padding-left:0;border-top:1px solid var(--hair);padding-top:6px}
+  .phase .lane{grid-template-columns:1fr;gap:4px}
+  .sechead h2{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="wrap">
+  <svg class="brandmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#C8A951" stroke-width="1.5"/><path d="M20 7 L31 26 H9 Z" fill="none" stroke="#C8A951" stroke-width="1.5"/><circle cx="20" cy="21" r="3.5" fill="#C8A951"/></svg>
+  <div class="brandtext"><div class="k">Insperity Compass &amp; Copilot</div><div class="s">Vision · solution architecture · roadmap for governed AI</div></div>
+  <div class="spacer"></div>
+  <div class="applinks">
+    <a class="applink" href="Insperity%20Solution%20Architecture.html">Solution Architecture</a>
+    <a class="applink" href="Insperity%20PLM%20Dashboard.html">PLM Dashboard</a>
+    <a class="applink" href="Insperity%20Impact%20Tracer.html">Impact Tracer</a>
+  </div>
+</div></header>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#vision">Vision</a><a href="#value">Who gains</a><a href="#layers">Three layers</a><a href="#lifecycle">Value streams</a><a href="#architecture">Architecture</a><a href="#stack">Stack independence</a><a href="#flow">Worked flow</a><a href="#roadmap">Roadmap</a><a href="#kpis">Scorecard</a><a href="#risks">Decisions &amp; risks</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- VISION -->
+<section id="vision" style="margin-top:0">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Executive vision</div>
+      <h1><span class="c1">Compass</span> sets direction. <span class="c2">Copilot</span> does the work. The <span class="c3">Keel</span> keeps both true.</h1>
+      <div class="vision">
+        <span class="eyebrow">Vision statement</span>
+        Make Insperity the PEO whose AI can show its work. Compass turns strategy, law and risk appetite into policy that machines enforce. A stack-independent semantic Keel gives every platform, from Workday to Microsoft 365, one governed meaning for every worker, client, rule and plan. Copilot speeds up every service moment for worksite employees, client leaders and Insperity's own teams, and every answer and action traces back to the rule and the statute behind it.
+      </div>
+      <p class="note" style="margin-top:12px">Insperity already runs AI agents in HR360 and delivers HRScale on Workday for mid-market clients, and its leadership has said AI does not replace experienced human judgment. This design builds on both: governed agents across every platform, with a person holding every irreversible action.</p>
+    </div>
+    <div class="principles" aria-label="Design principles">
+      <div class="pr"><i>1</i><div><b>Author once</b><span>Each obligation is written once as canonical truth (LKIF + SHACL), in open standards Insperity owns.</span></div></div>
+      <div class="pr"><i>2</i><div><b>Enforce everywhere</b><span>Rules compile into the engines already running: dbt/SQL, OPA/Rego, Workday configuration, agent guardrails.</span></div></div>
+      <div class="pr"><i>3</i><div><b>Trace every answer</b><span>Each payroll check, Jarvis answer and agent action carries the URI of the rule and statute behind it.</span></div></div>
+      <div class="pr"><i>4</i><div><b>Earn autonomy</b><span>Agents move from Observe to Advise to Assist to Governed Autonomy only as their MTBH scores clear each gate.</span></div></div>
+      <div class="pr"><i>5</i><div><b>Swap any vendor</b><span>Microsoft, Workday, Box and model providers connect through ports. Replacing an adapter never touches the knowledge.</span></div></div>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--serif);font-size:19px;margin:30px 0 10px">From the starting vision to this design</h3>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:34%">Starting vision</th><th>Revised for Insperity</th></tr></thead>
+    <tbody>
+      <tr><td class="was">A services firm moving from billable hours to outcome pricing</td><td>A PEO paid per worksite employee. The shift is from <b>administering HR</b> to <b>assuring outcomes</b>: correct pay, compliant benefits, audit-ready evidence, answers employees trust.</td></tr>
+      <tr><td class="was">Compass as a charter of DLP rules, scorecards and playbooks</td><td>Compass compiled into runtime policy. Every rejection, hold or answer cites its rule URI, and the PLM Dashboard and Impact Tracer measure value realization.</td></tr>
+      <tr><td class="was">Two layers: Compass and Copilot</td><td>Three layers. Shared meaning (the Keel) is what makes Compass enforceable and Copilot trustworthy. Without it each tool keeps its own definitions and they drift apart.</td></tr>
+      <tr><td class="was">"Compass validation nodes" review AI output</td><td>Deterministic validation first (SHACL, Rego, compiled tests), MTBH scoring on every answer, and a human Simplex gate on irreversible actions. An LLM is never the last check on another LLM.</td></tr>
+      <tr><td class="was">Microsoft 365 Copilot and Copilot Studio as the platform</td><td>Microsoft as a first-class adapter set alongside Workday (HRScale), Box AI, Insperity's own platforms and any model provider. The standards-based ports are what Insperity owns.</td></tr>
+      <tr><td class="was">"10x agility", "25–35% billable lift"</td><td>Targets tied to phase gates, with baselines measured in Phase 0 and reported through the PLM Dashboard.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- VALUE -->
+<section id="value">
+  <div class="sechead"><span class="secno">1</span><h2>Who gains what</h2></div>
+  <p class="lede">Value is defined for the four groups the program serves. Each item traces to a capability in the value proposition (C1–C9) and a project in the portfolio.</p>
+  <div class="grid4">
+    <div class="card"><h3>Worksite employees</h3><div class="who">300,000+ people across client companies</div>
+      <ul>
+        <li>Pay, benefits and leave answers in seconds, with the plan provision or statute cited</li>
+        <li>Training that arrives when a rule or role changes, not once a year</li>
+        <li>A governed personal profile they can see, with consent tracked per purpose</li>
+        <li>Their data never mixes with another employer's</li>
+      </ul></div>
+    <div class="card"><h3>Client employers</h3><div class="who">Owners, HR leads, managers</div>
+      <ul>
+        <li>A monthly <b>Compliance Assurance Statement</b>: rules applied to their workforce, changes absorbed, training completed, open items</li>
+        <li>State and local law changes reach their payroll in days, then hours</li>
+        <li>Hiring AI audited for bias, and every job posting checked for a pay range</li>
+        <li>An HRBP assistant for managers' policy questions</li>
+      </ul></div>
+    <div class="card"><h3>Insperity service teams</h3><div class="who">BPAs, HR specialists, payroll &amp; benefits specialists, service reps</div>
+      <ul>
+        <li>Meeting prep, proposal drafts and case summaries grounded in governed knowledge</li>
+        <li>Answers pre-checked against each client's jurisdictions and allocation terms</li>
+        <li>Fewer escalations: the circuit breaker routes only the uncertain cases to people</li>
+        <li>One rule library in place of spreadsheets and SharePoint silos</li>
+      </ul></div>
+    <div class="card"><h3>Insperity enterprise</h3><div class="who">Executives, compliance, finance, product</div>
+      <ul>
+        <li>CPEO, SOC 1/2 and ESAC evidence assembled continuously from rule-level provenance</li>
+        <li>Portfolio decisions scored on traced value, not anecdotes</li>
+        <li>Client selection informed by jurisdiction exposure and benefits risk</li>
+        <li>A governed workforce benchmarking data product as a new revenue line</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- LAYERS -->
+<section id="layers">
+  <div class="sechead"><span class="secno">2</span><h2>Three layers, one governed system</h2></div>
+  <p class="lede">Compass decides what is allowed and what matters. Copilot does the work. The Keel is the holonic semantic layer from the Solution Architecture. It holds the shared meaning, rules, identities and provenance that both depend on, and it connects to every platform through open ports.</p>
+  <div class="stack">
+    <div class="band compass">
+      <div class="bandhead"><h3>Compass · direction, policy &amp; guardrails</h3><span class="role">Decides and enforces. Runs at L4 (governance) and L3 (gateway).</span></div>
+      <div class="comps">
+        <div class="comp"><b>Strategy &amp; portfolio</b>PLM Dashboard gates, Impact Tracer value paths, client-fit scoring in the sales pipeline</div>
+        <div class="comp"><b>Policy authoring</b>142-rule SSOT register as LKIF norms + SHACL shapes; most-stringent-rule harmonization</div>
+        <div class="comp"><b>Runtime guardrails</b>RDSG gateway: 5D context bundle, PEPs, MTBH circuit breaker, Simplex action gate</div>
+        <div class="comp"><b>Responsible AI</b>NIST AI RMF, ISO/IEC 42001, AEDT bias audits, the four-step autonomy ladder</div>
+      </div>
+    </div>
+    <div class="link"><span>governs every agent call</span><span>compiles policy into the Keel</span></div>
+    <div class="band copilot">
+      <div class="bandhead"><h3>Copilot · execution &amp; acceleration</h3><span class="role">Does the work, only through governed tools.</span></div>
+      <div class="comps">
+        <div class="comp"><b>Jarvis, four roles</b>Employee, Employer/HRBP, Service Rep, Executive</div>
+        <div class="comp"><b>Staff copilots</b>Microsoft 365 Copilot in Teams and Outlook for BPAs, service and implementation teams</div>
+        <div class="comp"><b>Domain agents</b>Payroll, benefits, compliance, talent, onboarding, proposal drafting</div>
+        <div class="comp"><b>Workflow automation</b>Training assignment, notices, filings calendar, Assurance Statements</div>
+        <div class="comp"><b>Engineering copilots</b>GitHub Copilot working against governed schemas and rule tests</div>
+      </div>
+    </div>
+    <div class="link"><span>grounds every answer on admitted knowledge</span><span>reads rules &amp; personal models</span></div>
+    <div class="band keel">
+      <div class="bandhead"><h3>Keel · holonic semantic layer</h3><span class="role">Shared meaning, independent of any vendor. L1, L2, L4 and the mediation holon.</span></div>
+      <div class="comps">
+        <div class="comp"><b>L4 enterprise</b>isp-core, SKOS vocabularies, ORSD templates, KGCL change governance</div>
+        <div class="comp"><b>L2 domain holons</b>isp-pay, isp-ben, isp-comp, isp-tal, isp-tech, Client, Contractor</div>
+        <div class="comp"><b>L1 knowledge holons</b>One statute clause, plan provision or handbook policy each: URI, SHACL-valid, versioned</div>
+        <div class="comp"><b>Mediation holon</b>Mapping graph, identity &amp; URI registry, rule projection agents, RAG anchors</div>
+        <div class="comp"><b>Governed personal models</b>Role, jurisdiction, training and compliance state per employee, plus agent profiles</div>
+        <div class="comp"><b>Port contracts</b>Eight standards-based interfaces every platform plugs into (section 5)</div>
+      </div>
+    </div>
+    <div class="link"><span>projects compiled rules into</span><span>admits knowledge from</span></div>
+    <div class="band sor">
+      <div class="bandhead"><h3 style="color:var(--navy)">Systems of record stay where they are</h3><span class="role">Connect, don't rebuild.</span></div>
+      <div class="chips">
+        <span class="chip">Workday (HRScale)</span><span class="chip">Insperity payroll &amp; Premier platform</span><span class="chip">HR360 / HRCore</span><span class="chip">Microsoft 365, Fabric &amp; OneLake</span><span class="chip">Box AI content cloud · 33M records</span><span class="chip">Carrier EDI 834 &amp; 401(k) recordkeepers</span><span class="chip">ATS, LMS, background checks</span><span class="chip">CRM &amp; sales pipeline</span><span class="chip">Regulatory feeds</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIFECYCLE -->
+<section id="lifecycle">
+  <div class="sechead"><span class="secno">3</span><h2>Impact across Insperity's value streams</h2></div>
+  <p class="lede">The starting vision's lifecycle matrix, rebuilt on the six value streams in the HR Services Business Model. Each row shows what each layer contributes and the measure the Impact Tracer follows.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Value stream</th><th><span class="tag t-compass">Compass</span></th><th><span class="tag t-keel">Keel</span></th><th><span class="tag t-copilot">Copilot</span></th><th>Outcome measure</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Prospect-to-Client</td><td>Scores prospects on jurisdiction exposure, benefits risk, allocation complexity and margin</td><td>Maps the prospect's footprint to applicable rules; Client Allocation Matrix</td><td>BPA meeting prep and proposal drafts from admitted case studies and plan summaries</td><td>Proposal prep time; compliance exposure disclosed at quote</td></tr>
+      <tr><td class="k">Onboarding</td><td>Tenant isolation and consent in place before the first record lands</td><td>Maps the client's current data to isp-core; resolves IDs across Workday and Insperity payroll</td><td>Onboarding agent tracks readiness items and flags gaps</td><td>Time to first governed payroll</td></tr>
+      <tr><td class="k">Pay-to-Remit</td><td>Simplex gate on high-value remittance (PAY-028); UCA checks on gross-to-net</td><td>Compiled wage-hour and tax rules (PAY-005, PAY-013) in dbt and platform validations</td><td>Payroll agents explain every rejection with its statute</td><td>Correction rate; law change → production time</td></tr>
+      <tr><td class="k">Enroll-to-Benefit</td><td>MTBH thresholds on every benefits answer; ACA and parity controls</td><td>isp-ben plan provisions as L1 holons; affordability rule BEN-003</td><td>Employee Jarvis handles enrollment and life-event questions</td><td>Self-service resolution; MTBH_WHAT</td></tr>
+      <tr><td class="k">Hire-to-Retire</td><td>AEDT bias audits (TAL-003); pay-range checks (TAL-005)</td><td>Personal models: role, jurisdiction, training state</td><td>Training assigned automatically on rule or role change</td><td>Training lag after rule change</td></tr>
+      <tr><td class="k">Risk-to-Resolution &amp; Regulation-to-Rule</td><td>Harmonization, attestation calendar, Semantic Governance Council</td><td>KGCL change records; regulatory change discovery</td><td>Service Rep Jarvis; monthly Assurance Statements per client</td><td>Audit-evidence time index; cross-tenant incidents</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="sechead"><span class="secno">4</span><h2>Integrated solution architecture</h2></div>
+  <p class="lede">Six planes between two cross-cutting rails. Each box names a capability first and an example product in grey. The product is an adapter, and the capability is what the architecture guarantees.</p>
+  <div class="planes">
+    <div class="rail"><h4>Identity</h4><p>People, clients and agents each have one identity, resolved to a canonical URI.</p><p style="color:#fff">Entra ID · Entra Agent ID · SAML/OIDC · SCIM · URI registry (ISP-04)</p></div>
+    <div class="rows">
+      <div class="plane copilot"><div class="pl">Channels<small>where people work</small></div><div class="pc">
+        <span class="box">Teams &amp; Outlook <em>M365 Copilot</em></span><span class="box">Client &amp; employee portals <em>Premier, HRScale</em></span><span class="box">Jarvis web &amp; mobile</span><span class="box">Clients' own copilots <em>via MCP, Phase 3</em></span></div></div>
+      <div class="plane copilot"><div class="pl">Agent runtime<small>Copilot</small></div><div class="pc">
+        <span class="box">Low-code agents <em>Copilot Studio</em></span><span class="box">Pro-code agents <em>Foundry Agent Service, LangGraph</em></span><span class="box">Platform agents <em>Workday, HR360</em></span><span class="box">Agent registry <em>Agent 365 or equivalent</em></span></div></div>
+      <div class="plane compass"><div class="pl">Governance gateway<small>Compass · L3</small></div><div class="pc">
+        <span class="box">AI gateway <em>API Management</em></span><span class="box">5D context bundle</span><span class="box">Policy decision point <em>OPA/Rego</em></span><span class="box">MTBH scorer &amp; circuit breaker</span><span class="box">Simplex hold queue</span><span class="box">Perimeter DLP <em>Purview</em></span></div></div>
+      <div class="plane keel"><div class="pl">Grounding &amp; rule services<small>Keel</small></div><div class="pc">
+        <span class="box">Rule &amp; compiled-policy registry</span><span class="box">SPARQL endpoint</span><span class="box">Hybrid retrieval on canonical URIs <em>Foundry IQ, AI Search</em></span><span class="box">Personal &amp; agent models</span><span class="box">MCP tool server</span></div></div>
+      <div class="plane keel"><div class="pl">Semantic core<small>Keel · L1, L2, L4, mediation</small></div><div class="pc">
+        <span class="box pa">Pipeline A · author → validate → harmonize → compile → publish → enforce</span><span class="box pa">Pipeline B · ingest → profile → enrich → admit → bind → index</span><span class="box">Triple store <em>any RDF store</em></span><span class="box">Mapping graph</span><span class="box">Generated projections <em>Fabric IQ, Workday config, dbt, Rego</em></span></div></div>
+      <div class="plane"><div class="pl">Systems of record<small>unchanged</small></div><div class="pc">
+        <span class="box">Workday HCM</span><span class="box">Insperity payroll</span><span class="box">Benefits admin &amp; carriers</span><span class="box">Box content cloud</span><span class="box">OneLake</span><span class="box">ATS / LMS</span><span class="box">CRM</span></div></div>
+    </div>
+    <div class="rail"><h4>Observability &amp; audit</h4><p>Every decision logged with rule URI, identity and outcome.</p><p style="color:#fff">OpenTelemetry · PROV-O · KGCL · Sentinel · Fabric Real-Time Intelligence</p></div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="sechead"><span class="secno">5</span><h2>Stack independence and interoperability</h2></div>
+  <p class="lede">The Keel owns contracts, not products. Canonical knowledge lives in W3C and open standards, and every vendor surface receives a generated projection that carries the source URI. That lets Insperity run on Microsoft today, keep Workday as the system of record for HRScale clients, and change model or cloud providers later without rewriting the knowledge.</p>
+
+  <div class="adrs">
+    <div class="adr"><span class="id">ADR-01</span><h4>Canonical truth lives in open standards</h4><p>OWL, SKOS, SHACL and LKIF are the source. Fabric IQ ontologies, Workday business-process conditions, Purview glossary terms and dbt tests are generated from it.</p><p class="cons">Consequence: nobody hand-edits a projection. The mediation holon detects drift and flags it in CI.</p></div>
+    <div class="adr"><span class="id">ADR-02</span><h4>Enforcement sits in the request path, outside any model vendor</h4><p>Every agent, whatever vendor built it, reaches data and actions through the gateway's policy enforcement point.</p><p class="cons">Consequence: changing the LLM or the copilot product changes nothing about what is allowed.</p></div>
+    <div class="adr"><span class="id">ADR-03</span><h4>Every agent is an identity with a governed profile</h4><p>Agents get a directory identity and a profile listing allowed tools, tenants and autonomy level, just as employees get personal models.</p><p class="cons">Consequence: agent sprawl becomes visible and auditable. Unregistered agents cannot reach Keel tools.</p></div>
+    <div class="adr"><span class="id">ADR-04</span><h4>Replaceability is tested, not claimed</h4><p>Any adapter can be replaced within one quarter without changing L1 or L2 holons. One swap is exercised at every phase gate.</p><p class="cons">Consequence: lock-in risk is measured and reported to the ARB each phase.</p></div>
+  </div>
+
+  <div class="toolbar">
+    <label for="stackSeg">Show adapters for</label>
+    <div class="seg" id="stackSeg" role="group" aria-label="Adapter stack">
+      <button type="button" data-s="ms" aria-pressed="true">Microsoft</button>
+      <button type="button" data-s="wd" aria-pressed="false">Workday HRScale</button>
+      <button type="button" data-s="aws" aria-pressed="false">AWS</button>
+      <button type="button" data-s="oss" aria-pressed="false">Open source</button>
+    </div>
+    <span class="note">The contract column stays the same whichever stack you pick.</span>
+  </div>
+  <div class="tbl"><table id="portTbl">
+    <thead><tr><th>Port</th><th>What it carries</th><th>Canonical contract <span class="fixed">· fixed</span></th><th id="adHead">Microsoft adapter</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h3 style="font-family:var(--serif);font-size:19px;margin:28px 0 10px">Interoperability concerns and how the design answers them</h3>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:24%">Concern</th><th>Design response</th><th style="width:26%">How it is verified</th></tr></thead>
+    <tbody>
+      <tr><td class="k" style="white-space:normal">Ontologies will drift (Fabric IQ, Workday, ours)</td><td>One canonical source. Other models are generated projections, linked through the mapping graph with six correspondence types and lineage.</td><td>Drift check in CI; zero hand edits to projections</td></tr>
+      <tr><td class="k" style="white-space:normal">Microsoft already has AI guardrails</td><td>Keep them. Purview DLP, sensitivity labels and Conditional Access form the perimeter. The Keel adds controls they cannot express: co-employment allocation, jurisdiction-specific rules, per-client knowledge tenancy.</td><td>Both layers logged; 100% of agent calls carry a PEP decision</td></tr>
+      <tr><td class="k" style="white-space:normal">Client data bleeding across tenants in shared indexes</td><td>The owning client is set at admission (Pipeline B, step B2) and enforced at retrieval by the PEP. Indexes are partitioned per tenant.</td><td>Zero cross-tenant incidents; red-team test at every gate</td></tr>
+      <tr><td class="k" style="white-space:normal">Semantic reasoning adds latency</td><td>Reason at definition time and execute compiled projections at run time: sub-millisecond Rego, batch dbt, JSON-Schema directives.</td><td>Jarvis P95 ≤ 3 s (Gate 1)</td></tr>
+      <tr><td class="k" style="white-space:normal">Two payroll platforms give two answers</td><td>isp-core resolves Workday and Insperity payroll records to the same canonical worker and client URIs, and each rule compiles to both engines.</td><td>Parity test suite: same rule, same result on both platforms</td></tr>
+      <tr><td class="k" style="white-space:normal">Lock-in to one model or cloud</td><td>Eight ports plus ADR-04.</td><td>One adapter swap exercised per phase</td></tr>
+      <tr><td class="k" style="white-space:normal">Teams lack semantic skills</td><td>Engineers keep using familiar tools (dbt, Rego, Copilot Studio). Legal architects author through ORSD templates, and the Semantic Governance Council owns change.</td><td>Rules authored per quarter; council cycle time</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <div class="sechead"><span class="secno">6</span><h2>Worked flow on the Microsoft stack</h2></div>
+  <p class="lede">One question from a client manager, followed through every layer. Highlighted steps belong to the Keel and Compass. They stay the same when the Microsoft pieces are replaced with Workday agents or LangGraph with Claude.</p>
+  <div class="ask"><small>HR manager at a California client, in Teams</small>"Can I move my warehouse team to four 10-hour days?"</div>
+  <div class="flow">
+    <div class="st"><span class="n">1</span><p>A <b>Copilot Studio agent</b> in Teams receives the question. Entra ID identifies the manager, and Entra Agent ID identifies the agent.</p><div class="ms"><b>Copilot</b>Copilot Studio · Entra</div></div>
+    <div class="st fixed-step"><span class="n">2</span><p>The agent calls the Keel's <b>policy-answer tool over MCP</b>. The call must pass through the AI gateway, and unregistered agents are refused.</p><div class="ms"><b>Compass</b>API Management → PEP</div></div>
+    <div class="st fixed-step"><span class="n">3</span><p>The gateway builds the <b>5D context bundle</b>: WHO (HR manager, client tenant), WHAT (schedule change, non-exempt workers), WHEN (effective date), WHERE (US-CA), WHY (manager inquiry). OPA confirms tenant scope.</p><div class="ms"><b>Compass</b>RDSG · OPA/Rego</div></div>
+    <div class="st fixed-step"><span class="n">4</span><p>The Keel returns the applicable rules: <b>PAY-005/006</b> California daily overtime, <b>PAY-010</b> meal and rest periods, <b>PAY-009</b> predictive scheduling if a local ordinance applies. The register has no rule yet for California alternative-workweek elections (Labor Code §511), so the Keel <b>opens a KGCL change request</b>.</p><div class="ms"><b>Keel</b>SPARQL · rule registry</div></div>
+    <div class="st"><span class="n">5</span><p>Retrieval returns <b>only this client's admitted holons</b> (handbook, scheduling policy), and the model drafts an answer grounded on their URIs.</p><div class="ms"><b>Copilot</b>Foundry IQ · any LLM</div></div>
+    <div class="st fixed-step"><span class="n">6</span><p><b>MTBH scores</b> the draft on all five dimensions. Below threshold, the circuit breaker sends it to an Insperity HR specialist with the context attached.</p><div class="ms"><b>Compass</b>MTBH circuit breaker</div></div>
+    <div class="st"><span class="n">7</span><p>The manager gets the answer: overtime exposure under the current schedule, what an alternative workweek requires, and <b>citations to each rule and statute</b>.</p><div class="ms"><b>Copilot</b>Teams card</div></div>
+    <div class="st fixed-step"><span class="n">8</span><p>If the manager chooses <b>Apply schedule</b>, the Simplex gate holds the Workday or payroll change until an HR specialist approves. The decision is logged with PROV-O lineage.</p><div class="ms"><b>Compass</b>Simplex · Sentinel</div></div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="sechead"><span class="secno">7</span><h2>Roadmap: four gated phases over 18 months</h2></div>
+  <p class="lede">The IIH phases and their gate criteria are unchanged, and the Compass, Keel and Copilot deliverables now run in parallel lanes. Every phase puts something in front of employees, clients or staff, and no phase opens until the previous gate passes on the PLM Dashboard.</p>
+  <div class="tl">
+    <svg viewBox="0 0 1000 262" role="img" aria-label="18-month timeline with Compass, Keel and Copilot milestones and four phase gates">
+      <g font-family="system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+        <!-- month grid -->
+        <g id="months"></g>
+        <!-- phase bars -->
+        <rect x="120" y="32" width="96" height="24" rx="4" fill="#0B1F3A"/>
+        <rect x="218" y="32" width="190" height="24" rx="4" fill="#12305A"/>
+        <rect x="410" y="32" width="286" height="24" rx="4" fill="#1C3A63"/>
+        <rect x="698" y="32" width="286" height="24" rx="4" fill="#2A4A74"/>
+        <text x="168" y="48" fill="#FFFFFF" font-size="11" text-anchor="middle" font-weight="600">P0 Foundation</text>
+        <text x="313" y="48" fill="#FFFFFF" font-size="11" text-anchor="middle" font-weight="600">P1 Governed Copilot MVP</text>
+        <text x="553" y="48" fill="#FFFFFF" font-size="11" text-anchor="middle" font-weight="600">P2 Domain copilots &amp; client assurance</text>
+        <text x="841" y="48" fill="#FFFFFF" font-size="11" text-anchor="middle" font-weight="600">P3 Governed autonomy &amp; ecosystem</text>
+        <!-- lanes -->
+        <rect x="120" y="70" width="864" height="58" fill="#FBF3DF"/>
+        <rect x="120" y="132" width="864" height="58" fill="#E3EFF5"/>
+        <rect x="120" y="194" width="864" height="58" fill="#E6F1EC"/>
+        <text x="10" y="103" fill="#8A6D1F" font-size="12" font-weight="700">Compass</text>
+        <text x="10" y="165" fill="#2E6E8E" font-size="12" font-weight="700">Keel</text>
+        <text x="10" y="227" fill="#2E7D5B" font-size="12" font-weight="700">Copilot</text>
+        <!-- gates -->
+        <g id="gates"></g>
+        <g id="miles"></g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="phases">
+    <article class="phase">
+      <div class="ph"><h3>Phase 0 · Foundation &amp; safe grounding</h3><span>MONTHS 1–2</span></div>
+      <div class="body">
+        <div class="lane"><span class="tag t-compass">Compass</span><ul><li>Semantic Governance Council and AI use policy chartered, autonomy ladder defined</li><li>Purview DLP and sensitivity labels on Microsoft 365 content</li><li>PLM Dashboard live for all 28 projects</li></ul></div>
+        <div class="lane"><span class="tag t-keel">Keel</span><ul><li>isp-core and ORSD templates <span class="tag t-isp">ISP-01</span></li><li>142-rule register keyed; LKIF wave 1 <span class="tag t-isp">ISP-02</span></li><li>Box admission bridge, 2,000 seed assets <span class="tag t-isp">ISP-03</span></li><li>Identity &amp; URI registry across Entra, Workday and payroll IDs <span class="tag t-isp">ISP-04</span></li><li>KGCL change governance <span class="tag t-isp">ISP-05</span>; port contracts v1 published</li></ul></div>
+        <div class="lane"><span class="tag t-copilot">Copilot</span><ul><li>M365 Copilot for BPAs, service leaders and implementation managers, in Observe mode, on internal content only</li><li>Time studies to set every KPI baseline</li></ul></div>
+      </div>
+      <div class="value"><b>Value delivered:</b> staff time back on prep and summaries; every rule has an owner, a source and a URI; a measured baseline for every target.</div>
+      <div class="gate"><b>Gate 0:</b> ≥2,000 seed IP assets admitted with SHACL validation ≥98%; LKIF library covering FLSA, EEOC, OSHA and ERISA approved; ORSD templates approved for all six IP asset types.</div>
+    </article>
+
+    <article class="phase">
+      <div class="ph"><h3>Phase 1 · Governed Copilot MVP</h3><span>MONTHS 3–6</span></div>
+      <div class="body">
+        <div class="lane"><span class="tag t-compass">Compass</span><ul><li>RDSG gateway on the AI gateway: OPA PDP, MTBH circuit breaker, Simplex gate <span class="tag t-isp">ISP-10</span></li><li>Tenant isolation and PHI enforcement points <span class="tag t-isp">ISP-11</span></li><li>Agent registry: every agent has an identity and profile</li></ul></div>
+        <div class="lane"><span class="tag t-keel">Keel</span><ul><li>Payroll &amp; Tax and Benefits holons <span class="tag t-isp">ISP-06</span> <span class="tag t-isp">ISP-07</span></li><li>SHACL-to-policy compiler <span class="tag t-isp">ISP-08</span>; harmonization engine <span class="tag t-isp">ISP-09</span></li><li>Retrieval index fed only from admitted holons</li></ul></div>
+        <div class="lane"><span class="tag t-copilot">Copilot</span><ul><li>Employee Jarvis pilot with 3–5 clients, in Advise mode <span class="tag t-isp">ISP-12</span></li><li>Copilot Studio agents calling Keel tools over MCP</li><li>Proposal-draft agent for BPAs <span class="tag t-new">new</span></li></ul></div>
+      </div>
+      <div class="value"><b>Value delivered:</b> employees at pilot clients get cited pay and benefits answers; about 40% self-service resolution; law change to production in ≤10 days.</div>
+      <div class="gate"><b>Gate 1:</b> MTBH_WHERE ≥99.5%, MTBH_WHAT ≥97%, P95 ≤3 s, circuit-breaker trip rate ≤2%, self-service deflection ≥40%, zero cross-tenant incidents.</div>
+    </article>
+
+    <article class="phase">
+      <div class="ph"><h3>Phase 2 · Domain copilots &amp; client assurance</h3><span>MONTHS 7–12</span></div>
+      <div class="body">
+        <div class="lane"><span class="tag t-compass">Compass</span><ul><li>Compliance SSOT dashboard <span class="tag t-isp">ISP-20</span>; MTBH Ops Workbench <span class="tag t-isp">ISP-21</span></li><li>Compass scoring in the sales pipeline: fit, jurisdiction exposure, benefits risk <span class="tag t-new">new</span></li><li>Pilot an assurance-backed service tier</li></ul></div>
+        <div class="lane"><span class="tag t-keel">Keel</span><ul><li>Compliance, Talent, HR Technology and Client holons <span class="tag t-isp">ISP-13–16</span></li><li>Governed personal models <span class="tag t-isp">ISP-18</span></li><li>Workday HRScale adapter with parity tests <span class="tag t-new">new</span></li></ul></div>
+        <div class="lane"><span class="tag t-copilot">Copilot</span><ul><li>Employer/HRBP and Service Rep Jarvis, in Assist mode <span class="tag t-isp">ISP-17</span></li><li>On-demand compliance training <span class="tag t-isp">ISP-19</span></li><li>Onboarding agent; first monthly Assurance Statements <span class="tag t-new">new</span></li></ul></div>
+      </div>
+      <div class="value"><b>Value delivered:</b> 60–75% self-service; training lag ≤14 days after a rule change; audit-evidence index down to 42; 25–40 client companies live.</div>
+      <div class="gate"><b>Gate 2:</b> all six domain holons in production, MTBH aggregate ≥96% on every dimension, 25–40 client companies, zero unflagged compliance obligations at go-live.</div>
+    </article>
+
+    <article class="phase">
+      <div class="ph"><h3>Phase 3 · Governed autonomy &amp; ecosystem</h3><span>MONTHS 13–18</span></div>
+      <div class="body">
+        <div class="lane"><span class="tag t-compass">Compass</span><ul><li>Compliance-as-code council <span class="tag t-isp">ISP-22</span></li><li>CPEO, ESAC and SOC attestation automation <span class="tag t-isp">ISP-27</span></li><li>Deterministic validation nodes in multi-agent workflows</li></ul></div>
+        <div class="lane"><span class="tag t-keel">Keel</span><ul><li>Regulatory change discovery <span class="tag t-isp">ISP-24</span></li><li>Contractor &amp; gig holon <span class="tag t-isp">ISP-26</span>; values measurement <span class="tag t-isp">ISP-23</span></li><li>50-state rollout <span class="tag t-isp">ISP-28</span></li></ul></div>
+        <div class="lane"><span class="tag t-copilot">Copilot</span><ul><li>Executive Jarvis and benchmarking data product <span class="tag t-isp">ISP-25</span></li><li>Governed Autonomy for low-risk, reversible actions</li><li>Insperity's governed HR tools published over MCP into clients' own copilots <span class="tag t-new">new</span></li></ul></div>
+      </div>
+      <div class="value"><b>Value delivered:</b> 80% self-service; law change to production ≤48 h; audit-evidence index 38; a new data-product revenue line; Insperity's governed HR knowledge available inside clients' own AI tools.</div>
+      <div class="gate"><b>Gate 3:</b> MTBH aggregate ≥97% sustained, zero cumulative cross-tenant breaches, data product live, full 50-state rollout complete.</div>
+    </article>
+  </div>
+</section>
+
+<!-- KPIs -->
+<section id="kpis">
+  <div class="sechead"><span class="secno">8</span><h2>Program scorecard</h2></div>
+  <p class="lede">The Solution Architecture scorecard, extended with Compass, Copilot and interoperability measures. Rows marked <span class="tag t-new">new</span> are planning targets; their baselines are measured in Phase 0, and each index starts at 100.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>KPI</th><th>Layer</th><th>Baseline</th><th>Ph.0</th><th>Ph.1</th><th>Ph.2</th><th>Ph.3</th></tr></thead>
+    <tbody class="num">
+      <tr><td>Employee self-service resolution</td><td><span class="tag t-copilot">Copilot</span></td><td>base</td><td>—</td><td>40%</td><td>60–75%</td><td>80%</td></tr>
+      <tr><td>MTBH aggregate (5 dimensions)</td><td><span class="tag t-compass">Compass</span></td><td>~90%</td><td>—</td><td>≥95%</td><td>≥96%</td><td>≥97%</td></tr>
+      <tr><td>Law change → compiled policy in production</td><td><span class="tag t-keel">Keel</span></td><td>weeks</td><td>—</td><td>≤10 days</td><td>≤5 days</td><td>≤48 h</td></tr>
+      <tr><td>Register rules with owner + source + URI</td><td><span class="tag t-keel">Keel</span></td><td>0%</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+      <tr><td>Audit-evidence time (index)</td><td><span class="tag t-compass">Compass</span></td><td>100</td><td>80</td><td>55</td><td>42</td><td>38</td></tr>
+      <tr><td>Cross-tenant exposure incidents</td><td><span class="tag t-compass">Compass</span></td><td>n/a</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>Decision provenance coverage</td><td><span class="tag t-keel">Keel</span></td><td>10%</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+      <tr><td>Training lag after rule change</td><td><span class="tag t-copilot">Copilot</span></td><td>annual cycle</td><td>—</td><td>—</td><td>≤14 days</td><td>≤7 days</td></tr>
+      <tr><td>Agents with identity, registry entry and gateway path <span class="tag t-new">new</span></td><td><span class="tag t-compass">Compass</span></td><td>measured</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+      <tr><td>BPA proposal prep time (index) <span class="tag t-new">new</span></td><td><span class="tag t-copilot">Copilot</span></td><td>100</td><td>100</td><td>80</td><td>60</td><td>50</td></tr>
+      <tr><td>Time to first governed payroll, new client (index) <span class="tag t-new">new</span></td><td><span class="tag t-copilot">Copilot</span></td><td>100</td><td>—</td><td>90</td><td>75</td><td>60</td></tr>
+      <tr><td>Clients receiving a monthly Assurance Statement <span class="tag t-new">new</span></td><td><span class="tag t-copilot">Copilot</span></td><td>0</td><td>—</td><td>—</td><td>pilot clients</td><td>all live clients</td></tr>
+      <tr><td>Rule parity across Workday and Insperity payroll <span class="tag t-new">new</span></td><td><span class="tag t-keel">Keel</span></td><td>—</td><td>—</td><td>—</td><td>100% in scope</td><td>100%</td></tr>
+      <tr><td>Adapter swap exercised at gate <span class="tag t-new">new</span></td><td><span class="tag t-keel">Keel</span></td><td>—</td><td>contracts v1</td><td>1</td><td>1</td><td>1</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="sechead"><span class="secno">9</span><h2>Decisions needed and risks</h2></div>
+  <div class="two">
+    <div class="list"><h3>Decisions that set Phase 0 scope</h3><ul>
+      <li><b>Microsoft licensing in place.</b> Whether Purview, Fabric capacity and Copilot Studio are already licensed determines which adapters come first.</li>
+      <li><b>System of record by client segment.</b> HRScale clients on Workday and others on Insperity's platform sets the adapter order and the parity scope.</li>
+      <li><b>Model hosting.</b> Which model providers are approved for PHI-adjacent content, and where they run.</li>
+      <li><b>Council membership.</b> Legal, compliance, domain owners and IT architecture, with the authority to approve rule changes.</li>
+    </ul></div>
+    <div class="list"><h3>Top risks and mitigations</h3><ul>
+      <li><b>Benefits answers are high stakes.</b> MTBH thresholds, circuit-breaker escalation to people, and Simplex holds on anything irreversible.</li>
+      <li><b>State AI and hiring laws keep changing.</b> The regulatory change discovery holon and AEDT audits treat them as rules like any other.</li>
+      <li><b>Service teams may not adopt the tools.</b> Start with time-back uses in Observe mode, and let teams see their own metrics.</li>
+      <li><b>Semantics become a bottleneck.</b> ORSD templates, familiar authoring tools, and a council with a published cycle-time target.</li>
+    </ul></div>
+  </div>
+</section>
+
+<footer>
+  Insperity · Compass &amp; Copilot · Vision, solution architecture and roadmap v1.0 · an illustrative strategic concept prepared by Jeffrey Wallk, The Value Enablement Group, LLC. Not an Insperity-endorsed document. Figures are planning estimates; public references to HR360 AI agents and HRScale on Workday come from Insperity's 2026 announcements and earnings commentary. Microsoft, Workday, AWS and open-source products are shown as example adapters, not requirements. Companion files: Insperity Solution Architecture, PLM Dashboard, Impact Tracer, Project Portfolio.xlsx.
+</footer>
+</main>
+
+<script>
+(function(){
+  /* ---------- port table ---------- */
+  var PORTS=[
+    {p:"Meaning",c:"Entities, vocabularies, definitions",k:"OWL 2 · SKOS · RDF · LKIF",
+     ms:"Fabric IQ ontology (generated) · Purview Unified Catalog glossary",
+     wd:"Workday business objects mapped in the mediation graph",
+     aws:"Amazon Neptune (RDF/SPARQL) · DataZone glossary",
+     oss:"Apache Jena Fuseki or GraphDB · Protégé"},
+    {p:"Rules",c:"Obligations, thresholds, constraints",k:"SHACL · SWRL · LKIF norms · KGCL",
+     ms:"Compiled to Fabric/dbt data tests · Dataverse and Power Automate conditions",
+     wd:"Compiled to Workday validations and business-process conditions",
+     aws:"Glue Data Quality rules · dbt tests",
+     oss:"dbt tests · pySHACL · Great Expectations"},
+    {p:"Policy decision & enforcement",c:"Allow, deny, hold, redact",k:"OPA/Rego · JSON Schema · OpenID AuthZEN",
+     ms:"API Management AI gateway calling an OPA PDP · Entra Conditional Access · Purview DLP",
+     wd:"Workday security groups and domain policies (generated); API calls through the gateway",
+     aws:"Amazon Verified Permissions (Cedar) · API Gateway",
+     oss:"OPA · Envoy or Kong"},
+    {p:"Identity & reference",c:"People, clients, agents, URIs",k:"OIDC/SAML · SCIM · URI/IRI registry",
+     ms:"Entra ID · Entra Agent ID · Entra External ID",
+     wd:"Workday worker and organization IDs resolved to canonical URIs",
+     aws:"IAM Identity Center · Cognito",
+     oss:"Keycloak"},
+    {p:"Knowledge grounding",c:"Admitted holons for retrieval",k:"SPARQL 1.1 · GraphRAG anchors on canonical URIs · OpenAPI",
+     ms:"Foundry IQ knowledge bases on Azure AI Search, fed only admitted holons · Microsoft 365 Copilot connectors",
+     wd:"Workday data enters through Pipeline B admission, never indexed raw",
+     aws:"Bedrock Knowledge Bases · OpenSearch",
+     oss:"pgvector or Qdrant · SPARQL endpoint"},
+    {p:"Agent interaction",c:"Tools, delegation, messages",k:"MCP · A2A · OpenAPI/GraphQL",
+     ms:"Copilot Studio (MCP tools) · Foundry Agent Service · Microsoft Agent Framework · Agent 365",
+     wd:"Workday agents call Keel tools through the gateway via API, or MCP/A2A where supported",
+     aws:"Bedrock AgentCore",
+     oss:"LangGraph · Claude Agent SDK"},
+    {p:"Provenance & telemetry",c:"Every decision, with its lineage",k:"PROV-O · OpenTelemetry · CloudEvents · KGCL",
+     ms:"Azure Monitor · Microsoft Sentinel · Purview Audit · Fabric Real-Time Intelligence (MTBH)",
+     wd:"Workday audit trail and business-process history ingested",
+     aws:"CloudWatch · CloudTrail",
+     oss:"OpenLineage · Grafana and Prometheus"},
+    {p:"Analytics & data products",c:"Governed metrics and definitions",k:"W3C DPROD · governed semantic model definitions",
+     ms:"OneLake · Fabric semantic models · Power BI (generated definitions)",
+     wd:"Workday reporting fed governed definitions",
+     aws:"Redshift · QuickSight",
+     oss:"dbt Semantic Layer · Apache Superset"}
+  ];
+  var NAMES={ms:"Microsoft adapter",wd:"Workday HRScale adapter",aws:"AWS adapter",oss:"Open-source adapter"};
+  var tb=document.querySelector("#portTbl tbody");
+  function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+  function draw(s){
+    tb.innerHTML=PORTS.map(function(r){return "<tr><td class='k'>"+esc(r.p)+"</td><td>"+esc(r.c)+"</td><td class='fixed'>"+esc(r.k)+"</td><td class='adapter'>"+esc(r[s])+"</td></tr>";}).join("");
+    document.getElementById("adHead").textContent=NAMES[s];
+    document.querySelectorAll("#stackSeg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.s===s?"true":"false");});
+  }
+  document.querySelectorAll("#stackSeg button").forEach(function(b){b.addEventListener("click",function(){draw(b.dataset.s);});});
+  draw("ms");
+
+  /* ---------- timeline ---------- */
+  var NS="http://www.w3.org/2000/svg",X0=120,CW=48;
+  function el(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+  var mg=document.getElementById("months");
+  for(var m=1;m<=18;m++){
+    var x=X0+(m-1)*CW;
+    mg.appendChild(el("line",{x1:x,x2:x,y1:26,y2:252,stroke:"#E1E9F2","stroke-width":1}));
+    mg.appendChild(el("text",{x:x+CW/2,y:18,"font-size":10.5,fill:"#5E7188","text-anchor":"middle"},"M"+m));
+  }
+  mg.appendChild(el("line",{x1:X0+18*CW,x2:X0+18*CW,y1:26,y2:252,stroke:"#E1E9F2","stroke-width":1}));
+  var gg=document.getElementById("gates");
+  [[2,"G0"],[6,"G1"],[12,"G2"],[18,"G3"]].forEach(function(g){
+    var x=X0+g[0]*CW;
+    gg.appendChild(el("line",{x1:x,x2:x,y1:60,y2:252,stroke:"#C8A951","stroke-width":1.5,"stroke-dasharray":"4 3"}));
+    gg.appendChild(el("path",{d:"M"+x+" 57 l6 6 l-6 6 l-6 -6 z",fill:"#C8A951",stroke:"#7E6319","stroke-width":1}));
+    gg.appendChild(el("text",{x:g[0]===18?x-9:x+9,y:67,"font-size":10,"font-weight":700,fill:"#7E6319","text-anchor":g[0]===18?"end":"start"},g[1]));
+  });
+  var MI=[
+    ["c",1,"Council chartered","u","s"],["c",4,"Gateway + MTBH live","d"],["c",10,"Pipeline scoring","u"],["c",14,"Attestation automation","d"],["c",17,"Validation nodes","u"],
+    ["k",2,"142 rules keyed","u"],["k",5,"Pay & Ben holons","d"],["k",8,"HRScale adapter","u"],["k",12,"6 holons in production","d","e"],["k",15,"Reg-change discovery","u"],["k",18,"50 states","d","e"],
+    ["o",1,"M365 Copilot (Observe)","u","s"],["o",5,"Employee Jarvis pilot","d"],["o",9,"Service Rep Jarvis","u"],["o",11,"Assurance Statements","d"],["o",16,"MCP tools for client copilots","u"]
+  ];
+  var LANE={c:{y:99,col:"#8A6D1F"},k:{y:161,col:"#2E6E8E"},o:{y:223,col:"#2E7D5B"}};
+  var mi=document.getElementById("miles");
+  MI.forEach(function(r){
+    var L=LANE[r[0]],x=X0+(r[1]-1)*CW+CW/2;
+    mi.appendChild(el("circle",{cx:x,cy:L.y,r:5,fill:L.col,stroke:"#FFFFFF","stroke-width":1.5}));
+    var anchor=r[4]==="s"?"start":(r[4]==="e"?"end":"middle");
+    var tx=r[4]==="s"?x-6:(r[4]==="e"?x+6:x);
+    mi.appendChild(el("text",{x:tx,y:r[3]==="u"?L.y-11:L.y+19,"font-size":10.5,fill:"#20344B","text-anchor":anchor},r[2]));
+  });
+})();
+</script>
+
+</body>
+</html>

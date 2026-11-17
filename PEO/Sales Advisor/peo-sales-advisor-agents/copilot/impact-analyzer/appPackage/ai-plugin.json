@@ -1,0 +1,190 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelag31",
+  "functions": [
+    {
+      "name": "qbd_get_baseline",
+      "description": "Get the frozen QbD baseline for a decision question."
+    },
+    {
+      "name": "qbd_classify_change",
+      "description": "Classify a new answer against its baseline as benign, material or breaking, with the risk score."
+    },
+    {
+      "name": "probes_results",
+      "description": "Get the latest decision-question probe results for a job step or agent."
+    },
+    {
+      "name": "graph_query",
+      "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT)."
+    },
+    {
+      "name": "run_impact_analyzer",
+      "description": "Ask the hosted Impact Analyzer (AG-31) to do its job: Which questions, briefs and decisions a change affects. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/AG-31",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "qbd_get_baseline",
+              "title": "Qbd get baseline",
+              "description": "Get the frozen QbD baseline for a decision question.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "question_id": {
+                    "type": "string",
+                    "description": "Decision question ID"
+                  }
+                },
+                "required": [
+                  "question_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "qbd_classify_change",
+              "title": "Qbd classify change",
+              "description": "Classify a new answer against its baseline as benign, material or breaking, with the risk score.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "question_id": {
+                    "type": "string",
+                    "description": "Decision question ID"
+                  },
+                  "answer_fingerprint": {
+                    "type": "string",
+                    "description": "Fingerprint of the new answer"
+                  },
+                  "upstream_change_id": {
+                    "type": "string",
+                    "description": "KGCL or content change that explains it"
+                  }
+                },
+                "required": [
+                  "question_id",
+                  "answer_fingerprint"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "probes_results",
+              "title": "Probes results",
+              "description": "Get the latest decision-question probe results for a job step or agent.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "Job step ID (e.g. CA-J1.2) or agent ID"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "graph_query",
+              "title": "Graph query",
+              "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "context_bundle_id": {
+                    "type": "string",
+                    "description": "RCB ID from the Intent & RCB Agent"
+                  },
+                  "template_id": {
+                    "type": "string",
+                    "description": "Approved query template ID"
+                  },
+                  "params": {
+                    "type": "object",
+                    "description": "Template parameters"
+                  }
+                },
+                "required": [
+                  "context_bundle_id",
+                  "template_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "run_impact_analyzer",
+              "title": "Run Impact Analyzer",
+              "description": "Ask the hosted Impact Analyzer (AG-31) to do its job: Which questions, briefs and decisions a change affects. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "string",
+                    "description": "What you want the agent to do, in plain words"
+                  },
+                  "context": {
+                    "type": "object",
+                    "description": "Optional context: persona, job step, prospect URI, period"
+                  }
+                },
+                "required": [
+                  "request"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "qbd_get_baseline",
+        "qbd_classify_change",
+        "probes_results",
+        "graph_query",
+        "run_impact_analyzer"
+      ]
+    }
+  ]
+}

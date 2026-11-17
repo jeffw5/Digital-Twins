@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEO Job Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="common.css">
+<style>
+.formula{font-family:var(--f-mono);font-size:12.5px;background:var(--bg);border:1px solid var(--rule);padding:6px 10px;border-radius:4px;width:fit-content;max-width:100%;overflow-x:auto}
+.meta2{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12.5px;color:var(--ink-2)}
+.meta2 b{font-weight:500;color:var(--ink)}
+.databar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;border:1px solid var(--t-high);background:var(--z-high);border-radius:8px;padding:10px 14px;font-size:13px}
+.databar.real{border-color:var(--accent);background:var(--accent-soft)}
+.databar b{font-weight:600}
+.databar .grow{flex:1 1 320px;min-width:0}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.seg button{font:500 13px var(--f-body);background:transparent;color:var(--ink-2);border:0;padding:6px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.sw{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.kpi{background:var(--panel);padding:14px 16px;display:grid;gap:2px;align-content:start}
+.kpi .v{font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12.5px;color:var(--ink-2)}
+.kpi .s{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3)}
+.chip i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.land{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:16px}
+.plotbox{position:relative;padding:12px 12px 6px}
+.plotbox svg{width:100%;height:auto;display:block;touch-action:manipulation}
+.lg-zone{width:14px;height:10px;border:1px solid var(--rule);display:inline-block}
+.tip{position:absolute;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--rule);box-shadow:0 6px 20px rgb(0 0 0 / .14);border-radius:6px;padding:8px 10px;font-size:12px;max-width:300px;z-index:3}
+.tip .t{font-weight:500;margin-bottom:4px;line-height:1.35}
+.tip table{border-collapse:collapse;font-family:var(--f-mono);font-size:11.5px;width:auto}
+.tip td{padding:1px 8px 1px 0}
+.detail{padding:16px;display:grid;gap:12px;align-content:start}
+.detail .stmt{font-size:15px;line-height:1.45;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.iso{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;font-size:12.5px}
+.iso .lab{display:flex;align-items:center;gap:6px;color:var(--ink-2)}
+.track{position:relative;height:16px}
+.track .base{position:absolute;left:0;right:0;top:7px;height:2px;background:var(--rule-2);border-radius:2px}
+.track .fill{position:absolute;top:4px;height:8px;border-radius:0 4px 4px 0;left:0}
+.track .ci{position:absolute;top:7px;height:2px;opacity:.45}
+.detail .note{font-size:12px;color:var(--ink-3)}
+.minihead{display:grid;grid-template-columns:auto 1fr auto;gap:10px;font:11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.rows{display:grid}
+.row{display:grid;grid-template-columns:minmax(0,2.2fr) 44px minmax(0,1.6fr) minmax(0,1.7fr);gap:12px;align-items:center;padding:8px 14px;border-top:1px solid var(--rule-2)}
+.row.head{border-top:0;font:11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;padding-block:10px 6px}
+.row.grp{font:600 12px var(--f-display);color:var(--ink-2);background:var(--bg);padding-block:6px}
+.row .name{min-width:0;font-size:13px}
+.row .name .n{font-family:var(--f-mono);color:var(--ink-3);margin-right:6px}
+.click{cursor:pointer}
+.click:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.row.on{background:color-mix(in srgb,var(--accent) 11%,transparent)}
+.stack{display:flex;height:12px;gap:2px}
+.stack i{display:block;height:100%}
+.stack i:first-child{border-radius:2px 0 0 2px}
+.stack i:last-child{border-radius:0 4px 4px 0}
+.dt{position:relative;height:22px}
+.dt svg{width:100%;height:22px;display:block;overflow:visible}
+.axisrow{font:10.5px var(--f-mono);color:var(--ink-3);position:relative;height:14px}
+.axisrow span{position:absolute;transform:translateX(-50%)}
+.div-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.drow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 54px;gap:10px;align-items:center;padding:7px 14px;border-top:1px solid var(--rule-2);font-size:12.5px}
+.drow .txt{min-width:0;line-height:1.35}
+.drow .d{font-family:var(--f-mono);text-align:right;font-size:12px}
+.ins{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ins article{padding:16px 18px;display:grid;gap:6px;align-content:start}
+.ins article p{margin:0;color:var(--ink-2);max-width:66ch}
+.ins .k{font-family:var(--f-mono);font-size:11px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.tbl-wrap{overflow:auto;max-height:620px;border-radius:8px}
+table.rank{border-collapse:separate;border-spacing:0;width:100%;min-width:900px;font-size:12.5px}
+table.rank th{position:sticky;top:0;background:var(--panel);text-align:left;font:500 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--rule);padding:0;z-index:1}
+table.rank th button{all:unset;cursor:pointer;display:block;padding:9px 8px;width:100%;box-sizing:border-box}
+table.rank th button:focus-visible{outline:2px solid var(--accent)}
+table.rank th.num button,table.rank td.num{text-align:right}
+table.rank td{padding:7px 8px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+table.rank td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.rank tr.on td{background:color-mix(in srgb,var(--accent) 11%,transparent)}
+table.rank td.stmt{min-width:300px;max-width:440px}
+.tier{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.pos{color:var(--peo)} .neg{color:var(--non)}
+.notes{padding:18px 20px;display:grid;gap:10px;font-size:13px;color:var(--ink-2)}
+.notes p{max-width:90ch}
+.notes b{color:var(--ink);font-weight:600}
+.notes code{font-family:var(--f-mono);font-size:12px;background:var(--bg);padding:1px 5px;border-radius:3px}
+.flag{border-left:3px solid var(--t-high);padding-left:12px}
+@media (max-width:980px){.land,.div-grid,.ins{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis .kpi:first-child{grid-column:1/-1}}
+@media (max-width:640px){.row{grid-template-columns:minmax(0,1fr) 36px;row-gap:6px}.row .c3,.row .c4{grid-column:1/-1}.row.head .c3,.row.head .c4{display:none}.drow{grid-template-columns:minmax(0,1fr) 50px}.drow .chart{grid-column:1/-1;grid-row:2}}
+@media (prefers-reduced-motion:no-preference){circle.pt{transition:opacity .2s}}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Outcome-Driven Innovation study · Market: small and mid-size employers · Jobs: 26 HR jobs</div>
+  <h1>PEO Job Study: where clients are under-served</h1>
+  <div class="meta2" id="meta"></div>
+  <div class="formula">Opportunity = Importance + max(Importance − Satisfaction, 0) &nbsp;·&nbsp; scale 0–20 &nbsp;·&nbsp; I and S = % rating 4–5 of 5, ÷10</div>
+  <div class="databar" id="databar">
+    <div class="grow" id="datamsg"></div>
+    <label class="btn solid filebtn" for="upload">Load results CSV<input type="file" id="upload" accept=".csv,text/csv"></label>
+    <button class="btn" id="useExample" hidden>Back to example data</button>
+  </div>
+</div></header>
+
+<div class="bar" role="region" aria-label="Filters"><div class="wrap">
+  <div class="seg" role="group" aria-label="Segment">
+    <button id="sg-T" data-s="T" aria-pressed="true"><span class="sw" style="background:var(--total)"></span>Total</button>
+    <button id="sg-A" data-s="A" aria-pressed="false"><span class="sw" style="background:var(--peo)"></span>PEO clients</button>
+    <button id="sg-P" data-s="P" aria-pressed="false"><span class="sw" style="background:var(--non)"></span>Non-PEO</button>
+    <button id="sg-C" data-s="C" aria-pressed="false">PEO vs non-PEO</button>
+  </div>
+  <label class="f" for="f-p">Persona <select id="f-p"><option value="">All personas</option></select></label>
+  <label class="f" for="f-job">Job <select id="f-job"><option value="">All 26 jobs</option></select></label>
+  <label class="f" for="f-theme">Theme <select id="f-theme"><option value="">All themes</option></select></label>
+  <label class="f" for="f-tier">Tier <select id="f-tier"><option value="">All tiers</option><option value="3">Extreme (&gt;15)</option><option value="2">High (12–15)</option><option value="1">Solid (10–12)</option><option value="0">Below 10</option></select></label>
+  <input type="search" id="f-q" placeholder="Search outcomes…" aria-label="Search outcome statements">
+  <button class="btn" id="f-reset">Clear filters</button>
+  <span class="small muted mono" id="f-count"></span>
+</div></div>
+
+<main><div class="wrap">
+<section aria-labelledby="h-sum">
+  <div class="sec-head"><div><div class="eyebrow" id="sum-seg">Total market</div><h2 id="h-sum">Opportunity summary</h2></div></div>
+  <div class="kpis" id="kpis"></div>
+</section>
+
+<section aria-labelledby="h-land">
+  <div class="sec-head"><div><h2 id="h-land">Opportunity landscape</h2>
+    <p>Each dot is one desired outcome. Below the diagonal, importance outruns satisfaction; the further right and down, the larger the unmet need. Hover for scores, click to inspect.</p></div>
+    <label class="f" for="fit"><input type="checkbox" id="fit"> Zoom to data</label></div>
+  <div class="land">
+    <div class="card plotbox">
+      <svg id="land" viewBox="0 0 640 540" role="img" aria-label="Scatter of importance versus satisfaction for each outcome"></svg>
+      <div class="legend" id="land-legend" style="padding:4px 6px 8px"></div>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <aside class="card detail" id="detail" aria-live="polite"></aside>
+  </div>
+</section>
+
+<section aria-labelledby="h-job">
+  <div class="sec-head"><div><h2 id="h-job">Job map: opportunity by job</h2>
+    <p>Bars show how each job's outcomes split across opportunity tiers for the selected segment; dots show mean opportunity for PEO clients and non-PEO employers. Click a job to filter everything.</p></div></div>
+  <div class="card rows" id="jobmap"></div>
+</section>
+
+<section aria-labelledby="h-step">
+  <div class="sec-head"><div><h2 id="h-step">Opportunity by job-map step</h2>
+    <p>The same view across all jobs, by universal job-map step, in the order the steps are performed.</p></div></div>
+  <div class="card rows" id="stepmap"></div>
+</section>
+
+<section aria-labelledby="h-div">
+  <div class="sec-head"><div><h2 id="h-div">PEO clients vs non-PEO: where the models diverge</h2>
+    <p>Outcomes with the largest gap in opportunity score between the two delivery models. The faint band is the 95% interval on the gap, centered on the PEO score: when the non-PEO dot falls inside it, the gap is directional only.</p></div></div>
+  <div class="div-grid">
+    <div class="card"><div class="minihead" style="padding:12px 14px 6px"><span>PEO clients less served</span><span></span><span>Δ opp</span></div><div id="div-a"></div></div>
+    <div class="card"><div class="minihead" style="padding:12px 14px 6px"><span>Non-PEO less served</span><span></span><span>Δ opp</span></div><div id="div-p"></div></div>
+  </div>
+  <div class="legend"><span><span class="sw" style="background:var(--peo)"></span>PEO clients</span><span><span class="sw" style="background:var(--non)"></span>Non-PEO</span><span class="mono">axis 0–20 · Δ = PEO − non-PEO</span></div>
+</section>
+
+<section aria-labelledby="h-th">
+  <div class="sec-head"><div><h2 id="h-th">Themes and metric types</h2>
+    <p>Opportunity rolled up by benchmark theme (the business model's service lines) and by the kind of metric in each outcome statement. Click a theme to filter.</p></div></div>
+  <div class="card rows" id="themes"></div>
+  <div class="card rows" id="metrics"></div>
+</section>
+
+<section aria-labelledby="h-ins">
+  <div class="sec-head"><div><h2 id="h-ins">What the data says</h2><p id="ins-sub">Findings computed from the full dataset (unfiltered).</p></div></div>
+  <div class="ins" id="insights"></div>
+</section>
+
+<section aria-labelledby="h-tbl">
+  <div class="sec-head"><div><h2 id="h-tbl">Ranked outcomes</h2><p>All outcomes matching the filters, sorted by the selected segment's opportunity. Click a column to re-sort, or a row to inspect it in the landscape.</p></div></div>
+  <div class="card tbl-wrap"><table class="rank" id="tbl"><thead></thead><tbody></tbody></table></div>
+</section>
+
+<section aria-labelledby="h-notes">
+  <h2 id="h-notes">Method and data notes</h2>
+  <div class="card notes">
+    <p><b>Scoring.</b> Importance and satisfaction are the share of respondents rating an outcome 4 or 5 on a 5-point scale, divided by 10. Opportunity = I + max(I − S, 0). Tiers: above 15 extreme, 12–15 high, 10–12 solid, below 10 limited. An outcome is over-served when satisfaction exceeds importance. These are the same rules as the Zephyr study.</p>
+    <p><b>Segments.</b> PEO clients currently co-employ through a PEO. Non-PEO combines in-house HR and payroll/HRO or ASO providers. Total is the respondent-weighted combination.</p>
+    <p><b>Sample.</b> Each outcome is rated by the persona modules that execute its job, so n differs by outcome. The 95% intervals use each outcome's own n and assume independent importance and satisfaction estimates.</p>
+    <p class="flag"><b>Loading real results.</b> Upload a CSV with the columns <code>outcome_id, segment, n, importance, satisfaction</code>. Segment is <code>PEO</code> or <code>NONPEO</code>; an optional <code>TOTAL</code> row overrides the weighted total. Importance and satisfaction are on the 0–10 scale. Outcome IDs come from the outcome register. The file stays in your browser and is not uploaded anywhere.</p>
+  </div>
+</section>
+</div></main>
+
+<script src="data.js"></script><script src="common.js"></script>
+<script>
+H.nav('study.html');
+const esc=H.esc, PD=H.D;
+const SEGNAME={T:'Total market',A:'PEO clients',P:'Non-PEO employers',C:'PEO vs non-PEO'};
+const SEGSHORT={T:'Total',A:'PEO',P:'Non-PEO'};
+const COL={T:'var(--total)',A:'var(--peo)',P:'var(--non)'};
+const TIERS=[{k:3,name:'Extreme',rng:'>15',v:'--t-ext'},{k:2,name:'High',rng:'12–15',v:'--t-high'},{k:1,name:'Solid',rng:'10–12',v:'--t-solid'},{k:0,name:'Below 10',rng:'<10',v:'--t-low'}];
+const tierOf=o=>o>15?3:o>=12?2:o>=10?1:0;
+const THEMES=PD.themes.map(t=>t.name);
+const METRICS=['Stability','Speed','Cost & exposure','Effort','Output'];
+let DATA=[], SOURCE={kind:'example',name:''};
+
+function build(R){
+  // R: {PEO:{id:[I,S,n]}, NONPEO:{...}, TOTAL?:{...}}
+  const rows=PD.outcomes.map((o,i)=>{
+    const a=R.PEO[o.id], p=R.NONPEO[o.id];
+    let t=R.TOTAL&&R.TOTAL[o.id];
+    if(!t) t=[+((a[0]*a[2]+p[0]*p[2])/(a[2]+p[2])).toFixed(1), +((a[1]*a[2]+p[1]*p[2])/(a[2]+p[2])).toFixed(1), a[2]+p[2]];
+    const mk=v=>[v[0],v[1],+(v[0]+Math.max(v[0]-v[1],0)).toFixed(1),0,v[2]];
+    return {id:i, oid:o.id, t:o.t, job:o.job, step:o.step, th:o.theme, m:o.m, T:mk(t), A:mk(a), P:mk(p)};
+  });
+  ['T','A','P'].forEach(s=>{[...rows].sort((x,y)=>y[s][2]-x[s][2]||y[s][0]-x[s][0]).forEach((d,i)=>d[s][3]=i+1);});
+  rows.forEach(d=>d.D=+(d.A[2]-d.P[2]).toFixed(1));
+  return rows;
+}
+function ci(seg,d){const n=d[seg][4]||1, pI=d[seg][0]/10, pS=d[seg][1]/10;
+  const vI=pI*(1-pI)/n*100, vS=pS*(1-pS)/n*100; const v=d[seg][0]>d[seg][1]?4*vI+vS:vI; return 1.96*Math.sqrt(v);}
+const ciGap=d=>Math.sqrt(ci('A',d)**2+ci('P',d)**2);
+
+const st={seg:'T',p:'',job:'',theme:'',tier:'',q:'',sel:null,fit:false,sort:{k:'o',dir:-1}};
+try{const s=JSON.parse(localStorage.getItem('peo-study')||'{}'); if(s.seg) st.seg=s.seg; if(typeof s.fit==='boolean') st.fit=s.fit;}catch(e){}
+const save=()=>{try{localStorage.setItem('peo-study',JSON.stringify({seg:st.seg,fit:st.fit}))}catch(e){}};
+const keySeg=()=>st.seg==='C'?'T':st.seg;
+function pass(d){
+  if(st.p && !H.J[d.job].ex.includes(st.p)) return false;
+  if(st.job && d.job!==st.job) return false;
+  if(st.theme && d.th!==st.theme) return false;
+  if(st.tier!=='' && st.seg!=='C' && tierOf(d[keySeg()][2])!=+st.tier) return false;
+  if(st.tier!=='' && st.seg==='C' && tierOf(d.A[2])!=+st.tier && tierOf(d.P[2])!=+st.tier) return false;
+  if(st.q && !d.t.toLowerCase().includes(st.q.toLowerCase())) return false;
+  return true;
+}
+/* controls */
+const fP=document.getElementById('f-p'),fJob=document.getElementById('f-job'),fTheme=document.getElementById('f-theme'),fTier=document.getElementById('f-tier'),fQ=document.getElementById('f-q');
+PD.personas.forEach(p=>fP.add(new Option(p.name,p.id)));
+H.groupJobs(PD.jobs).forEach(([g,js])=>{const og=document.createElement('optgroup'); og.label=g; js.forEach(j=>og.appendChild(new Option(`${j.id} · ${j.stmt}`,j.id))); fJob.appendChild(og);});
+THEMES.forEach(t=>fTheme.add(new Option(t,t)));
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{st.seg=b.dataset.s;save();render();});
+fP.onchange=()=>{st.p=fP.value;render();}; fJob.onchange=()=>{st.job=fJob.value;render();};
+fTheme.onchange=()=>{st.theme=fTheme.value;render();}; fTier.onchange=()=>{st.tier=fTier.value;render();};
+fQ.oninput=()=>{st.q=fQ.value.trim();render();};
+document.getElementById('f-reset').onclick=()=>{st.p=st.job=st.theme=st.tier=st.q='';fP.value=fJob.value=fTheme.value=fTier.value='';fQ.value='';render();};
+const fit=document.getElementById('fit'); fit.checked=st.fit; fit.onchange=()=>{st.fit=fit.checked;save();drawLand();};
+(function(){const h=H.hashGet(); if(H.J[h]){st.job=h;fJob.value=h;} else {const t=PD.themes.find(t=>H.slug(t.name)===h); if(t){st.theme=t.name;fTheme.value=t.name;}}})();
+
+/* header + data source */
+function header(){
+  const nT=DATA.length?Math.max(...DATA.map(d=>d.T[4])):0;
+  const mods=PD.modules.reduce((a,m)=>a+m.n,0);
+  document.getElementById('meta').innerHTML=`<span>Method <b>Web survey, persona modules</b></span><span>Respondents <b class="mono">${SOURCE.kind==='example'?`N = ${mods.toLocaleString()} (planned)`:`up to ${nT} per outcome`}</b></span><span>Segments <b>PEO clients · non-PEO employers</b></span><span>Desired outcomes <b class="mono">${DATA.length}</b> across <b class="mono">${PD.jobs.length}</b> jobs and <b class="mono">8</b> job-map steps</span>`;
+  const bar=document.getElementById('databar');
+  bar.classList.toggle('real',SOURCE.kind!=='example');
+  document.getElementById('datamsg').innerHTML=SOURCE.kind==='example'
+    ? `<b>Example data.</b> These scores are generated to show how the study reads. They are not survey results. Load a results CSV to replace them.`
+    : `<b>Loaded:</b> ${esc(SOURCE.name)} · ${DATA.length} outcomes. The file stays in this browser.`;
+  document.getElementById('useExample').hidden=SOURCE.kind==='example';
+  document.getElementById('ins-sub').textContent = SOURCE.kind==='example' ? 'Findings computed from the full example dataset (unfiltered). They show what the study will report, not real findings.' : 'Findings computed from the loaded results (unfiltered).';
+}
+document.getElementById('upload').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{try{const R=parseCSV(r.result); DATA=build(R); SOURCE={kind:'file',name:f.name}; st.sel=null; header(); insights(); render(); H.toast(`Loaded ${f.name}`);}catch(err){H.toast(err.message);} e.target.value='';};
+  r.onerror=()=>H.toast('That file could not be read. Try saving it again as CSV.');
+  r.readAsText(f);
+};
+document.getElementById('useExample').onclick=()=>{DATA=build(exampleR()); SOURCE={kind:'example',name:''}; st.sel=null; header(); insights(); render();};
+function parseCSV(txt){
+  const lines=txt.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  if(lines.length<2) throw new Error('The file has no data rows.');
+  const hd=lines[0].split(',').map(s=>s.trim().toLowerCase().replace(/^"|"$/g,''));
+  const ix=k=>{const i=hd.indexOf(k); if(i<0) throw new Error(`Missing column "${k}". Expected outcome_id, segment, n, importance, satisfaction.`); return i;};
+  const c={id:ix('outcome_id'),seg:ix('segment'),n:ix('n'),i:ix('importance'),s:ix('satisfaction')};
+  const R={PEO:{},NONPEO:{},TOTAL:{}};
+  lines.slice(1).forEach((l,k)=>{const v=l.split(',').map(s=>s.trim().replace(/^"|"$/g,''));
+    const seg=v[c.seg].toUpperCase().replace(/[^A-Z]/g,''); if(!R[seg]) throw new Error(`Row ${k+2}: segment must be PEO, NONPEO or TOTAL.`);
+    const I=+v[c.i], S=+v[c.s], n=+v[c.n];
+    if(!(I>=0&&I<=10&&S>=0&&S<=10)) throw new Error(`Row ${k+2}: importance and satisfaction must be between 0 and 10.`);
+    R[seg][v[c.id]]=[I,S,n>0?n:1];});
+  const miss=PD.outcomes.filter(o=>!R.PEO[o.id]||!R.NONPEO[o.id]).map(o=>o.id);
+  if(miss.length) throw new Error(`${miss.length} outcomes are missing PEO or NONPEO rows, e.g. ${miss.slice(0,3).join(', ')}.`);
+  if(!Object.keys(R.TOTAL).length) delete R.TOTAL;
+  return R;
+}
+const exampleR=()=>({PEO:PD.example.PEO,NONPEO:PD.example.NONPEO,TOTAL:PD.example.TOTAL});
+
+/* KPIs */
+function kpis(){
+  const segs=st.seg==='C'?['A','P']:[st.seg];
+  const rows=DATA.filter(pass);
+  document.getElementById('sum-seg').textContent=SEGNAME[st.seg]+(rows.length<DATA.length?` · ${rows.length} of ${DATA.length} outcomes in filter`:'');
+  const f=fn=>segs.map(s=>fn(s));
+  const fmt=(arr,dp=0)=>arr.map((v,i)=>segs.length>1?`<span style="color:${COL[segs[i]]}">${v.toFixed(dp)}</span>`:v.toFixed(dp)).join('<span class="muted" style="font-size:18px"> / </span>');
+  const n=rows.length||1;
+  const ext=f(s=>rows.filter(d=>d[s][2]>15).length), hi=f(s=>rows.filter(d=>d[s][2]>=12&&d[s][2]<=15).length), und=f(s=>rows.filter(d=>d[s][2]>=12).length);
+  const mI=f(s=>rows.reduce((a,d)=>a+d[s][0],0)/n), mS=f(s=>rows.reduce((a,d)=>a+d[s][1],0)/n), over=f(s=>rows.filter(d=>d[s][1]>d[s][0]).length);
+  const sub=segs.length>1?'PEO / non-PEO':SEGNAME[st.seg];
+  document.getElementById('kpis').innerHTML=`
+   <div class="kpi"><span class="l">Under-served (opp ≥ 12)</span><span class="v">${fmt(und)}</span><span class="s">${segs.map(s=>Math.round(rows.filter(d=>d[s][2]>=12).length/n*100)+'%').join(' / ')} of ${rows.length} outcomes</span></div>
+   <div class="kpi"><span class="l"><i class="tier" style="background:var(--t-ext)"></i>Extreme (&gt;15)</span><span class="v">${fmt(ext)}</span><span class="s">${sub}</span></div>
+   <div class="kpi"><span class="l"><i class="tier" style="background:var(--t-high)"></i>High (12–15)</span><span class="v">${fmt(hi)}</span><span class="s">${sub}</span></div>
+   <div class="kpi"><span class="l">Mean importance vs satisfaction</span><span class="v">${fmt(mI,1)}</span><span class="s">sat ${mS.map(v=>v.toFixed(1)).join(' / ')} · gap ${mI.map((v,i)=>(v-mS[i]).toFixed(1)).join(' / ')}</span></div>
+   <div class="kpi"><span class="l">Over-served (S &gt; I)</span><span class="v">${fmt(over)}</span><span class="s">candidates for cost-down</span></div>`;
+}
+
+/* Landscape (Zephyr charting) */
+const svg=document.getElementById('land'), tip=document.getElementById('tip');
+const W=640,H2=540,M={l:52,r:18,t:16,b:46};
+let X,Y,pts=[];
+function drawLand(){
+  const dom=st.fit?{x:[2,10],y:[0,8]}:{x:[0,10],y:[0,10]};
+  X=v=>M.l+(v-dom.x[0])/(dom.x[1]-dom.x[0])*(W-M.l-M.r);
+  Y=v=>H2-M.b-(v-dom.y[0])/(dom.y[1]-dom.y[0])*(H2-M.t-M.b);
+  const P=a=>a.map(([x,y])=>`${X(x).toFixed(1)},${Y(y).toFixed(1)}`).join(' ');
+  const band=k=>P([[k/2-0.5,-1],[k/2+5.5,11],[30,11],[30,-1]]);
+  let h=`<defs><clipPath id="cp"><rect x="${M.l}" y="${M.t}" width="${W-M.l-M.r}" height="${H2-M.t-M.b}"/></clipPath></defs>`;
+  h+=`<rect x="${M.l}" y="${M.t}" width="${W-M.l-M.r}" height="${H2-M.t-M.b}" fill="var(--plot)"/>`;
+  h+=`<g clip-path="url(#cp)"><polygon points="${P([[-1,-1],[11,11],[-1,11]])}" fill="var(--z-over)"/><polygon points="${band(10)}" fill="var(--z-solid)"/><polygon points="${band(12)}" fill="var(--z-high)"/><polygon points="${band(15)}" fill="var(--z-ext)"/>`;
+  for(const k of [10,12,15]) h+=`<line x1="${X(k/2-0.5)}" y1="${Y(-1)}" x2="${X(k/2+5.5)}" y2="${Y(11)}" stroke="var(--t-high)" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>`;
+  h+=`<line x1="${X(-1)}" y1="${Y(-1)}" x2="${X(11)}" y2="${Y(11)}" stroke="var(--ink-3)" stroke-width="1.2"/>`;
+  for(let v=Math.ceil(dom.x[0]);v<=dom.x[1];v++) h+=`<line x1="${X(v)}" x2="${X(v)}" y1="${M.t}" y2="${H2-M.b}" stroke="var(--ink)" stroke-opacity=".05"/>`;
+  for(let v=Math.ceil(dom.y[0]);v<=dom.y[1];v++) h+=`<line y1="${Y(v)}" y2="${Y(v)}" x1="${M.l}" x2="${W-M.r}" stroke="var(--ink)" stroke-opacity=".05"/>`;
+  h+=`</g>`;
+  const lab=(x,y,t,a='start',w=500)=>`<text x="${x}" y="${y}" font-family="var(--f-mono)" font-size="10.5" font-weight="${w}" fill="var(--ink-3)" text-anchor="${a}">${t}</text>`;
+  h+=lab(M.l+10,M.t+18,'OVER-SERVED'); h+=lab(W-M.r-8,M.t+18,'UNDER-SERVED ↘','end',600);
+  if(!st.fit) h+=lab(X(2.4),Y(1.2),'APPROPRIATELY SERVED');
+  const yl=dom.y[0]+0.25;
+  [[10,'opp 10'],[12,'opp 12'],[15,'opp 15']].forEach(([k,t])=>{const x=(yl+k)/2; if(x<=dom.x[1]-0.6) h+=`<text x="${X(x)+5}" y="${Y(yl)}" font-family="var(--f-mono)" font-size="10" fill="var(--t-ext)">${t}</text>`;});
+  for(let v=Math.ceil(dom.x[0]);v<=dom.x[1];v++) h+=lab(X(v),H2-M.b+16,v,'middle',400);
+  for(let v=Math.ceil(dom.y[0]);v<=dom.y[1];v++) h+=`<text x="${M.l-8}" y="${Y(v)+3.5}" font-family="var(--f-mono)" font-size="10.5" fill="var(--ink-3)" text-anchor="end">${v}</text>`;
+  h+=`<text x="${(M.l+W-M.r)/2}" y="${H2-8}" font-size="12" fill="var(--ink-2)" text-anchor="middle" font-family="var(--f-body)">Importance →</text>`;
+  h+=`<text transform="translate(14 ${(M.t+H2-M.b)/2}) rotate(-90)" font-size="12" fill="var(--ink-2)" text-anchor="middle" font-family="var(--f-body)">Satisfaction →</text>`;
+  const segs=st.seg==='C'?['A','P']:[st.seg];
+  pts=[]; let g='',top='';
+  const selD=st.sel!=null?DATA[st.sel]:null;
+  if(selD&&segs.length>1) top+=`<line x1="${X(selD.A[0])}" y1="${Y(selD.A[1])}" x2="${X(selD.P[0])}" y2="${Y(selD.P[1])}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+  for(const s of segs) for(const d of DATA){
+    const x=X(d[s][0]), y=Y(d[s][1]), on=pass(d); pts.push({x,y,d,s,on});
+    const isSel=d.id===st.sel;
+    const c=`<circle class="pt" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${isSel?7:4.5}" fill="${COL[s]}" fill-opacity="${on?(isSel?1:.72):.1}" stroke="var(--plot)" stroke-width="${isSel?2.5:1.5}"/>`;
+    if(isSel) top+=c; else g+=c;
+  }
+  if(selD) for(const s of segs) top+=`<circle cx="${X(selD[s][0])}" cy="${Y(selD[s][1])}" r="11" fill="none" stroke="${COL[s]}" stroke-width="1.5"/>`;
+  h+=`<g clip-path="url(#cp)">${g}${top}</g>`;
+  h+=`<rect id="hit" x="${M.l}" y="${M.t}" width="${W-M.l-M.r}" height="${H2-M.t-M.b}" fill="transparent" style="cursor:crosshair"/>`;
+  h+=`<circle id="hov" r="8" fill="none" stroke="var(--ink)" stroke-width="1.5" visibility="hidden"/>`;
+  svg.innerHTML=h;
+  document.getElementById('land-legend').innerHTML=segs.map(s=>`<span><span class="sw" style="background:${COL[s]}"></span>${SEGNAME[s]}</span>`).join('')+
+    `<span><i class="lg-zone" style="background:var(--z-ext)"></i>Extreme &gt;15</span><span><i class="lg-zone" style="background:var(--z-high)"></i>High 12–15</span><span><i class="lg-zone" style="background:var(--z-solid)"></i>Solid 10–12</span><span><i class="lg-zone" style="background:var(--z-over)"></i>Over-served</span>`;
+  const hit=svg.querySelector('#hit'), hov=svg.querySelector('#hov');
+  const near=ev=>{const r=svg.getBoundingClientRect(),k=W/r.width,mx=(ev.clientX-r.left)*k,my=(ev.clientY-r.top)*k;
+    let best=null,bd=1e9; for(const p of pts){if(!p.on) continue; const dd=(p.x-mx)**2+(p.y-my)**2; if(dd<bd){bd=dd;best=p;}} return bd<324?best:null;};
+  hit.onmousemove=ev=>{const p=near(ev);
+    if(!p){tip.hidden=true;hov.setAttribute('visibility','hidden');hit.style.cursor='crosshair';return;}
+    hit.style.cursor='pointer'; hov.setAttribute('cx',p.x);hov.setAttribute('cy',p.y);hov.setAttribute('visibility','visible');
+    const d=p.d;
+    tip.innerHTML=`<div class="t">${esc(d.t)}</div><div class="small muted" style="margin-bottom:4px">${d.job} · ${esc(H.J[d.job].stmt)} · ${H.STEP[d.step].name}</div>
+      <table><tr><td></td><td>I</td><td>S</td><td>Opp</td><td>Rank</td></tr>${['T','A','P'].map(s=>`<tr style="${s===p.s?'font-weight:600':''}"><td><span class="sw" style="background:${COL[s]}"></span> ${SEGSHORT[s]}</td><td>${d[s][0]}</td><td>${d[s][1]}</td><td>${d[s][2]}</td><td>#${d[s][3]}</td></tr>`).join('')}</table>`;
+    tip.hidden=false;
+    const box=svg.parentElement.getBoundingClientRect(), r=svg.getBoundingClientRect(), k=r.width/W;
+    let lx=r.left-box.left+p.x*k+14, ly=r.top-box.top+p.y*k+14; const tw=tip.offsetWidth, th=tip.offsetHeight;
+    if(lx+tw>box.width-6) lx=r.left-box.left+p.x*k-tw-14; if(ly+th>box.height-6) ly=r.top-box.top+p.y*k-th-14;
+    tip.style.left=Math.max(6,lx)+'px'; tip.style.top=Math.max(6,ly)+'px';};
+  hit.onmouseleave=()=>{tip.hidden=true;hov.setAttribute('visibility','hidden');};
+  hit.onclick=ev=>{const p=near(ev); if(p) select(p.d.id);};
+}
+function select(id,scroll){st.sel=id;tip.hidden=true;drawLand();detail();table(); if(scroll) document.getElementById('h-land').scrollIntoView({behavior:'smooth',block:'start'});}
+
+/* Detail */
+function detail(){
+  const el=document.getElementById('detail');
+  if(st.sel==null){el.innerHTML='<p class="muted">Click a dot to inspect an outcome.</p>';return;}
+  const d=DATA[st.sel], s=keySeg(), t=TIERS.find(x=>x.k===tierOf(d[s][2])), j=H.J[d.job];
+  const bar=(seg)=>{const o=d[seg][2], e=ci(seg,d), lo=Math.max(0,o-e)/20*100, hi=Math.min(20,o+e)/20*100;
+    return `<span class="lab"><span class="sw" style="background:${COL[seg]}"></span>${SEGSHORT[seg]}</span><div class="track"><div class="base"></div><div class="ci" style="left:${lo}%;width:${hi-lo}%;background:${COL[seg]}"></div><div class="fill" style="width:${o/20*100}%;background:${COL[seg]}"></div></div><span class="mono">${o.toFixed(1)} <span class="muted small">±${e.toFixed(1)}</span></span>`;};
+  const row=seg=>`<tr><td><span class="sw" style="background:${COL[seg]}"></span> ${SEGSHORT[seg]}</td><td class="num">${d[seg][0]}</td><td class="num">${d[seg][1]}</td><td class="num">${(d[seg][0]-d[seg][1]).toFixed(1)}</td><td class="num">${d[seg][4]}</td><td class="num">#${d[seg][3]}</td></tr>`;
+  const g=ciGap(d);
+  el.innerHTML=`
+    <div class="eyebrow">Selected outcome · ${d.oid} · rank #${d[s][3]} of ${DATA.length} (${SEGSHORT[s]})</div>
+    <div class="stmt">${esc(d.t)}</div>
+    <div class="tags"><span class="chip"><i style="background:var(${t.v})"></i>${t.name} ${t.rng}</span><a class="chip" href="jobs.html#${d.job}">${d.job} · ${esc(j.stmt)}</a><span class="chip">Step ${H.stepNo(d.step)} · ${H.STEP[d.step].name}</span><a class="chip" href="themes.html#${H.slug(d.th)}">${esc(d.th)}</a><span class="chip">${esc(d.m)}</span></div>
+    <div class="meta"><span class="lbl">Rated by</span>${j.ex.map(p=>`<span class="chip"><span class="dot" style="background:${H.PCOL[p]}"></span>${esc(H.P[p].short)}</span>`).join('')}</div>
+    <div class="minihead"><span>Opportunity</span><span class="mono">0 — 20 · bar = score, band = 95% interval</span><span></span></div>
+    <div class="iso">${bar('T')}${bar('A')}${bar('P')}</div>
+    <table class="rank" style="min-width:0"><thead><tr>${['Segment','Imp','Sat','Gap','n','Rank'].map((h,i)=>`<th class="${i?'num':''}" style="position:static;padding:6px 8px">${h}</th>`).join('')}</tr></thead><tbody>${row('T')}${row('A')}${row('P')}</tbody></table>
+    <p class="note">${Math.abs(d.D)<g?`The PEO vs non-PEO gap (${d.D>0?'+':''}${d.D}) is inside its 95% interval (±${g.toFixed(1)}), so treat it as directional.`:`PEO clients are ${d.D>0?'less':'better'} served than non-PEO employers by ${Math.abs(d.D)} points, outside the 95% interval (±${g.toFixed(1)}).`}</p>
+    <p class="note">Addressed by: ${H.O[d.oid].svc.map(x=>esc(H.S[x].label)).join(' · ')}</p>`;
+}
+
+/* Row charts */
+function dotTrack(vals,dom){
+  const x=v=>((v-dom[0])/(dom[1]-dom[0])*100);
+  let s=`<svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="11" y2="11" stroke="var(--rule)" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+  [12,15].forEach(t=>{if(t>dom[0]&&t<dom[1]) s+=`<line x1="${x(t)}" x2="${x(t)}" y1="3" y2="19" stroke="var(--t-high)" stroke-dasharray="2 2" vector-effect="non-scaling-stroke" opacity=".7"/>`;});
+  if(vals.length===2) s+=`<line x1="${x(vals[0].v)}" x2="${x(vals[1].v)}" y1="11" y2="11" stroke="var(--ink-3)" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+  s+='</svg>';
+  vals.forEach(o=>{s+=`<span style="position:absolute;left:calc(${Math.max(0,Math.min(100,x(o.v)))}% - 5px);top:6px;width:10px;height:10px;border-radius:50%;background:${o.c};box-shadow:0 0 0 2px var(--panel)" title="${o.t}: ${o.v.toFixed(1)}"></span>`;});
+  return s;
+}
+const axisRow=(dom,ticks)=>`<div class="axisrow">${ticks.map(t=>`<span style="left:${(t-dom[0])/(dom[1]-dom[0])*100}%">${t}</span>`).join('')}</div>`;
+function stackBar(list,s,max){const c=[3,2,1,0].map(k=>list.filter(d=>tierOf(d[s][2])===k).length);
+  return `<div class="stack" title="${TIERS.map((t,i)=>t.name+' '+c[i]).join(' · ')}" style="width:${list.length/max*100}%">${c.map((n,i)=>n?`<i style="flex:${n};background:var(${TIERS[i].v})"></i>`:'').join('')}</div>`;}
+const mean=(l,s)=>l.reduce((a,d)=>a+d[s][2],0)/(l.length||1);
+const DOM=[6,16], TICKS=[6,8,10,12,14,16];
+function headRow(label){const s=keySeg(); return `<div class="row head"><span>${label}</span><span style="text-align:right">n</span><span class="c3">Tier mix · ${SEGSHORT[s]}</span><span class="c4">Mean opportunity · <span style="color:var(--peo)">PEO</span> / <span style="color:var(--non)">Non-PEO</span>${axisRow(DOM,TICKS)}</span></div>`;}
+function oneRow(name,list,max,on,key,attr){const s=keySeg();
+  return `<div class="row ${attr?'click':''} ${on?'on':''}" ${attr?`tabindex="0" role="button" aria-pressed="${on}" data-k="${esc(key)}"`:''}><span class="name">${name}</span><span class="mono" style="text-align:right">${list.length}</span>
+    <span class="c3">${list.length?stackBar(list,s,max):'<span class="muted small">none in filter</span>'}</span>
+    <span class="c4 dt">${list.length?dotTrack([{v:mean(list,'A'),c:'var(--peo)',t:'PEO'},{v:mean(list,'P'),c:'var(--non)',t:'Non-PEO'}],DOM):''}</span></div>`;}
+function without(key){const k=st[key]; st[key]=''; const b=DATA.filter(pass); st[key]=k; return b;}
+function bind(el,key,ctl){el.querySelectorAll('.row.click').forEach(r=>{const act=()=>{const k=r.dataset.k; st[key]=st[key]===k?'':k; ctl.value=st[key]; render();}; r.onclick=act; r.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act();}};});}
+function jobRows(){
+  const el=document.getElementById('jobmap'), base=without('job');
+  const max=Math.max(1,...PD.jobs.map(j=>base.filter(d=>d.job===j.id).length));
+  let h=headRow('Job');
+  H.groupJobs(PD.jobs).forEach(([g,js])=>{const vis=js.filter(j=>base.some(d=>d.job===j.id)); if(!vis.length) return;
+    h+=`<div class="row grp">${esc(g)}</div>`;
+    vis.forEach(j=>{h+=oneRow(`<span class="n">${j.id}</span>${esc(j.stmt)}`,base.filter(d=>d.job===j.id),max,st.job===j.id,j.id,true);});});
+  el.innerHTML=h; bind(el,'job',fJob);
+}
+function stepRows(){
+  const el=document.getElementById('stepmap'), base=DATA.filter(pass);
+  const max=Math.max(1,...PD.steps.map(s=>base.filter(d=>d.step===s.id).length));
+  el.innerHTML=headRow('Job-map step')+PD.steps.map((s,i)=>oneRow(`<span class="n">${i+1}</span>${s.name} <span class="muted small">· ${esc(s.desc)}</span>`,base.filter(d=>d.step===s.id),max,false,'',false)).join('');
+}
+function themeRows(){
+  const el=document.getElementById('themes'), base=without('theme');
+  const max=Math.max(1,...THEMES.map(t=>base.filter(d=>d.th===t).length));
+  el.innerHTML=headRow('Theme')+THEMES.map(t=>oneRow(esc(t),base.filter(d=>d.th===t),max,st.theme===t,t,true)).join('');
+  bind(el,'theme',fTheme);
+  const em=document.getElementById('metrics'), b2=DATA.filter(pass), m2=Math.max(1,...METRICS.map(m=>b2.filter(d=>d.m===m).length));
+  em.innerHTML=headRow('Metric type in the statement')+METRICS.map(m=>oneRow(m,b2.filter(d=>d.m===m),m2,false,'',false)).join('');
+}
+
+/* Divergence */
+function divergence(){
+  const rows=DATA.filter(pass), x=v=>v/20*100;
+  const mk=list=>list.length?list.map(d=>{const e=ciGap(d);
+    return `<div class="drow click" tabindex="0" role="button" data-id="${d.id}"><span class="txt">${esc(d.t.length>110?d.t.slice(0,108)+'…':d.t)} <span class="jid">${d.job}</span></span>
+      <span class="chart dt"><svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="11" y2="11" stroke="var(--rule)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <rect x="${x(Math.max(0,d.A[2]-e))}" width="${x(Math.min(20,d.A[2]+e))-x(Math.max(0,d.A[2]-e))}" y="7" height="8" fill="var(--peo)" opacity=".16"/>
+        <line x1="${x(d.A[2])}" x2="${x(d.P[2])}" y1="11" y2="11" stroke="var(--ink-3)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+        <span style="position:absolute;left:calc(${x(d.A[2])}% - 5px);top:6px;width:10px;height:10px;border-radius:50%;background:var(--peo);box-shadow:0 0 0 2px var(--panel)" title="PEO ${d.A[2]}"></span>
+        <span style="position:absolute;left:calc(${x(d.P[2])}% - 5px);top:6px;width:10px;height:10px;border-radius:50%;background:var(--non);box-shadow:0 0 0 2px var(--panel)" title="Non-PEO ${d.P[2]}"></span></span>
+      <span class="d ${d.D>0?'pos':'neg'}">${d.D>0?'+':''}${d.D.toFixed(1)}</span></div>`;}).join('')+`<div class="drow" style="padding-top:2px"><span></span>${axisRow([0,20],[0,5,10,15,20])}<span></span></div>`
+    :'<p class="muted small" style="padding:8px 14px">No outcomes in the current filter.</p>';
+  const s=[...rows].sort((a,b)=>b.D-a.D);
+  document.getElementById('div-a').innerHTML=mk(s.filter(d=>d.D>0).slice(0,10));
+  document.getElementById('div-p').innerHTML=mk(s.filter(d=>d.D<0).reverse().slice(0,10));
+  document.querySelectorAll('.drow.click').forEach(r=>{const a=()=>select(+r.dataset.id,true); r.onclick=a; r.onkeydown=e=>{if(e.key==='Enter')a();};});
+}
+
+/* Table */
+const COLS=[['r','Rank',1],['t','Outcome',0],['job','Job',0],['th','Theme',0],['i','Imp',1],['s','Sat',1],['o','Opp',1],['oa','PEO opp',1],['op','Non-PEO opp',1],['d','Δ PEO−non',1]];
+function table(){
+  const s=keySeg(), tb=document.querySelector('#tbl tbody'), th=document.querySelector('#tbl thead');
+  const val=(d,k)=>({r:d[s][3],t:d.t,job:d.job,th:d.th,i:d[s][0],s:d[s][1],o:d[s][2],oa:d.A[2],op:d.P[2],d:d.D})[k];
+  const rows=DATA.filter(pass).sort((a,b)=>{const A=val(a,st.sort.k),B=val(b,st.sort.k); return (A<B?-1:A>B?1:0)*st.sort.dir||a[s][3]-b[s][3];});
+  th.innerHTML='<tr>'+COLS.map(([k,l,n])=>`<th class="${n?'num':''}" aria-sort="${st.sort.k===k?(st.sort.dir>0?'ascending':'descending'):'none'}"><button data-k="${k}">${l}${'isor'.includes(k)&&k.length===1?` <span style="text-transform:none">(${SEGSHORT[s]})</span>`:''}${st.sort.k===k?(st.sort.dir>0?' ↑':' ↓'):''}</button></th>`).join('')+'</tr>';
+  th.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=b.dataset.k; st.sort=st.sort.k===k?{k,dir:-st.sort.dir}:{k,dir:['t','job','th','r'].includes(k)?1:-1}; table();});
+  tb.innerHTML=rows.map(d=>`<tr class="click ${d.id===st.sel?'on':''}" data-id="${d.id}" tabindex="0"><td class="num">${d[s][3]}</td>
+    <td class="stmt"><i class="tier" style="background:var(${TIERS.find(t=>t.k===tierOf(d[s][2])).v})"></i>${esc(d.t)} <span class="jid">${d.oid}</span></td>
+    <td class="small"><span class="jid">${d.job}</span>${esc(H.J[d.job].stmt)}</td><td class="small muted">${esc(d.th)}</td>
+    <td class="num">${d[s][0]}</td><td class="num">${d[s][1]}</td><td class="num"><b>${d[s][2].toFixed(1)}</b></td>
+    <td class="num">${d.A[2].toFixed(1)}</td><td class="num">${d.P[2].toFixed(1)}</td><td class="num ${d.D>0?'pos':d.D<0?'neg':''}">${d.D>0?'+':''}${d.D.toFixed(1)}</td></tr>`).join('')||`<tr><td colspan="10" class="muted">No outcomes match these filters. Clear filters to see all ${DATA.length}.</td></tr>`;
+  tb.querySelectorAll('tr.click').forEach(r=>{const a=()=>select(+r.dataset.id,true); r.onclick=a; r.onkeydown=e=>{if(e.key==='Enter')a();};});
+}
+
+/* Insights, computed from whatever data is loaded */
+function insights(){
+  const N=DATA.length, f1=v=>v.toFixed(1), pct=v=>Math.round(v*100)+'%';
+  const avg=(l,fn)=>l.reduce((a,d)=>a+fn(d),0)/(l.length||1);
+  const und=DATA.filter(d=>d.T[2]>=12), over=DATA.filter(d=>d.T[1]>d.T[0]);
+  const top=[...DATA].sort((a,b)=>a.T[3]-b.T[3]).slice(0,2);
+  const jm=PD.jobs.map(j=>{const l=DATA.filter(d=>d.job===j.id); return {j, m:avg(l,d=>d.T[2])};}).sort((a,b)=>b.m-a.m);
+  const tm=THEMES.map(t=>{const l=DATA.filter(d=>d.th===t); return {t, n:l.length, u:l.filter(d=>d.T[2]>=12).length, m:avg(l,d=>d.T[2]), sa:avg(l,d=>d.A[1]), sp:avg(l,d=>d.P[1])};});
+  const byM=[...tm].sort((a,b)=>b.m-a.m), adv=[...tm].sort((a,b)=>(b.sa-b.sp)-(a.sa-a.sp));
+  const sig=DATA.filter(d=>Math.abs(d.D)>=ciGap(d));
+  const peoWorse=[...DATA].sort((a,b)=>b.D-a.D).slice(0,3), nonWorse=[...DATA].sort((a,b)=>a.D-b.D).slice(0,3);
+  const ms=(m)=>und.filter(d=>d.m===m).length;
+  const stepM=PD.steps.map(s=>({s, m:avg(DATA.filter(d=>d.step===s.id),d=>d.T[2])})).sort((a,b)=>b.m-a.m);
+  const short=t=>t.length>90?t.slice(0,88)+'…':t;
+  const items=[
+   ['Market',`${pct(und.length/N)} of outcomes are under-served`,`${und.length} of ${N} outcomes score 12 or higher for the total market and ${over.length} ${over.length===1?'is':'are'} over-served. Average importance is ${f1(avg(DATA,d=>d.T[0]))} against average satisfaction of ${f1(avg(DATA,d=>d.T[1]))}.`],
+   ['Top need',`The top-ranked outcomes`,`#1 ${esc(short(top[0].t))} (${top[0].job}, opp ${f1(top[0].T[2])}). #2 ${esc(short(top[1].t))} (${top[1].job}, opp ${f1(top[1].T[2])}).`],
+   ['Jobs',`${esc(jm[0].j.stmt)} carries the most unmet need`,`Highest mean opportunity: ${jm.slice(0,3).map(x=>`${x.j.id} ${esc(x.j.stmt)} (${f1(x.m)})`).join(', ')}. Lowest: ${jm.slice(-2).map(x=>`${x.j.id} ${esc(x.j.stmt)} (${f1(x.m)})`).join(', ')}.`],
+   ['Job map',`Clients struggle most at the ${stepM[0].s.name} step`,`Across all jobs, mean opportunity is highest at ${stepM[0].s.name} (${f1(stepM[0].m)}) and ${stepM[1].s.name} (${f1(stepM[1].m)}), and lowest at ${stepM[7].s.name} (${f1(stepM[7].m)}).`],
+   ['Themes',`${esc(byM[0].t)} is the most under-served theme`,`${byM[0].u} of ${byM[0].n} ${esc(byM[0].t)} outcomes score 12+ (mean ${f1(byM[0].m)}), followed by ${esc(byM[1].t)} (${byM[1].u} of ${byM[1].n}, mean ${f1(byM[1].m)}). ${esc(byM[byM.length-1].t)} is least under-served (mean ${f1(byM[byM.length-1].m)}).`],
+   ['Benchmark',`PEO clients are most ahead in ${esc(adv[0].t)}`,`Satisfaction for PEO clients is ${f1(adv[0].sa-adv[0].sp)} points higher than non-PEO employers in ${esc(adv[0].t)} and ${f1(adv[1].sa-adv[1].sp)} higher in ${esc(adv[1].t)}. PEO clients trail in ${esc(adv[adv.length-1].t)} (${f1(adv[adv.length-1].sa-adv[adv.length-1].sp)}).`],
+   ['Benchmark',`Where PEO clients are least served`,`${sig.filter(d=>d.D>0).length} outcomes are significantly more under-served for PEO clients and ${sig.filter(d=>d.D<0).length} for non-PEO employers. Largest PEO gaps: ${peoWorse.map(d=>`${d.oid} (+${f1(d.D)})`).join(', ')}. Largest non-PEO gaps: ${nonWorse.map(d=>`${d.oid} (${f1(d.D)})`).join(', ')}.`],
+   ['Metric type',`${ms('Stability')>=ms('Speed')?'Reliability':'Speed'} dominates the unmet need`,`${ms('Stability')} of the ${und.length} under-served outcomes are about reducing the likelihood of an error or risk, versus ${ms('Speed')} about time and ${und.length-ms('Stability')-ms('Speed')} about cost, effort or output.`],
+  ];
+  document.getElementById('insights').innerHTML=items.map(([k,h,p])=>`<article class="card"><span class="k">${k}</span><h3>${h}</h3><p>${p}</p></article>`).join('');
+}
+
+function render(){
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===st.seg));
+  const n=DATA.filter(pass).length;
+  document.getElementById('f-count').textContent=n<DATA.length?`${n} of ${DATA.length} shown`:'';
+  if(st.sel==null||!pass(DATA[st.sel])){const s=keySeg(); const f=DATA.filter(pass).sort((a,b)=>b[s][2]-a[s][2]); st.sel=f.length?f[0].id:st.sel;}
+  kpis(); drawLand(); detail(); jobRows(); stepRows(); themeRows(); divergence(); table();
+}
+DATA=build(exampleR()); header(); insights(); render();
+const mq=window.matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener&&mq.addEventListener('change',render);
+</script>
+</body></html>

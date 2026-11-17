@@ -1,0 +1,577 @@
+<title>PEO Semantic Layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: Accelerator Console design system. Tabs: semantic map / ask the fabric / planned + on-demand / backup drift sentinel. */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-ink:#ffffff;
+  --obligation:#4A3AA7; --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:24px 56px}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px 24px;margin-bottom:18px}
+h1{font-size:clamp(30px,4.2vw,44px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:70ch}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:8px 13px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.hook{font-size:14.5px;color:var(--muted);margin:0 0 16px;max-width:90ch}
+.hook b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:20px;margin-bottom:8px}
+.sec-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.hint{font-size:12.5px;color:var(--muted)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;background:var(--surface)}
+.pill .sw{width:7px;height:7px;border-radius:50%;display:inline-block;background:currentColor}
+.pill.ok{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.pill.no{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.pill.hold{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}
+.pill.ver{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.pill.ob{color:var(--obligation);border-color:color-mix(in srgb,var(--obligation) 45%,var(--line))}
+.good{color:var(--permission)}.bad{color:var(--prohibition)}.warn{color:var(--warning)}
+.seg{display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:8px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--font-body);padding:7px 12px;border-radius:5px;cursor:pointer;text-align:left}
+.seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;font:600 13.5px var(--font-body);cursor:pointer}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.code-view{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:12px;white-space:pre;overflow-x:auto;color:var(--ink-soft);line-height:1.5;margin:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.r,th.r{text-align:right}
+.tbl-wrap{overflow-x:auto}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13.5px;margin-top:10px}
+.banner.no{border:1px solid color-mix(in srgb,var(--prohibition) 45%,var(--line));background:color-mix(in srgb,var(--prohibition) 9%,transparent)}
+.banner.hold{border:1px solid color-mix(in srgb,var(--warning) 45%,var(--line));background:color-mix(in srgb,var(--warning) 9%,transparent)}
+.banner.ok{border:1px solid color-mix(in srgb,var(--permission) 45%,var(--line));background:color-mix(in srgb,var(--permission) 8%,transparent)}
+.banner.info{border:1px dashed var(--line)}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media (max-width:900px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat .v{font-family:var(--font-mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.3}
+.data-note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:28px;max-width:92ch}
+
+/* MAP */
+.map{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+@media (max-width:860px){.map{grid-template-columns:minmax(0,1fr)}.map .mid,svg.mapwires{display:none}}
+.map .colh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.map .mid{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;text-align:center;font-size:11.5px;color:var(--muted);z-index:1;pointer-events:none}
+.tree{display:flex;flex-direction:column;gap:2px;position:relative;z-index:1}
+.grp{font-size:12px;color:var(--muted);padding:6px 0 2px}
+.grp b{color:var(--ink-soft);font-weight:600}
+.grp .lv{font-family:var(--font-mono);font-size:10px;border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-right:4px}
+.leaf{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;text-align:left;color:var(--ink);font-family:var(--font-body);width:100%}
+.leaf .u{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:48%}
+.leaf.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.leaf.lit{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.leaf.dim{opacity:.4}
+.leaf.gap{border-style:dashed}
+.leaf.gap .u::after{content:" · unmapped";color:var(--prohibition)}
+.leaf.core{box-shadow:inset 3px 0 0 var(--obligation)}
+.srcgrp{font-size:12px;color:var(--ink-soft);font-weight:600;padding:6px 0 2px}
+.srcgrp small{font-family:var(--font-mono);font-weight:400;color:var(--muted)}
+.leaf.src{justify-content:flex-start}
+.leaf.src .u{max-width:none}
+svg.mapwires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+svg.mapwires path{fill:none;stroke:var(--line);stroke-width:1.2}
+svg.mapwires path.on{stroke:var(--accent);stroke-width:2}
+svg.mapwires path.cand{stroke-dasharray:5 4}
+svg.mapwires path.on.cand{stroke:var(--warning)}
+svg.mapwires text{font-family:var(--font-mono);font-size:10px;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.detail{margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px}
+@media (max-width:980px){.detail{grid-template-columns:minmax(0,1fr)}}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted);font-size:12px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+@media (max-width:640px){.types{grid-template-columns:minmax(0,1fr)}}
+.types div{border:1px solid var(--line-soft);border-radius:6px;padding:6px 8px;font-size:12px}
+.types b{font-family:var(--font-mono);font-size:11.5px}
+
+/* ASK */
+.ask-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.qbox{display:flex;gap:8px;flex-wrap:wrap}
+.qbox input{flex:1 1 360px;min-width:0;font:15px var(--font-body);padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.samples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font:500 12.5px var(--font-body);cursor:pointer;color:var(--ink-soft);text-align:left}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:14px 0}
+@media (max-width:760px){.steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.step{border:1px solid var(--line);border-radius:7px;padding:7px 8px;font-size:11.5px;background:var(--surface);transition:border-color .2s,background .2s}
+.step .n{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+.step .s{font-weight:600;line-height:1.25}
+.step .st{font-family:var(--font-mono);font-size:10.5px;margin-top:3px;color:var(--muted)}
+.step.pass{border-color:var(--permission)}.step.pass .st{color:var(--permission)}
+.step.fail{border-color:var(--prohibition);background:color-mix(in srgb,var(--prohibition) 8%,transparent)}.step.fail .st{color:var(--prohibition)}
+.step.run{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.step.skip{opacity:.45}
+.panes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.panes{grid-template-columns:minmax(0,1fr)}}
+.pane{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--surface);min-width:0}
+.pane.wide{grid-column:1/-1}
+.pane h4{font-family:var(--font-mono);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.rcb{display:grid;grid-template-columns:70px minmax(0,1fr);gap:4px 10px;font-size:13px}
+.rcb b{font-family:var(--font-mono);font-size:11.5px;color:var(--obligation)}
+.gr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 52px;gap:4px 10px;font-size:12.5px;align-items:center;padding:5px 0;border-top:1px solid var(--line-soft)}
+.gr:first-of-type{border-top:0}
+.gr .ph{font-style:italic}
+.gr .uri{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);overflow-wrap:anywhere}
+.gr .sc{font-family:var(--font-mono);font-size:11.5px;text-align:right}
+.gr.ungr .uri{color:var(--prohibition)}
+.path{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px}
+.path span.h{border:1px solid var(--line);border-radius:5px;padding:2px 7px;background:var(--paper)}
+.path .arr{color:var(--muted)}
+.pep{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;align-items:start;padding:6px 0;border-top:1px solid var(--line-soft);font-size:13px}
+.pep:first-of-type{border-top:0}
+.pep .id{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+
+/* LANES */
+.lanes{display:grid;grid-template-columns:minmax(0,1fr) 240px minmax(0,1fr);gap:14px;align-items:stretch}
+@media (max-width:980px){.lanes{grid-template-columns:minmax(0,1fr)}}
+.lane{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:14px}
+.lane h3{font-size:19px;margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:6px}
+.flow div{border:1px solid var(--line-soft);border-radius:6px;padding:7px 9px;font-size:13px;position:relative}
+.flow div small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.core{border:2px solid var(--obligation);border-radius:10px;background:color-mix(in srgb,var(--obligation) 6%,var(--surface));padding:14px;display:flex;flex-direction:column;gap:8px}
+.core h3{font-size:19px;color:var(--obligation)}
+.core div{font-size:12.5px;border-top:1px solid var(--line-soft);padding-top:6px}
+.core div b{font-family:var(--font-mono);font-size:11px;display:block;color:var(--muted)}
+
+/* DRIFT */
+.drift-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:980px){.drift-grid{grid-template-columns:minmax(0,1fr)}}
+.chg{display:flex;flex-direction:column;gap:8px}
+.chg button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px}
+.chg button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.chg .cid{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.chg .ct{font-weight:600;font-size:14px;line-height:1.3}
+.diff{font-family:var(--font-mono);font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;white-space:pre;overflow-x:auto}
+.diff .del{color:var(--prohibition)}.diff .add{color:var(--permission)}
+.impact-tree{list-style:none;margin:0;padding:0;font-size:13px}
+.impact-tree li{padding:4px 0 4px 16px;position:relative}
+.impact-tree li::before{content:"";position:absolute;left:4px;top:12px;width:7px;height:7px;border-radius:50%;background:var(--prohibition)}
+.impact-tree li.warnd::before{background:var(--warning)}
+.impact-tree li.okd::before{background:var(--permission)}
+.impact-tree li.l1{margin-left:0}.impact-tree li.l2{margin-left:16px}.impact-tree li.l3{margin-left:32px}.impact-tree li.l4{margin-left:48px}
+.impact-tree .k{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);margin-right:6px}
+.cov{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.cov-row{display:grid;grid-template-columns:minmax(0,210px) minmax(0,1fr) 44px;gap:10px;align-items:center}
+.cov-bar{display:flex;height:12px;border-radius:3px;overflow:hidden;background:var(--line-soft)}
+.cov-bar span{display:block;height:100%}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Data &amp; analytics demo · holonic semantic layer on the HR Compliance SSOT</div>
+      <h1>PEO Semantic Layer</h1>
+      <p class="dek">Top-down meaning from the holarchy meets bottom-up structure from every source schema. A persistent mapping graph joins them, virtual graphs query them in place, and an AI fabric grounds each question in canonical URIs, so planned and on-demand analytics draw on one semantic layer.</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" id="tab-map" aria-selected="true" aria-controls="view-map">Semantic map</button>
+      <button role="tab" id="tab-ask" aria-selected="false" aria-controls="view-ask">Ask the fabric</button>
+      <button role="tab" id="tab-lanes" aria-selected="false" aria-controls="view-lanes">Planned + on-demand</button>
+      <button role="tab" id="tab-drift" aria-selected="false" aria-controls="view-drift">Backup: drift sentinel</button>
+    </nav>
+  </header>
+
+  <!-- MAP -->
+  <section id="view-map" role="tabpanel" aria-labelledby="tab-map">
+    <p class="hook"><b>Left:</b> concepts from your HR Services ontology and the core entity model (GOV-004), in their holons. <b>Right:</b> fields and models from the source systems, lifted to RDF. <b>Middle:</b> the persistent mapping graph (GOV-006), where every correspondence is typed, scored and owned. Click a concept to trace it down to the data; click a source field to trace it up to meaning.</p>
+    <div class="stats" id="stats"></div>
+    <div class="map" id="map">
+      <svg class="mapwires" id="mapwires" aria-hidden="true"></svg>
+      <div><div class="colh">Top-down · holons → concepts</div><div class="tree" id="tdTree"></div></div>
+      <div class="mid"><span class="eyebrow">GOV-006</span>Persistent mapping graph<span class="hint">typed correspondences<br>anti-drift lineage agents</span></div>
+      <div><div class="colh">Bottom-up · source schemas → RDF</div><div class="tree" id="buTree"></div></div>
+    </div>
+    <div class="detail">
+      <div class="card" id="selCard"></div>
+      <div class="card"><h3>Correspondences</h3><div class="tbl-wrap"><table id="corrTable"></table></div>
+        <div class="sec-label">Six correspondence types</div>
+        <div class="types" id="types"></div>
+        <p class="hint" style="margin-top:8px">GOV-006 calls for six correspondence types without naming them; this naming (four SKOS match relations plus two structural ones) is a proposal for the demo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASK -->
+  <section id="view-ask" role="tabpanel" aria-labelledby="tab-ask" hidden>
+    <p class="hook">On-demand analytics through the AI fabric. Each question is decomposed into WHO / WHAT / WHEN / WHERE / WHY (GOV-011), <b>every phrase is grounded to a canonical URI</b> through the RAG anchor index (GOV-010), and the virtual graph query runs against the sources in place. The same Policy Enforcement Points that govern transactions (GOV-012) and the ontology’s privacy shapes check the result before anyone sees it. Ungrounded phrases trip the circuit breaker (GOV-014).</p>
+    <div class="card">
+      <form class="qbox" id="qform" autocomplete="off">
+        <label for="q" class="eyebrow" style="flex-basis:100%">Ask a question</label>
+        <input id="q" type="text">
+        <button class="btn" id="qrun" type="submit">Ask</button>
+      </form>
+      <div class="samples" id="samples" role="group" aria-label="Sample questions"></div>
+      <div class="steps" id="steps"></div>
+      <div id="out" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- LANES -->
+  <section id="view-lanes" role="tabpanel" aria-labelledby="tab-lanes" hidden>
+    <p class="hook">Planned and on-demand analytics are two paths over <b>one</b> semantic layer. Planned analytics compile ahead of time and run with zero graph latency (GOV-024). On-demand analytics are assembled at question time through the virtual graph. Both pass the same PEPs, and questions that keep coming back get promoted into governed metrics.</p>
+    <div class="lanes">
+      <div class="lane"><h3>Planned analytics</h3><div class="flow">
+        <div>Metric Definition Cards + MET rules<small>SSOT register · Definition-Time</small></div>
+        <div>GOV-019 compile pipeline<small>shape → constraints → harmonize → map → generate → publish</small></div>
+        <div>Engine A · dbt / LookML models<small>materialized · zero graph latency (GOV-024)</small></div>
+        <div>Dashboards, close packs, board decks<small>Released · versioned · immutable URIs (GOV-022)</small></div>
+      </div></div>
+      <div class="core"><h3>Unified semantic layer</h3>
+        <div><b>Holarchy</b>8 domains · 17 bounded contexts · 74 services · 147 concepts</div>
+        <div><b>GOV-006 mapping graph</b>typed correspondences to source fields and models</div>
+        <div><b>GOV-007 identity registry</b>one Enterprise Entity ID per client and worker</div>
+        <div><b>GOV-010 RAG anchor index</b>embeddings grounded to canonical URIs</div>
+        <div><b>GOV-012 PEPs + SHACL shapes</b>the same checks on both paths</div>
+      </div>
+      <div class="lane"><h3>On-demand analytics</h3><div class="flow">
+        <div>Question in plain language<small>analyst, product manager or AI agent</small></div>
+        <div>GOV-011 RCB decomposition + GOV-010 grounding<small>every phrase resolved to a URI or flagged</small></div>
+        <div>Virtual graph query<small>SPARQL rewritten and pushed down to sources · no copies</small></div>
+        <div>Governed answer<small>provisional · provenance attached · MTBH monitored (GOV-014)</small></div>
+      </div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>How the two paths differ</h3><div class="tbl-wrap"><table>
+      <thead><tr><th>Aspect</th><th>Planned</th><th>On-demand</th></tr></thead><tbody>
+      <tr><td>Built</td><td>Ahead of time, compiled from MET rules</td><td>At question time, from the mapping graph</td></tr>
+      <tr><td>Data movement</td><td>Materialized in the warehouse</td><td>Queried in place; only aggregates leave the source</td></tr>
+      <tr><td>Status of the answer</td><td>Released, versioned, certified</td><td>Provisional, with grounding score and URIs</td></tr>
+      <tr><td>Governance</td><td>GOV-002 council, GOV-003 gates</td><td>Same PEPs and shapes at run time; GOV-014 breaker</td></tr>
+      <tr><td>Best for</td><td>Recurring questions, board and finance reporting</td><td>New questions, exploration, AI agents</td></tr>
+      </tbody></table></div></div>
+    <div class="card" style="margin-top:16px"><h3>Promotion queue: on-demand questions that should become planned metrics</h3>
+      <div class="tbl-wrap"><table id="promo"></table></div>
+      <div id="promoOut"></div>
+    </div>
+  </section>
+
+  <!-- DRIFT -->
+  <section id="view-drift" role="tabpanel" aria-labelledby="tab-drift" hidden>
+    <p class="hook">The backup demo: what happens when a source changes under the semantic layer. The anti-drift lineage agent (GOV-006) detects the change, the Schema Diff Classifier grades it, and the impact is traced up the holarchy and out to every model, dashboard and cached answer that depends on it, before anyone notices a wrong number.</p>
+    <div class="drift-grid">
+      <div>
+        <div class="chg" id="chg" role="group" aria-label="Source changes"></div>
+        <div class="card" style="margin-top:16px"><h3>Semantic coverage by domain</h3><div class="cov" id="cov"></div>
+          <div class="hint" style="margin-top:8px"><span style="color:var(--permission)">■</span> Released · <span style="color:var(--warning)">■</span> Candidate · <span style="color:var(--line)">■</span> Unmapped</div></div>
+      </div>
+      <div class="card" id="driftOut" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <p class="data-note">Concept names, URIs, holon structure, GOV/TEC rule IDs, privacy shapes and the Calc Library entry come from your SSOT files (HR Services ontology, rules register, compliance dashboard). Source systems, field names, mappings, scores, coverage figures, query plans and results are synthetic, built to show the method; they do not describe Insperity’s actual systems.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ============ TOP-DOWN: holons + concepts (labels verbatim from the ontology) ============ */
+const TD=[
+ {lv:"L4",label:"Enterprise core entity model (GOV-004)",uri:"isp-core:",kids:[{label:"",concepts:[
+   {id:"k-client",label:"ClientCompany",uri:"isp-core:ClientCompany",core:1},
+   {id:"k-worker",label:"Worker",uri:"isp-core:Worker",core:1},
+   {id:"k-juris",label:"Jurisdiction",uri:"isp-core:Jurisdiction",core:1}]}]},
+ {lv:"L1",label:"Client Relationship & Business Development Domain",uri:"hr:ClientRelationshipDomain",kids:[
+   {lv:"L2",label:"Client Success & Account Management",uri:"hr:ClientSuccessAccountMgmtSubDomain",svc:"Client Health Scoring & Retention Service",svcUri:"hr:ClientHealthScoringRetentionService",concepts:[
+     {id:"c-health",label:"Client Account Health Scoring Model",uri:"hr:ConceptClientHealthScoreModel"},
+     {id:"c-atrisk",label:"At-Risk Client Account Escalation Flag",uri:"hr:ConceptAtRiskAccountFlag"}]},
+   {lv:"L2",label:"Client Success & Account Management",uri:"hr:ClientSuccessAccountMgmtSubDomain",svc:"Client Escalation & Issue Resolution Service",svcUri:"hr:ClientEscalationResolutionService",concepts:[
+     {id:"c-tier",label:"Client Escalation Tier Routing Matrix",uri:"hr:ConceptEscalationTierMatrix"},
+     {id:"c-rca",label:"Client Issue Root Cause Analysis Record",uri:"hr:ConceptRootCauseAnalysisRecord"}]}]},
+ {lv:"L1",label:"Workforce Administration & Payroll Domain",uri:"hr:WorkforceAdminDomain",kids:[
+   {lv:"L2",label:"Payroll Processing & Multi-State Tax",uri:"hr:PayrollTaxSubDomain",svc:"Gross-to-Net Payroll Calculation Service",svcUri:"hr:GrossToNetPayrollService",concepts:[
+     {id:"c-ot",label:"FLSA Statutory Overtime Calculation Standard",uri:"hr:ConceptOvertimeCalculation"},
+     {id:"c-g2n",label:"Gross-to-Net Computation Calculation Rule",uri:"hr:ConceptGrossToNetRule"}]},
+   {lv:"L2",label:"Time, Attendance & Leave Management",uri:"hr:TimeAttendanceLeaveSubDomain",svc:"Statutory Leave & FMLA Administration Service",svcUri:"hr:StatutoryLeaveFMLAService",concepts:[
+     {id:"c-fmla",label:"Statutory FMLA 1,250-Hour Eligibility Requirement",uri:"hr:ConceptFMLAEligibility"},
+     {id:"c-pfl",label:"Paid Family Leave Intermittent Absence Matrix",uri:"hr:ConceptPFLIntermittentTracking"}]}]},
+ {lv:"L1",label:"HR Technology Platform & Employee Experience Domain",uri:"hr:HRTechnologyPlatformDomain",kids:[
+   {lv:"L2",label:"Data Integration & Workforce Analytics",uri:"hr:DataIntegrationAnalyticsSubDomain",svc:"Workforce Analytics & Predictive Reporting Service",svcUri:"hr:WorkforceAnalyticsReportingService",concepts:[
+     {id:"c-kpi",label:"Workforce Analytics KPI Metric Library",uri:"hr:ConceptWorkforceKPILibrary"},
+     {id:"c-turn",label:"Employee Turnover Predictive Model",uri:"hr:ConceptTurnoverPredictionModel"}]}]},
+ {lv:"L1",label:"Organizational Values, Culture & Ethics Stewardship Domain",uri:"hr:ValuesCultureStewardshipDomain",kids:[
+   {lv:"L2",label:"Values Monitoring & Measurement",uri:"hr:ValuesMonitoringMeasurementSubDomain",svc:"Anonymous Culture & Values Pulse Survey Service",svcUri:"hr:CulturePulseSurveyService",concepts:[
+     {id:"c-ri",label:"Respect & Inclusion Index",uri:"hr:IndRespectInclusionIndex",note:"Anonymous survey · aggregate groups ≥ 5 · not individually attributable"}]}]}
+];
+const CONCEPT={};TD.forEach(d=>d.kids.forEach(k=>k.concepts.forEach(c=>{CONCEPT[c.id]={...c,domain:d,ctx:k}})));
+
+/* ============ BOTTOM-UP: source systems (synthetic) ============ */
+const BU=[
+ {sys:"CRM",tech:"Salesforce objects",fields:[
+   {id:"s-acct-id",label:"Account.Id",type:"id"},{id:"s-acct-seg",label:"Account.Segment__c",type:"picklist"},{id:"s-acct-state",label:"Account.BillingState",type:"string"},
+   {id:"s-acct-health",label:"Account.Health_Score__c",type:"number 0–100"},{id:"s-acct-risk",label:"Account.At_Risk__c",type:"boolean"},
+   {id:"s-case-tier",label:"Case.Tier__c",type:"picklist"},{id:"s-case-rca",label:"Case.Root_Cause__c",type:"picklist"}]},
+ {sys:"Payroll ledger",tech:"PostgreSQL",fields:[
+   {id:"s-p-client",label:"pay_run_line.client_id",type:"bigint"},{id:"s-p-worker",label:"worker.worker_id",type:"bigint"},{id:"s-p-state",label:"worker.work_state",type:"char(2)"},
+   {id:"s-p-ot",label:"pay_run_line.ot_hours, ot_amount",type:"numeric(6,2)"},{id:"s-p-gross",label:"pay_run_line.gross, net",type:"numeric"}]},
+ {sys:"Time & leave",tech:"REST API",fields:[
+   {id:"s-l-elig",label:"eligibility.hours_12mo",type:"number"},{id:"s-l-int",label:"leave_case.intermittent_flag",type:"boolean"}]},
+ {sys:"Survey platform",tech:"vendor export",fields:[{id:"s-s-pulse",label:"pulse_item.score by team_id",type:"anonymous"}]},
+ {sys:"Analytics & AI layer",tech:"dbt · LookML · Neo4j · vector store",fields:[
+   {id:"s-dbt",label:"dbt fct_wse_monthly",type:"model"},{id:"s-look",label:"LookML client_health.view",type:"view"},
+   {id:"s-neo",label:"Neo4j (:Client)-[:ESCALATED]->(:Case)",type:"graph"},{id:"s-vec",label:"vector store kb_chunks",type:"embeddings"}]}
+];
+const FIELD={};BU.forEach(s=>s.fields.forEach(f=>FIELD[f.id]={...f,sys:s.sys,tech:s.tech}));
+
+/* ============ GOV-006 correspondences (synthetic) ============ */
+const TYPES={exactMatch:"Same meaning; interchangeable.",closeMatch:"Usable with care; meaning differs at the edges.",broadMatch:"Source is broader than the concept.",narrowMatch:"Source is narrower than the concept.",derivedFrom:"Concept is computed from the source by a governed calculation.",partOf:"Source is one component of the concept."};
+const M=[
+ ["k-client","s-acct-id","exactMatch",1.00,"Released","Resolved to the Enterprise Entity ID by GOV-007","Data Platform"],
+ ["k-client","s-p-client","exactMatch",1.00,"Released","Same entity; joined through the GOV-007 identity registry","Data Platform"],
+ ["k-client","s-neo","broadMatch",.90,"Released","Graph projection of clients and their escalations","Client Success Analytics"],
+ ["k-worker","s-p-worker","exactMatch",1.00,"Released","System of record for worksite employees","Payroll Engineering"],
+ ["k-juris","s-p-state","closeMatch",.95,"Released","Work location; authoritative for jurisdiction rules","Payroll Engineering"],
+ ["k-juris","s-acct-state","closeMatch",.60,"Candidate","Billing state is not work location. Not to be used for jurisdiction rules.","Client Success Analytics"],
+ ["c-health","s-acct-health","closeMatch",.88,"Released","CRM score is 0–100; the concept model uses risk bands","Client Success Analytics"],
+ ["c-health","s-look","derivedFrom",.92,"Released","Banded score computed in LookML","Client Success Analytics"],
+ ["c-atrisk","s-acct-risk","exactMatch",1.00,"Released","Set by the at-risk escalation process","Client Success Analytics"],
+ ["c-tier","s-case-tier","exactMatch",.97,"Released","Picklist values match the routing matrix","Service Ops"],
+ ["c-rca","s-case-rca","narrowMatch",.80,"Released","Picklist covers 9 of 14 root-cause classes","Service Ops"],
+ ["c-rca","s-neo","partOf",.85,"Candidate","Case nodes carry root-cause edges","Service Ops"],
+ ["c-ot","s-p-ot","derivedFrom",.96,"Released","Computed by calc-flsa-ot-pay v1.3 (ALN-CALC-00842)","Payroll Engineering"],
+ ["c-ot","s-vec","closeMatch",.80,"Released","Policy passages anchored to this URI (GOV-010)","Knowledge Engineering"],
+ ["c-g2n","s-p-gross","partOf",.94,"Released","Gross and net are components of the rule’s output","Payroll Engineering"],
+ ["c-fmla","s-l-elig","derivedFrom",.93,"Released","Eligible when hours_12mo ≥ 1,250","Benefits Engineering"],
+ ["c-fmla","s-vec","closeMatch",.82,"Released","Policy passages anchored to this URI (GOV-010)","Knowledge Engineering"],
+ ["c-pfl","s-l-int","exactMatch",.90,"Released","Intermittent absences flagged at intake","Benefits Engineering"],
+ ["c-kpi","s-dbt","broadMatch",.90,"Released","fct_wse_monthly compiled from MET-006–008","Insights Engineering"],
+ ["c-kpi","s-look","broadMatch",.80,"Released","KPI views reuse the library’s definitions","Insights Engineering"],
+ ["c-ri","s-s-pulse","derivedFrom",.95,"Released","Anonymous; groups of 5 or more only (hr:AggregateThresholdShape)","People Analytics"]
+].map(([c,f,t,s,st,n,o])=>({c,f,t,s,st,n,o}));
+const ORPHAN={"s-acct-seg":"No canonical concept yet. Proposed: isp-cli:ClientSegment (Candidate)."};
+
+/* stats (ontology counts are real; coverage is illustrative) */
+$("stats").innerHTML=[["8","L1 domains"],["17","L2 bounded contexts"],["74","L3 domain services"],["147","ontology concepts"],["142 + 14","register rules (+ MET)"],["62 / 19 / 66","concepts released / candidate / unmapped"]]
+ .map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+$("types").innerHTML=Object.entries(TYPES).map(([k,v])=>`<div><b>${k}</b><br>${v}</div>`).join("");
+
+/* render trees */
+$("tdTree").innerHTML=TD.map(d=>`<div class="grp"><span class="lv">${d.lv}</span><b>${esc(d.label)}</b></div>`+d.kids.map(k=>(k.label?`<div class="grp" style="padding-left:14px"><span class="lv">${k.lv}</span>${esc(k.label)} › <span class="lv">L3</span>${esc(k.svc)}</div>`:"")+k.concepts.map(c=>{
+  const mapped=M.some(m=>m.c===c.id);return `<button class="leaf ${c.core?"core":""} ${mapped?"":"gap"}" data-c="${c.id}" id="L-${c.id}" style="margin-left:${c.core?14:28}px;width:calc(100% - ${c.core?14:28}px)"><span>${esc(c.label)}</span><span class="u">${esc(c.uri)}</span></button>`}).join("")).join("")).join("");
+$("buTree").innerHTML=BU.map(s=>`<div class="srcgrp">${esc(s.sys)} <small>${esc(s.tech)}</small></div>`+s.fields.map(f=>`<button class="leaf src ${ORPHAN[f.id]?"gap":""}" data-f="${f.id}" id="R-${f.id}"><span class="mono" style="font-size:12px">${esc(f.label)}</span><span class="u">${esc(f.type)}</span></button>`).join("")).join("");
+let sel={k:"c",id:"k-client"};
+$("tdTree").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(b){sel={k:"c",id:b.dataset.c};mapRender()}});
+$("buTree").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(b){sel={k:"f",id:b.dataset.f};mapRender()}});
+function active(){return sel.k==="c"?M.filter(m=>m.c===sel.id):M.filter(m=>m.f===sel.id)}
+function mapRender(){
+  const act=active();
+  document.querySelectorAll("#map .leaf").forEach(el=>{const isSel=(sel.k==="c"&&el.dataset.c===sel.id)||(sel.k==="f"&&el.dataset.f===sel.id);
+    const lit=act.some(m=>m.c===el.dataset.c||m.f===el.dataset.f);el.classList.toggle("sel",isSel);el.classList.toggle("lit",lit&&!isSel);el.classList.toggle("dim",!isSel&&!lit)});
+  drawWires();
+  // selection card
+  if(sel.k==="c"){const c=CONCEPT[sel.id];
+    $("selCard").innerHTML=`<div class="eyebrow">Concept · top-down</div><h3 style="font-size:22px;margin:4px 0 10px">${esc(c.label)}</h3>
+     <dl class="kv"><dt>URI</dt><dd class="mono" style="font-size:12.5px">${esc(c.uri)}</dd>
+     <dt>Holon path</dt><dd>${c.core?"Enterprise (L4) · isp-core":`${esc(c.domain.label)} › ${esc(c.ctx.label)} › ${esc(c.ctx.svc)}`}</dd>
+     ${c.note?`<dt>Governance</dt><dd>${esc(c.note)}</dd>`:""}
+     <dt>Mappings</dt><dd>${act.length?`${act.filter(m=>m.st==="Released").length} released, ${act.filter(m=>m.st!=="Released").length} candidate`:`<span class="bad">None. A top-down gap: the concept exists but no source feeds it.</span>`}</dd></dl>
+     ${sel.id==="k-client"?`<div class="banner info">Two sources, one entity: the CRM Account.Id and the payroll client_id are resolved to one Enterprise Entity ID by GOV-007, so every query that crosses them joins on meaning, not on matching strings.</div>`:""}
+     ${sel.id==="k-juris"?`<div class="banner hold">A near-miss caught by typing the correspondence: billing state looks like jurisdiction but is only a closeMatch at 0.60. Jurisdiction rules read work_state instead.</div>`:""}
+     ${sel.id==="c-turn"?`<div class="banner no">The ontology defines an employee turnover model, but nothing maps to it yet. This is where the semantic layer shows the data team what to build next.</div>`:""}`;
+  } else {const f=FIELD[sel.id];
+    const up=act.map(m=>CONCEPT[m.c]);
+    $("selCard").innerHTML=`<div class="eyebrow">Source field · bottom-up</div><h3 style="font-size:20px;margin:4px 0 10px" class="mono">${esc(f.label)}</h3>
+     <dl class="kv"><dt>System</dt><dd>${esc(f.sys)} · ${esc(f.tech)}</dd><dt>Type</dt><dd>${esc(f.type)}</dd>
+     <dt>Serves</dt><dd>${up.length?up.map(c=>`${esc(c.label)} <span class="hint">(${c.core?"core":esc(c.domain.label.split(" ")[0])+" domain"})</span>`).join("<br>"):`<span class="bad">No concept.</span>`}</dd></dl>
+     ${ORPHAN[sel.id]?`<div class="banner hold">A bottom-up gap: ${ORPHAN[sel.id]} Segment is used in every dashboard but has no meaning in the ontology, which is how segment definitions drift apart.</div>`:""}`;
+  }
+  $("corrTable").innerHTML=`<thead><tr><th>${sel.k==="c"?"Source":"Concept"}</th><th>Type</th><th class="r">Score</th><th>Status</th><th>Owner</th></tr></thead><tbody>${act.length?act.map(m=>`<tr><td>${sel.k==="c"?`<span class="mono" style="font-size:12px">${esc(FIELD[m.f].label)}</span><br><span class="hint">${esc(m.n)}</span>`:`${esc(CONCEPT[m.c].label)}<br><span class="hint">${esc(m.n)}</span>`}</td><td class="mono" style="font-size:12px">${m.t}</td><td class="r num">${m.s.toFixed(2)}</td><td><span class="pill ${m.st==="Released"?"ok":"hold"}">${m.st}</span></td><td>${esc(m.o)}</td></tr>`).join(""):`<tr><td colspan="5" class="hint">No correspondences recorded.</td></tr>`}</tbody>`;
+}
+function drawWires(){
+  const svg=$("mapwires"),box=$("map").getBoundingClientRect();
+  if(!box.width||getComputedStyle(svg).display==="none"){svg.innerHTML="";return}
+  svg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);
+  const act=active();
+  svg.innerHTML=M.map(m=>{const a=$("L-"+m.c),b=$("R-"+m.f);if(!a||!b)return"";
+    const ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
+    const x1=ra.right-box.left,y1=ra.top+ra.height/2-box.top,x2=rb.left-box.left,y2=rb.top+rb.height/2-box.top,mx=(x1+x2)/2;
+    const on=act.includes(m);
+    return `<path class="${on?"on":""} ${m.st!=="Released"?"cand":""}" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}"/>`+(on?`<text x="${mx}" y="${(y1+y2)/2}" text-anchor="middle" dy="3">${m.t} ${m.s.toFixed(2)}</text>`:"")}).join("");
+}
+window.addEventListener("resize",()=>{if(!$("view-map").hidden)drawWires()});
+mapRender();
+
+/* ============ ASK THE FABRIC ============ */
+const Q=[
+ {id:"q1",short:"At-risk Growing SMB clients in CA",text:"Which Growing SMB clients in California have open escalations and an at-risk flag this quarter?",keys:["growing","california","escalation","at-risk","risk"],
+  rcb:{WHO:"Insights analyst · enterprise aggregate scope",WHAT:"isp-core:ClientCompany with hr:ConceptAtRiskAccountFlag and open escalations",WHEN:"Q3 2026 (Jul 1 – Sep 30)",WHERE:"isp-core:Jurisdiction US-CA by work location · Client Relationship domain",WHY:"Retention intervention (ad hoc)"},
+  gr:[["Growing SMB clients","isp-cli:ClientSegment/Growing",.86,"Candidate mapping to Account.Segment__c"],["California","isp-core:Jurisdiction/US-CA",.99,"Resolved through worker.work_state, not BillingState"],["open escalations","hr:ConceptEscalationTierMatrix",.91,""],["at-risk flag","hr:ConceptAtRiskAccountFlag",.97,""],["this quarter","time:2026-Q3",.99,""]],
+  path:["Client Relationship","Client Success & Account Mgmt","Health Scoring + Escalation services","3 concepts","isp-core:ClientCompany"],
+  sparql:`SELECT ?client ?name ?health (MAX(?tier) AS ?topTier) WHERE {
+  ?client a isp-core:ClientCompany ; rdfs:label ?name ;
+          isp-cli:segment isp-cli:GrowingSMB ;
+          hr:atRiskFlag true ; hr:healthScore ?health .
+  FILTER EXISTS { ?w isp-core:employedBy ?client ;
+                     isp-core:workJurisdiction jur:US-CA }
+  ?case hr:escalatedFor ?client ; hr:tier ?tier ;
+        hr:status "open" ; hr:openedOn ?d .
+  FILTER (?d >= "2026-07-01"^^xsd:date)
+} GROUP BY ?client ?name ?health`,
+  plan:[["segment, at-risk, health","CRM · Salesforce","SOQL: Account WHERE Segment__c='Growing' AND At_Risk__c=true","virtual","212"],["work jurisdiction","Payroll · PostgreSQL","SQL: DISTINCT client_id FROM worker WHERE work_state='CA'","virtual","1,940"],["open escalations","Neo4j","Cypher: (c:Client)-[:ESCALATED]->(k:Case {status:'open'})","virtual","388"],["identity join","GOV-007 registry","Account.Id ↔ client_id → Enterprise Entity ID","registry","212"]],
+  peps:[["TEC-001","Multi-tenant isolation","pass","Enterprise analyst role; cross-client aggregate allowed"],["TEC-005","Data classification","pass","No PII or PHI columns selected"],["GOV-021","Answer schema","pass","Result matches the compiled JSON Schema"]],
+  result:{kind:"table",cols:["Client","WSEs","Top open tier","Health score"],rows:[["Harbor Point Logistics","121","Tier 2","38"],["Coastline Veterinary Group","74","Tier 3","29"],["Golden Gate Print Works","58","Tier 2","44"],["Sierra Foothill Builders","133","Tier 1","47"]],
+   note:"Provisional: the segment was grounded through a Candidate mapping. The answer becomes Released once isp-cli:ClientSegment is approved."},grounded:"5 of 5 phrases grounded · 1 through a Candidate mapping"},
+ {id:"q2",short:"Intermittent leave vs overtime cost",text:"How does intermittent leave usage relate to overtime cost by segment in 2026?",keys:["intermittent","leave","overtime","segment"],
+  rcb:{WHO:"Insights analyst · enterprise aggregate scope",WHAT:"hr:ConceptPFLIntermittentTracking against hr:ConceptOvertimeCalculation",WHEN:"2026 year to date",WHERE:"All jurisdictions · Workforce Administration domain",WHY:"Staffing-cost insight for client advisory"},
+  gr:[["intermittent leave usage","hr:ConceptPFLIntermittentTracking",.90,""],["overtime cost","hr:ConceptOvertimeCalculation",.95,"Computed by calc-flsa-ot-pay v1.3"],["segment","isp-cli:ClientSegment",.86,"Candidate mapping"],["2026","time:2026-YTD",.99,""]],
+  path:["Workforce Administration","Payroll + Time, Attendance & Leave","Gross-to-Net + Statutory Leave services","2 concepts","isp-core:Worker → isp-core:ClientCompany"],
+  sparql:`SELECT ?segment
+       (SUM(?leaveHrs)/SUM(?wse)*100 AS ?leavePer100)
+       (SUM(?otCost)/SUM(?wse)       AS ?otPerWSE) WHERE {
+  ?w a isp-core:Worker ; isp-core:employedBy ?c .
+  ?c isp-cli:segment ?segment .
+  OPTIONAL { ?lv hr:intermittentFor ?w ; hr:hours ?leaveHrs ;
+                 hr:inPeriod time:2026-YTD }
+  ?pay hr:overtimeFor ?w ; hr:amount ?otCost ; hr:inPeriod time:2026-YTD .
+  BIND(1 AS ?wse)
+} GROUP BY ?segment`,
+  plan:[["intermittent leave hours","Time & leave · REST","API: /leave_cases?intermittent=true&year=2026 (aggregated at source)","virtual","48,210"],["overtime cost","dbt fct_payroll_worker_month","Planned model reused; no rescan of the ledger","materialized","2.9M"],["segment","CRM · Salesforce","SOQL: Account.Segment__c","virtual","11,365"],["identity join","GOV-007 registry","worker → client → Enterprise Entity ID","registry","305,764"]],
+  peps:[["TEC-005","Data classification","pass","Leave records are PHI-adjacent; only aggregates leave the source"],["MET-013","Small-cut suppression (k ≥ 5)","pass","Smallest cut has 165 clients"],["TEC-001","Multi-tenant isolation","pass","Enterprise aggregate only"]],
+  result:{kind:"table",cols:["Segment","Intermittent leave hrs / 100 WSEs / month","Overtime cost / WSE / month"],rows:[["Small business","31","$41"],["Growing SMB","46","$54"],["Mid-market","52","$60"]],
+   note:"An association across segments, not a causal finding. Asked 14 times by 6 teams this quarter: a candidate for a planned metric."},grounded:"4 of 4 phrases grounded · 1 through a Candidate mapping",promote:true},
+ {id:"q3",short:"Low inclusion scores at one client",text:"Show employees at Summit Ridge Engineering who scored low on the Respect & Inclusion pulse",keys:["employees","inclusion","pulse","respect","scored"],
+  rcb:{WHO:"Insights analyst · no Summit Ridge tenant role",WHAT:"hr:IndRespectInclusionIndex at individual level",WHEN:"Latest pulse (Aug 2026)",WHERE:"Client tenant: Summit Ridge Engineering",WHY:"Not stated"},
+  gr:[["employees","isp-core:Worker",.98,""],["Summit Ridge Engineering","isp-core:ClientCompany/10482",.99,"Resolved by GOV-007"],["Respect & Inclusion pulse","hr:IndRespectInclusionIndex",.97,"Collected as hr:ModeAnonymousSurvey"],["scored low","hr:indicatorFormula < threshold",.84,""]],
+  path:["Values, Culture & Ethics","Values Monitoring & Measurement","Anonymous Culture & Values Pulse Survey Service","hr:IndRespectInclusionIndex"],
+  sparql:`# not executed: blocked at Stage 5`,
+  plan:[],
+  peps:[["hr:AnonymousNotAttributableShape","Anonymous-survey indicator must not be individually attributable","block","The question asks for individual respondents"],["hr:ProhibitedDeanonymization","Re-identification of anonymous respondents","block","Listing low scorers would re-identify them"],["TEC-001","Multi-tenant isolation","block","Analyst has no role on this client’s tenant"],["GOV-011","WHY dimension","hold","No purpose stated for the request"]],
+  result:{kind:"blocked",alt:{title:"Safe alternative the fabric offers: team-level index where at least 5 people responded",cols:["Team","Respect & Inclusion Index","Respondents"],rows:[["Engineering","78%","31"],["Field Operations","71%","22"],["Administration","suppressed","4"]]}},grounded:"4 of 4 phrases grounded"},
+ {id:"q4",short:"An ungrounded question",text:"What is the churn propensity of clients on the quantum payroll module?",keys:["quantum","propensity","module"],
+  rcb:{WHO:"Insights analyst",WHAT:"? (propensity of an unknown product)",WHEN:"Not stated",WHERE:"Not resolvable",WHY:"Not stated"},
+  gr:[["churn propensity","closest: hr:ConceptTurnoverPredictionModel",.41,"That model is employee turnover, not client churn"],["clients","isp-core:ClientCompany",.98,""],["quantum payroll module","no match",.12,"No product line or service by this name in the ontology"]],
+  result:{kind:"ungrounded"},grounded:"1 of 3 phrases grounded"}
+];
+const GROUND_MIN=.75;
+const STEPS=["RCB decomposition","URI grounding","Holon path","Virtual graph query","Policy enforcement","Governed answer"];
+$("samples").innerHTML=Q.map(q=>`<button class="chip" data-q="${q.id}" aria-pressed="false">${esc(q.short)}</button>`).join("");
+$("samples").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(!b)return;const q=Q.find(x=>x.id===b.dataset.q);$("q").value=q.text;run(q)});
+$("qform").addEventListener("submit",e=>{e.preventDefault();const t=$("q").value.trim().toLowerCase();if(!t)return;
+  let best=null,bs=0;Q.forEach(q=>{const s=q.keys.filter(k=>t.includes(k)).length;if(s>bs){bs=s;best=q}});
+  if(best&&bs>=2&&best.id!=="q4")run(best);else run({...Q[3],text:$("q").value,gr:[[$("q").value.trim(),"no match in the RAG anchor index",.2,"Rephrase using terms from the ontology, or ask the Concept Search Agent"]],grounded:"0 phrases grounded",custom:true})});
+let tok=0;
+function run(q){
+  $("samples").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.q===q.id&&!q.custom));
+  const t=++tok;$("qrun").disabled=true;
+  $("steps").innerHTML=STEPS.map((s,i)=>`<div class="step" id="sp${i}"><div class="n">Stage ${i+1}</div><div class="s">${s}</div><div class="st">waiting</div></div>`).join("");
+  $("out").innerHTML=`<div class="panes" id="panes"></div>`;
+  const ungr=q.gr.filter(g=>g[2]<GROUND_MIN);
+  const failAt=q.result.kind==="ungrounded"?1:q.result.kind==="blocked"?4:-1;
+  const panes=[()=>rcbPane(q),()=>grPane(q,ungr),()=>pathPane(q),()=>qPane(q),()=>pepPane(q),()=>ansPane(q)];
+  let i=0;const d=reduce?0:380;
+  const step=()=>{if(t!==tok)return;
+    if(i>0){const p=$("sp"+(i-1)),f=(i-1)===failAt;p.className="step "+(f?"fail":"pass");p.querySelector(".st").textContent=f?(failAt===1?"✕ breaker tripped":"✕ blocked"):"✓ done";
+      $("panes").insertAdjacentHTML("beforeend",panes[i-1]());
+      if(f){for(let j=i;j<STEPS.length;j++){const s=$("sp"+j);s.className="step skip";s.querySelector(".st").textContent="not run"}
+        $("panes").insertAdjacentHTML("beforeend",failAt===1?breakerPane(q,ungr):ansPane(q));$("qrun").disabled=false;bindPromote();return}}
+    if(i<STEPS.length){const c=$("sp"+i);c.className="step run";c.querySelector(".st").textContent="running…";i++;d?setTimeout(step,d):step()}else{$("qrun").disabled=false;bindPromote()}};
+  step();
+}
+function rcbPane(q){return `<div class="pane"><h4>Stage 1 · GOV-011 Requirement Context Bundle</h4><div class="rcb">${Object.entries(q.rcb).map(([k,v])=>`<b>${k}</b><span>${esc(v)}</span>`).join("")}</div></div>`}
+function grPane(q,ungr){return `<div class="pane"><h4>Stage 2 · GOV-010 RAG anchor grounding · ${esc(q.grounded)}</h4>${q.gr.map(g=>`<div class="gr ${g[2]<GROUND_MIN?"ungr":""}"><span class="ph">“${esc(g[0])}”</span><span><span class="uri">${esc(g[1])}</span>${g[3]?`<br><span class="hint">${esc(g[3])}</span>`:""}</span><span class="sc ${g[2]<GROUND_MIN?"bad":g[2]<.9?"warn":"good"}">${g[2].toFixed(2)}</span></div>`).join("")}<p class="hint" style="margin-top:6px">Phrases below ${GROUND_MIN.toFixed(2)} are not trusted.</p></div>`}
+function pathPane(q){return `<div class="pane"><h4>Stage 3 · Holon path (top-down context)</h4><div class="path">${q.path.map((p,i)=>`${i?'<span class="arr">›</span>':""}<span class="h">${esc(p)}</span>`).join("")}</div><p class="hint" style="margin-top:8px">The holon path decides which domain rules and owners apply before any data is touched.</p></div>`}
+function qPane(q){return `<div class="pane wide"><h4>Stage 4 · Virtual graph query · SPARQL rewritten and pushed down to sources</h4><pre class="code-view">${esc(q.sparql)}</pre>
+  ${q.plan.length?`<div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Pattern</th><th>Source</th><th>Pushdown</th><th>Mode</th><th class="r">Rows</th></tr></thead><tbody>${q.plan.map(p=>`<tr><td>${esc(p[0])}</td><td>${esc(p[1])}</td><td class="mono" style="font-size:11.5px">${esc(p[2])}</td><td><span class="pill ${p[3]==="virtual"?"ver":p[3]==="materialized"?"ok":"ob"}">${p[3]}</span></td><td class="r num">${p[4]}</td></tr>`).join("")}</tbody></table></div>
+  <p class="hint" style="margin-top:6px">Nothing is copied into a new store. Where a planned model already exists, the fabric reuses it instead of rescanning the source.</p>`:""}</div>`}
+function pepPane(q){return `<div class="pane wide"><h4>Stage 5 · GOV-012 policy enforcement points + ontology shapes</h4>${q.peps.map(p=>`<div class="pep"><span class="id">${esc(p[0])}</span><span>${esc(p[1])}<br><span class="hint">${esc(p[3])}</span></span><span class="pill ${p[2]==="pass"?"ok":p[2]==="block"?"no":"hold"}">${p[2]}</span></div>`).join("")}</div>`}
+function tableHtml(cols,rows){return `<div class="tbl-wrap"><table><thead><tr>${cols.map((c,i)=>`<th class="${i?"r":""}">${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?"r num":""} ${c==="suppressed"?"warn":""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
+function ansPane(q){const r=q.result;
+  if(r.kind==="blocked")return `<div class="pane wide"><h4>Stage 6 · Answer withheld</h4><div class="banner no"><div><b class="bad">Blocked before execution.</b> Your ontology marks the Respect &amp; Inclusion Index as an anonymous-survey indicator that is never individually attributable, and it prohibits re-identification by filtering. No query ran against the survey data.</div></div>
+    <div class="sec-label">${esc(r.alt.title)}</div>${tableHtml(r.alt.cols,r.alt.rows)}<p class="hint" style="margin-top:6px">Administration is suppressed: 4 respondents is below the k = 5 floor (hr:AggregateThresholdShape).</p></div>`;
+  return `<div class="pane wide"><h4>Stage 6 · Governed answer · provisional</h4>${tableHtml(r.cols,r.rows)}<div class="banner hold"><div>${esc(r.note)}</div></div>
+   <div class="sec-label">Provenance</div><p class="mono" style="font-size:11.5px;overflow-wrap:anywhere;color:var(--accent)">http://example.org/isp/answer/${q.id}/2026-09-30 · grounded on ${q.gr.map(g=>g[1]).join(", ")}</p>
+   ${q.promote?`<div style="margin-top:10px"><button class="btn" data-promote="1">Promote to planned analytics</button> <span class="hint">Asked 14 times by 6 teams</span></div><div id="askPromo"></div>`:""}</div>`}
+function breakerPane(q,ungr){return `<div class="pane wide"><h4>GOV-014 circuit breaker · tripped</h4><div class="banner no"><div><b class="bad">No query was generated.</b> ${ungr.length} of ${q.gr.length} phrases could not be grounded to a canonical URI, so any answer would be a guess. MTBH counts this as a prevented hallucination, not a failure.</div></div>
+  <div class="sec-label">What the fabric asks back</div><p style="font-size:14px">${q.custom?"None of these terms exist in the ontology or the mapping graph yet. Try naming a concept, such as client retention, at-risk flag, overtime or intermittent leave.":"Did you mean <b>client retention</b> (client-retention v2.1) or the <b>at-risk flag</b> (hr:ConceptAtRiskAccountFlag)? There is no product called “quantum payroll module” in the ontology; the product lines are HR360, HRCore and HRScale."}</p></div>`}
+function promoteCard(){return `<div class="banner ok" style="margin-top:10px"><div><b class="good">Draft created: MET-015 · Leave–Overtime Intensity</b> (Candidate). The on-demand SPARQL becomes a Metric Definition Card and a dbt model through GOV-019, routed to the Semantic Governance Council (GOV-002). Once Released, the dashboard answers this question with zero graph latency.
+  <dl class="kv" style="margin-top:8px"><dt>Rule_ID</dt><dd class="mono">MET-015</dd><dt>Rule_Type</dt><dd>Business Logic</dd><dt>Trigger</dt><dd>Monthly segment metrics refresh</dd><dt>Logic</dt><dd>Intermittent leave hours per 100 paid WSEs ÷ overtime cost per paid WSE, by segment</dd><dt>Owning holon</dt><dd>Payroll &amp; Tax Domain Holon (isp-pay)</dd><dt>Lifecycle</dt><dd>Draft → Candidate</dd></dl></div></div>`}
+function bindPromote(){document.querySelectorAll("[data-promote]").forEach(b=>b.addEventListener("click",()=>{b.disabled=true;$("askPromo").innerHTML=promoteCard()}))}
+$("q").value=Q[0].text;run(Q[0]);
+
+/* ============ PLANNED + ON-DEMAND: promotion queue ============ */
+const PQ=[["How does intermittent leave usage relate to overtime cost by segment?",14,6,"4 / 4","promote"],["Which Growing SMB clients in CA have open escalations and an at-risk flag?",9,3,"5 / 5","watch"],["Average days from escalation to resolution by tier",7,4,"3 / 3","watch"],["Which clients mention “handbook” in escalations?",2,1,"2 / 3","adhoc"]];
+$("promo").innerHTML=`<thead><tr><th>Question</th><th class="r">Asked</th><th class="r">Teams</th><th class="r">Grounded</th><th>Recommendation</th></tr></thead><tbody>${PQ.map((p,i)=>`<tr><td>${esc(p[0])}</td><td class="r num">${p[1]}</td><td class="r num">${p[2]}</td><td class="r num">${p[3]}</td><td>${p[4]==="promote"?`<button class="btn" data-pq="${i}" style="padding:5px 10px;font-size:12.5px">Promote</button>`:p[4]==="watch"?'<span class="pill hold">Watch</span>':'<span class="pill">Keep ad hoc</span>'}</td></tr>`).join("")}</tbody>`;
+$("promo").addEventListener("click",e=>{const b=e.target.closest("[data-pq]");if(!b)return;b.disabled=true;$("promoOut").innerHTML=promoteCard()});
+
+/* ============ BACKUP: DRIFT SENTINEL ============ */
+const CH=[
+ {id:"A",title:"CRM renames At_Risk__c to Risk_Flag__c",sys:"CRM · Salesforce",grade:"MAJOR",gradeCls:"no",
+  diff:[["del","- Account.At_Risk__c        boolean"],["add","+ Account.Risk_Flag__c      boolean"]],
+  broken:["hr:ConceptAtRiskAccountFlag ⟷ Account.At_Risk__c (exactMatch 1.00)"],
+  impact:[[1,"Concept","hr:ConceptAtRiskAccountFlag"],[2,"L3 service","Client Health Scoring & Retention Service"],[3,"L2 context","Client Success & Account Management"],[4,"L1 domain","Client Relationship & Business Development"],
+    [1,"Process","ProcAtRiskAccountEscalation (at-risk escalation routing)"],[1,"Model","LookML client_health.view"],[1,"On-demand","3 cached answers invalidated, including “at-risk Growing SMB clients in CA”"],[1,"Metrics","No MET metric affected; client-retention v2.1 does not read this field","okd"]],
+  fix:"The Concept Search Agent finds Account.Risk_Flag__c with the same value distribution (KS test p = 0.98) and proposes exactMatch at 0.96. A KGCL change record is drafted (WHO: anti-drift agent; WHY: upstream rename) and routed by CODEOWNERS to Client Success Analytics. The Ontology Closure Checker passes. Until approved, on-demand questions that need the flag trip the circuit breaker instead of returning stale answers.",
+  fixCls:"hold"},
+ {id:"B",title:"Payroll widens ot_hours to numeric(8,2)",sys:"Payroll ledger · PostgreSQL",grade:"PATCH",gradeCls:"ok",
+  diff:[["del","- pay_run_line.ot_hours     numeric(6,2)"],["add","+ pay_run_line.ot_hours     numeric(8,2)"]],
+  broken:[],
+  impact:[[1,"Concept","hr:ConceptOvertimeCalculation: meaning unchanged","okd"],[1,"Calc","calc-flsa-ot-pay v1.3 still valid","okd"],[1,"Model","dbt fct_payroll_worker_month recompiles","warnd"]],
+  fix:"A type widening with no change in meaning. The Scenario Test Runner replays the synthetic payroll set, results match, and the change is auto-approved. No correspondence changes and no human review needed.",
+  fixCls:"ok"},
+ {id:"C",title:"Survey vendor adds respondent_email to the pulse export",sys:"Survey platform · vendor export",grade:"MINOR · privacy hold",gradeCls:"hold",
+  diff:[["","  pulse_item.team_id        string"],["","  pulse_item.score           int"],["add","+ pulse_item.respondent_email string"]],
+  broken:["hr:IndRespectInclusionIndex ⟷ pulse_item (derivedFrom 0.95): collection mode no longer anonymous"],
+  impact:[[1,"Classification","TEC-005 classifies respondent_email as PII"],[1,"Shape","Conflicts with hr:ModeAnonymousSurvey and hr:AnonymousNotAttributableShape"],[2,"Indicator","hr:IndRespectInclusionIndex marked at risk"],[3,"L3 service","Anonymous Culture & Values Pulse Survey Service"],[4,"L1 domain","Organizational Values, Culture & Ethics Stewardship"],
+    [1,"Virtual graph","Column quarantined: not exposed to any query (TEC-011 data minimization)"],[1,"Governance","Privacy alert to Data Privacy & Security Governance Service"]],
+  fix:"An additive change would normally pass as MINOR, but the new column breaks a privacy guarantee the ontology makes. The column is quarantined before any query can see it, and the vendor is asked to restore identity stripping at intake. The index keeps publishing from the existing anonymous fields.",
+  fixCls:"no"}
+];
+let curC="A";
+$("chg").innerHTML=CH.map(c=>`<button data-ch="${c.id}" aria-pressed="${c.id===curC}"><span class="cid">Change ${c.id} · ${esc(c.sys)}</span><span class="ct">${esc(c.title)}</span><span><span class="pill ${c.gradeCls}">${esc(c.grade)}</span></span></button>`).join("");
+$("chg").addEventListener("click",e=>{const b=e.target.closest("[data-ch]");if(!b)return;curC=b.dataset.ch;$("chg").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));driftRender()});
+function driftRender(){const c=CH.find(x=>x.id===curC);
+  $("driftOut").innerHTML=`<div class="eyebrow">Anti-drift lineage agent · GOV-006</div><h3 style="font-size:22px;margin:4px 0 10px">${esc(c.title)}</h3>
+   <div class="sec-label">Detected schema diff</div><div class="diff">${c.diff.map(([k,l])=>`<span class="${k}">${esc(l)}</span>`).join("\n")}</div>
+   <div class="sec-label">Schema Diff Classifier</div><p><span class="pill ${c.gradeCls}">${esc(c.grade)}</span></p>
+   <div class="sec-label">Correspondences affected</div>${c.broken.length?c.broken.map(b=>`<p style="font-size:13.5px" class="bad">✕ ${esc(b)}</p>`).join(""):`<p class="good" style="font-size:13.5px">None</p>`}
+   <div class="sec-label">Impact up the holarchy and downstream</div><ul class="impact-tree">${c.impact.map(([l,k,v,cls])=>`<li class="l${l} ${cls||""}"><span class="k">${esc(k)}</span>${esc(v)}</li>`).join("")}</ul>
+   <div class="sec-label">Remediation</div><div class="banner ${c.fixCls}"><div>${esc(c.fix)}</div></div>`;
+}
+driftRender();
+/* concept totals per domain are real (from the ontology); the released/candidate split is illustrative */
+const COV=[["Workforce Administration & Payroll",12,3,5],["Benefits & Retirement",10,3,7],["Compliance & Risk",9,3,8],["Talent Management",5,2,13],["Client Relationship",6,4,6],["HR Technology Platform",9,2,3],["Workforce Development",4,1,9],["Values, Culture & Ethics",7,1,15]];
+$("cov").innerHTML=COV.map(([n,r,c,u])=>{const t=r+c+u;return `<div class="cov-row"><span>${esc(n)}</span><span class="cov-bar"><span style="width:${r/t*100}%;background:var(--permission)"></span><span style="width:${c/t*100}%;background:var(--warning)"></span></span><span class="num" style="text-align:right">${Math.round(r/t*100)}%</span></div>`}).join("");
+
+/* ============ tabs ============ */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);$(t.getAttribute("aria-controls")).hidden=!on});if(id==="tab-map")requestAnimationFrame(drawWires);try{localStorage.setItem("sem-tab",id)}catch(e){}}
+tabs.forEach(t=>t.addEventListener("click",()=>show(t.id)));
+const hashMap={map:"tab-map",ask:"tab-ask",lanes:"tab-lanes",drift:"tab-drift"};
+let start=hashMap[(location.hash||"").slice(1)];
+if(!start){try{start=localStorage.getItem("sem-tab")}catch(e){}}
+if(start&&$(start))show(start);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(!$("view-map").hidden)drawWires()});
+})();
+</script>

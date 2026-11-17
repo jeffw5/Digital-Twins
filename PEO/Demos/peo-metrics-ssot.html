@@ -1,0 +1,810 @@
+<title>PEO Metrics Single Source</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: follows the Accelerator Console design system (schematic grid paper, Big Shoulders + IBM Plex, deontic colors).
+   Four tabs: churn question / SSOT register / dashboard + lineage / decision trace. */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-ink:#ffffff;
+  --obligation:#4A3AA7; --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --c1:#7A4BC4; --c2:#C0620F; --c3:#1F7FA8;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --c1:#B08CF0; --c2:#F0A15A; --c3:#5EBBE0; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --c1:#B08CF0; --c2:#F0A15A; --c3:#5EBBE0; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:24px 56px}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px 24px;margin-bottom:18px}
+h1{font-size:clamp(30px,4.2vw,44px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:66ch}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:8px 13px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.hook{font-size:14.5px;color:var(--muted);margin:0 0 16px;max-width:86ch}
+.hook b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:20px;margin-bottom:8px}
+.sec-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.hint{font-size:12.5px;color:var(--muted)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;background:var(--surface)}
+.pill .sw{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--muted)}
+.t-obligation{color:var(--obligation);border-color:color-mix(in srgb,var(--obligation) 40%,var(--line))}.t-obligation .sw{background:var(--obligation)}
+.t-prohibition{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 40%,var(--line))}.t-prohibition .sw{background:var(--prohibition)}
+.t-permission{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 40%,var(--line))}.t-permission .sw{background:var(--permission)}
+.t-threshold,.t-reporting{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}.t-threshold .sw,.t-reporting .sw{background:var(--warning)}
+.t-logic{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}.t-logic .sw{background:var(--accent)}
+.t-invariant{color:var(--ink-soft)}.t-invariant .sw{background:var(--ink-soft);border-radius:1px}
+.good{color:var(--permission)}.bad{color:var(--prohibition)}.warn{color:var(--warning)}
+.pill.ok{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.pill.no{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.pill.hold{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}
+.pill.ver{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.seg{display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:8px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--font-body);padding:7px 12px;border-radius:5px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;font:600 13.5px var(--font-body);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.data-note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:28px;max-width:90ch}
+.code-view{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:12px;white-space:pre;overflow-x:auto;color:var(--ink-soft);line-height:1.5;margin:0}
+.code-view .add{background:color-mix(in srgb,var(--prohibition) 14%,transparent);color:var(--ink);display:inline-block;min-width:100%}
+.code-view .cm{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tbl-wrap{overflow-x:auto}
+td.r,th.r{text-align:right}
+
+/* HERO */
+.q{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,4vw,44px);line-height:1.02;max-width:22ch;margin-bottom:8px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.consumers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.consumers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.consumers{grid-template-columns:minmax(0,1fr)}}
+.cons{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cons .who{font-weight:600;font-size:14px}
+.cons .what{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.cons .big{font-family:var(--font-display);font-weight:800;font-size:52px;line-height:.95;font-variant-numeric:tabular-nums}
+.cons .big small{font-size:18px;font-weight:600;color:var(--muted);font-family:var(--font-body)}
+.cons .def{font-size:12.5px;color:var(--muted);min-height:3.2em}
+.cons.aligned{border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.cons.aligned .big{color:var(--permission)}
+.bridge{margin-top:16px}
+.bridge-row{display:grid;grid-template-columns:minmax(0,160px) minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:13px;margin-bottom:8px}
+.bridge-row .track{display:flex;height:18px;background:var(--line-soft);border-radius:4px;overflow:hidden}
+.bridge-row .track span{height:100%;display:block;transition:width .5s}
+.b-core{background:var(--permission)}.b-t{background:var(--c1)}.b-e{background:var(--c2)}.b-n{background:var(--c3)}.b-m{background:var(--warning)}
+.keys{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:4px}
+.keys i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.takeaway{margin-top:14px;padding:12px 14px;border-radius:8px;border:1px dashed var(--line);font-size:14px}
+
+/* REGISTER */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stat .v{font-family:var(--font-mono);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.reg-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px;align-items:start}
+@media (max-width:980px){.reg-grid{grid-template-columns:minmax(0,1fr)}}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted);font-size:12px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+code.f{font-family:var(--font-mono);font-size:12.5px;background:var(--paper);border:1px solid var(--line-soft);padding:1px 6px;border-radius:4px}
+details.rule{border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+details.rule + details.rule{margin-top:6px}
+details.rule summary{list-style:none;cursor:pointer;padding:10px 12px;display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:10px;align-items:center}
+details.rule summary::-webkit-details-marker{display:none}
+details.rule .rid{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+details.rule .rn{font-size:13.5px;font-weight:500}
+details.rule.inh{background:color-mix(in srgb,var(--paper) 55%,var(--surface))}
+details.rule.off{border-color:var(--warning);box-shadow:inset 3px 0 0 var(--warning)}
+.rule-body{padding:4px 12px 12px;border-top:1px solid var(--line-soft)}
+.view-toggle{display:flex;gap:6px;margin:10px 0 8px;flex-wrap:wrap}
+.chip{padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font:500 12px var(--font-body);cursor:pointer;color:var(--ink-soft)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
+.holarchy .hl{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line-soft);font-size:13px}
+.holarchy .hl:first-child{border-top:0}
+.hl .lv{font-weight:600;font-size:13.5px}
+.hl .lv small{display:block;font-family:var(--font-mono);font-weight:400;font-size:10.5px;color:var(--muted)}
+.hl .down,.hl .up{border-radius:6px;padding:6px 8px;min-width:0;border:1px solid var(--line-soft)}
+.hl .down{background:color-mix(in srgb,var(--obligation) 7%,transparent)}
+.hl .up{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.hl .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+@media (max-width:560px){.holarchy .hl{grid-template-columns:minmax(0,1fr)}}
+.change-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;margin-top:16px}
+@media (max-width:980px){.change-grid{grid-template-columns:minmax(0,1fr)}}
+.sw-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line-soft);font-size:13px}
+.sw-row:first-of-type{border-top:0}
+.toggle{position:relative;width:34px;height:18px;flex:none}
+.toggle input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.toggle span{position:absolute;inset:0;border-radius:9px;background:var(--line);transition:background .15s;pointer-events:none}
+.toggle span::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.toggle input:checked + span{background:var(--permission)}
+.toggle input:checked + span::after{transform:translateX(16px)}
+.toggle input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+.pipeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:8px 0 10px}
+@media (max-width:700px){.pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.stage{border:1px solid var(--line);border-radius:7px;padding:7px 8px;font-size:11.5px;background:var(--surface);transition:border-color .2s,background .2s}
+.stage .n{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+.stage .s{font-weight:600;line-height:1.25}
+.stage .st{font-family:var(--font-mono);font-size:10.5px;margin-top:3px;color:var(--muted)}
+.stage.pass{border-color:var(--permission)}.stage.pass .st{color:var(--permission)}
+.stage.fail{border-color:var(--prohibition);background:color-mix(in srgb,var(--prohibition) 8%,transparent)}.stage.fail .st{color:var(--prohibition)}
+.stage.run{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.stage.skip{opacity:.45}
+.gates{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px;margin-top:8px}
+.kgcl{font-family:var(--font-mono);font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px}
+.kgcl b{color:var(--muted);font-weight:500}
+.impact{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+@media (max-width:560px){.impact{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.impact div{border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px}
+.impact .k{font-size:11px;color:var(--muted)}
+.impact .v{font-family:var(--font-mono);font-size:18px;font-weight:600}
+.impact .d{font-family:var(--font-mono);font-size:11.5px}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13px;margin-top:10px}
+.banner.no{border:1px solid color-mix(in srgb,var(--prohibition) 45%,var(--line));background:color-mix(in srgb,var(--prohibition) 9%,transparent)}
+.banner.hold{border:1px solid color-mix(in srgb,var(--warning) 45%,var(--line));background:color-mix(in srgb,var(--warning) 9%,transparent)}
+.banner.ok{border:1px solid color-mix(in srgb,var(--permission) 45%,var(--line));background:color-mix(in srgb,var(--permission) 8%,transparent)}
+
+/* DASHBOARD */
+.dash-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.crumbs{font-family:var(--font-mono);font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.crumbs button{border:0;background:none;padding:0;color:var(--accent);font:inherit;cursor:pointer}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
+@media (max-width:1000px){.dash-grid{grid-template-columns:minmax(0,1fr)}}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tile .t{font-size:13px;color:var(--muted);font-weight:600}
+.tile .v{font-family:var(--font-display);font-weight:800;font-size:42px;line-height:1;font-variant-numeric:tabular-nums}
+.tile .v.small{font-size:30px}
+.tile .s{font-size:12.5px;color:var(--muted)}
+.tile .lin{margin-top:8px;align-self:flex-start;border:1px solid var(--accent);color:var(--accent);background:transparent;font:500 11.5px var(--font-mono);padding:4px 9px;border-radius:99px;cursor:pointer}
+.tile[aria-pressed="true"] .lin{background:var(--accent);color:var(--accent-ink)}
+tr.drill{cursor:pointer}
+tr.drill:hover td{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+tr.drill td:first-child{color:var(--accent);font-weight:600}
+.lineage{position:sticky;top:12px}
+.lsteps{list-style:none;margin:0;padding:0}
+.lsteps li{position:relative;padding:0 0 12px 22px;font-size:13px;overflow-wrap:anywhere}
+.lsteps li::before{content:"";position:absolute;left:5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--surface);border:2px solid var(--accent)}
+.lsteps li::after{content:"";position:absolute;left:10px;top:17px;bottom:0;width:1px;background:var(--line)}
+.lsteps li:last-child::after{display:none}
+.lsteps li.card-s::before{background:var(--accent)}
+.lsteps li.met::before{border-color:var(--obligation)}
+.lsteps li.pol::before{border-color:var(--obligation);background:var(--obligation)}
+.lsteps li.eng::before{border-color:var(--ink-soft);border-radius:2px}
+.lsteps li.res::before{background:var(--permission);border-color:var(--permission)}
+.lsteps .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block}
+.lsteps .n{font-family:var(--font-mono);font-size:12px;float:right;margin-left:8px}
+.uri{font-family:var(--font-mono);font-size:11.5px;color:var(--accent)}
+
+/* DECISION */
+.dec-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1000px){.dec-grid{grid-template-columns:minmax(0,1fr)}}
+.lstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dlist{display:flex;flex-direction:column;gap:8px}
+.dlist button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:5px}
+.dlist button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.dlist .did{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dlist .dt{font-weight:600;font-size:14px;line-height:1.3}
+.trace{position:relative}
+.trace-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;position:relative;z-index:1}
+@media (max-width:1100px){.trace-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.trace-cols{grid-template-columns:minmax(0,1fr)}}
+.col h4{font-family:var(--font-mono);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.col .stack{display:flex;flex-direction:column;gap:8px}
+.node{border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--surface);font-size:13px}
+.node .nid{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.node b{display:block;font-weight:600;font-size:13.5px;line-height:1.3;margin:1px 0 3px}
+.node p{color:var(--muted);font-size:12.5px}
+.node.ins{box-shadow:inset 3px 0 0 var(--accent)}
+.node.ins.orphan{box-shadow:none;border-style:dashed}
+.node.decision{border:2px solid var(--ink)}
+.node.out{box-shadow:inset 3px 0 0 var(--obligation)}
+.node.meas.good{box-shadow:inset 3px 0 0 var(--permission)}.node.meas.warn{box-shadow:inset 3px 0 0 var(--warning)}.node.meas.pend{border-style:dashed}
+.node.missing{border:2px dashed var(--prohibition);background:color-mix(in srgb,var(--prohibition) 7%,transparent)}
+.score-row{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:6px;font-size:12px;align-items:center;margin-top:4px}
+.bar{height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--accent)}
+svg.wires{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+svg.wires path{fill:none;stroke:var(--accent);stroke-opacity:.45;stroke-width:1.5}
+svg.wires path.bad{stroke:var(--prohibition);stroke-dasharray:4 4}
+.meter{height:8px;background:var(--line-soft);border-radius:4px;overflow:hidden;margin-top:6px}
+.meter span{display:block;height:100%}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Insights demo · built on the HR Compliance SSOT register</div>
+      <h1>PEO Metrics Single Source</h1>
+      <p class="dek">Metrics join the same SSOT that already governs payroll, benefits and compliance. Each metric rule is authored once in the register schema, compiled by the GOV-019 pipeline, and inherits the policy rules above it.</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" id="tab-hero" aria-selected="true" aria-controls="view-hero">The churn question</button>
+      <button role="tab" id="tab-reg" aria-selected="false" aria-controls="view-reg">SSOT register</button>
+      <button role="tab" id="tab-dash" aria-selected="false" aria-controls="view-dash">Dashboard &amp; lineage</button>
+      <button role="tab" id="tab-dec" aria-selected="false" aria-controls="view-dec">Decision trace</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="view-hero" role="tabpanel" aria-labelledby="tab-hero">
+    <div class="hero-top">
+      <div>
+        <p class="q">“Why do Finance and Product have different churn numbers?”</p>
+        <p class="hook" style="margin:0">Same clients, same year, four answers. Switch to the SSOT view and watch the question go away.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Definition mode" id="modeSel">
+        <button data-mode="before" aria-pressed="true">Before: four definitions</button>
+        <button data-mode="after" aria-pressed="false">After: SSOT rules MET-001–005</button>
+      </div>
+    </div>
+    <div class="consumers" id="consumers"></div>
+    <div class="card bridge">
+      <h3 id="bridgeTitle">Where the numbers split</h3>
+      <div id="bridge"></div>
+      <div class="keys">
+        <span><i class="b-core"></i>Client churn (SSOT core)</span>
+        <span><i class="b-t"></i>Transfers (MET-002)</span>
+        <span><i class="b-m"></i>HRScale moves (MET-004)</span>
+        <span><i class="b-e"></i>First-90-day exits (MET-003)</span>
+        <span><i class="b-n"></i>Notices not yet effective (MET-001)</span>
+      </div>
+      <div class="takeaway" id="takeaway"></div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="view-reg" role="tabpanel" aria-labelledby="tab-reg" hidden>
+    <p class="hook">Metrics are added to your register as <b>MET-</b> rules in the same 14-field schema, with a Metric Definition Card for each (<span class="mono">hr:ConceptMetricDefinitionCard</span>). They inherit the policy rules already in the register, including privacy, tenant isolation and worker classification. <b>Switch a MET rule off</b> to watch the change go through KGCL provenance, the 6-stage compile pipeline and the promotion gates.</p>
+    <div class="stats" id="stats"></div>
+    <div class="seg" role="group" aria-label="Metric" id="mSel" style="margin-bottom:14px"></div>
+    <div class="reg-grid">
+      <div class="card" id="mcard"></div>
+      <div class="card">
+        <h3>Rules in force</h3>
+        <div class="seg" role="group" aria-label="Rule filter" id="rFilter" style="margin-bottom:10px">
+          <button data-f="met" aria-pressed="true">MET rules</button>
+          <button data-f="inh" aria-pressed="false">Inherited policy rules</button>
+        </div>
+        <div id="rules"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Holarchy: rules flow down, results roll up</h3>
+      <div class="holarchy" id="holarchy"></div>
+    </div>
+    <div class="change-grid">
+      <div class="card">
+        <h3>Change preview</h3>
+        <p class="hint" style="margin-bottom:6px">Switch a rule off to author a draft change. Nothing reaches consumers until the change passes every gate.</p>
+        <div id="switches"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn ghost" id="resetRules">Discard draft</button></div>
+      </div>
+      <div class="card" id="changePanel" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="view-dash" role="tabpanel" aria-labelledby="tab-dash" hidden>
+    <p class="hook">One dashboard at every level of the holarchy. Drill from the company to a single client, then open <b>Lineage</b> on any number: Metric Definition Card, MET rules and the policy rules they inherit, the Calc Library entry, the compiled Engine A model, and the immutable URI (GOV-022) that ties the number back to its definition.</p>
+    <div class="dash-top">
+      <div class="crumbs" id="crumbs"></div>
+      <span class="hint">Trailing 12 months to Jun 30, 2026 · Released definitions</span>
+    </div>
+    <div class="dash-grid">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="tiles" id="tiles"></div>
+        <div>
+          <div class="sec-label" id="childLabel"></div>
+          <div class="card" style="padding:0"><div class="tbl-wrap"><table id="children"></table></div></div>
+        </div>
+      </div>
+      <aside class="card lineage" id="lineage" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- DECISION -->
+  <section id="view-dec" role="tabpanel" aria-labelledby="tab-dec" hidden>
+    <p class="hook">The backup demo answers “did anyone act on our work?” Each decision records the insights that informed it, the options scored with the Decision Modeling criteria, the outcomes it committed to, and whether they were measured. Rule <b>MET-014</b> requires every decision to bind an outcome to a Released metric card, so an unmeasurable decision is flagged the day it is recorded.</p>
+    <div class="dec-grid">
+      <div>
+        <div class="lstats" id="lstats"></div>
+        <div class="dlist" id="dlist" role="group" aria-label="Decisions"></div>
+      </div>
+      <div class="card">
+        <div id="dhead"></div>
+        <div class="trace" id="trace">
+          <svg class="wires" id="wires" aria-hidden="true"></svg>
+          <div class="trace-cols" id="cols"></div>
+        </div>
+        <div id="verdict"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="data-note">Illustrative data. The 142-rule register, the GOV/TEC/PAY rules shown and the ontology concepts come from your SSOT files. MET-001 to MET-014, the Calc Library entries, Engine A/B code, URIs and the <span class="mono">isp-cli</span> holon are proposed extensions written for this demo. The company-level worksite employee count (305,764) and the 9–12% attrition range match Insperity’s public 2026 disclosures; segment splits, clients, surveys and decisions are synthetic.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const MET = [{"Rule_ID": "MET-001", "Domain": "Analytics & Measurement", "Sub_Category": "Client Retention", "Rule_Name": "Client Loss Dated at Last Payroll Processed", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: client-retention)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Client stops processing payroll or gives termination notice", "Business_Logic_Threshold": "A client counts as lost on the date of its last processed payroll; notices not yet effective are reported as Pending Terminations", "Precedence_Conflict_Resolution": "Payroll ledger is authoritative over CRM contract and notice dates; records joined through GOV-007 identity resolution", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content. Maps to hr:ClientHealthScoringRetentionService."}, {"Rule_ID": "MET-002", "Domain": "Analytics & Measurement", "Sub_Category": "Client Retention", "Rule_Name": "Transfers Between Client Holons Are Not Losses", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: client-retention)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Client merges into or is acquired by another active Insperity client", "Business_Logic_Threshold": "Record as a Consolidation Transfer when the successor Enterprise Entity ID is an active client; exclude from losses", "Precedence_Conflict_Resolution": "Successor identity resolved by GOV-007 before classification", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-003", "Domain": "Analytics & Measurement", "Sub_Category": "Client Retention", "Rule_Name": "First-90-Day Exits Classified as Onboarding Fallout", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: client-retention)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Client exits within 90 days of payroll go-live", "Business_Logic_Threshold": "Exclude from retention losses; report under the Onboarding Fallout metric", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-004", "Domain": "Analytics & Measurement", "Sub_Category": "Client Retention", "Rule_Name": "HR360 to HRScale Migrations Are Product Moves", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: client-retention)", "Jurisdiction_Scope": "N/A (scope: HRScale product line)", "Trigger_Condition": "Client changes product line from HR360 or HRCore to HRScale", "Business_Logic_Threshold": "Keep the client active and record a product-move event instead of a loss", "Precedence_Conflict_Resolution": "Scoped to the HRScale product-line holon; inherited only by HRScale clients", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-005", "Domain": "Analytics & Measurement", "Sub_Category": "Client Retention", "Rule_Name": "Retention Roll-Up Uses Ratio of Sums", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal metric standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Retention aggregated above the Client Holon", "Business_Logic_Threshold": "Sum losses and starting clients at each level, then divide; a SHACL shape rejects any aggregate that averages child percentages", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-006", "Domain": "Analytics & Measurement", "Sub_Category": "Worksite Employee Volume", "Rule_Name": "Paid Worksite Employee Definition", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: wse-growth)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Monthly worksite employee count computed", "Business_Logic_Threshold": "A worksite employee counts as paid in a month when at least one payroll was processed for them", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Payroll & Tax Domain Holon (isp-pay)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content. Maps to hr:WorkforceAnalyticsReportingService."}, {"Rule_ID": "MET-007", "Domain": "Analytics & Measurement", "Sub_Category": "Worksite Employee Volume", "Rule_Name": "Period WSE Value Is the Average of Monthly Counts", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: wse-growth)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Quarterly or annual WSE value reported", "Business_Logic_Threshold": "Period value = mean of the monthly paid-WSE counts; never a point-in-time snapshot", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Payroll & Tax Domain Holon (isp-pay)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-008", "Domain": "Analytics & Measurement", "Sub_Category": "Worksite Employee Volume", "Rule_Name": "COBRA-Only Participants and 1099 Contractors Excluded from WSE Counts", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal metric standard; worker classification per FLSA and state ABC tests", "Jurisdiction_Scope": "Federal/State (via PAY-003, PAY-004)", "Trigger_Condition": "Worker record included in a WSE count", "Business_Logic_Threshold": "Only co-employed worksite employees count; COBRA-only participants and workers classified as contractors are excluded", "Precedence_Conflict_Resolution": "Contractor status resolved upstream by PAY-003 and PAY-004 (stricter state ABC test governs)", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Payroll & Tax Domain Holon (isp-pay)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-009", "Domain": "Analytics & Measurement", "Sub_Category": "Service Satisfaction", "Rule_Name": "Survey Response Window: 7 Days From Case Close", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal metric standard (Metric Definition Card: service-satisfaction)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Post-case survey response received", "Business_Logic_Threshold": "Count a response only if it arrives within 7 days of the case close date", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content. Maps to hr:OrganizationalScorecardService."}, {"Rule_ID": "MET-010", "Domain": "Analytics & Measurement", "Sub_Category": "Service Satisfaction", "Rule_Name": "One Response per Case, Latest Wins", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal metric standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "More than one response recorded for a case", "Business_Logic_Threshold": "Keep only the latest valid response per case", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-011", "Domain": "Analytics & Measurement", "Sub_Category": "Service Satisfaction", "Rule_Name": "Satisfied Means Top-Two Box (4 or 5)", "Rule_Type": "Threshold", "Regulatory_Standards_Source": "Internal metric standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Rating on a 5-point scale scored", "Business_Logic_Threshold": "Rating >= 4 counts as satisfied", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-012", "Domain": "Analytics & Measurement", "Sub_Category": "Service Satisfaction", "Rule_Name": "Satisfaction Roll-Up Weighted by Responses", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal metric standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Satisfaction aggregated above the Client Holon", "Business_Logic_Threshold": "Sum satisfied and valid responses at each level, then divide; averaging child scores is rejected", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Client Relationship Domain Holon (isp-cli, proposed)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}, {"Rule_ID": "MET-013", "Domain": "Analytics & Measurement", "Sub_Category": "Privacy", "Rule_Name": "Small-Cut Suppression (k >= 5)", "Rule_Type": "Threshold", "Regulatory_Standards_Source": "CCPA/CPRA and state privacy acts (via TEC-006); hr:SafeguardAggregationThreshold", "Jurisdiction_Scope": "State (varies)", "Trigger_Condition": "Any metric cut built from people data with fewer than 5 respondents or workers", "Business_Logic_Threshold": "Suppress the value, including cuts produced by filtering or differencing", "Precedence_Conflict_Resolution": "Most-protective rule governs (GOV-009); cannot be disabled by a metric owner", "Lifecycle_Phase": "Run-Time", "Owning_System_Domain_Holon": "HR Technology Domain Holon (isp-tech)", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content. Compiled to OPA/Rego (Engine B) for the dashboard API."}, {"Rule_ID": "MET-014", "Domain": "Analytics & Measurement", "Sub_Category": "Decision Measurement", "Rule_Name": "Decisions Must Bind Outcomes to Released Metric Cards", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal decision governance standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Decision record created in Decision Model & Measurement", "Business_Logic_Threshold": "At least one outcome with a target and checkpoint date must reference a Released Metric Definition Card; otherwise the decision is flagged unmeasurable", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Run", "Owning_System_Domain_Holon": "Lateral Mediation Holon", "Source_Document": "Proposed (demo)", "Notes": "Proposed extension, synthetic demo content."}];
+const INH = [{"Rule_ID": "GOV-001", "Domain": "Governance & Architecture", "Sub_Category": "Core Architecture Principle", "Rule_Name": "Definition-Time vs Run-Time Separation", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal Holonic Semantic Governance Architecture standard", "Jurisdiction_Scope": "N/A - system-wide", "Trigger_Condition": "Any statutory rule authored or modified", "Business_Logic_Threshold": "Author canonical truth once in RDF/OWL/LKIF/SHACL (Definition-Time); compile and execute against OPA/Rego, dbt/SQL, and agentic guardrails (Run-Time)", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time/Run-Time", "Owning_System_Domain_Holon": "Enterprise (L4)", "Source_Document": "DOC3", "Notes": "Foundational principle underlying all other GOV rules."}, {"Rule_ID": "GOV-002", "Domain": "Governance & Architecture", "Sub_Category": "Enterprise Governance", "Rule_Name": "Enterprise Semantic Governance Council & CoE Oversight", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal governance charter", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any proposed change to core ontologies/standards", "Business_Logic_Threshold": "Route change through Enterprise Semantic Governance Council / Center of Excellence for Architecture Review Board (ARB) approval", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "L4 Enterprise Hierarchy", "Source_Document": "DOC3", "Notes": ""}, {"Rule_ID": "GOV-003", "Domain": "Governance & Architecture", "Sub_Category": "Change Management", "Rule_Name": "DEV/STG/PRD Ontology Lifecycle Gate", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal governance charter", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Ontology/rule change proceeds through environments", "Business_Logic_Threshold": "Require promotion gate approval at each of DEV, STG, and PRD stages before production activation", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "L4 Enterprise Hierarchy", "Source_Document": "DOC3", "Notes": ""}, {"Rule_ID": "GOV-007", "Domain": "Governance & Architecture", "Sub_Category": "Identity Resolution", "Rule_Name": "Identity & URI Resolution Registry", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Lateral Mediation Holon (SAML) / ISO 8000", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Cross-silo identifier encountered", "Business_Logic_Threshold": "Resolve cross-silo identifiers into canonical Enterprise Entity IDs enforcing the ISO 8000 Uniqueness invariant", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Lateral Mediation Holon", "Source_Document": "DOC3", "Notes": ""}, {"Rule_ID": "GOV-009", "Domain": "Governance & Architecture", "Sub_Category": "Conflict Resolution", "Rule_Name": "Most-Stringent-Rule / Highest-Employee-Protection Precedence Principle", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal statutory precedence doctrine", "Jurisdiction_Scope": "N/A - applies across all jurisdictions", "Trigger_Condition": "Two or more applicable statutory rules conflict or overlap for the same fact pattern", "Business_Logic_Threshold": "Enforce the rule offering the greatest employee protection / highest applicable standard as the effective rule", "Precedence_Conflict_Resolution": "This is the governing precedence principle referenced by PAY-002, PAY-026, TEC-006, CMP-006, CMP-019", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Lateral Mediation Holon", "Source_Document": "DOC3", "Notes": ""}, {"Rule_ID": "GOV-017", "Domain": "Governance & Architecture", "Sub_Category": "Rule Representation", "Rule_Name": "LKIF Deontic Norm + SHACL Shape Dual Representation", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "LKIF Core / W3C SHACL", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any statutory rule is authored as an L1 Knowledge Holon", "Business_Logic_Threshold": "Represent the rule as a paired LKIF Deontic statement (permission/obligation/prohibition) plus a SHACL structural invariant shape", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "L2 Domain Holons (L1 Knowledge Holons)", "Source_Document": "DOC3", "Notes": "Demonstrated via isp-pay:CADailyOvertimeObligation + isp-pay:CADailyTimesheetShape / CADailyOvertimeShape."}, {"Rule_ID": "GOV-018", "Domain": "Governance & Architecture", "Sub_Category": "Provenance", "Rule_Name": "Provenance & Change Management - ORSD + KGCL Metadata", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Ontology Requirements Specification Document (ORSD) / Knowledge Graph Change Language (KGCL)", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any RDF triple is added, changed, or retired", "Business_Logic_Threshold": "Bind the change to an ORSD and stamp it with KGCL metadata capturing WHO, WHAT, WHEN, WHERE, WHY", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time", "Owning_System_Domain_Holon": "Enterprise (L4) / L2 Domain Holons", "Source_Document": "DOC3", "Notes": ""}, {"Rule_ID": "GOV-019", "Domain": "Governance & Architecture", "Sub_Category": "Compilation Pipeline", "Rule_Name": "6-Stage SHACL-to-Policy Compilation Pipeline", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal Rule Projection Agent tooling", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "A canonical SHACL/SWRL/LKIF invariant is ready for runtime deployment", "Business_Logic_Threshold": "Execute: 1) Shape Parser, 2) Constraint Extractor, 3) Harmonization Check, 4) Target Mapper, 5) Policy Generator, 6) KGCL Version & Publish", "Precedence_Conflict_Resolution": "Stage 3 (Harmonization Check) applies GOV-008/GOV-009 before proceeding", "Lifecycle_Phase": "Design-Time to Run-Time", "Owning_System_Domain_Holon": "Lateral Mediation Holon (Rule Projection Agents)", "Source_Document": "DOC3", "Notes": "Walked through end-to-end for isp-pay:CADailyOvertimeShape."}, {"Rule_ID": "GOV-020", "Domain": "Governance & Architecture", "Sub_Category": "Compilation Pipeline", "Rule_Name": "Dual Runtime Target Compilation", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "Internal Rule Projection Agent tooling", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Compiled policy is deployed to a runtime engine", "Business_Logic_Threshold": "Route batch/data-pipeline enforcement to dbt/SQL (Engine A) and real-time API/gateway enforcement to OPA/Rego (Engine B)", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Run-Time", "Owning_System_Domain_Holon": "L3 Gateway Holon / L2 Domain Holons", "Source_Document": "DOC3", "Notes": "Example artifacts: dbt SQL check flagging VIOLATION_CA_DAILY_OT_RATE_INVALID; OPA/Rego calculate_overtime_multiplier policy."}, {"Rule_ID": "GOV-022", "Domain": "Governance & Architecture", "Sub_Category": "Audit Traceability", "Rule_Name": "Complete Audit Traceability via Immutable URI", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal architecture standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any timesheet rejection or calculated wage line item is produced", "Business_Logic_Threshold": "Attach an immutable URI on every rejected/calculated record linking back to the specific statutory LKIF/SHACL definition that governed it", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Run-Time", "Owning_System_Domain_Holon": "L2 Domain Holons / HR Technology Domain Holon", "Source_Document": "DOC3", "Notes": "Realized technically via TEC-008 immutable audit log."}, {"Rule_ID": "GOV-023", "Domain": "Governance & Architecture", "Sub_Category": "SSOT Principle", "Rule_Name": "Single Source of Truth (SSOT) Propagation", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal architecture standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "A statutory rule changes (e.g., CA or federal overtime law amendment)", "Business_Logic_Threshold": "Update the single canonical OWL/SHACL triple once; compilation pipeline (GOV-019) automatically propagates the change to all downstream database engines and microservices", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Design-Time to Run-Time", "Owning_System_Domain_Holon": "Enterprise (L4) / Lateral Mediation Holon", "Source_Document": "DOC3", "Notes": "Core value proposition of the entire architecture for this SSOT dashboard."}, {"Rule_ID": "TEC-001", "Domain": "HR Technology", "Sub_Category": "Multi-Tenancy", "Rule_Name": "Multi-Tenant Data Isolation Model", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal architecture standard / PEO Client Allocation Matrix", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any client data access or storage operation", "Business_Logic_Threshold": "Enforce logical/physical isolation boundaries between client tenants at all data layers", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Discover/Design", "Owning_System_Domain_Holon": "HR Technology Domain Holon (isp-tech)", "Source_Document": "DOC1; DOC2; DOC3", "Notes": "Underpins RBAC/ABAC checks such as TEC-021."}, {"Rule_ID": "TEC-005", "Domain": "HR Technology", "Sub_Category": "Data Governance", "Rule_Name": "Data Classification Rules (PII / PHI / Financial)", "Rule_Type": "Structural Invariant", "Regulatory_Standards_Source": "Internal data governance standard", "Jurisdiction_Scope": "N/A", "Trigger_Condition": "Any new data field or system onboarded", "Business_Logic_Threshold": "Classify data element as PII, PHI, or financial and apply corresponding handling controls", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Define", "Owning_System_Domain_Holon": "HR Technology Domain Holon", "Source_Document": "DOC1; DOC2", "Notes": ""}, {"Rule_ID": "TEC-006", "Domain": "HR Technology", "Sub_Category": "Data Privacy", "Rule_Name": "State Data Privacy Statute Compliance (CCPA/CPRA and equivalents)", "Rule_Type": "Obligation", "Regulatory_Standards_Source": "CCPA/CPRA and other state privacy acts", "Jurisdiction_Scope": "State (varies)", "Trigger_Condition": "Data subject is a resident of a covered state", "Business_Logic_Threshold": "Honor statutory consumer rights (access, deletion, opt-out) per applicable state privacy law", "Precedence_Conflict_Resolution": "Most-protective applicable state statute governs where subject is covered by multiple", "Lifecycle_Phase": "Design", "Owning_System_Domain_Holon": "HR Technology Domain Holon", "Source_Document": "DOC1; DOC2", "Notes": ""}, {"Rule_ID": "TEC-011", "Domain": "HR Technology", "Sub_Category": "Data Minimization", "Rule_Name": "Data Minimization Algorithm", "Rule_Type": "Business Logic", "Regulatory_Standards_Source": "State privacy statutes / NIST guidance", "Jurisdiction_Scope": "State/Federal (varies)", "Trigger_Condition": "Data pipeline processes client/employee data", "Business_Logic_Threshold": "Limit collected/propagated fields to what is strictly necessary for the governed transaction", "Precedence_Conflict_Resolution": "N/A", "Lifecycle_Phase": "Develop", "Owning_System_Domain_Holon": "HR Technology Domain Holon", "Source_Document": "DOC1", "Notes": ""}, {"Rule_ID": "PAY-003", "Domain": "Payroll & Tax", "Sub_Category": "Worker Classification", "Rule_Name": "DOL Multi-Factor Economic Reality Test", "Rule_Type": "Obligation", "Regulatory_Standards_Source": "DOL / Fair Labor Standards Act", "Jurisdiction_Scope": "Federal", "Trigger_Condition": "Worker engaged as 1099 independent contractor", "Business_Logic_Threshold": "Apply multi-factor economic-reality analysis before contractor classification is finalized", "Precedence_Conflict_Resolution": "Superseded by stricter state ABC test where applicable (PAY-004)", "Lifecycle_Phase": "Run", "Owning_System_Domain_Holon": "Payroll & Tax Domain Holon", "Source_Document": "DOC1", "Notes": ""}, {"Rule_ID": "PAY-004", "Domain": "Payroll & Tax", "Sub_Category": "Worker Classification", "Rule_Name": "State 'ABC' Test for Contractor Status", "Rule_Type": "Prohibition", "Regulatory_Standards_Source": "State statutes (e.g., CA AB5-style ABC tests)", "Jurisdiction_Scope": "State", "Trigger_Condition": "Worker engaged as 1099 in an ABC-test state", "Business_Logic_Threshold": "Contractor status denied unless all 3 ABC prongs satisfied (control, outside usual course of business, independently established trade)", "Precedence_Conflict_Resolution": "Takes precedence over federal economic-reality test when state test is stricter", "Lifecycle_Phase": "Run", "Owning_System_Domain_Holon": "Payroll & Tax Domain Holon", "Source_Document": "DOC1", "Notes": ""}];
+const REGISTER_TOTAL = 142;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct=(x,d=1)=>(x*100).toFixed(d)+"%";
+const fmt=n=>n.toLocaleString("en-US");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const R=Object.fromEntries(MET.concat(INH).map(r=>[r.Rule_ID,r]));
+const typeCls=t=>({"Obligation":"t-obligation","Prohibition":"t-prohibition","Permission":"t-permission","Threshold":"t-threshold","Reporting Deadline":"t-reporting","Business Logic":"t-logic","Structural Invariant":"t-invariant"}[t]||"");
+const typePill=t=>`<span class="pill ${typeCls(t)}"><span class="sw"></span>${esc(t)}</span>`;
+
+/* ================= DATA (synthetic, calibrated) ================= */
+const SEG=[
+ {id:"small",name:"Small business",band:"5–49 employees",start:9900,lost:1180,transfers:140,early:300,noticed:260,migr:0,wse:147100,wsePrior:151027,csatN:21400,csatSat:18853},
+ {id:"grow",name:"Growing SMB",band:"50–149 employees",start:1300,lost:118,transfers:20,early:12,noticed:22,migr:0,wse:106000,wsePrior:105578,csatN:9800,csatSat:8947},
+ {id:"mid",name:"Mid-market",band:"150–5,000 employees",start:165,lost:10,transfers:4,early:1,noticed:3,migr:12,wse:52664,wsePrior:52195,csatN:3100,csatSat:2678}
+];
+const CLIENTS={
+ small:[
+  {id:"c1",name:"Brazos Valley Dental",wse:42,wsePrior:39,status:"retained",csatN:61,csatSat:55,note:"Active all 12 months; payroll every cycle.",cobra:2,contractors:3},
+  {id:"c2",name:"Lakeshore Coffee Co.",wse:0,wsePrior:18,status:"lost",csatN:14,csatSat:9,note:"Last payroll processed Jun 27, 2026. Counted as a loss on that date (MET-001).",cobra:0,contractors:0},
+  {id:"c3",name:"Maple & Finch Design",wse:0,wsePrior:11,status:"transfer",csatN:4,csatSat:3,note:"Merged into Northgate Creative, also a client. Recorded as a Consolidation Transfer, not a loss (MET-002).",cobra:0,contractors:1}
+ ],
+ grow:[
+  {id:"c4",name:"Summit Ridge Engineering",wse:96,wsePrior:88,status:"retained",csatN:140,csatSat:131,note:"Active all 12 months.",cobra:3,contractors:6},
+  {id:"c5",name:"Harbor Point Logistics",wse:121,wsePrior:117,status:"noticed",csatN:188,csatSat:150,note:"Gave notice Sep 2, 2026; still processing payroll. Not a loss until its last payroll (MET-001); reported as a Pending Termination.",cobra:1,contractors:2}
+ ],
+ mid:[
+  {id:"c6",name:"Cedar Park Health Partners",wse:640,wsePrior:602,status:"migrated",csatN:410,csatSat:352,note:"Moved from HR360 to HRScale in April. A product move, not a loss, under MET-004 (HRScale holon).",cobra:6,contractors:4},
+  {id:"c7",name:"Tri-County Manufacturing",wse:310,wsePrior:318,status:"retained",csatN:233,csatSat:199,note:"Active all 12 months.",cobra:4,contractors:0}
+ ]
+};
+const STATUS={retained:["Retained","ok"],lost:["Lost","no"],transfer:["Consolidation transfer","hold"],noticed:["Pending termination","hold"],migrated:["Product move","ok"]};
+const K_MIN=5;
+
+/* Metric Definition Cards (hr:ConceptMetricDefinitionCard: purpose, formula, owner, granularity, privacy class) */
+const METRICS={
+ retention:{id:"client-retention",ver:"2.1",name:"Client retention",
+  purpose:"Share of clients active at the start of the period still processing payroll at the end.",
+  calc:{id:"calc-client-retention",formula:"1 - losses / clientsAtPeriodStart",version:"2.1",owner:"Insights Engineering",alationId:"ALN-CALC-01342",certification:"Endorsed"},
+  owner:"Insights (steward) · Finance (approver)",gran:"Client, trailing 12 months",privacy:"Client business data (no PII)",
+  onto:"hr:ClientHealthScoringRetentionService → hr:ConceptClientHealthScoreModel",
+  model:"fct_client_retention",met:["MET-001","MET-002","MET-003","MET-004","MET-005"],inh:["GOV-007","TEC-001","TEC-005","GOV-022","GOV-023"],
+  sources:["Payroll ledger (last payroll date)","Client master / CRM (contract, segment)","Implementation tracker (go-live date)"],
+  consumers:["Finance close pack","Product retention dashboard","Sales pipeline review","Board deck","Insights quarterly readout"],
+  kgcl:{who:"Insights steward; approved by Finance and the Semantic Governance Council",what:"Released client-retention v2.1 (MET-001–005)",when:"2026-01-01",where:"Enterprise (L4) → all Client Holons; MET-004 on the HRScale holon only",why:"Unify four team definitions (ORSD-2025-114)"}},
+ wse:{id:"wse-growth",ver:"1.4",name:"Worksite employee growth",
+  purpose:"Year-over-year change in the average number of paid worksite employees.",
+  calc:{id:"calc-wse-growth",formula:"avgPaidWSE(period) / avgPaidWSE(period - 1y) - 1",version:"1.4",owner:"Payroll Analytics",alationId:"ALN-CALC-01355",certification:"Endorsed"},
+  owner:"Finance (steward) · Insights (approver)",gran:"Worksite employee, monthly",privacy:"Aggregate workforce data; k ≥ 5 applies (MET-013)",
+  onto:"hr:WorkforceAnalyticsReportingService → hr:ConceptWorkforceKPILibrary",
+  model:"fct_wse_monthly",met:["MET-006","MET-007","MET-008","MET-013"],inh:["PAY-003","PAY-004","TEC-001","TEC-005","GOV-022"],
+  sources:["Payroll ledger (paid WSEs by month)","Benefits system (COBRA-only flags)","Worker classification (PAY-003/004 results)"],
+  consumers:["Finance close pack","Earnings materials","Board deck","Sales capacity plan"],
+  kgcl:{who:"Payroll Analytics steward; approved by Insights",what:"Released wse-growth v1.4 (MET-006–008)",when:"2025-01-01",where:"Enterprise (L4) → all Client and WSE Holons",why:"Align with externally reported WSE counts (ORSD-2024-087)"}},
+ csat:{id:"service-satisfaction",ver:"3.0",name:"Service satisfaction",
+  purpose:"Share of valid post-case survey responses rated 4 or 5.",
+  calc:{id:"calc-service-satisfaction",formula:"count(rating >= 4) / count(validResponses)",version:"3.0",owner:"Service Ops Analytics",alationId:"ALN-CALC-01361",certification:"Warned"},
+  owner:"Service Operations (steward) · Insights (approver)",gran:"Service case",privacy:"People data; k ≥ 5 applies (MET-013)",
+  onto:"hr:OrganizationalScorecardService → hr:ConceptMetricDefinitionCard",
+  model:"fct_service_satisfaction",met:["MET-009","MET-010","MET-011","MET-012","MET-013"],inh:["TEC-006","TEC-005","TEC-011","TEC-001","GOV-009","GOV-022"],
+  sources:["Case management system (close date)","Survey platform (responses, ratings)","Client master / CRM (segment)"],
+  consumers:["Service Ops weekly","Product retention dashboard","Insights quarterly readout"],
+  kgcl:{who:"Service Ops steward; approved by Insights",what:"Released service-satisfaction v3.0 (MET-009–013)",when:"2026-04-01",where:"Enterprise (L4) → all Client Holons",why:"Add k ≥ 5 suppression for people data (ORSD-2026-021)"},
+  warned:"Calc Library certification is Warned: a proposal to widen the MET-009 window to 14 days is under review."}
+};
+
+/* ================= calculations ================= */
+const ALL_ON={"MET-001":true,"MET-002":true,"MET-003":true,"MET-004":true,"MET-013":true};
+function churnParts(s,on){return {core:s.lost,noticed:on["MET-001"]?0:s.noticed,transfers:on["MET-002"]?0:s.transfers,early:on["MET-003"]?0:s.early,migr:on["MET-004"]?0:s.migr}}
+const sumParts=p=>p.core+p.noticed+p.transfers+p.early+p.migr;
+function retention(segs,on){let st=0,ch=0;segs.forEach(s=>{st+=s.start;ch+=sumParts(churnParts(s,on))});return {start:st,churn:ch,ret:1-ch/st}}
+const tot=k=>SEG.reduce((a,s)=>a+s[k],0);
+
+/* ================= HERO ================= */
+const TEAMS=[
+ {who:"Finance close pack",what:"SQL in the close workbook",on:{"MET-001":true,"MET-002":false,"MET-003":true,"MET-004":false},def:"Counts a client ID ending as a loss, so mergers and HRScale moves look like churn."},
+ {who:"Product retention dashboard",what:"Product analytics notebook",on:{"MET-001":true,"MET-002":true,"MET-003":false,"MET-004":true},def:"Includes clients that left during implementation."},
+ {who:"Sales pipeline review",what:"CRM report",on:{"MET-001":false,"MET-002":true,"MET-003":true,"MET-004":true},def:"Dates losses at the termination notice, so pending exits already count."},
+ {who:"Board deck",what:"Copied from Finance, quarter-end",on:{"MET-001":true,"MET-002":false,"MET-003":true,"MET-004":false},def:"Pulled from the Finance pack last quarter; nobody could say which rules applied."}
+];
+let mode="before",prevVals={};
+function heroRender(anim){
+  const core=retention(SEG,ALL_ON);
+  $("consumers").innerHTML=TEAMS.map((t,i)=>{
+    const r=retention(SEG,mode==="after"?ALL_ON:t.on), churn=1-r.ret;
+    return `<div class="cons ${mode==="after"?"aligned":""}"><div class="who">${t.who}</div><div class="what">${mode==="after"?"Engine A · fct_client_retention":esc(t.what)}</div>
+     <div class="big" data-v="${(churn*100).toFixed(1)}" id="hb${i}">${(churn*100).toFixed(1)}<small>% churn</small></div>
+     <div class="def">${mode==="after"?`Reads <span class="pill ver">client-retention v2.1</span> ${reclass(t)}`:esc(t.def)}</div></div>`}).join("");
+  const S=core.start,max=.16;
+  const rows=mode==="after"?[{lab:"Every consumer",on:ALL_ON}]:TEAMS.slice(0,3).map(t=>({lab:t.who.split(" ")[0],on:t.on}));
+  $("bridge").innerHTML=rows.map(r=>{let p={core:0,transfers:0,early:0,noticed:0,migr:0};SEG.forEach(s=>{const c=churnParts(s,r.on);for(const k in p)p[k]+=c[k]});
+    const w=k=>(p[k]/S/max*100).toFixed(2)+"%";
+    return `<div class="bridge-row"><span>${r.lab}</span><span class="track"><span class="b-core" style="width:${w("core")}"></span><span class="b-t" style="width:${w("transfers")}"></span><span class="b-m" style="width:${w("migr")}"></span><span class="b-e" style="width:${w("early")}"></span><span class="b-n" style="width:${w("noticed")}"></span></span><span class="num" style="text-align:right">${pct(sumParts(p)/S)}</span></div>`}).join("");
+  $("bridgeTitle").textContent=mode==="after"?"One number; every difference has a rule and a name":"Where the numbers split";
+  $("takeaway").innerHTML=mode==="after"
+   ?`<b class="good">The question goes away.</b> Churn is ${pct(1-core.ret)} in every consumer because all of them read one compiled model. The old differences are now governed rules with their own metrics: Consolidation Transfers (MET-002, ${pct(tot("transfers")/S)}), Onboarding Fallout (MET-003, ${pct(tot("early")/S)}) and Pending Terminations (MET-001, ${pct(tot("noticed")/S)}). When a rule changes, GOV-023 propagates it to all of them at once.`
+   :`Every team is right by its own logic. Core churn of <b>${pct(1-core.ret)}</b> is inside all four numbers; the gap is ${fmt(tot("transfers"))} transfers, ${fmt(tot("migr"))} HRScale moves, ${fmt(tot("early"))} first-90-day exits and ${fmt(tot("noticed"))} notices that each team classifies differently, in logic nobody else can see.`;
+  if(anim&&!reduce)TEAMS.forEach((t,i)=>countTo($("hb"+i)));
+}
+function reclass(t){const m=[];if(!t.on["MET-002"])m.push("MET-002");if(!t.on["MET-004"])m.push("MET-004");if(!t.on["MET-003"])m.push("MET-003");if(!t.on["MET-001"])m.push("MET-001");
+  return m.length?`Its old differences now sit under ${m.join(", ")}.`:""}
+function countTo(el){const to=parseFloat(el.dataset.v),from=prevVals[el.id]!=null?prevVals[el.id]:to;prevVals[el.id]=to;if(from===to)return;
+  const t0=performance.now(),dur=650,step=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);el.firstChild.nodeValue=(from+(to-from)*e).toFixed(1);if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+$("modeSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  TEAMS.forEach((t,i)=>{const el=$("hb"+i);if(el)prevVals["hb"+i]=parseFloat(el.dataset.v)});
+  mode=b.dataset.mode;$("modeSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));heroRender(true)});
+heroRender(false);
+
+/* ================= CANONICAL + COMPILED FORMS ================= */
+const CANON={
+ "MET-001":`# Definition-Time · LKIF deontic norm + SHACL shape (GOV-017)
+isp-met:MET-001 a lkif:Obligation ;
+  rdfs:label "Client Loss Dated at Last Payroll Processed" ;
+  isp:bearer isp-cli:RetentionComputation ;
+  isp:ownedBy isp-cli: .
+isp-met:MET-001-Shape a sh:NodeShape ;
+  sh:targetClass isp-cli:ClientLoss ;
+  sh:property [ sh:path isp-cli:lossDate ;
+                sh:equals isp-pay:lastPayrollDate ] .`,
+ "MET-002":`isp-met:MET-002 a lkif:Obligation ;
+  rdfs:label "Transfers Between Client Holons Are Not Losses" .
+isp-met:MET-002-Shape a sh:NodeShape ;
+  sh:targetClass isp-cli:ClientExit ;
+  sh:sparql [ sh:select """
+    SELECT $this WHERE {
+      $this isp-cli:successor ?s .
+      ?s a isp-core:ClientCompany ; isp-cli:status "active" .
+      $this isp-cli:exitType ?t . FILTER(?t = "loss") } """ ] .   # a transfer typed as loss fails`,
+ "MET-005":`isp-met:MET-005-Shape a sh:NodeShape ;       # Structural Invariant
+  sh:targetClass isp-met:RetentionAggregate ;
+  sh:property [ sh:path isp-met:aggregation ;
+                sh:in ( isp-met:RatioOfSums ) ] ;  # AverageOfRatios is rejected
+  sh:property [ sh:path isp-met:numerator ; sh:minCount 1 ] ;
+  sh:property [ sh:path isp-met:denominator ; sh:minCount 1 ] .`,
+ "MET-013":`isp-met:MET-013 a lkif:Prohibition ;
+  rdfs:label "Publish a people-data cut with fewer than k respondents" ;
+  isp:derivedFrom isp-tech:TEC-006 , hr:SafeguardAggregationThreshold ;
+  isp:precedence isp-gov:GOV-009 .
+isp-met:MET-013-Shape a sh:NodeShape ;
+  sh:targetClass isp-met:PublishedCut ;
+  sh:property [ sh:path isp-met:respondentCount ; sh:minInclusive 5 ] .`
+};
+const RETO_POLICY=`# Engine B · OPA/Rego · compiled from MET-013 (GOV-020 real-time path)
+package isp.metrics.privacy
+default allow_cut := false
+allow_cut { input.cut.respondents >= 5 }
+suppress[msg] {
+  input.cut.respondents < 5
+  msg := sprintf("MET-013: suppressed (k=%d)", [input.cut.respondents])
+}`;
+function canonFor(id){if(CANON[id])return CANON[id];const r=R[id];
+  const deon={"Obligation":"lkif:Obligation","Prohibition":"lkif:Prohibition","Permission":"lkif:Permission","Threshold":"lkif:Obligation","Business Logic":"lkif:Obligation","Reporting Deadline":"lkif:Obligation","Structural Invariant":"sh:NodeShape"}[r.Rule_Type];
+  return `isp-met:${id} a ${deon} ;\n  rdfs:label "${r.Rule_Name}" ;\n  isp:trigger "${r.Trigger_Condition}" ;\n  isp:logic "${r.Business_Logic_Threshold}" .`}
+function sqlLines(on){
+  const lossTypes=["'loss'"];if(!on["MET-001"])lossTypes.push("'notice'");if(!on["MET-002"])lossTypes.push("'transfer'");if(!on["MET-003"])lossTypes.push("'onboarding_fallout'");if(!on["MET-004"])lossTypes.push("'product_move'");
+  const dateCol=on["MET-001"]?"last_payroll_date":"notice_date";
+  return [
+   ["-- Engine A · dbt/SQL · models/metrics/fct_client_retention.sql","cm"],
+   ["-- compiled by GOV-019 from MET-001…MET-005 · client-retention v"+(isDirty()?"2.2-draft":"2.1"),"cm"],
+   ["select segment,",""],
+   ["       count(*) filter (where active_at_period_start)          as clients_start,",""],
+   ["       count(*) filter (where exit_type in ("+lossTypes.join(", ")+")",lossTypes.length>1?"add":""],
+   ["                          and "+dateCol+" between :p_start and :p_end) as losses,",on["MET-001"]?"":"add"],
+   ["       1 - losses::numeric / clients_start                        as retention  -- MET-005","" ],
+   ["from {{ ref('dim_client_exit') }}   -- Enterprise Entity IDs resolved by GOV-007","cm"],
+   ["group by segment",""]];
+}
+const renderLines=ls=>ls.map(([t,c])=>c?`<span class="${c}">${esc(t)}</span>`:esc(t)).join("\n");
+function compiledFor(id){
+  if(id==="MET-013")return RETO_POLICY;
+  const r=R[id];
+  if(["MET-001","MET-002","MET-003","MET-004","MET-005"].includes(id))return null; // rendered from sqlLines
+  if(id.startsWith("MET-00")&&["MET-006","MET-007","MET-008"].includes(id))return `-- Engine A · dbt/SQL · models/metrics/fct_wse_monthly.sql
+select client_id, month,
+       count(distinct worker_id) filter (
+         where payrolls_in_month >= 1                -- MET-006
+           and not cobra_only                        -- MET-008
+           and classification = 'employee'           -- MET-008 ← PAY-003 / PAY-004
+       ) as paid_wse
+from {{ ref('fct_payroll_worker_month') }}
+group by client_id, month
+-- period value = avg(paid_wse) over months       -- MET-007`;
+  if(["MET-009","MET-010","MET-011","MET-012"].includes(id))return `-- Engine A · dbt/SQL · models/metrics/fct_service_satisfaction.sql
+with valid as (
+  select distinct on (case_id) case_id, client_id, rating      -- MET-010 latest wins
+  from {{ ref('stg_survey_responses') }}
+  where responded_at <= case_closed_at + interval '7 days'    -- MET-009
+  order by case_id, responded_at desc )
+select client_id,
+       count(*) filter (where rating >= 4) as satisfied,       -- MET-011
+       count(*)                          as valid_responses   -- MET-012: sum, then divide
+from valid group by client_id`;
+  if(id==="MET-014")return `# Engine B · OPA/Rego · decision intake guard
+package isp.decisions
+deny[msg] {
+  count({o | o := input.decision.outcomes[_]; o.metric_card.state == "Released"; o.target; o.checkpoint}) == 0
+  msg := "MET-014: decision has no measurable outcome"
+}`;
+  return "-- Enforced by its own domain engine";
+}
+
+/* ================= REGISTER ================= */
+let curM="retention",rFilter="met";
+const ruleOn={...ALL_ON};
+const isDirty=()=>Object.keys(ALL_ON).some(k=>!ruleOn[k]);
+$("stats").innerHTML=[
+ [REGISTER_TOTAL,"rules in your register"],[MET.length,"proposed MET rules"],[new Set(Object.values(METRICS).flatMap(m=>m.inh)).size,"policy rules metrics inherit"],[3,"Metric Definition Cards"]
+].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+$("mSel").innerHTML=Object.entries(METRICS).map(([k,m])=>`<button data-m="${k}" aria-pressed="${k===curM}">${m.name}</button>`).join("");
+$("mSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curM=b.dataset.m;$("mSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));regRender()});
+$("rFilter").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;rFilter=b.dataset.f;$("rFilter").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));rulesRender()});
+function mcardRender(){
+  const m=METRICS[curM],c=m.calc;
+  $("mcard").innerHTML=`<div class="eyebrow">Metric Definition Card · hr:ConceptMetricDefinitionCard</div>
+   <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap;margin:4px 0 10px"><h3 style="margin:0;font-size:24px">${m.name}</h3><span class="pill ver">${m.id} v${curM==="retention"&&isDirty()?"2.2-draft":m.ver} · Released</span></div>
+   <dl class="kv">
+    <dt>Purpose</dt><dd>${m.purpose}</dd>
+    <dt>Formula</dt><dd><code class="f">${c.formula}</code><br><span class="hint">Calc Library <span class="mono">${c.id}</span> v${c.version} · ${c.alationId} · <span class="${c.certification==="Endorsed"?"good":"warn"}">${c.certification}</span></span></dd>
+    <dt>Owner</dt><dd>${m.owner}</dd>
+    <dt>Granularity</dt><dd>${m.gran}</dd>
+    <dt>Privacy class</dt><dd>${m.privacy}</dd>
+    <dt>Ontology</dt><dd class="mono" style="font-size:12px">${m.onto}</dd>
+    <dt>Compiled to</dt><dd>Engine A · <span class="mono">${m.model}</span>${m.met.includes("MET-013")?" · Engine B · <span class=\"mono\">isp.metrics.privacy</span>":""}</dd>
+    <dt>Read by</dt><dd>${m.consumers.join(" · ")}</dd>
+   </dl>${m.warned?`<div class="banner hold">${m.warned}</div>`:""}`;
+}
+function ruleDetails(id,inh){
+  const r=R[id],off=!inh&&ruleOn[id]===false;
+  const fields=[["Sub-category","Sub_Category"],["Source","Regulatory_Standards_Source"],["Jurisdiction","Jurisdiction_Scope"],["Trigger","Trigger_Condition"],["Logic / threshold","Business_Logic_Threshold"],["Precedence","Precedence_Conflict_Resolution"],["Lifecycle phase","Lifecycle_Phase"],["Owning holon","Owning_System_Domain_Holon"],["Source document","Source_Document"],["Notes","Notes"]];
+  const compiled = ["MET-001","MET-002","MET-003","MET-004","MET-005"].includes(id)?renderLines(sqlLines(ruleOn)):esc(compiledFor(id)||"");
+  return `<details class="rule ${inh?"inh":""} ${off?"off":""}"><summary><span class="rid">${id}</span><span class="rn">${esc(r.Rule_Name)}${off?' <span class="pill hold">switched off in draft</span>':""}</span>${typePill(r.Rule_Type)}</summary>
+   <div class="rule-body"><dl class="kv" style="margin-top:8px">${fields.filter(f=>r[f[1]]).map(f=>`<dt>${f[0]}</dt><dd>${esc(r[f[1]])}</dd>`).join("")}</dl>
+   ${inh?`<p class="hint" style="margin-top:8px">From your register, unchanged.</p>`:`<div class="view-toggle"><button class="chip" aria-pressed="true" data-v="canon">Canonical (Definition-Time)</button><button class="chip" aria-pressed="false" data-v="comp">Compiled (Run-Time)</button></div>
+   <pre class="code-view" data-c="canon">${esc(canonFor(id))}</pre><pre class="code-view" data-c="comp" hidden>${compiled}</pre>`}</div></details>`;
+}
+function rulesRender(){
+  const m=METRICS[curM],ids=rFilter==="met"?m.met:m.inh;
+  $("rules").innerHTML=ids.map(id=>ruleDetails(id,rFilter==="inh")).join("")+(rFilter==="inh"?`<p class="hint" style="margin-top:10px">Plus the governance spine that applies to every change: GOV-001, GOV-002, GOV-003, GOV-017, GOV-018, GOV-019, GOV-020.</p>`:"");
+  $("rules").querySelectorAll("details").forEach(d=>d.querySelectorAll(".chip").forEach(ch=>ch.addEventListener("click",e=>{e.preventDefault();
+    d.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===ch));
+    d.querySelectorAll("pre[data-c]").forEach(p=>p.hidden=p.dataset.c!==(ch.dataset.v==="canon"?"canon":"comp"))})));
+}
+function holarchyRender(){
+  const m=METRICS[curM];
+  const rows={
+   retention:[["Federal / State regulatory holon","HSGA layer 1","No statute defines client retention; nothing inherited here.","–"],
+    ["Enterprise holon (L4)","isp-core, isp-cli","Sets MET-001, 002, 003, 005; inherits TEC-001, TEC-005, GOV-007, GOV-022.","Losses and starting clients summed across segments (MET-005)"],
+    ["HRScale product-line holon","scope for MET-004","Adds MET-004. Other product lines never see it.","Summed into the enterprise totals"],
+    ["Client holon","~11,400 holons","Inherits every rule above that applies to its product line.","Status: retained, lost, transfer, pending, product move"],
+    ["Worksite employee holon","305,764 holons","Payroll records set the client’s last payroll date (MET-001).","Feeds the client’s status"]],
+   wse:[["Federal / State regulatory holon","HSGA layer 1","PAY-003 economic-reality test; PAY-004 ABC test where the state is stricter.","–"],
+    ["Enterprise holon (L4)","isp-core, isp-pay","Sets MET-006, 007, 008; MET-008 defers to PAY-003/004 for classification.","Sum of client WSEs; growth from sums"],
+    ["Segment cut","analytic grouping of clients","No rules of its own; a cut, not a governance layer.","Sum of client WSEs"],
+    ["Client holon","~11,400 holons","Inherits MET-006–008 and TEC-001 tenant isolation.","Average monthly paid WSEs (MET-007)"],
+    ["Worksite employee holon","305,764 holons","Classified once by PAY-003/004; COBRA-only excluded (MET-008).","Paid in month? (MET-006)"]],
+   csat:[["Federal / State regulatory holon","HSGA layer 1","TEC-006: most-protective state privacy statute governs.","–"],
+    ["Enterprise holon (L4)","isp-core, isp-tech","Sets MET-009–013; MET-013 implements TEC-006 and hr:SafeguardAggregationThreshold under GOV-009.","Satisfied ÷ valid responses, all clients (MET-012)"],
+    ["Segment cut","analytic grouping of clients","A cut; MET-013 still applies to every cut.","Satisfied ÷ valid responses in the cut"],
+    ["Client holon","~11,400 holons","Inherits MET-009–013; cuts under 5 responses are suppressed.","Client’s satisfied ÷ valid responses, or suppressed"],
+    ["Worksite employee holon","respondents","MET-009 window and MET-010 one-per-case decide which responses count.","One response per case"]]
+  }[curM];
+  $("holarchy").innerHTML=rows.map(r=>`<div class="hl"><div class="lv">${r[0]}<small>${r[1]}</small></div><div class="down"><span class="tag">↓ Rules in force</span>${r[2]}</div><div class="up"><span class="tag">↑ Rolls up as</span>${r[3]}</div></div>`).join("");
+}
+/* change preview */
+const SWITCHABLE=["MET-001","MET-002","MET-003","MET-004","MET-013"];
+$("switches").innerHTML=SWITCHABLE.map(id=>`<div class="sw-row"><label class="toggle" title="${id}"><input type="checkbox" id="sw-${id}" data-r="${id}" checked aria-label="${id} ${esc(R[id].Rule_Name)}"><span></span></label><span><span class="mono" style="font-size:11.5px;color:var(--muted)">${id}</span> ${esc(R[id].Rule_Name)}</span></div>`).join("");
+$("switches").querySelectorAll("input").forEach(inp=>inp.addEventListener("change",()=>{ruleOn[inp.dataset.r]=inp.checked;changeRun()}));
+$("resetRules").addEventListener("click",()=>{Object.keys(ruleOn).forEach(k=>ruleOn[k]=true);$("switches").querySelectorAll("input").forEach(i=>i.checked=true);changeRun()});
+const STAGES=["Shape Parser","Constraint Extractor","Harmonization Check","Target Mapper","Policy Generator","KGCL Version & Publish"];
+let runTok=0;
+function changeRun(){
+  regRender(true);
+  const panel=$("changePanel");
+  const offs=SWITCHABLE.filter(k=>!ruleOn[k]);
+  if(!offs.length){panel.innerHTML=`<h3>No draft</h3><p class="hint">Every consumer reads the Released definitions.</p><div class="banner ok">client-retention v2.1 and service-satisfaction v3.0 are live in DEV, STG and PRD. Switch a rule off to preview a change.</div>`;return}
+  const blocked=offs.includes("MET-013");
+  const cur=retention(SEG,ruleOn),base=retention(SEG,ALL_ON);
+  const cell=(l,n,w)=>{const d=(n-w)*100;return `<div><div class="k">${l}</div><div class="v">${pct(n)}</div><div class="d ${d<0?"bad":""}">${Math.abs(d)<.005?"no change":(d>0?"+":"")+d.toFixed(1)+" pts"}</div></div>`};
+  panel.innerHTML=`<h3>Draft change · ${offs.join(", ")} off</h3>
+   <div class="kgcl"><b>WHO</b><span>Insights steward (you)</span><b>WHAT</b><span>Disable ${offs.join(", ")} in ${blocked&&offs.length===1?"service-satisfaction":"client-retention"}</span><b>WHEN</b><span>2026-09-30 (draft)</span><b>WHERE</b><span>${offs.includes("MET-004")&&offs.length===1?"HRScale product-line holon only":"Enterprise (L4) → all Client Holons"}</span><b>WHY</b><span>Preview impact before proposing an ORSD</span></div>
+   <div class="sec-label">GOV-019 compilation pipeline</div>
+   <div class="pipeline" id="pipe">${STAGES.map((s,i)=>`<div class="stage" id="st${i}"><div class="n">Stage ${i+1}</div><div class="s">${s}</div><div class="st">waiting</div></div>`).join("")}</div>
+   <div id="pipeOut"></div>`;
+  const tok=++runTok,delay=reduce?0:260;
+  const finish=()=>{
+    if(tok!==runTok)return;
+    if(blocked){$("pipeOut").innerHTML=`<div class="banner no"><div><b class="bad">Rejected at Harmonization Check.</b> MET-013 implements TEC-006 and hr:SafeguardAggregationThreshold. GOV-009 requires the most-protective rule, so a metric owner cannot switch it off. Nothing was compiled or published.</div></div>`;return}
+    $("pipeOut").innerHTML=`<div class="sec-label">Stage 5 output · compiled diff</div><pre class="code-view">${renderLines(sqlLines(ruleOn))}</pre>
+     <div class="sec-label">Impact if promoted</div><div class="impact">${cell("Company",cur.ret,base.ret)}${SEG.map(s=>cell(s.name,retention([s],ruleOn).ret,retention([s],ALL_ON).ret)).join("")}</div>
+     <div class="gates"><span class="eyebrow">GOV-003 gates</span><span class="pill ok">DEV ✓</span><span class="pill ok">STG ✓ tests pass</span><span class="pill hold">PRD · awaiting Semantic Governance Council (GOV-002)</span></div>
+     <div class="banner hold"><div>On approval, GOV-023 propagates v2.2 to all ${METRICS.retention.consumers.length} consumers at once: ${METRICS.retention.consumers.join(", ")}. Until then they keep reading v2.1.</div></div>`;
+  };
+  let i=0;const step=()=>{if(tok!==runTok)return;
+    if(i>0){const p=$("st"+(i-1));const fail=blocked&&i-1===2;p.className="stage "+(fail?"fail":"pass");p.querySelector(".st").textContent=fail?"✕ GOV-009 conflict":"✓ pass";if(fail){for(let j=3;j<6;j++){const q=$("st"+j);q.className="stage skip";q.querySelector(".st").textContent="not run"}finish();return}}
+    if(i<STAGES.length){const c=$("st"+i);c.className="stage run";c.querySelector(".st").textContent="running…";i++;delay?setTimeout(step,delay):step()}else finish()};
+  step();
+}
+function regRender(keepChange){mcardRender();rulesRender();holarchyRender();if(!keepChange)changeRun()}
+regRender();
+
+/* ================= DASHBOARD ================= */
+let pathSel=[{lv:"company"}],lineMetric="retention";
+function holonData(){const last=pathSel[pathSel.length-1];
+  if(last.lv==="company")return {level:"Enterprise",name:"Insperity",segs:SEG,key:"company"};
+  if(last.lv==="segment"){const s=SEG.find(x=>x.id===last.id);return {level:"Segment cut",name:s.name,segs:[s],seg:s,key:"segment/"+s.id}}
+  const s=SEG.find(x=>x.id===pathSel[1].id),c=CLIENTS[s.id].find(x=>x.id===last.id);return {level:"Client holon",name:c.name,seg:s,client:c,key:"client/"+c.id}}
+function values(h){
+  if(h.client){const c=h.client,supp=c.csatN<K_MIN;return {
+    retention:{v:STATUS[c.status][0],small:true,sub:c.status==="lost"?"Counts as 1 loss in its segment":c.status==="transfer"?"Not a loss (MET-002)":c.status==="noticed"?"Not a loss yet (MET-001)":c.status==="migrated"?"Not a loss (MET-004)":"Still processing payroll",cls:STATUS[c.status][1]==="no"?"bad":""},
+    wse:{v:c.wsePrior?((c.wse/c.wsePrior-1)*100).toFixed(1)+"%":"n/a",sub:`${fmt(c.wse)} avg paid WSEs vs ${fmt(c.wsePrior)}`,cls:c.wse>=c.wsePrior?"good":"bad"},
+    csat:supp?{v:"Suppressed",small:true,sub:`${c.csatN} responses; MET-013 requires at least ${K_MIN}`,cls:"warn"}:{v:pct(c.csatSat/c.csatN),sub:`${fmt(c.csatN)} valid responses`}}}
+  const r=retention(h.segs,ALL_ON),w=h.segs.reduce((a,s)=>a+s.wse,0),wp=h.segs.reduce((a,s)=>a+s.wsePrior,0),n=h.segs.reduce((a,s)=>a+s.csatN,0),sat=h.segs.reduce((a,s)=>a+s.csatSat,0);
+  return {retention:{v:pct(r.ret),sub:`${fmt(r.churn)} losses of ${fmt(r.start)} clients`},wse:{v:((w/wp-1)*100).toFixed(1)+"%",sub:`${fmt(w)} avg paid WSEs vs ${fmt(wp)}`,cls:w>=wp?"good":"bad"},csat:{v:pct(sat/n),sub:`${fmt(n)} valid responses`}}}
+function dashRender(){
+  const h=holonData(),v=values(h);
+  const cr=[`<span class="pill">${h.level}</span>`];
+  pathSel.forEach((p,i)=>{const label=p.lv==="company"?"Insperity":p.lv==="segment"?SEG.find(s=>s.id===p.id).name:CLIENTS[pathSel[1].id].find(c=>c.id===p.id).name;
+    cr.push(i<pathSel.length-1?`<button data-depth="${i}">${esc(label)}</button><span>›</span>`:`<span style="color:var(--ink)">${esc(label)}</span>`)});
+  $("crumbs").innerHTML=cr.join(" ");
+  $("crumbs").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{pathSel=pathSel.slice(0,+b.dataset.depth+1);dashRender()}));
+  $("tiles").innerHTML=Object.keys(METRICS).map(k=>{const m=METRICS[k],x=v[k];return `<div class="tile" aria-pressed="${k===lineMetric}"><span class="t">${m.name}</span><span class="v ${x.small?"small":""} ${x.cls||""}">${x.v}</span><span class="s">${x.sub}</span><button class="lin" data-l="${k}">Lineage · ${m.id} v${m.ver}</button></div>`}).join("");
+  $("tiles").querySelectorAll("[data-l]").forEach(b=>b.addEventListener("click",()=>{lineMetric=b.dataset.l;dashRender()}));
+  if(!h.seg){
+    $("childLabel").textContent="Segment cuts · click to drill in";
+    $("children").innerHTML=`<thead><tr><th>Segment</th><th class="r">Clients at start</th><th class="r">Retention</th><th class="r">Avg paid WSEs</th><th class="r">WSE growth</th><th class="r">Service satisfaction</th></tr></thead><tbody>${SEG.map(s=>`<tr class="drill" data-seg="${s.id}" tabindex="0"><td>${s.name} <span class="hint">${s.band}</span></td><td class="r num">${fmt(s.start)}</td><td class="r num">${pct(retention([s],ALL_ON).ret)}</td><td class="r num">${fmt(s.wse)}</td><td class="r num ${s.wse>=s.wsePrior?"good":"bad"}">${((s.wse/s.wsePrior-1)*100).toFixed(1)}%</td><td class="r num">${pct(s.csatSat/s.csatN)}</td></tr>`).join("")}</tbody>`;
+  } else if(!h.client){
+    $("childLabel").textContent=`Sample client holons in ${h.seg.name} · click to drill in`;
+    $("children").innerHTML=`<thead><tr><th>Client</th><th>Status</th><th class="r">Avg paid WSEs</th><th class="r">Prior year</th><th class="r">Service satisfaction</th></tr></thead><tbody>${CLIENTS[h.seg.id].map(c=>`<tr class="drill" data-cl="${c.id}" tabindex="0"><td>${esc(c.name)}</td><td><span class="pill ${STATUS[c.status][1]}">${STATUS[c.status][0]}</span></td><td class="r num">${fmt(c.wse)}</td><td class="r num">${fmt(c.wsePrior)}</td><td class="r num">${c.csatN<K_MIN?'<span class="warn">suppressed</span>':pct(c.csatSat/c.csatN)}</td></tr>`).join("")}</tbody>`;
+  } else {
+    const c=h.client;
+    $("childLabel").textContent="Worksite employee holons";
+    $("children").innerHTML=`<thead><tr><th>What the WSE holons contribute</th><th class="r">Records</th></tr></thead><tbody>
+      <tr><td>${esc(c.note)}</td><td class="r num">–</td></tr>
+      <tr><td>Paid WSEs, average of monthly counts (MET-006, MET-007)</td><td class="r num">${fmt(c.wse)}</td></tr>
+      <tr><td>COBRA-only participants excluded (MET-008)</td><td class="r num">${fmt(c.cobra)}</td></tr>
+      <tr><td>Workers classified as contractors by PAY-003 / PAY-004, excluded (MET-008)</td><td class="r num">${fmt(c.contractors)}</td></tr>
+      <tr><td>Valid survey responses (MET-009, MET-010)${c.csatN<K_MIN?" · below k, suppressed by MET-013":""}</td><td class="r num">${fmt(c.csatN)}</td></tr></tbody>`;
+  }
+  $("children").querySelectorAll("tr.drill").forEach(tr=>{const go=()=>{if(tr.dataset.seg)pathSel=[{lv:"company"},{lv:"segment",id:tr.dataset.seg}];else pathSel=pathSel.concat([{lv:"client",id:tr.dataset.cl}]);dashRender()};
+    tr.addEventListener("click",go);tr.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();go()}})});
+  lineageRender(h,v);
+}
+function lineageRender(h,v){
+  const m=METRICS[lineMetric],c=m.calc,steps=[];
+  steps.push(`<li class="card-s"><span class="k">Metric Definition Card</span><b>${m.id} v${m.ver}</b> · ${m.purpose}</li>`);
+  if(lineMetric==="retention"){
+    const segs=h.client?[h.seg]:h.segs,T=k=>segs.reduce((a,s)=>a+s[k],0),S=T("start");
+    [["MET-001","noticed","pending terminations held out"],["MET-002","transfers","transfers held out"],["MET-003","early","onboarding fallout held out"],["MET-004","migr","HRScale moves held out"]].forEach(([id,k,l])=>{
+      if(id==="MET-004"&&h.seg&&h.seg.id!=="mid")steps.push(`<li class="met"><span class="k">${id} · not inherited</span>Scoped to the HRScale holon; does not apply to ${esc(h.seg.name)}.</li>`);
+      else steps.push(`<li class="met"><span class="k">${id} · Enterprise (L4)${id==="MET-004"?" → HRScale holon":""}</span>${esc(R[id].Rule_Name)}<span class="n">${T(k)?fmt(T(k))+" "+l.split(" ")[0]:"–"}</span></li>`)});
+    steps.push(`<li class="pol"><span class="k">Inherited policy</span>GOV-007 identity resolution · TEC-001 tenant isolation · TEC-005 data classification</li>`);
+    steps.push(`<li class="eng"><span class="k">Calc Library → Engine A</span><span class="mono">${c.id}</span> v${c.version} (${c.alationId}, ${c.certification}) → <span class="mono">${m.model}</span></li>`);
+    steps.push(`<li class="eng"><span class="k">Sources</span>${m.sources.join(" · ")}</li>`);
+    steps.push(`<li class="res"><span class="k">Result · MET-005 ratio of sums</span>${h.client?esc(h.client.note):`1 − ${fmt(T("lost"))} ÷ ${fmt(S)} = <b>${pct(1-T("lost")/S)}</b>`}</li>`);
+  } else if(lineMetric==="wse"){
+    ["MET-006","MET-007","MET-008"].forEach(id=>steps.push(`<li class="met"><span class="k">${id} · Enterprise (L4)</span>${esc(R[id].Rule_Name)}</li>`));
+    steps.push(`<li class="pol"><span class="k">Inherited policy · Federal/State</span>PAY-003 economic-reality test · PAY-004 state ABC test decide who is a contractor</li>`);
+    steps.push(`<li class="eng"><span class="k">Calc Library → Engine A</span><span class="mono">${c.id}</span> v${c.version} (${c.alationId}) → <span class="mono">${m.model}</span></li>`);
+    const w=h.client?h.client.wse:h.segs.reduce((a,s)=>a+s.wse,0),wp=h.client?h.client.wsePrior:h.segs.reduce((a,s)=>a+s.wsePrior,0);
+    steps.push(`<li class="res"><span class="k">Result · sums, then growth</span>${!h.seg?SEG.map(s=>fmt(s.wse)).join(" + ")+" = ":""}${fmt(w)} ÷ ${fmt(wp)} − 1 = <b>${((w/wp-1)*100).toFixed(1)}%</b></li>`);
+  } else {
+    ["MET-009","MET-010","MET-011","MET-012"].forEach(id=>steps.push(`<li class="met"><span class="k">${id} · Enterprise (L4)</span>${esc(R[id].Rule_Name)}</li>`));
+    steps.push(`<li class="pol"><span class="k">MET-013 ← TEC-006 · GOV-009</span>Cuts under ${K_MIN} responses are suppressed (hr:SafeguardAggregationThreshold). Compiled to Engine B · isp.metrics.privacy</li>`);
+    steps.push(`<li class="eng"><span class="k">Calc Library → Engine A</span><span class="mono">${c.id}</span> v${c.version} (${c.alationId}, <span class="warn">${c.certification}</span>) → <span class="mono">${m.model}</span></li>`);
+    const n=h.client?h.client.csatN:h.segs.reduce((a,s)=>a+s.csatN,0),sat=h.client?h.client.csatSat:h.segs.reduce((a,s)=>a+s.csatSat,0);
+    steps.push(`<li class="res"><span class="k">Result · MET-012 weighted by responses</span>${n<K_MIN?`<span class="warn">${n} responses &lt; ${K_MIN}: suppressed by Engine B before the API returns a value.</span>`:`${fmt(sat)} satisfied ÷ ${fmt(n)} valid = <b>${pct(sat/n)}</b>`}</li>`);
+  }
+  const uri=`http://example.org/isp/metric/${m.id}/v${m.ver}/${h.key}/2026-06-30`;
+  const k=m.kgcl;
+  let extra="";
+  if(!h.seg&&lineMetric==="retention"){const avg=SEG.reduce((a,s)=>a+retention([s],ALL_ON).ret,0)/SEG.length;extra=`<div class="banner no"><div><b class="bad">Rejected by the MET-005 shape:</b> averaging segment retention gives ${pct(avg)}. Mid-market has 165 clients and Small business 9,900, so only the ratio of sums is valid.</div></div>`}
+  if(!h.seg&&lineMetric==="csat"){const avg=SEG.reduce((a,s)=>a+s.csatSat/s.csatN,0)/SEG.length;extra=`<div class="banner no"><div><b class="bad">Rejected by the MET-012 shape:</b> averaging segment scores gives ${pct(avg)}, not ${pct(tot("csatSat")/tot("csatN"))}.</div></div>`}
+  $("lineage").innerHTML=`<h3>Lineage: ${m.name}</h3><p class="hint" style="margin:-4px 0 12px">${h.level} · ${esc(h.name)}</p><ul class="lsteps">${steps.join("")}</ul>${extra}
+   <div class="sec-label">Immutable URI · GOV-022</div><div class="uri">${esc(uri)}</div>
+   <div class="sec-label">Provenance · KGCL stamp (GOV-018)</div><div class="kgcl"><b>WHO</b><span>${k.who}</span><b>WHAT</b><span>${k.what}</span><b>WHEN</b><span>${k.when}</span><b>WHERE</b><span>${k.where}</span><b>WHY</b><span>${k.why}</span></div>
+   <div class="sec-label">Same compiled model read by</div><p style="font-size:13px">${m.consumers.join(" · ")}</p>`;
+}
+dashRender();
+
+/* ================= DECISIONS ================= */
+const CRIT=[["Customer outcome alignment",.35],["Compliance risk (lower = riskier)",.25],["Time-to-value",.2],["Build-vs-buy fit",.2]];
+const score=v=>v.reduce((a,x,i)=>a+x*CRIT[i][1],0);
+const rec=s=>s>=7.5?["Prioritize","ok"]:s>=5?["Refine","hold"]:["Hold","no"];
+const segRet=id=>retention([SEG.find(s=>s.id===id)],ALL_ON).ret, segG=id=>{const s=SEG.find(x=>x.id===id);return s.wse/s.wsePrior-1}, segC=id=>{const s=SEG.find(x=>x.id===id);return s.csatSat/s.csatN};
+const DEC=[
+ {id:"D-26-031",title:"Prioritize Growing SMB (50–149) in the fall selling campaign",date:"Aug 12, 2026",owner:"VP Sales & Marketing",status:["Measuring","hold"],met14:true,
+  q:"Which SMB segment should get extra sales capacity and broker incentives this fall?",
+  ins:[
+   {id:"I-1",t:"Growing SMB retains best among SMB segments",d:`Retention ${pct(segRet("grow"))} vs ${pct(segRet("small"))} for Small business.`,m:"client-retention v2.1",used:true},
+   {id:"I-2",t:"Growing SMB is the only SMB segment adding WSEs",d:`WSE growth +${(segG("grow")*100).toFixed(1)}% vs ${(segG("small")*100).toFixed(1)}%.`,m:"wse-growth v1.4",used:true},
+   {id:"I-3",t:"Growing SMB rates service highest",d:`Service satisfaction ${pct(segC("grow"))} vs ${pct(segC("small"))}.`,m:"service-satisfaction v3.0",used:true},
+   {id:"I-4",t:"Competitors concentrate on 50–149",d:"ADP, TriNet, Paychex and Rippling all press on this segment (CI threat score 9).",m:"CI graph",used:true},
+   {id:"I-5",t:"Onboarding fallout concentrated in Small business",d:`${fmt(SEG[0].early)} of ${fmt(tot("early"))} first-90-day exits (MET-003).`,m:"onboarding-fallout v1.0",used:false}],
+  opts:[{id:"A",t:"Small business (5–49)",v:[6,7,6,5]},{id:"B",t:"Growing SMB (50–149)",v:[9,7,8,6],chosen:true},{id:"C",t:"Mid-market via HRScale",v:[7,5,4,7]}],
+  out:[{id:"O-1",t:"Growing SMB WSEs sold, fall campaign",target:"+8% vs last fall",metric:"wse-sold v1.1"},{id:"O-2",t:"Growing SMB client retention holds",target:"≥ 90.5%",metric:"client-retention v2.1"},{id:"O-3",t:"Guardrail: Small business retention",target:"≥ 87.5%",metric:"client-retention v2.1"}],
+  meas:[{o:"O-1",when:"30-day check · Sep 11",res:"+5.2% vs last fall",st:"warn",p:.65,note:"Behind pace, within range for day 30."},{o:"O-2",when:"Q3 check · Oct 15",res:"Pending",st:"pend",note:"Scheduled; reads client-retention v2.1."},{o:"O-3",when:"30-day check · Sep 11",res:"88.0%",st:"good",p:1,note:"Guardrail holding."}],
+  verdict:["hold","In flight: one outcome behind pace, one guardrail holding, one check scheduled. Insight I-5 was produced but not used by any decision, which makes it a candidate for the next one."]},
+ {id:"D-26-024",title:"Hold renewal price increases for Small business clients under 12 months’ tenure",date:"May 6, 2026",owner:"VP Pricing",status:["Worked","ok"],met14:true,
+  q:"Are margin-recovery price increases driving early-tenure clients to leave?",
+  ins:[{id:"I-6",t:"Early-tenure clients are most price-sensitive",d:"Attrition after a price increase was highest under 12 months’ tenure.",m:"client-retention v2.1",used:true},{id:"I-7",t:"Exit surveys cite price in early exits",d:"Price was the top stated reason among first-year exits.",m:"exit-reason v1.2",used:true}],
+  opts:[{id:"A",t:"Keep increases for everyone",v:[5,8,9,6]},{id:"B",t:"Hold increases for clients under 12 months",v:[8,8,8,7],chosen:true}],
+  out:[{id:"O-1",t:"Churn in held cohort vs control",target:"At least 2 pts lower",metric:"client-retention v2.1"},{id:"O-2",t:"Gross profit impact",target:"Under $1.5M",metric:"gross-profit v2.0"}],
+  meas:[{o:"O-1",when:"90-day check · Aug 4",res:"9.8% vs 12.4% control (−2.6 pts)",st:"good",p:1,note:"Target met."},{o:"O-2",when:"90-day check · Aug 4",res:"$1.1M",st:"good",p:.73,note:"Within limit."}],
+  verdict:["ok","Worked. Both outcomes met at the 90-day check; recommended for extension to all Small business renewals in Q1."]},
+ {id:"D-26-019",title:"Open HRScale sales to prospects above 1,000 employees",date:"Apr 21, 2026",owner:"HRScale GM",status:["Violates MET-014","no"],met14:false,
+  q:"Should HRScale pursue accounts above its original focus?",
+  ins:[{id:"I-8",t:"Larger prospects are asking for HRScale",d:"Several inbound requests from 1,000+ employee companies.",m:"CRM pipeline",used:true}],
+  opts:[{id:"A",t:"Stay at 150–1,000",v:[6,7,7,6]},{id:"B",t:"Open to 1,000+",v:[8,5,6,6],chosen:true}],
+  out:[],meas:[],
+  verdict:["no","Flagged by MET-014 at intake: no outcome is bound to a Released metric card, so nobody can say whether this worked. Fix: bind WSEs sold above 1,000 employees and implementation time, both as Metric Definition Cards."]}
+];
+let curD="D-26-031";
+(function(){const all=DEC.flatMap(d=>d.ins),used=all.filter(i=>i.used).length;
+  $("lstats").innerHTML=[[`${used}/${all.length}`,"insights used in a decision"],[`${DEC.filter(d=>d.met14).length}/${DEC.length}`,"decisions pass MET-014"],[`${DEC.filter(d=>d.meas.some(m=>m.st!=="pend")).length}/${DEC.length}`,"decisions measured so far"],["1","confirmed to have worked"]]
+   .map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("")})();
+$("dlist").innerHTML=DEC.map(d=>`<button data-d="${d.id}" aria-pressed="${d.id===curD}"><span class="did">${d.id} · ${d.date}</span><span class="dt">${esc(d.title)}</span><span><span class="pill ${d.status[1]}">${d.status[0]}</span></span></button>`).join("");
+$("dlist").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curD=b.dataset.d;$("dlist").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));decRender()});
+function decRender(){
+  const d=DEC.find(x=>x.id===curD);
+  $("dhead").innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h3 style="margin:0;font-size:22px">${esc(d.title)}</h3><span class="pill ${d.status[1]}">${d.status[0]}</span></div><p class="hint" style="margin:4px 0 14px">${d.id} · decided ${d.date} · owner ${d.owner} · ${esc(d.q)}</p>`;
+  const col=(h,b)=>`<div class="col"><h4>${h}</h4><div class="stack">${b}</div></div>`;
+  const ins=d.ins.map(i=>`<div class="node ins ${i.used?"":"orphan"}" data-n="${i.id}"><span class="nid">${i.id} · ${i.m}</span><b>${esc(i.t)}</b><p>${esc(i.d)}</p>${i.used?"":`<p style="margin-top:4px"><span class="pill">Not used by any decision</span></p>`}</div>`).join("");
+  const opts=d.opts.map(o=>{const s=score(o.v),r=rec(s);return `<div class="node ${o.chosen?"decision":""}" data-n="${o.chosen?"DEC":"OPT"+o.id}"><span class="nid">Option ${o.id}${o.chosen?" · chosen":""}</span><b>${esc(o.t)}</b>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span class="num" style="font-size:15px;font-weight:600">${s.toFixed(2)}</span><span class="pill ${r[1]}">${r[0]}</span></div>
+    ${o.chosen?CRIT.map((c,i)=>`<div class="score-row"><span class="hint">${c[0]} · ${Math.round(c[1]*100)}%</span><span class="num" style="font-size:11.5px;text-align:right">${o.v[i]}/10</span></div><div class="bar"><span style="width:${o.v[i]*10}%"></span></div>`).join(""):""}</div>`}).join("");
+  const out=d.out.length?d.out.map(o=>`<div class="node out" data-n="${o.id}"><span class="nid">${o.id} · ${o.metric}</span><b>${esc(o.t)}</b><p>Target: ${esc(o.target)}</p></div>`).join(""):`<div class="node missing" data-n="NOOUT"><span class="nid">MET-014</span><b>No outcome bound to a metric card</b><p>Flagged when the decision was recorded.</p></div>`;
+  const meas=d.meas.length?d.meas.map(m=>`<div class="node meas ${m.st}" data-n="M${m.o}"><span class="nid">${m.o} · ${m.when}</span><b>${esc(m.res)}</b><p>${esc(m.note)}</p>${m.p!=null?`<div class="meter"><span style="width:${m.p*100}%;background:var(--${m.st==="good"?"permission":"warning"})"></span></div>`:""}</div>`).join(""):`<div class="node missing" data-n="NOMEAS"><b>Nothing to measure</b><p>Without an outcome, no checkpoint was scheduled.</p></div>`;
+  $("cols").innerHTML=col("Insights",ins)+col("Options · Decision Modeling score",opts)+col("Committed outcomes",out)+col("Measured results",meas);
+  $("verdict").innerHTML=`<div class="banner ${d.verdict[0]}" style="margin-top:16px"><div>${esc(d.verdict[1])}</div></div>`;
+  requestAnimationFrame(wires);
+}
+function wires(){
+  const d=DEC.find(x=>x.id===curD),svg=$("wires"),box=$("trace").getBoundingClientRect();
+  if(getComputedStyle($("cols")).gridTemplateColumns.split(" ").length<4||!box.width){svg.innerHTML="";return}
+  const pt=(id,side)=>{const el=$("cols").querySelector(`[data-n="${id}"]`);if(!el)return null;const r=el.getBoundingClientRect();return {x:(side==="r"?r.right:r.left)-box.left,y:r.top+r.height/2-box.top}};
+  const L=[];d.ins.filter(i=>i.used).forEach(i=>L.push([i.id,"DEC",""]));
+  if(d.out.length){d.out.forEach(o=>L.push(["DEC",o.id,""]));d.meas.forEach(m=>L.push([m.o,"M"+m.o,""]))}else{L.push(["DEC","NOOUT","bad"]);L.push(["NOOUT","NOMEAS","bad"])}
+  svg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);
+  svg.innerHTML=L.map(([a,b,c])=>{const p=pt(a,"r"),q=pt(b,"l");if(!p||!q)return"";const mx=(p.x+q.x)/2;return `<path class="${c}" d="M${p.x},${p.y} C${mx},${p.y} ${mx},${q.y} ${q.x},${q.y}"/>`}).join("");
+}
+window.addEventListener("resize",()=>{if(!$("view-dec").hidden)wires()});
+decRender();
+
+/* ================= tabs ================= */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);$(t.getAttribute("aria-controls")).hidden=!on});if(id==="tab-dec")requestAnimationFrame(wires);try{localStorage.setItem("ssot-tab",id)}catch(e){}}
+tabs.forEach(t=>t.addEventListener("click",()=>show(t.id)));
+const hashMap={churn:"tab-hero",register:"tab-reg",dashboard:"tab-dash",decision:"tab-dec"};
+let start=hashMap[(location.hash||"").slice(1)];
+if(!start){try{start=localStorage.getItem("ssot-tab")}catch(e){}}
+if(start&&$(start))show(start);
+})();
+</script>

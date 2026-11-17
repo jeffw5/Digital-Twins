@@ -1,0 +1,1185 @@
+<title>Accelerator Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     TOKENS
+     ============================================================ */
+  :root {
+    --ink:            #16202B;
+    --ink-soft:       #2A3846;
+    --muted:          #56697C;
+    --paper:          #EEF2F6;
+    --surface:        #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --line:           #C9D5E0;
+    --line-soft:      #DCE4EC;
+
+    --accent:         #2A78D6; /* schematic blue — primary UI accent */
+    --accent-ink:     #ffffff;
+
+    --obligation:     #4A3AA7; /* violet — "must" */
+    --permission:     #1BAF7A; /* green  — "may / good / closed circuit" */
+    --prohibition:    #E34948; /* red    — "must not / critical / tripped" */
+    --warning:        #C98500; /* amber, darkened for AA on light paper */
+
+    --font-display: 'Big Shoulders', 'Arial Narrow', sans-serif;
+    --font-body:    'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:            #EAF0F6;
+      --ink-soft:       #C9D5E0;
+      --muted:          #93A3B4;
+      --paper:          #0E141B;
+      --surface:        #161F29;
+      --surface-raised: #1B2530;
+      --line:           #2A3644;
+      --line-soft:      #212C38;
+
+      --accent:         #5B9CE6;
+      --accent-ink:     #0B1116;
+
+      --obligation:     #9085E9;
+      --permission:     #2FC98D;
+      --prohibition:    #E97675;
+      --warning:        #E3A93B;
+
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink:            #EAF0F6;
+    --ink-soft:       #C9D5E0;
+    --muted:          #93A3B4;
+    --paper:          #0E141B;
+    --surface:        #161F29;
+    --surface-raised: #1B2530;
+    --line:           #2A3644;
+    --line-soft:      #212C38;
+
+    --accent:         #5B9CE6;
+    --accent-ink:     #0B1116;
+
+    --obligation:     #9085E9;
+    --permission:     #2FC98D;
+    --prohibition:    #E97675;
+    --warning:        #E3A93B;
+
+    color-scheme: dark;
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-attachment: local;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+  p { margin: 0; }
+  button { font-family: inherit; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+
+  a { color: var(--accent); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  .mono { font-family: var(--font-mono); }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  /* ============================================================
+     LAYOUT SHELL
+     ============================================================ */
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- top strip ---------- */
+  .topstrip {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: wrap;
+  }
+  .topstrip .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .topstrip .brand h1 {
+    font-size: 22px;
+    letter-spacing: 0.02em;
+  }
+  .topstrip .brand .who {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .status-strip {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .status-strip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block; margin-right: 6px;
+    background: var(--permission);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--permission) 22%, transparent);
+  }
+  .status-strip .dot.warn { background: var(--warning); box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 22%, transparent); }
+  .status-strip .dot.trip { background: var(--prohibition); box-shadow: 0 0 0 3px color-mix(in srgb, var(--prohibition) 22%, transparent); }
+
+  /* ---------- breaker rail ---------- */
+  .rail {
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+    padding: 18px 14px 24px;
+    position: sticky;
+    top: 53px;
+    align-self: start;
+    height: calc(100vh - 53px);
+    overflow-y: auto;
+  }
+  .rail .panel-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 8px 10px;
+  }
+  .breaker {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 8px;
+    margin-bottom: 3px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ink-soft);
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .breaker:hover { background: var(--paper); }
+  .breaker[aria-current="true"] {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--ink);
+  }
+  .switch {
+    flex: none;
+    width: 30px; height: 16px;
+    border-radius: 9px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    position: relative;
+    transition: background 0.15s ease;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 1px; left: 1px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .switch.on { background: var(--permission); border-color: var(--permission); }
+  .switch.on::after { transform: translateX(14px); }
+  .switch.trip { background: var(--prohibition); border-color: var(--prohibition); }
+  .switch.trip::after { transform: translateX(14px); }
+
+  .breaker .label { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .breaker .label .n { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+  .breaker .label .t { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .rail-foot {
+    margin-top: 18px;
+    padding: 12px 10px;
+    border-top: 1px solid var(--line);
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ---------- main ---------- */
+  main {
+    padding: 32px 40px 80px;
+    max-width: 980px;
+  }
+  section.view { display: none; }
+  section.view.active { display: block; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .section-head h2 { font-size: 30px; }
+  .section-head .code { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .dek {
+    color: var(--muted);
+    max-width: 62ch;
+    margin-top: 10px;
+    font-size: 15px;
+  }
+  .thesis {
+    margin-top: 16px;
+    max-width: 68ch;
+    font-size: 15.5px;
+  }
+  .thesis + .thesis { margin-top: 10px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .pill .sw { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .pill.obligation .sw { background: var(--obligation); }
+  .pill.permission .sw { background: var(--permission); }
+  .pill.prohibition .sw { background: var(--prohibition); }
+  .pill.obligation { color: var(--obligation); border-color: color-mix(in srgb, var(--obligation) 40%, var(--line)); }
+  .pill.permission { color: var(--permission); border-color: color-mix(in srgb, var(--permission) 40%, var(--line)); }
+  .pill.prohibition { color: var(--prohibition); border-color: color-mix(in srgb, var(--prohibition) 40%, var(--line)); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .tbl-wrap { overflow-x: auto; }
+
+  /* Overview summary grid */
+  .accel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 22px; }
+  @media (max-width: 760px) { .accel-grid { grid-template-columns: 1fr; } }
+  .accel-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.12s ease, transform 0.12s ease;
+    text-align: left;
+  }
+  .accel-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .accel-card .row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .accel-card .n { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .accel-card h3 { font-size: 16px; }
+  .accel-card .maps { font-size: 12px; color: var(--muted); }
+  .accel-card .maps b { color: var(--ink-soft); font-weight: 600; }
+  .status-ok { color: var(--permission); }
+
+  /* buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn.danger { background: var(--prohibition); }
+  .chip {
+    padding: 6px 11px;
+    border-radius: 99px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .chip:hover { border-color: var(--accent); color: var(--ink); }
+  .chip[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--ink); }
+
+  label.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+  select, input[type="text"], textarea {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+  .metric { display: flex; flex-direction: column; gap: 2px; }
+  .metric .v { font-family: var(--font-mono); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .metric .l { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .bar { height: 8px; border-radius: 5px; background: var(--line-soft); overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--accent); border-radius: 5px 0 0 5px; }
+
+  figure { margin: 0; }
+  figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  .foot-note {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  details.rule { border: 1px solid var(--line); border-radius: 8px; padding: 0; overflow: hidden; }
+  details.rule + details.rule { margin-top: 8px; }
+  details.rule summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  details.rule summary::-webkit-details-marker { display: none; }
+  details.rule .rule-body {
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .code-view {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    white-space: pre-wrap;
+    color: var(--ink-soft);
+  }
+  .view-toggle { display: flex; gap: 6px; margin: 10px 0; }
+
+  /* Holon layers */
+  .holon-stack { display: flex; flex-direction: column; gap: 8px; }
+  .holon {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: var(--surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .holon[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .holon .name { font-weight: 600; font-size: 14px; }
+  .holon .desc { font-size: 12px; color: var(--muted); }
+  .holon-detail {
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 13.5px;
+  }
+
+  /* Gateway pipeline */
+  .gateway-stage-label { font-size: 11.5px; text-align: center; color: var(--muted); margin-top: 6px; }
+  .gateway-stage-label.pass { color: var(--permission); }
+  .gateway-stage-label.fail { color: var(--prohibition); }
+
+  /* Lifecycle tracker */
+  .lifecycle { display: flex; align-items: center; gap: 0; margin: 10px 0 4px; }
+  .lifecycle .lc-node { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
+  .lifecycle .lc-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--line-soft); border: 2px solid var(--line); z-index: 1; }
+  .lifecycle .lc-node.done .lc-dot { background: var(--permission); border-color: var(--permission); }
+  .lifecycle .lc-node.current .lc-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .lifecycle .lc-node .lc-label { font-size: 11px; color: var(--muted); text-align: center; }
+  .lifecycle .lc-node.current .lc-label, .lifecycle .lc-node.done .lc-label { color: var(--ink-soft); }
+  .lifecycle .lc-line { position: absolute; top: 6px; left: -50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+  .lifecycle .lc-node.done .lc-line { background: var(--permission); }
+  .lifecycle .lc-node:first-child .lc-line { display: none; }
+
+  .product-card { border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: var(--surface); }
+  .product-card + .product-card { margin-top: 12px; }
+  .product-card summary { cursor: pointer; list-style: none; }
+  .product-card summary::-webkit-details-marker { display: none; }
+
+  /* Circuit breaker */
+  .breaker-hero {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (max-width: 700px) { .breaker-hero { grid-template-columns: 1fr; } }
+  .dial-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .dial-state { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--line); }
+  .dial-state.ok { color: var(--permission); border-color: color-mix(in srgb, var(--permission) 45%, var(--line)); }
+  .dial-state.tripped { color: var(--prohibition); border-color: color-mix(in srgb, var(--prohibition) 45%, var(--line)); background: color-mix(in srgb, var(--prohibition) 10%, transparent); }
+
+  .query-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; gap: 10px;
+  }
+  .query-row + .query-row { margin-top: 6px; }
+  .query-row .q { font-family: var(--font-mono); font-size: 12.5px; }
+  .gate-banner {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--prohibition) 45%, var(--line));
+    background: color-mix(in srgb, var(--prohibition) 10%, transparent);
+    color: var(--ink);
+    font-size: 13.5px;
+    margin-top: 14px;
+  }
+  .gate-banner.show { display: flex; }
+
+  .insight-strip {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    padding: 14px 16px; border: 1px dashed var(--line); border-radius: 8px; margin-top: 14px;
+    font-size: 13px; color: var(--muted);
+  }
+  .insight-strip b { color: var(--ink); font-family: var(--font-mono); }
+
+  svg text { font-family: var(--font-mono); }
+</style>
+
+<div class="app">
+  <div class="topstrip">
+    <div class="brand">
+      <h1>Accelerator Console</h1>
+      <span class="who">Jeffrey Wallk · prototype for Insperity</span>
+    </div>
+    <div class="status-strip" id="statusStrip">
+      <span><span class="dot" id="statusDot"></span><span id="statusText">6 / 6 accelerators operational</span></span>
+      <span class="mono">MTBH <span id="statusMtbh">412h</span></span>
+    </div>
+  </div>
+
+  <nav class="rail" aria-label="Accelerators">
+    <div class="panel-label">Panel — 6 circuits</div>
+    <button class="breaker" data-target="view-overview" aria-current="true">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">00</span><span class="t">Overview</span></span>
+    </button>
+    <button class="breaker" data-target="view-hsga">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">01</span><span class="t">HSGA</span></span>
+    </button>
+    <button class="breaker" data-target="view-decision">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">02</span><span class="t">Decision Modeling</span></span>
+    </button>
+    <button class="breaker" data-target="view-ssot">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">03</span><span class="t">SSOT — Rules &amp; Logic</span></span>
+    </button>
+    <button class="breaker" data-target="view-gateway">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">04</span><span class="t">Requirements Gateway</span></span>
+    </button>
+    <button class="breaker" data-target="view-plm">
+      <span class="switch on" aria-hidden="true"></span>
+      <span class="label"><span class="n">05</span><span class="t">PLM Dashboard</span></span>
+    </button>
+    <button class="breaker" data-target="view-circuit">
+      <span class="switch on" id="railBreakerSwitch" aria-hidden="true"></span>
+      <span class="label"><span class="n">06</span><span class="t">AI Circuit Breaker</span></span>
+    </button>
+    <div class="rail-foot">All data on this console is illustrative — a working prototype of the governance and product accelerators, not a connection to live Insperity systems.</div>
+  </nav>
+
+  <main>
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="view active" id="view-overview">
+      <div class="section-head">
+        <h2>Six accelerators, one governance spine</h2>
+      </div>
+      <p class="dek">Insperity runs a co-employment model at scale — one company standing behind payroll, benefits, and compliance for thousands of client businesses and 300,000+ worksite employees. That only works if the rules governing every one of those relationships are written once, enforced consistently, and traceable end to end. That's what these six accelerators are built to do.</p>
+
+      <p class="thesis">Each panel below is a working prototype of an accelerator I've built and refined in enterprise settings, re-cast against the priorities Insperity is actively investing in: platform modernization, an AI-first roadmap, and a widening product portfolio. Click any circuit — on the panel at left, or the cards below — to open it.</p>
+
+      <div class="accel-grid" id="overviewGrid"></div>
+
+      <div class="card" style="margin-top:26px;">
+        <div class="eyebrow" style="margin-bottom:10px;">How the six connect</div>
+        <figure>
+          <svg viewBox="0 0 900 300" role="img" aria-label="SSOT sits at the center, feeding Decision Modeling, the Requirements Gateway, and the PLM Dashboard; HSGA governs all four; the AI Circuit Breaker sits on every path that reaches an AI-driven action." style="width:100%; height:auto; color: var(--ink-soft);">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- HSGA governance frame -->
+            <rect x="20" y="16" width="860" height="240" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="4 5"></rect>
+            <text x="36" y="34" font-size="11" fill="currentColor" opacity="0.7">HSGA — GOVERNANCE FRAME (obligations &amp; permissions apply throughout)</text>
+
+            <!-- SSOT center -->
+            <rect x="380" y="120" width="140" height="56" rx="8" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+            <text x="450" y="144" font-size="12" text-anchor="middle" fill="currentColor">SSOT</text>
+            <text x="450" y="160" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="0.7">rules · constraints · logic</text>
+
+            <!-- Decision Modeling -->
+            <rect x="70" y="60" width="150" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="145" y="82" font-size="11" text-anchor="middle" fill="currentColor">Decision Modeling</text>
+            <text x="145" y="97" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.7">&amp; Measurement</text>
+
+            <!-- Requirements Gateway -->
+            <rect x="70" y="188" width="150" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="145" y="210" font-size="11" text-anchor="middle" fill="currentColor">Requirements</text>
+            <text x="145" y="225" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.7">Engineering Gateway</text>
+
+            <!-- PLM dashboard -->
+            <rect x="680" y="60" width="150" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="755" y="82" font-size="11" text-anchor="middle" fill="currentColor">PLM Dashboard</text>
+            <text x="755" y="97" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.7">product lifecycle</text>
+
+            <!-- AI Circuit Breaker -->
+            <rect x="680" y="188" width="150" height="52" rx="8" fill="none" stroke="var(--prohibition)" stroke-width="1.6"></rect>
+            <text x="755" y="210" font-size="11" text-anchor="middle" fill="var(--prohibition)">AI Circuit Breaker</text>
+            <text x="755" y="225" font-size="9" text-anchor="middle" fill="var(--prohibition)" opacity="0.85">MTBH gate</text>
+
+            <!-- connectors -->
+            <line x1="220" y1="86" x2="380" y2="138" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)"></line>
+            <line x1="220" y1="214" x2="380" y2="158" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)"></line>
+            <line x1="520" y1="138" x2="680" y2="86" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)"></line>
+            <line x1="520" y1="158" x2="680" y2="214" stroke="currentColor" stroke-width="1.2" marker-end="url(#arrow)"></line>
+          </svg>
+          <figcaption>SSOT is the single authored source for rules and constraints; Decision Modeling and the Requirements Gateway consume it going in, PLM and the AI Circuit Breaker enforce it going out. HSGA is the governance frame the whole spine sits inside.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================== HSGA ===================== -->
+    <section class="view" id="view-hsga">
+      <div class="section-head">
+        <h2>HSGA</h2>
+        <span class="code">Holonic Semantic Governance Architecture</span>
+      </div>
+      <p class="dek">Governance modeled as nested holons — each layer a whole in its own right and a part of the layer above it, autonomous within its scope but accountable to the obligations it inherits.</p>
+      <p class="thesis">A PEO's co-employment model is holonic whether or not anyone names it that way: Insperity sits inside federal and state regulatory frameworks, each client company sits inside Insperity's policy envelope, and each worksite employee sits inside their client's plan choices. HSGA makes those nested scopes explicit and machine-checkable, so a rule authored once at the top is inherited correctly at every layer below — instead of re-implemented, and re-drifted, four separate times.</p>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="eyebrow" style="margin-bottom:12px;">Click a layer</div>
+        <div class="holon-stack" id="holonStack"></div>
+        <div class="holon-detail" id="holonDetail"></div>
+      </div>
+    </section>
+
+    <!-- ===================== DECISION MODELING ===================== -->
+    <section class="view" id="view-decision">
+      <div class="section-head">
+        <h2>Decision Modeling &amp; Measurement</h2>
+        <span class="code">formal, weighted, reproducible</span>
+      </div>
+      <p class="dek">Product investment decisions scored against explicit, measurable criteria — not restated as a gut call after the fact.</p>
+      <p class="thesis">Pick a live-style initiative below and adjust the criteria. The composite score and recommendation update immediately — the point isn't the specific numbers, it's that the reasoning behind a "prioritize / refine / hold" call is visible and arguable, not buried in a single person's judgment.</p>
+
+      <div class="card" style="margin-top:20px;">
+        <label class="field" style="max-width: 360px;">
+          Initiative
+          <select id="initiativeSelect"></select>
+        </label>
+
+        <div class="grid-2" style="margin-top:18px;" id="criteriaGrid"></div>
+
+        <div style="margin-top:22px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+          <div class="metric">
+            <span class="v" id="compositeScore">0.0</span>
+            <span class="l">Investment Readiness</span>
+          </div>
+          <div class="pill" id="recommendationPill" style="font-size:12px; padding:6px 12px;">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SSOT ===================== -->
+    <section class="view" id="view-ssot">
+      <div class="section-head">
+        <h2>SSOT</h2>
+        <span class="code">rules, constraints &amp; logic — authored once</span>
+      </div>
+      <p class="dek">One semantic source for policy — obligations, permissions, and prohibitions — compiled down into whatever a system actually needs: a live compliance check, or an analytics filter.</p>
+      <p class="thesis">Expand a rule to see both forms: the canonical statement an SME or legal reviewer can read, and the compiled form a runtime system actually executes. Author once, enforce everywhere, and the same registry that runs the check also answers "how many obligations are we carrying, and where."</p>
+
+      <div class="card" style="margin-top:20px;">
+        <div id="ruleList"></div>
+        <div class="insight-strip" id="ssotInsight"></div>
+      </div>
+    </section>
+
+    <!-- ===================== GATEWAY ===================== -->
+    <section class="view" id="view-gateway">
+      <div class="section-head">
+        <h2>Requirements Engineering Gateway</h2>
+        <span class="code">RDSG — requirements-driven semantic gateway</span>
+      </div>
+      <p class="dek">Every requirement passes through the gateway before it reaches the roadmap — so investment ties to a named customer outcome, not just the loudest stakeholder.</p>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="eyebrow" style="margin-bottom:8px;">Try a requirement</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;" id="reqChips"></div>
+        <label class="field">
+          Requirement text
+          <textarea id="reqInput" rows="2" style="resize:vertical;"></textarea>
+        </label>
+        <div style="margin-top:12px;">
+          <button class="btn" id="runGateway">Run gateway →</button>
+        </div>
+
+        <div style="margin-top:26px;">
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;" id="gatewayStages"></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:20px;" id="gatewayResult"></div>
+      </div>
+    </section>
+
+    <!-- ===================== PLM ===================== -->
+    <section class="view" id="view-plm">
+      <div class="section-head">
+        <h2>PLM Dashboard</h2>
+        <span class="code">product lifecycle, portfolio-wide</span>
+      </div>
+      <p class="dek">Where every HR product line actually stands — stage, OKR progress, and what it depends on in the SSOT — in one view instead of three separate status decks.</p>
+
+      <div class="stack" style="margin-top:20px;" id="plmList"></div>
+    </section>
+
+    <!-- ===================== AI CIRCUIT BREAKER ===================== -->
+    <section class="view" id="view-circuit">
+      <div class="section-head">
+        <h2>AI Circuit Breaker</h2>
+        <span class="code">MTBH metrology — mean time between hallucinations</span>
+      </div>
+      <p class="dek">Borrowed from reliability engineering: treat an AI assistant's trustworthiness as a measured, monitored property, not an assumption. When confidence drops below threshold, the breaker trips before the action executes.</p>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="breaker-hero">
+          <div class="dial-wrap">
+            <svg viewBox="0 0 200 130" width="200" height="130" role="img" aria-label="MTBH dial showing current mean time between hallucinations against the sensitivity threshold">
+              <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="var(--line)" stroke-width="14" stroke-linecap="round"></path>
+              <path id="dialArc" d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="var(--permission)" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="0"></path>
+              <text x="100" y="95" text-anchor="middle" font-size="26" font-weight="600" fill="var(--ink)" id="dialValue">412</text>
+              <text x="100" y="114" text-anchor="middle" font-size="10" fill="var(--muted)">hours since last flag</text>
+            </svg>
+            <span class="dial-state ok" id="dialState">Closed — Normal</span>
+          </div>
+
+          <div>
+            <label class="field">
+              Sensitivity threshold — trip below <span class="mono" id="thresholdVal">70%</span> confidence
+              <input type="range" id="thresholdSlider" min="40" max="95" value="70">
+            </label>
+            <div style="margin-top:16px; display:flex; gap:10px;">
+              <button class="btn" id="simulateBtn">Simulate interaction queue</button>
+              <button class="btn ghost" id="resetBreaker">Reset breaker</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;" id="queryQueue"></div>
+
+        <div class="gate-banner" id="gateBanner">
+          <strong style="font-family: var(--font-mono); font-size:12px;">SIMPLEX ACTION GATE</strong>
+          <span>Irreversible action detected below threshold — execution halted, routed to human review.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot-note">Prototype built to demonstrate how these six accelerators — developed and refined across enterprise architecture and knowledge-engineering work — map onto Insperity's platform modernization, AI-first, and product-innovation priorities. Company names, rules, and metrics shown are illustrative scenarios, not live Insperity data.</div>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------
+     Accelerator registry (drives overview grid + nav labels)
+     --------------------------------------------------------- */
+  var ACCELERATORS = [
+    { id: "view-hsga", n: "01", name: "HSGA", full: "Holonic Semantic Governance Architecture", desc: "Nested governance layers — federal, enterprise, client, worksite employee — each accountable to the one above.", maps: "Multi-jurisdiction compliance at co-employment scale" },
+    { id: "view-decision", n: "02", name: "Decision Modeling & Measurement", full: "", desc: "Weighted, reproducible scoring for product investment decisions.", maps: "Investment prioritization across the HR product portfolio" },
+    { id: "view-ssot", n: "03", name: "SSOT", full: "Rules, Constraints & Logic", desc: "One authored source for policy — compiled to whatever a system needs, enforcement or analytics.", maps: "A single, auditable source for policy and insight" },
+    { id: "view-gateway", n: "04", name: "Requirements Engineering Gateway", full: "RDSG", desc: "Every requirement traced to a named customer outcome before it reaches the roadmap.", maps: "Product investment aligned to customer outcomes" },
+    { id: "view-plm", n: "05", name: "PLM Dashboard", full: "", desc: "Lifecycle stage, OKR progress, and SSOT dependencies for every product line, in one view.", maps: "Portfolio-wide product visibility" },
+    { id: "view-circuit", n: "06", name: "AI Circuit Breaker", full: "MTBH metrology", desc: "Measures AI trustworthiness and halts irreversible actions before they execute.", maps: "Safe AI-first rollout for GenAI HR assistants" }
+  ];
+
+  var grid = document.getElementById("overviewGrid");
+  ACCELERATORS.forEach(function (a) {
+    var card = document.createElement("button");
+    card.className = "accel-card";
+    card.setAttribute("data-target", a.id);
+    card.innerHTML =
+      '<div class="row1"><span class="n">' + a.n + '</span><span class="status-ok mono" style="font-size:11px;">● operational</span></div>' +
+      '<h3>' + a.name + (a.full ? '<br><span style="font-size:11px; color:var(--muted); font-weight:500; font-family:var(--font-mono);">' + a.full + '</span>' : '') + '</h3>' +
+      '<p style="font-size:12.5px; color:var(--muted);">' + a.desc + '</p>' +
+      '<div class="maps">Insperity priority: <b>' + a.maps + '</b></div>';
+    grid.appendChild(card);
+  });
+
+  /* ---------------------------------------------------------
+     Navigation
+     --------------------------------------------------------- */
+  function go(targetId) {
+    document.querySelectorAll("section.view").forEach(function (s) {
+      s.classList.toggle("active", s.id === targetId);
+    });
+    document.querySelectorAll(".breaker").forEach(function (b) {
+      b.setAttribute("aria-current", b.getAttribute("data-target") === targetId ? "true" : "false");
+    });
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+  document.querySelectorAll(".breaker, .accel-card").forEach(function (el) {
+    el.addEventListener("click", function () { go(el.getAttribute("data-target")); });
+  });
+
+  /* ---------------------------------------------------------
+     01 — HSGA holon stack
+     --------------------------------------------------------- */
+  var HOLONS = [
+    { name: "Federal Regulatory Holon", desc: "The outermost scope — statute", governs: "Every layer below, without exception.", inherits: "Nothing — this is the root.", sample: "FLSA overtime thresholds · EEOC anti-discrimination · ERISA fiduciary duties for benefit plans" },
+    { name: "Insperity Enterprise Holon", desc: "PEO-wide policy", governs: "Every client company's HR configuration.", inherits: "All federal obligations, resolved into enterprise-wide policy.", sample: "Standard benefits plan architecture · payroll cut-off rules · data retention schedule (33M+ HR records)" },
+    { name: "Client (SMB) Holon", desc: "Per-client configuration", governs: "That client's worksite employees and their plan elections.", inherits: "Enterprise policy, plus whichever state and local rules apply to that client's registered locations.", sample: "Texas Payday Law timing · client-specific PTO accrual schedule · 1099 contractor classification rules" },
+    { name: "Worksite Employee Holon", desc: "Individual scope", governs: "Nothing below — this is the leaf.", inherits: "Every obligation and permission from the three layers above, resolved down to this one person.", sample: "This employee's PTO balance · this employee's benefits eligibility window · this employee's FMLA status" }
+  ];
+  var holonStack = document.getElementById("holonStack");
+  var holonDetail = document.getElementById("holonDetail");
+  HOLONS.forEach(function (h, i) {
+    var row = document.createElement("button");
+    row.className = "holon";
+    row.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+    row.style.marginLeft = (i * 18) + "px";
+    row.style.width = "calc(100% - " + (i * 18) + "px)";
+    row.innerHTML = '<span><span class="name">' + h.name + '</span><br><span class="desc">' + h.desc + '</span></span><span class="mono" style="font-size:11px; color:var(--muted);">layer ' + (i + 1) + '/4</span>';
+    row.addEventListener("click", function () {
+      document.querySelectorAll(".holon").forEach(function (r) { r.setAttribute("aria-pressed", "false"); });
+      row.setAttribute("aria-pressed", "true");
+      renderHolon(h);
+    });
+    holonStack.appendChild(row);
+  });
+  function renderHolon(h) {
+    holonDetail.innerHTML =
+      '<dl class="kv">' +
+      '<dt>Governs</dt><dd>' + h.governs + '</dd>' +
+      '<dt>Inherits</dt><dd>' + h.inherits + '</dd>' +
+      '<dt>Sample obligations</dt><dd>' + h.sample + '</dd>' +
+      '</dl>';
+  }
+  renderHolon(HOLONS[0]);
+
+  /* ---------------------------------------------------------
+     02 — Decision Modeling & Measurement
+     --------------------------------------------------------- */
+  var INITIATIVES = {
+    "contractor": {
+      label: "Contractor Management Expansion (Wingspan)",
+      criteria: [
+        { key: "outcome", label: "Customer outcome alignment", weight: 0.35, value: 8 },
+        { key: "risk", label: "Compliance risk (lower = riskier)", weight: 0.25, value: 6 },
+        { key: "time", label: "Time-to-value", weight: 0.2, value: 7 },
+        { key: "buildbuy", label: "Build-vs-buy fit (internal capability)", weight: 0.2, value: 5 }
+      ]
+    },
+    "assistant": {
+      label: "AI HR Assistant Rollout",
+      criteria: [
+        { key: "outcome", label: "Customer outcome alignment", weight: 0.35, value: 7 },
+        { key: "risk", label: "Compliance risk (lower = riskier)", weight: 0.25, value: 4 },
+        { key: "time", label: "Time-to-value", weight: 0.2, value: 6 },
+        { key: "buildbuy", label: "Build-vs-buy fit (internal capability)", weight: 0.2, value: 8 }
+      ]
+    },
+    "benefits": {
+      label: "Benefits Marketplace Redesign",
+      criteria: [
+        { key: "outcome", label: "Customer outcome alignment", weight: 0.35, value: 6 },
+        { key: "risk", label: "Compliance risk (lower = riskier)", weight: 0.25, value: 7 },
+        { key: "time", label: "Time-to-value", weight: 0.2, value: 5 },
+        { key: "buildbuy", label: "Build-vs-buy fit (internal capability)", weight: 0.2, value: 4 }
+      ]
+    }
+  };
+  var initiativeSelect = document.getElementById("initiativeSelect");
+  Object.keys(INITIATIVES).forEach(function (k) {
+    var opt = document.createElement("option");
+    opt.value = k; opt.textContent = INITIATIVES[k].label;
+    initiativeSelect.appendChild(opt);
+  });
+  var criteriaGrid = document.getElementById("criteriaGrid");
+  var compositeScoreEl = document.getElementById("compositeScore");
+  var recommendationPill = document.getElementById("recommendationPill");
+  var currentInitiative = "contractor";
+
+  function renderCriteria() {
+    criteriaGrid.innerHTML = "";
+    INITIATIVES[currentInitiative].criteria.forEach(function (c) {
+      var wrap = document.createElement("label");
+      wrap.className = "field";
+      wrap.innerHTML =
+        c.label + ' — <span class="mono" data-val="' + c.key + '">' + c.value + '</span>/10' +
+        '<input type="range" min="0" max="10" value="' + c.value + '" data-key="' + c.key + '">';
+      criteriaGrid.appendChild(wrap);
+    });
+    criteriaGrid.querySelectorAll('input[type="range"]').forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        var key = inp.getAttribute("data-key");
+        var c = INITIATIVES[currentInitiative].criteria.find(function (x) { return x.key === key; });
+        c.value = Number(inp.value);
+        criteriaGrid.querySelector('[data-val="' + key + '"]').textContent = c.value;
+        computeScore();
+      });
+    });
+  }
+  function computeScore() {
+    var crit = INITIATIVES[currentInitiative].criteria;
+    var score = crit.reduce(function (sum, c) { return sum + (c.value * c.weight); }, 0);
+    compositeScoreEl.textContent = score.toFixed(1);
+    var label, cls;
+    if (score >= 7.5) { label = "Prioritize"; cls = "permission"; }
+    else if (score >= 5) { label = "Refine"; cls = "obligation"; }
+    else { label = "Hold"; cls = "prohibition"; }
+    recommendationPill.className = "pill " + cls;
+    recommendationPill.innerHTML = '<span class="sw"></span>' + label;
+  }
+  initiativeSelect.addEventListener("change", function () {
+    currentInitiative = initiativeSelect.value;
+    renderCriteria();
+    computeScore();
+  });
+  renderCriteria();
+  computeScore();
+
+  /* ---------------------------------------------------------
+     03 — SSOT rules
+     --------------------------------------------------------- */
+  var RULES = [
+    { id: "R-1042", type: "obligation", jurisdiction: "Federal", statement: "Overtime must be paid at 1.5× for non-exempt worksite employees beyond 40hrs/week.", canonical: "obligation(pay_overtime) :- worksite_employee(X), classification(X, non_exempt), hours(X, H), H > 40.", compiled: "-- OPA/Rego\nallow_payroll_run {\n  input.classification == \"non_exempt\"\n  input.hours <= 40\n} else = flag {\n  input.overtime_rate >= 1.5\n}" },
+    { id: "R-1108", type: "prohibition", jurisdiction: "Federal (EEOC)", statement: "Hiring and promotion logic must not use protected-class attributes as a decision input.", canonical: "prohibition(use_attr) :- decision(hiring), attribute(X, protected_class).", compiled: "-- SQL CHECK\nCHECK (decision_inputs NOT LIKE '%protected_class%')" },
+    { id: "R-2231", type: "permission", jurisdiction: "Texas (state)", statement: "Client companies in Texas may set pay period cadence weekly, biweekly, or semimonthly, but not monthly.", canonical: "permission(pay_cadence, X) :- client(C, state, tx), X in {weekly, biweekly, semimonthly}.", compiled: "-- runtime enum guard\nvalid_cadence = {\"weekly\",\"biweekly\",\"semimonthly\"}" },
+    { id: "R-3390", type: "obligation", jurisdiction: "Federal (ERISA)", statement: "Any benefit plan modification affecting vested rights requires a disclosure event logged before execution.", canonical: "obligation(log_disclosure) :- action(modify_benefit), affects(vested_rights).", compiled: "-- Simplex Action Gate\nrequire human_signoff BEFORE commit\n  WHEN action == \"modify_benefit\" AND affects_vested == true" },
+    { id: "R-4415", type: "permission", jurisdiction: "Enterprise", statement: "Anonymized, aggregated workforce data may be used for benchmarking products (turnover, comp) once k-anonymity ≥ 5 is met.", canonical: "permission(publish_benchmark, D) :- aggregate(D), k_anonymity(D) >= 5.", compiled: "-- data marketplace guard\nWHERE COUNT(DISTINCT employee_id) >= 5" }
+  ];
+  var typeLabel = { obligation: "Obligation", permission: "Permission", prohibition: "Prohibition" };
+  var ruleList = document.getElementById("ruleList");
+  RULES.forEach(function (r) {
+    var det = document.createElement("details");
+    det.className = "rule";
+    det.innerHTML =
+      '<summary>' +
+        '<span><span class="mono" style="font-size:11.5px; color:var(--muted); margin-right:10px;">' + r.id + '</span>' + r.statement + '</span>' +
+        '<span class="pill ' + r.type + '"><span class="sw"></span>' + typeLabel[r.type] + '</span>' +
+      '</summary>' +
+      '<div class="rule-body">' +
+        '<div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Jurisdiction: ' + r.jurisdiction + '</div>' +
+        '<div class="view-toggle">' +
+          '<button class="chip" aria-pressed="true" data-view="canon">Canonical form</button>' +
+          '<button class="chip" aria-pressed="false" data-view="compiled">Compiled form</button>' +
+        '</div>' +
+        '<div class="code-view" data-content="canon">' + r.canonical + '</div>' +
+        '<div class="code-view" data-content="compiled" style="display:none;">' + r.compiled + '</div>' +
+      '</div>';
+    var chips = det.querySelectorAll(".chip");
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function (e) {
+        e.preventDefault();
+        chips.forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+        chip.setAttribute("aria-pressed", "true");
+        var view = chip.getAttribute("data-view");
+        det.querySelector('[data-content="canon"]').style.display = view === "canon" ? "block" : "none";
+        det.querySelector('[data-content="compiled"]').style.display = view === "compiled" ? "block" : "none";
+      });
+    });
+    ruleList.appendChild(det);
+  });
+  var obligationCount = RULES.filter(function (r) { return r.type === "obligation"; }).length;
+  var jurisdictions = Array.from(new Set(RULES.map(function (r) { return r.jurisdiction; }))).length;
+  document.getElementById("ssotInsight").innerHTML =
+    '<span><b>' + obligationCount + '</b> active obligations</span>' +
+    '<span><b>' + jurisdictions + '</b> jurisdictions covered</span>' +
+    '<span>1 SSOT feeding both compliance checks and workforce analytics</span>';
+
+  /* ---------------------------------------------------------
+     04 — Requirements Engineering Gateway
+     --------------------------------------------------------- */
+  var OUTCOME_LIBRARY = [
+    { keywords: ["contractor", "1099"], outcome: "Reduce contractor onboarding friction" },
+    { keywords: ["benefit", "enroll", "pto", "severance"], outcome: "Increase employee trust in self-service HR" },
+    { keywords: ["report", "dashboard", "benchmark"], outcome: "Improve client visibility into workforce data" },
+    { keywords: ["ai", "assistant", "chatbot"], outcome: "Deliver safe, grounded AI-first HR experiences" }
+  ];
+  var SAMPLE_REQS = [
+    "Contractors should be able to see their 1099 status in the portal",
+    "Add a chatbot that can answer benefits questions instantly",
+    "Give client admins a live turnover benchmark report"
+  ];
+  var reqChips = document.getElementById("reqChips");
+  var reqInput = document.getElementById("reqInput");
+  SAMPLE_REQS.forEach(function (t, i) {
+    var chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = "Example " + (i + 1);
+    chip.title = t;
+    chip.addEventListener("click", function () { reqInput.value = t; });
+    reqChips.appendChild(chip);
+  });
+  reqInput.value = SAMPLE_REQS[0];
+
+  var STAGES = ["Intake", "Semantic Validation", "Outcome Traceability", "Compliance Check"];
+  var gatewayStages = document.getElementById("gatewayStages");
+  function renderStages(states) {
+    gatewayStages.innerHTML = "";
+    STAGES.forEach(function (s, i) {
+      var st = states ? states[i] : "pending";
+      var box = document.createElement("div");
+      box.innerHTML =
+        '<div class="card" style="padding:12px; text-align:center; border-color:' + (st === "pass" ? "var(--permission)" : st === "fail" ? "var(--prohibition)" : "var(--line)") + ';">' +
+          '<div class="mono" style="font-size:10px; color:var(--muted);">STAGE ' + (i + 1) + '</div>' +
+          '<div style="font-size:12.5px; font-weight:600; margin-top:4px;">' + s + '</div>' +
+        '</div>' +
+        '<div class="gateway-stage-label ' + st + '">' + (st === "pending" ? "—" : st === "pass" ? "✓ pass" : "✕ needs revision") + '</div>';
+      gatewayStages.appendChild(box);
+    });
+  }
+  renderStages(null);
+
+  document.getElementById("runGateway").addEventListener("click", function () {
+    var text = reqInput.value.toLowerCase();
+    var matched = null;
+    for (var i = 0; i < OUTCOME_LIBRARY.length; i++) {
+      if (OUTCOME_LIBRARY[i].keywords.some(function (k) { return text.indexOf(k) !== -1; })) { matched = OUTCOME_LIBRARY[i]; break; }
+    }
+    var hasComplianceTerm = /contractor|benefit|1099|pto|severance/.test(text);
+    var states = [
+      "pass",
+      text.trim().length > 12 ? "pass" : "fail",
+      matched ? "pass" : "fail",
+      "pass"
+    ];
+    renderStages(states);
+
+    var score = states.filter(function (s) { return s === "pass"; }).length / STAGES.length * 100;
+    var result = document.getElementById("gatewayResult");
+    result.innerHTML =
+      '<div class="card"><div class="metric"><span class="v">' + Math.round(score) + '%</span><span class="l">Traceability score</span></div></div>' +
+      '<div class="card"><div class="eyebrow" style="margin-bottom:6px;">Linked customer outcome</div><div style="font-size:14px; font-weight:600;">' + (matched ? matched.outcome : "No confident match — route back to product for reframing") + '</div>' +
+      (hasComplianceTerm ? '<div style="margin-top:8px;" class="pill obligation"><span class="sw"></span>Flag for HSGA / SSOT compliance review</div>' : "") +
+      '</div>';
+  });
+
+  /* ---------------------------------------------------------
+     05 — PLM Dashboard
+     --------------------------------------------------------- */
+  var PRODUCTS = [
+    {
+      name: "Contractor Management (powered by Wingspan)",
+      stage: 3,
+      okrs: [
+        { label: "Onboarding time under 48 hours", pct: 72 },
+        { label: "1099 compliance auto-checks live in all 50 states", pct: 58 }
+      ],
+      depends: ["R-2231", "R-4415"]
+    },
+    {
+      name: "AI HR Assistant",
+      stage: 2,
+      okrs: [
+        { label: "MTBH ≥ 400 hours in staging", pct: 81 },
+        { label: "Grounded on 100% of verified policy set", pct: 64 }
+      ],
+      depends: ["R-3390", "R-1108"]
+    },
+    {
+      name: "Benefits Marketplace",
+      stage: 4,
+      okrs: [
+        { label: "Client self-serve plan comparison live", pct: 90 },
+        { label: "Turnover benchmark product in beta", pct: 35 }
+      ],
+      depends: ["R-4415", "R-1042"]
+    }
+  ];
+  var LC_STAGES = ["Discover", "Define", "Build", "Launch", "Scale"];
+  var plmList = document.getElementById("plmList");
+  PRODUCTS.forEach(function (p) {
+    var wrap = document.createElement("details");
+    wrap.className = "product-card";
+    wrap.open = false;
+    var lifecycleHtml = LC_STAGES.map(function (s, i) {
+      var cls = i < p.stage ? "done" : i === p.stage ? "current" : "";
+      return '<div class="lc-node ' + cls + '"><span class="lc-line"></span><span class="lc-dot"></span><span class="lc-label">' + s + '</span></div>';
+    }).join("");
+    var okrHtml = p.okrs.map(function (o) {
+      return '<div style="margin-top:8px;"><div style="display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:4px;"><span>' + o.label + '</span><span class="mono">' + o.pct + '%</span></div><div class="bar"><span style="width:' + o.pct + '%;"></span></div></div>';
+    }).join("");
+    wrap.innerHTML =
+      '<summary><div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">' +
+        '<h3 style="font-size:16px; font-family:var(--font-body); font-weight:600;">' + p.name + '</h3>' +
+        '<span class="mono" style="font-size:11px; color:var(--muted);">stage: ' + LC_STAGES[p.stage] + '</span>' +
+      '</div>' +
+      '<div class="lifecycle">' + lifecycleHtml + '</div></summary>' +
+      '<div style="margin-top:14px;">' + okrHtml + '</div>' +
+      '<div style="margin-top:12px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;"><span class="eyebrow">SSOT dependencies</span>' +
+      p.depends.map(function (d) { return '<span class="pill" style="color:var(--ink-soft);"><span class="sw" style="background:var(--accent);"></span>' + d + '</span>'; }).join("") +
+      '</div>';
+    plmList.appendChild(wrap);
+  });
+
+  /* ---------------------------------------------------------
+     06 — AI Circuit Breaker
+     --------------------------------------------------------- */
+  var QUERIES = [
+    { q: "What's my current PTO balance?", confidence: 96, irreversible: false },
+    { q: "Am I eligible for FMLA leave this quarter?", confidence: 88, irreversible: false },
+    { q: "Cancel my 401(k) contribution starting next pay period", confidence: 61, irreversible: true },
+    { q: "Update my dependent's coverage on the health plan", confidence: 54, irreversible: true }
+  ];
+  var thresholdSlider = document.getElementById("thresholdSlider");
+  var thresholdVal = document.getElementById("thresholdVal");
+  var dialArc = document.getElementById("dialArc");
+  var dialValue = document.getElementById("dialValue");
+  var dialState = document.getElementById("dialState");
+  var railSwitch = document.getElementById("railBreakerSwitch");
+  var gateBanner = document.getElementById("gateBanner");
+  var queryQueue = document.getElementById("queryQueue");
+  var statusDot = document.getElementById("statusDot");
+  var statusText = document.getElementById("statusText");
+  var statusMtbh = document.getElementById("statusMtbh");
+  var ARC_LEN = 251.2;
+  var mtbhHours = 412;
+
+  thresholdSlider.addEventListener("input", function () {
+    thresholdVal.textContent = thresholdSlider.value + "%";
+  });
+
+  function setTripped(tripped) {
+    dialState.textContent = tripped ? "Tripped — Gate Active" : "Closed — Normal";
+    dialState.className = "dial-state " + (tripped ? "tripped" : "ok");
+    dialArc.style.stroke = tripped ? "var(--prohibition)" : "var(--permission)";
+    railSwitch.className = "switch " + (tripped ? "trip" : "on");
+    gateBanner.classList.toggle("show", tripped);
+    statusDot.className = "dot " + (tripped ? "trip" : "");
+    statusText.textContent = tripped ? "1 accelerator gated — human review pending" : "6 / 6 accelerators operational";
+    statusMtbh.textContent = mtbhHours + "h";
+    dialValue.textContent = mtbhHours;
+    dialArc.style.strokeDashoffset = tripped ? ARC_LEN * 0.75 : 0;
+  }
+
+  document.getElementById("resetBreaker").addEventListener("click", function () {
+    mtbhHours = 412;
+    queryQueue.innerHTML = "";
+    setTripped(false);
+  });
+
+  document.getElementById("simulateBtn").addEventListener("click", function () {
+    var threshold = Number(thresholdSlider.value);
+    queryQueue.innerHTML = "";
+    var tripped = false;
+    QUERIES.forEach(function (item, i) {
+      var flagged = item.confidence < threshold && item.irreversible;
+      if (flagged) tripped = true;
+      var row = document.createElement("div");
+      row.className = "query-row";
+      row.style.borderColor = flagged ? "var(--prohibition)" : "var(--line)";
+      row.innerHTML =
+        '<span class="q">"' + item.q + '"</span>' +
+        '<span style="display:flex; gap:10px; align-items:center;">' +
+          '<span class="mono" style="font-size:11.5px; color:var(--muted);">confidence ' + item.confidence + '%</span>' +
+          '<span class="pill ' + (flagged ? "prohibition" : "permission") + '"><span class="sw"></span>' + (flagged ? "gated" : "executed") + '</span>' +
+        '</span>';
+      queryQueue.appendChild(row);
+    });
+    mtbhHours = tripped ? 6 : 412;
+    setTripped(tripped);
+  });
+
+  setTripped(false);
+})();
+</script>

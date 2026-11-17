@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insperity PLM Dashboard</title>
+<style>
+:root{
+  --navy:#0B1F3A; --navy2:#12305A; --navy-soft:#1C3A63;
+  --gold:#C8A951; --gold-hi:#E4C572;
+  --ice:#EDF2F8; --ice2:#F6F9FC; --surface:#FFFFFF;
+  --ink:#20344B; --muted:#5E7188; --hair:#D8E1EC;
+  --go:#2E7D5B; --go-bg:#E6F1EC; --go-hair:#B7D8C6;
+  --rev:#B8842B; --rev-bg:#F7EEDD; --rev-hair:#E6D2A6;
+  --nogo:#B23A3A; --nogo-bg:#F7E7E6; --nogo-hair:#E6BDBD;
+  --crit:#8E1F1F; --crit-bg:#F3DCDB;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--ice);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:600}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+header.top{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.top .wrap{display:flex;align-items:center;gap:14px;padding:11px 20px;flex-wrap:wrap}
+.brandmark{width:30px;height:30px;flex:0 0 auto}
+.brandtext .k{font-family:var(--serif);font-size:17px}
+.brandtext .s{font-size:11px;color:#9db4d4;letter-spacing:.06em;text-transform:uppercase}
+.mainnav{display:flex;gap:2px;margin-left:6px;flex-wrap:wrap}
+.navbtn{border:0;background:transparent;color:#c3d3ea;font:inherit;font-size:13px;padding:7px 11px;border-radius:8px;cursor:pointer}
+.navbtn:hover{background:rgba(255,255,255,.08);color:#fff}
+.navbtn.active{background:var(--gold);color:var(--navy);font-weight:600}
+.top .spacer{flex:1}
+.projpick{display:flex;align-items:center;gap:6px}
+.projpick label{font-size:11px;color:#9db4d4;text-transform:uppercase;letter-spacing:.05em}
+.projpick select{font:inherit;font-size:13px;background:var(--navy2);color:#fff;border:1px solid var(--navy-soft);border-radius:8px;padding:6px 8px}
+.sebok-chip{background:rgba(255,255,255,.08);border:1px solid rgba(200,169,81,.5);color:var(--gold-hi);font-size:12px;padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.sebok-chip:hover{background:rgba(255,255,255,.14)}
+
+.band{background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;padding:24px 0 28px}
+.det-grid{display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:center}
+.seal-holder{display:flex;flex-direction:column;align-items:center;gap:10px}
+.appetite{display:flex;gap:4px;background:rgba(255,255,255,.06);padding:4px;border-radius:999px}
+.appetite button{border:0;background:transparent;color:#9db4d4;font:inherit;font-size:12px;padding:5px 10px;border-radius:999px;cursor:pointer}
+.appetite button[aria-pressed="true"]{background:var(--gold);color:var(--navy);font-weight:600}
+.det-copy .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi)}
+.det-copy h1{font-family:var(--serif);font-size:28px;font-weight:600;margin:6px 0 8px;line-height:1.15}
+.det-copy p.lede{color:#c3d3ea;max-width:64ch;margin:0 0 14px}
+.verdict-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.tag{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:6px}
+.verdict-reason{color:#c3d3ea;font-size:14px}
+.metrics{display:flex;gap:24px;margin-top:16px;flex-wrap:wrap}
+.metric .v{font-family:var(--mono);font-size:22px;font-weight:600}
+.metric .l{font-size:12px;color:#9db4d4;letter-spacing:.04em;text-transform:uppercase}
+
+.statusbar{background:var(--navy);color:#fff}
+.statusbar .wrap{display:flex;align-items:center;gap:14px;padding:12px 20px;flex-wrap:wrap}
+.backlink{border:0;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:13px;padding:7px 12px;border-radius:8px;cursor:pointer}
+.backlink:hover{background:rgba(255,255,255,.16)}
+.sb-title{font-family:var(--serif);font-size:19px;display:flex;align-items:center;gap:10px}
+.sb-spacer{flex:1}
+.sb-chip{font-size:13px;font-family:var(--mono);padding:5px 12px;border-radius:999px;font-weight:600}
+.prevnext{display:flex;gap:6px}
+.prevnext button{border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;font:inherit;font-size:13px;padding:6px 11px;border-radius:8px;cursor:pointer}
+.prevnext button:hover{background:rgba(255,255,255,.1)}
+
+main{padding:22px 0 60px}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:16px}
+.card h3{font-family:var(--serif);font-size:16px;margin-bottom:4px}
+.card .hint{font-size:12px;color:var(--muted);margin-bottom:10px}
+.phase-id{font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--navy);padding:3px 8px;border-radius:5px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--hair);display:inline-block}
+.aggbar{height:8px;background:var(--ice);border-radius:999px;overflow:hidden;border:1px solid var(--hair)}
+.aggbar>span{display:block;height:100%;width:0;background:var(--muted);transition:width .35s,background .35s}
+
+/* Portfolio */
+.pf-head{display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:center}
+.heatwrap{overflow-x:auto}
+table.heat{border-collapse:separate;border-spacing:4px;width:100%;min-width:640px}
+table.heat th{font-size:12px;color:var(--muted);font-weight:600;text-align:center;padding:4px}
+table.heat th.proj{text-align:left}
+table.heat td{text-align:center}
+.pcell{width:100%;padding:9px 6px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;border:1px solid transparent}
+.pcell.empty{background:var(--ice);color:var(--muted);font-family:var(--sans);font-weight:400}
+.projrow{display:flex;align-items:center;gap:8px;cursor:pointer;font:inherit;background:none;border:0;padding:6px 4px;text-align:left;color:var(--ink);width:100%}
+.projrow:hover .pname{text-decoration:underline}
+.pname{font-weight:600;font-size:14px}
+.pverd{font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px}
+
+/* Guidance / steps */
+.guidance{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 20px;margin-bottom:22px}
+.guidance h2{font-family:var(--serif);font-size:18px;margin-bottom:12px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{display:flex;gap:12px}
+.step .num{font-family:var(--mono);font-size:13px;color:var(--gold);background:var(--navy);width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.step .st{font-weight:600;font-size:14px}.step .sd{font-size:13px;color:var(--muted)}
+
+.home-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tile{text-align:left;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:16px;cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:8px}
+.tile:hover{border-color:var(--navy-soft);box-shadow:0 3px 14px rgba(11,31,58,.07)}
+.tile-top{display:flex;align-items:center;justify-content:space-between}
+.tile-name{font-family:var(--serif);font-size:20px}
+.tile-meta{font-size:12px;color:var(--muted)}
+.tile-ratio{font-family:var(--mono);font-size:22px;font-weight:600;display:flex;align-items:baseline;gap:6px}
+.tile-ratio small{font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400}
+.appmini{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border:1px solid var(--hair);border-radius:5px;padding:1px 6px}
+.home-side{display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
+.radar-wrap{display:flex;justify-content:center}
+.packet-empty{font-size:13px;color:var(--go);background:var(--go-bg);border:1px solid var(--go-hair);border-radius:8px;padding:12px}
+.pk{border-left:3px solid var(--hair);padding:8px 0 8px 12px;margin:8px 0}
+.pk.hard{border-color:var(--nogo)}.pk.gap{border-color:var(--rev)}.pk.evi{border-color:var(--muted)}
+.pk .pk-t{font-size:13px;font-weight:600}.pk .pk-m{font-size:12px;color:var(--muted);margin-top:2px}
+.pk .own{color:var(--navy2)}.pk-mono{font-family:var(--mono)}
+.count-pill{font-family:var(--mono);font-size:12px;background:var(--ice);border:1px solid var(--hair);border-radius:999px;padding:1px 9px;margin-left:6px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13px;border:1px solid var(--hair);background:#fff;color:var(--ink);padding:8px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--navy-soft);background:var(--ice2)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.primary:hover{background:var(--navy2)}
+
+/* Phase detail */
+.phasewrap{max-width:920px}
+.hardbanner{background:var(--nogo-bg);border:1px solid var(--nogo-hair);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;color:var(--nogo);font-size:13px}
+.appstrip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:14px 16px;margin-bottom:18px}
+.appstrip .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.threshbar{position:relative;flex:1;min-width:220px;height:22px;background:var(--ice);border-radius:6px;overflow:hidden;border:1px solid var(--hair)}
+.threshbar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--muted);opacity:.9}
+.threshbar .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--navy)}
+.threshbar .tick.hi{background:var(--go)}.threshbar .tick.lo{background:var(--nogo)}
+.threshbar .tk-label{position:absolute;top:2px;font-size:10px;font-family:var(--mono);color:#fff;transform:translateX(4px)}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:7px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;font-family:var(--mono);font-size:13px;width:30px;height:30px;cursor:pointer;color:var(--muted);border-left:1px solid var(--hair)}
+.seg button:first-child{border-left:0;font-family:var(--sans);font-size:15px}
+.seg button:hover{background:var(--ice)}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.seg button[aria-pressed="true"].s0{background:var(--nogo)}
+.seg.target button[aria-pressed="true"]{background:var(--gold);color:var(--navy)}
+.seg.disabled{opacity:.45;pointer-events:none}
+.segapp{display:inline-flex;border:1px solid var(--hair);border-radius:7px;overflow:hidden}
+.segapp button{border:0;border-left:1px solid var(--hair);background:#fff;font:inherit;font-size:12px;padding:6px 12px;cursor:pointer;color:var(--muted)}
+.segapp button:first-child{border-left:0}
+.segapp button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);overflow:hidden;margin-bottom:18px}
+.group{padding:4px 18px 14px}
+.group-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy2);font-weight:600;margin:16px 0 6px;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.group-label .owner{font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0}
+.art{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:9px 0;border-top:1px solid var(--ice)}
+.art:first-child{border-top:0}
+.art-name{font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.crit{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--nogo);border:1px solid var(--nogo-hair);background:var(--nogo-bg);padding:1px 6px;border-radius:4px}
+.nb{font-size:11px;color:var(--muted);font-style:italic}
+.baseline{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.baseline b{color:var(--navy2)}
+.gap-flag{font-family:var(--mono);font-size:12px;padding:2px 7px;border-radius:5px;min-width:58px;text-align:center}
+.rightcell{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.seg-cap{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-right:2px}
+
+/* Targets */
+.targets-intro{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 20px;margin-bottom:20px}
+.targets-intro h2{font-family:var(--serif);font-size:18px;margin-bottom:6px}
+.targets-intro p{font-size:14px;margin:6px 0;max-width:82ch}
+.wavebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--ice)}
+.wavebar .wl{font-size:13px;color:var(--muted)}
+.tphase{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.tphase-head{display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--ice2);border-bottom:1px solid var(--hair);flex-wrap:wrap}
+.tphase-name{font-family:var(--serif);font-size:18px}
+.tphase-read{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.bulk{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;align-items:center}
+.bulk button{border:1px solid var(--hair);background:#fff;font:inherit;font-size:12px;padding:5px 9px;border-radius:7px;cursor:pointer;color:var(--ink)}
+.bulk button:hover{border-color:var(--navy-soft);background:var(--ice)}
+.tart{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:8px 18px;border-top:1px solid var(--ice)}
+.tart .cur{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* Risk */
+.riskhead{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-bottom:22px}
+.proceed{background:var(--surface);border:1px solid var(--hair);border-left:4px solid var(--nogo);border-radius:var(--radius);padding:16px 18px}
+.proceed h3{font-family:var(--serif);font-size:17px;margin-bottom:6px}
+.proceed .big{font-size:14px}
+.proceed ul{margin:8px 0 0;padding-left:18px}
+.proceed li{font-size:13px;margin:4px 0}
+.bandgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bandbox{border-radius:8px;padding:12px;text-align:center;border:1px solid var(--hair)}
+.bandbox .n{font-family:var(--mono);font-size:24px;font-weight:600}
+.bandbox .l{font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.agentnote{background:var(--ice2);border:1px dashed var(--hair);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--muted)}
+.agentnote b{color:var(--navy2)}
+.agent{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+.agent-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--hair);flex-wrap:wrap}
+.agent-badge{width:34px;height:34px;border-radius:9px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;flex:0 0 auto}
+.agent-name{font-family:var(--serif);font-size:17px}
+.agent-lens{font-size:12px;color:var(--muted)}
+.agent-posture{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:180px}
+.agent-body{padding:6px 18px 14px}
+.finding{border-top:1px solid var(--ice);padding:11px 0}
+.finding:first-child{border-top:0}
+.finding-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.eband{font-size:11px;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:5px;text-transform:uppercase}
+.finding-t{font-size:14px;font-weight:600}
+.finding-src{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.li-row{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 2px;font-size:12px;color:var(--muted)}
+.li-row .mono{font-family:var(--mono);color:var(--ink)}
+.impact{font-size:13px;margin:4px 0}
+.impact b{color:var(--nogo)}
+.explain{font-size:12px;color:var(--muted);background:var(--ice2);border-radius:8px;padding:8px 10px;margin-top:6px}
+.explain .own{color:var(--navy2)}
+.agent-guide{background:var(--ice2);border-top:1px solid var(--hair);padding:12px 18px;font-size:13px}
+.agent-guide b{color:var(--navy2)}
+.moretxt{font-size:12px;color:var(--muted);padding:8px 0 0}
+
+.field label{display:block;font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.field input{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--hair);border-radius:8px;background:#fff;color:var(--ink)}
+.field input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.field + .field{margin-top:10px}
+
+.drawer-bg{position:fixed;inset:0;background:rgba(11,31,58,.5);display:none;z-index:50}
+.drawer-bg.open{display:block}
+.drawer{position:absolute;right:0;top:0;height:100%;width:min(480px,92vw);background:#fff;padding:24px;overflow-y:auto;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.drawer h2{font-family:var(--serif);font-size:20px;margin-bottom:6px}
+.drawer .x{position:absolute;right:16px;top:16px;border:0;background:var(--ice);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;color:var(--ink)}
+.drawer h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy2);margin:18px 0 6px}
+.drawer p{font-size:14px;margin:6px 0}
+.drawer .cite{font-size:12px;color:var(--muted);border-left:2px solid var(--gold);padding-left:10px;font-style:italic}
+
+footer{border-top:1px solid var(--hair);color:var(--muted);font-size:12px;padding:20px 0 50px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .det-grid,.pf-head{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .det-copy{text-align:left}
+  .home-grid{grid-template-columns:1fr}.home-side{position:static}
+  .tiles{grid-template-columns:1fr}.steps{grid-template-columns:1fr}
+  .riskhead{grid-template-columns:1fr}.bandgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.mainnav,.sebok-chip,.appetite,.toolbar,.seg,.segapp,.bulk,.prevnext,.backlink,.wavebar,.projpick{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <svg class="brandmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#C8A951" stroke-width="1.5"/><path d="M20 7 L31 26 H9 Z" fill="none" stroke="#C8A951" stroke-width="1.5"/><circle cx="20" cy="21" r="3.5" fill="#C8A951"/></svg>
+  <div class="brandtext"><div class="k">Insperity PLM Dashboard</div><div class="s">Program lifecycle · Governance debt · Go / No-Go</div></div>
+  <nav class="mainnav">
+    <button class="navbtn" data-nav="#/portfolio">Portfolio</button>
+    <button class="navbtn" data-nav="#/project">Project</button>
+    <button class="navbtn" data-nav="#/targets">Targets</button>
+    <button class="navbtn" data-nav="#/risk">Risk</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="projpick"><label>Project</label><select id="projSel"></select></div>
+  <a class="sebok-chip" style="text-decoration:none" href="Insperity%20Solution%20Architecture.html" target="_blank" rel="noopener">Architecture ↗</a>
+  <a class="sebok-chip" style="text-decoration:none" href="Insperity%20Impact%20Tracer.html" target="_blank" rel="noopener">Impact Tracer ↗</a>
+  <button class="sebok-chip" id="sebokBtn">Method ›</button>
+</div></header>
+
+<div id="view"></div>
+
+<footer><div class="wrap">
+  <span>Lifecycle taxonomy from the Insperity Policy Cross-Reference (Discover → Run) and the SSOT HR Policy Rules Register · 28 projects from the IIH roadmap. Scores are an illustrative planning snapshot.</span>
+  <span>Gate &amp; risk logic map to SEBoK Enterprise Evaluation &amp; Assessment and capability-gap analysis.</span>
+</div></footer>
+
+<div class="drawer-bg" id="drawerBg"><div class="drawer">
+  <button class="x" id="drawerX" aria-label="Close">✕</button>
+  <h2>How this maps to SEBoK &amp; the agents</h2>
+  <p>The console operationalises the SEBoK Enterprise SE knowledge area (v2.2) for Insperity's holonic governance program: every project is scored against the same Discover → Run artifact taxonomy, whose critical items are the governance controls the policies demand — tenant isolation, Simplex gating, rule-to-statute traceability, PII/PHI protection, statutory filings and MTBH monitoring.</p><h4>Portfolios = roadmap phases</h4><p>Projects are grouped by IIH phase (Foundation, Jarvis MVP, Expansion, Enterprise Holarchy). A phase gate review is a portfolio verdict here: every project in the phase must clear its hard gates.</p>
+  <h4>The gate = Enterprise Evaluation &amp; Assessment</h4>
+  <p>EE&amp;A should <span class="cite">look for break points where capabilities are significantly enhanced or totally disabled</span>. A critical artifact at zero is that break point.</p>
+  <h4>Target vs assessment = capability gap</h4>
+  <p>Capability-Based Planning compares desired capability to the baseline. Targets are the desired profile; each project's assessment is the observed one.</p>
+  <h4>Per-phase appetite = satisficing threshold</h4>
+  <p>Each phase carries its own Conservative / Balanced / Lenient bar, applied to its cumulative-target maturity. Enterprise decisions satisfice, so the threshold is a choice, not a proof.</p>
+  <h4>The agents</h4>
+  <p>Each assessment agent is a deterministic advisor for one discipline lens — the in-browser proxy for the skill-library evaluators. It reads scores, rates likelihood × impact, and explains the consequence of proceeding unmitigated. Ratings are heuristic decision support, not a guarantee.</p>
+</div></div>
+
+<script>
+/* ================= Taxonomy (targets shared) ================= */
+const DATA=[{"id": "1.0", "key": "discover", "name": "Discover", "groups": [{"label": "DT — Client & Regulatory Discovery", "owner": "Business Architecture", "arts": [{"n": "Stakeholder Jobs-to-be-Done (employee · employer · HRBP · executive)", "b": 2}, {"n": "Client Profile Baseline (size, FTEs, NAICS, worksite states)", "b": 2}, {"n": "ACA ALE & ERISA Plan Scoping (BEN-001)", "b": 2}, {"n": "Tax Nexus & Jurisdiction Audit (PAY-012, PAY-015)", "b": 2}, {"n": "OSHA High-Hazard & NCCI Class Baseline (CMP-002, CMP-010)", "b": 2}, {"n": "Hiring Workflow & EEOC Baseline (TAL-001, TAL-002)", "b": 1}, {"n": "Data-Flow Inventory & Client Allocation Matrix (TEC-001, PEO-006)", "b": 3, "c": true}, {"n": "Value Case & Capability Mapping (C1–C9)", "b": 2}, {"n": "Inspections", "b": 3, "c": true}, {"n": "Defect Log — Major defects addressed", "b": 3, "c": true}]}]}, {"id": "2.0", "key": "define", "name": "Define", "groups": [{"label": "RE — Policy & Rule Specification", "owner": "Compliance Governance", "arts": [{"n": "ORSD per Domain Holon (competency questions)", "b": 3}, {"n": "LKIF Deontic Norms Authored (obligation · permission · prohibition)", "b": 3}, {"n": "SSOT Register Entries (owner · source · trigger · threshold)", "b": 3, "c": true}, {"n": "Jurisdiction Precedence Rules (GOV-009)", "b": 3, "c": true}, {"n": "Rule-to-Statute Traceability", "b": 3, "c": true}]}, {"label": "RE — Service & Trust Specification", "owner": "Requirements Engineering", "arts": [{"n": "Capability & Service Maps (HR Services Business Model)", "b": 2}, {"n": "Jarvis Use Cases & Role Scope", "b": 2}, {"n": "Measurement (KPIs, MTBH 5D targets, gate criteria)", "b": 3}, {"n": "Data Classification PII / PHI / Financial (TEC-005)", "b": 3, "c": true}, {"n": "Test Scope & Golden Records", "b": 2}, {"n": "Inspections", "b": 3, "c": true}, {"n": "Defect Log — Major defects addressed", "b": 3, "c": true}]}]}, {"id": "3.0", "key": "design", "name": "Design", "groups": [{"label": "ODD — Holonic Architecture", "owner": "Enterprise Architecture", "arts": [{"n": "isp-core Alignment & owl:imports Federation (GOV-004/005)", "b": 3}, {"n": "Domain Ontology Model (OWL)", "b": 3}, {"n": "SHACL / SWRL Invariant Design", "b": 3}, {"n": "Rule Harmonization Design (GOV-008)", "b": 2}, {"n": "RDSG Gateway & 5D RCB Design (GOV-011)", "b": 3}, {"n": "Tenant Isolation Model (TEC-001)", "b": 3, "c": true}, {"n": "Simplex Action Gate Design (GOV-015)", "b": 3, "c": true}, {"n": "Personal Model & Consent Design (TEC-010)", "b": 2}, {"n": "Privacy by Design (CCPA/CPRA, HIPAA)", "b": 3, "c": true}, {"n": "ARB Review", "b": 3, "c": true}, {"n": "ARB Remediation", "b": 2}, {"n": "Inspections", "b": 3, "c": true}, {"n": "Defect Log — Major defects addressed", "b": 3, "c": true}]}]}, {"id": "4.0", "key": "develop", "name": "Develop", "groups": [{"label": "KE — Knowledge Engineering", "owner": "Knowledge Engineering", "arts": [{"n": "SKOS Vocabulary & Taxonomy", "b": 2}, {"n": "Ontology Build & Reasoner Checks", "b": 3}, {"n": "SHACL Shapes Implemented & Tested", "b": 3}, {"n": "Mapping Graph & Identity Resolution (GOV-006/007)", "b": 2}, {"n": "RAG Anchor Index (GOV-010)", "b": 2}]}, {"label": "DE — Data Engineering (DCAM)", "owner": "Data Engineering", "arts": [{"n": "dbt / SQL Rule Projections", "b": 3}, {"n": "Source Connectors (Box AI, payroll, EDI 834, ATS, LMS)", "b": 2}, {"n": "Masking, Tokenization & Minimization (TEC-011/012)", "b": 3, "c": true}, {"n": "Lineage & Provenance Capture", "b": 2}]}, {"label": "SE — Rule Compilation & Verification", "owner": "Systems Engineering", "arts": [{"n": "6-Stage Compilation Pipeline (GOV-019)", "b": 3}, {"n": "OPA / Rego Policies with Source URI", "b": 3}, {"n": "STPA / STAMP Unsafe Control Action Analysis", "b": 3, "c": true}, {"n": "Continuous Verification & Validation", "b": 3, "c": true}, {"n": "KGCL Change Control Log", "b": 3, "c": true}, {"n": "Testing (functional, jurisdictional, performance, UAT)", "b": 3, "c": true}, {"n": "MTBH Instrumentation", "b": 2}, {"n": "Inspections", "b": 3, "c": true}, {"n": "Defect Log — Major defects addressed", "b": 3, "c": true}]}]}, {"id": "5.0", "key": "deliver", "name": "Deliver", "groups": [{"label": "OPR — Operations & Release", "owner": "Operations Management", "arts": [{"n": "DEV / STG / PRD Promotion Gate (GOV-003)", "b": 3, "c": true}, {"n": "Security Management (SOC 2, NIST 800-53)", "b": 3, "c": true}, {"n": "Data Quality Management (ISO 8000)", "b": 2, "c": true}, {"n": "Statutory Notices & Disclosures (SPD, SBC, wage notices)", "b": 2}, {"n": "On-Demand Training Deployment", "b": 2}, {"n": "Jarvis Role Rollout & Adoption", "b": 2}, {"n": "Pilot Client Onboarding", "b": 2}, {"n": "Runbooks (SOPs) & Hypercare", "b": 2}, {"n": "Inspections", "b": 3, "c": true}, {"n": "Defect Log — Major defects addressed", "b": 3, "c": true}]}]}, {"id": "6.0", "key": "run", "name": "RUN", "groups": [{"label": "GOV — Compliance Operations", "owner": "Compliance Operations", "arts": [{"n": "Statutory Filings on Time (941, W-2, 5500, 1095-C, OSHA ITA, EEO-1)", "b": 3, "c": true}, {"n": "CPEO / ESAC / SOC Attestation Evidence", "b": 3, "c": true}, {"n": "Regulatory Change Monitoring", "b": 2}, {"n": "Rule Re-compilation on Law Change", "b": 2}, {"n": "Runtime Violation Burndown", "b": 2}]}, {"label": "SLM — Trust & Service Level", "owner": "Service Level Management", "arts": [{"n": "MTBH 5D Monitoring & Circuit-Breaker Trip Rate", "b": 3, "c": true}, {"n": "Cross-Tenant Exposure Monitoring", "b": 3, "c": true}, {"n": "Self-Service Deflection & eNPS", "b": 2}, {"n": "Periodic Access Reviews (TEC-018)", "b": 2}, {"n": "Value Realization vs Gate Targets", "b": 2}]}]}];
+DATA.forEach(p=>p.groups.forEach((g,gi)=>g.arts.forEach((art,ai)=>{art.id=p.key+"."+gi+"."+ai;})));
+
+const APPETITES={conservative:{hi:.90,lo:.60,cov:.80,label:"Conservative",code:"C"},balanced:{hi:.85,lo:.50,cov:.60,label:"Balanced",code:"B"},lenient:{hi:.75,lo:.40,cov:.50,label:"Lenient",code:"L"}};
+
+/* ================= Portfolio state ================= */
+function findArt(pred){for(const p of DATA)for(const g of p.groups)for(const a of g.arts)if(pred(a,g,p))return a;return null;}
+/* Illustrative assessment snapshot — Insperity program projects (see Insperity Project Portfolio.xlsx) */
+let projects=[{"id": "isp-01", "name": "ISP-01 Core PEO Ontology (isp-core) & ORSD Templates", "portfolio": "Phase 0 · Foundation", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 1, "discover.0.3": 2, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 2, "discover.0.9": 1, "define.0.0": 2, "define.0.1": 2, "define.0.2": 2, "define.0.3": 2, "define.0.4": 3, "define.1.0": 2, "define.1.1": 1, "define.1.2": 3, "define.1.3": 2, "define.1.4": 2, "define.1.5": 3, "define.1.6": 3, "design.0.0": 2, "design.0.1": 3, "design.0.2": 2, "design.0.3": 1, "design.0.4": 3, "design.0.5": 3, "design.0.6": 3, "design.0.7": 2, "design.0.8": 3, "design.0.9": 3, "design.0.10": 2, "design.0.11": 3, "design.0.12": 1, "develop.0.0": 2, "develop.0.1": 3, "develop.0.2": 1, "develop.0.3": 1, "develop.0.4": 2, "develop.1.0": 3, "develop.1.1": 1, "develop.1.2": 3, "develop.1.3": 2, "develop.2.0": 2, "develop.2.1": 1, "develop.2.2": 2, "develop.2.3": 3, "develop.2.4": 3, "develop.2.5": 2, "develop.2.6": 1, "develop.2.7": 1, "develop.2.8": 3, "deliver.0.0": 2, "deliver.0.1": 3, "deliver.0.2": 1, "deliver.0.3": 2, "deliver.0.5": 1, "deliver.0.7": 1}}, {"id": "isp-02", "name": "ISP-02 SSOT Policy Rules Register & LKIF Wave 1", "portfolio": "Phase 0 · Foundation", "scores": {"discover.0.0": 1, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 1, "define.0.0": 2, "define.0.1": 2, "define.0.2": 2, "define.0.3": 2, "define.0.4": 2, "define.1.0": 1, "define.1.1": 2, "define.1.2": 3, "define.1.3": 3, "define.1.4": 2, "define.1.5": 3, "define.1.6": 3, "design.0.0": 3, "design.0.1": 2, "design.0.2": 3, "design.0.3": 2, "design.0.4": 1, "design.0.5": 3, "design.0.6": 2, "design.0.7": 2, "design.0.8": 3, "design.0.9": 3, "design.0.10": 2, "design.0.11": 3, "design.0.12": 3, "develop.0.0": 2, "develop.0.1": 3, "develop.0.2": 3, "develop.0.3": 2, "develop.0.4": 2, "develop.1.0": 3, "develop.1.1": 2, "develop.1.2": 2, "develop.1.3": 1, "develop.2.0": 3, "develop.2.1": 3, "develop.2.2": 3, "develop.2.3": 3, "develop.2.4": 3, "develop.2.5": 3, "develop.2.6": 2, "develop.2.7": 3, "develop.2.8": 3, "deliver.0.1": 1, "deliver.0.2": 1, "deliver.0.4": 1, "deliver.0.6": 1, "deliver.0.7": 1, "deliver.0.8": 1}}, {"id": "isp-03", "name": "ISP-03 Box AI Admission Bridge (33M records → L1 holons)", "portfolio": "Phase 0 · Foundation", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 3, "define.0.0": 3, "define.0.1": 3, "define.0.2": 3, "define.0.3": 1, "define.0.4": 3, "define.1.0": 2, "define.1.1": 2, "define.1.2": 2, "define.1.3": 3, "define.1.4": 2, "define.1.5": 3, "define.1.6": 3, "design.0.0": 3, "design.0.1": 1, "design.0.2": 3, "design.0.3": 2, "design.0.4": 3, "design.0.5": 2, "design.0.6": 3, "design.0.7": 1, "design.0.8": 3, "design.0.9": 3, "design.0.10": 2, "design.0.11": 3, "design.0.12": 1, "develop.0.1": 3, "develop.0.2": 3, "develop.0.3": 2, "develop.0.4": 1, "develop.1.0": 3, "develop.1.2": 3, "develop.1.3": 1, "develop.2.1": 2, "develop.2.5": 1, "develop.2.6": 1, "develop.2.8": 3}}, {"id": "isp-04", "name": "ISP-04 SAML Identity & URI Resolution Registry v1", "portfolio": "Phase 0 · Foundation", "scores": {"discover.0.0": 2, "discover.0.1": 1, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 3, "define.0.0": 3, "define.0.1": 3, "define.0.2": 2, "define.0.3": 3, "define.0.4": 3, "define.1.0": 1, "define.1.1": 1, "define.1.2": 1, "define.1.3": 2, "define.1.4": 1, "define.1.5": 3, "define.1.6": 3, "design.0.0": 3, "design.0.1": 3, "design.0.2": 3, "design.0.3": 1, "design.0.4": 3, "design.0.5": 2, "design.0.6": 3, "design.0.7": 2, "design.0.8": 3, "design.0.9": 1, "design.0.10": 1, "design.0.11": 3, "design.0.12": 3, "develop.0.0": 2, "develop.0.2": 3, "develop.0.3": 1, "develop.0.4": 1, "develop.1.1": 1, "develop.1.3": 1, "develop.2.0": 2, "develop.2.1": 3, "develop.2.2": 3, "develop.2.3": 3, "develop.2.4": 3, "develop.2.5": 2, "develop.2.7": 3}}, {"id": "isp-05", "name": "ISP-05 KGCL Change Governance & Semantic Governance Council Charter", "portfolio": "Phase 0 · Foundation", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 1, "discover.0.3": 2, "discover.0.4": 2, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 3, "define.0.0": 3, "define.0.1": 3, "define.0.2": 3, "define.0.3": 3, "define.0.4": 3, "define.1.0": 0, "define.1.1": 2, "define.1.2": 3, "define.1.3": 2, "define.1.4": 2, "define.1.5": 3, "define.1.6": 2, "design.0.0": 2, "design.0.1": 1, "design.0.2": 3, "design.0.3": 2, "design.0.4": 2, "design.0.5": 3, "design.0.6": 3, "design.0.7": 2, "design.0.8": 2, "design.0.9": 1, "design.0.10": 2, "design.0.11": 3, "design.0.12": 2, "develop.0.0": 0, "develop.0.1": 3, "develop.0.2": 2, "develop.0.3": 2, "develop.0.4": 1, "develop.1.0": 3, "develop.1.1": 2, "develop.1.2": 3, "develop.1.3": 2, "develop.2.0": 3, "develop.2.1": 3, "develop.2.2": 1, "develop.2.3": 3, "develop.2.4": 3, "develop.2.5": 2, "develop.2.6": 2, "develop.2.7": 2, "develop.2.8": 2, "deliver.0.0": 2, "deliver.0.2": 2, "deliver.0.3": 1, "deliver.0.4": 2, "deliver.0.5": 2, "deliver.0.7": 2, "deliver.0.8": 2, "deliver.0.9": 2}}, {"id": "isp-06", "name": "ISP-06 Payroll & Tax Domain Holon (isp-pay)", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 1, "discover.0.2": 1, "discover.0.3": 0, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 2, "discover.0.7": 1, "discover.0.8": 2, "discover.0.9": 3, "define.0.0": 1, "define.0.1": 2, "define.0.2": 3, "define.0.3": 2, "define.0.4": 2, "define.1.0": 2, "define.1.1": 2, "define.1.2": 2, "define.1.3": 3, "define.1.4": 1, "define.1.5": 2, "define.1.6": 3, "design.0.1": 2, "design.0.2": 3, "design.0.3": 1, "design.0.4": 3, "design.0.5": 0, "design.0.6": 2, "design.0.7": 2, "design.0.10": 2, "design.0.11": 3}}, {"id": "isp-07", "name": "ISP-07 Benefits & Retirement Domain Holon (isp-ben)", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 1, "discover.0.2": 0, "discover.0.3": 2, "discover.0.4": 0, "discover.0.5": 1, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 2, "define.0.0": 2, "define.0.1": 3, "define.0.2": 3, "define.0.3": 3, "define.0.4": 2, "define.1.0": 1, "define.1.1": 1, "define.1.2": 3, "define.1.3": 3, "define.1.4": 2, "define.1.5": 2, "define.1.6": 3, "design.0.1": 1, "design.0.2": 3, "design.0.6": 2, "design.0.10": 1, "design.0.11": 3}}, {"id": "isp-08", "name": "ISP-08 SHACL-to-Policy Compilation Pipeline", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 1, "discover.0.9": 3, "define.0.0": 3, "define.0.1": 2, "define.0.2": 3, "define.0.3": 3, "define.0.4": 2, "define.1.0": 1, "define.1.1": 2, "define.1.2": 3, "define.1.3": 3, "define.1.4": 0, "define.1.5": 3, "define.1.6": 2, "design.0.0": 1, "design.0.2": 2, "design.0.3": 1, "design.0.4": 3, "design.0.7": 1, "design.0.8": 3, "design.0.9": 3, "design.0.10": 1, "design.0.11": 3, "design.0.12": 2}}, {"id": "isp-09", "name": "ISP-09 Rule Harmonization Engine (most-stringent-rule)", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 0, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 1, "discover.0.5": 0, "discover.0.6": 3, "discover.0.7": 0, "discover.0.8": 3, "discover.0.9": 3, "define.0.1": 3, "define.0.4": 3, "define.1.0": 1, "define.1.1": 1, "define.1.3": 3}}, {"id": "isp-10", "name": "ISP-10 RDSG Gateway, MTBH Circuit Breaker & Simplex Action Gate", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 2, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 3, "define.0.0": 2, "define.0.1": 3, "define.0.2": 2, "define.0.3": 3, "define.0.4": 3, "define.1.0": 1, "define.1.1": 2, "define.1.2": 3, "define.1.3": 2, "define.1.4": 1, "define.1.5": 3, "define.1.6": 3, "design.0.0": 1, "design.0.1": 2, "design.0.2": 3, "design.0.4": 2, "design.0.6": 0, "design.0.9": 2, "design.0.10": 2, "design.0.11": 3}}, {"id": "isp-11", "name": "ISP-11 Multi-Tenant Isolation & PHI Policy Enforcement Points", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 2, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 1, "discover.0.8": 3, "discover.0.9": 2, "define.0.0": 3, "define.0.1": 2, "define.0.2": 2, "define.0.3": 3, "define.0.4": 3, "define.1.0": 2, "define.1.1": 1, "define.1.2": 3, "define.1.3": 2, "define.1.4": 2, "define.1.5": 2, "define.1.6": 2, "design.0.0": 2, "design.0.1": 3, "design.0.3": 1, "design.0.4": 3, "design.0.5": 2, "design.0.7": 1, "design.0.10": 2, "design.0.11": 2, "design.0.12": 3}}, {"id": "isp-12", "name": "ISP-12 Employee Jarvis & Machine APIs (pilot, 3–5 clients)", "portfolio": "Phase 1 · Jarvis MVP", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 0, "discover.0.5": 1, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 2, "discover.0.9": 3, "define.0.0": 2, "define.0.2": 3, "define.0.4": 2, "define.1.0": 2, "define.1.1": 2, "define.1.2": 3, "define.1.3": 0, "define.1.4": 1, "define.1.6": 3}}, {"id": "isp-13", "name": "ISP-13 Compliance & Risk Domain Holon (isp-comp, 50-state library)", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 2, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 1, "discover.0.8": 3, "discover.0.9": 3, "define.0.3": 1, "define.0.4": 1, "define.1.0": 2, "define.1.1": 2, "define.1.2": 3, "define.1.3": 3, "define.1.5": 3, "define.1.6": 3}}, {"id": "isp-14", "name": "ISP-14 Talent Domain Holon (isp-tal) & AEDT Governance", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 1, "discover.0.1": 2, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 2, "discover.0.8": 2, "discover.0.9": 3, "define.0.0": 2, "define.0.1": 3, "define.0.2": 2, "define.0.4": 1, "define.1.1": 1, "define.1.2": 1, "define.1.3": 1, "define.1.4": 2, "define.1.5": 1, "define.1.6": 2}}, {"id": "isp-15", "name": "ISP-15 HR Technology Holon — Identity Backbone & Attestation Controls", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 2, "discover.0.1": 1, "discover.0.2": 2, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 1, "discover.0.7": 2, "discover.0.8": 3, "discover.0.9": 3, "define.0.0": 3, "define.0.2": 1, "define.0.3": 1, "define.0.4": 2, "define.1.3": 2, "define.1.6": 2}}, {"id": "isp-16", "name": "ISP-16 Client Relationship Holon & Client Allocation Matrix", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 1, "discover.0.4": 1, "discover.0.6": 1, "discover.0.8": 2, "discover.0.9": 1}}, {"id": "isp-17", "name": "ISP-17 Employer/HRBP & Service Rep Jarvis", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 2, "discover.0.1": 1, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 0, "discover.0.6": 1, "discover.0.8": 1, "discover.0.9": 1}}, {"id": "isp-18", "name": "ISP-18 Governed Personal Models (employee & role profiles)", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.3": 1, "discover.0.5": 0, "discover.0.6": 1, "discover.0.7": 2}}, {"id": "isp-19", "name": "ISP-19 On-Demand Compliance Training Engine", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.3": 1, "discover.0.6": 1}}, {"id": "isp-20", "name": "ISP-20 Compliance SSOT Dashboard & Governed Analytics Publishing", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 1, "discover.0.1": 0, "discover.0.2": 2, "discover.0.3": 0, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 3, "discover.0.7": 1, "discover.0.8": 3, "discover.0.9": 1, "define.0.0": 2, "define.0.1": 3, "define.0.3": 1, "define.0.4": 3, "define.1.4": 2, "define.1.5": 3, "define.1.6": 3}}, {"id": "isp-21", "name": "ISP-21 MTBH Ops Workbench", "portfolio": "Phase 2 · Expansion", "scores": {"discover.0.0": 2, "discover.0.1": 2, "discover.0.2": 1, "discover.0.3": 1, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 3, "discover.0.7": 1, "discover.0.8": 2, "discover.0.9": 3, "define.0.0": 3, "define.0.2": 2, "define.1.1": 1, "define.1.2": 1, "define.1.4": 1, "define.1.6": 2}}, {"id": "isp-22", "name": "ISP-22 Enterprise Semantic Governance Council & Compliance-as-Code", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.2": 1, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 1, "discover.0.7": 1, "discover.0.9": 3}}, {"id": "isp-23", "name": "ISP-23 Continuous Values Measurement & Calibration", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.1": 1, "discover.0.2": 2, "discover.0.3": 2, "discover.0.4": 1, "discover.0.6": 2, "discover.0.7": 1, "discover.0.8": 2, "discover.0.9": 3}}, {"id": "isp-24", "name": "ISP-24 Self-Evolving Holarchy — Regulatory Change Discovery", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.1": 1, "discover.0.2": 1, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 0, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 1, "discover.0.9": 1}}, {"id": "isp-25", "name": "ISP-25 Executive Jarvis & Workforce Benchmarking Data Product", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.0": 1, "discover.0.1": 1, "discover.0.3": 2, "discover.0.4": 1, "discover.0.5": 1, "discover.0.6": 2, "discover.0.9": 2}}, {"id": "isp-26", "name": "ISP-26 Contractor & Gig Worker Holon (classification governance)", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.0": 1, "discover.0.1": 1, "discover.0.2": 1, "discover.0.3": 2, "discover.0.4": 2, "discover.0.5": 0, "discover.0.6": 2, "discover.0.7": 2, "discover.0.8": 1, "discover.0.9": 2}}, {"id": "isp-27", "name": "ISP-27 PEO Attestation Automation (CPEO · ESAC · SOC)", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.0": 1, "discover.0.3": 2, "discover.0.5": 1, "discover.0.6": 3, "discover.0.7": 1, "discover.0.8": 2, "discover.0.9": 3}}, {"id": "isp-28", "name": "ISP-28 50-State Digital Orchestration Rollout", "portfolio": "Phase 3 · Enterprise Holarchy", "scores": {"discover.0.1": 1, "discover.0.3": 1, "discover.0.4": 1, "discover.0.5": 1, "discover.0.8": 2, "discover.0.9": 1}}];
+let activeProject=5;
+let overallAppetite="balanced";
+let phaseAppetite={}; DATA.forEach(p=>phaseAppetite[p.key]="balanced");
+let openTargets=new Set(DATA.map(p=>p.key));
+const meta={cycle:"Gate 1 readiness review", assessor:""};
+const AP=()=>projects[activeProject];
+const scoreOf=(art,proj)=>{const v=(proj||AP()).scores[art.id];return v===undefined?null:v;};
+
+/* ================= Compute ================= */
+function pstats(p,proj){let sumB=0,sumA=0,debt=0,gradeable=0,scored=0,hard=[];
+  p.groups.forEach(g=>g.arts.forEach(art=>{if(art.b!=null){const a0=scoreOf(art,proj);const a=(a0==null?0:a0);
+    sumB+=art.b;sumA+=a;if(art.b>0){gradeable++;if(a0!=null)scored++;}if(art.b-a>0)debt+=(art.b-a);
+    if(art.c&&art.b>0&&a0===0)hard.push({art,group:g,phase:p});}}));
+  return{sumB,sumA,debt,gradeable,scored,hard,ratio:(sumB>0?sumA/sumB:null)};}
+function overallOf(proj){let sumB=0,sumA=0,debt=0,gradeable=0,scored=0,hard=[],gaps=[],evi=[];
+  DATA.forEach(p=>{const s=pstats(p,proj);sumB+=s.sumB;sumA+=s.sumA;debt+=s.debt;gradeable+=s.gradeable;scored+=s.scored;s.hard.forEach(h=>hard.push(h));
+    p.groups.forEach(g=>g.arts.forEach(art=>{if(art.b!=null&&art.b>0){const a=scoreOf(art,proj);if(a==null)evi.push({art,group:g,phase:p});else if(art.b-a>0)gaps.push({art,group:g,phase:p,gap:art.b-a});}}));});
+  gaps.sort((x,y)=>(y.art.c-x.art.c)||(y.gap-x.gap));
+  return{sumB,sumA,debt,gradeable,scored,ratio:(sumB>0?sumA/sumB:0),cov:(gradeable>0?scored/gradeable:0),hard,gaps,evi};}
+function tier(r,appKey){const A=APPETITES[appKey];if(r==null)return"muted";if(r>=A.hi)return"go";if(r>=A.lo)return"rev";return"nogo";}
+function tierColor(r,appKey){return cvar(tier(r,appKey));}
+function cvar(t){return t==="go"?"var(--go)":t==="rev"?"var(--rev)":t==="nogo"?"var(--nogo)":"var(--muted)";}
+function cbg(t){return t==="go"?"var(--go-bg)":t==="rev"?"var(--rev-bg)":t==="nogo"?"var(--nogo-bg)":"var(--ice)";}
+function verdict(o,appKey){const A=APPETITES[appKey];
+  if(o.hard.length>0)return{tag:"NO-GO",cls:"nogo",reason:o.hard.length+" critical artifact"+(o.hard.length>1?"s":"")+" at zero — mandatory rework."};
+  if(o.ratio<A.lo)return{tag:"NO-GO",cls:"nogo",reason:"Maturity "+(o.ratio*100).toFixed(0)+"% is below the "+(A.lo*100).toFixed(0)+"% floor."};
+  if(o.ratio>=A.hi&&o.cov>=A.cov)return{tag:"GO",cls:"go",reason:"Ratio and coverage clear the "+A.label.toLowerCase()+" thresholds."};
+  if(o.cov<A.cov)return{tag:"REVIEW",cls:"rev",reason:"Coverage "+(o.cov*100).toFixed(0)+"% under "+(A.cov*100).toFixed(0)+"% — too little evidence to auto-approve."};
+  return{tag:"REVIEW",cls:"rev",reason:"Maturity "+(o.ratio*100).toFixed(0)+"% is between review and go — spot-check required."};}
+function phaseVerdict(p,proj){const s=pstats(p,proj);return verdict({...s,hard:s.hard,cov:(s.gradeable>0?s.scored/s.gradeable:0)},phaseAppetite[p.key]);}
+
+/* ================= Risk engine (multi-agent) ================= */
+function phaseWeight(p){return(p.key==="deliver"||p.key==="run")?1:0;}
+function discWeight(g){const L=g.label;if(/OPR|GOV|SLM|Operations|Trust/.test(L))return 1;if(/SE —|Compilation/.test(L))return 1;return 0;}
+function bandOf(E){return E>=16?"critical":E>=10?"high":E>=5?"moderate":"low";}
+function bandColor(b){return b==="critical"?"var(--crit)":b==="high"?"var(--nogo)":b==="moderate"?"var(--rev)":"var(--go)";}
+function bandBg(b){return b==="critical"?"var(--crit-bg)":b==="high"?"var(--nogo-bg)":b==="moderate"?"var(--rev-bg)":"var(--go-bg)";}
+function impactText(art){const n=art.n.toLowerCase();
+  if(/tenant|cross-tenant|allocation matrix/.test(n))return"one client's data could surface in another client's answer — a co-employment trust breach";
+  if(/simplex/.test(n))return"an irreversible payroll, benefits or COBRA action could execute without human sign-off";
+  if(/filing|attestation|cpeo|esac/.test(n))return"missed statutory filings or attestations expose clients to penalties and Insperity's CPEO/ESAC standing";
+  if(/pii|phi|privacy|masking|classification/.test(n))return"PII/PHI is mishandled, triggering HIPAA, CCPA and SOC findings";
+  if(/stpa|unsafe/.test(n))return"unsafe control actions (double pay, negative deductions) reach paychecks";
+  if(/mtbh|circuit/.test(n))return"Jarvis hallucinations on pay or benefits reach employees unchecked";
+  if(/precedence|harmoniz/.test(n))return"the less protective rule is applied, underpaying employees in stricter jurisdictions";
+  if(/register|statute|lkif|orsd/.test(n))return"compiled checks cannot prove which law they enforce";
+  if(/kgcl|change control|promotion/.test(n))return"rule changes reach production unreviewed and unversioned";
+  if(/ale|nexus|hazard|jurisdiction|eeoc/.test(n))return"obligations go unscoped and surface first as penalties";
+  if(/trace|requirements mapping|feature (matrix|decomp)/.test(n))return"untraceable requirements let scope drift and regressions ship undetected";
+  if(/security/.test(n))return"unmanaged security exposes the release to breach and compliance findings";
+  if(/continuity/.test(n))return"no tested recovery path exists when an outage hits";
+  if(/verification|validation|testing/.test(n))return"defects escape into production use";
+  if(/defect log|inspection/.test(n))return"major defects go unfound at the gate";
+  if(/data quality|data operations|warehous|transformation|data access|dcam/.test(n))return"poor data quality drives wrong decisions and rework";
+  if(/architecture|arb|solution design|integration|interoperab/.test(n))return"architecture gaps surface as integration failures and rework";
+  if(/release/.test(n))return"deployments become unrepeatable or fail";
+  if(/service level|slm|orchestration|order |inventory|provider/.test(n))return"SLAs are breached and operations are disrupted";
+  if(/persona|consumer needs|design thinking|outcome|northstar value/.test(n))return"the team risks building the wrong capability";
+  return"confidence in the release is reduced";}
+function risksFor(proj){const risks=[];
+  DATA.forEach(p=>p.groups.forEach(g=>g.arts.forEach(art=>{
+    if(art.b==null||art.b===0)return;const a=scoreOf(art,proj);const assessed=a!=null;const av=assessed?a:0;const gap=art.b-av;
+    if(assessed&&gap<=0)return;
+    let L=assessed?Math.min(5,gap+2):Math.max(3,Math.min(5,art.b+1));
+    let I=Math.min(5,(art.c?4:2)+phaseWeight(p)+discWeight(g));
+    const E=L*I,band=bandOf(E);
+    risks.push({art,group:g,phase:p,a,assessed,gap:Math.max(0,gap),L,I,E,band,impact:impactText(art)});
+  })));
+  risks.sort((x,y)=>y.E-x.E);return risks;}
+
+const AGENTS=[
+ {key:"disc",name:"Client & Regulatory Discovery",glyph:"D",lens:"Do we know which statutes, jurisdictions and co-employment duties apply to this client base?",match:l=>/^DT/.test(l),
+   guide:(post,worst)=>post<.6?"Finish jurisdiction, ALE and hazard baselines before authoring rules — an unscoped obligation is a penalty waiting for a filing date.":"Discovery baseline is holding; refresh it when clients add worksite states."},
+ {key:"req",name:"Policy & Rule Specification",glyph:"R",lens:"Is every rule owned, sourced, precedence-resolved and traceable to its statute?",match:l=>/^RE/.test(l),
+   guide:(post,worst)=>worst?"Close rule-to-statute traceability and precedence gaps first — without them no compiled check can prove which law it enforces.":"Rule specification is coherent; keep ORSDs current as the register grows."},
+ {key:"arch",name:"Holonic Architecture",glyph:"A",lens:"Tenant isolation, Simplex gating, privacy and ARB governance of the holarchy.",match:l=>/^ODD/.test(l),
+   guide:(post,worst)=>post<.5?"Stand up tenant isolation, Simplex gate and ARB review before build — a co-employment boundary cannot be retrofitted.":"Architecture posture is sound; keep isolation and gating designs under ARB review."},
+ {key:"vv",name:"Rule Compilation & Verification",glyph:"V",lens:"Compiled policy correctness, STPA/STAMP safety, KGCL change control (payroll-grade assurance).",match:l=>/^SE/.test(l),
+   guide:(post,worst)=>post<.6?"Prioritise STPA analysis, jurisdictional testing and KGCL change control — these stop a wrong multiplier from reaching a paycheck.":"Verification controls are adequate; sustain regression on every rule release."},
+ {key:"data",name:"Semantic & Data Governance",glyph:"K",lens:"Ontology quality, identity resolution, PII/PHI protection and lineage (KE / DCAM).",match:l=>/^DE|^KE/.test(l),
+   guide:(post,worst)=>"Baseline ontology, identity and masking artifacts; ungoverned semantics or PHI quietly erode every Jarvis answer and every audit."},
+ {key:"ops",name:"Compliance Operations & Trust",glyph:"O",lens:"Release gates, filings, attestations, MTBH trust and tenant-exposure monitoring.",match:l=>/^OPR|^GOV|^SLM/.test(l),
+   guide:(post,worst)=>post<.6?"Security, promotion gates, filings and MTBH monitoring must clear before go-live — these carry statutory and co-employment blast radius.":"Operational readiness is on track; confirm attestation evidence and trip-rate targets before the gate review."},
+];
+function agentOf(groupLabel){return AGENTS.find(ag=>ag.match(groupLabel))||AGENTS[AGENTS.length-1];}
+function agentPosture(ag,proj){let sB=0,sA=0;DATA.forEach(p=>p.groups.forEach(g=>{if(!ag.match(g.label))return;g.arts.forEach(art=>{if(art.b!=null){sB+=art.b;const a=scoreOf(art,proj);sA+=(a==null?0:a);}});}));return sB>0?sA/sB:null;}
+
+/* ================= SVG ================= */
+function sealSVG(ratio,tag,cls,label){const R=64,C=2*Math.PI*R,pct=Math.max(0,Math.min(1,ratio)),col=cvar(cls);
+  return `<svg width="176" height="176" viewBox="0 0 176 176" role="img" aria-label="${tag} ${(pct*100).toFixed(0)} percent">
+   <circle cx="88" cy="88" r="80" fill="none" stroke="#C8A951" stroke-width="1"/><circle cx="88" cy="88" r="74" fill="none" stroke="rgba(200,169,81,.35)"/>
+   <circle cx="88" cy="88" r="${R}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="10"/>
+   <circle cx="88" cy="88" r="${R}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" transform="rotate(-90 88 88)" style="transition:stroke-dashoffset .5s,stroke .3s"/>
+   <text x="88" y="80" text-anchor="middle" fill="#fff" style="font-family:var(--serif);font-size:23px;font-weight:600">${tag}</text>
+   <text x="88" y="104" text-anchor="middle" fill="${col}" style="font-family:var(--mono);font-size:19px;font-weight:600">${(pct*100).toFixed(0)}%</text>
+   <text x="88" y="121" text-anchor="middle" fill="#9db4d4" style="font-size:9px;letter-spacing:.12em">${label||"MATURITY"}</text></svg>`;}
+function radarSVG(proj){const cx=140,cy=130,R=95,n=DATA.length,ang=i=>(-90+i*360/n)*Math.PI/180;let rings="",spokes="",labels="";const pts=[];
+  [.25,.5,.75,1].forEach(t=>{let p=DATA.map((_,i)=>`${(cx+Math.cos(ang(i))*R*t).toFixed(1)},${(cy+Math.sin(ang(i))*R*t).toFixed(1)}`).join(" ");rings+=`<polygon points="${p}" fill="none" stroke="var(--hair)"/>`;});
+  DATA.forEach((p,i)=>{const s=pstats(p,proj);const r=(s.ratio==null?0:s.ratio);const x=cx+Math.cos(ang(i))*R,y=cy+Math.sin(ang(i))*R;
+    spokes+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--hair)"/>`;
+    const lx=cx+Math.cos(ang(i))*(R+16),ly=cy+Math.sin(ang(i))*(R+16),anc=Math.abs(Math.cos(ang(i)))<.3?"middle":(Math.cos(ang(i))>0?"start":"end");
+    labels+=`<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="${anc}" style="font-size:11px;fill:var(--muted)">${p.name}</text>`;
+    pts.push([cx+Math.cos(ang(i))*R*r,cy+Math.sin(ang(i))*R*r]);});
+  const poly=`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(" ")}" fill="rgba(18,48,90,.14)" stroke="var(--navy2)" stroke-width="2"/>`;
+  const dots=pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${tierColor(pstats(DATA[i],proj).ratio,phaseAppetite[DATA[i].key])}"/>`).join("");
+  return `<svg width="280" height="270" viewBox="0 0 280 270" role="img" aria-label="Phase maturity radar">${rings}${spokes}${poly}${dots}${labels}</svg>`;}
+function gapFlag(art,proj){if(art.b==null)return `<span class="gap-flag" style="color:var(--muted);background:var(--ice)">n/a</span>`;
+  const a=scoreOf(art,proj);if(a==null)return `<span class="gap-flag" style="color:var(--muted);background:var(--ice)">No data</span>`;
+  const g=art.b-a;if(g<=0)return `<span class="gap-flag" style="color:var(--go);background:var(--go-bg)">on target</span>`;
+  const col=g>=2?"var(--nogo)":"var(--rev)",bg=g>=2?"var(--nogo-bg)":"var(--rev-bg)";return `<span class="gap-flag" style="color:${col};background:${bg}">gap −${g}</span>`;}
+function seg(scope,pi,gi,ai,art){const val=scope==="assess"?scoreOf(art):art.b;const dis=scope==="assess"&&art.b==null?" disabled":"";
+  const opts=[["—",null],["0",0],["1",1],["2",2],["3",3]];
+  const btns=opts.map(([lab,v])=>{const pressed=(val===v)||(v===null&&val==null);const s0=v===0?" s0":"";
+    return `<button type="button" class="${s0.trim()}" aria-pressed="${pressed}" data-scope="${scope}" data-p="${pi}" data-g="${gi}" data-a="${ai}" data-v="${v==null?'':v}" aria-label="Set ${lab}">${lab}</button>`;}).join("");
+  return `<div class="seg ${scope==="target"?"target":""}${dis}" role="group">${btns}</div>`;}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ================= Views ================= */
+function renderPortfolio(){
+  // aggregate
+  const withData=projects.filter(pr=>Object.values(pr.scores).some(v=>v!=null));
+  const ratios=withData.map(pr=>overallOf(pr).ratio);
+  const mean=ratios.length?ratios.reduce((a,b)=>a+b,0)/ratios.length:0;
+  let go=0,rev=0,nogo=0,hardTot=0;
+  projects.forEach(pr=>{const o=overallOf(pr);const has=Object.values(pr.scores).some(v=>v!=null);if(!has)return;const v=verdict(o,overallAppetite);if(v.tag==="GO")go++;else if(v.tag==="REVIEW")rev++;else nogo++;hardTot+=o.hard.length;});
+  const posture=nogo>0?"nogo":rev>go?"rev":"go";
+  const postureTag=nogo>0?"AT RISK":rev>go?"WATCH":"HEALTHY";
+  // heatmap
+  let head=`<tr><th class="proj">Project</th>${DATA.map(p=>`<th>${p.name}</th>`).join("")}<th>Overall</th></tr>`;
+  const rowFor=(pr,idx)=>{
+    const cells=DATA.map(p=>{const s=pstats(p,pr);const has=p.groups.some(g=>g.arts.some(a=>scoreOf(a,pr)!=null));
+      if(s.sumB===0||!has)return `<td><div class="pcell empty">—</div></td>`;
+      const t=tier(s.ratio,phaseAppetite[p.key]);return `<td><div class="pcell" style="background:${cbg(t)};color:${cvar(t)};border-color:${cvar(t)}">${(s.ratio*100).toFixed(0)}%</div></td>`;}).join("");
+    const o=overallOf(pr);const has=Object.values(pr.scores).some(v=>v!=null);
+    const ov=has?`<div class="pcell" style="background:${cbg(tier(o.ratio,overallAppetite))};color:${cvar(tier(o.ratio,overallAppetite))};border-color:${cvar(tier(o.ratio,overallAppetite))}">${(o.ratio*100).toFixed(0)}%</div>`:`<div class="pcell empty">—</div>`;
+    const v=has?verdict(o,overallAppetite):{tag:"NO DATA",cls:"muted"};
+    return `<tr><td class="proj" style="padding-left:14px"><button class="projrow" data-selproj="${idx}"><span class="dot" style="background:${cvar(v.cls==="muted"?"muted":v.cls)}"></span><span class="pname">${esc(pr.name)}</span><span class="pverd" style="background:${cbg(v.cls==="muted"?"muted":v.cls)};color:${cvar(v.cls==="muted"?"muted":v.cls)}">${v.tag}</span></button></td>${cells}<td>${ov}</td></tr>`;
+  };
+  const ports=[...new Set(projects.map(p=>p.portfolio||"Ungrouped"))];
+  let rows=ports.map(port=>{
+    const idxs=projects.map((p,i)=>[p,i]).filter(pair=>(pair[0].portfolio||"Ungrouped")===port);
+    const withd=idxs.map(pair=>pair[0]).filter(pr=>Object.values(pr.scores).some(v=>v!=null));
+    const phaseCells=DATA.map(p=>{const rs=withd.map(pr=>pstats(p,pr)).filter(s=>s.sumB>0&&s.ratio!=null);
+      if(!rs.length)return `<td><div class="pcell empty">—</div></td>`;
+      const m=rs.reduce((a,s)=>a+s.ratio,0)/rs.length;const t=tier(m,phaseAppetite[p.key]);
+      return `<td><div class="pcell" style="background:${cbg(t)};color:${cvar(t)};border-color:${cvar(t)};font-weight:700">${(m*100).toFixed(0)}%</div></td>`;}).join("");
+    const ovs=withd.map(pr=>overallOf(pr).ratio);const m=ovs.length?ovs.reduce((a,b)=>a+b,0)/ovs.length:null;
+    const ovc=m!=null?`<div class="pcell" style="background:${cbg(tier(m,overallAppetite))};color:${cvar(tier(m,overallAppetite))};font-weight:700">${(m*100).toFixed(0)}%</div>`:`<div class="pcell empty">—</div>`;
+    const gh=`<tr><td class="proj" style="background:var(--navy);border-radius:6px 0 0 6px"><span style="font-family:var(--serif);font-size:14px;color:#fff">${esc(port)}</span> <span style="font-family:var(--mono);font-size:11px;color:#9db4d4">${idxs.length}</span></td>${phaseCells}<td>${ovc}</td></tr>`;
+    return gh+idxs.map(pair=>rowFor(pair[0],pair[1])).join("");
+  }).join("");
+  return `<section class="band"><div class="wrap pf-head">
+     <div class="seal-holder">${sealSVG(mean,postureTag,posture,"PORTFOLIO")}
+       <div class="appetite" role="group" aria-label="Portfolio appetite">${["conservative","balanced","lenient"].map(k=>`<button data-app="${k}" aria-pressed="${overallAppetite===k}">${APPETITES[k].label}</button>`).join("")}</div>
+     </div>
+     <div class="det-copy"><div class="eyebrow">Portfolio posture</div>
+       <h1>${go} Go · ${rev} Review · ${nogo} No-Go across the portfolio</h1>
+       <p class="lede">Mean maturity across projects with data, scored against shared targets. Each phase carries its own risk appetite; the overall verdict uses the portfolio appetite above. Select a project to drill in.</p>
+       <div class="metrics">
+         <div class="metric"><div class="v">${(mean*100).toFixed(0)}%</div><div class="l">Mean maturity</div></div>
+         <div class="metric"><div class="v">${withData.length}/${projects.length}</div><div class="l">Projects with data</div></div>
+         <div class="metric"><div class="v">${hardTot}</div><div class="l">Hard-gate trips</div></div>
+       </div></div></div></section>
+   <main><div class="wrap">
+     <div class="card" style="margin-bottom:20px"><h3>Portfolio maturity by phase</h3><div class="hint">Cell = Σ assessment ÷ Σ target for that project &amp; phase, coloured by the phase's own appetite. Click a project to open it.</div>
+       <div class="heatwrap"><table class="heat">${head}${rows}</table></div></div>
+     <div class="toolbar"><button class="btn primary" data-nav="#/project">Open active project ›</button><button class="btn" data-nav="#/risk">Portfolio risk ›</button><button class="btn" id="btnExport">Export JSON</button><button class="btn" id="btnImport">Import JSON</button><button class="btn" id="btnCsv">Export CSV</button><input type="file" id="fileInput" accept="application/json" style="display:none"></div>
+   </div></main>`;
+}
+function tile(p,proj){const s=pstats(p,proj),app=phaseAppetite[p.key],t=tier(s.ratio,app),col=cvar(t),w=s.ratio==null?0:Math.min(100,s.ratio*100);
+  const arts=p.groups.reduce((a,g)=>a+g.arts.filter(x=>x.b!=null).length,0);
+  return `<button class="tile" data-nav="#/phase/${p.key}">
+    <div class="tile-top"><span class="phase-id">${p.id}</span><span class="dot" style="background:${col}"></span></div>
+    <div class="tile-name">${p.name}</div>
+    <div class="tile-meta">${arts} artifacts · ${s.debt} debt${s.hard.length?` · <b style="color:var(--nogo)">${s.hard.length} hard</b>`:''} <span class="appmini">${APPETITES[app].code}</span></div>
+    <div class="aggbar"><span style="width:${w}%;background:${col}"></span></div>
+    <div class="tile-ratio" style="color:${col}">${s.ratio==null?'n/a':(s.ratio*100).toFixed(0)+'%'}<small>vs target</small></div></button>`;}
+function renderProject(){const proj=AP();const o=overallOf(proj);const v=verdict(o,overallAppetite);
+  return `<section class="band"><div class="wrap det-grid">
+     <div class="seal-holder">${sealSVG(o.ratio,v.tag,v.cls)}
+       <div class="appetite" role="group" aria-label="Project appetite">${["conservative","balanced","lenient"].map(k=>`<button data-app="${k}" aria-pressed="${overallAppetite===k}">${APPETITES[k].label}</button>`).join("")}</div></div>
+     <div class="det-copy"><div class="eyebrow">${esc(proj.name)} · release determination</div>
+       <h1>${v.tag==="GO"?"Cleared for release":v.tag==="REVIEW"?"Hold for human review":"Blocked — return for rework"}</h1>
+       <p class="lede">Each artifact is assessed 0–3 against its shared maturity target. Shortfalls are capability gaps; a gap on a critical artifact trips a hard gate and forces human review.</p>
+       <div class="verdict-line"><span class="tag" style="background:${cbg(v.cls)};color:${cvar(v.cls)}">${v.tag}</span><span class="verdict-reason">${v.reason}</span></div>
+       <div class="metrics">
+         <div class="metric"><div class="v">${(o.ratio*100).toFixed(0)}%</div><div class="l">Maturity ratio</div></div>
+         <div class="metric"><div class="v">${o.debt}</div><div class="l">Debt points</div></div>
+         <div class="metric"><div class="v">${o.hard.length}</div><div class="l">Hard-gate trips</div></div>
+         <div class="metric"><div class="v">${(o.cov*100).toFixed(0)}%</div><div class="l">Evidence coverage</div></div>
+       </div></div></div></section>
+   <main><div class="wrap">
+     <div class="guidance"><h2>How to run an assessment</h2><div class="steps">
+       <div class="step"><div class="num">1</div><div><div class="st">Set shared targets</div><div class="sd">In Targets, set expected maturity per artifact and each phase's appetite. Targets apply to every project.</div></div></div>
+       <div class="step"><div class="num">2</div><div><div class="st">Score this project</div><div class="sd">Open a phase and assess each artifact 0–3 for ${esc(proj.name)}.</div></div></div>
+       <div class="step"><div class="num">3</div><div><div class="st">Read gate &amp; risk</div><div class="sd">The seal turns Go / Review / No-Go; the Risk screen explains what proceeding unmitigated would cost.</div></div></div>
+     </div></div>
+     <div class="home-grid">
+       <div class="tiles">${DATA.map(p=>tile(p,proj)).join("")}</div>
+       <aside class="home-side">
+         <div class="card"><h3>Phase maturity</h3><div class="hint">Σ assessment ÷ Σ target · coloured by each phase's appetite.</div><div class="radar-wrap">${radarSVG(proj)}</div></div>
+         <div class="card"><h3>Review packet <span class="count-pill">${o.hard.length+o.gaps.length+o.evi.length}</span></h3><div class="hint">Routed to discipline owners.</div>${packetHTML(o)}</div>
+       </aside></div></div></main>`;}
+function packetHTML(o){if(o.hard.length+o.gaps.length+o.evi.length===0)return `<div class="packet-empty">No open items. Every targeted artifact is assessed and on target.</div>`;
+  let html="";o.hard.forEach(h=>html+=`<div class="pk hard"><div class="pk-t">Hard gate · ${h.art.n}</div><div class="pk-m"><span class="pk-mono">${h.phase.id} ${h.phase.name}</span> · 0 vs target ${h.art.b}. <span class="own">${h.group.owner}.</span></div></div>`);
+  o.gaps.slice(0,6).forEach(g=>html+=`<div class="pk gap"><div class="pk-t">${g.art.c?'Critical gap':'Capability gap'} · ${g.art.n}</div><div class="pk-m"><span class="pk-mono">${g.phase.name} · ${g.art.a}→${g.art.b}</span> (−${g.gap}). <span class="own">${g.group.owner}.</span></div></div>`);
+  if(o.gaps.length>6)html+=`<div class="pk-m" style="padding-left:12px">+${o.gaps.length-6} more gaps…</div>`;
+  if(o.evi.length)html+=`<div class="pk evi"><div class="pk-t">Evidence gap · ${o.evi.length} unassessed</div><div class="pk-m">Unscored targeted artifacts count as debt until assessed.</div></div>`;
+  return html;}
+function threshBar(ratio,appKey){const A=APPETITES[appKey];const pct=ratio==null?0:Math.min(100,ratio*100);const t=tier(ratio,appKey);
+  return `<div class="threshbar"><div class="fill" style="width:${pct}%;background:${cvar(t)}"></div>
+    <div class="tick lo" style="left:${A.lo*100}%"></div><div class="tick hi" style="left:${A.hi*100}%"></div>
+    <span class="tk-label" style="left:${A.lo*100}%">${(A.lo*100).toFixed(0)}</span><span class="tk-label" style="left:${A.hi*100}%">${(A.hi*100).toFixed(0)}</span></div>`;}
+function renderPhase(key){const pi=DATA.findIndex(p=>p.key===key);if(pi<0)return renderProject();const p=DATA[pi];const proj=AP();const s=pstats(p,proj);
+  const app=phaseAppetite[p.key];const v=phaseVerdict(p,proj);const t=tier(s.ratio,app);
+  const prev=DATA[(pi-1+DATA.length)%DATA.length],next=DATA[(pi+1)%DATA.length];
+  let body="";p.groups.forEach((g,gi)=>{let rows="";g.arts.forEach((art,ai)=>{rows+=`<div class="art">
+      <div class="art-name">${art.n}${art.c?'<span class="crit">critical</span>':''}${art.b==null?'<span class="nb">not targeted</span>':''}</div>
+      <div class="baseline">target <b>${art.b==null?'—':art.b}</b></div>
+      <div class="rightcell">${gapFlag(art,proj)} ${seg("assess",pi,gi,ai,art)}</div></div>`;});
+    body+=`<div class="group"><div class="group-label">${g.label}<span class="owner">· owner: ${g.owner}</span></div>${rows}</div>`;});
+  const hard=s.hard.length?`<div class="hardbanner"><b>${s.hard.length} hard-gate trip${s.hard.length>1?"s":""}.</b> ${s.hard.map(h=>h.art.n).join(", ")} scored 0 against target — forces No-Go until reworked.</div>`:"";
+  return `<div class="statusbar"><div class="wrap"><button class="backlink" data-nav="#/project">‹ ${esc(proj.name)}</button>
+      <div class="sb-title"><span class="phase-id">${p.id}</span> ${p.name}</div><div class="sb-spacer"></div>
+      <span class="sb-chip" style="background:${cbg(t)};color:${cvar(t)}">${v.tag} · ${s.ratio==null?'n/a':(s.ratio*100).toFixed(0)+'%'}</span>
+      <div class="prevnext"><button data-nav="#/phase/${prev.key}">‹ ${prev.name}</button><button data-nav="#/phase/${next.key}">${next.name} ›</button></div></div></div>
+    <main><div class="wrap phasewrap">
+      <div class="appstrip"><span class="lbl">Phase appetite</span>
+        <div class="segapp" role="group" aria-label="Phase appetite">${["conservative","balanced","lenient"].map(k=>`<button data-phaseapp="${p.key}" data-app="${k}" aria-pressed="${app===k}">${APPETITES[k].label}</button>`).join("")}</div>
+        ${threshBar(s.ratio,app)}
+        <span class="sb-chip" style="background:${cbg(t)};color:${cvar(t)}">${s.ratio==null?'n/a':(s.ratio*100).toFixed(0)+'% vs cumulative target'}</span></div>
+      ${hard}<div class="panel">${body}</div>
+      <div class="toolbar"><button class="btn" data-nav="#/risk">See risk for this project ›</button><button class="btn" data-nav="#/targets">Adjust targets ›</button></div>
+    </div></main>`;}
+function renderTargets(){let blocks="";DATA.forEach((p,pi)=>{const s=pstats(p,AP());let rows="";
+    p.groups.forEach((g,gi)=>{let arts="";g.arts.forEach((art,ai)=>{arts+=`<div class="tart">
+      <div class="art-name">${art.n}${art.c?'<span class="crit">critical</span>':''}</div>
+      <div class="cur">${esc(AP().name)}: ${scoreOf(art)==null?'—':scoreOf(art)}</div>
+      <div class="rightcell"><span class="seg-cap">target</span>${seg("target",pi,gi,ai,art)}</div></div>`;});
+      rows+=`<div class="group"><div class="group-label">${g.label}<span class="owner">· owner: ${g.owner}</span></div>${arts}</div>`;});
+    const open=openTargets.has(p.key),app=phaseAppetite[p.key];
+    blocks+=`<div class="tphase"><div class="tphase-head"><span class="phase-id">${p.id}</span><span class="tphase-name">${p.name}</span>
+      <span class="tphase-read">Σ target ${s.sumB}</span>
+      <div class="segapp" role="group" aria-label="Phase appetite">${["conservative","balanced","lenient"].map(k=>`<button data-phaseapp="${p.key}" data-app="${k}" aria-pressed="${app===k}">${APPETITES[k].code}</button>`).join("")}</div>
+      <div class="bulk"><button data-bulk="set" data-phase="${pi}" data-val="1">All→1</button><button data-bulk="set" data-phase="${pi}" data-val="2">All→2</button><button data-bulk="set" data-phase="${pi}" data-val="3">All→3</button><button data-bulk="inc" data-phase="${pi}">+1</button><button data-bulk="dec" data-phase="${pi}">−1</button><button data-toggletgt="${p.key}">${open?'Hide':'Show'}</button></div>
+      </div>${open?rows:""}</div>`;});
+  return `<div class="statusbar"><div class="wrap"><button class="backlink" data-nav="#/project">‹ Project</button><div class="sb-title">Manage targets &amp; appetite</div></div></div>
+    <main><div class="wrap"><div class="targets-intro"><h2>Set the bar, the appetite, and raise it in waves</h2>
+      <p>Targets are the expected maturity (0–3) per artifact and are shared across every project in the portfolio. Each phase's appetite (C / B / L) sets how strict its Go/Review/No-Go bands are against cumulative targets.</p>
+      <p>Lowering a target relaxes the bar and lifts the ratio; raising it exposes more gap. Bulk actions apply to already-targeted artifacts; set a “—” to bring one into scope.</p>
+      <div class="wavebar"><span class="wl">Apply a maturity wave to every phase:</span><button class="btn" data-wave="1">Foundational (1)</button><button class="btn" data-wave="2">Managed (2)</button><button class="btn" data-wave="3">Optimized (3)</button></div></div>
+      ${blocks}</div></main>`;}
+function renderRisk(){const proj=AP();const o=overallOf(proj);const risks=risksFor(proj);
+  const counts={critical:0,high:0,moderate:0,low:0};risks.forEach(r=>counts[r.band]++);
+  const proceed=risks.filter(r=>r.band==="critical"||r.band==="high").slice(0,6);
+  // phase roll-up
+  const phaseRoll=DATA.map(p=>{const pr=risks.filter(r=>r.phase.key===p.key);const E=pr.reduce((a,b)=>a+b.E,0);return{p,E,n:pr.length,top:pr[0]};}).filter(x=>x.n>0).sort((a,b)=>b.E-a.E);
+  // agents
+  let agentCards="";AGENTS.forEach(ag=>{const post=agentPosture(ag,proj);const ar=risks.filter(r=>ag.match(r.group.label));
+    const pcol=cvar(tier(post,"balanced"));const worst=ar[0];
+    let findings=ar.slice(0,4).map(r=>`<div class="finding"><div class="finding-top">
+        <span class="eband" style="background:${bandBg(r.band)};color:${bandColor(r.band)}">${r.band}</span>
+        <span class="finding-t">${r.art.n}</span><span class="finding-src">${r.phase.name}${r.art.c?' · critical':''}</span></div>
+      <div class="li-row"><span>assessed <span class="mono">${r.assessed?r.a:'—'}</span> / target <span class="mono">${r.art.b}</span></span><span>likelihood <span class="mono">${r.L}/5</span> × impact <span class="mono">${r.I}/5</span> = exposure <span class="mono">${r.E}</span></span></div>
+      <div class="impact">If you proceed unmitigated: <b>${r.impact}</b>.</div>
+      <div class="explain">${r.assessed?`Scored ${r.a} against a target of ${r.art.b} (gap ${r.gap}).`:`Not yet assessed against a target of ${r.art.b}; unknown state is treated as unmitigated risk.`} Likelihood rises with the gap; impact rises because this is ${r.art.c?'a critical':'a standard'} artifact${phaseWeight(r.phase)?' in a release-facing phase':''}. Recommended: raise toward target and re-assess. <span class="own">Owner: ${r.group.owner}.</span></div></div>`).join("");
+    if(ar.length===0)findings=`<div class="finding"><div class="impact" style="color:var(--go)">No open risks in this lens for ${esc(proj.name)}.</div></div>`;
+    const more=ar.length>4?`<div class="moretxt">+${ar.length-4} more findings in this lens.</div>`:"";
+    agentCards+=`<div class="agent"><div class="agent-head"><div class="agent-badge">${ag.glyph}</div>
+      <div><div class="agent-name">${ag.name}</div><div class="agent-lens">${ag.lens}</div></div>
+      <div class="agent-posture"><div class="aggbar" style="flex:1"><span style="width:${post==null?0:Math.min(100,post*100)}%;background:${pcol}"></span></div><span class="finding-src" style="color:${pcol}">${post==null?'n/a':(post*100).toFixed(0)+'%'}</span></div></div>
+      <div class="agent-body">${findings}${more}</div>
+      <div class="agent-guide"><b>Guidance.</b> ${ag.guide(post==null?0:post,worst)}</div></div>`;});
+  const posture=counts.critical>0?"critical":counts.high>0?"high":counts.moderate>0?"moderate":"low";
+  return `<div class="statusbar"><div class="wrap"><button class="backlink" data-nav="#/project">‹ ${esc(proj.name)}</button><div class="sb-title">Risk assessment · ${esc(proj.name)}</div>
+      <div class="sb-spacer"></div><span class="sb-chip" style="background:${bandBg(posture)};color:${bandColor(posture)}">${posture.toUpperCase()} exposure</span></div></div>
+    <main><div class="wrap">
+      <div class="agentnote">Assessment agents are <b>deterministic, rule-based advisors</b> — the in-browser proxy for the skill-library evaluators. Each rates likelihood × impact (1–5) and explains the consequence of proceeding unmitigated. Ratings are decision support, not a guarantee.</div>
+      <div class="riskhead">
+        <div class="proceed"><h3>If you proceed now</h3>
+          <div class="big">${proceed.length? `${proceed.length} high or critical risk${proceed.length>1?"s":""} would ship unmitigated on ${esc(proj.name)}:`:`No high or critical risks are open for ${esc(proj.name)} at the current scoring.`}</div>
+          ${proceed.length?`<ul>${proceed.map(r=>`<li><b>${r.art.n}</b> (${r.phase.name}) — ${r.impact}.</li>`).join("")}</ul>`:""}</div>
+        <div class="card"><h3>Exposure profile</h3><div class="hint">Count of open risks by band across all phases.</div>
+          <div class="bandgrid">
+            <div class="bandbox" style="background:var(--crit-bg)"><div class="n" style="color:var(--crit)">${counts.critical}</div><div class="l" style="color:var(--crit)">Critical</div></div>
+            <div class="bandbox" style="background:var(--nogo-bg)"><div class="n" style="color:var(--nogo)">${counts.high}</div><div class="l" style="color:var(--nogo)">High</div></div>
+            <div class="bandbox" style="background:var(--rev-bg)"><div class="n" style="color:var(--rev)">${counts.moderate}</div><div class="l" style="color:var(--rev)">Moderate</div></div>
+            <div class="bandbox" style="background:var(--go-bg)"><div class="n" style="color:var(--go)">${counts.low}</div><div class="l" style="color:var(--go)">Low</div></div>
+          </div>
+          <div class="hint" style="margin:12px 0 0">Phase exposure (Σ likelihood×impact): ${phaseRoll.map(x=>`<b>${x.p.name}</b> ${x.E}`).join(" · ")||"none"}.</div>
+        </div></div>
+      ${agentCards}
+    </div></main>`;}
+
+/* ================= Router ================= */
+function parseHash(){const h=location.hash.replace(/^#\/?/,""),parts=h.split("/");
+  if(parts[0]==="phase"&&parts[1])return{name:"phase",param:parts[1]};
+  if(["project","targets","risk"].includes(parts[0]))return{name:parts[0]};
+  return{name:"portfolio"};}
+let pendingScroll=null;
+function render(){const v=parseHash(),host=document.getElementById("view");
+  host.innerHTML=v.name==="phase"?renderPhase(v.param):v.name==="project"?renderProject():v.name==="targets"?renderTargets():v.name==="risk"?renderRisk():renderPortfolio();
+  document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.nav==="#/"+(v.name==="phase"?"project":v.name)));
+  buildProjSel();
+  if(pendingScroll!=null){window.scrollTo(0,pendingScroll);pendingScroll=null;}else window.scrollTo(0,0);}
+function navigate(hash){if(location.hash===hash)render();else location.hash=hash;}
+window.addEventListener("hashchange",render);
+function rerender(){pendingScroll=window.scrollY;render();}
+function buildProjSel(){const sel=document.getElementById("projSel");if(!sel)return;sel.innerHTML=projects.map((p,i)=>`<option value="${i}" ${i===activeProject?"selected":""}>${esc((p.portfolio?p.portfolio.replace(/ Operations$/,'')+" · ":"")+p.name)}</option>`).join("");}
+
+/* ================= Events ================= */
+document.addEventListener("click",e=>{
+  const sb=e.target.closest(".seg button");
+  if(sb&&sb.dataset.scope){const s=sb.closest(".seg");if(s.classList.contains("disabled"))return;
+    const pi=+sb.dataset.p,gi=+sb.dataset.g,ai=+sb.dataset.a,val=sb.dataset.v===""?null:+sb.dataset.v;const art=DATA[pi].groups[gi].arts[ai];
+    if(sb.dataset.scope==="assess"){if(val==null)delete AP().scores[art.id];else AP().scores[art.id]=val;}else art.b=val;rerender();return;}
+  const pa=e.target.closest("[data-phaseapp]");
+  if(pa){phaseAppetite[pa.dataset.phaseapp]=pa.dataset.app;rerender();return;}
+  const blk=e.target.closest("[data-bulk]");
+  if(blk){const pi=+blk.dataset.phase,mode=blk.dataset.bulk,val=blk.dataset.val?+blk.dataset.val:null;
+    DATA[pi].groups.forEach(gr=>gr.arts.forEach(art=>{if(art.b==null)return;if(mode==="set")art.b=val;else if(mode==="inc")art.b=Math.min(3,art.b+1);else if(mode==="dec")art.b=Math.max(0,art.b-1);}));rerender();return;}
+  const w=e.target.closest("[data-wave]");
+  if(w){const val=+w.dataset.wave;DATA.forEach(p=>p.groups.forEach(gr=>gr.arts.forEach(art=>{if(art.b!=null)art.b=val;})));rerender();return;}
+  const tg=e.target.closest("[data-toggletgt]");
+  if(tg){const k=tg.dataset.toggletgt;openTargets.has(k)?openTargets.delete(k):openTargets.add(k);rerender();return;}
+  const sp=e.target.closest("[data-selproj]");
+  if(sp){activeProject=+sp.dataset.selproj;navigate("#/project");return;}
+  const ap=e.target.closest("[data-app]");
+  if(ap&&!ap.dataset.phaseapp){overallAppetite=ap.dataset.app;rerender();return;}
+  const nav=e.target.closest("[data-nav]");
+  if(nav){navigate(nav.dataset.nav);return;}
+  if(e.target.closest("#sebokBtn")){document.getElementById("drawerBg").classList.add("open");return;}
+  if(e.target.id==="btnExport"){doExport();return;}
+  if(e.target.id==="btnCsv"){doCsv();return;}
+  if(e.target.id==="btnImport"){document.getElementById("fileInput").click();return;}
+});
+document.addEventListener("change",e=>{if(e.target.id==="projSel"){activeProject=+e.target.value;rerender();}
+  if(e.target.id==="fileInput"){const f=e.target.files[0];if(f)readImport(f);e.target.value="";}});
+const drawerBg=document.getElementById("drawerBg");
+document.getElementById("drawerX").onclick=()=>drawerBg.classList.remove("open");
+drawerBg.addEventListener("click",e=>{if(e.target===drawerBg)drawerBg.classList.remove("open");});
+
+/* ================= Export / import ================= */
+function currentState(){return{meta,overallAppetite,phaseAppetite,targets:DATA.map(p=>({key:p.key,groups:p.groups.map(g=>g.arts.map(a=>a.b))})),
+  projects:projects.map(pr=>({id:pr.id,name:pr.name,portfolio:pr.portfolio,scores:pr.scores})),activeProject};}
+function download(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+function doExport(){download("portfolio_assessment.json",JSON.stringify(currentState(),null,2),"application/json");}
+function doCsv(){let rows=[["Project","Phase ID","Phase","Discipline","Owner","Artifact","Critical","Target","Assessment","Gap"]];
+  projects.forEach(pr=>DATA.forEach(p=>p.groups.forEach(g=>g.arts.forEach(a=>{const v=pr.scores[a.id];rows.push([pr.name,p.id,p.name,g.label,g.owner,a.n,a.c?"Y":"",a.b==null?"":a.b,v==null?"":v,(a.b!=null&&v!=null)?(a.b-v):""]);}))));
+  download("portfolio_assessment.csv",rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"),"text/csv");}
+function readImport(f){const r=new FileReader();r.onload=()=>{try{const st=JSON.parse(r.result);
+  if(st.targets)st.targets.forEach(tp=>{const p=DATA.find(x=>x.key===tp.key);if(p)tp.groups.forEach((ga,gi)=>ga.forEach((b,ai)=>{if(p.groups[gi]&&p.groups[gi].arts[ai])p.groups[gi].arts[ai].b=b;}));});
+  if(st.projects)projects=st.projects.map(pr=>({id:pr.id,name:pr.name,portfolio:pr.portfolio||"Ungrouped",scores:pr.scores||{}}));
+  if(st.phaseAppetite)phaseAppetite=st.phaseAppetite;if(st.overallAppetite)overallAppetite=st.overallAppetite;
+  if(typeof st.activeProject==="number")activeProject=Math.min(st.activeProject,projects.length-1);
+  if(st.meta){meta.cycle=st.meta.cycle??meta.cycle;meta.assessor=st.meta.assessor??meta.assessor;}
+  render();
+}catch(err){alert("Could not read that file — expected JSON exported from this console.");}};r.readAsText(f);}
+
+render();
+</script>
+</body>
+</html>

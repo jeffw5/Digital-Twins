@@ -1,0 +1,385 @@
+###############################################################################
+#  PEO Employment Standards Ontology (PES) — TBox
+#  Replaces the Telecom Service Interoperability Ontology (TSIO v0.1).
+#
+#  Purpose: model the federal, state, county and municipal employment
+#  standards that a Professional Employer Organization (PEO) and its client
+#  employers must meet, how they apply to worksites by jurisdiction and
+#  headcount, and how responsibility for each requirement is allocated in the
+#  co-employment relationship.
+#
+#  Modules
+#    peo-es.ttl          – this file: classes, properties, axioms (OWL 2 DL)
+#    peo-topics.ttl      – compliance topic taxonomy (SKOS)
+#    peo-standards.ttl   – reference data: jurisdictions, agencies, laws,
+#                          requirements, wage rates (verified 2026-09-30)
+#    peo-examples.ttl    – fictional PEO, clients, worksites, agreement
+#    peo-shapes.ttl      – SHACL quality gates for the reference data
+#    ke-governance-scheme.ttl – KE lifecycle + ISO standards (SKOS)
+#
+#  Upper ontology: BFO (ISO/IEC 21838-2), referenced by IRI.
+#  Design decisions to review are marked with skos:editorialNote.
+#  Not legal advice: the reference data is a modeling sample.
+###############################################################################
+
+@prefix pes:     <https://enablingvalue.com/ontology/peo-es#> .
+@prefix obo:     <http://purl.obolibrary.org/obo/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<https://enablingvalue.com/ontology/peo-es>
+    a owl:Ontology ;
+    owl:versionIRI <https://enablingvalue.com/ontology/peo-es/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "PEO Employment Standards Ontology"@en ;
+    dcterms:description "Domain ontology for the employment standards (statutes, regulations, ordinances) that govern HR services delivered by a Professional Employer Organization: where each standard applies, who enforces it, what it requires, above which headcount it applies, and which co-employer carries each requirement."@en ;
+    dcterms:created "2026-09-30"^^xsd:date ;
+    dcterms:replaces <https://enablingvalue.com/ontology/tsio> ;
+    dcterms:references "ISO/IEC 21838-2:2021 (BFO)" , "ISO 30400:2022 (HRM vocabulary)" , "ISO 704:2022" , "ISO/IEC 5392:2024" ;
+    rdfs:comment "Reference data is a modeling sample verified on 2026-09-30, not legal advice. Wage rates and thresholds change; see pes:lastVerified on each record."@en .
+
+#################################################################
+#  Annotation properties
+#################################################################
+dcterms:title a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:created a owl:AnnotationProperty .
+dcterms:references a owl:AnnotationProperty .
+dcterms:replaces a owl:AnnotationProperty .
+skos:definition a owl:AnnotationProperty .
+skos:editorialNote a owl:AnnotationProperty .
+skos:altLabel a owl:AnnotationProperty .
+skos:example a owl:AnnotationProperty .
+
+#################################################################
+#  BFO (ISO/IEC 21838-2) — referenced classes
+#################################################################
+obo:BFO_0000001 a owl:Class ; rdfs:label "entity"@en .
+obo:BFO_0000002 a owl:Class ; rdfs:label "continuant"@en ; rdfs:subClassOf obo:BFO_0000001 .
+obo:BFO_0000004 a owl:Class ; rdfs:label "independent continuant"@en ; rdfs:subClassOf obo:BFO_0000002 .
+obo:BFO_0000031 a owl:Class ; rdfs:label "generically dependent continuant"@en ; rdfs:subClassOf obo:BFO_0000002 ;
+    owl:disjointWith obo:BFO_0000004 .
+obo:BFO_0000040 a owl:Class ; rdfs:label "material entity"@en ; rdfs:subClassOf obo:BFO_0000004 .
+obo:BFO_0000141 a owl:Class ; rdfs:label "immaterial entity"@en ; rdfs:subClassOf obo:BFO_0000004 ;
+    owl:disjointWith obo:BFO_0000040 .
+obo:BFO_0000029 a owl:Class ; rdfs:label "site"@en ; rdfs:subClassOf obo:BFO_0000141 .
+obo:BFO_0000030 a owl:Class ; rdfs:label "object"@en ; rdfs:subClassOf obo:BFO_0000040 .
+obo:BFO_0000027 a owl:Class ; rdfs:label "object aggregate"@en ; rdfs:subClassOf obo:BFO_0000040 ;
+    owl:disjointWith obo:BFO_0000030 .
+
+#################################################################
+#  Employment standards (information content — GDC)
+#################################################################
+pes:EmploymentStandard
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:appliesIn ; owl:someValuesFrom pes:Jurisdiction ] ;
+    rdfs:label "Employment Standard"@en ;
+    skos:definition "A legal instrument (statute, regulation or ordinance) that sets rules employers must follow toward workers within a jurisdiction."@en ;
+    skos:editorialNote "Modeled as information content (generically dependent continuant): the same law exists in many copies. Its legal effect in a place is expressed by pes:appliesIn."@en .
+
+pes:Statute a owl:Class ; rdfs:subClassOf pes:EmploymentStandard ;
+    rdfs:label "Statute"@en ; skos:altLabel "Act"@en ;
+    skos:definition "An employment standard enacted by a federal or state legislature."@en .
+pes:Regulation a owl:Class ; rdfs:subClassOf pes:EmploymentStandard ;
+    rdfs:label "Regulation"@en ; skos:altLabel "Agency rule"@en ;
+    skos:definition "An employment standard issued by an agency under authority delegated by a statute."@en .
+pes:Ordinance a owl:Class ; rdfs:subClassOf pes:EmploymentStandard ;
+    rdfs:label "Ordinance"@en ;
+    skos:definition "An employment standard enacted by a county or municipal legislative body."@en .
+[] a owl:AllDisjointClasses ; owl:members ( pes:Statute pes:Regulation pes:Ordinance ) .
+
+### Level classes are defined, not asserted: a reasoner classifies each standard by where it applies.
+pes:FederalStandard a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf ( pes:EmploymentStandard
+        [ a owl:Restriction ; owl:onProperty pes:appliesIn ; owl:someValuesFrom pes:FederalJurisdiction ] ) ] ;
+    rdfs:label "Federal Standard"@en ;
+    skos:definition "An employment standard that applies in a federal jurisdiction."@en .
+pes:StateStandard a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf ( pes:EmploymentStandard
+        [ a owl:Restriction ; owl:onProperty pes:appliesIn ; owl:someValuesFrom pes:StateJurisdiction ] ) ] ;
+    rdfs:label "State Standard"@en ;
+    skos:definition "An employment standard that applies in a state jurisdiction."@en .
+pes:LocalStandard a owl:Class ;
+    owl:equivalentClass [ a owl:Class ; owl:intersectionOf ( pes:EmploymentStandard
+        [ a owl:Restriction ; owl:onProperty pes:appliesIn ; owl:someValuesFrom pes:LocalJurisdiction ] ) ] ;
+    rdfs:label "Local Standard"@en ; skos:altLabel "Municipal or county standard"@en ;
+    skos:definition "An employment standard that applies in a county or municipal jurisdiction."@en .
+
+#################################################################
+#  Requirements (deontic norms inside standards)
+#################################################################
+pes:Requirement
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:establishedBy ; owl:someValuesFrom pes:EmploymentStandard ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:deonticModality ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:label "Requirement"@en ; skos:altLabel "Norm"@en ;
+    skos:definition "A single rule of conduct for employers, stated as an obligation, prohibition or permission, that one or more employment standards establish."@en ;
+    skos:editorialNote "Deontic modality follows the LKIF-Core pattern (obligation / prohibition / permission) but is modeled as a value, not a class, to keep the ontology small. A requirement shared by several laws (e.g. pay a minimum wage) is one node linked to each law."@en .
+
+pes:DeonticModality a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:label "Deontic Modality"@en ;
+    skos:definition "Whether a requirement obliges, prohibits or permits an action."@en ;
+    owl:oneOf ( pes:Obligation pes:Prohibition pes:Permission ) .
+pes:Obligation  a owl:NamedIndividual , pes:DeonticModality ; rdfs:label "Obligation"@en ;  skos:definition "The employer must act."@en .
+pes:Prohibition a owl:NamedIndividual , pes:DeonticModality ; rdfs:label "Prohibition"@en ; skos:definition "The employer must not act."@en .
+pes:Permission  a owl:NamedIndividual , pes:DeonticModality ; rdfs:label "Permission"@en ;  skos:definition "The employer may act, within stated limits."@en .
+[] a owl:AllDifferent ; owl:distinctMembers ( pes:Obligation pes:Prohibition pes:Permission ) .
+
+#################################################################
+#  Legal status (lifecycle of a standard)
+#################################################################
+pes:LegalStatus a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:label "Legal Status"@en ;
+    skos:definition "Whether a standard is currently enforceable."@en ;
+    owl:oneOf ( pes:InForce pes:InForceChallenged pes:Preempted pes:Rescinded ) .
+pes:InForce a owl:NamedIndividual , pes:LegalStatus ; rdfs:label "In force"@en ;
+    skos:definition "Enacted, effective and enforceable."@en .
+pes:InForceChallenged a owl:NamedIndividual , pes:LegalStatus ; rdfs:label "In force — under legal challenge"@en ;
+    skos:definition "Enforceable, but its validity is being litigated."@en .
+pes:Preempted a owl:NamedIndividual , pes:LegalStatus ; rdfs:label "Preempted / enjoined"@en ;
+    skos:definition "Held invalid or blocked because a higher-level law displaces it."@en .
+pes:Rescinded a owl:NamedIndividual , pes:LegalStatus ; rdfs:label "Rescinded / vacated"@en ;
+    skos:definition "Withdrawn by its issuer or vacated by a court; kept for history."@en .
+[] a owl:AllDifferent ; owl:distinctMembers ( pes:InForce pes:InForceChallenged pes:Preempted pes:Rescinded ) .
+
+#################################################################
+#  Wage rates (measured values with explicit units — ISO 80000-1)
+#################################################################
+pes:WageRate
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:label "Wage Rate"@en ;
+    skos:definition "A minimum pay amount set by a standard for a category of worker, with its unit and the date it takes effect."@en ;
+    skos:editorialNote "Rates are separate records with effective dates so that each annual change is a new node rather than an overwrite (bitemporal-friendly)."@en .
+
+#################################################################
+#  Jurisdictions (sites)
+#################################################################
+pes:Jurisdiction
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000029 ;
+    rdfs:label "Jurisdiction"@en ;
+    skos:definition "A geopolitical area within which a government's employment standards apply."@en ;
+    skos:editorialNote "Modeled as a BFO site (the area), separate from the government agencies that act within it."@en .
+pes:FederalJurisdiction a owl:Class ; rdfs:subClassOf pes:Jurisdiction ; rdfs:label "Federal Jurisdiction"@en ;
+    skos:definition "The United States as a whole."@en .
+pes:StateJurisdiction a owl:Class ; rdfs:subClassOf pes:Jurisdiction ; rdfs:label "State Jurisdiction"@en ;
+    skos:definition "A US state."@en .
+pes:LocalJurisdiction a owl:Class ; rdfs:subClassOf pes:Jurisdiction ; rdfs:label "Local Jurisdiction"@en ;
+    skos:definition "A county or municipality."@en .
+pes:CountyJurisdiction a owl:Class ; rdfs:subClassOf pes:LocalJurisdiction ; rdfs:label "County"@en ;
+    skos:definition "A county within a state."@en .
+pes:MunicipalJurisdiction a owl:Class ; rdfs:subClassOf pes:LocalJurisdiction ; rdfs:label "Municipality"@en ;
+    skos:definition "A city, town or village."@en .
+[] a owl:AllDisjointClasses ; owl:members ( pes:FederalJurisdiction pes:StateJurisdiction pes:LocalJurisdiction ) .
+pes:CountyJurisdiction owl:disjointWith pes:MunicipalJurisdiction .
+
+pes:Worksite
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000029 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:locatedIn ; owl:someValuesFrom pes:Jurisdiction ] ;
+    rdfs:label "Worksite"@en ;
+    skos:definition "A place where a client employer's co-employed workers physically perform work."@en .
+pes:Worksite owl:disjointWith pes:Jurisdiction .
+
+#################################################################
+#  Organizations and people (material entities)
+#################################################################
+pes:Organization
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000040 ;
+    rdfs:label "Organization"@en ;
+    skos:definition "A legally recognized body of people acting together."@en ;
+    skos:editorialNote "Placed under material entity for simplicity; CCO models organizations as object aggregates."@en .
+pes:GovernmentAgency a owl:Class ; rdfs:subClassOf pes:Organization ;
+    rdfs:label "Government Agency"@en ;
+    skos:definition "A public body that administers or enforces employment standards."@en .
+pes:Employer a owl:Class ; rdfs:subClassOf pes:Organization ;
+    rdfs:label "Employer"@en ;
+    skos:definition "An organization that employs workers."@en .
+pes:ProfessionalEmployerOrganization a owl:Class ; rdfs:subClassOf pes:Employer ;
+    rdfs:label "Professional Employer Organization"@en ; skos:altLabel "PEO"@en ;
+    skos:definition "An employer that co-employs a client's workers under a client service agreement, taking on payroll, tax, benefits and HR administration responsibilities."@en .
+pes:ClientEmployer a owl:Class ; rdfs:subClassOf pes:Employer ;
+    rdfs:label "Client Employer"@en ; skos:altLabel "Worksite employer"@en ;
+    skos:definition "An employer that directs day-to-day work and contracts with a PEO for HR services."@en .
+pes:GovernmentAgency owl:disjointWith pes:Employer .
+pes:ProfessionalEmployerOrganization owl:disjointWith pes:ClientEmployer ;
+    skos:editorialNote "Disjoint within one agreement model; a PEO that uses another PEO would be modeled as two roles."@en .
+
+pes:Worker
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000030 ;
+    rdfs:label "Worker"@en ; skos:altLabel "Worksite employee"@en ;
+    skos:definition "A person who performs work at a worksite and is co-employed by a client and a PEO."@en .
+pes:Worker owl:disjointWith pes:Organization .
+
+#################################################################
+#  Co-employment agreement and responsibility allocation (GDC)
+#################################################################
+pes:ClientServiceAgreement
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:hasPEO ; owl:someValuesFrom pes:ProfessionalEmployerOrganization ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:hasClient ; owl:someValuesFrom pes:ClientEmployer ] ;
+    rdfs:label "Client Service Agreement"@en ; skos:altLabel "Professional employer services agreement"@en , "CSA"@en ;
+    skos:definition "The contract that creates a co-employment relationship and allocates employer responsibilities between a PEO and a client."@en .
+
+pes:ResponsibilityAllocation
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:forRequirement ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty pes:allocatedTo ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:label "Responsibility Allocation"@en ;
+    skos:definition "A clause of a client service agreement that assigns one requirement to the PEO, the client, or both."@en ;
+    skos:editorialNote "N-ary relation pattern: agreement × requirement × responsible party."@en .
+
+pes:ResponsibleParty a owl:Class ; rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:label "Responsible Party"@en ;
+    owl:oneOf ( pes:PEOResponsible pes:ClientResponsible pes:SharedResponsibility ) .
+pes:PEOResponsible a owl:NamedIndividual , pes:ResponsibleParty ; rdfs:label "PEO"@en ;
+    skos:definition "The PEO performs and answers for the requirement."@en .
+pes:ClientResponsible a owl:NamedIndividual , pes:ResponsibleParty ; rdfs:label "Client"@en ;
+    skos:definition "The client employer performs and answers for the requirement."@en .
+pes:SharedResponsibility a owl:NamedIndividual , pes:ResponsibleParty ; rdfs:label "Shared"@en ;
+    skos:definition "Both co-employers carry part of the requirement."@en .
+[] a owl:AllDifferent ; owl:distinctMembers ( pes:PEOResponsible pes:ClientResponsible pes:SharedResponsibility ) .
+
+### Top-level disjointness among domain kinds
+[] a owl:AllDisjointClasses ;
+   owl:members ( pes:EmploymentStandard pes:Requirement pes:WageRate pes:ClientServiceAgreement pes:ResponsibilityAllocation pes:LegalStatus pes:DeonticModality pes:ResponsibleParty ) .
+
+#################################################################
+#  Object properties
+#################################################################
+pes:appliesIn a owl:ObjectProperty ;
+    rdfs:label "applies in"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:Jurisdiction ;
+    owl:inverseOf pes:governedBy ;
+    skos:definition "The jurisdiction in which a standard has legal effect."@en .
+pes:governedBy a owl:ObjectProperty ; rdfs:label "governed by"@en .
+
+pes:withinJurisdiction a owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:label "within jurisdiction"@en ; rdfs:domain pes:Jurisdiction ; rdfs:range pes:Jurisdiction ;
+    skos:definition "One jurisdiction lies inside another (city ⊂ county ⊂ state ⊂ nation)."@en .
+
+pes:locatedIn a owl:ObjectProperty ;
+    rdfs:label "located in"@en ; rdfs:domain pes:Worksite ; rdfs:range pes:Jurisdiction ;
+    skos:definition "The most specific jurisdiction containing a worksite."@en .
+
+pes:subjectTo a owl:ObjectProperty ;
+    rdfs:label "subject to"@en ; rdfs:domain pes:Worksite ; rdfs:range pes:EmploymentStandard ;
+    owl:propertyChainAxiom ( pes:locatedIn pes:governedBy ) ;
+    skos:definition "A standard that applies at a worksite because it applies in the worksite's jurisdiction or any jurisdiction containing it. Inferred, not asserted."@en ;
+    skos:editorialNote "Two chain axioms: locatedIn ∘ governedBy, and locatedIn ∘ withinJurisdiction ∘ governedBy. Headcount thresholds (pes:minEmployees) are not in the chain; apply them in a query or rule."@en .
+pes:subjectTo owl:propertyChainAxiom ( pes:locatedIn pes:withinJurisdiction pes:governedBy ) .
+
+pes:enforcedBy a owl:ObjectProperty ;
+    rdfs:label "enforced by"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:GovernmentAgency ;
+    skos:definition "An agency that administers or enforces the standard."@en .
+pes:agencyOf a owl:ObjectProperty ;
+    rdfs:label "agency of"@en ; rdfs:domain pes:GovernmentAgency ; rdfs:range pes:Jurisdiction ;
+    skos:definition "The jurisdiction whose government the agency belongs to."@en .
+
+pes:establishedBy a owl:ObjectProperty ;
+    rdfs:label "established by"@en ; rdfs:domain pes:Requirement ; rdfs:range pes:EmploymentStandard ;
+    owl:inverseOf pes:establishes ;
+    skos:definition "A standard that imposes the requirement."@en .
+pes:establishes a owl:ObjectProperty ; rdfs:label "establishes"@en .
+
+pes:deonticModality a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "deontic modality"@en ; rdfs:domain pes:Requirement ; rdfs:range pes:DeonticModality .
+
+pes:coversTopic a owl:ObjectProperty ;
+    rdfs:label "covers topic"@en ; rdfs:range skos:Concept ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( pes:EmploymentStandard pes:Requirement ) ] ;
+    skos:definition "Links a standard or requirement to a concept in the compliance topic taxonomy (peo-topics.ttl)."@en ;
+    skos:editorialNote "Bridges the OWL ontology and the SKOS taxonomy without making topics into classes."@en .
+
+pes:legalStatus a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "legal status"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:LegalStatus .
+
+pes:preemptedBy a owl:ObjectProperty ;
+    rdfs:label "preempted by"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:EmploymentStandard ;
+    skos:definition "A higher-level standard that displaces this one entirely (it has no effect)."@en .
+pes:displacedBy a owl:ObjectProperty ;
+    rdfs:label "displaced by"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:EmploymentStandard ;
+    skos:definition "Where the other standard applies, this one does not (e.g. a state leave law that yields to a local ordinance)."@en .
+pes:supplementedBy a owl:ObjectProperty ;
+    rdfs:label "supplemented by"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:EmploymentStandard ;
+    skos:definition "A lower-level standard that adds to or raises this floor; employers follow whichever is more protective."@en .
+pes:amends a owl:ObjectProperty ;
+    rdfs:label "amends"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:EmploymentStandard .
+pes:implements a owl:ObjectProperty ;
+    rdfs:label "implements"@en ; rdfs:domain pes:Regulation ; rdfs:range pes:Statute ;
+    skos:definition "The statute a regulation is issued under."@en .
+
+pes:setsWageRate a owl:ObjectProperty ;
+    rdfs:label "sets wage rate"@en ; rdfs:domain pes:EmploymentStandard ; rdfs:range pes:WageRate ;
+    owl:inverseOf pes:rateSetBy .
+pes:rateSetBy a owl:ObjectProperty ; rdfs:label "rate set by"@en .
+
+pes:hasWorksite a owl:ObjectProperty ;
+    rdfs:label "has worksite"@en ; rdfs:domain pes:ClientEmployer ; rdfs:range pes:Worksite .
+pes:worksAt a owl:ObjectProperty ;
+    rdfs:label "works at"@en ; rdfs:domain pes:Worker ; rdfs:range pes:Worksite .
+pes:coEmployedBy a owl:ObjectProperty ;
+    rdfs:label "co-employed by"@en ; rdfs:domain pes:Worker ; rdfs:range pes:Employer .
+
+pes:hasPEO a owl:ObjectProperty ; rdfs:label "has PEO"@en ;
+    rdfs:domain pes:ClientServiceAgreement ; rdfs:range pes:ProfessionalEmployerOrganization .
+pes:hasClient a owl:ObjectProperty ; rdfs:label "has client"@en ;
+    rdfs:domain pes:ClientServiceAgreement ; rdfs:range pes:ClientEmployer .
+pes:hasAllocation a owl:ObjectProperty ; rdfs:label "has allocation"@en ;
+    rdfs:domain pes:ClientServiceAgreement ; rdfs:range pes:ResponsibilityAllocation .
+pes:forRequirement a owl:ObjectProperty ; rdfs:label "for requirement"@en ;
+    rdfs:domain pes:ResponsibilityAllocation ; rdfs:range pes:Requirement .
+pes:allocatedTo a owl:ObjectProperty , owl:FunctionalProperty ; rdfs:label "allocated to"@en ;
+    rdfs:domain pes:ResponsibilityAllocation ; rdfs:range pes:ResponsibleParty .
+
+pes:licensedUnder a owl:ObjectProperty ; rdfs:label "licensed under"@en ;
+    rdfs:domain pes:ProfessionalEmployerOrganization ; rdfs:range pes:EmploymentStandard .
+pes:certifiedUnder a owl:ObjectProperty ; rdfs:label "certified under"@en ;
+    rdfs:domain pes:ProfessionalEmployerOrganization ; rdfs:range pes:EmploymentStandard .
+
+#################################################################
+#  Data properties
+#################################################################
+pes:shortName a owl:DatatypeProperty ; rdfs:label "short name"@en ; rdfs:range xsd:string .
+pes:citation a owl:DatatypeProperty ; rdfs:label "citation"@en ;
+    rdfs:domain pes:EmploymentStandard ; rdfs:range xsd:string ;
+    skos:definition "Official code citation, e.g. '29 U.S.C. § 201 et seq.'"@en .
+pes:effectiveDate a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "effective date"@en ;
+    rdfs:range xsd:date ;
+    skos:definition "Date the standard, amendment or rate first took effect."@en .
+pes:minEmployees a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "minimum employees"@en ;
+    rdfs:domain pes:EmploymentStandard ; rdfs:range xsd:integer ;
+    skos:definition "Smallest employer headcount to which the standard applies; 1 means all employers."@en ;
+    skos:editorialNote "Counting rules differ by law (e.g. FMLA counts employees within 75 miles; ACA counts full-time equivalents). See pes:thresholdNote."@en .
+pes:thresholdNote a owl:DatatypeProperty ; rdfs:label "threshold note"@en ; rdfs:range xsd:string .
+pes:lastVerified a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "last verified"@en ;
+    rdfs:range xsd:date ;
+    skos:definition "Date a knowledge engineer last checked this record against an authoritative source (governance attribute)."@en .
+pes:verifiedAgainst a owl:DatatypeProperty ; rdfs:label "verified against"@en ; rdfs:range xsd:anyURI .
+pes:statusNote a owl:DatatypeProperty ; rdfs:label "status note"@en ; rdfs:range xsd:string .
+
+pes:amount a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "amount"@en ;
+    rdfs:domain pes:WageRate ; rdfs:range xsd:decimal .
+pes:unit a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "unit"@en ;
+    rdfs:domain pes:WageRate ; rdfs:range xsd:string ;
+    skos:definition "Unit of the amount, written per ISO 80000-1 conventions, e.g. 'USD/h' or 'USD/wk'."@en .
+pes:rateCategory a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "rate category"@en ;
+    rdfs:domain pes:WageRate ; rdfs:range xsd:string .
+pes:region a owl:DatatypeProperty ; rdfs:label "region"@en ; rdfs:domain pes:WageRate ; rdfs:range xsd:string .
+
+pes:headcount a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:label "headcount"@en ;
+    rdfs:domain pes:Employer ; rdfs:range xsd:integer .
+pes:clauseText a owl:DatatypeProperty ; rdfs:label "clause text"@en ;
+    rdfs:domain pes:ResponsibilityAllocation ; rdfs:range xsd:string .

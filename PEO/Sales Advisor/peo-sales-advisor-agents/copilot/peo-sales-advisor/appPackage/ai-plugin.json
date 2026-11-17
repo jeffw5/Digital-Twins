@@ -1,0 +1,380 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelfd01",
+  "functions": [
+    {
+      "name": "advisor_ask",
+      "description": "Ask the Sales Advisor a persona question. Runs intent, query, extraction, assembly, entitlement and grounding, and returns a cited brief or a held result."
+    },
+    {
+      "name": "advisor_job_steps",
+      "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to."
+    },
+    {
+      "name": "ssot_get_rule",
+      "description": "Get a Released SSOT rule, constraint or calculation by ID, optionally as of a date."
+    },
+    {
+      "name": "metrics_definition",
+      "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version."
+    },
+    {
+      "name": "census_validate",
+      "description": "Validate an uploaded prospect census against the census schema and rules; returns errors and warnings, stores nothing."
+    },
+    {
+      "name": "quote_request",
+      "description": "Request an indicative (non-binding) quote for a prospect from a validated census."
+    },
+    {
+      "name": "quote_get",
+      "description": "Get a quote with its cost lines, assumptions and sources."
+    },
+    {
+      "name": "consent_check",
+      "description": "Check outreach consent for a contact and channel."
+    },
+    {
+      "name": "proposal_draft",
+      "description": "Draft a proposal from a quote and brief for a licensed producer to review. Does not send anything."
+    },
+    {
+      "name": "advisor_record_decision",
+      "description": "Record the decision a person made from a brief, binding it to desired outcomes. Requires the person's explicit confirmation."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/FD-01",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "advisor_ask",
+              "title": "Advisor ask",
+              "description": "Ask the Sales Advisor a persona question. Runs intent, query, extraction, assembly, entitlement and grounding, and returns a cited brief or a held result.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "persona": {
+                    "type": "string",
+                    "description": "Persona the brief is for",
+                    "enum": [
+                      "client_admin",
+                      "hr_specialist"
+                    ]
+                  },
+                  "question": {
+                    "type": "string",
+                    "description": "The question in the persona's words"
+                  },
+                  "job_step": {
+                    "type": "string",
+                    "description": "Job step ID if known, e.g. CA-J1.3"
+                  },
+                  "prospect_uri": {
+                    "type": "string",
+                    "description": "Prospect URI if the question is about a specific prospect"
+                  }
+                },
+                "required": [
+                  "persona",
+                  "question"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "advisor_job_steps",
+              "title": "Advisor job steps",
+              "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "persona": {
+                    "type": "string",
+                    "description": "Persona",
+                    "enum": [
+                      "client_admin",
+                      "hr_specialist"
+                    ]
+                  }
+                },
+                "required": [
+                  "persona"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "ssot_get_rule",
+              "title": "Ssot get rule",
+              "description": "Get a Released SSOT rule, constraint or calculation by ID, optionally as of a date.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Rule, constraint or calc ID, e.g. PAY-002, CON-019, CALC-003"
+                  },
+                  "as_of": {
+                    "type": "string",
+                    "description": "ISO date; defaults to today"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "metrics_definition",
+              "title": "Metrics definition",
+              "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "calc_id": {
+                    "type": "string",
+                    "description": "Calc ID"
+                  }
+                },
+                "required": [
+                  "calc_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "census_validate",
+              "title": "Census validate",
+              "description": "Validate an uploaded prospect census against the census schema and rules; returns errors and warnings, stores nothing.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "census_file_id": {
+                    "type": "string",
+                    "description": "Uploaded census file ID"
+                  }
+                },
+                "required": [
+                  "census_file_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "quote_request",
+              "title": "Quote request",
+              "description": "Request an indicative (non-binding) quote for a prospect from a validated census.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "prospect_uri": {
+                    "type": "string",
+                    "description": "Prospect URI"
+                  },
+                  "census_intake_id": {
+                    "type": "string",
+                    "description": "Validated census intake ID"
+                  },
+                  "products": {
+                    "type": "array",
+                    "description": "Products to price, e.g. [workforce_optimization, benefits]",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "prospect_uri",
+                  "census_intake_id",
+                  "products"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "quote_get",
+              "title": "Quote get",
+              "description": "Get a quote with its cost lines, assumptions and sources.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "quote_id": {
+                    "type": "string",
+                    "description": "Quote ID"
+                  }
+                },
+                "required": [
+                  "quote_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "consent_check",
+              "title": "Consent check",
+              "description": "Check outreach consent for a contact and channel.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "contact_uri": {
+                    "type": "string",
+                    "description": "Contact URI"
+                  },
+                  "channel": {
+                    "type": "string",
+                    "description": "Channel",
+                    "enum": [
+                      "email",
+                      "sms",
+                      "call"
+                    ]
+                  }
+                },
+                "required": [
+                  "contact_uri",
+                  "channel"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "proposal_draft",
+              "title": "Proposal draft",
+              "description": "Draft a proposal from a quote and brief for a licensed producer to review. Does not send anything.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "prospect_uri": {
+                    "type": "string",
+                    "description": "Prospect URI"
+                  },
+                  "quote_id": {
+                    "type": "string",
+                    "description": "Quote ID"
+                  },
+                  "brief_id": {
+                    "type": "string",
+                    "description": "Brief ID"
+                  }
+                },
+                "required": [
+                  "prospect_uri",
+                  "quote_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "advisor_record_decision",
+              "title": "Advisor record decision",
+              "description": "Record the decision a person made from a brief, binding it to desired outcomes. Requires the person's explicit confirmation.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "brief_id": {
+                    "type": "string",
+                    "description": "Brief ID"
+                  },
+                  "option_id": {
+                    "type": "string",
+                    "description": "Chosen option ID"
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "description": "Why"
+                  },
+                  "confirmed_by_person": {
+                    "type": "boolean",
+                    "description": "True only after the person confirmed the decision in chat"
+                  }
+                },
+                "required": [
+                  "brief_id",
+                  "option_id",
+                  "rationale",
+                  "confirmed_by_person"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "advisor_ask",
+        "advisor_job_steps",
+        "ssot_get_rule",
+        "metrics_definition",
+        "census_validate",
+        "quote_request",
+        "quote_get",
+        "consent_check",
+        "proposal_draft",
+        "advisor_record_decision"
+      ]
+    }
+  ]
+}

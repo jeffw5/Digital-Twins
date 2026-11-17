@@ -1,0 +1,322 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sales Advisor Circuit Breaker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="cb.css">
+<style>
+/* Overview: a reading page inside the console shell — prose column with wide figures */
+.ov{max-width:1100px;margin:0 auto;padding-block:28px 56px;display:grid;gap:40px}
+.ov section{display:grid;gap:14px;scroll-margin-top:70px}
+.ov h2{font-size:24px;font-weight:600}
+.ov h3{font-size:16px}
+.ov p{margin:0;max-width:72ch;color:var(--ink2)}
+.ov p b{color:var(--ink)}
+.hero{display:grid;gap:14px}
+.hero h1{font-size:clamp(32px,4.6vw,52px)}
+.hero .lede{font-size:17px;max-width:66ch}
+.cta{display:flex;gap:8px;flex-wrap:wrap}
+.toc{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:10px}
+.toc a{color:var(--ink2);text-decoration:none} .toc a:hover{color:var(--accent)}
+.snap{display:grid;gap:8px}
+.stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.stages{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:13px 14px;display:grid;gap:6px;align-content:start}
+.stage .lv{font:600 11px var(--f-mono);color:var(--accent);letter-spacing:.08em}
+.stage h3{font-size:16px}
+.stage p{font-size:13px}
+.stage .q{font:500 11.5px var(--f-mono);color:var(--ink3);border-top:1px dashed var(--rule);padding-top:6px}
+.ftab th,.ftab td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top;font-size:13px}
+.ftab th{font:500 10.5px var(--f-mono);color:var(--ink3);text-transform:uppercase;letter-spacing:.06em}
+.ftab td.f{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+.ftab td.n{font-family:var(--f-mono);text-align:center;font-variant-numeric:tabular-nums}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:14px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:760px;height:auto}
+.ar .band{fill:var(--panel2);stroke:var(--rule)}
+.ar .gate{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.ar .box{fill:var(--panel);stroke:var(--rule)}
+.ar .boxa{fill:var(--panel);stroke:var(--accent)}
+.ar .side{fill:var(--panel2);stroke:var(--ink3);stroke-dasharray:0}
+.ar .lbl{font:600 10.5px 'IBM Plex Mono',monospace;fill:var(--ink3);letter-spacing:.08em}
+.ar .t{font:600 13px 'IBM Plex Sans Condensed','Arial Narrow',sans-serif;fill:var(--ink)}
+.ar .s{font:400 11px 'IBM Plex Sans',sans-serif;fill:var(--ink2)}
+.ar .m{font:500 10.5px 'IBM Plex Mono',monospace;fill:var(--ink3)}
+.ar .ln{stroke:var(--ink2);stroke-width:1.4;fill:none}
+.ar .lnA{stroke:var(--accent);stroke-width:1.6;fill:none}
+.ar .dash{stroke:var(--ink3);stroke-width:1.4;stroke-dasharray:5 4;fill:none}
+.ar .hold{stroke:var(--freeze);stroke-width:1.6;fill:none}
+.ar .num{fill:var(--accent)} .ar .numt{font:600 10px 'IBM Plex Mono',monospace;fill:var(--panel)}
+.flows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 22px;font-size:13px;color:var(--ink2);margin:0;padding:0;list-style:none}
+@media (max-width:700px){.flows{grid-template-columns:minmax(0,1fr)}}
+.flows li{display:grid;grid-template-columns:22px 1fr;gap:6px}
+.flows li b.k{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--panel);font:600 10px var(--f-mono)}
+pre{margin:0;background:var(--panel2);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;overflow-x:auto;font:400 12px/1.55 var(--f-mono);color:var(--ink)}
+.codes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.codes{grid-template-columns:minmax(0,1fr)}}
+.codes figure{margin:0;display:grid;gap:6px;min-width:0}
+.codes figcaption{font:500 11px var(--f-mono);color:var(--ink3);text-transform:uppercase;letter-spacing:.06em}
+.pol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.pol{grid-template-columns:minmax(0,1fr)}}
+.pol div{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:grid;gap:5px;align-content:start}
+.pol h3{font-size:15px} .pol p{font-size:13px}
+.phases{display:grid;gap:0;counter-reset:ph;margin:0;padding:0;list-style:none}
+.phases li{display:grid;grid-template-columns:44px minmax(0,1fr) 180px;gap:12px;padding:12px 0;border-top:1px solid var(--rule);align-items:start}
+.phases li:last-child{border-bottom:1px solid var(--rule)}
+.phases li::before{counter-increment:ph;content:counter(ph);font:700 22px var(--f-display);color:var(--accent)}
+.phases h3{font-size:15px;margin-bottom:3px} .phases p{font-size:13px}
+.phases .ex{font:500 11.5px var(--f-mono);color:var(--ink3)}
+@media (max-width:640px){.phases li{grid-template-columns:32px minmax(0,1fr)}.phases .ex{grid-column:2}}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.pg{display:grid;gap:5px;align-content:start;background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:13px 14px;text-decoration:none;color:var(--ink)}
+.pg:hover{border-color:var(--accent)}
+.pg b{font:600 16px var(--f-display)} .pg span{font-size:12.5px;color:var(--ink2)}
+.pg i{font:500 11px var(--f-mono);font-style:normal;color:var(--accent)}
+</style>
+
+<div id="topbar" data-page="overview"></div>
+<main class="gut"><div class="ov">
+
+<section class="hero">
+  <div class="eyebrow">Keel &amp; North Star · PEO Sales Advisor · AI Circuit Breaker</div>
+  <h1>Sales Advisor Circuit Breaker</h1>
+  <p class="lede">The Sales Advisor runs as six cooperating agents that qualify a prospect, discover needs, configure a solution, price it, check the claims and write the proposal. The circuit breaker sits between those agents and anything they send or commit. It measures every decision against a reference model of the real business, weights the result by the client persona the advisor is talking to, and holds anything out of tolerance for a person to decide.</p>
+  <div class="cta"><a class="btn solid" href="ops.html">Open the operations dashboard</a><a class="btn" href="decisions.html">Inspect a decision</a><a class="btn" href="review.html">Work the review queue</a></div>
+  <div class="snap"><span class="eyebrow">Live snapshot of the current simulation run</span><div class="kpis" id="kpis"></div></div>
+  <nav class="toc" aria-label="On this page"><a href="#how">How a decision is measured</a><a href="#math">Measurement reference</a><a href="#persona">Persona sensitivity</a><a href="#arch">Architecture</a><a href="#fabric">Implementing in the agentic fabric</a><a href="#rollout">Rollout</a><a href="#pages">Dashboard pages</a></nav>
+</section>
+
+<section id="how" aria-labelledby="h-how">
+  <h2 id="h-how">How a decision is measured</h2>
+  <p>The breaker never inspects model weights. It treats each agent as a morphism <b class="mono">h: Z<sub>agent</sub> → Z<sub>real</sub></b> and measures only the boundary: what the agent saw, what it decided, and how far that decision sits from the reference picture of the business. Each decision passes through the same six layers, in order.</p>
+  <div class="stages">
+    <div class="stage"><span class="lv">L0 · BOUNDARY</span><h3>Capture the decision</h3><p>The agent framework emits a decision envelope at the tool-call boundary: the output, the engaged persona, the evidence used and the model version. Nothing reaches a prospect or a system of record before this point.</p><span class="q">Is this a decision we can see whole?</span></div>
+    <div class="stage"><span class="lv">L1 · REFERENCE STANDARDS</span><h3>Fetch the ruler</h3><p>Keel supplies the pinned version of the hr: ontology, the persona model, the five context anchors for this decision and the guardrails that apply. These are versioned like code.</p><span class="q">What does reality say this should look like?</span></div>
+    <div class="stage"><span class="lv">L2 · INSTRUMENTS</span><h3>Measure three distances</h3><p>D<sub>s</sub> compares the decision's asserted facts to the ontology. D<sub>b</sub> compares its output to the reference intent. D<sub>r</sub> scores WHO, WHAT, WHEN, WHERE and WHY against the anchors, weighted by persona. Each carries an uncertainty budget.</p><span class="q">How far off is it, and on which axis?</span></div>
+    <div class="stage"><span class="lv">L3 · CONTROL</span><h3>Apply tolerance and rules</h3><p>Guardrails veto first. Then each distance is compared to its tolerance, which tightens with the decision's consequence and the persona's tolerance. Out-of-tolerance trends are tracked with control limits.</p><span class="q">PASS, COMPLY, FREEZE or HALT?</span></div>
+    <div class="stage"><span class="lv">L4 · HOLARCHY</span><h3>Roll up to the agent and the chain</h3><p>Decision verdicts set each agent's state: online, restricted or dropped. Fidelity multiplies along the sales flow, so a loss in pricing lowers confidence in the proposal that follows it.</p><span class="q">Can this agent keep acting on its own?</span></div>
+    <div class="stage"><span class="lv">L5 · TRUSTEE</span><h3>Hand judgment to a person</h3><p>Held decisions go to the review queue with the full chain of evidence. The reviewer's disposition is recorded in PROV-O and fed back: corrections reduce drift, recalibration restores the agent, overrides count against trust.</p><span class="q">What does the accountable human decide?</span></div>
+  </div>
+</section>
+
+<section id="math" aria-labelledby="h-math">
+  <h2 id="h-math">Measurement reference</h2>
+  <p>The formulas the dashboards use. In production, D<sub>s</sub> and D<sub>b</sub> come from graph comparison and embedding services; in this demonstration they are simulated from the drift each operating condition adds, so the method can be exercised end to end.</p>
+  <div class="card scroll"><table class="ftab">
+    <thead><tr><th>Quantity</th><th>Definition</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td>Structural distance</td><td class="f">D<sub>s</sub> = |edits(G<sub>decision</sub>, G<sub>ref</sub>)| / |G<sub>ref</sub>|</td><td>Share of the decision's asserted facts (rates, codes, states, plan IDs) that disagree with the reference ontology.</td></tr>
+      <tr><td>Behavioral distance</td><td class="f">D<sub>b</sub> = 1 − cos(v<sub>output</sub>, u<sub>intent</sub>)</td><td>How far the output drifts from the intent anchored to the decision's desired outcome.</td></tr>
+      <tr><td>Context match</td><td class="f">m<sub>k</sub> ∈ [0,1], k ∈ {WHO, WHAT, WHEN, WHERE, WHY}</td><td>Agreement between the live context and the decision's anchor on each dimension.</td></tr>
+      <tr><td>Relevancy distance</td><td class="f">D<sub>r</sub>(p) = Σ<sub>k</sub> w<sub>p,k</sub> (1 − m<sub>k</sub>) / 5</td><td>Context misses weighted by how much persona p cares about each dimension.</td></tr>
+      <tr><td>Tolerances</td><td class="f">τ<sub>s</sub> = 0.20 − 0.10 w<sub>c</sub> · τ<sub>b</sub> = 0.15 − 0.06 w<sub>c</sub><br>τ<sub>r</sub>(p) = (0.16 − 0.06 w<sub>c</sub>) · τ<sub>p</sub> / σ</td><td>Higher consequence w<sub>c</sub> tightens every axis. Persona tolerance τ<sub>p</sub> and the sensitivity dial σ scale relevancy.</td></tr>
+      <tr><td>Verdict</td><td class="f">HALT if guardrail breached<br>FREEZE if any D ≥ 1.5τ<br>COMPLY if any D &gt; τ · else PASS</td><td>HALT is deterministic and cannot be approved. FREEZE holds the decision. COMPLY releases it under conditions or sampling.</td></tr>
+      <tr><td>Fidelity</td><td class="f">φ<sub>d</sub> = 1 − (0.3 D<sub>s</sub> + 0.25 D<sub>b</sub> + 0.3 D<sub>r</sub>)<br>φ<sub>agent</sub> = Π φ<sub>d</sub> · φ<sub>chain</sub> = Π φ<sub>agent</sub></td><td>Fidelity multiplies, so small losses in several decisions compound across the sales flow.</td></tr>
+      <tr><td>Agent state</td><td class="f">DROPPED: HALT ∨ ≥2 FREEZE ∨ K &lt; 0.50<br>RESTRICTED: 1 FREEZE ∨ ≥2 COMPLY</td><td>A dropped agent's decisions route to human fallback until it is recalibrated.</td></tr>
+      <tr><td>Reliability</td><td class="f">MTBH = operating hours / trips</td><td>Mean time between hallucinations, tracked per agent and for the fleet.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="persona" aria-labelledby="h-per">
+  <h2 id="h-per">Persona sensitivity</h2>
+  <p>The seven client personas from the Outcome Benchmark are the lenses. Each weights the five dimensions differently and accepts a different amount of drift, so <b>the same decision can pass for one buyer and freeze for another</b>. A Finance Leader is most exposed to WHAT and WHEN errors in a quote; an Operations &amp; Safety Leader to WHERE errors in a class code. These are proposed starting values, to be calibrated from benchmark importance ratings.</p>
+  <div class="card scroll"><table class="ftab" id="ptab"></table></div>
+</section>
+
+<section id="arch" aria-labelledby="h-arch">
+  <h2 id="h-arch">Architecture</h2>
+  <p>The breaker is a gateway service inside the agent fabric, not a feature of any one agent. Agents on North Star cannot reach a system of action except through it, and it reads its reference standards from Keel rather than holding its own copy of the business rules.</p>
+  <figure class="fig" style="margin:0">
+  <svg class="ar" viewBox="0 0 1000 640" role="img" aria-label="Architecture: channels feed North Star agents; every decision passes the circuit breaker gateway, which reads reference standards from Keel, releases to systems of action, holds to the trustee workbench and writes to the metrology and provenance store.">
+    <defs>
+      <marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink2)"/></marker>
+      <marker id="aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--accent)"/></marker>
+      <marker id="af" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--freeze)"/></marker>
+      <marker id="ad" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink3)"/></marker>
+    </defs>
+    <!-- Channels -->
+    <rect class="band" x="20" y="20" width="730" height="80" rx="10"/>
+    <text class="lbl" x="32" y="38">CHANNELS</text>
+    <rect class="box" x="32" y="46" width="228" height="42" rx="6"/><text class="t" x="146" y="72" text-anchor="middle">Advisor workspace</text>
+    <rect class="box" x="271" y="46" width="228" height="42" rx="6"/><text class="t" x="385" y="72" text-anchor="middle">Copilot / Compass chat</text>
+    <rect class="box" x="510" y="46" width="228" height="42" rx="6"/><text class="t" x="624" y="72" text-anchor="middle">CRM and email</text>
+    <!-- North Star -->
+    <rect class="band" x="20" y="120" width="730" height="104" rx="10"/>
+    <text class="lbl" x="32" y="138">NORTH STAR · AGENT ORCHESTRATION</text>
+    <g id="agents"></g>
+    <!-- Gateway -->
+    <rect class="gate" x="20" y="244" width="730" height="120" rx="10"/>
+    <text class="lbl" x="32" y="262" style="fill:var(--accent)">AI CIRCUIT BREAKER GATEWAY</text>
+    <rect class="boxa" x="32" y="272" width="228" height="80" rx="6"/><text class="t" x="44" y="294">Intercept</text><text class="s" x="44" y="312">Decision envelope captured at</text><text class="s" x="44" y="327">the tool-call boundary</text><text class="m" x="44" y="343">L0 · &lt; 2 ms</text>
+    <rect class="boxa" x="271" y="272" width="228" height="80" rx="6"/><text class="t" x="283" y="294">Measure</text><text class="s" x="283" y="312">D<tspan baseline-shift="sub" font-size="8">s</tspan> · D<tspan baseline-shift="sub" font-size="8">b</tspan> · D<tspan baseline-shift="sub" font-size="8">r</tspan> (5D, persona-weighted)</text><text class="s" x="283" y="327">with uncertainty budgets</text><text class="m" x="283" y="343">L1–L3</text>
+    <rect class="boxa" x="510" y="272" width="228" height="80" rx="6"/><text class="t" x="522" y="294">Actuate</text><text class="s" x="522" y="312">Release, hold for review,</text><text class="s" x="522" y="327">or block on a guardrail</text><text class="m" x="522" y="343">L4 · agent state, routing</text>
+    <path class="lnA" d="M260 312 H268" marker-end="url(#aa)"/><path class="lnA" d="M499 312 H507" marker-end="url(#aa)"/>
+    <!-- Systems of action -->
+    <rect class="band" x="20" y="384" width="730" height="62" rx="10"/>
+    <text class="lbl" x="32" y="402">SYSTEMS OF ACTION</text>
+    <text class="s" x="32" y="426">Quotes · proposals · CRM updates · outbound mail · contract drafts</text>
+    <text class="m" x="738" y="426" text-anchor="end">released decisions only</text>
+    <!-- Keel -->
+    <rect class="band" x="20" y="466" width="730" height="154" rx="10"/>
+    <text class="lbl" x="32" y="484">KEEL · KNOWLEDGE FABRIC (REFERENCE STANDARDS)</text>
+    <rect class="box" x="32" y="494" width="170" height="114" rx="6"/><text class="t" x="44" y="516">hr: ontology</text><text class="s" x="44" y="534">Services, domains, jobs,</text><text class="s" x="44" y="549">outcomes, vocabularies</text><text class="m" x="44" y="596">gauge block for D_s</text>
+    <rect class="box" x="211" y="494" width="170" height="114" rx="6"/><text class="t" x="223" y="516">Persona &amp; outcome</text><text class="t" x="223" y="532">models</text><text class="s" x="223" y="550">Weights, tolerances, 5D</text><text class="s" x="223" y="565">anchors from the benchmark</text><text class="m" x="223" y="596">lens for D_r</text>
+    <rect class="box" x="390" y="494" width="170" height="114" rx="6"/><text class="t" x="402" y="516">Guardrails</text><text class="s" x="402" y="534">SHACL shapes and deontic</text><text class="s" x="402" y="549">norms (prohibitions,</text><text class="s" x="402" y="564">purpose limits)</text><text class="m" x="402" y="596">deterministic veto</text>
+    <rect class="box" x="569" y="494" width="169" height="114" rx="6"/><text class="t" x="581" y="516">Standards registry</text><text class="s" x="581" y="534">Versioned releases</text><text class="s" x="581" y="549">dev → test → stage → prod,</text><text class="s" x="581" y="564">change records as triples</text><text class="m" x="581" y="596">pinned per decision</text>
+    <!-- Right column -->
+    <rect class="side" x="770" y="20" width="210" height="204" rx="10"/>
+    <text class="lbl" x="782" y="38">SYSTEMS OF RECORD</text>
+    <text class="s" x="782" y="62">HRScale (Workday)</text><text class="s" x="782" y="80">Pricing engine and rate cards</text><text class="s" x="782" y="98">CRM opportunity data</text><text class="s" x="782" y="116">Benefits carrier tables</text><text class="s" x="782" y="134">State registrations</text>
+    <text class="m" x="782" y="206">live context for agents</text>
+    <rect class="side" x="770" y="244" width="210" height="120" rx="10" style="stroke:var(--freeze)"/>
+    <text class="lbl" x="782" y="262">HUMAN TRUSTEE</text>
+    <text class="t" x="782" y="284">Review workbench</text><text class="s" x="782" y="302">These dashboards: queue,</text><text class="s" x="782" y="317">inspector, recalibration</text><text class="m" x="782" y="350">L5 · dispositions</text>
+    <rect class="side" x="770" y="384" width="210" height="100" rx="10"/>
+    <text class="lbl" x="782" y="402">METROLOGY &amp; PROVENANCE</text>
+    <text class="s" x="782" y="424">Time series of D, φ, MTBH</text><text class="s" x="782" y="440">PROV-O triple store</text><text class="m" x="782" y="470">audit · SPC baselines</text>
+    <rect class="side" x="770" y="504" width="210" height="116" rx="10"/>
+    <text class="lbl" x="782" y="522">CALIBRATION LOOP</text>
+    <text class="s" x="782" y="544">Corrections pass the SHACL</text><text class="s" x="782" y="559">gate, then ship as a new</text><text class="s" x="782" y="574">standards release</text><text class="m" x="782" y="604">benchmark → weights</text>
+    <!-- flows -->
+    <path class="ln" d="M146 88 V142" marker-end="url(#ah)"/><path class="ln" d="M385 88 V142" marker-end="url(#ah)"/><path class="ln" d="M624 88 V142" marker-end="url(#ah)"/>
+    <path class="ln" d="M770 172 H752" marker-end="url(#ah)"/>
+    <path class="lnA" d="M385 210 V268" marker-end="url(#aa)"/>
+    <path class="lnA" d="M624 352 V398" marker-end="url(#aa)"/>
+    <path class="hold" d="M738 296 H766" marker-end="url(#af)"/>
+    <path class="ln" d="M770 330 H742" marker-end="url(#ah)"/>
+    <path class="dash" d="M470 494 V356" marker-end="url(#ad)"/>
+    <path class="dash" d="M750 352 H760 V430 H766" marker-end="url(#ad)"/>
+    <path class="ln" d="M980 330 H990 V560 H984" marker-end="url(#ah)"/>
+    <path class="ln" d="M770 560 H754" marker-end="url(#ah)"/>
+    <!-- flow numbers -->
+    <g id="nums"></g>
+  </svg>
+  </figure>
+  <ol class="flows">
+    <li><b class="k">1</b><span>Channels and systems of record give the agents their live context.</span></li>
+    <li><b class="k">2</b><span>Every agent decision leaves North Star as an envelope and enters the gateway.</span></li>
+    <li><b class="k">3</b><span>The gateway reads the pinned reference standards from Keel for that decision.</span></li>
+    <li><b class="k">4</b><span>Released decisions continue to the systems of action.</span></li>
+    <li><b class="k">5</b><span>Held decisions go to the trustee; the disposition returns to the gateway.</span></li>
+    <li><b class="k">6</b><span>Every measurement and disposition is written to the metrology and provenance store.</span></li>
+    <li><b class="k">7</b><span>Accepted corrections pass the SHACL gate and ship to Keel as a new standards release.</span></li>
+  </ol>
+  <div class="card scroll"><table class="ftab">
+    <thead><tr><th>Component</th><th>Responsibility</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Decision envelope SDK</td><td>Emits a standard envelope from every agent action, including persona, evidence and model version. Agents cannot call action tools directly.</td><td>Agent platform engineering</td></tr>
+      <tr><td>Gateway · Intercept</td><td>Receives envelopes, attaches the pinned standards version, decides sync or async evaluation by consequence weight.</td><td>Agent platform engineering</td></tr>
+      <tr><td>Gateway · Measure</td><td>Distance services for D<sub>s</sub> (graph comparison), D<sub>b</sub> (embedding), D<sub>r</sub> (5D anchors × persona weights) and uncertainty budgets.</td><td>Data &amp; analytics</td></tr>
+      <tr><td>Gateway · Actuate</td><td>Applies guardrails and tolerances, sets agent state, routes held work to fallback and the queue.</td><td>AI governance</td></tr>
+      <tr><td>Keel reference standards</td><td>Ontology, persona and outcome models, SHACL and deontic guardrails, versioned registry and release pipeline.</td><td>Knowledge engineering</td></tr>
+      <tr><td>Trustee workbench</td><td>Review queue, inspector, recalibration, escalation to compliance. These dashboards.</td><td>Sales operations with Compliance</td></tr>
+      <tr><td>Metrology &amp; provenance store</td><td>Time series for control limits and MTBH; PROV-O record of every evaluation and disposition.</td><td>Data governance</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fabric" aria-labelledby="h-fab">
+  <h2 id="h-fab">Implementing in the agentic fabric</h2>
+  <p>The breaker works only if <b>no agent action can bypass it</b>. In practice that means action tools (send email, write CRM, generate quote, attach contract) are exposed to agents only through the gateway, whether the agents run on North Star, inside Copilot or behind an MCP server. The gateway is stack-independent: it speaks a small envelope contract and reads standards over SPARQL, so it fits the Microsoft stack and HRScale without being tied to either.</p>
+  <div class="codes">
+    <figure><figcaption>Decision envelope · agent → gateway</figcaption>
+<pre>{
+  "decisionId": "D11-7f3a",
+  "agent": "A4.PricingQuote",
+  "decisionType": "cb:TotalCostComparison",
+  "output": { "projectedSavingsUSD": 41800,
+              "pctChange": -0.062 },
+  "context": {
+    "who":   "hr:PersonaFinance",
+    "what":  "hr:ClientInvoicingBillingService",
+    "when":  "stage:Quote",
+    "where": ["IL","TX","CA","NY"],
+    "why":   "hr:OutcomeO196"
+  },
+  "evidence": ["rateCard:2026.10", "census:v3"],
+  "model": { "id": "advisor-pricing", "version": "4.2.1" },
+  "standards": "keel:release/2026.10.3"
+}</pre></figure>
+    <figure><figcaption>Verdict · gateway → agent and workbench</figcaption>
+<pre>{
+  "decisionId": "D11-7f3a",
+  "verdict": "FREEZE",
+  "tier": 2,
+  "persona": "hr:PersonaFinance",
+  "distances": { "Ds": 0.071, "Db": 0.064,
+                 "Dr": 0.162 },
+  "tolerance": { "s": 0.115, "b": 0.099,
+                 "r": 0.091 },
+  "drivers": ["WHEN match 0.41 x weight 1.6"],
+  "guardrails": { "G1": "clear" },
+  "action": "hold",
+  "route": "hitl/sales-advisor",
+  "fallback": "advisor-manual"
+}</pre></figure>
+  </div>
+  <figure style="margin:0;display:grid;gap:6px"><figcaption class="eyebrow">Provenance record · PROV-O</figcaption>
+<pre>:eval-D11-7f3a a prov:Activity, cb:Evaluation ;
+    prov:used :envelope-D11-7f3a, &lt;keel:release/2026.10.3&gt; ;
+    cb:persona hr:PersonaFinance ;
+    cb:Dr 0.162 ; cb:tauR 0.091 ; cb:verdict cb:FREEZE ;
+    prov:wasAssociatedWith :cbGateway .
+:disp-D11-7f3a a prov:Activity, cb:Disposition ;
+    prov:used :eval-D11-7f3a ;
+    cb:outcome cb:RejectAndCorrect ;
+    prov:wasAssociatedWith :salesAdvisorTrustee .</pre></figure>
+  <div class="pol">
+    <div><h3>Synchronous where it matters</h3><p>Decisions with consequence w<sub>c</sub> ≥ 0.7 (pricing, certification claims, class codes, contract terms) and every decision with a guardrail are evaluated in line and held until verdict. Lower-consequence decisions are evaluated asynchronously and sampled.</p></div>
+    <div><h3>Fail closed on guardrails</h3><p>If the gateway or Keel is unreachable, guardrail-bearing and high-consequence decisions stop and route to the advisor. Low-consequence decisions continue in advisory mode, flagged for later review.</p></div>
+    <div><h3>Pin the standards</h3><p>Every evaluation names the Keel release it used. Standards change through the dev, test, stage and prod pipeline, with change records as triples, so any verdict can be replayed against the rules in force at the time.</p></div>
+    <div><h3>Calibrate from the benchmark</h3><p>Persona weights come from benchmark importance ratings grouped by context dimension; tolerances from satisfaction gaps. Control limits come from four to six weeks of shadow baselines, not from guesses.</p></div>
+    <div><h3>Feedback through a gate</h3><p>A reviewer's correction never goes straight into an agent. It is validated against the SHACL shapes, then released into Keel, so contaminated corrections cannot re-enter the reference standards.</p></div>
+    <div><h3>One contract, many agents</h3><p>The same envelope and verdict serve every agent family. HR Advisory 360 and later client-facing agents join by emitting envelopes and registering their decision types and personas.</p></div>
+  </div>
+</section>
+
+<section id="rollout" aria-labelledby="h-roll">
+  <h2 id="h-roll">Rollout</h2>
+  <p>Each phase widens what the breaker is allowed to stop, and each one needs the evidence from the phase before it.</p>
+  <ol class="phases">
+    <li><div><h3>Shadow</h3><p>Agents emit envelopes; the gateway measures asynchronously and acts on nothing. Builds baselines and the first control limits, and shows where personas disagree.</p></div><span class="ex">Exit: stable baselines on all 20 decision types</span></li>
+    <li><div><h3>Advisory</h3><p>Verdicts appear in the advisor workspace and the review queue is staffed. Weights and tolerances are calibrated against reviewer agreement.</p></div><span class="ex">Exit: reviewer agreement with verdicts above target</span></li>
+    <li><div><h3>Enforce high consequence</h3><p>Guardrails and w<sub>c</sub> ≥ 0.7 decisions are held in line. Agents can be restricted and dropped; fallback routes to the advisor.</p></div><span class="ex">Exit: MTBH and false-hold rate within agreed bands</span></li>
+    <li><div><h3>Full enforcement and reuse</h3><p>All Sales Advisor decisions are governed. The gateway and standards are reused for HR Advisory 360 and other agent families on the fabric.</p></div><span class="ex">Exit: second agent family onboarded on the same contract</span></li>
+  </ol>
+</section>
+
+<section id="pages" aria-labelledby="h-pg">
+  <h2 id="h-pg">Dashboard pages</h2>
+  <p>The dashboards share one simulation run, kept in your browser, so a change on one page appears on all of them. The run bar on each page sets the engaged persona and runs, steps or resets the simulation.</p>
+  <div class="pages">
+    <a class="pg" href="ops.html"><b>Operations</b><span>Fleet KPIs, agent states, chain fidelity by persona, first-drop matrix and operating conditions.</span><i>Open →</i></a>
+    <a class="pg" href="decisions.html"><b>Decisions</b><span>The 20-decision ledger and the morphism inspector with the five-dimension breakdown.</span><i>Open →</i></a>
+    <a class="pg" href="relevancy.html"><b>Persona relevancy</b><span>Each persona's lens and verdict mix, and the decision × persona relevancy map.</span><i>Open →</i></a>
+    <a class="pg" href="review.html"><b>Review queue</b><span>Human-in-the-loop dispositioning with filters and the record of recent decisions.</span><i>Open →</i></a>
+    <a class="pg" href="guardrails.html"><b>Guardrails &amp; audit</b><span>Deterministic rules, the drift register by agent and dimension, and the full provenance log.</span><i>Open →</i></a>
+  </div>
+</section>
+
+<footer>Illustrative model for design review. Decisions trace to hr:DesiredOutcome codes and hr:DomainService classes in the HR Services &amp; PEO Outcome Benchmark extension (v3.0). Persona weights, tolerances and drift rates are proposed starting values. Method: AI Circuit Breaker with MTBH metrology and 5D context relevancy, developed with Paul Wach (University of Arizona) · The Value Enablement Group. Sample figures (fees, headcount, savings) are examples, not quotes.</footer>
+</div></main>
+
+<script src="cb-engine.js"></script>
+<script src="cb-ui.js"></script>
+<script>
+(function(){
+  const C=window.CB, esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  // persona table
+  const t=document.getElementById('ptab');
+  t.innerHTML='<thead><tr><th>Persona</th><th>Buying role</th>'+C.DIMS.map(k=>'<th style="text-align:center">'+C.DL[k]+'</th>').join('')+'<th style="text-align:center">Tolerance</th></tr></thead><tbody>'+
+    C.PERSONAS.map(p=>{const mx=Math.max(...p.w);return '<tr><td><span class="dot" style="background:'+p.col+';margin-right:6px"></span>'+esc(p.name)+'</td><td>'+esc(p.role)+'</td>'+p.w.map(w=>'<td class="n" style="'+(w===mx?'font-weight:700;color:var(--ink)':'color:var(--ink2)')+'">'+w.toFixed(1)+'</td>').join('')+'<td class="n">×'+p.tau.toFixed(2)+'</td></tr>';}).join('')+'</tbody>';
+  // agent boxes in the diagram
+  const ns='http://www.w3.org/2000/svg';
+  const g=document.getElementById('agents');
+  g.innerHTML=C.AGENTS.map((a,i)=>{const x=32+i*119,n=C.DECS.filter(d=>d.ag===a.id).length;
+    return '<rect class="box" x="'+x+'" y="146" width="111" height="64" rx="6"/><text class="m" x="'+(x+10)+'" y="164">'+a.id+'</text><text class="t" x="'+(x+10)+'" y="183">'+esc(a.short)+'</text><text class="s" x="'+(x+10)+'" y="200">'+n+' decisions</text>';}).join('');
+  const nums=[[1,160,112],[2,399,232],[3,484,430],[4,638,372],[5,752,282],[6,760,404],[7,990,446]];
+  document.getElementById('nums').innerHTML=nums.map(([n,x,y])=>'<circle class="num" cx="'+x+'" cy="'+y+'" r="8"/><text class="numt" x="'+x+'" y="'+(y+3.5)+'" text-anchor="middle">'+n+'</text>').join('');
+})();
+</script>
+
+</body></html>

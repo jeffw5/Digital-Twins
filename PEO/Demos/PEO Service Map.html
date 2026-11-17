@@ -1,0 +1,314 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PEO Service Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: masthead → company profile strip → filterable capability matrix (Insperity pinned as baseline column) → findings → sources */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --ink:#16222b; --muted:#5b6973; --line:#dde2e6;
+  --accent:#1f5f7a; --accent-soft:#e3eef3; --brass:#9a6b1f;
+  --c-core:#1f7a52; --c-core-bg:#e2f2ea; --c-add:#8a6510; --c-add-bg:#f7eed8;
+  --c-part:#5a5fa0; --c-part-bg:#e9eaf6; --c-none:#8e979e; --c-none-bg:#eef0f2;
+  --c-ver:#a3412b; --c-ver-bg:#f8e6e1; --base-bg:#eef4f7;
+  --f-display:"Familjen Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Public Sans",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171c; --surface:#172129; --ink:#e4eaee; --muted:#93a1ab; --line:#2a3741;
+  --accent:#6fb3cf; --accent-soft:#1b3340; --brass:#d6a75a;
+  --c-core:#6fcf9f; --c-core-bg:#16352a; --c-add:#e2bd6a; --c-add-bg:#3a2f15; --c-part:#a7abe8; --c-part-bg:#272a4a;
+  --c-none:#77838c; --c-none-bg:#1f2930; --c-ver:#ee9a85; --c-ver-bg:#3d221c; --base-bg:#18293a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171c; --surface:#172129; --ink:#e4eaee; --muted:#93a1ab; --line:#2a3741;
+  --accent:#6fb3cf; --accent-soft:#1b3340; --brass:#d6a75a;
+  --c-core:#6fcf9f; --c-core-bg:#16352a; --c-add:#e2bd6a; --c-add-bg:#3a2f15; --c-part:#a7abe8; --c-part-bg:#272a4a;
+  --c-none:#77838c; --c-none-bg:#1f2930; --c-ver:#ee9a85; --c-ver-bg:#3d221c; --base-bg:#18293a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4vw,40px);font-weight:700}
+h2{font-size:22px;font-weight:600}
+h3{font-size:16px;font-weight:600}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+.lede{color:var(--muted);max-width:68ch;margin:8px 0 0}
+header{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:22px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);margin-top:8px}
+.meta b{color:var(--ink);font-weight:600}
+section{display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px}
+
+/* profiles */
+.profiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.prof{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.prof.base{border-color:var(--accent);background:var(--base-bg)}
+.prof h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.prof .tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.prof dl{margin:0;display:grid;grid-template-columns:82px 1fr;gap:4px 10px;font-size:13px}
+.prof dt{color:var(--muted)}
+.prof dd{margin:0;min-width:0}
+
+/* legend + controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 11px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible,.btn:focus-visible,tr.row:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.toggle{display:flex;align-items:center;gap:7px;font-size:13.5px;cursor:pointer}
+.btn{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:5px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend span.k{display:inline-flex;align-items:center;gap:6px}
+
+/* matrix */
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
+thead th{position:sticky;top:0;background:var(--surface);z-index:2;font:600 12.5px var(--f-display);text-align:center;padding:10px 6px;border-bottom:1px solid var(--line);vertical-align:bottom}
+thead th.svc{text-align:left;padding-left:14px;width:31%}
+thead th.base{background:var(--base-bg);color:var(--accent)}
+th small{display:block;font:400 10.5px var(--f-mono);color:var(--muted);letter-spacing:.03em;margin-top:2px}
+tr.dom td{background:var(--bg);font:600 12px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:12px 14px 6px;border-bottom:1px solid var(--line)}
+tr.row td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:center;vertical-align:middle}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--accent-soft)}
+tr.row td.base{background:var(--base-bg)}
+tr.row td.svc{text-align:left;padding-left:14px}
+.sid{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-right:8px}
+.diff{display:inline-block;margin-left:6px;font:500 10px var(--f-mono);color:var(--brass);letter-spacing:.04em;text-transform:uppercase}
+.lv{display:inline-flex;align-items:center;justify-content:center;min-width:56px;padding:2px 7px;border-radius:4px;font:500 11.5px var(--f-mono);letter-spacing:.02em}
+.lv.C{color:var(--c-core);background:var(--c-core-bg)}
+.lv.A{color:var(--c-add);background:var(--c-add-bg)}
+.lv.P{color:var(--c-part);background:var(--c-part-bg)}
+.lv.N{color:var(--c-none);background:var(--c-none-bg)}
+.lv.V{color:var(--c-ver);background:var(--c-ver-bg)}
+.lv sup{font-size:9px;margin-left:2px}
+tr.detail td{background:var(--bg);border-bottom:1px solid var(--line);padding:10px 14px 14px}
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 18px;font-size:13px}
+.notes div{min-width:0}
+.notes b{font-family:var(--f-display);font-weight:600;margin-right:6px}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+
+/* findings */
+.find{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.find article{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
+.find ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.find li{max-width:65ch}
+.sources ol{margin:0;padding-left:20px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;columns:1}
+.sources a{color:var(--accent);word-break:break-word}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:5px;font-size:13px}
+.copybox{width:100%;height:160px;font:12px var(--f-mono);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:8px}
+@media (prefers-reduced-motion:no-preference){tr.row td{transition:background .12s}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Competitive intelligence · PEO operational services</span>
+  <h1>PEO Service Map</h1>
+  <p class="lede">Which services the major U.S. PEOs deliver, mapped against Insperity as the baseline. Each cell records how a service is delivered (core bundle, add-on or tier, partner) and how firmly public sources support it. Tap a row to see the evidence notes.</p>
+  <div class="meta"><span>Baseline <b>Insperity</b></span><span>Compared <b>6 competitors</b></span><span>Capability rows <b id="rowcount">–</b></span><span>Public sources as of <b>Oct 23, 2026</b></span></div>
+</header>
+
+<section>
+  <div class="sec-head"><h2>Who is in the map</h2><span class="eyebrow">Offer structure</span></div>
+  <div class="profiles" id="profiles"></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Capability matrix</h2>
+    <div class="controls"><button class="btn" id="copycsv">Copy CSV</button><button class="btn" id="copyttl">Copy SKOS (Turtle)</button></div>
+  </div>
+  <div class="controls">
+    <div class="chips" id="domchips" role="group" aria-label="Filter by domain"></div>
+    <label class="toggle"><input type="checkbox" id="onlydiff"> Only rows where a competitor differs from Insperity</label>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="lv C">Core</span> In the standard PEO bundle</span>
+    <span class="k"><span class="lv A">Add-on</span> Extra fee, higher tier or separate product</span>
+    <span class="k"><span class="lv P">Partner</span> Delivered through a third party</span>
+    <span class="k"><span class="lv N">None</span> Not evident in public sources</span>
+    <span class="k"><span class="lv V">Verify</span> Likely offered; public evidence thin</span>
+  </div>
+  <div class="tablebox"><table id="matrix"><thead></thead><tbody></tbody></table></div>
+  <textarea class="copybox" id="copyfallback" hidden aria-label="Export text"></textarea>
+</section>
+
+<section>
+  <div class="sec-head"><h2>What the map says about Insperity</h2><span class="eyebrow">Read-out</span></div>
+  <div class="find">
+    <article><h3>Where the baseline is strong</h3><ul>
+      <li><b>Enterprise HCM path inside the PEO.</b> HRScale puts Workday HCM, payroll, absence and time under Insperity's co-employment for 150–5,000-employee firms. ADP (Workforce Now) and Rippling are the only peers with a comparable one-platform scale-up story.</li>
+      <li><b>Breadth of human-delivered services in the bundle.</b> Performance management, training and development, organizational planning, recruiting and outplacement support appear as Insperity services; most peers deliver these as software modules or not at all.</li>
+      <li><b>Benefits anchor.</b> A single UnitedHealthcare master plan running since 2002 and extended through 2028.</li>
+    </ul></article>
+    <article><h3>Where competitors set the pace</h3><ul>
+      <li><b>Vertical packaging.</b> TriNet sells industry-specific service teams (tech, life sciences, nonprofit, financial and professional services, hospitality, retail). Insperity has no packaged vertical offer in public material.</li>
+      <li><b>Price transparency.</b> Justworks publishes per-employee rates and moved PEO Plus from $109 to $124 in June 2026. Every other provider, Insperity included, is quote-only.</li>
+      <li><b>Global and EOR.</b> Justworks, Rippling, TriNet and VensureHR offer international hiring. Nothing comparable appears for Insperity.</li>
+      <li><b>Lighter-weight entry tiers.</b> TriNet HR Plus, Paychex HR Outsourcing and VensureHR offer ASO without co-employment; Rippling lets clients switch the PEO off and keep the software.</li>
+      <li><b>AI narrative.</b> Paychex now leads its corporate positioning with the WISE agentic AI engine.</li>
+    </ul></article>
+    <article><h3>Validate before using</h3><ul>
+      <li>Red <span class="lv V">Verify</span> cells in the Insperity column are services the public record does not confirm. Check them against the internal product catalog first; that turns the baseline into ground truth.</li>
+      <li>Ratings come from vendor pages, filings and third-party reviews. Vendor comparison pages (for example ADP's claims about competitors' learning systems) are marked as vendor claims.</li>
+      <li>Service IDs are stable so the matrix can seed a SKOS concept scheme; use Copy SKOS to start one.</li>
+    </ul></article>
+  </div>
+</section>
+
+<section class="sources">
+  <div class="sec-head"><h2>Sources</h2></div>
+  <ol id="srclist"></ol>
+</section>
+</div>
+
+<script>
+const CO=[
+ {k:"nsp",n:"Insperity",s:"Baseline",base:true,
+  p:{Offers:"HR360 (formerly Workforce Optimization), HRCore (formerly Workforce Acceleration, payroll and HCM without co-employment), HRScale (with Workday), Workforce Synchronization (middle market)",Platform:"Insperity Premier; Workday for HRScale (GA Feb 26, 2026)",Accredited:"IRS CPEO since 2017; ESAC",Scale:"About 300,000 worksite employees",Pricing:"Quote-based"}},
+ {k:"adp",n:"ADP TotalSource",s:"Scale leader",
+  p:{Offers:"TotalSource PEO; Workforce Now and RUN outside the PEO",Platform:"ADP Workforce Now suite, 300 standard reports plus report builder",Accredited:"IRS CPEO; ESAC",Scale:"Operates in all 50 states; 5 to 1,000+ employees",Pricing:"Quote-based"}},
+ {k:"tri",n:"TriNet",s:"Vertical specialist",
+  p:{Offers:"TriNet PEO; HR Plus (ASO); global solutions",Platform:"Proprietary TriNet platform",Accredited:"ESAC since 1995; IRS CPEO",Scale:"Industry-specialized HR teams",Pricing:"Flat PEPM by quote; advisory add-on reported from $8 PEPM"}},
+ {k:"pay",n:"Paychex PEO",s:"Incl. Oasis",
+  p:{Offers:"Paychex PEO and Oasis; HR Outsourcing (ASO); Flex payroll",Platform:"Paychex Flex; WISE agentic AI engine",Accredited:"Licensed PEO entities (Paychex Business Solutions, Oasis Outsourcing)",Scale:"PEO and Insurance revenue about $1.4B, FY2026",Pricing:"Quote-based"}},
+ {k:"jw",n:"Justworks",s:"Transparent pricing",
+  p:{Offers:"Payroll, PEO Basic, PEO Plus, EOR",Platform:"Proprietary Justworks platform",Accredited:"IRS CPEO (per third-party check of IRS list)",Scale:"Small business focus",Pricing:"Payroll $50 + $8, Basic $79, Plus $124, EOR $599 PEPM"}},
+ {k:"rip",n:"Rippling PEO",s:"Software-first",
+  p:{Offers:"PEO as a switchable layer on the Rippling platform",Platform:"Rippling HR, IT and spend modules",Accredited:"Verify current CPEO status",Scale:"Growing, multi-state companies",Pricing:"Quote: PEO fee plus software modules"}},
+ {k:"ven",n:"VensureHR",s:"Roll-up / private",
+  p:{Offers:"PEO, ASO, EOR (Canada, Mexico), managed services, BPO",Platform:"Vfficient; parent merged with PrismHR in 2022",Accredited:"Verify",Scale:"Stone Point Capital portfolio; growth by acquisition",Pricing:"Quote-based"}}
+];
+const DOM={PAY:"Payroll & tax",BEN:"Benefits",RSK:"Risk & compliance",HRA:"HR advisory",TAL:"Talent",TEC:"Technology",MOD:"Delivery models"};
+/* value: "L|note"  L ∈ C A P N V */
+const R=[
+ ["PAY.01","PAY","Payroll processing & employment administration",{nsp:"C|Core of HR360 and HRCore",adp:"C|",tri:"C|",pay:"C|",jw:"C|",rip:"C|",ven:"C|"}],
+ ["PAY.02","PAY","Payroll tax filing as co-employer (multi-state)",{nsp:"C|CPEO tax treatment",adp:"C|All 50 states",tri:"C|Multi-state processing",pay:"C|",jw:"C|",rip:"C|State registrations automated",ven:"C|"}],
+ ["PAY.03","PAY","Time & attendance",{nsp:"A|Listed as a separate product",adp:"C|Within Workforce Now",tri:"V|PTO on platform; timekeeping unclear",pay:"C|Paychex Flex",jw:"A|Time tracking access listed by plan",rip:"A|Separate module",ven:"C|Listed in service suite"}],
+ ["PAY.04","PAY","Expense management",{nsp:"A|Listed as a separate product",adp:"V|",tri:"C|Expenses on the platform",pay:"V|",jw:"N|",rip:"A|Spend module",ven:"N|"}],
+ ["PAY.05","PAY","Garnishments & unemployment claims administration",{nsp:"V|Confirm in internal catalog",adp:"C|Unemployment claims admin listed",tri:"C|Garnishment management",pay:"C|Unemployment management listed",jw:"V|",rip:"V|",ven:"V|"}],
+ ["BEN.01","BEN","Large-group medical, dental & vision",{nsp:"C|UnitedHealthcare master plan since 2002, extended through 2028",adp:"C|Multi-carrier incl. UHC, Aetna, Anthem, Kaiser",tri:"C|",pay:"C|",jw:"A|Health administration sits in PEO Plus",rip:"C|Large-group plans",ven:"C|"}],
+ ["BEN.02","BEN","401(k) / retirement plan",{nsp:"C|Retirement services",adp:"C|",tri:"C|",pay:"C|In-house recordkeeper, about $66B assets",jw:"C|Included from PEO Basic",rip:"C|",ven:"V|"}],
+ ["BEN.03","BEN","HSA, FSA & commuter accounts",{nsp:"V|",adp:"V|",tri:"V|",pay:"V|",jw:"A|PEO Plus",rip:"C|",ven:"V|"}],
+ ["BEN.04","BEN","Life, disability & voluntary benefits",{nsp:"C|Insurance services",adp:"C|",tri:"C|",pay:"C|STD/LTD, life, voluntary",jw:"V|",rip:"V|",ven:"V|"}],
+ ["BEN.05","BEN","ACA & COBRA administration",{nsp:"V|Confirm in internal catalog",adp:"V|",tri:"C|ACA, COBRA, state filings",pay:"V|",jw:"V|",rip:"C|",ven:"V|"}],
+ ["BEN.06","BEN","ICHRA (health reimbursement alternative)",{nsp:"N|",adp:"N|",tri:"N|",pay:"N|",jw:"P|Via Thatch, $25 per enrolled employee, launched 2026",rip:"N|",ven:"N|"}],
+ ["BEN.07","BEN","Mental health & fertility benefits",{nsp:"V|",adp:"V|",tri:"V|",pay:"V|",jw:"A|PEO Plus",rip:"V|",ven:"V|"}],
+ ["RSK.01","RSK","Workers' compensation coverage & claims",{nsp:"C|",adp:"C|",tri:"C|",pay:"C|Pay-as-you-go with claims management",jw:"C|",rip:"C|Pay-as-you-go",ven:"C|"}],
+ ["RSK.02","RSK","Employment practices liability (EPLI)",{nsp:"C|Employer liability management",adp:"V|",tri:"C|",pay:"C|",jw:"V|",rip:"C|",ven:"V|"}],
+ ["RSK.03","RSK","Safety & OSHA consulting",{nsp:"V|",adp:"C|Safety awareness courses",tri:"V|",pay:"C|Assigned safety specialist",jw:"N|",rip:"N|",ven:"C|Risk management services"}],
+ ["RSK.04","RSK","Federal, state & local compliance monitoring",{nsp:"C|Government compliance",adp:"C|",tri:"C|",pay:"C|Compliance team",jw:"C|",rip:"C|Posters, notices, state leave policies",ven:"C|"}],
+ ["RSK.05","RSK","Leave of absence administration",{nsp:"V|",adp:"C|State leave administration",tri:"V|",pay:"V|",jw:"V|",rip:"C|State-required leave policies",ven:"C|FMLA assistance"}],
+ ["RSK.06","RSK","Cyber liability insurance",{nsp:"N|",adp:"N|",tri:"N|",pay:"C|Listed in Oasis offer",jw:"N|",rip:"N|",ven:"N|"}],
+ ["RSK.07","RSK","Business insurance brokerage",{nsp:"A|Business insurance",adp:"V|",tri:"N|",pay:"A|Paychex Insurance Agency",jw:"N|",rip:"V|Brokerage cited for health",ven:"V|"}],
+ ["HRA.01","HRA","Dedicated HR specialist / business partner",{nsp:"C|Dedicated HR consulting",adp:"C|HR Business Partner per client",tri:"C|Industry HR team",pay:"C|HRBP, client advocate, payroll specialist",jw:"A|Named consultant $30 PEPM; pooled support included",rip:"C|Pooled certified advisers",ven:"C|"}],
+ ["HRA.02","HRA","Handbook & policy development",{nsp:"V|",adp:"V|",tri:"C|Handbook through termination support",pay:"V|",jw:"V|",rip:"V|",ven:"V|"}],
+ ["HRA.03","HRA","Employee relations & termination guidance",{nsp:"V|",adp:"C|",tri:"C|",pay:"C|",jw:"V|",rip:"C|On-staff experts for claims",ven:"V|"}],
+ ["HRA.04","HRA","Industry-specific service teams",{nsp:"N|No packaged verticals in public material",adp:"N|",tri:"C|Seven named verticals",pay:"V|Vertical flyers (retail, hotels)",jw:"N|",rip:"N|",ven:"C|Customized by industry"}],
+ ["HRA.05","HRA","Strategic HR & organizational planning",{nsp:"C|Organizational planning; Synchronization lets clients add strategic HR for a fee",adp:"A|Talent strategic support tier",tri:"A|Advisory tiers",pay:"V|Reviewers cite a strategic gap",jw:"A|",rip:"N|",ven:"V|"}],
+ ["TAL.01","TAL","Recruiting services (human recruiters)",{nsp:"A|Recruiting and direct placement",adp:"V|",tri:"N|",pay:"A|Professional recruiter service",jw:"N|",rip:"N|",ven:"N|"}],
+ ["TAL.02","TAL","Applicant tracking & job posting",{nsp:"V|",adp:"A|Recruitment management in talent suite",tri:"V|",pay:"C|",jw:"N|",rip:"A|",ven:"C|"}],
+ ["TAL.03","TAL","Background & employment screening",{nsp:"A|Employment screening",adp:"V|",tri:"V|",pay:"V|",jw:"V|",rip:"A|",ven:"V|"}],
+ ["TAL.04","TAL","Onboarding",{nsp:"C|",adp:"C|",tri:"C|",pay:"C|Online onboarding",jw:"C|",rip:"C|Benefits enrollment built into onboarding",ven:"C|"}],
+ ["TAL.05","TAL","Performance management",{nsp:"C|",adp:"A|Enhanced talent suite",tri:"V|",pay:"C|",jw:"N|",rip:"A|",ven:"C|"}],
+ ["TAL.06","TAL","Learning & development / LMS",{nsp:"C|Training and development",adp:"C|LMS with hundreds of courses",tri:"N|Per ADP comparison page (vendor claim)",pay:"V|",jw:"N|Per ADP comparison page (vendor claim)",rip:"A|",ven:"C|Employee development"}],
+ ["TAL.07","TAL","Compensation benchmarking & succession",{nsp:"V|",adp:"A|Talent suite",tri:"V|",pay:"V|",jw:"N|",rip:"V|",ven:"N|"}],
+ ["TAL.08","TAL","Outplacement support",{nsp:"A|",adp:"N|",tri:"N|",pay:"N|",jw:"N|",rip:"N|",ven:"N|"}],
+ ["TEC.01","TEC","Proprietary HCM platform",{nsp:"C|Insperity Premier",adp:"C|Workforce Now",tri:"C|",pay:"C|Flex",jw:"C|",rip:"C|",ven:"C|Vfficient"}],
+ ["TEC.02","TEC","Enterprise HCM option for mid-market",{nsp:"C|HRScale on Workday, 150–5,000 employees",adp:"C|Workforce Now",tri:"N|",pay:"N|",jw:"N|",rip:"C|Same platform scales",ven:"V|"}],
+ ["TEC.03","TEC","Employee self-service & mobile",{nsp:"C|",adp:"C|",tri:"C|",pay:"C|",jw:"C|",rip:"C|",ven:"C|"}],
+ ["TEC.04","TEC","Reporting & analytics",{nsp:"C|",adp:"C|300 standard reports plus builder",tri:"C|",pay:"C|",jw:"C|",rip:"C|Custom reports across modules",ven:"V|"}],
+ ["TEC.05","TEC","Embedded AI / agentic assistance",{nsp:"V|AI initiatives cited on Q2 2026 call",adp:"V|Workforce Now marketed as AI-powered",tri:"V|",pay:"C|WISE agentic AI engine",jw:"V|",rip:"V|",ven:"V|"}],
+ ["TEC.06","TEC","IT, device & app management",{nsp:"N|",adp:"N|",tri:"N|",pay:"N|",jw:"N|",rip:"C|",ven:"N|"}],
+ ["TEC.07","TEC","Marketplace / partner ecosystem",{nsp:"C|Insperity MarketPlace",adp:"C|ADP app marketplace",tri:"V|",pay:"V|",jw:"V|",rip:"V|",ven:"V|"}],
+ ["MOD.01","MOD","Full PEO co-employment",{nsp:"C|",adp:"C|",tri:"C|",pay:"C|",jw:"C|",rip:"C|",ven:"C|"}],
+ ["MOD.02","MOD","ASO (HR outsourcing without co-employment)",{nsp:"N|",adp:"A|Separate ADP offer",tri:"C|HR Plus",pay:"C|HR Outsourcing",jw:"N|",rip:"N|",ven:"C|"}],
+ ["MOD.03","MOD","Payroll / HCM software without co-employment",{nsp:"C|HRCore",adp:"C|Workforce Now, RUN",tri:"V|",pay:"C|Flex",jw:"C|Payroll plan",rip:"C|PEO can be switched off",ven:"C|"}],
+ ["MOD.04","MOD","International hiring (EOR / global)",{nsp:"N|",adp:"V|Global payroll, not PEO",tri:"C|Global solutions",pay:"V|",jw:"A|EOR $599 PEPM",rip:"A|",ven:"C|EOR Canada, Mexico"}],
+ ["MOD.05","MOD","Published price list",{nsp:"N|",adp:"N|",tri:"N|",pay:"N|",jw:"C|",rip:"N|",ven:"N|"}]
+];
+const LBL={C:"Core",A:"Add-on",P:"Partner",N:"None",V:"Verify"};
+const SRC=[
+ ["Insperity and Workday announce general availability of HRScale (Workday Newsroom, Feb 2026)","https://newsroom.workday.com/2026-02-26-Insperity-and-Workday-Announce-General-Availability-of-Insperity-HRScale"],
+ ["Insperity Q2 2026 earnings call highlights (MarketBeat)","https://www.marketbeat.com/instant-alerts/insperity-q2-earnings-call-highlights-2026-07-30/"],
+ ["Insperity rebrands to HR360 and HRCore (TechIntelPro)","https://techintelpro.com/news/hr/hr-analytics/insperity-unveils-hr360-hrcore-and-workday-powered-hrscale-for-smbs"],
+ ["Insperity company profile (roic.ai)","https://roic.ai/company/NSP"],
+ ["Insperity review: accreditation and benefits (Employsome)","https://employsome.com/?p=9863"],
+ ["ADP TotalSource features (ADP Marketplace)","https://apps.adp.com/en-US/apps/234948/ADP-TotalSource%C2%AE---a-PEO-Solution/features"],
+ ["ADP TotalSource vs. TriNet (ADP)","https://adp.com/what-we-offer/hr-outsourcing-and-peo/professional-employer-organization/compare/adp-vs-trinet.aspx"],
+ ["ADP TotalSource service listing (SoftwareOne)","https://platform.softwareone.com/product/adp-totalsource/PCP-8066-7603"],
+ ["TriNet FAQs","https://www.trinet.com/faqs"],
+ ["TriNet official information","https://www.trinet.com/ai-instructions"],
+ ["TriNet product profile (FitGap)","https://us.fitgap.com/products/trinet"],
+ ["Paychex PEO support team","https://www.paychex.com/peo?ssrid=ssr"],
+ ["Oasis, a Paychex company: client value","https://interactive.paychex.com/oasisvalue"],
+ ["Paychex investor relations","https://investor.paychex.com/"],
+ ["Paychex segment summary (Motley Fool)","https://www.fool.com/quote/nasdaq/paychex/payx/"],
+ ["Justworks PEO Plus price change, Q2 2026 (PricingSaaS)","https://pricingsaas.com/companies/justworks/diffs/2026Q2"],
+ ["Justworks pricing explained (Hire in South)","https://www.hireinsouth.com/post/justworks-pricing"],
+ ["Justworks pricing and add-ons (Audit Friendly)","https://auditfriendly.co/software/justworks"],
+ ["Rippling PEO feature list (PEO Compare)","https://www.peocompare.com/rippling/"],
+ ["Rippling PEO explained (SpotSaaS)","https://www.spotsaas.com/blog/rippling-peo"],
+ ["VensureHR company profile (BriefGlance)","https://briefglance.com/companies/vensure-employer-solutions-vensurehr"],
+ ["VensureHR service models (Zoftware)","https://zoftwarehub.com/ar-bh/products/vensurehr/zoftware-analysis"]
+];
+
+const val=(r,k)=>{const [l,...n]=(r[3][k]||"V|").split("|");return {l,n:n.join("|")}};
+const differs=r=>{const b=val(r,"nsp").l;return CO.some(c=>!c.base&&val(r,c.k).l!==b)};
+let dom="ALL",only=false,open=new Set();
+
+function profiles(){
+  document.getElementById("profiles").innerHTML=CO.map(c=>`<div class="prof${c.base?" base":""}"><h3>${c.n}<span class="tag">${c.s}</span></h3><dl>${Object.entries(c.p).map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl></div>`).join("");
+}
+function chips(){
+  const all=[["ALL","All domains"],...Object.entries(DOM)];
+  const el=document.getElementById("domchips");
+  el.innerHTML=all.map(([k,v])=>`<button class="chip" id="chip-${k}" data-k="${k}" aria-pressed="${k===dom}">${v}</button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{dom=b.dataset.k;chips();render()});
+}
+function render(){
+  const th=document.querySelector("#matrix thead");
+  th.innerHTML=`<tr><th class="svc">Service</th>${CO.map(c=>`<th class="${c.base?"base":""}">${c.n}<small>${c.base?"BASELINE":c.s}</small></th>`).join("")}</tr>`;
+  const tb=document.querySelector("#matrix tbody");let h="",n=0,last="";
+  R.forEach(r=>{
+    if(dom!=="ALL"&&r[1]!==dom)return;
+    const d=differs(r); if(only&&!d)return; n++;
+    if(r[1]!==last){h+=`<tr class="dom"><td colspan="${CO.length+1}">${DOM[r[1]]}</td></tr>`;last=r[1]}
+    h+=`<tr class="row" tabindex="0" data-id="${r[0]}" aria-expanded="${open.has(r[0])}"><td class="svc"><span class="sid">${r[0]}</span>${r[2]}${d?'<span class="diff">differs</span>':""}</td>${CO.map(c=>{const v=val(r,c.k);return `<td class="${c.base?"base":""}"><span class="lv ${v.l}" title="${v.n||LBL[v.l]}">${LBL[v.l]}${v.n?"<sup>•</sup>":""}</span></td>`}).join("")}</tr>`;
+    if(open.has(r[0])){h+=`<tr class="detail"><td colspan="${CO.length+1}"><div class="notes">${CO.map(c=>{const v=val(r,c.k);return `<div><b>${c.n}</b><span class="lv ${v.l}">${LBL[v.l]}</span> ${v.n||'<span style="color:var(--muted)">No note</span>'}</div>`}).join("")}</div></td></tr>`}
+  });
+  tb.innerHTML=h||`<tr><td class="empty" colspan="${CO.length+1}">No services in this view. Clear the filter to see all rows.</td></tr>`;
+  document.getElementById("rowcount").textContent=R.length;
+  tb.querySelectorAll("tr.row").forEach(tr=>{
+    const t=()=>{const id=tr.dataset.id;open.has(id)?open.delete(id):open.add(id);render();const el=document.querySelector(`tr.row[data-id="${id}"]`);el&&el.focus()};
+    tr.onclick=t;tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}};
+  });
+}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function copy(text,label){
+  const fb=document.getElementById("copyfallback");
+  const show=()=>{fb.hidden=false;fb.value=text;fb.focus();fb.select();toast("Select all and copy from the box")};
+  try{navigator.clipboard.writeText(text).then(()=>{fb.hidden=true;toast(label+" copied")},show)}catch(e){show()}
+}
+const q=s=>`"${String(s).replace(/"/g,'""')}"`;
+function csv(){
+  const head=["id","domain","service",...CO.flatMap(c=>[c.n,c.n+" note"])];
+  return [head.map(q).join(","),...R.map(r=>[r[0],DOM[r[1]],r[2],...CO.flatMap(c=>{const v=val(r,c.k);return [LBL[v.l],v.n]})].map(q).join(","))].join("\n");
+}
+function ttl(){
+  const slug=s=>s.replace(/\./g,"_");const esc=s=>s.replace(/\\/g,"\\\\").replace(/"/g,'\\"');
+  let o=`@prefix skos: <http://www.w3.org/2004/02/skos/core#> .\n@prefix peo: <https://example.org/peo-service-map#> .\n\npeo:PEOServiceScheme a skos:ConceptScheme ;\n  skos:prefLabel "PEO Service Map"@en .\n\n`;
+  Object.entries(DOM).forEach(([k,v])=>{o+=`peo:${k} a skos:Concept ;\n  skos:prefLabel "${esc(v)}"@en ;\n  skos:topConceptOf peo:PEOServiceScheme .\n\n`});
+  R.forEach(r=>{o+=`peo:${slug(r[0])} a skos:Concept ;\n  skos:notation "${r[0]}" ;\n  skos:prefLabel "${esc(r[2])}"@en ;\n  skos:broader peo:${r[1]} ;\n  skos:inScheme peo:PEOServiceScheme .\n\n`});
+  return o;
+}
+document.getElementById("onlydiff").onchange=e=>{only=e.target.checked;render()};
+document.getElementById("copycsv").onclick=()=>copy(csv(),"CSV");
+document.getElementById("copyttl").onclick=()=>copy(ttl(),"Turtle");
+document.getElementById("srclist").innerHTML=SRC.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("");
+profiles();chips();render();
+</script>
+
+</body></html>

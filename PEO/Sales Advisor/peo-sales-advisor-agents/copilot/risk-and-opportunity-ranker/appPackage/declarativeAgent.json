@@ -1,0 +1,32 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Risk & Opportunity Ranker${{APP_NAME_SUFFIX}}",
+    "description": "Risk & Opportunity Ranker: How to rank risks and opportunities. Runs the hosted agent under its circuit breaker and cites every result.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "text": "What are the top three risks to the Sales Advisor's outcomes right now?"
+        },
+        {
+            "text": "Which opportunities have the biggest effect on time to a binding quote?"
+        },
+        {
+            "text": "Why is this risk ranked first?"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

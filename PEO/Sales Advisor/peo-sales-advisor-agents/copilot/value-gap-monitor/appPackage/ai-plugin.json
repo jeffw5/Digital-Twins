@@ -1,0 +1,157 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelag26",
+  "functions": [
+    {
+      "name": "metrics_query",
+      "description": "Query a published calc at a grain. Cells under k = 5 are suppressed."
+    },
+    {
+      "name": "metrics_definition",
+      "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version."
+    },
+    {
+      "name": "advisor_job_steps",
+      "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to."
+    },
+    {
+      "name": "run_value_gap_monitor",
+      "description": "Ask the hosted Value-Gap Monitor (AG-26) to do its job: Gap, no gap, or not enough data. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/AG-26",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "metrics_query",
+              "title": "Metrics query",
+              "description": "Query a published calc at a grain. Cells under k = 5 are suppressed.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "calc_id": {
+                    "type": "string",
+                    "description": "Calc ID, e.g. CALC-001"
+                  },
+                  "grain": {
+                    "type": "string",
+                    "description": "Grain, e.g. persona x job step x week"
+                  },
+                  "filters": {
+                    "type": "object",
+                    "description": "Filters"
+                  }
+                },
+                "required": [
+                  "calc_id",
+                  "grain"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "metrics_definition",
+              "title": "Metrics definition",
+              "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "calc_id": {
+                    "type": "string",
+                    "description": "Calc ID"
+                  }
+                },
+                "required": [
+                  "calc_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "advisor_job_steps",
+              "title": "Advisor job steps",
+              "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "persona": {
+                    "type": "string",
+                    "description": "Persona",
+                    "enum": [
+                      "client_admin",
+                      "hr_specialist"
+                    ]
+                  }
+                },
+                "required": [
+                  "persona"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "run_value_gap_monitor",
+              "title": "Run Value-Gap Monitor",
+              "description": "Ask the hosted Value-Gap Monitor (AG-26) to do its job: Gap, no gap, or not enough data. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "string",
+                    "description": "What you want the agent to do, in plain words"
+                  },
+                  "context": {
+                    "type": "object",
+                    "description": "Optional context: persona, job step, prospect URI, period"
+                  }
+                },
+                "required": [
+                  "request"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "metrics_query",
+        "metrics_definition",
+        "advisor_job_steps",
+        "run_value_gap_monitor"
+      ]
+    }
+  ]
+}

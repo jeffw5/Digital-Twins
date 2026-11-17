@@ -1,0 +1,614 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/OrganizationShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/Organization> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/> a owl:Ontology;
+  rdfs:label "Taxonomy | Core | Party"@en;
+  dct:description "The party taxonomy categorizes entities such as organizations (companies, agencies), persons (individuals, contacts) and vendors (suppliers of goods or services) which helps to effectively manage relationships and interactions with various internal & external entities."@en;
+  dct:title "Taxonomy | Core | Party"@en;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-party/"^^<http://www.w3.org/2001/XMLSchema#anyURI>;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:modified "2025-09-30T19:47:17.454Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources.";
+  dct:created "2024-08-29T17:21:12.502Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  owl:versionInfo "1.0";
+  owl:imports <https://ontologies.verizon.com/upperontology/>;
+  <http://verizon.ontologies.com/terms/certified> false .
+
+<https://ontologies.metaphacts.com/common-core-ontology/BusinessUnitShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/BusinessUnit> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/VerizonShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/Verizon> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/CorporateServicesShape> a
+    sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/DataAnalyticsShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/DataAnalytics> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/ExecutiveTeamShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/ExecutiveTeam> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/NetworkOperationsShape> a
+    sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/NetworkTechnology> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/VbgShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/VerizonBusinessGroup> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/VcgShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/VerizonGlobalServices> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/VcsShape> a sh:NodeShape;
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/VerizonConsumerGroup> .
+
+<https://ontologies.metaphacts.com/common-core-ontology/StrategyShape> a sh:NodeShape;
+  sh:property [
+      sh:path <https://ontologies.metaphacts.com/ontology/upper-ontology/basic-formal-ontology/enables>;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-party/VerizonGlobalServices>
+    ], [
+      sh:path <https://ontologies.metaphacts.com/ontology/upper-ontology/basic-formal-ontology/enables>;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-party/VerizonConsumerGroup>
+    ], [
+      sh:path <https://ontologies.metaphacts.com/ontology/upper-ontology/basic-formal-ontology/enables>;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-party/VerizonBusinessGroup>
+    ], [
+      sh:path <https://ontologies.metaphacts.com/ontology/upper-ontology/basic-formal-ontology/enables>;
+      sh:class <https://ontologies.verizon.com/taxonomy-core-party/GlobalNetworkTechnology>
+    ];
+  sh:targetClass <https://ontologies.verizon.com/taxonomy-core-party/Strategy> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/DataAnalyticsHubSpoke> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/DataAnalytics>;
+  rdfs:label "Data & Analytics Hub & Spoke"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-11-22T16:18:35.354Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/54900548-3a84-4782-a54f-3640fbf7b53a> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Person> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Party>;
+  rdfs:label "Person"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-21T17:53:10.310Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-10-01T19:45:51.149Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/4b51326c-a7ed-4c96-bf51-ee94b7b1d362> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Vendor> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Party>;
+  rdfs:label "Vendor"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-21T17:53:10.310Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-12-05T18:44:53.379Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/ee77f4b9-0c08-4e11-a15c-450c56b2f3bb> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VirtualTeam> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Virtual Team"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69";
+  dct:creator "milsh69";
+  dct:modified "2025-04-21T17:53:10.310Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-12-05T18:44:53.379Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/db31e59b-289e-4bfe-be4d-48ef0e8f1d56> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonBusinessGroup> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/BusinessUnit>;
+  rdfs:label "Verizon Business Group"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/52e4dbeb-6663-4ea8-8423-e3b6839666a1> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonConsumerGroup> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/BusinessUnit>;
+  rdfs:label "Verizon Consumer Group"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/975b378b-415c-40af-a8df-38a889a32801> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonGlobalServices> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/BusinessUnit>;
+  rdfs:label "Verizon Global Services"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/8f1456e1-3e52-497f-b259-aa4ded74a581> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/BusinessUnit> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Business Unit"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T21:26:59.196Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/64f8c934-d0eb-429f-a5c1-c4cfed5e6608> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Verizon> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Organization>;
+  rdfs:label "Verizon"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T21:26:59.196Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/90e3a34c-2ce1-415c-95c6-ec68b4f44cc5> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Organization> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Party>;
+  rdfs:label "Organization"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T21:24:53.451Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/c6ab2846-981d-4c13-89d4-60012e974095> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Party> a owl:Class;
+  rdfs:label "Party"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:45:24.356Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T17:55:47.470Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/003c7b04-3c39-4b43-8135-46b8d6724906> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices>;
+  rdfs:label "Legal & Security"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/6495f769-cbdf-4cb3-8c85-c39a18a9f81b> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/CorporateServices> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Corporate Services"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/9e2d6bb9-cda5-429c-9bf0-aee9c790a183> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/DataAnalytics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/VerizonGlobalServices>;
+  rdfs:label "Data & Analytics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/d56c3939-346c-4602-9723-50ccdf8ea6b9> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Audit> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Audit"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/4694108b-3a9e-4e7d-80fe-cc94bb194298> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Finance> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices>;
+  rdfs:label "Finance"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/82a8fe1f-9c51-48a6-b51d-e60006770cfb> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/CareerDevelopment> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Career Development"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/0ed801f3-6d18-447b-9d23-926f1c99c711> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/HumanResources> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices>;
+  rdfs:label "Human Resources"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/7e2e52d5-9b9f-4a11-b523-51dcda66add4> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Commercial> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Commercial"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/3aea65cf-35a2-47f5-95bf-4695e1c7ce06> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Compensation> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Compensation"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/0c91508e-8a3c-47c7-8877-4add6345c408> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Controller> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Controller"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/b710e57d-3e8f-4768-aeac-e3f33c47ea9e> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/EnvironmentalHealthSafety> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Environmental Health & Safety"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/1f255cbd-3fe7-4b71-bb2e-d799bfea837c> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/FinancialPlanningAnalytics> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Financial Planning & Analytics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/98319935-0cf2-4973-bc0d-4d2c003260c1> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/HealthBenefits> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Health & Benefits"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/fa3d4d7a-b599-4956-9bcf-385b74ed90bc> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/InvestorRelations> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Investor Relations"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/bbc998c8-4256-472f-843b-0989501c5e51> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/TalentManagement> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Talent Management"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/bf7a9b05-9176-4273-b818-4938f1a8980d> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Tax> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Tax"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/f7291474-8a54-49de-a63b-d702ecb7b5d5> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Treasurer> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Finance>;
+  rdfs:label "Treasurer"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:44:32.025Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/2733ca60-34fa-4998-96be-7c33e3b6edc2> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/WorkLifeBalance> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/HumanResources>;
+  rdfs:label "Work Life Balance"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:48:48.749Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/c87b1bfb-13a2-4f05-86c5-dabd7b4268a7> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/GlobalNetworkTechnology> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/NetworkTechnology>;
+  rdfs:label "Global Network & Technology"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T23:06:14.401Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/a8d462b4-092c-4568-a0de-e03e1a450b81> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/ExecutiveTeam> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Executive Team"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/58bdd28c-4a73-4f0f-b138-8758ebcfd623> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/NetworkTechnology> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/Verizon>;
+  rdfs:label "Network Technology"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev", "wallkje";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/6efc75ec-9dec-4abf-9304-23590853cf6e> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Strategy> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices>;
+  rdfs:label "Strategy"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/0f41701b-c125-4077-a1d7-72cd18879be9> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/ArtificialIntelligenceData> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/NetworkTechnology>;
+  rdfs:label "Artificial Intelligence & Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:53:10.310Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T23:06:14.401Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/de85451d-df46-4100-b0c1-9b26ae5cd3c0> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/ChiefFinancialOfficer> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/ExecutiveTeam>;
+  rdfs:label "Chief Financial Officer"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T23:06:14.401Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/506741ee-8cb0-498d-a715-aceece2b72c7> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/ChiefHumanResourcesOfficer> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/ExecutiveTeam>;
+  rdfs:label "Chief Human Resources Officer"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T23:06:14.401Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/fef2a09f-661e-4375-bab7-797a0551caa1> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/ChiefOperationsOfficer> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/ExecutiveTeam>;
+  rdfs:label "Chief Operations Officer"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T23:06:14.401Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/e7af9f83-9ce0-4d93-82bd-60c486dae541> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/CorporateSecurity> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Corporate Security"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/ecb9344b-6a28-4881-9253-e24421dc4850> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/CorporateTax> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Corporate Tax"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/9254a0d5-1a25-4ecf-b691-880a870cc339> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/GlobalClearance> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Global Clearance"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/603161d3-bd49-40c1-9ad7-39ba686ab274> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/LaborEmployeeRelations> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Labor & Employee Relations"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/dd2a1263-8d0d-4bac-bf42-9c292cd7c60d> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Litigation> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Litigation"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/4dcc2a82-6101-45d8-9352-f417e84d6f20> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/NetworkProductIntellectualProperty>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Network & Product Intellectual Property"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/cb1ff6eb-e22c-4184-a479-15be16bbc7fc> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/Privacy> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Privacy"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/72a939cf-bd84-4e44-a6c2-a4cf1d3cb07c> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/StrategicBusinessOperations> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Strategic Business Operations"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/61a5c7e3-9161-42e3-a71f-cf047efe9c8c> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonBusinessGroupLegal> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Verizon Business Group Legal"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/17d5ac01-98c5-4a6e-b964-601aa11ec1a3> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonConsumerGroupLegal> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Verizon Consumer Group Legal"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/4ee99fd3-759a-4904-a9a4-9bc5c6b14002> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonGlobalServicesLegal> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/LegalSecurity>;
+  rdfs:label "Verizon Global Services Legal"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:53:06.218Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/5f340696-908d-4029-b7fc-5dd71b2e9dcd> .
+
+<https://ontologies.verizon.com/taxonomy-core-party/VerizonIndia> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-party/CorporateServices>;
+  rdfs:label "Verizon India"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-party/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:52:16.204Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-04T22:33:12.742Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-party/dd36f8fe-d5be-4cf4-846c-eb97de6e0a7a> .

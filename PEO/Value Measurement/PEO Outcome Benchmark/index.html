@@ -1,0 +1,158 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PEO Outcome Benchmark</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="common.css">
+<style>
+.stats{display:flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:8px;overflow:hidden;width:fit-content;max-width:100%}
+.stat{padding:10px 18px;border-right:1px solid var(--rule);display:grid}
+.stat:last-child{border-right:0}
+.stat b{font-family:var(--f-display);font-size:24px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-2)}
+.pages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.pg{display:grid;gap:8px;padding:16px 18px;text-decoration:none;color:var(--ink);align-content:start}
+.pg:hover{border-color:var(--accent)}
+.pg h3{font-size:18px}
+.pg p{font-size:13px;color:var(--ink-2)}
+.pg .go{font:500 12.5px var(--f-body);color:var(--accent)}
+.pg.feature{grid-column:span 1;border-color:var(--accent);background:var(--accent-soft)}
+.svlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;padding:6px 16px 14px}
+.svg{break-inside:avoid;display:grid;gap:2px;align-content:start;padding-top:10px}
+.svg .g{font:600 12px var(--f-display);color:var(--ink-2);padding-bottom:4px;border-bottom:1px solid var(--rule-2)}
+.svrow{display:grid;grid-template-columns:minmax(0,1fr) 80px 24px;gap:10px;align-items:center;font-size:12px;padding:2px 0}
+.svrow .b{height:8px;background:var(--h3);border-radius:0 4px 4px 0}
+.svrow .n{font-family:var(--f-mono);text-align:right;color:var(--ink-2)}
+.tblwrap{overflow:auto;max-height:640px;border-radius:8px}
+table.reg{min-width:980px;font-size:12.5px}
+table.reg th{position:sticky;top:0;background:var(--panel);text-align:left;font:500 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--rule);padding:9px 8px;z-index:1}
+table.reg td{padding:7px 8px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+table.reg td.st{min-width:320px;max-width:460px}
+table.reg td.sv{font:11px var(--f-mono);color:var(--ink-2);min-width:200px}
+.design{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.design .card{padding:18px;display:grid;gap:10px;align-content:start}
+.design .wide{grid-column:1/-1}
+.q{border-left:3px solid var(--accent);padding:6px 12px;background:var(--bg);border-radius:0 6px 6px 0;font-size:13px}
+.q .k{font:10.5px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;display:block}
+.scale{display:flex;gap:4px;flex-wrap:wrap}
+.scale span{font:11px var(--f-mono);border:1px solid var(--rule);border-radius:4px;padding:2px 6px;color:var(--ink-2)}
+.scale span.t2{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.formula{font-family:var(--f-mono);font-size:12.5px;background:var(--bg);border:1px solid var(--rule);padding:6px 10px;border-radius:4px;overflow-x:auto}
+.tiers{display:flex;flex-wrap:wrap;gap:6px}
+table.plan{font-size:12.5px;min-width:640px}
+table.plan th{text-align:left;font:500 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--rule);padding:8px}
+table.plan td{padding:8px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+table.plan td.n,table.plan th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.plan tfoot td{font-weight:600;border-bottom:0}
+.dims{display:grid;gap:10px}
+.dim{display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px;font-size:12.5px;padding-bottom:10px;border-bottom:1px solid var(--rule-2)}
+.dim:last-child{border-bottom:0}
+.dim b{font-weight:600}
+.dim .lv{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start;align-content:flex-start}
+.notes{padding:18px 20px;display:grid;gap:10px;font-size:13px;color:var(--ink-2)}
+.notes p{max-width:92ch}
+.notes b{color:var(--ink);font-weight:600}
+@media (max-width:1000px){.pages{grid-template-columns:repeat(2,minmax(0,1fr))}.design,.svlist{grid-template-columns:minmax(0,1fr)}.design .wide{grid-column:auto}}
+@media (max-width:640px){.pages{grid-template-columns:minmax(0,1fr)}.dim{grid-template-columns:minmax(0,1fr)}.stat{padding:8px 12px}.stat b{font-size:20px}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Outcome-Driven Innovation · study blueprint · built on the HR Services &amp; PEO Enterprise Business Model ontology</div>
+  <h1>PEO Outcome Benchmark</h1>
+  <p class="lede">The client personas, the jobs they hire an HR partner to get done, and the desired outcomes the benchmark survey rates for importance and satisfaction. Every outcome traces to the domain services in the business model, so results land on the services that can act on them.</p>
+  <div class="stats" id="stats"></div>
+</div></header>
+
+<main><div class="wrap">
+<section aria-labelledby="h-pg">
+  <h2 id="h-pg">Explore the benchmark</h2>
+  <div class="pages">
+    <a class="card pg" href="personas.html"><span class="eyebrow">Who</span><h3>Personas</h3><p>Seven client roles, their goals, emotional jobs, the jobs they execute and their survey modules.</p><span class="go">Open personas →</span></a>
+    <a class="card pg" href="jobs.html"><span class="eyebrow">What</span><h3>Job Explorer</h3><p>All 26 jobs on the eight-step job map, with the persona × job matrix.</p><span class="go">Open job explorer →</span></a>
+    <a class="card pg" href="themes.html"><span class="eyebrow">Across jobs</span><h3>Theme Explorer</h3><p>The eleven service-line themes: their services, jobs, personas and outcomes.</p><span class="go">Open theme explorer →</span></a>
+    <a class="card pg feature" href="study.html"><span class="eyebrow">Results</span><h3>Job Study</h3><p>The Zephyr-style study: opportunity landscape, job map, PEO vs non-PEO benchmark and ranked outcomes.</p><span class="go">Open job study →</span></a>
+  </div>
+</section>
+
+<section aria-labelledby="h-c">
+  <div class="sec-head"><div><h2 id="h-c">Service coverage</h2><p id="sv-sum"></p></div></div>
+  <div class="card svlist" id="svlist"></div>
+</section>
+
+<section aria-labelledby="h-r">
+  <div class="sec-head"><div><h2 id="h-r">Outcome register</h2>
+  <p>Every desired outcome with its job, step, theme, metric type and the ontology services that address it. Copy the filtered rows into a survey tool or spreadsheet.</p></div>
+  <button class="btn solid" id="copy">Copy filtered rows</button></div>
+  <div class="card" style="padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center">
+    <label class="f" for="f-p">Persona <select id="f-p"><option value="">All personas</option></select></label>
+    <label class="f" for="f-t">Theme <select id="f-t"><option value="">All themes</option></select></label>
+    <input type="search" id="f-q" placeholder="Search outcomes…" aria-label="Search outcome statements">
+    <span class="small muted mono" id="f-count"></span>
+  </div>
+  <div class="card tblwrap"><table class="reg" id="reg"><thead><tr><th>ID</th><th>Desired outcome</th><th>Job</th><th>Step</th><th>Theme</th><th>Metric</th><th>Executors</th><th>Services (hr:)</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section aria-labelledby="h-d">
+  <div class="sec-head"><div><h2 id="h-d">Study design</h2><p>How the outcomes become a benchmark: the questions, the segments to compare, and the survey modules and sample each needs.</p></div></div>
+  <div class="design">
+    <div class="card">
+      <h3>How each outcome is rated</h3>
+      <div class="q" id="q-imp"></div><div class="q" id="q-sat"></div>
+      <div class="scale"><span>1 Not at all</span><span>2</span><span>3</span><span class="t2">4</span><span class="t2">5 Extremely</span></div>
+      <p class="small muted">Importance and satisfaction are each the share of respondents answering 4 or 5, divided by 10, as in the Zephyr study.</p>
+      <div class="formula">Opportunity = Importance + max(Importance − Satisfaction, 0)</div>
+      <div class="tiers"><span class="chip">&gt;15 extreme</span><span class="chip">12–15 high</span><span class="chip">10–12 solid</span><span class="chip">&lt;10 limited</span><span class="chip">S &gt; I over-served</span></div>
+    </div>
+    <div class="card"><h3>Segments to benchmark</h3><div class="dims" id="dims"></div></div>
+    <div class="card wide">
+      <h3>Survey modules and sample plan</h3>
+      <p class="small muted">Each respondent qualifies into exactly one persona module and rates every outcome of the jobs that persona executes. Modules over 80 outcomes are split in two and assigned at random. Intervals are 95% half-widths on an opportunity score at the most uncertain point.</p>
+      <div class="scroll"><table class="plan" id="plan"></table></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-n">
+  <h2 id="h-n">Method notes</h2>
+  <div class="card notes">
+    <p><b>Jobs are the client's, not the provider's.</b> The ontology describes what the PEO delivers. Each job states what a client persona is trying to get done, without naming a solution, and links back to the services that help.</p>
+    <p><b>Outcome format.</b> Direction + metric + object of control + clarifier. Metric type is read from the statement: time (speed), likelihood (stability), cost or liability, effort, or count (output).</p>
+    <p><b>Themes.</b> The ontology's nine Core Service Lines, assigned from each outcome's primary service, plus PEO Relationship and HR Technology &amp; Data for services the service-line layer does not cover.</p>
+    <p><b>Before fielding.</b> Validate the statements in 15–20 interviews (two to three per persona), then pilot each module with 20–30 respondents.</p>
+  </div>
+</section>
+</div></main>
+
+<script src="data.js"></script><script src="common.js"></script>
+<script>
+H.nav('index.html');
+const D=H.D, esc=H.esc;
+const covered=new Set(D.outcomes.flatMap(o=>o.svc));
+document.getElementById('stats').innerHTML=[[D.personas.length,'client personas'],[D.jobs.length,'jobs (22 core · 4 consumption)'],[D.outcomes.length,'desired outcomes'],[`${covered.size}/${D.services.length}`,'ontology services covered'],[D.themes.length,'benchmark themes'],[D.domains.length,'business domains']].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+// coverage
+const sc={}; D.outcomes.forEach(o=>o.svc.forEach(s=>sc[s]=(sc[s]||0)+1)); const smax=Math.max(...Object.values(sc));
+document.getElementById('sv-sum').textContent=`How many outcomes each of the ontology's ${D.services.length} domain services addresses. All ${covered.size} are covered.`;
+document.getElementById('svlist').innerHTML=[...D.domains].sort((a,b)=>a.n-b.n).map(d=>`<div class="svg"><div class="g">D${d.n} · ${esc(d.label)}</div>`+D.services.filter(s=>s.dom===d.id).map(s=>`<div class="svrow" title="hr:${s.id} · ${esc(s.subLabel)}"><span>${esc(s.label)}</span><div><div class="b" style="width:${(sc[s.id]||0)/smax*100}%"></div></div><span class="n">${sc[s.id]||'–'}</span></div>`).join('')+'</div>').join('');
+// register
+const st={p:'',t:'',q:''};
+const fp=document.getElementById('f-p'), ft=document.getElementById('f-t'), fq=document.getElementById('f-q');
+D.personas.forEach(p=>fp.add(new Option(p.name,p.id))); D.themes.forEach(t=>ft.add(new Option(t.name,t.name)));
+const pass=o=>(!st.p||H.J[o.job].ex.includes(st.p))&&(!st.t||o.theme===st.t)&&(!st.q||o.t.toLowerCase().includes(st.q.toLowerCase()));
+function register(){const outs=D.outcomes.filter(pass);
+  document.getElementById('f-count').textContent=outs.length<D.outcomes.length?`${outs.length} of ${D.outcomes.length} outcomes`:'';
+  document.querySelector('#reg tbody').innerHTML=outs.map(o=>{const j=H.J[o.job]; return `<tr><td class="mono">${o.id}</td><td class="st">${esc(o.t)}</td><td><a href="jobs.html#${j.id}" style="color:var(--ink)"><span class="jid">${j.id}</span>${esc(j.stmt)}</a></td><td style="white-space:nowrap">${H.stepNo(o.step)} · ${H.STEP[o.step].name}</td><td><a href="themes.html#${H.slug(o.theme)}" style="color:var(--ink)">${esc(o.theme)}</a></td><td>${esc(o.m)}</td><td>${j.ex.map(p=>`<span class="dot" style="background:${H.PCOL[p]};margin-right:4px"></span>${esc(H.P[p].short)}`).join('<br>')}</td><td class="sv">${o.svc.map(s=>'hr:'+s).join('<br>')}</td></tr>`;}).join('')||'<tr><td colspan="8" class="muted">No outcomes match these filters.</td></tr>';}
+fp.onchange=()=>{st.p=fp.value;register();}; ft.onchange=()=>{st.t=ft.value;register();}; fq.oninput=()=>{st.q=fq.value.trim();register();};
+document.getElementById('copy').onclick=()=>{const outs=D.outcomes.filter(pass);
+  const rows=[['Outcome ID','Desired outcome','Job ID','Job','Step','Theme','Metric','Executors','Services']].concat(outs.map(o=>{const j=H.J[o.job];return [o.id,o.t,j.id,j.stmt,H.STEP[o.step].name,o.theme,o.m,j.ex.map(p=>H.P[p].short).join('; '),o.svc.map(s=>'hr:'+s).join('; ')];}));
+  try{navigator.clipboard.writeText(rows.map(r=>r.join('\t')).join('\n')).then(()=>H.toast(`Copied ${outs.length} outcomes`),()=>H.toast('Copy was blocked. Use the CSV file instead.'));}catch(e){H.toast('Copy was blocked. Use the CSV file instead.');}};
+register();
+// design
+const o=H.O['O005'], j=H.J[o.job];
+document.getElementById('q-imp').innerHTML=`<span class="k">Importance</span>When you ${esc(H.lcFirst(j.stmt))}, how important is it to ${esc(H.lcFirst(o.t))}?`;
+document.getElementById('q-sat').innerHTML=`<span class="k">Satisfaction</span>How satisfied are you with your current ability to ${esc(H.lcFirst(o.t))}?`;
+const dims=[['HR delivery model','Primary benchmark cut',['Current PEO client','Former PEO client','Payroll / HRO or ASO provider','In-house HR only']],['Company size','Employees on payroll',['5–19','20–49','50–149','150–499']],['Industry risk profile','Drives safety and comp jobs',['Office and professional services','Field and industrial','Healthcare and social services','Hospitality and retail']],['Geographic footprint','Drives tax and compliance jobs',['Single state','2–4 states','5+ states or remote workforce']],['Growth stage','Drives hiring and onboarding jobs',['Headcount growing >10% a year','Stable','Shrinking']],['Current provider','PEO clients only; report where n ≥ 50',['Named provider list set at fielding']]];
+document.getElementById('dims').innerHTML=dims.map(([a,b,l])=>`<div class="dim"><div><b>${a}</b><div class="small muted">${b}</div></div><div class="lv">${l.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>`).join('');
+const T=D.modules.reduce((a,m)=>a+m.n,0);
+document.getElementById('plan').innerHTML=`<thead><tr><th>Module</th><th>Persona</th><th>Jobs rated</th><th class="n">Outcomes</th><th class="n">~Minutes</th><th class="n">Target n</th><th class="n">± Opp (all)</th><th class="n">± Opp (PEO vs non-PEO cell)</th></tr></thead><tbody>`+D.modules.map(m=>`<tr><td><b>${esc(m.name)}</b></td><td><span class="dot" style="background:${H.PCOL[m.persona]};margin-right:6px"></span><a href="personas.html#${m.persona}" style="color:var(--ink)">${esc(H.P[m.persona].name)}</a></td><td class="mono small">${m.jobs.join(' ')}</td><td class="n">${m.items}</td><td class="n">${m.minutes}</td><td class="n">${m.n}</td><td class="n">±${m.ci.toFixed(1)}</td><td class="n">±${m.ci_cell.toFixed(1)}</td></tr>`).join('')+`</tbody><tfoot><tr><td colspan="5">Total completes</td><td class="n">${T.toLocaleString()}</td><td colspan="2" class="small muted" style="font-weight:400">Ops/Safety and IT are smaller populations; treat their cell results as directional.</td></tr></tfoot>`;
+</script>
+
+</body></html>

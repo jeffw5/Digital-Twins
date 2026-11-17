@@ -1,0 +1,630 @@
+###############################################################################
+#  PEO Employment Standards — reference data (ABox)
+#  Jurisdictions, agencies, employment standards, requirements and wage rates
+#  for: United States (federal); Illinois, Texas, California, New York (state);
+#  Cook County, Chicago, New York City, Austin (local).
+#
+#  Governance convention:
+#    pes:lastVerified + pes:verifiedAgainst are set ONLY on records checked
+#    against a published source on 2026-09-30. Records without them are
+#    well-known law entered from domain knowledge and are queued for
+#    verification (peo-shapes.ttl reports them as warnings).
+#  Not legal advice.
+###############################################################################
+@prefix pes:     <https://enablingvalue.com/ontology/peo-es#> .
+@prefix esd:     <https://enablingvalue.com/ontology/peo-es/data#> .
+@prefix topic:   <https://enablingvalue.com/ontology/peo-es/topics#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+<https://enablingvalue.com/ontology/peo-es/data>
+    a owl:Ontology ;
+    owl:imports <https://enablingvalue.com/ontology/peo-es> ;
+    dcterms:title "PEO Employment Standards — reference data"@en ;
+    dcterms:created "2026-09-30"^^xsd:date .
+
+#################################################################
+#  Jurisdictions
+#################################################################
+esd:US a owl:NamedIndividual , pes:FederalJurisdiction ; rdfs:label "United States"@en ; pes:shortName "US" .
+esd:Illinois a owl:NamedIndividual , pes:StateJurisdiction ; rdfs:label "Illinois"@en ; pes:shortName "IL" ; pes:withinJurisdiction esd:US .
+esd:Texas a owl:NamedIndividual , pes:StateJurisdiction ; rdfs:label "Texas"@en ; pes:shortName "TX" ; pes:withinJurisdiction esd:US .
+esd:California a owl:NamedIndividual , pes:StateJurisdiction ; rdfs:label "California"@en ; pes:shortName "CA" ; pes:withinJurisdiction esd:US .
+esd:NewYork a owl:NamedIndividual , pes:StateJurisdiction ; rdfs:label "New York State"@en ; pes:shortName "NY" ; pes:withinJurisdiction esd:US .
+esd:CookCounty a owl:NamedIndividual , pes:CountyJurisdiction ; rdfs:label "Cook County, IL"@en ; pes:withinJurisdiction esd:Illinois .
+esd:Chicago a owl:NamedIndividual , pes:MunicipalJurisdiction ; rdfs:label "Chicago, IL"@en ; pes:withinJurisdiction esd:CookCounty .
+esd:NYC a owl:NamedIndividual , pes:MunicipalJurisdiction ; rdfs:label "New York City"@en ; pes:shortName "NYC" ; pes:withinJurisdiction esd:NewYork .
+esd:Austin a owl:NamedIndividual , pes:MunicipalJurisdiction ; rdfs:label "Austin, TX"@en ; pes:withinJurisdiction esd:Texas .
+
+#################################################################
+#  Government agencies
+#################################################################
+esd:US_DOL_WHD a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "US DOL Wage and Hour Division"@en ; pes:shortName "WHD" ; pes:agencyOf esd:US .
+esd:US_DOL_EBSA a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "US DOL Employee Benefits Security Administration"@en ; pes:shortName "EBSA" ; pes:agencyOf esd:US .
+esd:US_DOL_VETS a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "US DOL Veterans' Employment and Training Service"@en ; pes:shortName "VETS" ; pes:agencyOf esd:US .
+esd:US_EEOC a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Equal Employment Opportunity Commission"@en ; pes:shortName "EEOC" ; pes:agencyOf esd:US .
+esd:US_OSHA a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Occupational Safety and Health Administration"@en ; pes:shortName "OSHA" ; pes:agencyOf esd:US .
+esd:US_IRS a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Internal Revenue Service"@en ; pes:shortName "IRS" ; pes:agencyOf esd:US .
+esd:US_DHS a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Department of Homeland Security (USCIS, ICE)"@en ; pes:shortName "DHS" ; pes:agencyOf esd:US .
+esd:US_NLRB a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "National Labor Relations Board"@en ; pes:shortName "NLRB" ; pes:agencyOf esd:US .
+esd:IL_IDOL a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Illinois Department of Labor"@en ; pes:shortName "IDOL" ; pes:agencyOf esd:Illinois .
+esd:IL_IDHR a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Illinois Department of Human Rights"@en ; pes:shortName "IDHR" ; pes:agencyOf esd:Illinois .
+esd:TX_TWC a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Texas Workforce Commission"@en ; pes:shortName "TWC" ; pes:agencyOf esd:Texas .
+esd:TX_TDLR a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Texas Department of Licensing and Regulation"@en ; pes:shortName "TDLR" ; pes:agencyOf esd:Texas .
+esd:CA_LC a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "California Labor Commissioner's Office"@en ; pes:shortName "DLSE" ; pes:agencyOf esd:California .
+esd:CA_CRD a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "California Civil Rights Department"@en ; pes:shortName "CRD" ; pes:agencyOf esd:California .
+esd:NY_DOL a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "New York State Department of Labor"@en ; pes:shortName "NYSDOL" ; pes:agencyOf esd:NewYork .
+esd:NY_DHR a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "New York State Division of Human Rights"@en ; pes:shortName "NYSDHR" ; pes:agencyOf esd:NewYork .
+esd:CHI_OLS a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Chicago Office of Labor Standards"@en ; pes:shortName "OLS" ; pes:agencyOf esd:Chicago .
+esd:COOK_CHR a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "Cook County Commission on Human Rights"@en ; pes:shortName "CCCHR" ; pes:agencyOf esd:CookCounty .
+esd:NYC_DCWP a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "NYC Department of Consumer and Worker Protection"@en ; pes:shortName "DCWP" ; pes:agencyOf esd:NYC .
+esd:NYC_CCHR a owl:NamedIndividual , pes:GovernmentAgency ; rdfs:label "NYC Commission on Human Rights"@en ; pes:shortName "NYCCHR" ; pes:agencyOf esd:NYC .
+
+#################################################################
+#  FEDERAL standards
+#################################################################
+esd:FLSA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Fair Labor Standards Act"@en ; pes:shortName "FLSA" ;
+    pes:citation "29 U.S.C. § 201 et seq." ;
+    dcterms:description "Sets the federal minimum wage, overtime at 1.5× for hours over 40 in a workweek, the white-collar exemption tests, child-labor limits and recordkeeping."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_WHD ;
+    pes:coversTopic topic:MinimumWage , topic:Overtime ;
+    pes:minEmployees 1 ; pes:thresholdNote "Enterprise coverage ($500,000 annual sales) or individual coverage (interstate commerce); in practice nearly all employers."@en ;
+    pes:effectiveDate "1938-10-24"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_US_Min , esd:Rate_US_ExemptSalary ;
+    pes:supplementedBy esd:IL_MWL , esd:CA_MinWage , esd:NY_MinWage .
+
+esd:FLSA_OT2024 a owl:NamedIndividual , pes:Regulation ;
+    rdfs:label "2024 FLSA white-collar overtime rule"@en ; pes:shortName "2024 OT rule" ;
+    pes:citation "29 C.F.R. Part 541 (89 Fed. Reg. 32842, 2024)" ;
+    dcterms:description "Would have raised the exempt salary threshold to $844/week (July 2024) and $1,128/week (January 2025) with automatic updates every three years."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_WHD ; pes:implements esd:FLSA ;
+    pes:coversTopic topic:Overtime ; pes:minEmployees 1 ;
+    pes:effectiveDate "2024-07-01"^^xsd:date ; pes:legalStatus pes:Rescinded ;
+    pes:statusNote "Vacated nationwide by the E.D. Texas on 2024-11-15; formally rescinded by DOL final rule effective 2026-05-15, restoring the 2019 threshold of $684/week."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://ogletree.com/insights-resources/blog-posts/trump-administration-rescinds-2024-dol-white-collar-overtime-expansion/"^^xsd:anyURI .
+
+esd:EPA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Equal Pay Act of 1963"@en ; pes:shortName "EPA" ;
+    pes:citation "29 U.S.C. § 206(d)" ;
+    dcterms:description "Prohibits sex-based pay differences for equal work in the same establishment."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_EEOC ; pes:coversTopic topic:PayTransparency ;
+    pes:minEmployees 1 ; pes:effectiveDate "1964-06-11"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:amends esd:FLSA .
+
+esd:TitleVII a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Title VII of the Civil Rights Act of 1964"@en ; pes:shortName "Title VII" ;
+    pes:citation "42 U.S.C. § 2000e et seq." ;
+    dcterms:description "Prohibits employment discrimination based on race, color, religion, sex (including pregnancy, sexual orientation and gender identity) and national origin."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_EEOC ; pes:coversTopic topic:AntiDiscrimination ;
+    pes:minEmployees 15 ; pes:thresholdNote "15+ employees for 20+ weeks in the current or preceding year."@en ;
+    pes:effectiveDate "1965-07-02"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:ADA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Americans with Disabilities Act, Title I"@en ; pes:shortName "ADA" ;
+    pes:citation "42 U.S.C. § 12111 et seq." ;
+    dcterms:description "Prohibits disability discrimination and requires reasonable accommodation absent undue hardship."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_EEOC ; pes:coversTopic topic:AntiDiscrimination , topic:Accommodation ;
+    pes:minEmployees 15 ; pes:effectiveDate "1992-07-26"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:ADEA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Age Discrimination in Employment Act"@en ; pes:shortName "ADEA" ;
+    pes:citation "29 U.S.C. § 621 et seq." ;
+    dcterms:description "Protects applicants and employees aged 40 and over from age discrimination."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_EEOC ; pes:coversTopic topic:AntiDiscrimination ;
+    pes:minEmployees 20 ; pes:effectiveDate "1968-06-12"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:PWFA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Pregnant Workers Fairness Act"@en ; pes:shortName "PWFA" ;
+    pes:citation "42 U.S.C. § 2000gg et seq." ;
+    dcterms:description "Requires reasonable accommodation of known limitations related to pregnancy, childbirth or related medical conditions."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_EEOC ; pes:coversTopic topic:Accommodation ;
+    pes:minEmployees 15 ; pes:effectiveDate "2023-06-27"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:FMLA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Family and Medical Leave Act"@en ; pes:shortName "FMLA" ;
+    pes:citation "29 U.S.C. § 2601 et seq." ;
+    dcterms:description "Up to 12 weeks of unpaid, job-protected leave per year for qualifying family and medical reasons, with continued group health coverage."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_WHD ; pes:coversTopic topic:FamilyMedicalLeave ;
+    pes:minEmployees 50 ; pes:thresholdNote "50+ employees for 20+ weeks; an employee is eligible only if 50 employees work within 75 miles. In a PEO arrangement the client is normally the primary employer for counting."@en ;
+    pes:effectiveDate "1993-08-05"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:supplementedBy esd:CFRA .
+
+esd:OSHAct a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Occupational Safety and Health Act"@en ; pes:shortName "OSH Act" ;
+    pes:citation "29 U.S.C. § 651 et seq." ;
+    dcterms:description "General duty to keep the workplace free of recognized serious hazards, plus specific safety standards and injury recordkeeping."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_OSHA ; pes:coversTopic topic:WorkplaceSafety ;
+    pes:minEmployees 1 ; pes:thresholdNote "Injury and illness recordkeeping is required at 11+ employees."@en ;
+    pes:effectiveDate "1971-04-28"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:ERISA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Employee Retirement Income Security Act"@en ; pes:shortName "ERISA" ;
+    pes:citation "29 U.S.C. § 1001 et seq." ;
+    dcterms:description "Fiduciary, disclosure and reporting rules for private-sector retirement and welfare benefit plans."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_EBSA ; pes:coversTopic topic:RetirementPlans ;
+    pes:minEmployees 1 ; pes:thresholdNote "Applies to employers that sponsor a plan."@en ;
+    pes:effectiveDate "1974-09-02"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:COBRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Consolidated Omnibus Budget Reconciliation Act — health continuation"@en ; pes:shortName "COBRA" ;
+    pes:citation "29 U.S.C. § 1161 et seq." ;
+    dcterms:description "Lets employees and dependents keep group health coverage at their own cost after qualifying events."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_EBSA ; pes:coversTopic topic:ContinuationCoverage ;
+    pes:minEmployees 20 ; pes:effectiveDate "1986-04-07"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:amends esd:ERISA .
+
+esd:ACA_4980H a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "ACA employer shared responsibility"@en ; pes:shortName "ACA §4980H" ;
+    pes:citation "26 U.S.C. § 4980H" ;
+    dcterms:description "Applicable large employers owe a payment if they do not offer affordable, minimum-value coverage to full-time employees; reported on Forms 1094-C/1095-C."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_IRS ; pes:coversTopic topic:HealthCoverage ;
+    pes:minEmployees 50 ; pes:thresholdNote "50+ full-time employees including full-time equivalents in the prior year (applicable large employer)."@en ;
+    pes:effectiveDate "2015-01-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:IRCA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Immigration Reform and Control Act — employment verification"@en ; pes:shortName "IRCA / Form I-9" ;
+    pes:citation "8 U.S.C. § 1324a" ;
+    dcterms:description "Employers must verify identity and work authorization of every new hire on Form I-9 and must not knowingly employ unauthorized workers."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DHS ; pes:coversTopic topic:WorkforceEligibility ;
+    pes:minEmployees 1 ; pes:effectiveDate "1986-11-06"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:NLRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "National Labor Relations Act"@en ; pes:shortName "NLRA" ;
+    pes:citation "29 U.S.C. § 151 et seq." ;
+    dcterms:description "Protects private-sector employees' rights to organize, bargain collectively and engage in concerted activity."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_NLRB ; pes:coversTopic topic:LaborRelations ;
+    pes:minEmployees 1 ; pes:thresholdNote "NLRB applies revenue-based jurisdictional standards by industry."@en ;
+    pes:effectiveDate "1935-07-05"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:WARN a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Worker Adjustment and Retraining Notification Act"@en ; pes:shortName "WARN" ;
+    pes:citation "29 U.S.C. § 2101 et seq." ;
+    dcterms:description "60 days' notice before a plant closing or mass layoff. Enforced by employees and local governments in federal court; DOL issues guidance."@en ;
+    pes:appliesIn esd:US ; pes:coversTopic topic:WorkforceChanges ;
+    pes:minEmployees 100 ; pes:thresholdNote "100+ full-time employees, or 100+ employees working 4,000+ hours per week combined."@en ;
+    pes:effectiveDate "1989-02-04"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:USERRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Uniformed Services Employment and Reemployment Rights Act"@en ; pes:shortName "USERRA" ;
+    pes:citation "38 U.S.C. § 4301 et seq." ;
+    dcterms:description "Reemployment rights and anti-discrimination protection for service members."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_DOL_VETS ; pes:coversTopic topic:MilitaryLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "1994-10-13"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:FICA_FUTA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "FICA and FUTA employment taxes"@en ; pes:shortName "FICA/FUTA" ;
+    pes:citation "26 U.S.C. §§ 3101–3128, 3301–3311, 3401–3406" ;
+    dcterms:description "Withholding and payment of Social Security and Medicare taxes, federal income tax withholding, and federal unemployment tax."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_IRS ; pes:coversTopic topic:PayrollTax ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce .
+
+esd:CPEO a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Certified Professional Employer Organization provisions"@en ; pes:shortName "CPEO (IRC §3511)" ;
+    pes:citation "26 U.S.C. §§ 3511, 7705; 26 C.F.R. § 31.3511-1" ;
+    dcterms:description "Voluntary IRS certification under which a CPEO becomes solely liable for federal employment taxes on wages it pays to worksite employees. Requires a surety bond of 5% of §3511 liability (minimum $50,000, maximum $1,000,000), audited financials, electronic filing and reporting of material changes."@en ;
+    pes:appliesIn esd:US ; pes:enforcedBy esd:US_IRS ; pes:coversTopic topic:PEOTaxCertification , topic:PayrollTax ;
+    pes:minEmployees 1 ; pes:thresholdNote "Applies to PEOs that choose to be certified."@en ;
+    pes:effectiveDate "2014-12-19"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.irs.gov/tax-professionals/certified-professional-employer-organizations-what-you-need-to-know"^^xsd:anyURI .
+
+#################################################################
+#  ILLINOIS
+#################################################################
+esd:IL_MWL a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois Minimum Wage Law"@en ; pes:shortName "IL MWL" ;
+    pes:citation "820 ILCS 105" ;
+    dcterms:description "Sets the Illinois minimum wage, reached $15.00/hour on 2025-01-01 (tipped: 60% of the standard rate), and state overtime."@en ;
+    pes:appliesIn esd:Illinois ; pes:enforcedBy esd:IL_IDOL ; pes:coversTopic topic:MinimumWage , topic:Overtime ;
+    pes:minEmployees 4 ; pes:thresholdNote "4+ employees, excluding the employer's parent, spouse, child or other immediate family."@en ;
+    pes:effectiveDate "1971-07-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_IL_Min , esd:Rate_IL_Tipped ;
+    pes:supplementedBy esd:CHI_MWO , esd:COOK_MWO .
+
+esd:IL_PLAWA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois Paid Leave for All Workers Act"@en ; pes:shortName "PLAWA" ;
+    pes:citation "820 ILCS 192" ;
+    dcterms:description "At least 40 hours of paid leave per 12 months, usable for any reason, accrued at 1 hour per 40 hours worked or front-loaded."@en ;
+    pes:appliesIn esd:Illinois ; pes:enforcedBy esd:IL_IDOL ; pes:coversTopic topic:PaidSickLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "2024-01-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:displacedBy esd:CHI_PLO , esd:COOK_PLO ;
+    pes:statusNote "Does not apply to employers covered by a local paid leave ordinance in effect (e.g. Chicago, Cook County)."@en .
+
+esd:IHRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois Human Rights Act"@en ; pes:shortName "IHRA" ;
+    pes:citation "775 ILCS 5" ;
+    dcterms:description "Prohibits employment discrimination and harassment on a broad list of protected classes."@en ;
+    pes:appliesIn esd:Illinois ; pes:enforcedBy esd:IL_IDHR ; pes:coversTopic topic:AntiDiscrimination , topic:Accommodation ;
+    pes:minEmployees 1 ; pes:thresholdNote "Covers employers of one or more employees since 2020-07-01."@en ;
+    pes:legalStatus pes:InForce .
+
+esd:IL_AI_HB3773 a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois AI in employment amendment (HB 3773)"@en ; pes:shortName "IL HB 3773" ;
+    pes:citation "775 ILCS 5/2-102(L), as amended by HB 3773" ;
+    dcterms:description "Makes it a civil rights violation to use AI in recruitment, hiring, promotion, discharge or terms of employment in a way that discriminates, or to use AI for those decisions without notifying employees and applicants."@en ;
+    pes:appliesIn esd:Illinois ; pes:enforcedBy esd:IL_IDHR ; pes:coversTopic topic:AIInEmployment , topic:AntiDiscrimination ;
+    pes:minEmployees 1 ; pes:effectiveDate "2026-01-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:amends esd:IHRA ;
+    pes:statusNote "IDHR notice rules (Subpart J) were in draft when last checked."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.hinshawlaw.com/en/insights/blogs/employment-law-observer/illinois-adopts-new-ai-in-employment-regulations-what-employers-need-to-know-for-2026"^^xsd:anyURI .
+
+esd:IL_EPA_Transparency a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois Equal Pay Act — pay scale disclosure"@en ; pes:shortName "IL pay transparency" ;
+    pes:citation "820 ILCS 112/10" ;
+    dcterms:description "Job postings must include the pay scale and a general description of benefits."@en ;
+    pes:appliesIn esd:Illinois ; pes:enforcedBy esd:IL_IDOL ; pes:coversTopic topic:PayTransparency ;
+    pes:minEmployees 15 ; pes:effectiveDate "2025-01-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:BIPA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Illinois Biometric Information Privacy Act"@en ; pes:shortName "BIPA" ;
+    pes:citation "740 ILCS 14" ;
+    dcterms:description "Written notice, consent and a retention policy before collecting biometrics such as fingerprints for timekeeping; enforced by private lawsuits."@en ;
+    pes:appliesIn esd:Illinois ; pes:coversTopic topic:BiometricPrivacy ;
+    pes:minEmployees 1 ; pes:effectiveDate "2008-10-03"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:statusNote "2024 amendment limits damages to one recovery per person rather than per scan."@en .
+
+#################################################################
+#  TEXAS
+#################################################################
+esd:TX_MWA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Texas Minimum Wage Act"@en ; pes:shortName "TX MWA" ;
+    pes:citation "Tex. Lab. Code ch. 62" ;
+    dcterms:description "Adopts the federal minimum wage as the Texas minimum wage and bars local governments from setting a higher private-sector minimum wage."@en ;
+    pes:appliesIn esd:Texas ; pes:enforcedBy esd:TX_TWC ; pes:coversTopic topic:MinimumWage , topic:LocalAuthority ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_US_Min .
+
+esd:TX_Payday a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Texas Payday Law"@en ; pes:shortName "TX Payday Law" ;
+    pes:citation "Tex. Lab. Code ch. 61" ;
+    dcterms:description "Paydays at least monthly (semi-monthly for non-exempt workers), final-pay deadlines and limits on deductions."@en ;
+    pes:appliesIn esd:Texas ; pes:enforcedBy esd:TX_TWC ; pes:coversTopic topic:WagePayment ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce .
+
+esd:TCHRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Texas Commission on Human Rights Act"@en ; pes:shortName "TCHRA" ;
+    pes:citation "Tex. Lab. Code ch. 21" ;
+    dcterms:description "State counterpart to Title VII, ADA and ADEA, administered by the TWC Civil Rights Division."@en ;
+    pes:appliesIn esd:Texas ; pes:enforcedBy esd:TX_TWC ; pes:coversTopic topic:AntiDiscrimination ;
+    pes:minEmployees 15 ; pes:thresholdNote "Sexual harassment provisions apply to employers of one or more employees since 2021."@en ;
+    pes:legalStatus pes:InForce .
+
+esd:TX_PEOAct a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Texas Professional Employer Organization Act"@en ; pes:shortName "TX PEO Act" ;
+    pes:citation "Tex. Lab. Code ch. 91" ;
+    dcterms:description "Requires a TDLR license to provide professional employer services in Texas, even for one assigned employee. Full and limited licenses; limited licenses cover out-of-state PEOs with 50 or fewer Texas employees and no Texas office. Requires positive working capital shown by audited financial statements (or bonding) and a written professional employer services agreement allocating responsibilities."@en ;
+    pes:appliesIn esd:Texas ; pes:enforcedBy esd:TX_TDLR ; pes:coversTopic topic:PEOLicensing ;
+    pes:minEmployees 1 ; pes:thresholdNote "Applies to PEOs, not to client employers."@en ;
+    pes:effectiveDate "2013-09-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:statusNote "Effective date shown is for the SB 1286 framework now in force."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.tdlr.texas.gov/peo/peofaq.htm"^^xsd:anyURI .
+
+esd:TX_HB2127 a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "Texas Regulatory Consistency Act (HB 2127)"@en ; pes:shortName "TX HB 2127" ;
+    pes:citation "HB 2127, 88th Tex. Leg. (2023), adding preemption provisions to the Labor Code and six other codes" ;
+    dcterms:description "Bars cities and counties from regulating in fields the state occupies — including labor — unless a statute expressly allows it, and lets affected persons sue."@en ;
+    pes:appliesIn esd:Texas ; pes:coversTopic topic:LocalAuthority ;
+    pes:minEmployees 1 ; pes:effectiveDate "2023-09-01"^^xsd:date ; pes:legalStatus pes:InForceChallenged ;
+    pes:statusNote "A Travis County court held it unconstitutional in 2023; the Third Court of Appeals reversed on standing on 2025-07-21, leaving the law in effect."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://texasscorecard.com/state/law-criticized-as-death-star-bill-upheld-in-texas-court-of-appeals/"^^xsd:anyURI .
+
+esd:AUS_EST a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Austin Earned Sick Time Ordinance"@en ; pes:shortName "Austin paid sick time" ;
+    pes:citation "Austin City Code ch. 4-19 (2018)" ;
+    dcterms:description "Would have required private employers to provide accrued paid sick time."@en ;
+    pes:appliesIn esd:Austin ; pes:coversTopic topic:PaidSickLeave , topic:LocalAuthority ;
+    pes:minEmployees 1 ; pes:legalStatus pes:Preempted ;
+    pes:preemptedBy esd:TX_MWA ;
+    pes:statusNote "Temporarily enjoined and held preempted by the Texas Minimum Wage Act by the Third Court of Appeals in 2018 before taking effect; kept as a preemption example."@en .
+
+#################################################################
+#  CALIFORNIA
+#################################################################
+esd:CA_MinWage a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "California minimum wage"@en ; pes:shortName "CA minimum wage" ;
+    pes:citation "Cal. Lab. Code § 1182.12" ;
+    dcterms:description "Statewide minimum wage, adjusted each January for inflation; $16.90/hour from 2026-01-01. No tip credit. Many cities set higher local rates."@en ;
+    pes:appliesIn esd:California ; pes:enforcedBy esd:CA_LC ; pes:coversTopic topic:MinimumWage ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_CA_Min ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.shrm.org/topics-tools/employment-law-compliance/ca-minimum-wage-will-increase-on-jan-1-2026"^^xsd:anyURI .
+
+esd:FEHA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "California Fair Employment and Housing Act"@en ; pes:shortName "FEHA" ;
+    pes:citation "Cal. Gov. Code § 12900 et seq." ;
+    dcterms:description "Prohibits employment discrimination and requires harassment-prevention training at 5+ employees."@en ;
+    pes:appliesIn esd:California ; pes:enforcedBy esd:CA_CRD ; pes:coversTopic topic:AntiDiscrimination , topic:Accommodation ;
+    pes:minEmployees 5 ; pes:thresholdNote "Harassment prohibitions apply to employers of one or more."@en ;
+    pes:legalStatus pes:InForce .
+
+esd:CFRA a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "California Family Rights Act"@en ; pes:shortName "CFRA" ;
+    pes:citation "Cal. Gov. Code § 12945.2" ;
+    dcterms:description "Up to 12 weeks of job-protected family and medical leave."@en ;
+    pes:appliesIn esd:California ; pes:enforcedBy esd:CA_CRD ; pes:coversTopic topic:FamilyMedicalLeave ;
+    pes:minEmployees 5 ; pes:effectiveDate "2021-01-01"^^xsd:date ; pes:thresholdNote "Threshold dropped from 50 to 5 employees on 2021-01-01."@en ;
+    pes:legalStatus pes:InForce .
+
+esd:CA_PSL a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "California Healthy Workplaces, Healthy Families Act (as amended by SB 616)"@en ; pes:shortName "CA paid sick leave" ;
+    pes:citation "Cal. Lab. Code § 245 et seq." ;
+    dcterms:description "Paid sick leave of at least 40 hours or five days per year."@en ;
+    pes:appliesIn esd:California ; pes:enforcedBy esd:CA_LC ; pes:coversTopic topic:PaidSickLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "2024-01-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:CA_PayTransparency a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "California pay transparency (SB 1162)"@en ; pes:shortName "CA pay transparency" ;
+    pes:citation "Cal. Lab. Code § 432.3" ;
+    dcterms:description "Job postings must include a pay scale; employers must keep job title and wage-rate history."@en ;
+    pes:appliesIn esd:California ; pes:enforcedBy esd:CA_LC ; pes:coversTopic topic:PayTransparency ;
+    pes:minEmployees 15 ; pes:effectiveDate "2023-01-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+#################################################################
+#  NEW YORK
+#################################################################
+esd:NY_MinWage a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "New York minimum wage"@en ; pes:shortName "NY minimum wage" ;
+    pes:citation "N.Y. Lab. Law § 652" ;
+    dcterms:description "Regional minimum wage: $17.00/hour in NYC, Long Island and Westchester and $16.00/hour elsewhere from 2026-01-01; indexed to CPI-W after 2026."@en ;
+    pes:appliesIn esd:NewYork ; pes:enforcedBy esd:NY_DOL ; pes:coversTopic topic:MinimumWage ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_NY_Downstate , esd:Rate_NY_Upstate ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://ogletree.com/insights-resources/blog-posts/2026-minimum-wage-increases-in-new-york-key-details-for-employers/"^^xsd:anyURI .
+
+esd:NY_PSL a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "New York paid sick leave"@en ; pes:shortName "NY paid sick leave" ;
+    pes:citation "N.Y. Lab. Law § 196-b" ;
+    dcterms:description "Accrual of 1 hour per 30 worked: 40 hours (paid at 5–99 employees, or 4 or fewer with net income over $1 million) and 56 paid hours at 100+ employees."@en ;
+    pes:appliesIn esd:NewYork ; pes:enforcedBy esd:NY_DOL ; pes:coversTopic topic:PaidSickLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "2020-09-30"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:supplementedBy esd:NYC_ESSTA ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.sixfifty.com/blog/new-york-paid-sick-leave-laws-and-requirements/"^^xsd:anyURI .
+
+esd:NY_PrenatalLeave a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "New York paid prenatal leave"@en ; pes:shortName "NY prenatal leave" ;
+    pes:citation "N.Y. Lab. Law § 196-b (as amended 2024)" ;
+    dcterms:description "20 hours of paid prenatal leave per year, separate from sick leave, usable in hourly increments."@en ;
+    pes:appliesIn esd:NewYork ; pes:enforcedBy esd:NY_DOL ; pes:coversTopic topic:PrenatalLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "2025-01-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:amends esd:NY_PSL ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.sixfifty.com/blog/new-york-paid-sick-leave-laws-and-requirements/"^^xsd:anyURI .
+
+esd:NYSHRL a owl:NamedIndividual , pes:Statute ;
+    rdfs:label "New York State Human Rights Law"@en ; pes:shortName "NYSHRL" ;
+    pes:citation "N.Y. Exec. Law § 296" ;
+    dcterms:description "Prohibits employment discrimination and harassment; covers all employers regardless of size."@en ;
+    pes:appliesIn esd:NewYork ; pes:enforcedBy esd:NY_DHR ; pes:coversTopic topic:AntiDiscrimination , topic:Accommodation ;
+    pes:minEmployees 1 ; pes:legalStatus pes:InForce .
+
+#################################################################
+#  COOK COUNTY and CHICAGO
+#################################################################
+esd:COOK_MWO a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Cook County Minimum Wage Ordinance"@en ; pes:shortName "Cook County minimum wage" ;
+    pes:citation "Cook County Code of Ordinances, Minimum Wage Ordinance" ;
+    dcterms:description "County minimum wage of $15.40/hour ($9.25 tipped) from 2026-07-01 for employers with a facility in the county."@en ;
+    pes:appliesIn esd:CookCounty ; pes:enforcedBy esd:COOK_CHR ; pes:coversTopic topic:MinimumWage ;
+    pes:minEmployees 4 ; pes:thresholdNote "Over 80% of municipalities in the county have opted out; Chicago applies its own higher rate."@en ;
+    pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_Cook_Min , esd:Rate_Cook_Tipped ;
+    pes:supplementedBy esd:CHI_MWO ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+
+esd:COOK_PLO a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Cook County Paid Leave Ordinance"@en ; pes:shortName "Cook County paid leave" ;
+    pes:citation "Cook County Paid Leave Ordinance (2023)" ;
+    dcterms:description "One hour of paid leave per 40 hours worked, at least 40 hours a year, usable for any reason; front-loading allowed."@en ;
+    pes:appliesIn esd:CookCounty ; pes:enforcedBy esd:COOK_CHR ; pes:coversTopic topic:PaidSickLeave ;
+    pes:minEmployees 1 ; pes:thresholdNote "Does not apply to Chicago-located workers (Chicago's own ordinance governs) or in municipalities that opted out."@en ;
+    pes:displacedBy esd:CHI_PLO ;
+    pes:statusNote "Chicago exclusion confirmed against Jackson Lewis summary of the final rules (2026-09-30)."@en ;
+    pes:effectiveDate "2023-12-31"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.crowell.com/en/insights/client-alerts/cook-county-and-chicago-update-paid-leave-laws"^^xsd:anyURI .
+
+esd:CHI_MWO a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Chicago Minimum Wage Ordinance"@en ; pes:shortName "Chicago minimum wage" ;
+    pes:citation "Chicago Mun. Code ch. 6-105" ;
+    dcterms:description "City minimum wage of $17.05/hour and $12.96 for tipped workers from 2026-07-01. The tip credit stays at 24% through 2028-06-30, then phases out by 2030-07-01."@en ;
+    pes:appliesIn esd:Chicago ; pes:enforcedBy esd:CHI_OLS ; pes:coversTopic topic:MinimumWage ;
+    pes:minEmployees 4 ; pes:thresholdNote "Covers employees who work at least 2 hours in any two-week period within the city."@en ;
+    pes:legalStatus pes:InForce ;
+    pes:setsWageRate esd:Rate_CHI_Min , esd:Rate_CHI_Tipped ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+
+esd:CHI_PLO a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Chicago Paid Leave and Paid Sick and Safe Leave Ordinance"@en ; pes:shortName "Chicago paid leave" ;
+    pes:citation "Chicago Mun. Code ch. 6-130" ;
+    dcterms:description "Up to 40 hours of paid leave for any reason plus 40 hours of paid sick and safe leave per year; payout rules at separation vary by employer size."@en ;
+    pes:appliesIn esd:Chicago ; pes:enforcedBy esd:CHI_OLS ; pes:coversTopic topic:PaidSickLeave ;
+    pes:minEmployees 1 ; pes:thresholdNote "Covered employees work 80+ hours in any 120-day period in Chicago."@en ;
+    pes:effectiveDate "2024-07-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.crowell.com/en/insights/client-alerts/cook-county-and-chicago-update-paid-leave-laws"^^xsd:anyURI .
+
+esd:CHI_FWW a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "Chicago Fair Workweek Ordinance"@en ; pes:shortName "Chicago Fair Workweek" ;
+    pes:citation "Chicago Mun. Code ch. 6-110" ;
+    dcterms:description "Covered employers in listed industries must post schedules in advance and pay premiums for late changes."@en ;
+    pes:appliesIn esd:Chicago ; pes:enforcedBy esd:CHI_OLS ; pes:coversTopic topic:Scheduling ;
+    pes:minEmployees 100 ; pes:thresholdNote "100+ employees globally (250+ for non-profits) in covered industries; covered employees earn below an annually adjusted income cap."@en ;
+    pes:effectiveDate "2020-07-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+#################################################################
+#  NEW YORK CITY
+#################################################################
+esd:NYC_ESSTA a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "NYC Earned Safe and Sick Time Act"@en ; pes:shortName "NYC ESSTA" ;
+    pes:citation "N.Y.C. Admin. Code § 20-911 et seq." ;
+    dcterms:description "City paid safe and sick time aligned with the state law. A 2026 amendment adds 32 hours of unpaid safe and sick time available at hire and each year, 20 hours of paid prenatal leave, and new covered purposes such as disaster-related closures and caregiving."@en ;
+    pes:appliesIn esd:NYC ; pes:enforcedBy esd:NYC_DCWP ; pes:coversTopic topic:PaidSickLeave , topic:PrenatalLeave ;
+    pes:minEmployees 1 ; pes:effectiveDate "2014-04-01"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:statusNote "Amendment effective 2026-02-22."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.lawandtheworkplace.com/2025/10/nyc-council-approves-bill-expanding-safe-and-sick-leave-entitlements/"^^xsd:anyURI .
+
+esd:NYC_PayTransparency a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "NYC salary transparency law (Local Law 32 of 2022)"@en ; pes:shortName "NYC pay transparency" ;
+    pes:citation "N.Y.C. Admin. Code § 8-107(32)" ;
+    dcterms:description "Advertised jobs, promotions and transfers must state a good-faith minimum and maximum salary."@en ;
+    pes:appliesIn esd:NYC ; pes:enforcedBy esd:NYC_CCHR ; pes:coversTopic topic:PayTransparency ;
+    pes:minEmployees 4 ; pes:effectiveDate "2022-11-01"^^xsd:date ; pes:legalStatus pes:InForce .
+
+esd:NYC_LL144 a owl:NamedIndividual , pes:Ordinance ;
+    rdfs:label "NYC Automated Employment Decision Tools law (Local Law 144)"@en ; pes:shortName "NYC LL 144" ;
+    pes:citation "N.Y.C. Admin. Code § 20-870 et seq." ;
+    dcterms:description "Before using an automated employment decision tool for hiring or promotion, an employer needs an independent bias audit within the past year, a public summary of results, and notice to candidates. Penalties up to $1,500 per violation."@en ;
+    pes:appliesIn esd:NYC ; pes:enforcedBy esd:NYC_DCWP ; pes:coversTopic topic:AIInEmployment ;
+    pes:minEmployees 1 ; pes:effectiveDate "2023-07-05"^^xsd:date ; pes:legalStatus pes:InForce ;
+    pes:statusNote "A December 2025 State Comptroller audit found enforcement weak; DCWP committed to stronger enforcement in 2026."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://www.dlapiper.com/en-us/insights/publications/2026/01/critical-audit-of-nyc-ai-hiring-law-signals-increased-risk-for-employers"^^xsd:anyURI .
+
+#################################################################
+#  Wage rates
+#################################################################
+esd:Rate_US_Min a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Federal minimum wage"@en ; pes:amount "7.25"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:effectiveDate "2009-07-24"^^xsd:date .
+esd:Rate_US_ExemptSalary a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Federal exempt salary threshold"@en ; pes:amount "684"^^xsd:decimal ; pes:unit "USD/wk" ;
+    pes:rateCategory "Exempt salary level (EAP)" ; pes:effectiveDate "2020-01-01"^^xsd:date ;
+    pes:statusNote "Restored as the governing level by DOL rule effective 2026-05-15."@en ;
+    pes:lastVerified "2026-09-30"^^xsd:date ;
+    pes:verifiedAgainst "https://ogletree.com/insights-resources/blog-posts/trump-administration-rescinds-2024-dol-white-collar-overtime-expansion/"^^xsd:anyURI .
+esd:Rate_IL_Min a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Illinois minimum wage"@en ; pes:amount "15.00"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:effectiveDate "2025-01-01"^^xsd:date .
+esd:Rate_IL_Tipped a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Illinois tipped minimum wage"@en ; pes:amount "9.00"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Tipped" ; pes:effectiveDate "2025-01-01"^^xsd:date .
+esd:Rate_Cook_Min a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Cook County minimum wage"@en ; pes:amount "15.40"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:effectiveDate "2026-07-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+esd:Rate_Cook_Tipped a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Cook County tipped minimum wage"@en ; pes:amount "9.25"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Tipped" ; pes:effectiveDate "2026-07-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+esd:Rate_CHI_Min a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Chicago minimum wage"@en ; pes:amount "17.05"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:effectiveDate "2026-07-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+esd:Rate_CHI_Tipped a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "Chicago tipped minimum wage"@en ; pes:amount "12.96"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Tipped" ; pes:effectiveDate "2026-07-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://www.govdocs.com/cook-county-minimum-wage-july-2026/"^^xsd:anyURI .
+esd:Rate_CA_Min a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "California minimum wage"@en ; pes:amount "16.90"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:effectiveDate "2026-01-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://www.shrm.org/topics-tools/employment-law-compliance/ca-minimum-wage-will-increase-on-jan-1-2026"^^xsd:anyURI .
+esd:Rate_NY_Downstate a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "New York minimum wage — NYC, Long Island, Westchester"@en ; pes:amount "17.00"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:region "NYC, Long Island, Westchester" ; pes:effectiveDate "2026-01-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://ogletree.com/insights-resources/blog-posts/2026-minimum-wage-increases-in-new-york-key-details-for-employers/"^^xsd:anyURI .
+esd:Rate_NY_Upstate a owl:NamedIndividual , pes:WageRate ;
+    rdfs:label "New York minimum wage — rest of state"@en ; pes:amount "16.00"^^xsd:decimal ; pes:unit "USD/h" ;
+    pes:rateCategory "Standard" ; pes:region "Rest of state" ; pes:effectiveDate "2026-01-01"^^xsd:date ;
+    pes:lastVerified "2026-09-30"^^xsd:date ; pes:verifiedAgainst "https://ogletree.com/insights-resources/blog-posts/2026-minimum-wage-increases-in-new-york-key-details-for-employers/"^^xsd:anyURI .
+
+#################################################################
+#  Requirements (deontic norms)
+#################################################################
+esd:Req_PayMinimumWage a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Pay at least the applicable minimum wage"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:MinimumWage ;
+    pes:establishedBy esd:FLSA , esd:IL_MWL , esd:COOK_MWO , esd:CHI_MWO , esd:TX_MWA , esd:CA_MinWage , esd:NY_MinWage ;
+    skos:note "Where several rates apply, the highest governs."@en .
+esd:Req_PayOvertime a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Pay overtime to non-exempt workers"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:Overtime ; pes:establishedBy esd:FLSA , esd:IL_MWL .
+esd:Req_ProvidePaidLeave a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Provide accrued paid sick or any-purpose leave"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:PaidSickLeave ;
+    pes:establishedBy esd:IL_PLAWA , esd:COOK_PLO , esd:CHI_PLO , esd:CA_PSL , esd:NY_PSL , esd:NYC_ESSTA .
+esd:Req_ProvidePrenatalLeave a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Provide paid prenatal leave"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:PrenatalLeave ; pes:establishedBy esd:NY_PrenatalLeave , esd:NYC_ESSTA .
+esd:Req_FamilyMedicalLeave a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Grant job-protected family and medical leave"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:FamilyMedicalLeave ; pes:establishedBy esd:FMLA , esd:CFRA .
+esd:Req_NoDiscrimination a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Do not discriminate on a protected characteristic"@en ; pes:deonticModality pes:Prohibition ;
+    pes:coversTopic topic:AntiDiscrimination ;
+    pes:establishedBy esd:TitleVII , esd:ADA , esd:ADEA , esd:IHRA , esd:TCHRA , esd:FEHA , esd:NYSHRL .
+esd:Req_Accommodate a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Provide reasonable accommodation"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:Accommodation ; pes:establishedBy esd:ADA , esd:PWFA , esd:FEHA .
+esd:Req_EqualPay a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Do not pay unequally by sex for equal work"@en ; pes:deonticModality pes:Prohibition ;
+    pes:coversTopic topic:PayTransparency ; pes:establishedBy esd:EPA .
+esd:Req_PostPayRange a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Post the pay range in job advertisements"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:PayTransparency ;
+    pes:establishedBy esd:IL_EPA_Transparency , esd:CA_PayTransparency , esd:NYC_PayTransparency .
+esd:Req_NoticeOfAIUse a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Notify candidates and employees when AI is used in employment decisions"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:AIInEmployment ; pes:establishedBy esd:IL_AI_HB3773 , esd:NYC_LL144 .
+esd:Req_BiasAudit a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Obtain an annual independent bias audit of automated hiring tools"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:AIInEmployment ; pes:establishedBy esd:NYC_LL144 .
+esd:Req_NoDiscriminatoryAI a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Do not use AI that has a discriminatory effect"@en ; pes:deonticModality pes:Prohibition ;
+    pes:coversTopic topic:AIInEmployment , topic:AntiDiscrimination ; pes:establishedBy esd:IL_AI_HB3773 .
+esd:Req_BiometricConsent a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Obtain written consent before collecting biometrics"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:BiometricPrivacy ; pes:establishedBy esd:BIPA .
+esd:Req_VerifyEligibility a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Verify identity and work authorization on Form I-9"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:WorkforceEligibility ; pes:establishedBy esd:IRCA .
+esd:Req_WithholdTaxes a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Withhold, deposit and report employment taxes"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:PayrollTax ; pes:establishedBy esd:FICA_FUTA , esd:CPEO .
+esd:Req_OfferCoverage a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Offer affordable health coverage to full-time employees or pay the assessment"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:HealthCoverage ; pes:establishedBy esd:ACA_4980H .
+esd:Req_OfferCOBRA a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Offer continuation coverage after qualifying events"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:ContinuationCoverage ; pes:establishedBy esd:COBRA .
+esd:Req_SafeWorkplace a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Keep the workplace free of recognized serious hazards"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:WorkplaceSafety ; pes:establishedBy esd:OSHAct .
+esd:Req_LayoffNotice a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Give 60 days' notice of a plant closing or mass layoff"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:WorkforceChanges ; pes:establishedBy esd:WARN .
+esd:Req_AdvanceSchedule a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Post work schedules in advance and pay change premiums"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:Scheduling ; pes:establishedBy esd:CHI_FWW .
+esd:Req_TimelyPay a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Pay wages on regular paydays and on time at separation"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:WagePayment ; pes:establishedBy esd:TX_Payday .
+esd:Req_PEOLicense a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Hold a state PEO license before providing services"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:PEOLicensing ; pes:establishedBy esd:TX_PEOAct .
+esd:Req_NoRetaliationConcerted a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Do not interfere with protected concerted activity"@en ; pes:deonticModality pes:Prohibition ;
+    pes:coversTopic topic:LaborRelations ; pes:establishedBy esd:NLRA .
+esd:Req_ReemployService a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Reemploy returning service members"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:MilitaryLeave ; pes:establishedBy esd:USERRA .
+esd:Req_PlanFiduciary a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Administer benefit plans as a fiduciary and file plan reports"@en ; pes:deonticModality pes:Obligation ;
+    pes:coversTopic topic:RetirementPlans ; pes:establishedBy esd:ERISA .
+esd:Req_NoLocalLaborRule a owl:NamedIndividual , pes:Requirement ;
+    rdfs:label "Local governments may not regulate employment in fields the state occupies"@en ; pes:deonticModality pes:Prohibition ;
+    pes:coversTopic topic:LocalAuthority ; pes:establishedBy esd:TX_HB2127 , esd:TX_MWA ;
+    skos:note "Addressed to local governments rather than employers; included so preemption is queryable."@en .

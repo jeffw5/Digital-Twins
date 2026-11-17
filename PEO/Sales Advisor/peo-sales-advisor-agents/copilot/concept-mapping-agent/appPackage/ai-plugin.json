@@ -1,0 +1,161 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelag12",
+  "functions": [
+    {
+      "name": "content_get",
+      "description": "Get a governed content item or claim by URI, with version, labels, validity and source spans."
+    },
+    {
+      "name": "ssot_search_rules",
+      "description": "Search Released SSOT rules by text, domain or jurisdiction."
+    },
+    {
+      "name": "graph_query",
+      "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT)."
+    },
+    {
+      "name": "run_concept_mapping_agent",
+      "description": "Ask the hosted Concept Mapping Agent (AG-12) to do its job: Which concept a claim or field maps to. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/AG-12",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "content_get",
+              "title": "Content get",
+              "description": "Get a governed content item or claim by URI, with version, labels, validity and source spans.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "uri": {
+                    "type": "string",
+                    "description": "Canonical URI"
+                  }
+                },
+                "required": [
+                  "uri"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "ssot_search_rules",
+              "title": "Ssot search rules",
+              "description": "Search Released SSOT rules by text, domain or jurisdiction.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "description": "Search text"
+                  },
+                  "domain": {
+                    "type": "string",
+                    "description": "Register domain filter"
+                  },
+                  "jurisdiction": {
+                    "type": "string",
+                    "description": "Jurisdiction filter, e.g. US-CA"
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "graph_query",
+              "title": "Graph query",
+              "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT).",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "context_bundle_id": {
+                    "type": "string",
+                    "description": "RCB ID from the Intent & RCB Agent"
+                  },
+                  "template_id": {
+                    "type": "string",
+                    "description": "Approved query template ID"
+                  },
+                  "params": {
+                    "type": "object",
+                    "description": "Template parameters"
+                  }
+                },
+                "required": [
+                  "context_bundle_id",
+                  "template_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "run_concept_mapping_agent",
+              "title": "Run Concept Mapping Agent",
+              "description": "Ask the hosted Concept Mapping Agent (AG-12) to do its job: Which concept a claim or field maps to. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "string",
+                    "description": "What you want the agent to do, in plain words"
+                  },
+                  "context": {
+                    "type": "object",
+                    "description": "Optional context: persona, job step, prospect URI, period"
+                  }
+                },
+                "required": [
+                  "request"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "content_get",
+        "ssot_search_rules",
+        "graph_query",
+        "run_concept_mapping_agent"
+      ]
+    }
+  ]
+}

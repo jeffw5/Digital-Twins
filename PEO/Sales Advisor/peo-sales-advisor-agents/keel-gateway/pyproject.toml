@@ -1,0 +1,16 @@
+[project]
+name = "keel-gateway"
+version = "1.0.0"
+description = "Keel Gateway: governed MCP server for the PEO Sales Advisor"
+requires-python = ">=3.11"
+dependencies = ["mcp>=2.2,<3", "starlette>=0.40", "uvicorn>=0.30", "anyio>=4"]
+
+[project.scripts]
+keel-gateway = "keel_gateway.server:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["keel_gateway"]

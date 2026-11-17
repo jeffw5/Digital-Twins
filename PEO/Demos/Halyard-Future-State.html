@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Halyard Future State</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one vessel cross-section as the map of the platform. Header tabs switch pages; every cell is clickable;
+   details open in a docked panel at right so the imagery never moves. Accelerator Console design system (from the Keel and North Star demos). */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --surface-2:#F5F8FB; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-soft:#DCE9F9; --accent-ink:#FFFFFF;
+  --ok:#1BAF7A; --ok-soft:#D9F3E8; --crit:#E34948; --crit-soft:#FBE1E0; --warn:#C98500; --warn-soft:#F8ECD0;
+  --sky:#16202B; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#C9A227;
+  --sea:#DCE7F0; --sea-line:#7C93A8;
+  --hull:#E3EAF3; --keel:#1C2A3A; --keel-ink:#EAF0F6; --keel-card:#273A50; --keel-line:#3B5370;
+  --ballast:#F3EAD0; --ballast-line:#C9A227; --sail:#FBFCFD; --sail-line:#9AABBC;
+  --s1:#1F7FA8; --s2:#C0620F; --s3:#6A4FC4; --s4:#B0457A; --s5:#2E8B57; --s6:#2A78D6; --s7:#C2413B;
+  --f-display:'Big Shoulders Display','Arial Narrow',sans-serif;
+  --f-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  --shadow:0 10px 30px rgba(22,32,43,.14);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --surface-2:#1B2531; --line:#2A3644; --line-soft:#1A2430;
+  --accent:#5B9CE6; --accent-soft:#16304D; --accent-ink:#0B1116;
+  --ok:#2FC98D; --ok-soft:#123326; --crit:#E97675; --crit-soft:#3A1A1A; --warn:#E3A93B; --warn-soft:#3A2D12;
+  --sky:#070B10; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#E3BE47; --sea:#12202D; --sea-line:#4E6A85;
+  --hull:#1D2A38; --keel:#0A1119; --keel-ink:#EAF0F6; --keel-card:#16212D; --keel-line:#2E4560;
+  --ballast:#2A2412; --ballast-line:#B8952A; --sail:#E6ECF2; --sail-line:#6F8397;
+  --s1:#5EBBE0; --s2:#F0A15A; --s3:#A893F0; --s4:#E486B4; --s5:#6CCB94; --s6:#7FB2F0; --s7:#F08A84;
+  --shadow:0 12px 34px rgba(0,0,0,.5); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --surface-2:#1B2531; --line:#2A3644; --line-soft:#1A2430;
+  --accent:#5B9CE6; --accent-soft:#16304D; --accent-ink:#0B1116;
+  --ok:#2FC98D; --ok-soft:#123326; --crit:#E97675; --crit-soft:#3A1A1A; --warn:#E3A93B; --warn-soft:#3A2D12;
+  --sky:#070B10; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#E3BE47; --sea:#12202D; --sea-line:#4E6A85;
+  --hull:#1D2A38; --keel:#0A1119; --keel-ink:#EAF0F6; --keel-card:#16212D; --keel-line:#2E4560;
+  --ballast:#2A2412; --ballast-line:#B8952A; --sail:#E6ECF2; --sail-line:#6F8397;
+  --s1:#5EBBE0; --s2:#F0A15A; --s3:#A893F0; --s4:#E486B4; --s5:#6CCB94; --s6:#7FB2F0; --s7:#F08A84;
+  --shadow:0 12px 34px rgba(0,0,0,.5); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+button,select{font:inherit;color:inherit}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance;line-height:1.05}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--f-mono)}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.note{font-size:12.5px;color:var(--muted)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1480px;margin:0 auto;padding-inline:20px;padding-block:10px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.brand{display:flex;gap:10px;align-items:center;min-width:0}
+.brand b{font-family:var(--f-display);font-size:24px;font-weight:800;letter-spacing:.02em;line-height:1;display:block}
+.brand span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:2px;flex:1;min-width:0}
+.tab{all:unset;cursor:pointer;padding:7px 11px;border-radius:6px;font-weight:500;font-size:14px;color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-current="page"]{color:var(--ink);background:var(--accent-soft)}
+.tab:focus-visible{outline:2px solid var(--accent)}
+.tools{display:flex;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface)}
+.seg button{all:unset;cursor:pointer;padding:6px 11px;font-size:13px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.theme-btn{display:inline-grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);background:var(--ink);color:var(--paper);border-radius:50%;padding:0;cursor:pointer}
+.theme-btn svg{width:17px;height:17px}
+
+/* layout: page + docked panel */
+.layout{max-width:1480px;margin:0 auto;padding-inline:20px;padding-block:20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:22px;align-items:start}
+.page{min-width:0}
+.dock{position:sticky;top:calc(env(safe-area-inset-top,0px) + 74px);max-height:calc(100vh - 92px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.dock-head{position:sticky;top:0;background:var(--surface);display:flex;justify-content:space-between;gap:10px;align-items:start;padding:14px 18px 10px;border-bottom:1px solid var(--line);z-index:1}
+.dock-head h2{font-size:26px;margin-top:3px}
+.dock-body{padding:14px 18px 22px;display:grid;gap:14px}
+.dock-body h4{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2px 0 6px}
+.dock-body p{font-size:14.5px}
+.dock-body ul{margin:0;padding-left:18px;font-size:14px}
+.dock-body li{margin-bottom:4px}
+.x{all:unset;cursor:pointer;font-size:13px;border:1px solid var(--line);border-radius:6px;padding:4px 9px;color:var(--muted)}
+.x:hover{color:var(--ink)} .x:focus-visible{outline:2px solid var(--accent)}
+.lead{font-size:15.5px}
+.tech{border-top:1px dashed var(--line);padding-top:12px;display:grid;gap:10px}
+.tech>.eyebrow{color:var(--accent)}
+
+/* page heads */
+.ph{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:end;margin-bottom:16px}
+.ph h1{font-size:clamp(34px,4.2vw,52px);font-weight:800}
+.ph p{color:var(--muted);max-width:70ch;margin-top:8px}
+.sec{margin-top:28px}
+.sec>h2{font-size:28px;margin-bottom:4px}
+.sec>p{color:var(--muted);max-width:70ch;margin-bottom:12px}
+
+/* clickable cells */
+.cell{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:4px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 13px;min-width:0;transition:border-color .12s,box-shadow .12s}
+.cell:hover{border-color:var(--accent)}
+.cell:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.cell.is-sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.cell b{font-weight:600;font-size:14.5px;line-height:1.3}
+.cell span{font-size:13px;color:var(--muted)}
+.cell .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))} .gauto{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.chip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--surface);color:var(--ink);max-width:100%}
+.chip:hover{border-color:var(--accent)} .chip:focus-visible{outline:2px solid var(--accent)}
+.chip.is-sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.pill{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:10.5px;padding:2px 7px;border-radius:4px;letter-spacing:.04em;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.crit{background:var(--crit-soft);color:var(--crit)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.n{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.ms{font-family:var(--f-mono);font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);white-space:nowrap}
+.L-Keel{background:var(--keel);color:var(--keel-ink);border-color:var(--keel)} .L-Hull{background:var(--hull);color:var(--ink)} .L-Adapter{background:var(--warn-soft);color:var(--ink)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+
+/* vessel */
+.vessel{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vessel svg{display:block;width:100%;height:auto}
+.vh{cursor:pointer}
+.vh:focus{outline:none}
+.vh .hl{fill:none;stroke:transparent;stroke-width:3}
+.vh:hover .hl,.vh:focus-visible .hl{stroke:var(--accent)}
+.vh.is-sel .hl{stroke:var(--accent);stroke-width:4}
+.vt{font-family:var(--f-body);font-size:13px;fill:var(--ink);pointer-events:none}
+.vt-b{font-family:var(--f-display);font-size:19px;font-weight:700;fill:var(--ink);pointer-events:none;letter-spacing:.02em}
+.vt-m{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted);letter-spacing:.1em;pointer-events:none}
+.on-sky{fill:var(--sky-ink)} .on-sky-m{fill:var(--sky-mute)} .on-keel{fill:var(--keel-ink)}
+.sail-band{fill:var(--sail);stroke:var(--sail-line);stroke-width:1}
+.vh:hover .sail-band{fill:var(--accent-soft)} .vh.is-sel .sail-band{fill:var(--accent-soft)}
+.keel-row{fill:var(--keel-card);stroke:var(--keel-line);stroke-width:1}
+.vh:hover .keel-row,.vh.is-sel .keel-row{fill:var(--keel-line)}
+.hull-cell{fill:var(--surface);stroke:var(--line)}
+.vh:hover .hull-cell,.vh.is-sel .hull-cell{fill:var(--accent-soft)}
+.sea-tile{fill:var(--surface);stroke:var(--line)}
+.vh:hover .sea-tile,.vh.is-sel .sea-tile{fill:var(--accent-soft)}
+.port{fill:var(--surface-2);stroke:var(--sea-line);stroke-dasharray:4 3}
+.vh:hover .port,.vh.is-sel .port{fill:var(--warn-soft)}
+.halyard{stroke:var(--accent);stroke-width:4;fill:none;stroke-linecap:round}
+.vh.is-sel .halyard,.vh:hover .halyard{stroke-width:6}
+.hit{stroke:transparent;stroke-width:22;fill:none}
+.vlegend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+
+/* seven seas rose */
+.rose{width:100%;height:auto;display:block}
+.rw path{fill-opacity:.22;stroke:var(--paper);stroke-width:3;transition:fill-opacity .15s}
+.rw:hover path{fill-opacity:.4} .rw.is-sel path{fill-opacity:.7}
+.rw{cursor:pointer} .rw:focus{outline:none} .rw:focus-visible path{stroke:var(--ink)}
+.rl{font-family:var(--f-display);font-size:17px;font-weight:700;fill:var(--ink);pointer-events:none;letter-spacing:.02em}
+.rn{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted);pointer-events:none}
+.seas-top{display:grid;grid-template-columns:minmax(240px,420px) minmax(0,1fr);gap:20px;align-items:center}
+
+/* matrices */
+.mx td,.mx th{vertical-align:top}
+.mx td{min-width:150px}
+.mx .rowh{all:unset;cursor:pointer;display:flex;gap:8px;align-items:center;font-family:var(--f-display);font-size:19px;font-weight:700}
+.mx .rowh:hover{color:var(--accent)} .mx .rowh:focus-visible{outline:2px solid var(--accent)}
+.mx .rowh.is-sel{color:var(--accent)}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;display:block;border:1px solid var(--line);border-radius:6px;padding:6px 9px;margin-bottom:6px;background:var(--surface);font-size:13px;font-weight:500;line-height:1.3}
+.tile:hover{border-color:var(--accent)} .tile:focus-visible{outline:2px solid var(--accent)} .tile.is-sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.tile.dim{opacity:.35}
+.tile small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.heat{border-collapse:separate;border-spacing:2px;width:auto}
+.heat th,.heat td{padding:0;border:0;background:transparent}
+.heat th.c{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;padding:4px 0;height:56px}
+.heat th.r{font-family:var(--f-body);font-size:12.5px;text-transform:none;letter-spacing:0;color:var(--ink);text-align:right;padding-right:8px;white-space:nowrap;font-weight:500}
+.hc{all:unset;cursor:pointer;display:block;width:22px;height:22px;border-radius:4px;background:var(--surface-2);border:1px solid var(--line-soft)}
+.hc.on{background:var(--accent);border-color:var(--accent)}
+.hc.on.L-Keel{background:var(--keel);border-color:var(--keel)}
+.hc.on.L-Adapter{background:var(--warn);border-color:var(--warn)}
+.hc:hover{outline:2px solid var(--accent)} .hc.is-sel{outline:3px solid var(--ink)}
+.hb{all:unset;cursor:pointer} .hb:hover{color:var(--accent)} .hb:focus-visible{outline:2px solid var(--accent)}
+.cross td{text-align:center;min-width:120px}
+.xc{all:unset;cursor:pointer;display:grid;gap:3px;justify-items:center;padding:10px 8px;border-radius:8px;width:100%;box-sizing:border-box;border:1px solid var(--line)}
+.xc.allow{background:var(--ok-soft)} .xc.block{background:var(--crit-soft)}
+.xc:hover{outline:2px solid var(--accent)} .xc.is-sel{outline:3px solid var(--ink)}
+.xc b{font-family:var(--f-display);font-size:18px}
+.xc.allow b{color:var(--ok)} .xc.block b{color:var(--crit)}
+.zones{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.9fr) minmax(0,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.zone{padding:16px;display:grid;gap:8px;align-content:start}
+.zone h3{font-size:22px}
+.zone.own{background:var(--keel);color:var(--keel-ink)} .zone.own .eyebrow{color:var(--keel-ink);opacity:.75}
+.zone.own .cell{background:var(--keel-card);border-color:var(--keel-line);color:var(--keel-ink)} .zone.own .cell span{color:var(--keel-ink);opacity:.75}
+.zone.cross{background:var(--accent-soft);border-left:2px dashed var(--accent);border-right:2px dashed var(--accent)}
+.zone.vend{background:var(--surface)}
+
+/* agents */
+.agent-cell b{font-family:var(--f-display);font-size:21px;font-weight:700}
+.try{display:grid;gap:10px}
+.field{display:grid;gap:3px}
+.field label{font-size:12px;font-weight:600;color:var(--muted)}
+select{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;max-width:100%}
+.result{border:1px solid var(--accent);background:var(--accent-soft);border-radius:8px;padding:11px 13px;display:grid;gap:7px}
+.result b{font-size:15px}
+.calls{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.arrow{color:var(--muted);font-size:12px}
+.score{font-family:var(--f-display);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.dt td{font-size:12px} .dt tr.sel td{background:var(--accent-soft)}
+
+/* roadmap */
+.road th.p{font-family:var(--f-display);font-size:20px;text-transform:none;letter-spacing:.01em;color:var(--ink)}
+.road th.p small{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.road td{min-width:200px}
+.road .wsh{font-family:var(--f-display);font-size:18px;font-weight:700;white-space:nowrap}
+.rc{all:unset;box-sizing:border-box;cursor:pointer;display:block;font-size:13.5px;line-height:1.4;padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);width:100%}
+.rc:hover{border-color:var(--accent)} .rc.is-sel{box-shadow:0 0 0 2px var(--accent) inset;border-color:var(--accent)} .rc:focus-visible{outline:2px solid var(--accent)}
+.reuse{display:flex;gap:10px;align-items:baseline}
+.reuse b{font-family:var(--f-display);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+
+.thesis b{font-family:var(--f-display);font-size:22px;font-weight:700}
+
+
+/* capabilities */
+.caprows{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.caprow{display:grid;grid-template-columns:170px minmax(0,1fr);gap:14px;padding:14px 16px;border-top:1px solid var(--line);align-items:start;background:var(--surface)}
+.caprow:first-child{border-top:0;background:var(--surface-2)}
+.caprow:last-child{background:var(--keel);color:var(--keel-ink)}
+.caprow:last-child .cell{background:var(--keel-card);border-color:var(--keel-line);color:var(--keel-ink)} .caprow:last-child .cell span{color:var(--keel-ink);opacity:.75}
+.caplab b{font-family:var(--f-display);font-size:22px;display:block}
+.caplab span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.flow,.loop{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .cell,.loop .cell{flex:1 1 180px}
+.farrow{align-self:center;color:var(--muted);font-size:20px}
+.flow-under{margin-top:8px;max-width:520px}
+.tiers3{display:grid;gap:6px}
+.tiers3 .t-top{border-left:5px solid var(--accent)} .tiers3 .t-mid{border-left:5px solid var(--star)} .tiers3 .t-bot{border-left:5px solid var(--sea-line)}
+.mstack{display:grid;gap:6px;max-width:760px}
+.mstack .m-found{background:var(--keel);color:var(--keel-ink);border-color:var(--keel)} .mstack .m-found span{color:var(--keel-ink);opacity:.75}
+@media (max-width:760px){.caprow{grid-template-columns:minmax(0,1fr)} .farrow{display:none}}
+
+@media (max-width:1180px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .dock{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:62vh;border-radius:14px 14px 0 0;z-index:40;padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(105%);transition:transform .2s}
+  .dock.open{transform:none}
+  .seas-top{grid-template-columns:minmax(0,1fr)}
+  .zones{grid-template-columns:minmax(0,1fr)} .zone.cross{border:0;border-top:2px dashed var(--accent);border-bottom:2px dashed var(--accent)}
+}
+@media (max-width:760px){.g3,.g4{grid-template-columns:minmax(0,1fr)} .tools .seg button{padding:6px 8px} .top-in{gap:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="var(--ink)" stroke-width="1.4"/><path d="M17 4 L20.5 17 L17 30 L13.5 17 Z" fill="var(--accent)"/><path d="M17 4 L20.5 17 L13.5 17 Z" fill="var(--ink)"/><circle cx="17" cy="17" r="1.8" fill="var(--surface)"/></svg>
+    <div><b>Halyard</b><span>Future State</span></div></div>
+  <nav class="tabs" aria-label="Pages" id="tabs"></nav>
+  <div class="tools"><div class="seg" role="group" aria-label="Audience" id="aud"></div>
+    <button class="theme-btn" id="themebtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7Z" fill="currentColor"/></svg></button></div>
+</div></header>
+<div class="layout"><main class="page" id="page"></main><aside class="dock" id="dock" aria-live="polite" aria-label="Details"></aside></div>
+<script>
+"use strict";
+const FS_MS=[
+ {id:"VOC",name:"Vocabulary and concepts",layer:"Keel",what:"Resolves the words people use to governed concepts, with preferred and alternate labels.",std:"SKOS · ISO 704, 1087, 25964"},
+ {id:"ONT",name:"Ontology registry",layer:"Keel",what:"Holds the HR services, employment standards and assembly ontologies and their versions.",std:"OWL 2 · ISO/IEC 21838, 19763"},
+ {id:"RUL",name:"Rules register and policy compiler",layer:"Keel",what:"Authors each rule once and compiles it to the engine that runs it: policy engine, analytics, or Workday business-process conditions.",std:"LKIF · SHACL"},
+ {id:"DEC",name:"Decision models",layer:"Keel",what:"Registers every agent's decision table, weighted criteria and decision records, with an owner and version.",std:"DMN-style decision tables"},
+ {id:"REQ",name:"Requirements and traceability",layer:"Keel",what:"States what each feature and passage must do, in EARS form, traced to its source.",std:"EARS · RDSG"},
+ {id:"CMP",name:"Components and assembly",layer:"Keel",what:"Stores content components and assembles them per person, client or channel.",std:"ISO/IEC 11179 metadata"},
+ {id:"VAL",name:"Values, indicators and safeguards",layer:"Keel",what:"The Compass order, principles, registered indicators and privacy safeguards.",std:"ISO 30414 · ISO/IEC 27701"},
+ {id:"STD",name:"Standards and applicability",layer:"Keel",what:"Laws, requirements and jurisdictions; decides what applies by location and headcount.",std:"PEO Employment Standards ontology"},
+ {id:"IDN",name:"Identity and URI registry",layer:"Keel",what:"One enterprise ID per employee, client and worksite, so systems join on meaning.",std:"Persistent URIs"},
+ {id:"GRD",name:"Grounding and anchor index",layer:"Hull",what:"Every phrase and citation must resolve to a canonical URI or a dated source before an answer is shown.",std:"RAG on canonical URIs"},
+ {id:"RQD",name:"Request decomposition",layer:"Hull",what:"Breaks a request into who, what, when, where and why before anything runs.",std:"—"},
+ {id:"PEP",name:"Policy enforcement",layer:"Hull",what:"Applies role, tenant, jurisdiction and privacy rules (k ≥ 5) to every result and action.",std:"Policy-as-code"},
+ {id:"CB",name:"AI Circuit Breaker and MTBH",layer:"Hull",what:"Checks ambiguity, policy, privacy, values and grounding; trips before anything is published; tracks mean time between hallucinations.",std:"ISO/IEC 42001"},
+ {id:"PRV",name:"Provenance and audit",layer:"Hull",what:"Records who, what, when, where and why for every change, answer and boundary crossing.",std:"W3C PROV-O · KGCL"},
+ {id:"NTF",name:"Notifications and task inbox",layer:"Hull",what:"One task list across Workday, I2 University, acknowledgments and requests.",std:"—"},
+ {id:"EVT",name:"Events and drift sentinel",layer:"Hull",what:"Watches source schemas, vendor releases and law changes; classifies each change.",std:"Semantic versioning"},
+ {id:"AWD",name:"Workday and HRScale adapter",layer:"Adapter",what:"Reads records and starts Workday business processes through scoped APIs and deep links.",std:"Workday APIs"},
+ {id:"AMS",name:"Microsoft 365 and Copilot connector",layer:"Adapter",what:"Lets Copilot and Teams ask Compass for grounded answers without receiving the keel.",std:"Connector / API"},
+ {id:"ALM",name:"I2 University adapter",layer:"Adapter",what:"Course catalog, assignments, completions and certificates.",std:"LMS APIs"},
+ {id:"LLM",name:"Model gateway",layer:"Adapter",what:"Routes each AI call to an approved model with minimal context; models are swappable.",std:"Model-agnostic"},
+ {id:"AID",name:"Ideas and speak-up adapters",layer:"Adapter",what:"Connects the idea program, speak-up line and case system.",std:"—"}
+];
+const FS_M=Object.fromEntries(FS_MS.map(m=>[m.id,m]));
+const FS_AGENTS=[
+ {id:"CON",name:"Concierge",role:"Routes every question or request from the Seven Seas home to the right answer, task or person.",
+  inputs:[{id:"conf",label:"Intent confidence",opts:["High (0.8 or more)","Medium (0.5 to 0.8)","Low (under 0.5)"]},{id:"sens",label:"Sensitivity",opts:["Not sensitive","Sensitive topic"]},{id:"act",label:"Kind of need",opts:["Information","Action in a system"]}],
+  def:{conf:0,sens:0,act:1},
+  rules:[{when:{sens:[1]},out:"Hand to the Concerns agent and show the path to a person first",calls:["RQD","VOC","PEP"],gate:"A person handles it"},
+   {when:{conf:[2]},out:"Offer the HR service center and log the question as a gap for the keel",calls:["RQD","NTF","REQ"],gate:"Service center"},
+   {when:{conf:[1]},out:"Show the top three matches and ask one clarifying question",calls:["VOC","GRD","PEP"],gate:"None"},
+   {when:{act:[1]},out:"Deep-link to the exact Workday task, prefilled",calls:["VOC","IDN","PEP","AWD","PRV"],gate:"Employee completes it in Workday"},
+   {out:"Answer with citations after the Circuit Breaker checks it",calls:["VOC","GRD","PEP","LLM","CB","PRV"],gate:"Breaker must be closed"}]},
+ {id:"EXP",name:"Expense assistant",role:"Turns a receipt or a trip into a draft Workday expense report that follows policy.",
+  inputs:[{id:"cat",label:"Category",opts:["Flight","Lodging","Meals","Home office internet","Other"]},{id:"amt",label:"Amount",opts:["Under $75","$75 to $500","Over $500"]},{id:"rc",label:"Receipt",opts:["Attached","Missing"]},{id:"pol",label:"Policy",opts:["Within policy","Exception requested"]}],
+  def:{cat:0,amt:1,rc:0,pol:0},
+  rules:[{when:{rc:[1],amt:[1,2]},out:"Ask for the receipt before drafting",calls:["RUL","DEC"],gate:"Nothing drafted yet"},
+   {when:{pol:[1]},out:"Draft in Workday with the exception reason; the Circuit Breaker checks the justification",calls:["RUL","DEC","CB","AWD","PRV"],gate:"Manager approves"},
+   {when:{amt:[2]},out:"Draft in Workday and route to the manager and Finance",calls:["RUL","DEC","AWD","PRV"],gate:"Two approvals"},
+   {when:{cat:[0]},out:"Draft in Workday and show the trip's carbon estimate with a video option for next time (Planet first)",calls:["RUL","DEC","VAL","AWD","PRV"],gate:"Employee confirms submit"},
+   {out:"Draft the report in Workday for the employee to review",calls:["RUL","DEC","AWD","PRV"],gate:"Employee confirms submit"}]},
+ {id:"BEN",name:"Benefits and insurance navigator",role:"Explains coverage, windows and life events, then starts the right Workday benefit event.",
+  inputs:[{id:"ev",label:"Life event",opts:["None","Marriage","Birth or adoption","Loss of other coverage","Move to a new state"]},{id:"days",label:"Since the event",opts:["30 days or less","More than 30 days"]},{id:"oe",label:"Open enrollment",opts:["Open","Closed"]}],
+  def:{ev:2,days:0,oe:1},
+  rules:[{when:{oe:[0]},out:"Compare plans with the decision guide, then start elections in Workday",calls:["VOC","GRD","AWD","NTF"],gate:"Employee elects"},
+   {when:{ev:[4],days:[0]},out:"Start the life event in Workday and re-run applicability for the new state",calls:["STD","AWD","NTF","PEP"],gate:"Benefits verifies"},
+   {when:{ev:[1,2,3],days:[0]},out:"Start the life event in Workday with a document checklist",calls:["VOC","AWD","NTF"],gate:"Benefits verifies"},
+   {when:{ev:[1,2,3,4],days:[1]},out:"Explain the 30-day rule and route an exception request to Benefits",calls:["GRD","AID","NTF"],gate:"Benefits decides"},
+   {out:"Show current coverage and costs; changes wait for open enrollment",calls:["AWD","GRD","PEP"],gate:"None"}]},
+ {id:"CMPL",name:"Compliance planner",role:"Assigns required training by role, state and headcount, and plans the time to finish it.",
+  inputs:[{id:"role",label:"Role",opts:["Employee","Manager"]},{id:"st",label:"Work state",opts:["California","Illinois","New York","Texas"]},{id:"due",label:"Due",opts:["More than 30 days","30 days or less","Overdue"]}],
+  def:{role:1,st:0,due:1},
+  rules:[{when:{due:[2]},out:"Notify the employee and manager and hold a 1-hour block this week",calls:["NTF","ALM","PEP"],gate:"Manager acknowledges"},
+   {when:{role:[1],st:[0]},out:"Assign the 2-hour California supervisor course and plan time before the due date",calls:["STD","ALM","NTF","CMP"],gate:"None"},
+   {when:{due:[1]},out:"Nudge with a time-boxed plan and a calendar hold",calls:["ALM","NTF","AMS"],gate:"None"},
+   {out:"Add to the task inbox with the due date and the law behind it",calls:["STD","NTF","CMP"],gate:"None"}]},
+ {id:"CAR",name:"Career navigator",role:"Builds an I2 University path from goals, skills gaps and available time.",
+  inputs:[{id:"goal",label:"Goal",opts:["Grow in my role","Move to a new role","Lead people"]},{id:"gap",label:"Skills gap",opts:["Small","Large"]},{id:"time",label:"Time available",opts:["2 hours a week or less","More than 2 hours a week"]}],
+  def:{goal:1,gap:1,time:0},
+  rules:[{when:{goal:[2]},out:"Leadership path plus a coaching match; coaching notes stay with the employee",calls:["DEC","ALM","VAL","PEP"],gate:"Employee chooses"},
+   {when:{goal:[1],gap:[1]},out:"Two-quarter path with a mentor, and open roles that fit",calls:["DEC","ALM","AWD","PEP"],gate:"Employee chooses"},
+   {when:{gap:[1],time:[0]},out:"Micro-learning path, with required compliance courses first",calls:["DEC","ALM","STD"],gate:"None"},
+   {out:"Three courses ranked by relevance and time fit",calls:["DEC","ALM"],gate:"None"}]},
+ {id:"IDE",name:"Ideas triage",role:"Scores ideas with the weighted decision model and the Compass gate, then routes them to an owner.",
+  inputs:[{id:"o",label:"Outcome (35%)",opts:["High","Medium","Low"]},{id:"r",label:"Risk (25%)",opts:["Low","Medium","High"]},{id:"t",label:"Time to value (20%)",opts:["Weeks","A quarter","A year or more"]},{id:"b",label:"Build or buy (20%)",opts:["Reuses existing services","Buy","Build new"]},{id:"v",label:"Compass check",opts:["Passes","Conflicts with Planet or People"]}],
+  def:{o:0,r:1,t:1,b:0,v:0},
+  score:x=>Math.round(.35*[100,60,20][x.o]+.25*[100,60,20][x.r]+.20*[100,60,20][x.t]+.20*[100,60,30][x.b]),
+  rules:[{when:{v:[1]},out:"Return to the submitter with the Compass reasoning, whatever the score",calls:["VAL","NTF","AID"],gate:"None"},
+   {min:70,out:"Fast-track to the owning service; the submitter joins the build",calls:["DEC","ONT","NTF","AID"],gate:"Service owner accepts"},
+   {min:45,out:"Incubate: community review and a small test",calls:["DEC","NTF","AID"],gate:"Idea council"},
+   {out:"Archive with thanks and specific feedback",calls:["DEC","NTF"],gate:"None"}]},
+ {id:"OMB",name:"Concerns (Ombudsman)",role:"Gets every concern to the right person quickly. It routes; it never investigates or resolves.",
+  inputs:[{id:"tp",label:"Topic",opts:["Question","Policy concern","Harassment or discrimination","Safety","Retaliation"]},{id:"dg",label:"Danger",opts:["No immediate danger","Immediate danger"]},{id:"who",label:"Reporter",opts:["Named","Anonymous"]}],
+  def:{tp:2,dg:0,who:1},
+  rules:[{when:{dg:[1]},out:"Show emergency contacts first and alert Safety now",calls:["NTF","AID"],gate:"A person responds now"},
+   {when:{tp:[2,4]},out:"Open a speak-up case with acknowledgment within 2 business days; anonymous reports keep identity out of every system",calls:["AID","NTF","PEP","PRV"],gate:"Employee Relations"},
+   {when:{tp:[3]},out:"Open a safety report; the employee may stop unsafe work",calls:["AID","NTF","STD"],gate:"Safety team"},
+   {when:{tp:[1]},out:"Route to the policy owner through its requirement and tell the employee what happens next",calls:["REQ","NTF","PRV"],gate:"Policy owner"},
+   {out:"Answer with citations",calls:["VOC","GRD","CB"],gate:"Breaker must be closed"}]},
+ {id:"CUL",name:"Culture steward",role:"Decides whether a culture or values result may be shown, and to whom.",
+  inputs:[{id:"n",label:"Group size",opts:["Fewer than 5","5 or more"]},{id:"pu",label:"Purpose",opts:["Registered","Not registered"]},{id:"use",label:"Use",opts:["Aggregate insight","Individual decision"]}],
+  def:{n:1,pu:0,use:0},
+  rules:[{when:{pu:[1]},out:"Block and route to the Privacy Office for an impact assessment",calls:["VAL","PEP","PRV"],gate:"Privacy Office"},
+   {when:{use:[1]},out:"Block: no employment decision from a culture score; human review with the right to respond",calls:["VAL","PEP"],gate:"Human review"},
+   {when:{n:[0]},out:"Suppress the result for small groups",calls:["PEP","VAL"],gate:"None"},
+   {out:"Publish the aggregate with its definition and method",calls:["VAL","DEC","PRV"],gate:"None"}]},
+ {id:"POL",name:"Policy author",role:"Takes a requirement from draft to published passage through the Circuit Breaker.",
+  inputs:[{id:"src",label:"Source",opts:["Law change","Insperity policy update","Client request"]},{id:"br",label:"Circuit Breaker",opts:["Closed","Half-open","Open"]}],
+  def:{src:2,br:0},
+  rules:[{when:{br:[2]},out:"Return to the author with the findings",calls:["CB","REQ"],gate:"Author fixes"},
+   {when:{br:[1]},out:"Hold for human review",calls:["CB","PRV"],gate:"Editor approves"},
+   {when:{src:[2]},out:"Publish to that client's overlay only; the Insperity core stays unchanged",calls:["CMP","REQ","PEP","PRV"],gate:"Client admin approves"},
+   {when:{src:[0]},out:"Publish to affected profiles and notify employees and client admins",calls:["STD","CMP","NTF","PRV"],gate:"Legal signs off"},
+   {out:"Publish a new version and retire the old one",calls:["CMP","PRV","NTF"],gate:"Policy owner"}]},
+ {id:"DRF",name:"Drift sentinel",role:"Watches sources, vendor releases and laws so numbers and guidance never break silently.",
+  inputs:[{id:"ch",label:"Change",opts:["Source field renamed","New source field","Law status or rate change","Workday release"]},{id:"pv",label:"Privacy impact",opts:["None","Yes"]},{id:"sv",label:"Severity",opts:["Patch","Minor","Major"]}],
+  def:{ch:3,pv:0,sv:1},
+  rules:[{when:{pv:[1]},out:"Privacy hold until the Privacy Office clears it",calls:["EVT","PEP","PRV"],gate:"Privacy Office"},
+   {when:{ch:[2]},out:"Re-run applicability and open Policy author tasks for affected passages",calls:["EVT","STD","CMP","NTF"],gate:"Legal reviews"},
+   {when:{sv:[2]},out:"Stop the pipeline and remap with the owning team",calls:["EVT","ONT","IDN","NTF"],gate:"Owning team"},
+   {when:{ch:[3]},out:"Run the adapter contract tests; the keel is untouched",calls:["EVT","AWD","PRV"],gate:"None if tests pass"},
+   {out:"Auto-remap, log it and notify the owner",calls:["EVT","ONT","PRV","NTF"],gate:"None"}]},
+ {id:"IPG",name:"IP boundary guardian",role:"Checks every call that leaves Insperity's boundary, so vendors get what a task needs and never the keel.",
+  inputs:[{id:"ds",label:"Destination",opts:["Workday / HRScale","Microsoft 365 Copilot","Model provider","Client tenant"]},{id:"py",label:"Payload",opts:["Scoped transaction or record","Compiled answer with citation","Ontology, rules or decision model","Bulk content or index export"]},{id:"tm",label:"Vendor terms",opts:["No-training and no-retention terms in place","Terms not in place"]}],
+  def:{ds:1,py:3,tm:0},
+  rules:[{when:{py:[2]},out:"Block: keep it in the keel and send only the compiled result",calls:["PEP","DEC","PRV"],gate:"None"},
+   {when:{py:[3]},out:"Block: serve answers through Insperity's grounding API instead of exporting content",calls:["GRD","PEP","PRV"],gate:"None"},
+   {when:{tm:[1],ds:[1,2]},out:"Block: route through the model gateway to an approved model",calls:["LLM","PEP","PRV"],gate:"Vendor terms reviewed"},
+   {when:{py:[1]},out:"Allow, with a provenance link that resolves only inside Insperity",calls:["GRD","PEP","PRV"],gate:"None"},
+   {out:"Allow the scoped call and log the crossing",calls:["PEP","PRV"],gate:"None"}]}
+];
+const FS_A=Object.fromEntries(FS_AGENTS.map(a=>[a.id,a]));
+const FS_FEAT=[
+ {id:"F01",name:"Seven Seas home",v:"One front door for career, compliance, collaboration, creativity, culture, current needs and concerns.",sea:"all",ag:["CON"],ms:["VOC","PEP","NTF","AWD","ALM","AMS","IDN"],ph:1,aud:"Employees"},
+ {id:"F02",name:"Compass enterprise search",v:"Search by meaning across the handbook, Workday, I2 University and company assets.",sea:"collaboration",ag:["CON"],ms:["VOC","ONT","GRD","PEP","PRV"],ph:1,aud:"Employees"},
+ {id:"F03",name:"Living Handbook",v:"Policies assembled per person, traced to requirements and law.",sea:"compliance",ag:["POL","DRF"],ms:["CMP","REQ","VOC","STD","CB","PRV","PEP","EVT"],ph:1,aud:"Employees"},
+ {id:"F04",name:"Ombudsman",v:"Guidance, notifications and a fast path to a person for concerns.",sea:"concerns",ag:["OMB","CON"],ms:["VOC","GRD","CB","PEP","AID","NTF","LLM"],ph:1,aud:"Employees"},
+ {id:"F05",name:"Unified task inbox",v:"Workday inbox, training, acknowledgments and requests in one list.",sea:"current",ag:["CMPL"],ms:["NTF","AWD","ALM","PEP","IDN"],ph:1,aud:"Employees"},
+ {id:"F06",name:"Compliance training planner",v:"The right courses by role and state, with time planned to finish them.",sea:"compliance",ag:["CMPL"],ms:["STD","PEP","ALM","NTF","CMP"],ph:1,aud:"Employees"},
+ {id:"F07",name:"Policy authoring studio",v:"Requirement-first authoring with the content graph and the Circuit Breaker.",sea:"compliance",ag:["POL"],ms:["REQ","VOC","CB","CMP","STD","PRV","GRD"],ph:1,aud:"Employees"},
+ {id:"F08",name:"Expense assistant",v:"Receipts and trips become policy-checked draft reports in Workday.",sea:"current",ag:["EXP"],ms:["RUL","DEC","AWD","PEP","PRV","CB","VAL"],ph:2,aud:"Employees"},
+ {id:"F09",name:"Benefits and insurance navigator",v:"Coverage explained; life events started in Workday on time.",sea:"current",ag:["BEN"],ms:["VOC","GRD","AWD","NTF","STD","PEP"],ph:2,aud:"Employees"},
+ {id:"F10",name:"Requests and cases",v:"Start any HR request in plain words and follow it to closure.",sea:"current",ag:["CON","OMB"],ms:["RQD","AWD","AID","NTF","PRV"],ph:2,aud:"Employees"},
+ {id:"F11",name:"Career navigator",v:"I2 University paths from goals, skills gaps and available time.",sea:"career",ag:["CAR"],ms:["DEC","ALM","AWD","VAL","PEP"],ph:2,aud:"Employees"},
+ {id:"F12",name:"Ideas exchange",v:"Ideas scored, routed to an owner and reported back to the submitter.",sea:"creativity",ag:["IDE"],ms:["DEC","VAL","ONT","NTF","AID"],ph:2,aud:"Employees"},
+ {id:"F13",name:"Culture pulse and recognition",v:"Values in action, measured in aggregate, never by watching people.",sea:"culture",ag:["CUL"],ms:["VAL","PEP","PRV","DEC"],ph:2,aud:"Employees"},
+ {id:"F14",name:"Manager copilot",v:"Grounded answers on approvals, leave and reporting duties.",sea:"collaboration",ag:["CON","CMPL"],ms:["GRD","PEP","CB","AWD","AMS","STD"],ph:2,aud:"Employees"},
+ {id:"F15",name:"Copilot in Microsoft 365",v:"The same grounded answers inside Teams and Outlook, through a connector.",sea:"collaboration",ag:["CON","IPG"],ms:["AMS","GRD","PEP","CB","PRV","LLM"],ph:2,aud:"Employees"},
+ {id:"F16",name:"Client-branded living handbooks",v:"Each client's handbook assembled from its worksites, headcount and service agreement.",sea:"compliance",ag:["POL","DRF"],ms:["CMP","STD","REQ","VOC","CB","PEP","AWD"],ph:3,aud:"Clients"},
+ {id:"F17",name:"Law-change impact alerts",v:"Which requirements, passages and employees a new law affects, per client.",sea:"compliance",ag:["DRF","POL"],ms:["EVT","STD","CMP","NTF","PRV"],ph:3,aud:"Clients"},
+ {id:"F18",name:"Multi-state expansion advisor",v:"Every standard and duty that applies before a client opens a new site.",sea:"current",ag:["CON"],ms:["STD","IDN","DEC","GRD"],ph:3,aud:"Clients"},
+ {id:"F19",name:"Pay transparency checker",v:"Job postings checked for required pay ranges and risky wording.",sea:"compliance",ag:["POL"],ms:["CB","RUL","STD","VOC"],ph:3,aud:"Clients"},
+ {id:"F20",name:"AI governance as a service",v:"A client's AI content and tools run through the Circuit Breaker and boundary guardian.",sea:"compliance",ag:["IPG"],ms:["CB","LLM","PRV","STD","DEC"],ph:3,aud:"Clients"},
+ {id:"F21",name:"Values measurement for clients",v:"Clients measure their own values with the same privacy safeguards.",sea:"culture",ag:["CUL"],ms:["VAL","PEP","PRV","DEC"],ph:3,aud:"Clients"}
+];
+const FS_F=Object.fromEntries(FS_FEAT.map(f=>[f.id,f]));
+const FS_SEAS=[
+ {id:"career",name:"Career",line:"Grow skills and move forward",jobs:["I2 University courses and paths","Goals and check-ins","Internal moves and mentoring"],sor:["I2 University","Workday talent"],view:"organization"},
+ {id:"compliance",name:"Compliance",line:"Know and meet what applies to you",jobs:["Required training and due dates","Policy acknowledgments","The handbook for your role and state"],sor:["I2 University compliance courses","Living Handbook"],view:"compliance"},
+ {id:"collaboration",name:"Collaboration",line:"Find people and get help",jobs:["Who handles what","Teams and shared work","Manager support"],sor:["Microsoft 365","Workday org data"],view:"organization"},
+ {id:"creativity",name:"Creativity",line:"Bring ideas and see them used",jobs:["Submit and follow ideas","Join challenges","See what shipped"],sor:["Idea program"],view:"organization"},
+ {id:"culture",name:"Culture",line:"Live the Compass together",jobs:["Values and recognition","Pulse surveys","Community volunteering"],sor:["Survey and recognition tools"],view:"organization"},
+ {id:"current",name:"Current needs",line:"Get today's tasks done",jobs:["Expenses","Benefits and insurance","Time off, pay and requests"],sor:["Workday","Benefit carriers"],view:"experience"},
+ {id:"concerns",name:"Concerns",line:"Raise it and reach a person",jobs:["Questions","Speak-up and safety","Cases and follow-up"],sor:["Speak-up line","Case system"],view:"ombudsman"}
+];
+const FS_SEA=Object.fromEntries(FS_SEAS.map(s=>[s.id,s]));
+const FS_PH=[
+ {n:1,name:"Operationalize",when:"Months 0–6",goal:"Prove it inside Insperity",scope:["Seven Seas home, read-only, for one pilot group","Compass search, Living Handbook, Ombudsman, task inbox, compliance planner, authoring studio","Keel v1: vocabulary, HR services and standards ontologies, components, requirements","Read-only adapters to Workday and I2 University","Circuit Breaker live, with an MTBH baseline"],exit:["Pilot employees start their top tasks from the home","Every AI answer is grounded or refused, and measured","The Semantic Governance Council meets and approves releases"]},
+ {n:2,name:"Industrialize",when:"Months 6–18",goal:"Make it repeatable",scope:["Agent factory: decision-model registry, agent templates, release gates","Actions through Workday business processes, with human approval","Expense, benefits, requests, career, ideas, culture and manager features","Copilot in Microsoft 365 through the connector"],exit:["New features ship mostly from existing microservices","Every agent has a registered decision model, owner and MTBH threshold","Workday releases pass adapter tests without keel changes"]},
+ {n:3,name:"Scale",when:"Months 18–36",goal:"Offer it to clients on HRScale",scope:["Client-facing services built from the same catalog","Client overlays on the keel; the Insperity core is never exposed","Isolation between tenants in every policy check","A catalog clients can turn on service by service"],exit:["Client services ship without new core microservices","Client data and overlays are isolated and audited","Each service reports its own outcome measures"]}
+];
+function fsReuse(){
+  const first={}; [1,2,3].forEach(p=>FS_FEAT.filter(f=>f.ph===p).forEach(f=>f.ms.forEach(m=>{if(!(m in first))first[m]=p})));
+  return [1,2,3].map(p=>{const fs=FS_FEAT.filter(f=>f.ph===p); const uses=fs.flatMap(f=>f.ms); const reused=uses.filter(m=>first[m]<p).length; const fresh=[...new Set(fs.flatMap(f=>f.ms).filter(m=>first[m]===p))];
+    return {p,features:fs.length,pct:uses.length?Math.round(reused/uses.length*100):0,fresh};});
+}
+function fsEval(a,vals){const sc=a.score?a.score(vals):null; for(let i=0;i<a.rules.length;i++){const r=a.rules[i]; const ok=Object.entries(r.when||{}).every(([k,al])=>al.includes(vals[k]))&&(r.min==null||sc>=r.min); if(ok)return {i,r,sc};} return {i:-1,r:null,sc};}
+
+/* ===================== EXTENSIONS: capabilities ===================== */
+FS_M.RUL.name="Rules SSOT and policy authoring point (PAP)";
+FS_M.DEC.name="Decision models and policy decision point (PDP)";
+FS_M.PEP.name="Policy enforcement points (PEP)";
+FS_M.RUL.what="The single source of truth for rules, constraints and logic. Each is authored once and compiled to the engine that runs it: policy engine, analytics, AI guardrails or Workday business-process conditions.";
+[
+ {id:"PER",name:"Personas and personal semantic model",layer:"Keel",what:"A semantic profile for each employee: role, location, tenure, goals, learning, preferences and consents, which the employee can see and correct.",std:"Consent-scoped attributes · ISO/IEC 27701"},
+ {id:"MAP",name:"Digital asset mappings",layer:"Keel",what:"Typed mappings from keel concepts to digital assets: Workday tasks, forms, courses, dashboards, documents and Teams sites, each with an owner and a confidence score.",std:"SKOS exact, close, broad and narrow match · derivedFrom · partOf"},
+ {id:"MET",name:"Metrology",layer:"Keel",what:"The definition behind every measure: what is measured, unit, method, uncertainty, calibration and owner, including MTBH.",std:"ISO/IEC Guide 99 (VIM) · ISO 80000-1"},
+ {id:"CAU",name:"Causal models",layer:"Keel",what:"Causal graphs linking interventions (services, policies, training) to outcomes, with expected effects recorded before a decision and measured after.",std:"Causal DAGs · decision records"},
+ {id:"VGR",name:"Virtual graph",layer:"Hull",what:"Queries Workday, I2 University and Microsoft 365 in place through the ontology. Data stays in its source; only results move.",std:"R2RML / OBDA · SQL/PGQ · SPARQL"},
+ {id:"EXT",name:"Three-tier extraction",layer:"Hull",what:"Bottom-up source schemas and documents meet top-down ontologies through the middle-out vocabulary. Deterministic rules first, then taxonomy-driven NLP, then grounded LLM extraction with human review.",std:"SKOS · SHACL · PROV-O"},
+ {id:"ANL",name:"Analytics and insights",layer:"Hull",what:"Supply chain insights from sources through the keel to services, and dynamic assembly analytics: what is assembled, for whom, how often and with what result.",std:"Metric definition cards"},
+ {id:"EXM",name:"Experiential measurement",layer:"Hull",what:"Measures moments: effort, steps, time to complete and one-tap feedback on each task, reported in aggregate.",std:"Registered indicators · k ≥ 5"},
+ {id:"LRN",name:"Recursive learning",layer:"Hull",what:"Turns unanswered questions, edits, overrides and outcomes into proposed changes to the keel. Nothing changes without human approval.",std:"KGCL change records"},
+ {id:"HIL",name:"Human in the loop",layer:"Hull",what:"Review queues, approvals and the employee's right to respond; every human decision is kept as a decision record.",std:"ISO/IEC 42001 human oversight"},
+ {id:"VRA",name:"Values reinforcement and assessment",layer:"Hull",what:"Per-employee reinforcement (recognition, reflections, learning nudges) and an employee-owned assessment built from self, peer and goal evidence, with human dialogue.",std:"Values-in-performance safeguards"}
+].forEach(m=>{FS_MS.push(m); FS_M[m.id]=m;});
+FS_MS.sort((a,b)=>["Keel","Hull","Adapter"].indexOf(a.layer)-["Keel","Hull","Adapter"].indexOf(b.layer));
+
+/* richer calls on existing agents */
+FS_A.CON.rules[3].calls=["VOC","PER","MAP","IDN","PEP","AWD","PRV"];
+FS_A.CON.rules[4].calls=["VOC","PER","GRD","VGR","PEP","LLM","CB","PRV"];
+FS_A.CON.rules[1].calls=["RQD","NTF","LRN"];
+FS_A.EXP.rules[1].calls=["RUL","DEC","CB","AWD","HIL","PRV"];
+FS_A.EXP.rules[2].calls=["RUL","DEC","AWD","HIL","PRV"];
+FS_A.CMPL.rules[1].calls=["PER","STD","ALM","NTF","CMP"];
+FS_A.CAR.rules[0].calls=["PER","DEC","ALM","VAL","PEP"];
+FS_A.POL.rules[1].calls=["CB","HIL","PRV"];
+FS_A.POL.rules[3].calls=["EXT","STD","CMP","NTF","PRV"];
+FS_A.DRF.rules[2].calls=["EVT","ONT","MAP","VGR","NTF"];
+FS_A.CUL.rules[3].calls=["VAL","MET","DEC","PRV"];
+FS_A.CUL.rules[1].calls=["VAL","PEP","HIL"];
+FS_A.OMB.rules[1].calls=["AID","NTF","PEP","HIL","PRV"];
+
+/* new agents */
+[
+ {id:"LRS",name:"Learning steward",role:"Turns signals from everyday use into proposed improvements to the keel, and routes each one to the person who must approve it.",
+  inputs:[{id:"sg",label:"Signal",opts:["Unanswered question","Repeated edit or override","Outcome below expectation","New term found in sources"]},{id:"vol",label:"Frequency",opts:["One-off","Recurring (5 or more times)"]},{id:"rk",label:"Touches",opts:["Content only","Policy or law","People data"]}],
+  def:{sg:0,vol:1,rk:0},
+  rules:[{when:{rk:[2]},out:"Hold for the Privacy Office before anything is proposed",calls:["LRN","PEP","HIL"],gate:"Privacy Office"},
+   {when:{vol:[0]},out:"Log it and watch for a pattern; no change yet",calls:["LRN","PRV"],gate:"None"},
+   {when:{rk:[1]},out:"Open a Policy author task with Legal review",calls:["LRN","REQ","HIL","PRV"],gate:"Legal approves"},
+   {when:{sg:[3]},out:"Search for near-duplicates, then propose a new concept to the vocabulary steward",calls:["LRN","EXT","VOC","HIL"],gate:"Vocabulary steward"},
+   {when:{sg:[2]},out:"Open a causal review in Insights before changing anything",calls:["LRN","CAU","ANL","MET"],gate:"Service owner"},
+   {out:"Propose a new component and asset mapping to the owner",calls:["LRN","CMP","MAP","HIL","PRV"],gate:"Owner approves"}]},
+ {id:"VCO",name:"Values coach",role:"Reinforces the Compass and the principles for each employee, and helps them build an assessment they own.",
+  inputs:[{id:"mo",label:"Moment",opts:["Recognition received","Course completed","Goal check-in","Reflection due"]},{id:"use",label:"Purpose",opts:["Reinforcement","Assessment for a performance dialogue"]},{id:"cs",label:"Sharing",opts:["Private to me","Shared with my manager"]}],
+  def:{mo:0,use:0,cs:0},
+  rules:[{when:{use:[1],cs:[0]},out:"Keep the evidence private; ask the employee what, if anything, to share",calls:["VRA","PER","PEP"],gate:"Employee decides"},
+   {when:{use:[1],cs:[1]},out:"Assemble an evidence pack (self-reflection, recognition, goals) the employee reviews first; no automated score",calls:["VRA","VAL","PER","HIL","PRV"],gate:"Employee and manager dialogue"},
+   {when:{mo:[0]},out:"Connect the recognition to its principle and Compass tier, and thank the giver",calls:["VRA","VAL","NTF"],gate:"None"},
+   {when:{mo:[3]},out:"Offer a two-minute reflection, private by default",calls:["VRA","VAL","PER"],gate:"None"},
+   {out:"Suggest a related I2 University micro-course and a values moment to watch for",calls:["VRA","ALM","PER"],gate:"None"}]},
+ {id:"INS",name:"Insights analyst",role:"Answers supply chain, assembly and outcome questions, and says plainly whether a result shows association or cause.",
+  inputs:[{id:"q",label:"Question",opts:["Supply chain: where does this service come from?","Dynamic assembly: what is assembled, for whom?","Outcome: did this change work?"]},{id:"dt",label:"Data",opts:["Aggregate","Individual-level"]},{id:"ds",label:"Design",opts:["Expected outcome recorded before the change","Nothing recorded beforehand"]}],
+  def:{q:2,dt:0,ds:0},
+  rules:[{when:{dt:[1]},out:"Block: people questions are answered in aggregate only, for groups of 5 or more",calls:["PEP","MET"],gate:"None"},
+   {when:{q:[2],ds:[0]},out:"Estimate the effect against the recorded expectation, with uncertainty",calls:["CAU","MET","ANL","VGR","PRV"],gate:"Service owner reviews"},
+   {when:{q:[2],ds:[1]},out:"Report the association and label it 'not a cause'; propose a design for next time",calls:["ANL","MET","CAU"],gate:"None"},
+   {when:{q:[0]},out:"Trace sources, keel concepts, components and services, with lead times and bottlenecks",calls:["ANL","VGR","MAP","PRV","MET"],gate:"None"},
+   {out:"Show assembly counts by profile, unused components and gaps",calls:["ANL","CMP","PER","MET"],gate:"None"}]},
+ {id:"XPL",name:"Experience pulse",role:"Measures how each moment felt and how hard it was, without asking too often.",
+  inputs:[{id:"mm",label:"Moment",opts:["Task completed","Task abandoned","Answer given"]},{id:"rc",label:"Asked recently",opts:["Not in the last 30 days","Yes"]}],
+  def:{mm:1,rc:0},
+  rules:[{when:{rc:[1]},out:"Do not ask; record effort, steps and time only",calls:["EXM","PEP"],gate:"None"},
+   {when:{mm:[1]},out:"Ask one question: what got in the way? Send the pattern to the Learning steward",calls:["EXM","LRN","PEP"],gate:"None"},
+   {out:"Offer a one-tap rating; report in aggregate for groups of 5 or more",calls:["EXM","MET","ANL","PEP"],gate:"None"}]}
+].forEach(a=>{FS_AGENTS.push(a); FS_A[a.id]=a;});
+
+/* new services */
+[
+ {id:"F22",name:"Personal compass",v:"Each employee's private view of their values, recognition, learning and goals, with reinforcement and an assessment they own.",sea:"culture",ag:["VCO","CAR"],ms:["VRA","VAL","PER","HIL","ALM","PEP","MET"],ph:2,aud:"Employees"},
+ {id:"F23",name:"Experience pulse",v:"In-the-moment measurement of effort and friction on every task, reported in aggregate.",sea:"current",ag:["XPL"],ms:["EXM","PEP","LRN","ANL","MET"],ph:2,aud:"Employees"},
+ {id:"F24",name:"Supply chain insights",v:"Trace each service from its sources through the keel to what employees use: lead times, bottlenecks and single points of failure.",sea:"collaboration",ag:["INS"],ms:["ANL","VGR","PRV","MAP","MET"],ph:2,aud:"Employees"},
+ {id:"F25",name:"Dynamic assembly analytics",v:"What is assembled, for whom and how often; which components go unused; where profiles hit gaps.",sea:"all",ag:["INS"],ms:["ANL","CMP","PER","MET","PRV"],ph:2,aud:"Employees"},
+ {id:"F26",name:"Outcome and causal insights",v:"Did a service, policy or course cause the result we expected? Expected effects are recorded before, measured after.",sea:"career",ag:["INS"],ms:["CAU","MET","ANL","DEC","VGR"],ph:2,aud:"Employees"},
+ {id:"F27",name:"Client workforce insights",v:"Clients see the same assembly, experience and outcome insights for their own workforce.",sea:"culture",ag:["INS","XPL"],ms:["ANL","CAU","MET","EXM","PEP","VGR"],ph:3,aud:"Clients"},
+ {id:"F28",name:"Learning loop",v:"Unanswered questions, edits and outcomes become proposed improvements to the keel, approved by people.",sea:"all",ag:["LRS"],ms:["LRN","HIL","VOC","MAP","PRV"],ph:1,aud:"Employees"}
+].forEach(f=>{FS_FEAT.push(f); FS_F[f.id]=f;});
+const addMs=(fid,ms)=>{const f=FS_F[fid]; ms.forEach(m=>{if(!f.ms.includes(m))f.ms.push(m)});};
+addMs("F01",["PER","MAP"]); addMs("F02",["MAP","VGR","EXT"]); addMs("F03",["PER","EXT"]); addMs("F04",["HIL"]); addMs("F05",["VGR"]);
+addMs("F06",["PER"]); addMs("F07",["EXT","HIL"]); addMs("F08",["HIL"]); addMs("F11",["PER"]); addMs("F13",["MET"]); addMs("F16",["PER"]); addMs("F17",["EXT"]); addMs("F21",["MET","VRA"]);
+FS_FEAT.sort((a,b)=>a.ph-b.ph||a.id.localeCompare(b.id));
+
+/* ===================== CONTENT ===================== */
+const PROTO="https://claude.ai/artifact/HztTt9M4WC7qHNG997k8uS";
+const PAGES=[["overview","Overview"],["caps","Capabilities"],["seas","Seven Seas"],["services","Services"],["agents","Agents"],["micro","Microservices"],["boundary","IP Boundary"],["roadmap","Roadmap"]];
+const SEA_COLOR=Object.fromEntries(FS_SEAS.map((s,i)=>[s.id,"var(--s"+(i+1)+")"]));
+const KEEL_SHORT={VOC:"Vocabulary",ONT:"Ontologies",RUL:"SSOT \u00b7 PAP",DEC:"Decisions \u00b7 PDP",REQ:"Requirements",CMP:"Components",VAL:"Values",STD:"Standards",IDN:"Identity",PER:"Personas",MAP:"Asset maps",MET:"Metrology",CAU:"Causal models"};
+const LAYER_MEAN={Keel:"Insperity IP. Governed, versioned and vendor-neutral; defined once and compiled for use.",Hull:"Run-time services Insperity operates. They read the keel and enforce it on every request.",Adapter:"The only parts that touch a vendor. They pass scoped calls and compiled results, never the keel."};
+const SVC_PROTO={F01:"overview",F02:"search",F03:"experience",F04:"ombudsman",F05:"ombudsman",F06:"compliance",F07:"studio",F12:"organization",F13:"organization",F14:"ombudsman",F16:"compliance",F17:"compliance",F18:"compliance",F19:"studio",F20:"studio",F21:"organization"};
+const PARTS={
+ northstar:{layer:"Bearing",name:"North Star",lead:"Every passage, answer, search result and agent decision rests on governed, traceable, unambiguous meaning.",bul:["Anyone can ask where an answer came from, and get the rule, source and version","The same meaning in Workday, Teams, the handbook and client portals","Answers that cannot be grounded are refused, not guessed"],tech:"Every output carries a canonical URI and a provenance record (W3C PROV-O). The grounding index resolves each phrase to a concept or a dated source before display.",go:"boundary"},
+ halyard:{layer:"Platform",name:"The halyard",lead:"A halyard is the line that raises a sail. Halyard is the platform that raises Insperity's services: it pulls governed parts up from the keel and sets them as experiences employees and clients use.",bul:["Services are assembled from shared parts, not rebuilt","Each phase raises the sail higher: operationalize, industrialize, scale","The same line serves Insperity's employees first, then clients on HRScale"],tech:"A service = experience + agent with a registered decision model + microservices from the catalog + content components + registered measures.",go:"services"},
+ compass:{layer:"Bridge",name:"Compass",lead:"How people find and understand meaning. Enterprise search and navigation across the handbook, Workday, I2 University and company content.",bul:["Search resolves words to concepts, not keywords","Browse by domain, service and concept","Explain this answer down to the rule, source and owner","Shows only what the person's role and client allow"],tech:"Reads the SKOS vocabulary, ontologies and grounding index through the hull; holds no meaning of its own. Uses VOC, ONT, GRD, PEP and PRV.",go:"services",svc:["F02","F01"]},
+ copilot:{layer:"Bridge",name:"Copilot",lead:"How AI answers and acts on meaning: the Ombudsman, drafting, Copilot in Microsoft 365 and the HR360 agent, all on one hull.",bul:["Grounds every phrase through Compass before it speaks","Drafts and proposes; people approve anything irreversible","Stops at the Circuit Breaker when it cannot ground an answer"],tech:"Calls the model gateway (LLM) with minimal per-request context, then the Circuit Breaker (CB). Microsoft 365 reaches the same hull through the connector (AMS), never the keel.",go:"agents",svc:["F04","F15","F14"]},
+ winch:{layer:"Bridge",name:"Winch: agents and decision models",lead:"The winch turns effort into lift. Eleven agents each follow a registered decision model and call shared microservices, so features reuse what already works.",bul:["Every agent has an owner, a decision model and an MTBH threshold","Protective rules sit above convenience rules","Human gates on anything irreversible"],tech:"Decision tables with a first-match hit policy; the Compass order (Planet over People over Profit) breaks ties. Registered in DEC.",go:"agents"},
+ waterline:{layer:"Waterline",name:"Waterline: drift",lead:"Where the moving world meets the vessel: law changes, Workday releases, renamed fields and new vendors.",bul:["Law and rate changes re-run applicability and open authoring tasks","Workday releases run adapter contract tests; the keel is untouched","Privacy-affecting changes go on hold until cleared"],tech:"The drift sentinel agent (DRF) uses EVT to classify each change as patch, minor or major.",go:"agents",agent:"DRF"},
+ insights:{layer:"Bridge",name:"Insights",lead:"Where leaders see how the platform and the business are doing: supply chain insights, dynamic assembly analytics, experience and outcomes, with cause and association labeled plainly.",bul:["Supply chain: from sources and vendors through the keel to services","Dynamic assembly: what is assembled, for whom, and where gaps are","Outcomes against expectations recorded before each decision"],tech:"ANL over the virtual graph (VGR) and provenance (PRV); every measure defined in MET; causal estimates from CAU.",go:"caps",svc:["F24","F25","F26"],agent:"INS"},
+ sextant:{layer:"Instruments",name:"Sextant: metrology and causality",lead:"A sextant measures the angle to a star to fix position. Metrology defines how every measure is taken, and causal models say whether what we did moved us toward the North Star.",bul:["Every measure has a unit, method, uncertainty and owner","MTBH measured per agent","Expected outcomes recorded before decisions, measured after"],tech:"MET (ISO/IEC Guide 99, ISO 80000-1) and CAU (causal DAGs, decision records) in the keel; estimates run in ANL.",go:"caps",agent:"INS"},
+ mainsheet:{layer:"Rigging",name:"Mainsheet: recursive learning",lead:"The mainsheet trims the sail to the wind. Recursive learning trims the platform to how people actually use it: signals become proposals, and people approve every change.",bul:["Unanswered questions, edits, overrides and missed outcomes are the signals","The Learning steward proposes; owners, Legal or Privacy approve","Approved changes re-assemble every affected service"],tech:"LRN with HIL approvals and KGCL change records; signals from NTF, EXM, CB and decision records.",go:"caps",agent:"LRS",svc:["F28"]},
+ "h-ext":{layer:"Hull",name:"Three-tier extraction",ms:["EXT"],lead:"Top-down ontologies, middle-out vocabulary and bottom-up sources meet here. Deterministic rules first, then taxonomy-driven NLP, then grounded LLM extraction with human review."},
+ "h-vgr":{layer:"Hull",name:"Virtual graph",ms:["VGR"],lead:"Queries Workday, I2 University and Microsoft 365 in place through the ontology. Data stays in its source; only results move."},
+ "h-hil":{layer:"Hull",name:"Human in the loop",ms:["HIL"],lead:"Review queues, approvals and the employee's right to respond. People approve anything irreversible and every change to the keel."},
+ "h-anl":{layer:"Hull",name:"Analytics",ms:["ANL"],lead:"Supply chain insights and dynamic assembly analytics, computed in aggregate from provenance, assembly events and the virtual graph."},
+ "h-exm":{layer:"Hull",name:"Experiential measurement",ms:["EXM"],lead:"Effort, steps, time and one-tap feedback on each moment, without asking too often, reported for groups of 5 or more."},
+ "h-vra":{layer:"Hull",name:"Values coach",ms:["VRA"],lead:"Per-employee reinforcement and an employee-owned assessment, inside the privacy safeguards. Private by default; never a machine score."},
+ "h-ground":{layer:"Hull",name:"Grounding and request decomposition",ms:["GRD","RQD"],lead:"Breaks each request into who, what, when, where and why, then makes every phrase and citation resolve to a governed concept or dated source."},
+ "h-pep":{layer:"Hull",name:"Policy enforcement",ms:["PEP"],lead:"The same checks govern transactions, search results and AI answers: role, client tenant, jurisdiction and privacy (groups of 5 or more)."},
+ "h-cb":{layer:"Hull",name:"AI Circuit Breaker and MTBH",ms:["CB"],lead:"Checks ambiguity, policy, privacy, values and grounding, and trips before anything reaches an employee. Mean time between hallucinations is tracked per agent."},
+ "h-ntf":{layer:"Hull",name:"Task inbox and notifications",ms:["NTF"],lead:"One list of what each person needs to do, across Workday, I2 University, acknowledgments and requests."},
+ "h-lrn":{layer:"Hull",name:"Learning, provenance and drift",ms:["LRN","PRV","EVT"],lead:"Recursive learning from use, the who-what-when-where-why record behind every change, answer and boundary crossing, and the watch on sources that move."},
+ "h-adp":{layer:"Hull",name:"Adapters",ms:["AWD","AMS","ALM","LLM","AID"],lead:"The only parts that touch vendors. Workday, Microsoft 365, I2 University, model providers and the idea and speak-up tools connect here and nowhere else."},
+ ballast:{layer:"Ballast",name:"Ballast: governance",lead:"The weight that keeps the vessel upright as it scales.",bul:["Semantic Governance Council: HR, Legal, Privacy, IT and Product","Release gates: shape checks, Circuit Breaker, adapter contract tests","Most-protective-rule precedence","Ten-stage knowledge engineering lifecycle, from scope to retirement","Legal review of vendor data-use and ownership terms"],go:"roadmap"},
+ boundary:{layer:"Boundary",name:"Insperity IP boundary",lead:"Everything inside the dashed line is Insperity's: the keel, the hull, the bridge and the agents. Vendors sit outside, at the ports, and receive only what each task needs.",bul:["Compile, don't copy: vendors get results, not the logic","Every crossing is checked by the IP boundary guardian and logged","Open standards keep the keel portable"],go:"boundary",agent:"IPG"}
+};
+const PORTS={
+ wd:{name:"Workday and HRScale",ad:"AWD",lead:"System of record for people, pay, benefits, time and expenses. Insperity's employees use Workday; clients use HRScale, built on Workday.",inn:["Records and transaction status","Events such as hires, changes and approvals"],out:["Scoped API calls and deep links to the exact task","Actions through Workday business processes, with approval","Compiled business-process conditions where Workday must enforce a rule"],never:["Ontologies, vocabulary or the rules register","Agent decision models","The component library"]},
+ lms:{name:"I2 University",ad:"ALM",lead:"Courses, assignments, completions and certificates for career and compliance learning.",inn:["Catalog, assignments and completions"],out:["Assignments and enrollments chosen by the planner and career agents"],never:["Skills and career decision models","Standards and applicability logic"]},
+ m365:{name:"Microsoft 365 Copilot and Teams",short:"Microsoft 365 Copilot",ad:"AMS",lead:"Another front door. Copilot and Teams ask Compass through a connector and show its grounded answers.",inn:["Questions from employees in Teams and Outlook"],out:["Compiled answers with citations that resolve inside Insperity"],never:["The grounding index or vocabulary export","Bulk handbook content"]},
+ llm:{name:"Model providers",ad:"LLM",lead:"Language models used for inference only, behind Insperity's model gateway, so models can be swapped.",inn:["Generated text, checked by the Circuit Breaker before use"],out:["Minimal per-request context under no-training, no-retention terms"],never:["Training data","Decision models, rules or ontologies"]},
+ client:{name:"Client tenants",ad:"PEP",lead:"Clients on HRScale get Insperity services with their own overlay: their vocabulary, policies and branding.",inn:["Client policies and preferences for their overlay"],out:["Assembled handbooks, alerts and answers for that client only"],never:["The Insperity core keel","Other clients' data or overlays"]}
+};
+const THESES=[
+ {id:"keel",k:"Keel",name:"Insperity owns the meaning",lead:"Vocabulary, ontologies, rules, decision models, requirements and content live in governed, vendor-neutral form. That is Insperity's IP, and it stays inside Insperity.",go:"boundary"},
+ {id:"north",k:"North Star",name:"One front door, Workday-first",lead:"Employees navigate the Seven Seas from one home. Workday stays the system of record, and every action lands on the exact Workday task.",go:"seas"},
+ {id:"agents",k:"Agents",name:"Agents decide, microservices do",lead:"Each agent follows a registered decision model and calls shared microservices, so new features reuse what already works, inside Insperity and later for clients.",go:"agents"}
+];
+const WS=[
+ {id:"exp",name:"Experiences",c:["Seven Seas home (read-only) for a pilot group; Compass search; Living Handbook; Ombudsman; task inbox; compliance planner; authoring studio","Expenses, benefits and insurance, requests, career, ideas, culture, manager copilot, and Copilot in Microsoft 365","Client handbooks, law-change alerts, expansion advisor, pay transparency checker, AI governance as a service, values measurement"]},
+ {id:"agt",name:"Agents",c:["Concierge, Concerns, Compliance planner, Policy author and Drift sentinel, each with an MTBH baseline","Agent factory: decision-model registry, agent templates and release gates; Expense, Benefits, Career, Ideas, Culture and IP guardian agents","Client-tenant agents from the same templates, with per-client decision overlays"]},
+ {id:"keel",name:"Keel",c:["Vocabulary, HR services and standards ontologies, components, requirements, values and safeguards","Rules register compiled to engines; decision models registered; one identity across Workday, I2 University and Microsoft 365","Client overlays: client vocabulary and policies layered over the core, never merged into it"]},
+ {id:"hull",name:"Hull and adapters",c:["Read-only Workday and I2 University adapters; grounding index; policy enforcement; Circuit Breaker","Write actions through Workday business processes; Microsoft 365 connector; model gateway; adapter contract tests on every Workday release","Tenant isolation in every policy check; HRScale client adapters"]},
+ {id:"gov",name:"Governance",c:["Semantic Governance Council chartered; release gates; Legal review of vendor terms begins","Every agent with an owner, decision model and MTBH threshold; privacy impact assessments for new indicators","Client-facing service levels; per-service audit and outcome reporting"]},
+ {id:"msr",name:"Measures",c:["Baselines: time to top tasks, on-time compliance, questions resolved without a case, MTBH","Targets agreed with the sponsor; reuse rate tracked per feature","Per-client outcomes; days from law change to updated guidance"]}
+];
+const MEASURES=[["Time to complete top tasks","Expenses, time off, benefit events and requests, measured end to end."],["Share of tasks started from the home","Adoption of the Seven Seas front door over going straight to Workday."],["On-time compliance completion","By role and state, from I2 University completions."],["Questions resolved without a case","Grounded answers and self-service that close the need."],["Mean time between hallucinations","Per agent, with a trip threshold that opens the Circuit Breaker."],["Reuse rate","Share of a new feature built from existing microservices."],["Law change to updated guidance","Days from enactment to updated passages, per jurisdiction."],["Idea to implementation","Share of submitted ideas that ship, reported back to submitters."],["Speak-up confidence","Aggregate only, for groups of 5 or more."]];
+const RISKS=[["Seen as competing with Workday","A Workday-first front door: every action lands in Workday, and the roadmap is shared with the HRScale team."],["Overlap with Workday's and Microsoft's assistants and the HR360 agent","Compass and Copilot are the grounding layer those assistants call through connectors, not another chatbot."],["IP leaks to vendors","IP boundary guardian, compile-don't-copy, an Insperity-hosted grounding API, contract terms, and an audit of every crossing."],["AI errors reach employees","Circuit Breaker with MTBH thresholds per agent; people approve anything irreversible."],["Privacy and trust","Registered purposes, groups of 5 or more, no covert monitoring, and an independent Privacy Office."],["Two home pages, low adoption","Launch with the top tasks working end to end; retire links nobody uses."],["Vendor lock-in","Keel in open standards; adapters isolate vendor change and are contract-tested on every release."]];
+const DECISIONS=[["Sponsor and pilot","An executive sponsor and one pilot group for phase 1."],["Governance council","Charter a Semantic Governance Council: HR, Legal, Privacy, IT and Product."],["Vendor terms","Legal review of data-use, no-training and configuration-ownership terms."],["Keel as an asset","Treat the keel as a governed Insperity asset with its own repository and owner."],["Boundary session","A working session with the HRScale and Workday team on the adapter boundary."]];
+
+/* ===================== STATE & HELPERS ===================== */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store={get(k,d){try{const v=localStorage.getItem("hfs-"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("hfs-"+k,JSON.stringify(v))}catch(e){}}};
+const S={page:"overview",aud:store.get("aud","exec"),sel:null,agIn:{},filt:"all",tm:0};
+const $=id=>document.getElementById(id);
+const tech=()=>S.aud==="tech";
+const attrs=(k,id,label)=>`data-k="${k}" data-id="${esc(id)}"${label?` aria-label="${esc(label)}"`:""}`;
+const usedBy=m=>FS_FEAT.filter(f=>f.ms.includes(m));
+const agentsUsing=m=>FS_AGENTS.filter(a=>a.rules.some(r=>r.calls.includes(m)));
+const svcChip=id=>{const f=FS_F[id];return `<button class="chip" ${attrs("svc",id)}><span class="dot" style="background:${f.sea==="all"?"var(--accent)":SEA_COLOR[f.sea]}"></span>${esc(f.name)}</button>`};
+const agChip=id=>`<button class="chip" ${attrs("agent",id)}>${esc(FS_A[id].name)}</button>`;
+const msChip=id=>`<button class="chip" ${attrs("ms",id)}><span class="ms L-${FS_M[id].layer}">${id}</span>${esc(FS_M[id].name)}</button>`;
+const seaChip=id=>`<button class="chip" ${attrs("sea",id)}><span class="dot" style="background:${SEA_COLOR[id]}"></span>${esc(FS_SEA[id].name)}</button>`;
+const goBtn=(page,label)=>`<button class="chip" data-go="${page}">${esc(label||("Open "+PAGES.find(p=>p[0]===page)[1]))} →</button>`;
+const protoLink=view=>`<a class="chip" href="${PROTO}#${view}" target="_blank" rel="noopener">See it in the working prototype ↗</a>`;
+const ul=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+const RU=fsReuse();
+const firstPhase={}; [1,2,3].forEach(p=>FS_FEAT.filter(f=>f.ph===p).forEach(f=>f.ms.forEach(m=>{if(!(m in firstPhase))firstPhase[m]=p})));
+function agVals(a){if(!S.agIn[a.id])S.agIn[a.id]=Object.assign({},a.def);return S.agIn[a.id];}
+
+/* ===================== IMAGERY ===================== */
+function vesselSVG(){
+  const vh=(k,id,label,inner)=>`<g class="vh" tabindex="0" role="button" ${attrs(k,id,label)}>${inner}</g>`;
+  let wave="M0 470"; for(let i=0;i<40;i++)wave+=" q15 -7 30 0";
+  const stars=[[250,40],[330,120],[420,60],[700,30],[960,70],[1040,150],[1120,48],[860,26],[200,190],[1150,230]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.6" fill="var(--sky-mute)"/>`).join("");
+  const starPts=(cx,cy,R,r)=>Array.from({length:10},(_,i)=>{const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r:R;return (cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)}).join(" ");
+  const sail="M606 78 L606 404 L884 404 Q860 150 606 78 Z";
+  const bands=[[3,78,186,"3 · Scale","Client services",618,124],[2,186,296,"2 · Industrialize","Expenses, benefits, career, ideas",618,236],[1,296,404,"1 · Operationalize","Seven Seas home, handbook, search",618,346]];
+  const HX=[405,525,645,765],HY=[436,472,508];
+  const hullCells=[["h-ground","Grounding","GRD \u00b7 RQD"],["h-ext","Extraction","EXT \u00b7 3-tier"],["h-pep","PEP","Enforcement"],["h-cb","Circuit Breaker","CB \u00b7 MTBH"],["h-vgr","Virtual graph","VGR"],["h-hil","Human in loop","HIL"],["h-anl","Analytics","ANL"],["h-exm","Experience","EXM"],["h-vra","Values coach","VRA"],["h-ntf","Task inbox","NTF"],["h-lrn","Learning","LRN \u00b7 PRV \u00b7 EVT"],["h-adp","Adapters","5 vendors"]].map((h,i)=>[h[0],HX[i%4],HY[Math.floor(i/4)],h[1],h[2]]);
+  const keelIds=[["VOC","ONT"],["RUL","DEC"],["REQ","CMP"],["VAL","STD"],["IDN","PER"],["MAP","MET"],["CAU"]];
+  const seaPos=[[20,494],[146,494],[20,542],[146,542],[1006,494],[1006,542],[1006,590]];
+  const seaW=[120,120,120,120,176,176,176];
+  const ports=[["wd",20,662,246],["lms",20,706,246],["m365",1006,662,176],["llm",1006,706,176]];
+  return `<svg viewBox="0 0 1200 780" role="group" aria-label="The Halyard vessel: North Star, sail, halyard, bridge, hull, keel, ballast and the Seven Seas. Every part opens details.">
+  <defs><clipPath id="sailclip"><path d="${sail}"/></clipPath></defs>
+  <rect x="0" y="0" width="1200" height="470" fill="var(--sky)"/>${stars}
+  <text x="1180" y="30" text-anchor="end" class="vt-m on-sky-m">HALYARD · FUTURE STATE</text>
+  <path d="M600 56 L148 72" stroke="var(--star)" stroke-width="2" stroke-dasharray="7 6" fill="none"/>
+  ${vh("part","northstar","North Star",`<circle cx="122" cy="72" r="40" fill="transparent" class="hl"/><polygon points="${starPts(122,72,26,11)}" fill="var(--star)"/><text x="122" y="128" text-anchor="middle" class="vt-m on-sky">NORTH STAR</text><text x="122" y="144" text-anchor="middle" class="vt-m on-sky-m">governed meaning</text>`)}
+  <path d="M600 56 L292 430" stroke="var(--sky-mute)" stroke-width="1.5" fill="none"/>
+  <line x1="600" y1="50" x2="600" y2="432" stroke="var(--sky-ink)" stroke-width="5"/>
+  ${bands.map(b=>vh("phase",String(b[0]),"Phase "+b[3],`<rect x="606" y="${b[1]}" width="290" height="${b[2]-b[1]}" class="sail-band" clip-path="url(#sailclip)"/><text x="${b[5]}" y="${b[6]}" class="vt-b">${esc(b[3])}</text><text x="${b[5]}" y="${b[6]+17}" class="vt">${esc(b[4])}</text>`)).join("")}
+  <path d="${sail}" fill="none" stroke="var(--sail-line)" stroke-width="1.5" pointer-events="none"/>
+  <text x="904" y="100" class="vt-m on-sky-m">THE SAIL · SERVICES</text>
+  <line x1="600" y1="410" x2="894" y2="410" stroke="var(--sky-ink)" stroke-width="5" stroke-linecap="round"/>
+  ${vh("part","mainsheet","Mainsheet: recursive learning",`<path d="M890 412 L936 430" class="hit"/><path d="M890 412 Q916 424 936 430" fill="none" stroke="var(--star)" stroke-width="3" stroke-linecap="round"/><path d="M936 430 C 960 380 1000 360 1040 372" fill="none" stroke="var(--star)" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="900" y="372" width="220" height="40" rx="6" fill="transparent" class="hl"/><text x="1044" y="384" class="vt-m on-sky">MAINSHEET</text><text x="1044" y="399" class="vt-m on-sky-m">recursive learning</text>`)}
+  ${vh("part","sextant","Sextant: metrology and causality",`<path d="M150 104 L232 238" stroke="var(--star)" stroke-width="1.2" stroke-dasharray="3 5" fill="none"/><rect x="196" y="226" width="196" height="58" rx="6" fill="transparent" class="hl"/><path d="M212 270 A40 40 0 0 1 268 240" fill="none" stroke="var(--star)" stroke-width="3"/><line x1="240" y1="236" x2="214" y2="272" stroke="var(--star)" stroke-width="2"/><line x1="240" y1="236" x2="268" y2="270" stroke="var(--star)" stroke-width="2"/><circle cx="240" cy="236" r="3.5" fill="var(--star)"/><text x="278" y="250" class="vt-m on-sky">SEXTANT</text><text x="278" y="265" class="vt-m on-sky-m">metrology \u00b7 causality</text>`)}
+  ${vh("part","halyard","The halyard",`<path d="M606 80 Q604 58 598 56 Q593 58 593 66 L593 360 L580 370" class="hit"/><path d="M606 80 Q604 58 598 56 Q593 58 593 66 L593 360 L580 370" class="halyard"/><circle cx="600" cy="56" r="6" fill="var(--sky)" stroke="var(--accent)" stroke-width="2.5"/><line x1="546" y1="112" x2="590" y2="112" stroke="var(--accent)" stroke-width="1.5"/><rect x="396" y="88" width="146" height="50" rx="6" fill="transparent" class="hl"/><text x="536" y="112" text-anchor="end" class="vt-b on-sky">THE HALYARD</text><text x="536" y="129" text-anchor="end" class="vt-m on-sky-m">raises every service</text>`)}
+  ${vh("part","winch","Winch: agents and decision models",`<line x1="562" y1="350" x2="574" y2="364" stroke="var(--sky-mute)" stroke-width="1"/><rect x="436" y="326" width="130" height="34" rx="6" fill="transparent" class="hl"/><text x="558" y="340" text-anchor="end" class="vt-m on-sky">WINCH · AGENTS</text><text x="558" y="355" text-anchor="end" class="vt-m on-sky-m">11 decision models</text><circle cx="578" cy="370" r="9" fill="var(--star)" stroke="var(--sky)" stroke-width="2"/>`)}
+  <text x="348" y="376" class="vt-m on-sky-m">BRIDGE</text>
+  <rect x="344" y="380" width="242" height="50" rx="5" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+  ${vh("part","insights","Insights",`<rect x="352" y="389" width="72" height="32" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/><rect x="352" y="389" width="72" height="32" rx="4" class="hl"/><text x="388" y="410" text-anchor="middle" class="vt" style="font-weight:600">Insights</text>`)}
+  ${vh("part","compass","Compass",`<rect x="430" y="389" width="72" height="32" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/><rect x="430" y="389" width="72" height="32" rx="4" class="hl"/><text x="466" y="410" text-anchor="middle" class="vt" style="font-weight:600">Compass</text>`)}
+  ${vh("part","copilot","Copilot",`<rect x="508" y="389" width="72" height="32" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/><rect x="508" y="389" width="72" height="32" rx="4" class="hl"/><text x="544" y="410" text-anchor="middle" class="vt" style="font-weight:600">Copilot</text>`)}
+  <rect x="0" y="470" width="1200" height="310" fill="var(--sea)"/>
+  ${vh("part","waterline","Waterline: drift",`<path d="${wave}" class="hit"/><path d="${wave}" fill="none" stroke="var(--sea-line)" stroke-width="2.5"/><text x="1182" y="462" text-anchor="end" class="vt-m on-sky-m">WATERLINE · DRIFT</text>`)}
+  <path d="M266 680 C 330 660 360 600 420 546" stroke="var(--sea-line)" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/><path d="M266 724 C 350 700 390 620 440 546" stroke="var(--sea-line)" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+  <path d="M1006 680 C 960 660 930 600 900 546" stroke="var(--sea-line)" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/><path d="M1006 724 C 950 700 920 620 880 546" stroke="var(--sea-line)" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+  <path d="M285 430 L975 430 L955 545 L400 545 Q320 505 285 430 Z" fill="var(--hull)" stroke="var(--line)" stroke-width="2"/>
+  <text x="300" y="448" class="vt-m">HULL</text><text x="300" y="462" class="vt-m">RUN-TIME</text>
+  ${hullCells.map(h=>vh("part",h[0],PARTS[h[0]].name,`<rect x="${h[1]}" y="${h[2]}" width="114" height="32" rx="4" class="hull-cell"/><rect x="${h[1]}" y="${h[2]}" width="114" height="32" rx="4" class="hl"/><text x="${h[1]+8}" y="${h[2]+14}" class="vt" style="font-weight:600;font-size:12px">${esc(h[3])}</text><text x="${h[1]+8}" y="${h[2]+26}" class="vt-m" style="font-size:9.5px">${esc(h[4])}</text>`)).join("")}
+  <path d="M480 545 L720 545 L690 720 L510 720 Z" fill="var(--keel)"/>
+  <text x="732" y="566" class="vt-m">KEEL</text><text x="732" y="580" class="vt-m">GOVERNED MEANING</text><text x="732" y="594" class="vt-m">INSPERITY IP</text>
+  ${keelIds.map((pair,i)=>{const y=549+i*24.4;return pair.map((id,j)=>{const x=pair.length===1?514:514+j*88,w=pair.length===1?172:84;return vh("ms",id,FS_M[id].name,`<rect x="${x}" y="${y.toFixed(1)}" width="${w}" height="22" rx="3" class="keel-row"/><rect x="${x}" y="${y.toFixed(1)}" width="${w}" height="22" rx="3" class="hl"/><text x="${x+w/2}" y="${(y+15).toFixed(1)}" text-anchor="middle" class="vt on-keel" style="font-size:10.5px">${esc(KEEL_SHORT[id])}</text>`)}).join("")}).join("")}
+  ${vh("part","ballast","Ballast: governance",`<ellipse cx="600" cy="744" rx="150" ry="22" fill="var(--ballast)" stroke="var(--ballast-line)" stroke-width="2"/><ellipse cx="600" cy="744" rx="150" ry="22" class="hl"/><text x="600" y="748" text-anchor="middle" class="vt-m" style="fill:var(--ink)">BALLAST · GOVERNANCE</text>`)}
+  ${vh("part","boundary","Insperity IP boundary",`<path d="M272 346 L596 346 L596 420 L990 420 L990 772 L272 772 Z" class="hit" style="stroke-width:14"/><path d="M272 346 L596 346 L596 420 L990 420 L990 772 L272 772 Z" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="9 6"/><text x="282" y="764" class="vt-m" style="fill:var(--accent)">INSPERITY IP BOUNDARY</text>`)}
+  <text x="20" y="488" class="vt-m">THE SEVEN SEAS</text><text x="1006" y="488" class="vt-m">THE SEVEN SEAS</text>
+  ${FS_SEAS.map((s,i)=>{const [x,y]=seaPos[i],w=seaW[i];const n=FS_FEAT.filter(f=>f.sea===s.id).length;return vh("sea",s.id,s.name,`<rect x="${x}" y="${y}" width="${w}" height="40" rx="6" class="sea-tile"/><rect x="${x}" y="${y}" width="6" height="40" rx="2" fill="${SEA_COLOR[s.id]}"/><rect x="${x}" y="${y}" width="${w}" height="40" rx="6" class="hl"/><text x="${x+14}" y="${y+17}" class="vt" style="font-weight:600">${esc(s.name)}</text><text x="${x+14}" y="${y+32}" class="vt-m">${n} SERVICES</text>`)}).join("")}
+  <text x="20" y="654" class="vt-m">PORTS · VENDOR PLATFORMS</text><text x="1006" y="654" class="vt-m">PORTS · VENDOR PLATFORMS</text>
+  ${ports.map(([id,x,y,w])=>vh("port",id,PORTS[id].name,`<rect x="${x}" y="${y}" width="${w}" height="36" rx="6" class="port"/><rect x="${x}" y="${y}" width="${w}" height="36" rx="6" class="hl"/><text x="${x+12}" y="${y+22}" class="vt" style="font-weight:500">${esc(PORTS[id].short||PORTS[id].name)}</text>`)).join("")}
+  </svg>`;
+}
+function roseSVG(){
+  const cx=220,cy=220,R=200,r0=62,n=7,st=-90-180/n;const P=(r,a)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)].map(v=>v.toFixed(1)).join(" ");
+  const g=FS_SEAS.map((s,i)=>{const a0=st+i*360/n,a1=a0+360/n,am=(a0+a1)/2;const lx=cx+132*Math.cos(am*Math.PI/180),ly=cy+132*Math.sin(am*Math.PI/180);
+    return `<g class="rw" tabindex="0" role="button" ${attrs("sea",s.id,s.name)}><path d="M ${P(r0,a0)} L ${P(R,a0)} A ${R} ${R} 0 0 1 ${P(R,a1)} L ${P(r0,a1)} A ${r0} ${r0} 0 0 0 ${P(r0,a0)} Z" style="fill:${SEA_COLOR[s.id]}"/><text x="${lx.toFixed(1)}" y="${(ly-2).toFixed(1)}" text-anchor="middle" class="rl">${esc(s.name)}</text><text x="${lx.toFixed(1)}" y="${(ly+14).toFixed(1)}" text-anchor="middle" class="rn">${FS_FEAT.filter(f=>f.sea===s.id).length} services</text></g>`}).join("");
+  return `<svg viewBox="0 0 440 440" class="rose" role="group" aria-label="The Seven Seas"><circle cx="${cx}" cy="${cy}" r="${R+8}" fill="none" stroke="var(--line)" stroke-width="1.5"/>${g}<g class="rw" tabindex="0" role="button" ${attrs("part","northstar","North Star")}><circle cx="${cx}" cy="${cy}" r="${r0-4}" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><path d="M${cx} ${cy-34} L${cx+7} ${cy-7} L${cx+34} ${cy} L${cx+7} ${cy+7} L${cx} ${cy+34} L${cx-7} ${cy+7} L${cx-34} ${cy} L${cx-7} ${cy-7} Z" fill="var(--star)"/><path d="M${cx} ${cy-34} L${cx+7} ${cy-7} L${cx-7} ${cy-7} Z" fill="var(--ink)"/></g><text x="${cx}" y="${cy+52}" text-anchor="middle" class="rn" style="letter-spacing:.08em">NORTH STAR</text></svg>`;
+}
+
+/* ===================== PAGES ===================== */
+function pOverview(){
+  const groups=[["Bearing and sail",[["part","northstar"],["part","halyard"],["phase","1"],["phase","2"],["phase","3"]]],["Bridge, instruments and rigging",[["part","insights"],["part","compass"],["part","copilot"],["part","winch"],["part","sextant"],["part","mainsheet"]]],["Waterline and hull",[["part","waterline"],...["h-ground","h-ext","h-pep","h-cb","h-vgr","h-hil","h-anl","h-exm","h-vra","h-ntf","h-lrn","h-adp"].map(h=>["part",h])]],["Keel, ballast and boundary",[...["VOC","ONT","RUL","DEC","REQ","CMP","VAL","STD","IDN","PER","MAP","MET","CAU"].map(m=>["ms",m]),["part","ballast"],["part","boundary"]]],["Seven Seas and ports",[...FS_SEAS.map(s=>["sea",s.id]),...Object.keys(PORTS).filter(p=>p!=="client").map(p=>["port",p])]]];
+  const nm=(k,id)=>k==="part"?PARTS[id].name:k==="phase"?"Phase "+id+" · "+FS_PH[id-1].name:k==="ms"?FS_M[id].name:k==="sea"?FS_SEA[id].name:PORTS[id].name;
+  return `<div class="ph"><div><span class="eyebrow">Proposal for Insperity executive and technical leaders · Draft for discussion · October 2026</span><h1>One vessel, seven seas</h1><p>The Keel and North Star architecture, with the halyard that raises every service. Click any part of the vessel, or any of the Seven Seas, to see what it is and why it matters. Details open in the panel; the picture stays put.</p></div></div>
+   <figure class="vessel" style="margin:0">${vesselSVG()}<figcaption class="vlegend"><span><span class="dot" style="background:var(--star)"></span> North Star and agents</span><span><span class="dot" style="background:var(--accent)"></span> Halyard, bridge and IP boundary</span><span><span class="dot" style="background:var(--keel)"></span> Keel: Insperity IP</span><span><span class="dot" style="background:var(--warn)"></span> Ports: vendor platforms</span><span>Halyard Employer Services in the working prototype stands in for Insperity.</span></figcaption></figure>
+   <section class="sec"><h2>Three ideas</h2><div class="grid g3">${THESES.map(t=>`<button class="cell thesis" ${attrs("thesis",t.id)}><span class="k">${esc(t.k)}</span><b>${esc(t.name)}</b><span>${esc(t.lead)}</span></button>`).join("")}</div></section>
+   <section class="sec"><h2>Every part of the vessel</h2><p>The same parts as the picture, as a list.</p>${groups.map(([g,items])=>`<h4 class="eyebrow" style="margin:14px 0 8px">${esc(g)}</h4><div class="grid gauto">${items.map(([k,id])=>`<button class="cell" ${attrs(k,id)}><b>${esc(nm(k,id))}</b></button>`).join("")}</div>`).join("")}</section>`;
+}
+function pSeas(){
+  const row=s=>{const fs=ph=>FS_FEAT.filter(f=>f.sea===s.id&&f.ph===ph); const ags=[...new Set(FS_FEAT.filter(f=>f.sea===s.id).flatMap(f=>f.ag))];
+    return `<tr><td><button class="rowh" ${attrs("sea",s.id)}><span class="dot" style="background:${SEA_COLOR[s.id]};width:12px;height:12px"></span>${esc(s.name)}</button><div class="note">${esc(s.line)}</div></td>
+     <td>${s.jobs.map(j=>`<div style="font-size:13px;margin-bottom:4px">${esc(j)}</div>`).join("")}</td><td>${s.sor.map(j=>`<div style="font-size:13px;margin-bottom:4px">${esc(j)}</div>`).join("")}</td>
+     ${[1,2,3].map(p=>`<td>${fs(p).map(f=>`<button class="tile" ${attrs("svc",f.id)}>${esc(f.name)}</button>`).join("")||'<span class="note">—</span>'}</td>`).join("")}
+     <td><div class="chips">${ags.map(agChip).join("")}</div></td></tr>`};
+  return `<div class="ph"><div><span class="eyebrow">The employee front door</span><h1>The Seven Seas</h1><p>The home is organized around seven needs, not around systems. Workday, I2 University and Microsoft 365 stay the systems of record; the home finds, explains and routes, and every action lands on the right task.</p></div></div>
+   <div class="seas-top"><div>${roseSVG()}</div><div class="grid">${THESES.slice(1,2).map(t=>`<button class="cell thesis" ${attrs("thesis",t.id)}><span class="k">${esc(t.k)}</span><b>${esc(t.name)}</b><span>${esc(t.lead)}</span></button>`).join("")}<button class="cell" ${attrs("svc","F01")}><span class="k">Front door · Phase 1</span><b>Seven Seas home</b><span>${esc(FS_F.F01.v)}</span></button><button class="cell" ${attrs("agent","CON")}><span class="k">Agent</span><b>Concierge</b><span>${esc(FS_A.CON.role)}</span></button></div></div>
+   <section class="sec"><h2>What each sea covers</h2><p>Click a sea, a service or an agent.</p><div class="tbl"><table class="mx"><thead><tr><th>Sea</th><th>Employees come here to</th><th>System of record</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3 · clients</th><th>Agents</th></tr></thead><tbody>${FS_SEAS.map(row).join("")}</tbody></table></div></section>`;
+}
+function pServices(){
+  const rows=[{id:"all",name:"All seas"},...FS_SEAS];
+  const dim=f=>S.filt!=="all"&&f.aud!==S.filt?" dim":"";
+  return `<div class="ph"><div><span class="eyebrow">${FS_FEAT.length} services · ${FS_MS.length} microservices · ${FS_AGENTS.length} agents</span><h1>Service catalog</h1><p>Phases 1 and 2 serve Insperity's employees. Phase 3 offers the proven services to clients on HRScale, built from the same parts.</p></div>
+    <div class="seg" role="group" aria-label="Audience filter">${[["all","All"],["Employees","Insperity employees"],["Clients","Clients"]].map(([k,l])=>`<button data-filt="${k}" aria-pressed="${S.filt===k}">${l}</button>`).join("")}</div></div>
+   <div class="tbl"><table class="mx"><thead><tr><th>Sea</th>${FS_PH.map((p,i)=>`<th><button class="hb" ${attrs("phase",String(p.n))}>Phase ${p.n} · ${esc(p.name)}</button><div class="note" style="text-transform:none;letter-spacing:0;font-family:var(--f-body)">${esc(p.when)} · ${i?RU[i].pct+"% reuse":RU[0].fresh.length+" microservices built"}</div></th>`).join("")}</tr></thead>
+   <tbody>${rows.map(s=>`<tr><td>${s.id==="all"?`<span class="rowh" style="cursor:default">All seas</span>`:`<button class="rowh" ${attrs("sea",s.id)}><span class="dot" style="background:${SEA_COLOR[s.id]};width:12px;height:12px"></span>${esc(s.name)}</button>`}</td>${[1,2,3].map(p=>`<td>${FS_FEAT.filter(f=>f.sea===s.id&&f.ph===p).map(f=>`<button class="tile${dim(f)}" ${attrs("svc",f.id)}>${esc(f.name)}<small>${esc(f.aud)} · ${f.ag.map(a=>FS_A[a].name).join(", ")}</small></button>`).join("")||'<span class="note">—</span>'}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <section class="sec"><h2>The recipe</h2><p>Every service is assembled the same way, which is what makes it reusable.</p><div class="grid g4"><button class="cell" ${attrs("part","halyard")}><span class="k">1</span><b>Experience</b><span>What people see: a page, a card, an answer in Teams.</span></button><button class="cell" ${attrs("part","winch")}><span class="k">2</span><b>Agent and decision model</b><span>Registered, owned and versioned.</span></button><button class="cell" ${attrs("part","h-adp")}><span class="k">3</span><b>Microservices</b><span>Taken from the catalog, not rebuilt.</span></button><button class="cell" ${attrs("ms","CMP")}><span class="k">4</span><b>Components and measures</b><span>Governed content and registered indicators.</span></button></div></section>`;
+}
+function pAgents(){
+  return `<div class="ph"><div><span class="eyebrow">${FS_AGENTS.length} agents · one decision-model registry</span><h1>Agents</h1><p>Each agent is a registered decision model plus the microservices it may call. Open one to try its decision model: change an input and see which rule fires, what it does and where a person approves.</p></div></div>
+   <div class="grid gauto">${FS_AGENTS.map(a=>{const ms=new Set(a.rules.flatMap(r=>r.calls)).size;const n=FS_FEAT.filter(f=>f.ag.includes(a.id)).length;return `<button class="cell agent-cell" ${attrs("agent",a.id)}><span class="k">Agent ${esc(a.id)}</span><b>${esc(a.name)}</b><span>${esc(a.role)}</span><span class="mono" style="font-size:11px">${a.rules.length} rules · ${ms} microservices · ${n} services</span></button>`}).join("")}</div>
+   <section class="sec"><h2>How an agent guides microservices</h2><div class="grid g4"><button class="cell" ${attrs("part","h-ground")}><span class="k">1 · Understand</span><b>Decompose and ground</b><span>Who, what, when, where, why; words to concepts.</span></button><button class="cell" ${attrs("ms","DEC")}><span class="k">2 · Decide</span><b>Evaluate the decision model</b><span>First matching rule wins; protective rules come first.</span></button><button class="cell" ${attrs("part","h-pep")}><span class="k">3 · Do</span><b>Call microservices</b><span>Through policy enforcement, in the order the rule names.</span></button><button class="cell" ${attrs("part","h-cb")}><span class="k">4 · Check</span><b>Breaker and human gate</b><span>Grounded or refused; people approve the irreversible.</span></button></div></section>`;
+}
+function pMicro(){
+  const band=L=>`<div class="grid gauto">${FS_MS.filter(m=>m.layer===L).map(m=>`<button class="cell" ${attrs("ms",m.id)}><span class="k"><span class="ms L-${m.layer}">${m.id}</span> · ${usedBy(m.id).length} services</span><b>${esc(m.name)}</b><span>${esc(m.what)}</span></button>`).join("")}</div>`;
+  return `<div class="ph"><div><span class="eyebrow">${FS_MS.length} shared parts in three layers</span><h1>Microservices</h1><p>Keel services hold Insperity's IP. Hull services run it. Adapters are the only parts that touch vendors.</p></div></div>
+   ${["Keel","Hull","Adapter"].map(L=>`<section class="sec" style="margin-top:18px"><h2>${L==="Adapter"?"Adapters":L}</h2><p>${esc(LAYER_MEAN[L])}</p>${band(L)}</section>`).join("")}
+   <section class="sec"><h2>Reuse matrix</h2><p>Each filled cell is a service using a microservice. Click a cell, a row or a column.</p>
+   <div class="tbl" style="padding:10px"><table class="heat"><thead><tr><th></th>${FS_MS.map(m=>`<th class="c"><button class="hb" ${attrs("ms",m.id)}>${m.id}</button></th>`).join("")}</tr></thead><tbody>
+   ${FS_FEAT.map(f=>`<tr><th class="r"><button class="hb" ${attrs("svc",f.id)}>${esc(f.name)}</button></th>${FS_MS.map(m=>{const on=f.ms.includes(m.id);return `<td><button class="hc${on?" on L-"+m.layer:""}" ${attrs("use",f.id+"|"+m.id,(on?"":"Not used: ")+f.name+" and "+m.name)}></button></td>`}).join("")}</tr>`).join("")}
+   <tr><th class="r" style="color:var(--muted)">Services using it</th>${FS_MS.map(m=>`<td class="mono" style="font-size:11px;text-align:center">${usedBy(m.id).length}</td>`).join("")}</tr></tbody></table></div></section>`;
+}
+function pBoundary(){
+  const ipg=FS_A.IPG, ds=ipg.inputs[0].opts, py=ipg.inputs[1].opts;
+  return `<div class="ph"><div><span class="eyebrow">Building on Workday and Microsoft without giving away the keel</span><h1>IP Boundary</h1><p>Vendors connect through adapters in the hull. They receive what each task needs and never the keel. Employees and clients see Insperity services; the vendors behind them can change without the experience or the IP changing.</p></div></div>
+   <div class="zones"><div class="zone own"><span class="eyebrow">Inside Insperity's boundary</span><h3>Owned IP</h3><div class="grid">${["VOC","ONT","RUL","DEC","REQ","CMP","VAL","STD","IDN"].map(m=>`<button class="cell" ${attrs("ms",m)}><b>${esc(FS_M[m].name)}</b></button>`).join("")}<button class="cell" ${attrs("part","h-ground")}><b>Grounding index, prompts and agent definitions</b></button><button class="cell" ${attrs("ms","PER")}><b>${esc(FS_M.PER.name)}</b></button><button class="cell" ${attrs("ms","MAP")}><b>${esc(FS_M.MAP.name)}</b></button><button class="cell" ${attrs("ms","MET")}><b>Metrology and MTBH telemetry</b></button><button class="cell" ${attrs("ms","CAU")}><b>${esc(FS_M.CAU.name)}</b></button><button class="cell" ${attrs("part","h-lrn")}><b>Provenance and learning history</b></button></div></div>
+   <div class="zone cross"><span class="eyebrow">What crosses, and how</span><h3>Compile, don't copy</h3><div class="grid">${ipg.rules.map((r,i)=>`<button class="cell" ${attrs("iprule",String(i))}><span class="k">Rule ${i+1}</span><b>${esc(r.out)}</b></button>`).join("")}<button class="cell" ${attrs("agent","IPG")}><span class="k">Agent</span><b>IP boundary guardian</b><span>Checks every call that leaves the boundary.</span></button></div></div>
+   <div class="zone vend"><span class="eyebrow">Outside: the ports</span><h3>Vendor platforms</h3><div class="grid">${Object.keys(PORTS).map(p=>`<button class="cell" ${attrs("port",p)}><span class="k">Adapter ${esc(PORTS[p].ad)}</span><b>${esc(PORTS[p].name)}</b></button>`).join("")}</div></div></div>
+   <section class="sec"><h2>Crossing rules</h2><p>The IP boundary guardian's decision model, evaluated for every destination and payload. Click a cell to see the rule that decides it.</p>
+    <div class="seg" role="group" aria-label="Vendor terms" style="margin-bottom:10px">${ipg.inputs[2].opts.map((o,i)=>`<button data-tm="${i}" aria-pressed="${S.tm===i}">${esc(o)}</button>`).join("")}</div>
+    <div class="tbl"><table class="cross"><thead><tr><th style="text-align:left">Destination</th>${py.map(p=>`<th>${esc(p)}</th>`).join("")}</tr></thead><tbody>${ds.map((d,di)=>`<tr><td style="text-align:left;font-weight:600">${esc(d)}</td>${py.map((p,pi)=>{const e=fsEval(ipg,{ds:di,py:pi,tm:S.tm});const allow=/^Allow/.test(e.r.out);return `<td><button class="xc ${allow?"allow":"block"}" ${attrs("cross",di+"|"+pi+"|"+S.tm,d+", "+p)}><b>${allow?"Allow":"Block"}</b><span class="note">Rule ${e.i+1}</span></button></td>`}).join("")}</tr>`).join("")}</tbody></table></div>
+    <p class="note" style="margin-top:10px">Technical controls reduce exposure but do not replace contracts. Data-use, no-training and configuration-ownership terms need Legal review, and some compiled logic will live in Workday configuration.</p></section>`;
+}
+function pRoadmap(){
+  return `<div class="ph"><div><span class="eyebrow">Operationalize · industrialize · scale</span><h1>Roadmap</h1><p>Each phase has a goal, a scope and exit criteria. Reuse is computed from the catalog: the share of each phase's microservice uses that earlier phases already built.</p></div></div>
+   <div class="tbl"><table class="road"><thead><tr><th>Workstream</th>${FS_PH.map((p,i)=>`<th class="p"><button class="hb" ${attrs("phase",String(p.n))}>${p.n} · ${esc(p.name)}</button><small>${esc(p.when)} · ${i?RU[i].pct+"% reuse":RU[0].fresh.length+" microservices built"}</small></th>`).join("")}</tr></thead>
+   <tbody>${WS.map(w=>`<tr><td class="wsh">${esc(w.name)}</td>${w.c.map((c,i)=>`<td><button class="rc" ${attrs("road",w.id+"|"+i)}>${esc(c)}</button></td>`).join("")}</tr>`).join("")}</tbody></table></div>
+   <section class="sec"><h2>How we'll know it works</h2><p>Baselines are set in phase 1; targets are agreed with the sponsor before phase 2.</p><div class="grid gauto">${MEASURES.map((m,i)=>`<button class="cell" ${attrs("measure",String(i))}><b>${esc(m[0])}</b><span>${esc(m[1])}</span></button>`).join("")}</div></section>
+   <section class="sec"><h2>Risks and responses</h2><div class="grid gauto">${RISKS.map((r,i)=>`<button class="cell" ${attrs("risk",String(i))}><span class="k">Risk</span><b>${esc(r[0])}</b></button>`).join("")}</div></section>
+   <section class="sec"><h2>Decisions we're asking for</h2><div class="grid gauto">${DECISIONS.map((d,i)=>`<button class="cell" ${attrs("decision",String(i))}><span class="k">Decision ${i+1}</span><b>${esc(d[0])}</b><span>${esc(d[1])}</span></button>`).join("")}</div></section>`;
+}
+
+
+/* ===================== CAPABILITIES PAGE ===================== */
+const CAPS=[
+ {id:"persona",layer:"Keel",name:"Persona and personal semantic model",where:"Keel row: Personas",show:["ms","PER"],lead:"Every employee has a semantic profile: role, location, tenure, goals, learning, preferences and consents. It drives what Compass ranks, what the handbook assembles and what agents suggest.",bul:["The employee can see it, correct it and choose what is shared","Design personas shape each experience: new hire, manager, field employee, remote worker, client admin","Only stated or system-of-record facts; no inferred sensitive traits"],tech:"PER links each enterprise ID (IDN) to keel concepts, with a consent scope per attribute. Assembly, ranking and agents read it only through policy enforcement (PEP).",ms:["PER","IDN","PEP"],ag:["CON","VCO","CMPL"],svc:["F01","F03","F22"]},
+ {id:"ssot",layer:"Keel",name:"Single source of truth (SSOT)",where:"Keel row: SSOT · PAP",show:["ms","RUL"],lead:"Each rule, constraint, definition and piece of logic is authored once in the keel and compiled to wherever it runs: Workday conditions, analytics, the policy engine and AI guardrails.",bul:["One definition of each term, rule and metric","Change it once; every engine and channel updates together","Owner, version and history on every item"],tech:"The rules register (LKIF norms plus SHACL shapes) compiles to OPA/Rego, dbt and Workday business-process conditions. KGCL records every change; SSOT propagation updates all consumers.",ms:["RUL","VOC","ONT","DEC"],ag:["POL","DRF"],svc:["F03","F07","F16"]},
+ {id:"policy",layer:"Keel and hull",name:"Policy authoring (PAP) and enforcement (PEP)",where:"Keel row SSOT · PAP, hull cell PEP",show:["part","h-pep"],lead:"Policies are authored at one point (PAP, backed by the SSOT), decided by registered decision models (PDP), informed by governed data (PIP) and enforced wherever a person or agent acts (PEP).",bul:["The Authoring Studio is the policy authoring point","Enforcement in the hull, the adapters and Workday conditions","The same rules govern transactions, dashboards and AI answers"],tech:"An XACML-style split: PAP = RUL plus the Authoring Studio; PDP = DEC; PIP = IDN, PER, VGR and STD; PEP = PEP plus guards in every adapter.",ms:["RUL","DEC","PEP","IDN","VGR"],ag:["POL","IPG"],svc:["F07","F19"]},
+ {id:"decision",layer:"Keel",name:"Decision models",where:"Keel row: Decisions · PDP; the winch",show:["part","winch"],lead:"Every agent decides with a registered decision model: inputs, rules, weights and the human gate. Decisions are recorded and later checked against measured outcomes.",bul:["One registry; every model has an owner and version","Protective rules first; the Compass breaks ties","Decision records feed causal review"],tech:"DMN-style decision tables with a first-match hit policy, plus weighted criteria (outcome 35%, risk 25%, time 20%, build or buy 20%) where options are scored.",ms:["DEC","CAU","MET"],ag:["IDE","IPG","CON"],svc:["F12","F26"],go:"agents"},
+ {id:"breaker",layer:"Hull",name:"AI Circuit Breaker",where:"Hull cell: Circuit Breaker",show:["part","h-cb"],lead:"Checks ambiguity, policy, privacy, values and grounding before anything reaches a person, and trips when an agent's error rate passes its threshold.",bul:["Closed, half-open or open, with the reason shown","Mean time between hallucinations tracked per agent","Half-open sends work to a person"],tech:"Rule checks plus grounding (GRD) and model review; MTBH metrology (MET) sets units, thresholds and uncertainty.",ms:["CB","GRD","MET","HIL"],ag:["POL","CON","OMB"],svc:["F07","F04","F20"]},
+ {id:"mappings",layer:"Keel",name:"Mappings to digital assets",where:"Keel row: Asset maps",show:["ms","MAP"],lead:"Every form, course, dashboard, document, Workday task and Teams site is mapped to the concepts it serves, so Compass can find it by meaning and agents can deep-link to it.",bul:["Typed mappings with an owner and a confidence score","Broken or stale links caught by the drift sentinel","One concept can point to many assets across systems"],tech:"Six correspondence types: SKOS exactMatch, closeMatch, broadMatch, narrowMatch, plus derivedFrom and partOf, kept in a persistent mapping graph.",ms:["MAP","VOC","EVT"],ag:["CON","DRF","LRS"],svc:["F02","F01","F24"]},
+ {id:"vgraph",layer:"Hull",name:"Virtual graphs",where:"Hull cell: Virtual graph",show:["part","h-vgr"],lead:"Workday, I2 University and Microsoft 365 data stays where it is. The virtual graph lets Compass, agents and analytics query it in place through the ontology.",bul:["No copying of operational data","Only results leave the source","Slow-changing reference data is persisted; fast-changing data is virtualized"],tech:"Ontology-based data access (R2RML) and SQL/PGQ property-graph views; SPARQL rewritten and pushed down to sources. A hybrid of persistent keel and virtual operational data.",ms:["VGR","ONT","MAP","PEP"],ag:["INS","CON","DRF"],svc:["F02","F05","F24"]},
+ {id:"extract",layer:"Hull",name:"Three-tier extraction",where:"Hull cell: Extraction",show:["part","h-ext"],lead:"Top-down ontologies, middle-out vocabulary and bottom-up sources meet in one extraction pipeline that turns documents, fields and statutes into governed concepts.",bul:["Tier 1 top-down: what we need to know (ontologies and holarchy)","Tier 2 middle-out: how words map to concepts (vocabulary and taxonomy)","Tier 3 bottom-up: what the sources say (schemas, documents, statutes)"],tech:"Methods escalate only as needed: deterministic rules, then taxonomy-driven NLP, then grounded LLM extraction. Each result carries confidence and provenance; low confidence goes to human review.",ms:["EXT","VOC","ONT","CB","HIL","PRV"],ag:["POL","LRS"],svc:["F02","F03","F17"]},
+ {id:"supply",layer:"Bridge",name:"Analytics: supply chain insights",where:"Bridge window: Insights",show:["part","insights"],lead:"Trace every service from its sources (laws, vendors, systems, policies) through the keel to what employees and clients use, and see lead times, bottlenecks and single points of failure.",bul:["Which services depend on which vendors and sources","How long a law change takes to reach employees","Where one owner or one system holds up many services"],tech:"Lineage from PROV-O records and the mapping graph, queried through the virtual graph; every metric defined in MET.",ms:["ANL","PRV","MAP","VGR","MET"],ag:["INS"],svc:["F24","F27"]},
+ {id:"assembly",layer:"Bridge",name:"Analytics: dynamic assembly",where:"Bridge window: Insights",show:["part","insights"],lead:"See what is assembled, for whom and how often: which components carry the most weight, which go unused, and where profiles hit gaps.",bul:["Assembly counts by persona, state and role","Unused and duplicate components","Gaps where a profile has no guidance"],tech:"Assembly events from CMP joined to PER profiles in aggregate; reuse rate and coverage defined in MET.",ms:["ANL","CMP","PER","MET"],ag:["INS"],svc:["F25"]},
+ {id:"learning",layer:"Hull",name:"Recursive learning",where:"The mainsheet; hull cell Learning",show:["part","mainsheet"],lead:"The platform improves itself from use: unanswered questions, repeated edits, overrides and missed outcomes become proposed improvements to the keel, which people approve.",bul:["Every signal is logged; patterns become proposals","Proposals go to the owner, Legal or the Privacy Office","Approved changes re-assemble every affected experience"],tech:"LRN aggregates signals from NTF, EXM, CB and decision records; proposals are KGCL change requests through the release gates.",ms:["LRN","HIL","PRV","MAP","VOC"],ag:["LRS","XPL"],svc:["F28","F23"]},
+ {id:"hitl",layer:"Hull",name:"Human in the loop",where:"Hull cell: Human in the loop; the ballast",show:["part","h-hil"],lead:"People approve anything irreversible, anything half-open, and every change to the keel. Employees see the evidence and can respond before any decision about them.",bul:["Named human gate on every agent rule","Review queues with service levels","Every human decision kept as a record"],tech:"HIL queues bound to decision-model gates; approvals recorded in PRV and fed to LRN.",ms:["HIL","PRV","DEC"],ag:["POL","EXP","VCO","LRS"],svc:["F07","F08","F22"]},
+ {id:"metrology",layer:"Keel",name:"Metrology",where:"Keel row: Metrology; the sextant",show:["part","sextant"],lead:"Every number has a definition: what is measured, the unit, the method, the uncertainty and the owner. That is what makes measures comparable and trustworthy, including MTBH.",bul:["One definition card per measure","Uncertainty shown, not hidden","Calibration when a source or method changes"],tech:"Measurement definitions follow ISO/IEC Guide 99 (VIM) and ISO 80000-1 units; each indicator carries its k threshold and decision-use flag.",ms:["MET","VAL","CB"],ag:["INS","CUL"],svc:["F13","F26"]},
+ {id:"causality",layer:"Keel",name:"Causality",where:"Keel row: Causal models; the sextant",show:["part","sextant"],lead:"Before a decision, record what it is expected to change. After, measure it. Results are labeled as cause only when the design supports it; otherwise they are association.",bul:["Expected outcomes recorded in the decision record","Causal graphs link services and policies to outcomes","Plain labels: cause, association, or not yet known"],tech:"Causal DAGs per outcome; estimates by pre-registered comparison (staggered rollout, difference-in-differences) with uncertainty from MET.",ms:["CAU","DEC","MET","ANL"],ag:["INS","LRS"],svc:["F26","F27"]},
+ {id:"experience",layer:"Hull",name:"Experiential measurement",where:"Hull cell: Experience",show:["part","h-exm"],lead:"Measure how each moment felt and how hard it was: effort, steps, time and one-tap feedback, without asking too often.",bul:["Passive measures first; questions only when useful","Abandoned tasks get one question: what got in the way?","Reported in aggregate, for groups of 5 or more"],tech:"EXM events per task and channel, defined in MET and joined to assembly and outcome data in ANL.",ms:["EXM","MET","ANL","PEP"],ag:["XPL"],svc:["F23","F27"]},
+ {id:"values",layer:"Hull",name:"Values reinforcement and assessment for each employee",where:"Hull cell: Values coach; Seven Seas: Culture",show:["part","h-vra"],lead:"Each employee gets a personal compass: recognition tied to the principles, short reflections, learning nudges, and an assessment they own and choose to share for performance dialogues.",bul:["Private by default; the employee decides what to share","Evidence from self-reflection, peer recognition and goals, never from monitoring","No automated values score used for any decision; people talk it through"],tech:"VRA reads VAL principles and PER consents; attributable indicators require HIL review and the employee's right to respond. Prohibited practices (keystroke capture, message mining, off-duty monitoring) are blocked by the Circuit Breaker.",ms:["VRA","VAL","PER","HIL","MET"],ag:["VCO"],svc:["F22","F21"]}
+];
+const CAP=Object.fromEntries(CAPS.map(c=>[c.id,c]));
+const GEN={
+ pol:{
+  pap:{e:"Policy architecture",n:"PAP · policy authoring point",l:"Where policy is written once: the Authoring Studio over the rules SSOT, with requirements, sources and the Circuit Breaker.",ms:["RUL","REQ","CB"],ag:["POL"]},
+  pdp:{e:"Policy architecture",n:"PDP · policy decision point",l:"Registered decision models evaluate each request against the policy and return a decision with its reason.",ms:["DEC"],ag:["CON","IPG"]},
+  pip:{e:"Policy architecture",n:"PIP · policy information points",l:"Governed facts the decision needs: identity, persona and consents, jurisdiction, and live data through the virtual graph.",ms:["IDN","PER","STD","VGR"]},
+  pep:{e:"Policy architecture",n:"PEP · policy enforcement points",l:"Where the decision is applied: every search result, answer, assembled page, adapter call and Workday condition.",ms:["PEP","AWD","AMS","LLM"],ag:["IPG"]}},
+ tier:{
+  t1:{e:"Three-tier extraction",n:"Tier 1 · Top-down",l:"Ontologies and the holarchy say what we need to know: services, requirements, laws, concepts.",ms:["ONT","STD"]},
+  t2:{e:"Three-tier extraction",n:"Tier 2 · Middle-out",l:"The vocabulary and taxonomy say how words map to concepts, so many labels resolve to one meaning.",ms:["VOC","MAP"]},
+  t3:{e:"Three-tier extraction",n:"Tier 3 · Bottom-up",l:"Source schemas, documents and statutes say what is actually there: Workday fields, I2 University catalogs, SharePoint pages, legal text.",ms:["VGR","AWD","ALM"]},
+  m1:{e:"Extraction method 1",n:"Deterministic",l:"Schemas, codes and exact matches. Cheapest and most reliable; always tried first.",ms:["EXT","RUL"]},
+  m2:{e:"Extraction method 2",n:"Taxonomy-driven NLP",l:"Entity and term recognition guided by the vocabulary, for documents and free text.",ms:["EXT","VOC"]},
+  m3:{e:"Extraction method 3",n:"Grounded LLM with review",l:"For what the first two cannot resolve. Output must ground to a concept; low confidence goes to a person.",ms:["EXT","LLM","CB","HIL"]}},
+ mst:{
+  exp:{e:"Measurement",n:"Experiential",l:"How a moment felt: effort, steps, time and one-tap feedback.",ms:["EXM"],ag:["XPL"]},
+  ops:{e:"Measurement",n:"Operational",l:"How the service ran: time to complete, questions resolved without a case, on-time compliance, MTBH.",ms:["ANL","CB"]},
+  out:{e:"Measurement",n:"Outcome",l:"What changed: retention, idea throughput, speak-up confidence, client results.",ms:["ANL","VAL"]},
+  cau:{e:"Measurement",n:"Causal",l:"Whether the service caused the change, against an expectation recorded before.",ms:["CAU","DEC"],ag:["INS"]},
+  met:{e:"Measurement foundation",n:"Metrology",l:"Definitions, units, methods, uncertainty and calibration under every layer above.",ms:["MET"]}},
+ loop:{
+  l1:{e:"Recursive learning · 1",n:"Observe",l:"Questions, searches, edits, overrides, abandoned tasks and outcomes are logged.",ms:["NTF","EXM","PRV"]},
+  l2:{e:"Recursive learning · 2",n:"Measure",l:"Signals become defined measures with units and uncertainty.",ms:["MET","ANL"]},
+  l3:{e:"Recursive learning · 3",n:"Explain",l:"Causal review separates real effects from noise.",ms:["CAU"],ag:["INS"]},
+  l4:{e:"Recursive learning · 4",n:"Propose",l:"The Learning steward drafts a change: a term, a component, a mapping or a rule.",ms:["LRN"],ag:["LRS"]},
+  l5:{e:"Recursive learning · 5",n:"Approve",l:"A person approves: the owner, Legal or the Privacy Office.",ms:["HIL"]},
+  l6:{e:"Recursive learning · 6",n:"Update the keel",l:"The change is versioned in the SSOT and passes the release gates.",ms:["RUL","VOC","MAP","PRV"]},
+  l7:{e:"Recursive learning · 7",n:"Re-assemble",l:"Every affected experience updates, and the loop measures the result.",ms:["CMP","NTF"]}},
+ pc:{
+  reinforce:{e:"Personal compass",n:"Reinforce",l:"Recognition tied to the principle it shows and its Compass tier; thanks back to the giver; values moments in everyday tasks.",ms:["VRA","VAL","NTF"],ag:["VCO"]},
+  reflect:{e:"Personal compass",n:"Reflect",l:"Two-minute reflections, private by default, linked to goals and learning.",ms:["VRA","PER"],ag:["VCO"]},
+  assess:{e:"Personal compass",n:"Assess",l:"An evidence pack the employee owns: self-reflection, peer recognition and goals. Shared only by choice, discussed with a manager, never scored by a machine.",ms:["VRA","HIL","PRV"],ag:["VCO"]},
+  guard:{e:"Personal compass",n:"Safeguards",l:"No keystroke capture, message mining or off-duty monitoring; aggregate culture results only for groups of 5 or more; the employee's right to see and respond.",ms:["PEP","CB","VAL"],ag:["CUL"]}}
+};
+function pCaps(){
+  const rows=[["Bridge","Insights for leaders"],["Hull","Run-time"],["Keel and hull","Policy architecture"],["Keel","Governed meaning"]];
+  const cell=c=>`<button class="cell" ${attrs("cap",c.id)}><b>${esc(c.name)}</b><span>${esc(c.where)}</span></button>`;
+  const g=(k,id,cls)=>{const x=GEN[k][id];return `<button class="cell${cls?" "+cls:""}" ${attrs(k,id)}><span class="k">${esc(x.e)}</span><b>${esc(x.n)}</b><span>${esc(x.l)}</span></button>`};
+  return `<div class="ph"><div><span class="eyebrow">${CAPS.length} capabilities · where each one lives</span><h1>Capabilities</h1><p>Persona, SSOT, decision models, the Circuit Breaker, asset mappings, virtual graphs, three-tier extraction, analytics, recursive learning, human review, metrology, causality, policy authoring and enforcement, experiential measurement and values for each employee. Each cell says where it sits on the vessel; the panel shows it there.</p></div></div>
+   <div class="caprows">${rows.map(([L,sub])=>{const cs=CAPS.filter(c=>c.layer===L);return `<div class="caprow"><div class="caplab"><b>${esc(L)}</b><span>${esc(sub)}</span></div><div class="grid gauto">${cs.map(cell).join("")}</div></div>`}).join("")}</div>
+   <section class="sec"><h2>Author once, enforce everywhere</h2><p>The policy architecture behind every answer and action.</p>
+    <div class="flow">${g("pol","pap")}<span class="farrow">→</span>${g("pol","pdp")}<span class="farrow">→</span>${g("pol","pep")}</div><div class="flow-under">${g("pol","pip")}</div></section>
+   <section class="sec"><h2>Three-tier extraction</h2><p>Sources meet meaning in the middle. Methods escalate only when needed.</p>
+    <div class="tiers3">${g("tier","t1","t-top")}${g("tier","t2","t-mid")}${g("tier","t3","t-bot")}</div><div class="flow" style="margin-top:10px">${g("tier","m1")}<span class="farrow">→</span>${g("tier","m2")}<span class="farrow">→</span>${g("tier","m3")}</div></section>
+   <section class="sec"><h2>Measurement: from experience to cause</h2><p>Each layer builds on the one below; metrology defines them all.</p>
+    <div class="mstack">${["cau","out","ops","exp"].map(id=>g("mst",id)).join("")}${g("mst","met","m-found")}</div></section>
+   <section class="sec"><h2>The recursive learning loop</h2><p>The platform learns from use, and people approve every change.</p>
+    <div class="loop">${Object.keys(GEN.loop).map((id,i)=>`${i?'<span class="farrow">→</span>':""}${g("loop",id)}`).join("")}<span class="farrow">↺</span></div></section>
+   <section class="sec"><h2>Values for each employee: the personal compass</h2><p>Reinforcement and assessment that the employee owns, inside the privacy safeguards.</p>
+    <div class="grid g4">${Object.keys(GEN.pc).map(id=>g("pc",id)).join("")}</div><div class="chips" style="margin-top:10px">${svcChip("F22")}${agChip("VCO")}</div></section>`;
+}
+function pnCap(id){const c=CAP[id];
+  return head(`Capability · ${esc(c.layer)}`,c.name)+`<div class="dock-body"><p class="lead">${esc(c.lead)}</p>${ul(c.bul)}
+   <div><h4>On the vessel</h4><p>${esc(c.where)}</p><div class="chips" style="margin-top:6px"><button class="chip" data-show="${c.show[0]}|${c.show[1]}">Show on the vessel →</button></div></div>
+   ${c.svc?`<div><h4>Services</h4><div class="chips">${c.svc.map(svcChip).join("")}</div></div>`:""}
+   ${c.ag?`<div><h4>Agents</h4><div class="chips">${c.ag.map(agChip).join("")}</div></div>`:""}
+   ${tech()?`<div class="tech"><span class="eyebrow">Technical</span><p>${esc(c.tech)}</p><div class="chips">${c.ms.map(msChip).join("")}</div></div>`:""}
+   ${c.go?`<div class="chips">${goBtn(c.go)}</div>`:""}${techHint()}</div>`;}
+function pnGen(k,id){const x=GEN[k][id];
+  return head(esc(x.e),x.n)+`<div class="dock-body"><p class="lead">${esc(x.l)}</p>
+   ${x.ag?`<div><h4>Agents</h4><div class="chips">${x.ag.map(agChip).join("")}</div></div>`:""}
+   <div><h4>Microservices</h4><div class="chips">${x.ms.map(m=>tech()?msChip(m):`<button class="chip" ${attrs("ms",m)}>${esc(FS_M[m].name)}</button>`).join("")}</div></div>
+   <div class="chips">${goBtn("caps")}</div></div>`;}
+
+/* ===================== PANEL ===================== */
+function head(eyebrow,title){return `<div class="dock-head"><div><span class="eyebrow">${eyebrow}</span><h2>${esc(title)}</h2></div>${S.sel?`<button class="x" data-close>Close</button>`:""}</div>`}
+const techHint=()=>tech()?"":`<p class="note">Switch to the technical view for decision tables, microservices and standards.</p>`;
+function pDefault(){
+  const intro={caps:["Where each capability lives","Click a capability to see what it does, the services and agents that use it, and a button that shows it on the vessel."],overview:["Start here","Click the North Star, the halyard, the sail, the bridge, any hull cell, a keel row, the ballast or any of the Seven Seas."],seas:["The front door","Click a sea on the compass or in the table to see its jobs, systems, services and agents."],services:["The catalog","Click any service tile. The filter dims services for the other audience."],agents:["Decision models","Open an agent to try its decision model with your own inputs."],micro:["Shared parts","Click a microservice or any cell in the reuse matrix."],boundary:["IP boundary","Click a zone item, a rule, or a cell in the crossing matrix."],roadmap:["Roadmap","Click a phase, a roadmap cell, a measure, a risk or a decision."]}[S.page];
+  return head("Details",intro[0])+`<div class="dock-body"><p class="lead">${esc(intro[1])}</p>
+   <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><div class="score">${FS_FEAT.length}</div><span class="note">services</span></div><div><div class="score">${FS_AGENTS.length}</div><span class="note">agents</span></div><div><div class="score">${FS_MS.length}</div><span class="note">microservices</span></div></div>
+   <div><h4>Reuse by phase</h4>${FS_PH.map((p,i)=>`<div class="reuse"><b>${i?RU[i].pct+"%":RU[0].fresh.length}</b><span class="note">${i?`Phase ${p.n} reuse · ${RU[i].fresh.length} new microservice${RU[i].fresh.length===1?"":"s"}`:"microservices built in phase 1"}</span></div>`).join("")}</div>
+   <p class="note">Viewing as ${tech()?"a technical leader":"an executive"}. Use the switch at the top to change.</p></div>`;
+}
+function pnPart(id){const p=PARTS[id]; let ms=p.ms||[];
+  return head(p.layer,p.name)+`<div class="dock-body"><p class="lead">${esc(p.lead)}</p>${p.bul?ul(p.bul):""}
+   ${ms.length?`<div><h4>${ms.length>1?"Microservices":"Microservice"}</h4><div class="chips">${ms.map(msChip).join("")}</div></div>`:""}
+   ${p.svc?`<div><h4>Services</h4><div class="chips">${p.svc.map(svcChip).join("")}</div></div>`:""}
+   ${id==="winch"?`<div><h4>Agents</h4><div class="chips">${FS_AGENTS.map(a=>agChip(a.id)).join("")}</div></div>`:""}
+   ${p.agent?`<div><h4>Agent</h4><div class="chips">${agChip(p.agent)}</div></div>`:""}
+   ${tech()&&p.tech?`<div class="tech"><span class="eyebrow">Technical</span><p>${esc(p.tech)}</p></div>`:""}
+   ${tech()&&ms.length?`<div class="tech"><span class="eyebrow">Technical</span>${ms.map(m=>`<p><b>${m}</b> · ${esc(FS_M[m].what)} <span class="note">${esc(FS_M[m].std)}</span></p>`).join("")}</div>`:""}
+   ${p.go?`<div class="chips">${goBtn(p.go)}</div>`:""}${techHint()}</div>`;}
+function pnPhase(n){const p=FS_PH[n-1],i=n-1; const fs=FS_FEAT.filter(f=>f.ph===n);
+  return head(`Phase ${n} · ${esc(p.when)}`,p.name)+`<div class="dock-body"><p class="lead">${esc(p.goal)}.</p>
+   <div class="reuse"><b>${i?RU[i].pct+"%":RU[0].fresh.length}</b><span class="note">${i?"of this phase's microservice uses were built in earlier phases":"microservices built to start"}</span></div>
+   <div><h4>Services</h4><div class="chips">${fs.map(f=>svcChip(f.id)).join("")}</div></div>
+   <div><h4>Scope</h4>${ul(p.scope)}</div><div><h4>Exit criteria</h4>${ul(p.exit)}</div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Technical</span><h4>New microservices in this phase</h4><div class="chips">${RU[i].fresh.length?RU[i].fresh.map(msChip).join(""):'<span class="note">None. Everything is reused.</span>'}</div></div>`:""}
+   <div class="chips">${goBtn("roadmap")}${goBtn("services")}</div>${techHint()}</div>`;}
+function pnSea(id){const s=FS_SEA[id]; const fs=FS_FEAT.filter(f=>f.sea===id||f.sea==="all"); const ags=[...new Set(fs.flatMap(f=>f.ag))]; const ms=[...new Set(fs.flatMap(f=>f.ms))];
+  return head(`Sea · ${esc(s.line)}`,s.name)+`<div class="dock-body"><div><h4>Employees come here to</h4>${ul(s.jobs)}</div><div><h4>System of record</h4>${ul(s.sor)}</div>
+   ${[1,2,3].map(p=>{const x=fs.filter(f=>f.ph===p);return x.length?`<div><h4>Phase ${p} · ${FS_PH[p-1].name}</h4><div class="chips">${x.map(f=>svcChip(f.id)).join("")}</div></div>`:""}).join("")}
+   <div><h4>Agents</h4><div class="chips">${ags.map(agChip).join("")}</div></div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Technical</span><h4>Microservices behind this sea</h4><div class="chips">${ms.map(m=>`<button class="chip" ${attrs("ms",m)}><span class="ms L-${FS_M[m].layer}">${m}</span></button>`).join("")}</div></div>`:""}
+   <div class="chips">${goBtn("seas")}${protoLink(s.view)}</div>${techHint()}</div>`;}
+function pnSvc(id){const f=FS_F[id]; const reused=f.ms.filter(m=>firstPhase[m]<f.ph).length;
+  return head(`${f.id} · Phase ${f.ph} · ${esc(f.aud)}`,f.name)+`<div class="dock-body"><p class="lead">${esc(f.v)}</p>
+   <div><h4>Sea</h4><div class="chips">${f.sea==="all"?FS_SEAS.map(s=>seaChip(s.id)).join(""):seaChip(f.sea)}</div></div>
+   <div><h4>Agents</h4><div class="chips">${f.ag.map(agChip).join("")}</div></div>
+   <div class="reuse"><b>${f.ph===1?f.ms.length:reused+" of "+f.ms.length}</b><span class="note">${f.ph===1?"microservices, built in phase 1":"microservices already built in earlier phases"}</span></div>
+   <div><h4>Phase</h4><div class="chips"><button class="chip" ${attrs("phase",String(f.ph))}>Phase ${f.ph} · ${FS_PH[f.ph-1].name}</button></div></div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Technical</span><h4>Microservices</h4><div class="chips">${f.ms.map(msChip).join("")}</div></div>`:""}
+   ${SVC_PROTO[id]?`<div class="chips">${protoLink(SVC_PROTO[id])}</div>`:""}${techHint()}</div>`;}
+function pnAgent(id){const a=FS_A[id], v=agVals(a), e=fsEval(a,v); const fs=FS_FEAT.filter(f=>f.ag.includes(id));
+  return head(`Agent ${esc(a.id)}`,a.name)+`<div class="dock-body"><p class="lead">${esc(a.role)}</p>
+   <div class="try"><h4>Try the decision model</h4>${a.inputs.map(inp=>`<div class="field"><label for="ag-${inp.id}">${esc(inp.label)}</label><select id="ag-${inp.id}" data-agin="${inp.id}">${inp.opts.map((o,i)=>`<option value="${i}"${v[inp.id]===i?" selected":""}>${esc(o)}</option>`).join("")}</select></div>`).join("")}${a.score?`<div><span class="note">Weighted score</span><div class="score">${e.sc}</div></div>`:""}</div>
+   <div class="result"><span class="eyebrow">Rule ${e.i+1} fires</span><b>${esc(e.r.out)}</b><span class="note">Human gate: ${esc(e.r.gate)}</span>
+    ${tech()?`<div class="calls">${e.r.calls.map((m,i)=>`${i?'<span class="arrow">→</span>':""}<button class="chip" ${attrs("ms",m)}><span class="ms L-${FS_M[m].layer}">${m}</span>${esc(FS_M[m].name)}</button>`).join("")}</div>`:""}</div>
+   <div><h4>Used by</h4><div class="chips">${fs.map(f=>svcChip(f.id)).join("")}</div></div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Decision table · first match wins</span><div class="tbl"><table class="dt"><thead><tr><th>#</th><th>When</th>${a.score?"<th>Score</th>":""}<th>Then</th><th>Gate</th></tr></thead><tbody>${a.rules.map((r,ri)=>`<tr class="${ri===e.i?"sel":""}"><td class="mono">${ri+1}</td><td>${r.when?Object.entries(r.when).map(([k,al])=>{const inp=a.inputs.find(x=>x.id===k);return esc(inp.label)+": "+esc(al.map(x=>inp.opts[x]).join(" or "))}).join("; "):'<span class="note">any</span>'}</td>${a.score?`<td class="mono">${r.min!=null?"≥ "+r.min:"any"}</td>`:""}<td>${esc(r.out)}</td><td>${esc(r.gate)}</td></tr>`).join("")}</tbody></table></div><p class="note">Protective rules sit above convenience rules. The Compass order, Planet over People over Profit, breaks ties. Registered in DEC with an owner and an MTBH threshold.</p></div>`:""}
+   <div class="chips">${goBtn("agents")}</div>${techHint()}</div>`;}
+function pnMs(id){const m=FS_M[id]; const fs=usedBy(id), ags=agentsUsing(id);
+  return head(`${m.layer==="Adapter"?"Adapter":m.layer} · ${id}`,m.name)+`<div class="dock-body"><p class="lead">${esc(m.what)}</p><p class="note">${esc(LAYER_MEAN[m.layer])}</p>
+   <div class="reuse"><b>${fs.length}</b><span class="note">services use it · first needed in phase ${firstPhase[id]}</span></div>
+   <div><h4>Services</h4><div class="chips">${fs.map(f=>svcChip(f.id)).join("")}</div></div>
+   <div><h4>Agents that call it</h4><div class="chips">${ags.map(a=>agChip(a.id)).join("")||'<span class="note">None directly</span>'}</div></div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Technical</span><p><b>Standards:</b> ${esc(m.std)}</p></div>`:""}
+   <div class="chips">${goBtn("micro")}</div>${techHint()}</div>`;}
+function pnUse(key){const [fid,mid]=key.split("|"),f=FS_F[fid],m=FS_M[mid],on=f.ms.includes(mid);
+  return head(on?"Reuse":"Not used",`${f.name} · ${mid}`)+`<div class="dock-body"><p class="lead">${on?`${esc(f.name)} uses ${esc(m.name)}.`:`${esc(f.name)} does not use ${esc(m.name)}.`}</p>
+   <div><h4>Service</h4><div class="chips">${svcChip(fid)}</div><p class="note" style="margin-top:6px">${esc(f.v)}</p></div>
+   <div><h4>Microservice</h4><div class="chips">${msChip(mid)}</div><p class="note" style="margin-top:6px">${esc(m.what)}</p></div>
+   <p class="note">${esc(m.name)} serves ${usedBy(mid).length} services in total.</p></div>`;}
+function pnPort(id){const p=PORTS[id];
+  return head(`Port · adapter ${esc(p.ad)}`,p.name)+`<div class="dock-body"><p class="lead">${esc(p.lead)}</p>
+   <div><h4>Comes in</h4>${ul(p.inn)}</div><div><h4>Goes out</h4>${ul(p.out)}</div><div><h4>Never leaves Insperity</h4>${ul(p.never)}</div>
+   <div class="chips">${FS_M[p.ad]?msChip(p.ad):""}${agChip("IPG")}${goBtn("boundary")}</div></div>`;}
+function pnCross(key){const [di,pi,tm]=key.split("|").map(Number),a=FS_A.IPG,e=fsEval(a,{ds:di,py:pi,tm}),allow=/^Allow/.test(e.r.out);
+  return head(`Crossing · rule ${e.i+1}`,allow?"Allowed":"Blocked")+`<div class="dock-body"><p class="lead">${esc(a.inputs[1].opts[pi])} to ${esc(a.inputs[0].opts[di])}.</p>
+   <div class="result"><span class="eyebrow">Decision</span><b>${esc(e.r.out)}</b><span class="note">${esc(a.inputs[2].opts[tm])}</span></div>
+   ${tech()?`<div class="tech"><span class="eyebrow">Microservices called</span><div class="calls">${e.r.calls.map((m,i)=>`${i?'<span class="arrow">→</span>':""}<button class="chip" ${attrs("ms",m)}><span class="ms L-${FS_M[m].layer}">${m}</span></button>`).join("")}</div></div>`:""}
+   <div class="chips">${agChip("IPG")}</div>${techHint()}</div>`;}
+function pnIpRule(i){const r=FS_A.IPG.rules[+i];
+  return head(`IP boundary guardian · rule ${+i+1}`,/^Allow/.test(r.out)?"Allow":"Block")+`<div class="dock-body"><p class="lead">${esc(r.out)}.</p><p class="note">Rules are checked from the top; the first match decides. Blocking rules come first, so the most protective outcome wins.</p><div class="chips">${agChip("IPG")}${goBtn("boundary")}</div></div>`;}
+function pnRoad(key){const [ws,i]=key.split("|"),w=WS.find(x=>x.id===ws),p=FS_PH[+i];
+  return head(`${esc(w.name)} · Phase ${p.n}`,p.name)+`<div class="dock-body"><p class="lead">${esc(w.c[+i])}</p><div><h4>Phase goal</h4><p>${esc(p.goal)} (${esc(p.when)}).</p></div><div><h4>Exit criteria</h4>${ul(p.exit)}</div><div class="chips"><button class="chip" ${attrs("phase",String(p.n))}>Phase ${p.n} details</button></div></div>`;}
+function pnSimple(kind,i){const arr={measure:MEASURES,risk:RISKS,decision:DECISIONS}[kind],x=arr[+i];
+  const ey={measure:"Measure",risk:"Risk",decision:"Decision "+(+i+1)}[kind];
+  return head(ey,x[0])+`<div class="dock-body">${kind==="risk"?`<h4>Response</h4>`:""}<p class="lead">${esc(x[1])}</p>${kind==="measure"?`<p class="note">Baseline in phase 1; target agreed with the sponsor before phase 2.</p>`:""}</div>`;}
+function pnThesis(id){const t=THESES.find(x=>x.id===id);return head(t.k,t.name)+`<div class="dock-body"><p class="lead">${esc(t.lead)}</p><div class="chips">${goBtn(t.go)}</div></div>`;}
+function renderPanel(){
+  const d=$("dock"); const s=S.sel; let h;
+  try{ h=!s?pDefault():s.k==="part"?pnPart(s.id):s.k==="phase"?pnPhase(+s.id):s.k==="sea"?pnSea(s.id):s.k==="svc"?pnSvc(s.id):s.k==="agent"?pnAgent(s.id):s.k==="ms"?pnMs(s.id):s.k==="use"?pnUse(s.id):s.k==="port"?pnPort(s.id):s.k==="cross"?pnCross(s.id):s.k==="iprule"?pnIpRule(s.id):s.k==="road"?pnRoad(s.id):s.k==="thesis"?pnThesis(s.id):s.k==="cap"?pnCap(s.id):GEN[s.k]?pnGen(s.k,s.id):pnSimple(s.k,s.id);}catch(e){h=pDefault();}
+  d.innerHTML=h; d.classList.toggle("open",!!s); d.scrollTop=0; markSel();
+}
+function markSel(){document.querySelectorAll("[data-k]").forEach(el=>el.classList.toggle("is-sel",!!S.sel&&el.dataset.k===S.sel.k&&el.dataset.id===S.sel.id));}
+
+/* ===================== RENDER & EVENTS ===================== */
+function renderTabs(){
+  $("tabs").innerHTML=PAGES.map(([k,l])=>`<button class="tab" data-go="${k}" aria-current="${S.page===k?"page":"false"}">${l}</button>`).join("");
+  $("aud").innerHTML=[["exec","Executive"],["tech","Technical"]].map(([k,l])=>`<button data-aud="${k}" aria-pressed="${S.aud===k}">${l}</button>`).join("");
+}
+function renderPage(){
+  const f={caps:pCaps,overview:pOverview,seas:pSeas,services:pServices,agents:pAgents,micro:pMicro,boundary:pBoundary,roadmap:pRoadmap}[S.page];
+  $("page").innerHTML=f(); markSel();
+}
+function go(page,keepSel){if(!PAGES.some(p=>p[0]===page))page="overview"; S.page=page; if(!keepSel)S.sel=null; renderTabs(); renderPage(); renderPanel(); window.scrollTo(0,0);}
+function open(k,id){S.sel={k,id}; renderPanel();}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-k],[data-go],[data-aud],[data-close],[data-filt],[data-tm],[data-show]"); if(!t)return;
+  if(t.dataset.show){const [k,id]=t.dataset.show.split("|"); S.sel={k,id}; go("overview",true); setTimeout(()=>{const el=document.querySelector(`.vessel [data-k="${k}"][data-id="${id}"]`); if(el&&el.scrollIntoView)el.scrollIntoView({block:"center",behavior:"smooth"});},40); return;}
+  if(t.hasAttribute("data-close")){S.sel=null; renderPanel(); return;}
+  if(t.dataset.go){ const inPanel=!!t.closest("#dock"); go(t.dataset.go,inPanel); return;}
+  if(t.dataset.aud){S.aud=t.dataset.aud; store.set("aud",S.aud); renderTabs(); renderPage(); renderPanel(); return;}
+  if(t.dataset.filt){S.filt=t.dataset.filt; renderPage(); return;}
+  if(t.dataset.tm){S.tm=+t.dataset.tm; renderPage(); if(S.sel&&S.sel.k==="cross"){const p=S.sel.id.split("|"); S.sel.id=p[0]+"|"+p[1]+"|"+S.tm; renderPanel();} return;}
+  if(t.dataset.k)open(t.dataset.k,t.dataset.id);
+});
+document.addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("g[data-k]")){e.preventDefault(); open(e.target.dataset.k,e.target.dataset.id); return;}
+  if(e.key==="Escape"&&S.sel){S.sel=null; renderPanel();}
+});
+document.addEventListener("change",e=>{const t=e.target; if(t.dataset&&t.dataset.agin&&S.sel&&S.sel.k==="agent"){agVals(FS_A[S.sel.id])[t.dataset.agin]=+t.value; const id=t.id, sc=$("dock").scrollTop; renderPanel(); $("dock").scrollTop=sc; document.getElementById(id)?.focus();}});
+
+/* theme */
+function isDark(){const t=document.documentElement.getAttribute("data-theme"); return t?t==="dark":!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);}
+function syncTheme(){const b=$("themebtn"),d=isDark(),p=b.querySelector("path"); const l=d?"Switch to light mode":"Switch to dark mode"; b.setAttribute("aria-label",l); b.title=l;
+  p.setAttribute("d",d?"M8 4.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM8 0v2.5M8 13.5V16M0 8h2.5M13.5 8H16M2.3 2.3l1.8 1.8M11.9 11.9l1.8 1.8M2.3 13.7l1.8-1.8M11.9 4.1l1.8-1.8":"M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7Z"); p.setAttribute("stroke",d?"currentColor":"none"); p.setAttribute("stroke-width","1.5");}
+if(typeof document!=="undefined"&&$("page")){
+  const th=store.get("theme",null); if(th)document.documentElement.setAttribute("data-theme",th);
+  $("themebtn").addEventListener("click",()=>{const n=isDark()?"light":"dark"; document.documentElement.setAttribute("data-theme",n); store.set("theme",n); syncTheme();});
+  try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",syncTheme)}catch(e){}
+  syncTheme();
+  let h=""; try{h=(location.hash||"").slice(1)}catch(e){}
+  go(PAGES.some(p=>p[0]===h)?h:"overview");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEO Theme Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="common.css">
+<style>
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.tcard{all:unset;box-sizing:border-box;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;display:grid;gap:6px;cursor:pointer;align-content:start}
+.tcard:hover{border-color:var(--ink-3)}
+.tcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
+.tcard b{font:600 15px var(--f-display)}
+.tcard .n{display:flex;flex-wrap:wrap;gap:2px 10px;font:11.5px var(--f-mono);color:var(--ink-2)}
+.tcard .n span{white-space:nowrap}
+.tcard .d{font-size:12px;color:var(--ink-2);line-height:1.4}
+table.hm tr{cursor:pointer}
+table.hm tr:hover th.rl{color:var(--accent)}
+.detail{padding:20px;display:grid;gap:18px}
+.dhead{display:grid;gap:6px}
+.dhead .t{font:600 28px/1.1 var(--f-display)}
+.dstats{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;width:fit-content;max-width:100%}
+.dstats div{padding:8px 16px;border-right:1px solid var(--rule);display:grid}
+.dstats div:last-child{border-right:0}
+.dstats b{font:600 22px var(--f-display);font-variant-numeric:tabular-nums}
+.dstats span{font-size:12px;color:var(--ink-2)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.blk{display:grid;gap:6px;align-content:start;min-width:0}
+.blk h3{font-size:14px}
+.rowbar{display:grid;grid-template-columns:minmax(0,1fr) 80px 24px;gap:8px;align-items:center;font-size:12.5px;padding:2px 0}
+.rowbar .b i{display:block;height:8px;background:var(--h3);border-radius:0 4px 4px 0}
+.rowbar .n{font-family:var(--f-mono);text-align:right;color:var(--ink-2)}
+.rowbar a{color:var(--ink);text-decoration:none}
+.rowbar a:hover{color:var(--accent)}
+.sub{font:500 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-top:6px}
+.olist{display:grid;gap:14px}
+.ogrp{display:grid;gap:6px}
+.ogrp h4{margin:0;font:600 14px var(--f-display)}
+.ogrp h4 a{color:var(--ink);text-decoration:none}
+.ogrp h4 a:hover{color:var(--accent)}
+.orow{display:grid;grid-template-columns:52px 110px minmax(0,1fr) auto;gap:10px;font-size:12.5px;padding:6px 8px;border-radius:6px;background:var(--bg);align-items:baseline}
+.orow .mono{color:var(--ink-3);font-size:11px}
+@media (max-width:1000px){.cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.orow{grid-template-columns:44px minmax(0,1fr)}.orow .stp,.orow .mt{grid-column:2}}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">PEO Outcome Benchmark · cross-job view</div>
+  <h1>Theme explorer</h1>
+  <p class="lede">Themes are the business model's core service lines, so a theme groups the outcomes that one part of the PEO is accountable for, across every job and persona. Two themes are added for services the service-line layer does not cover.</p>
+</div></header>
+<main><div class="wrap">
+<section aria-labelledby="h-g">
+  <div class="sec-head"><div><h2 id="h-g">Themes</h2><p>Select a theme to see its services, the jobs and personas it touches, and every outcome in it.</p></div></div>
+  <div class="tgrid" id="tgrid" role="group" aria-label="Themes"></div>
+</section>
+<section aria-labelledby="h-d">
+  <h2 id="h-d" class="eyebrow" style="font-size:11px">Selected theme</h2>
+  <div class="card detail" id="detail" aria-live="polite"></div>
+</section>
+<section aria-labelledby="h-h">
+  <div class="sec-head"><div><h2 id="h-h">Theme × job-map step</h2><p>Where each theme's outcomes fall on the universal job map. Click a row to select the theme.</p></div></div>
+  <div class="card scroll" style="padding:14px"><table class="hm" id="hm"></table><div class="legend" style="margin-top:10px" id="hm-legend"></div></div>
+</section>
+</div></main>
+<script src="data.js"></script><script src="common.js"></script>
+<script>
+H.nav('themes.html');
+const D=H.D, esc=H.esc;
+const bySlug=Object.fromEntries(D.themes.map(t=>[H.slug(t.name),t.name]));
+let cur = bySlug[H.hashGet()] || D.themes[0].name;
+function stats(name){const os=D.outcomes.filter(o=>o.theme===name); const sv=D.services.filter(s=>s.theme===name);
+  return {os, sv, jobs:[...new Set(os.map(o=>o.job))]};}
+function grid(){
+  document.getElementById('tgrid').innerHTML=D.themes.map(t=>{const s=stats(t.name);
+    return `<button class="tcard" aria-pressed="${t.name===cur}" data-t="${esc(t.name)}"><b>${esc(t.name)}${t.added?' <span class="chip" style="font-size:10px">added</span>':''}</b><span class="d">${esc(t.desc)}</span><span class="n"><span>${s.os.length} outcomes</span><span>${s.sv.length} services</span><span>${s.jobs.length} jobs</span></span></button>`;}).join('');
+  document.querySelectorAll('.tcard').forEach(b=>b.onclick=()=>select(b.dataset.t,true));
+}
+function select(name,scroll){cur=name; H.hashSet(H.slug(name)); grid(); detail(); heat(); if(scroll) document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});}
+function detail(){
+  const t=D.themes.find(x=>x.name===cur), s=stats(cur);
+  const svcCount=sv=>s.os.filter(o=>o.svc.includes(sv)).length;
+  // services that address theme outcomes, incl. secondary services from other themes
+  const allSvc=[...new Set(s.os.flatMap(o=>o.svc))];
+  const subs={}; allSvc.forEach(id=>{const sv=H.S[id]; (subs[sv.subLabel]=subs[sv.subLabel]||[]).push(sv);});
+  const smax=Math.max(1,...allSvc.map(svcCount));
+  const jc=s.jobs.map(j=>[j,s.os.filter(o=>o.job===j).length]).sort((a,b)=>b[1]-a[1]); const jmax=Math.max(1,...jc.map(x=>x[1]));
+  const pc=D.personas.map(p=>[p,s.os.filter(o=>H.J[o.job].ex.includes(p.id)).length]).filter(x=>x[1]); const pmax=Math.max(1,...pc.map(x=>x[1]));
+  const mc={}; s.os.forEach(o=>mc[o.m]=(mc[o.m]||0)+1);
+  const notIn=s.sv.filter(x=>!allSvc.includes(x.id));
+  document.getElementById('detail').innerHTML=`
+    <div class="dhead"><div class="eyebrow">Service line${t.added?' · added for the benchmark':''} · hr:${esc(t.sl)}</div><div class="t">${esc(t.name)}</div><p class="muted" style="max-width:78ch">${esc(t.desc)}</p></div>
+    <div class="dstats"><div><b>${s.os.length}</b><span>outcomes</span></div><div><b>${s.jobs.length}</b><span>jobs</span></div><div><b>${pc.length}</b><span>personas rate it</span></div><div><b>${allSvc.length}</b><span>services address it</span></div><div><b>${Object.entries(mc).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${v} ${k.toLowerCase()}`).slice(0,2).join(' · ')}</b><span>top metric types</span></div></div>
+    <div class="cols">
+      <div class="blk"><h3>Ontology services</h3>${Object.entries(subs).map(([k,v])=>`<div class="sub">${esc(k)}</div>`+v.map(sv=>`<div class="rowbar" title="hr:${sv.id}"><span>${esc(sv.label)}${sv.theme!==cur?' <span class="muted small">(supporting)</span>':''}</span><span class="b"><i style="width:${svcCount(sv.id)/smax*100}%"></i></span><span class="n">${svcCount(sv.id)}</span></div>`).join('')).join('')}
+        ${notIn.length?`<p class="small muted">In this service line but not yet addressed by an outcome: ${notIn.map(x=>esc(x.label)).join(', ')}</p>`:''}</div>
+      <div class="blk"><h3>Jobs</h3>${jc.map(([j,n])=>`<div class="rowbar"><a href="jobs.html#${j}"><span class="jid">${j}</span>${esc(H.J[j].stmt)}</a><span class="b"><i style="width:${n/jmax*100}%"></i></span><span class="n">${n}</span></div>`).join('')}</div>
+      <div class="blk"><h3>Personas who rate it</h3>${pc.map(([p,n])=>`<div class="rowbar"><a href="personas.html#${p.id}"><span class="dot" style="background:${H.PCOL[p.id]};margin-right:6px"></span>${esc(p.name)}</a><span class="b"><i style="width:${n/pmax*100}%"></i></span><span class="n">${n}</span></div>`).join('')}
+        <a class="btn solid" style="margin-top:10px;width:fit-content" href="study.html#${H.slug(cur)}">See this theme in the Job Study</a></div>
+    </div>
+    <div class="blk"><h3>Outcomes</h3><div class="olist">${jc.map(([j])=>`<div class="ogrp"><h4><a href="jobs.html#${j}"><span class="jid">${j}</span>${esc(H.J[j].stmt)}</a></h4>${s.os.filter(o=>o.job===j).map(o=>`<div class="orow"><span class="mono">${o.id}</span><span class="stp small muted">${H.stepNo(o.step)} · ${H.STEP[o.step].name}</span><span>${esc(o.t)}</span><span class="mt chip">${esc(o.m)}</span></div>`).join('')}</div>`).join('')}</div></div>`;
+}
+function heat(){
+  const cnt={}; let max=1; D.outcomes.forEach(o=>{const k=o.theme+'|'+o.step; cnt[k]=(cnt[k]||0)+1; max=Math.max(max,cnt[k]);});
+  let h=`<thead><tr><th></th>${D.steps.map((s,i)=>`<th title="${s.name}">${i+1}<br>${s.name.slice(0,4)}</th>`).join('')}<th>Σ</th></tr></thead><tbody>`;
+  D.themes.forEach(t=>{const row=D.steps.map(s=>cnt[t.name+'|'+s.id]||0);
+    h+=`<tr class="${t.name===cur?'on':''}" data-t="${esc(t.name)}" tabindex="0"><th class="rl">${esc(t.name)}${t.added?' <span class="muted small">(added)</span>':''}</th>${row.map(v=>`<td><div style="background:${H.heat(v,max)};color:${v/max>.4?'var(--panel)':'var(--ink)'};${t.name===cur?'outline:1.5px solid var(--accent);outline-offset:-1px':''}">${v||''}</div></td>`).join('')}<td class="tot">${row.reduce((a,b)=>a+b,0)}</td></tr>`;});
+  h+=`<tr><th class="rl muted">Σ</th>${D.steps.map(s=>`<td class="tot" style="text-align:center;padding:4px 0">${D.outcomes.filter(o=>o.step===s.id).length}</td>`).join('')}<td class="tot">${D.outcomes.length}</td></tr></tbody>`;
+  const el=document.getElementById('hm'); el.innerHTML=h;
+  el.querySelectorAll('tr[data-t]').forEach(r=>{const a=()=>select(r.dataset.t,true); r.onclick=a; r.onkeydown=e=>{if(e.key==='Enter')a();};});
+  document.getElementById('hm-legend').innerHTML='<span>Outcomes per cell</span>'+['h1','h2','h3','h4','h5'].map((c,i)=>`<span><i style="width:16px;height:12px;border-radius:2px;display:inline-block;background:var(--${c})"></i>${i===0?'fewest':i===4?'most':''}</span>`).join('');
+}
+select(cur,false);
+window.addEventListener('hashchange',()=>{const n=bySlug[H.hashGet()]; if(n&&n!==cur) select(n,true);});
+</script>
+</body></html>

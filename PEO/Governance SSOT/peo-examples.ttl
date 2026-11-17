@@ -1,0 +1,104 @@
+###############################################################################
+#  PEO Employment Standards — fictional examples
+#  A fictional PEO, four client employers, their worksites, two workers and a
+#  client service agreement that allocates requirements. All names are
+#  invented. Worksites link to real jurisdictions in peo-standards.ttl so a
+#  reasoner can infer pes:subjectTo.
+###############################################################################
+@prefix pes:     <https://enablingvalue.com/ontology/peo-es#> .
+@prefix esd:     <https://enablingvalue.com/ontology/peo-es/data#> .
+@prefix ex:      <https://enablingvalue.com/ontology/peo-es/examples#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://enablingvalue.com/ontology/peo-es/examples>
+    a owl:Ontology ;
+    owl:imports <https://enablingvalue.com/ontology/peo-es/data> ;
+    rdfs:comment "Illustrative individuals only; all organizations and people are fictional."@en .
+
+### The PEO ---------------------------------------------------------------
+ex:SummitPEO a owl:NamedIndividual , pes:ProfessionalEmployerOrganization ;
+    rdfs:label "Summit Co-Employment Services"@en ;
+    pes:headcount 4200 ;
+    pes:licensedUnder esd:TX_PEOAct ;
+    pes:certifiedUnder esd:CPEO .
+
+### Clients and worksites ---------------------------------------------------
+ex:LakeshoreBakery a owl:NamedIndividual , pes:ClientEmployer ;
+    rdfs:label "Lakeshore Bakery Co."@en ; pes:headcount 38 ; pes:hasWorksite ex:Site_Chicago .
+ex:Site_Chicago a owl:NamedIndividual , pes:Worksite ;
+    rdfs:label "Lakeshore Bakery — West Loop, Chicago"@en ; pes:locatedIn esd:Chicago .
+
+ex:BayouFreight a owl:NamedIndividual , pes:ClientEmployer ;
+    rdfs:label "Bayou Freight LLC"@en ; pes:headcount 120 ; pes:hasWorksite ex:Site_Houston , ex:Site_Austin .
+ex:Site_Houston a owl:NamedIndividual , pes:Worksite ;
+    rdfs:label "Bayou Freight — Houston terminal"@en ; pes:locatedIn esd:Texas .
+ex:Site_Austin a owl:NamedIndividual , pes:Worksite ;
+    rdfs:label "Bayou Freight — Austin cross-dock"@en ; pes:locatedIn esd:Austin .
+
+ex:HudsonDesign a owl:NamedIndividual , pes:ClientEmployer ;
+    rdfs:label "Hudson Design Studio"@en ; pes:headcount 12 ; pes:hasWorksite ex:Site_Brooklyn .
+ex:Site_Brooklyn a owl:NamedIndividual , pes:Worksite ;
+    rdfs:label "Hudson Design — Brooklyn, NYC"@en ; pes:locatedIn esd:NYC .
+
+ex:SierraAgTech a owl:NamedIndividual , pes:ClientEmployer ;
+    rdfs:label "Sierra AgTech Inc."@en ; pes:headcount 64 ; pes:hasWorksite ex:Site_Fresno .
+ex:Site_Fresno a owl:NamedIndividual , pes:Worksite ;
+    rdfs:label "Sierra AgTech — Fresno, CA"@en ; pes:locatedIn esd:California ;
+    rdfs:comment "City-level ordinances in California are not modeled; the site links to the state."@en .
+
+### Workers -----------------------------------------------------------------
+ex:Worker_0001 a owl:NamedIndividual , pes:Worker ;
+    rdfs:label "Worker 0001 (pastry cook)"@en ;
+    pes:worksAt ex:Site_Chicago ; pes:coEmployedBy ex:LakeshoreBakery , ex:SummitPEO .
+ex:Worker_0002 a owl:NamedIndividual , pes:Worker ;
+    rdfs:label "Worker 0002 (designer)"@en ;
+    pes:worksAt ex:Site_Brooklyn ; pes:coEmployedBy ex:HudsonDesign , ex:SummitPEO .
+
+### Client service agreement: Summit × Lakeshore ------------------------------
+ex:CSA_Lakeshore a owl:NamedIndividual , pes:ClientServiceAgreement ;
+    rdfs:label "Client service agreement — Lakeshore Bakery"@en ;
+    pes:hasPEO ex:SummitPEO ; pes:hasClient ex:LakeshoreBakery ; pes:effectiveDate "2025-04-01"^^xsd:date ;
+    pes:hasAllocation ex:Alloc_L_Taxes , ex:Alloc_L_MinWage , ex:Alloc_L_Leave , ex:Alloc_L_I9 ,
+                      ex:Alloc_L_Safety , ex:Alloc_L_Schedule , ex:Alloc_L_PayRange , ex:Alloc_L_Biometric .
+ex:Alloc_L_Taxes a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — employment taxes"@en ; pes:forRequirement esd:Req_WithholdTaxes ; pes:allocatedTo pes:PEOResponsible ;
+    pes:clauseText "PEO reports and remits federal and state employment taxes on wages it pays."@en .
+ex:Alloc_L_MinWage a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — minimum wage"@en ; pes:forRequirement esd:Req_PayMinimumWage ; pes:allocatedTo pes:SharedResponsibility ;
+    pes:clauseText "Client reports accurate hours and rates; PEO pays wages and flags rates below the applicable minimum."@en .
+ex:Alloc_L_Leave a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — paid leave"@en ; pes:forRequirement esd:Req_ProvidePaidLeave ; pes:allocatedTo pes:SharedResponsibility ;
+    pes:clauseText "PEO tracks accruals in payroll; client approves and schedules leave."@en .
+ex:Alloc_L_I9 a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — Form I-9"@en ; pes:forRequirement esd:Req_VerifyEligibility ; pes:allocatedTo pes:ClientResponsible ;
+    pes:clauseText "Client completes Section 2 in person; PEO provides the electronic I-9 system."@en .
+ex:Alloc_L_Safety a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — workplace safety"@en ; pes:forRequirement esd:Req_SafeWorkplace ; pes:allocatedTo pes:ClientResponsible ;
+    pes:clauseText "Client controls the worksite and its hazards."@en .
+ex:Alloc_L_Schedule a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — fair workweek"@en ; pes:forRequirement esd:Req_AdvanceSchedule ; pes:allocatedTo pes:ClientResponsible ;
+    pes:clauseText "Applies only if the client reaches the ordinance threshold; at 38 employees it does not."@en .
+ex:Alloc_L_PayRange a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — pay range in postings"@en ; pes:forRequirement esd:Req_PostPayRange ; pes:allocatedTo pes:ClientResponsible ;
+    pes:clauseText "Client writes job postings; PEO supplies templates with the pay-range field."@en .
+ex:Alloc_L_Biometric a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Lakeshore — biometric timeclock consent"@en ; pes:forRequirement esd:Req_BiometricConsent ; pes:allocatedTo pes:SharedResponsibility ;
+    pes:clauseText "PEO's timekeeping vendor collects consent at enrollment; client does not deploy scanners without it."@en .
+
+### Client service agreement: Summit × Hudson (AI hiring tool in NYC) ---------
+ex:CSA_Hudson a owl:NamedIndividual , pes:ClientServiceAgreement ;
+    rdfs:label "Client service agreement — Hudson Design Studio"@en ;
+    pes:hasPEO ex:SummitPEO ; pes:hasClient ex:HudsonDesign ; pes:effectiveDate "2026-01-15"^^xsd:date ;
+    pes:hasAllocation ex:Alloc_H_Taxes , ex:Alloc_H_AINotice , ex:Alloc_H_BiasAudit , ex:Alloc_H_Prenatal .
+ex:Alloc_H_Taxes a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Hudson — employment taxes"@en ; pes:forRequirement esd:Req_WithholdTaxes ; pes:allocatedTo pes:PEOResponsible .
+ex:Alloc_H_AINotice a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Hudson — AI-use notice to candidates"@en ; pes:forRequirement esd:Req_NoticeOfAIUse ; pes:allocatedTo pes:SharedResponsibility ;
+    pes:clauseText "PEO's applicant-tracking system screens résumés; PEO publishes the notice text and client posts it with each opening."@en .
+ex:Alloc_H_BiasAudit a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Hudson — annual bias audit"@en ; pes:forRequirement esd:Req_BiasAudit ; pes:allocatedTo pes:PEOResponsible ;
+    pes:clauseText "PEO commissions the independent audit of its screening tool and shares the public summary."@en .
+ex:Alloc_H_Prenatal a owl:NamedIndividual , pes:ResponsibilityAllocation ;
+    rdfs:label "Hudson — prenatal leave"@en ; pes:forRequirement esd:Req_ProvidePrenatalLeave ; pes:allocatedTo pes:SharedResponsibility .

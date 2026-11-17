@@ -1,0 +1,532 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/> a owl:Ontology;
+  rdfs:label "Taxonomy | Core | Persona"@en;
+  dct:description "The persona taxonomy categorizes data types used to understand individual users and work together to create comprehensive user profiles for personalized experiences."@en;
+  dct:title "Taxonomy | Core | Persona"@en;
+  <http://www.linkedmodel.org/1.2/schema/vaem#namespace> "https://ontologies.verizon.com/taxonomy-core-persona/"^^<http://www.w3.org/2001/XMLSchema#anyURI>;
+  <http://open-services.net/ns/core#modifiedBy> "sherri.miller1@one.verizon.com";
+  dct:contributor "milsh69", "wallkje", "sherri.miller1@one.verizon.com";
+  dct:creator "Jeffrey Wallk", "Sherri Anderson";
+  dct:modified "2025-09-30T19:47:26.396Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/ontology/bibo/status> <http://purl.org/spar/pso/draft>;
+  skos:changeNote "This is the initial version of the core taxonomy to be refined over time with input from other stakeholders & resources.";
+  dct:created "2024-09-05T00:04:05.311Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  owl:versionInfo "1.0";
+  <http://verizon.ontologies.com/terms/certified> false .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/AnalyticEngineeringPersona>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Analytic Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/5e56d869-7d73-4c32-a988-1512566e0231> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaType> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaData>;
+  rdfs:label "Persona Type"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/a6234f22-178a-48c8-b5e0-7360b938fea5> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/BrowsingHistory> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "Browsing History"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/284215b7-5537-4898-9b56-b01b38f76705> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "Prior History Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/2d4d3b9f-4ff5-436c-a94d-609cb19e057a> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/DataEngineeringPersona> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Data Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/ec35a2e3-a2b6-43fd-94f1-84fb0489c4f7> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/DevicePlatformData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData>;
+  rdfs:label "Device & Platform Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/d0dfc92c-83ac-4dff-8d7b-815603cecd49> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "User Behavior Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/3423633b-c884-490a-9294-6d96e0213c69> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/EngagementMetric> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData>;
+  rdfs:label "Engagement Metric"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/f836c828-f661-4538-8847-ffd16c58c2c4> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/EventTracking> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData>;
+  rdfs:label "Event Tracking"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/b1287dd3-4090-4cb4-8d42-75a4f546f4ac> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/FeedbackRating> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "Feedback & Rating"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/d95e5ad2-5820-4af4-acff-bc942068ff3a> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/InteractionTimestamp> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "Interaction Timestamp"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/f6222ad9-3f34-4be5-af31-633507a5d60e> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/KnowledgeEngineeringPersona>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Knowledge Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/eb269191-1951-4d04-996a-4a7a9f45c067> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/NavigationPattern> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData>;
+  rdfs:label "Navigation Pattern"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/a24f7d1a-b1a8-4e13-b407-458d4c76f271> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/Persona> a owl:Class;
+  rdfs:label "Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/c8cb38ee-f506-4864-920d-e7523e513081> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "Persona Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/a3d2fe72-1825-4011-b18e-52af69c57a26> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaDemographics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaData>;
+  rdfs:label "Persona Demographics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/3e87eafc-efb1-492d-851d-3013806d5eaf> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaEmail> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Email"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/b47d1578-adc2-406d-8e26-9d1142ea50e6> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/ProfileData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "Profile Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/87cf7f38-1342-4f49-baeb-dbc78f1a3642> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaEthnographics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaData>;
+  rdfs:label "Persona Ethnographics "@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/598c506d-75b5-44c2-8a5e-c7ca3371f6e9> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaIndustry> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaData>;
+  rdfs:label "Persona Industry"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/1f114a06-410b-4e1e-b690-5631bfb4da95> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaLanguage> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Language"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/eb3c0dad-8c31-42b5-876c-1964c03bdfb1> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaLocation> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Location"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/adecd254-eae3-4322-aadb-6baec57afa50> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaName> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Name"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/7e5e9d9d-6a85-4d82-9301-e2d3aecc86d4> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaOrganization> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Organization"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/8b20a1ff-9142-48cf-8465-078b0cf76b60> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaPhone> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona Phone"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/bc96db83-f32b-4a09-b43f-1618eb5b9756> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaRole> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaData>;
+  rdfs:label "Persona Role"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/e5e3f6a4-957f-43b5-b30b-6deb4a56a035> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonaUserIdentifier> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/ProfileData>;
+  rdfs:label "Persona User Identifier"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/99d9304f-cee0-4ef0-9146-25c461c39ed2> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonalizationAlgorithm> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonalizationData>;
+  rdfs:label "Personalization Algorithm"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/08a655ff-a474-4996-bbe2-d16b0af9a978> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PersonalizationData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "Personalization Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/eddfaabf-a96b-427c-9f95-9dfbe8691c47> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PlatformEngineeringPersona>
+  a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Platform Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/a0309f92-1bc5-4b26-b686-14078c417eaf> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferenceAccessibility> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preference Accessibility"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/eb85a804-8bd4-4e3a-9bda-6a9f75ff534a> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/Persona>;
+  rdfs:label "Preference Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T00:05:56.430Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/962276ab-523b-424b-9880-2e3e889adb7e> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferenceNotification> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preference Notification"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/ba45097d-c089-4311-bd57-8a97a82abf07> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferencePrivacySettings> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preference Privacy Settings"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/1f5a6dbc-b6d1-4c64-baa9-d28dfba15cf4> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferredCommunication> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preferred Communication"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/4e87eeb3-dff4-4edb-bf40-41f6364be385> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferredContent> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preferred Content"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/9b3d0e88-4153-4329-84bd-054452801bd2> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/PreferredTopics> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PreferenceData>;
+  rdfs:label "Preferred Topics"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/fe2aaf2e-bd47-4389-9e85-ba170315029d> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/QualityEngineeringPersona> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Quality Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/0451339d-9f69-428b-933d-6ba2b8cba13f> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/RecommendationHistory> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonalizationData>;
+  rdfs:label "Recommendation History"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/2104de0b-074e-466c-8a1c-db6e34cb9685> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/SearchHistory> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "Search History"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/f8b72c80-ee5a-4693-bacf-5ec73121f4d2> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/SelectionHistory> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "Selection History"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/6f8667ff-d297-4d39-92db-a29eeed22f27> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/SessionData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/UserBehaviorData>;
+  rdfs:label "Session Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/072e4a19-ecfe-4f3e-9652-c7838977a00e> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/SystemsEngineeringPersona> a
+    owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "Systems Engineering Persona"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/d5e9a085-d512-4533-b6ea-39160c3298ff> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/UserJourneyData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PriorHistoryData>;
+  rdfs:label "User Journey Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T03:14:26.235Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/b8f1894f-4461-4e3f-8623-935ff400f6fd> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/UserSegmentData> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonalizationData>;
+  rdfs:label "User Segment Data"@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/ab0e51ed-92fd-4dfd-85e7-9a81b4e9a3e0> .
+
+<https://ontologies.verizon.com/taxonomy-core-persona/UxEngineeringPersona> a owl:Class;
+  rdfs:subClassOf <https://ontologies.verizon.com/taxonomy-core-persona/PersonaType>;
+  rdfs:label "UX Engineering Persona  "@en;
+  rdfs:isDefinedBy <https://ontologies.verizon.com/taxonomy-core-persona/>;
+  <http://open-services.net/ns/core#modifiedBy> "milsh69";
+  dct:contributor "milsh69", "VZDev";
+  dct:creator "VZDev";
+  dct:modified "2025-04-21T17:27:37.069Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  dct:created "2024-09-05T02:57:20.520Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://purl.org/dc/elements/1.1/subject> <https://vocabularies.verizon.com/core-persona/8e501d1a-56e5-4b48-a175-a6325b4ba91f> .

@@ -1,0 +1,2367 @@
+@prefix hr:   <http://example.org/hrservices/ddd#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+
+# #################################################################
+#   EXTENSION v3.0 — OUTCOME-DRIVEN BENCHMARK (CUSTOMER JOBS LAYER)
+#
+#   Adds the client's side of the PEO business model: who the client
+#   personas are, the jobs they are trying to get done, the universal
+#   job-map steps, and the desired outcomes (customer success metrics)
+#   that the benchmark survey will rate for importance and satisfaction.
+#   Every desired outcome is linked to the hr:DomainService(s) that
+#   address it, and to a benchmark theme (hr:ServiceLine).
+#
+#   Additive only: nothing in v1 or v2.0 is changed.
+# #################################################################
+
+hr:OutcomeBenchmarkExtension a owl:Ontology ;
+    rdfs:label "PEO Outcome-Driven Benchmark Extension" ;
+    owl:imports hr:HRServicesEnterpriseModel ;
+    owl:versionInfo "3.0" .
+
+# --- Classes ---
+hr:ClientPersona a owl:Class ;
+    rdfs:label "Client Persona (Job Executor)" ;
+    rdfs:comment "A role at or within a client company that executes, or takes part in, a job the PEO helps get done." .
+
+hr:JobToBeDone a owl:Class ;
+    rdfs:label "Job To Be Done" ;
+    rdfs:comment "A solution-agnostic goal a client persona is trying to accomplish." .
+
+hr:CoreFunctionalJob a owl:Class ;
+    rdfs:subClassOf hr:JobToBeDone ;
+    rdfs:label "Core Functional Job" .
+
+hr:ConsumptionChainJob a owl:Class ;
+    rdfs:subClassOf hr:JobToBeDone ;
+    rdfs:label "Consumption Chain Job" ;
+    rdfs:comment "A job the client must do to acquire, adopt, use and renew the PEO relationship itself." .
+
+hr:JobStep a owl:Class ;
+    rdfs:label "Universal Job-Map Step" .
+
+hr:DesiredOutcome a owl:Class ;
+    rdfs:label "Desired Outcome" ;
+    rdfs:comment "A measurable customer success metric: direction + metric + object of control + contextual clarifier." .
+
+hr:OutcomeMetricType a owl:Class ;
+    rdfs:label "Outcome Metric Type" .
+
+# --- Object properties (with inverses) ---
+hr:executedByPersona a owl:ObjectProperty ; rdfs:domain hr:JobToBeDone ; rdfs:range hr:ClientPersona ; rdfs:label "Executed By Persona" .
+hr:executesJob a owl:ObjectProperty ; owl:inverseOf hr:executedByPersona ; rdfs:label "Executes Job" .
+hr:involvesPersona a owl:ObjectProperty ; rdfs:domain hr:JobToBeDone ; rdfs:range hr:ClientPersona ; rdfs:label "Involves Persona (Participant)" .
+hr:participatesInJob a owl:ObjectProperty ; owl:inverseOf hr:involvesPersona ; rdfs:label "Participates In Job" .
+hr:jobInDomain a owl:ObjectProperty ; rdfs:domain hr:JobToBeDone ; rdfs:range hr:Domain ; rdfs:label "Job In Domain" .
+hr:hasDesiredOutcome a owl:ObjectProperty ; rdfs:domain hr:JobToBeDone ; rdfs:range hr:DesiredOutcome ; rdfs:label "Has Desired Outcome" .
+hr:isOutcomeOfJob a owl:ObjectProperty ; owl:inverseOf hr:hasDesiredOutcome ; rdfs:label "Is Outcome Of Job" .
+hr:atJobStep a owl:ObjectProperty ; rdfs:domain hr:DesiredOutcome ; rdfs:range hr:JobStep ; rdfs:label "At Job-Map Step" .
+hr:addressedByService a owl:ObjectProperty ; rdfs:domain hr:DesiredOutcome ; rdfs:range hr:DomainService ; rdfs:label "Addressed By Domain Service" .
+hr:addressesOutcome a owl:ObjectProperty ; owl:inverseOf hr:addressedByService ; rdfs:label "Addresses Desired Outcome" .
+hr:benchmarkTheme a owl:ObjectProperty ; rdfs:domain hr:DesiredOutcome ; rdfs:range hr:ServiceLine ; rdfs:label "Benchmark Theme" .
+hr:hasMetricType a owl:ObjectProperty ; rdfs:domain hr:DesiredOutcome ; rdfs:range hr:OutcomeMetricType ; rdfs:label "Has Metric Type" .
+
+# --- Datatype properties ---
+hr:outcomeCode a owl:DatatypeProperty ; rdfs:domain hr:DesiredOutcome ; rdfs:range xsd:string ; rdfs:label "Outcome Code" .
+hr:stepOrder a owl:DatatypeProperty ; rdfs:domain hr:JobStep ; rdfs:range xsd:integer ; rdfs:label "Step Order" .
+hr:personaGoal a owl:DatatypeProperty ; rdfs:domain hr:ClientPersona ; rdfs:range xsd:string ; rdfs:label "Persona Goal" .
+hr:buyingRole a owl:DatatypeProperty ; rdfs:domain hr:ClientPersona ; rdfs:range xsd:string ; rdfs:label "Buying Role" .
+hr:emotionalJob a owl:DatatypeProperty ; rdfs:domain hr:ClientPersona ; rdfs:range xsd:string ; rdfs:label "Emotional / Social Job" .
+
+# --- Benchmark themes not covered by the v2.0 service-line layer ---
+hr:ServiceLinePEORelationship a hr:ServiceLine ;
+    rdfs:label "PEO Relationship" ;
+    rdfs:comment "Added for the benchmark: buying, onboarding, support and renewal of the PEO relationship." ;
+    hr:realizedBySubDomain hr:SalesClientOnboardingSubDomain , hr:ClientSuccessAccountMgmtSubDomain .
+
+hr:ServiceLineHRTechnologyData a hr:ServiceLine ;
+    rdfs:label "HR Technology & Data" ;
+    rdfs:comment "Added for the benchmark: self-service, administration, identity, integration and data security." ;
+    hr:realizedBySubDomain hr:DigitalSelfServiceExperienceSubDomain ;
+    hr:realizedByService hr:HRISDataIntegrationConnectorService , hr:ClientAdminPortalReportingService ,
+                         hr:SingleSignOnIdentityManagementService , hr:DataPrivacySecurityGovernanceService .
+
+# --- Metric types ---
+hr:MetricSpeed a hr:OutcomeMetricType ; rdfs:label "Speed" .
+hr:MetricStability a hr:OutcomeMetricType ; rdfs:label "Stability" .
+hr:MetricCostexposure a hr:OutcomeMetricType ; rdfs:label "Cost & exposure" .
+hr:MetricEffort a hr:OutcomeMetricType ; rdfs:label "Effort" .
+hr:MetricOutput a hr:OutcomeMetricType ; rdfs:label "Output" .
+
+# --- Universal job-map steps ---
+hr:StepDefine a hr:JobStep ; rdfs:label "Define" ; rdfs:comment "Determine objectives and plan the approach" ; hr:stepOrder 1 .
+hr:StepLocate a hr:JobStep ; rdfs:label "Locate" ; rdfs:comment "Gather the inputs and information needed" ; hr:stepOrder 2 .
+hr:StepPrepare a hr:JobStep ; rdfs:label "Prepare" ; rdfs:comment "Set up the environment and inputs" ; hr:stepOrder 3 .
+hr:StepConfirm a hr:JobStep ; rdfs:label "Confirm" ; rdfs:comment "Verify readiness before acting" ; hr:stepOrder 4 .
+hr:StepExecute a hr:JobStep ; rdfs:label "Execute" ; rdfs:comment "Carry out the core task" ; hr:stepOrder 5 .
+hr:StepMonitor a hr:JobStep ; rdfs:label "Monitor" ; rdfs:comment "Check that the task is going as intended" ; hr:stepOrder 6 .
+hr:StepModify a hr:JobStep ; rdfs:label "Modify" ; rdfs:comment "Make adjustments and corrections" ; hr:stepOrder 7 .
+hr:StepConclude a hr:JobStep ; rdfs:label "Conclude" ; rdfs:comment "Finish, close out and prepare for next time" ; hr:stepOrder 8 .
+
+# --- Client personas ---
+hr:PersonaOwner a hr:ClientPersona ;
+    rdfs:label "Business Owner / CEO" ;
+    rdfs:comment "Runs a 5–150 employee company; often the final HR decision-maker; HR is a distraction from growing the business." ;
+    hr:personaGoal "Grow the business without becoming an expert in employment law, insurance and payroll tax." ;
+    hr:buyingRole "Economic buyer — signs the agreement and owns the cost/value decision" ;
+    hr:emotionalJob "Feel confident the company is not exposed to a lawsuit or penalty it doesn't know about" , "Feel able to compete with larger employers for talent" , "Be seen by employees as an employer that takes care of its people" .
+
+hr:PersonaFinance a hr:ClientPersona ;
+    rdfs:label "Finance Leader" ;
+    rdfs:comment "Owns payroll funding, tax deposits, GL posting and the HR provider invoice; frequently also the payroll processor in smaller firms." ;
+    hr:personaGoal "Keep employer costs predictable and the books accurate with minimal manual reconciliation." ;
+    hr:buyingRole "Evaluator and gatekeeper on total cost; often the day-to-day payroll user" ;
+    hr:emotionalJob "Avoid the embarrassment of a missed or wrong payroll" , "Feel in control of every dollar of employer cost" , "Be seen by the owner as a trusted steward of company money" .
+
+hr:PersonaHR a hr:ClientPersona ;
+    rdfs:label "HR Leader" ;
+    rdfs:comment "Covers every HR discipline at once — benefits, compliance, hiring, employee relations — with little specialist support." ;
+    hr:personaGoal "Run reliable HR operations and spend more time on people strategy than on paperwork." ;
+    hr:buyingRole "Primary evaluator and daily user; champions or blocks the provider" ;
+    hr:emotionalJob "Feel confident in giving advice on issues outside their expertise" , "Avoid being blamed for a compliance miss" , "Be seen as a strategic partner rather than an administrator" .
+
+hr:PersonaOpsSafety a hr:ClientPersona ;
+    rdfs:label "Operations & Safety Leader" ;
+    rdfs:comment "Responsible for field or industrial worksites (construction, manufacturing, logistics, trades) where injury risk and workers' comp cost are material." ;
+    hr:personaGoal "Keep crews safe and productive and keep insurance cost under control." ;
+    hr:buyingRole "Influencer on risk and safety services; user of injury and safety workflows" ;
+    hr:emotionalJob "Feel that no one will be seriously hurt on their watch" , "Be seen by crews as someone who has their back after an injury" .
+
+hr:PersonaManager a hr:ClientPersona ;
+    rdfs:label "People Manager" ;
+    rdfs:comment "Approves time, hires, coaches and evaluates a team; usually promoted for technical skill with little leadership training." ;
+    hr:personaGoal "Build a capable, engaged team and handle people issues well." ;
+    hr:buyingRole "User and influencer; their experience drives employee adoption" ;
+    hr:emotionalJob "Feel competent handling difficult people conversations" , "Be seen by their team as fair and supportive" .
+
+hr:PersonaEmployee a hr:ClientPersona ;
+    rdfs:label "Worksite Employee" ;
+    rdfs:comment "Experiences the PEO through pay, benefits, self-service and HR answers; never chose the provider." ;
+    hr:personaGoal "Get paid correctly, understand and use benefits, and get HR tasks done without friction." ;
+    hr:buyingRole "End user; satisfaction affects client retention and renewal" ;
+    hr:emotionalJob "Feel financially secure and protected by good benefits" , "Feel respected and that personal data is handled with care" .
+
+hr:PersonaIT a hr:ClientPersona ;
+    rdfs:label "IT & Systems Administrator" ;
+    rdfs:comment "Connects HR and payroll data to accounting, scheduling and identity systems; responsible for access and security." ;
+    hr:personaGoal "Keep employee data flowing between systems accurately and securely with little maintenance." ;
+    hr:buyingRole "Technical evaluator; can veto on security or integration grounds" ;
+    hr:emotionalJob "Avoid being responsible for a data breach involving employee records" .
+
+# --- Jobs to be done ---
+hr:JobJ01 a hr:CoreFunctionalJob ;
+    rdfs:label "Pay employees accurately and on time" ;
+    hr:executedByPersona hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaHR , hr:PersonaOwner ;
+    hr:jobInDomain hr:WorkforceAdminDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO001 , hr:OutcomeO002 , hr:OutcomeO003 , hr:OutcomeO004 , hr:OutcomeO005 , hr:OutcomeO006 , hr:OutcomeO007 , hr:OutcomeO008 , hr:OutcomeO009 , hr:OutcomeO010 .
+
+hr:JobJ02 a hr:CoreFunctionalJob ;
+    rdfs:label "Meet payroll tax obligations in every jurisdiction where employees work" ;
+    hr:executedByPersona hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaOwner ;
+    hr:jobInDomain hr:WorkforceAdminDomain , hr:ComplianceRiskDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO011 , hr:OutcomeO012 , hr:OutcomeO013 , hr:OutcomeO014 , hr:OutcomeO015 , hr:OutcomeO016 , hr:OutcomeO017 , hr:OutcomeO018 , hr:OutcomeO019 .
+
+hr:JobJ03 a hr:CoreFunctionalJob ;
+    rdfs:label "Track time worked and manage time off" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaManager , hr:PersonaOpsSafety ;
+    hr:involvesPersona hr:PersonaEmployee , hr:PersonaFinance ;
+    hr:jobInDomain hr:WorkforceAdminDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO020 , hr:OutcomeO021 , hr:OutcomeO022 , hr:OutcomeO023 , hr:OutcomeO024 , hr:OutcomeO025 , hr:OutcomeO026 , hr:OutcomeO027 , hr:OutcomeO028 .
+
+hr:JobJ04 a hr:CoreFunctionalJob ;
+    rdfs:label "Understand and allocate labor cost by department, job or project" ;
+    hr:executedByPersona hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaOwner , hr:PersonaOpsSafety ;
+    hr:jobInDomain hr:WorkforceAdminDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO029 , hr:OutcomeO030 , hr:OutcomeO031 , hr:OutcomeO032 , hr:OutcomeO033 , hr:OutcomeO034 , hr:OutcomeO035 .
+
+hr:JobJ05 a hr:CoreFunctionalJob ;
+    rdfs:label "Offer a competitive and affordable benefits package" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaFinance ;
+    hr:jobInDomain hr:BenefitsRetirementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO036 , hr:OutcomeO037 , hr:OutcomeO038 , hr:OutcomeO039 , hr:OutcomeO040 , hr:OutcomeO041 , hr:OutcomeO042 , hr:OutcomeO043 , hr:OutcomeO044 .
+
+hr:JobJ06 a hr:CoreFunctionalJob ;
+    rdfs:label "Administer benefit enrollment and changes" ;
+    hr:executedByPersona hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaFinance , hr:PersonaEmployee ;
+    hr:jobInDomain hr:BenefitsRetirementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO045 , hr:OutcomeO046 , hr:OutcomeO047 , hr:OutcomeO048 , hr:OutcomeO049 , hr:OutcomeO050 , hr:OutcomeO051 , hr:OutcomeO052 , hr:OutcomeO053 .
+
+hr:JobJ07 a hr:CoreFunctionalJob ;
+    rdfs:label "Provide a retirement savings plan" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaHR , hr:PersonaEmployee ;
+    hr:jobInDomain hr:BenefitsRetirementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO054 , hr:OutcomeO055 , hr:OutcomeO056 , hr:OutcomeO057 , hr:OutcomeO058 , hr:OutcomeO059 , hr:OutcomeO060 , hr:OutcomeO061 , hr:OutcomeO062 .
+
+hr:JobJ08 a hr:CoreFunctionalJob ;
+    rdfs:label "Choose and use my benefits" ;
+    hr:executedByPersona hr:PersonaEmployee ;
+    hr:jobInDomain hr:BenefitsRetirementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO063 , hr:OutcomeO064 , hr:OutcomeO065 , hr:OutcomeO066 , hr:OutcomeO067 , hr:OutcomeO068 , hr:OutcomeO069 , hr:OutcomeO070 .
+
+hr:JobJ09 a hr:CoreFunctionalJob ;
+    rdfs:label "Keep the company compliant with employment laws" ;
+    hr:executedByPersona hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaOwner ;
+    hr:jobInDomain hr:ComplianceRiskDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO071 , hr:OutcomeO072 , hr:OutcomeO073 , hr:OutcomeO074 , hr:OutcomeO075 , hr:OutcomeO076 , hr:OutcomeO077 , hr:OutcomeO078 , hr:OutcomeO079 , hr:OutcomeO080 .
+
+hr:JobJ10 a hr:CoreFunctionalJob ;
+    rdfs:label "Resolve employee relations issues and separations without legal exposure" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaOwner ;
+    hr:involvesPersona hr:PersonaManager ;
+    hr:jobInDomain hr:ComplianceRiskDomain , hr:ValuesCultureStewardshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO081 , hr:OutcomeO082 , hr:OutcomeO083 , hr:OutcomeO084 , hr:OutcomeO085 , hr:OutcomeO086 , hr:OutcomeO087 , hr:OutcomeO088 , hr:OutcomeO089 .
+
+hr:JobJ11 a hr:CoreFunctionalJob ;
+    rdfs:label "Keep the workplace safe and manage injuries" ;
+    hr:executedByPersona hr:PersonaOpsSafety ;
+    hr:involvesPersona hr:PersonaHR , hr:PersonaFinance , hr:PersonaEmployee ;
+    hr:jobInDomain hr:ComplianceRiskDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO090 , hr:OutcomeO091 , hr:OutcomeO092 , hr:OutcomeO093 , hr:OutcomeO094 , hr:OutcomeO095 , hr:OutcomeO096 , hr:OutcomeO097 , hr:OutcomeO098 , hr:OutcomeO099 .
+
+hr:JobJ12 a hr:CoreFunctionalJob ;
+    rdfs:label "Hire the right people" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaManager ;
+    hr:involvesPersona hr:PersonaOwner , hr:PersonaOpsSafety ;
+    hr:jobInDomain hr:TalentManagementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO100 , hr:OutcomeO101 , hr:OutcomeO102 , hr:OutcomeO103 , hr:OutcomeO104 , hr:OutcomeO105 , hr:OutcomeO106 , hr:OutcomeO107 , hr:OutcomeO108 .
+
+hr:JobJ13 a hr:CoreFunctionalJob ;
+    rdfs:label "Get new hires productive quickly" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaManager ;
+    hr:involvesPersona hr:PersonaEmployee , hr:PersonaIT ;
+    hr:jobInDomain hr:TalentManagementDomain , hr:ValuesCultureStewardshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO109 , hr:OutcomeO110 , hr:OutcomeO111 , hr:OutcomeO112 , hr:OutcomeO113 , hr:OutcomeO114 , hr:OutcomeO115 , hr:OutcomeO116 .
+
+hr:JobJ14 a hr:CoreFunctionalJob ;
+    rdfs:label "Set pay that is competitive, fair and affordable" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaFinance , hr:PersonaManager ;
+    hr:jobInDomain hr:TalentManagementDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO117 , hr:OutcomeO118 , hr:OutcomeO119 , hr:OutcomeO120 , hr:OutcomeO121 , hr:OutcomeO122 , hr:OutcomeO123 , hr:OutcomeO124 .
+
+hr:JobJ15 a hr:CoreFunctionalJob ;
+    rdfs:label "Manage and improve team performance" ;
+    hr:executedByPersona hr:PersonaManager ;
+    hr:involvesPersona hr:PersonaHR , hr:PersonaEmployee ;
+    hr:jobInDomain hr:TalentManagementDomain , hr:WorkforceDevelopmentDomain , hr:ValuesCultureStewardshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO125 , hr:OutcomeO126 , hr:OutcomeO127 , hr:OutcomeO128 , hr:OutcomeO129 , hr:OutcomeO130 , hr:OutcomeO131 , hr:OutcomeO132 , hr:OutcomeO133 .
+
+hr:JobJ16 a hr:CoreFunctionalJob ;
+    rdfs:label "Develop employees and retain the best ones" ;
+    hr:executedByPersona hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaOwner , hr:PersonaManager , hr:PersonaEmployee ;
+    hr:jobInDomain hr:TalentManagementDomain , hr:WorkforceDevelopmentDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO134 , hr:OutcomeO135 , hr:OutcomeO136 , hr:OutcomeO137 , hr:OutcomeO138 , hr:OutcomeO139 , hr:OutcomeO140 , hr:OutcomeO141 , hr:OutcomeO142 .
+
+hr:JobJ17 a hr:CoreFunctionalJob ;
+    rdfs:label "Become an effective people leader" ;
+    hr:executedByPersona hr:PersonaManager ;
+    hr:jobInDomain hr:WorkforceDevelopmentDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO143 , hr:OutcomeO144 , hr:OutcomeO145 , hr:OutcomeO146 , hr:OutcomeO147 , hr:OutcomeO148 , hr:OutcomeO149 , hr:OutcomeO150 .
+
+hr:JobJ18 a hr:CoreFunctionalJob ;
+    rdfs:label "Build and sustain a healthy, values-driven culture" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaHR ;
+    hr:involvesPersona hr:PersonaManager , hr:PersonaEmployee ;
+    hr:jobInDomain hr:ValuesCultureStewardshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO151 , hr:OutcomeO152 , hr:OutcomeO153 , hr:OutcomeO154 , hr:OutcomeO155 , hr:OutcomeO156 , hr:OutcomeO157 , hr:OutcomeO158 , hr:OutcomeO159 , hr:OutcomeO160 .
+
+hr:JobJ19 a hr:CoreFunctionalJob ;
+    rdfs:label "Measure the workforce while protecting employee privacy" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaIT ;
+    hr:involvesPersona hr:PersonaOwner ;
+    hr:jobInDomain hr:ValuesCultureStewardshipDomain , hr:HRTechnologyPlatformDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO161 , hr:OutcomeO162 , hr:OutcomeO163 , hr:OutcomeO164 , hr:OutcomeO165 , hr:OutcomeO166 , hr:OutcomeO167 , hr:OutcomeO168 , hr:OutcomeO169 .
+
+hr:JobJ20 a hr:CoreFunctionalJob ;
+    rdfs:label "Use workforce data to make business decisions" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaHR ;
+    hr:jobInDomain hr:HRTechnologyPlatformDomain , hr:WorkforceDevelopmentDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO170 , hr:OutcomeO171 , hr:OutcomeO172 , hr:OutcomeO173 , hr:OutcomeO174 , hr:OutcomeO175 , hr:OutcomeO176 , hr:OutcomeO177 .
+
+hr:JobJ21 a hr:CoreFunctionalJob ;
+    rdfs:label "Connect employee data to other business systems securely" ;
+    hr:executedByPersona hr:PersonaIT ;
+    hr:involvesPersona hr:PersonaFinance , hr:PersonaHR ;
+    hr:jobInDomain hr:HRTechnologyPlatformDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO178 , hr:OutcomeO179 , hr:OutcomeO180 , hr:OutcomeO181 , hr:OutcomeO182 , hr:OutcomeO183 , hr:OutcomeO184 , hr:OutcomeO185 , hr:OutcomeO186 .
+
+hr:JobJ22 a hr:CoreFunctionalJob ;
+    rdfs:label "Get HR answers and complete HR tasks myself" ;
+    hr:executedByPersona hr:PersonaEmployee ;
+    hr:jobInDomain hr:HRTechnologyPlatformDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO187 , hr:OutcomeO188 , hr:OutcomeO189 , hr:OutcomeO190 , hr:OutcomeO191 , hr:OutcomeO192 , hr:OutcomeO193 , hr:OutcomeO194 .
+
+hr:JobC1 a hr:ConsumptionChainJob ;
+    rdfs:label "Evaluate and choose an HR outsourcing partner" ;
+    hr:executedByPersona hr:PersonaOwner , hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaHR , hr:PersonaIT ;
+    hr:jobInDomain hr:ClientRelationshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO195 , hr:OutcomeO196 , hr:OutcomeO197 , hr:OutcomeO198 , hr:OutcomeO199 , hr:OutcomeO200 , hr:OutcomeO201 , hr:OutcomeO202 .
+
+hr:JobC2 a hr:ConsumptionChainJob ;
+    rdfs:label "Move the company onto a new HR provider" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaFinance ;
+    hr:involvesPersona hr:PersonaIT , hr:PersonaOwner ;
+    hr:jobInDomain hr:ClientRelationshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO203 , hr:OutcomeO204 , hr:OutcomeO205 , hr:OutcomeO206 , hr:OutcomeO207 , hr:OutcomeO208 , hr:OutcomeO209 , hr:OutcomeO210 .
+
+hr:JobC3 a hr:ConsumptionChainJob ;
+    rdfs:label "Get help when an HR issue arises" ;
+    hr:executedByPersona hr:PersonaHR , hr:PersonaOwner ;
+    hr:involvesPersona hr:PersonaManager , hr:PersonaFinance ;
+    hr:jobInDomain hr:ClientRelationshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO211 , hr:OutcomeO212 , hr:OutcomeO213 , hr:OutcomeO214 , hr:OutcomeO215 , hr:OutcomeO216 , hr:OutcomeO217 .
+
+hr:JobC4 a hr:ConsumptionChainJob ;
+    rdfs:label "Manage the cost and value of the HR outsourcing relationship" ;
+    hr:executedByPersona hr:PersonaFinance , hr:PersonaOwner ;
+    hr:involvesPersona hr:PersonaHR ;
+    hr:jobInDomain hr:ClientRelationshipDomain ;
+    hr:hasDesiredOutcome hr:OutcomeO218 , hr:OutcomeO219 , hr:OutcomeO220 , hr:OutcomeO221 , hr:OutcomeO222 , hr:OutcomeO223 , hr:OutcomeO224 .
+
+# --- Desired outcomes ---
+hr:OutcomeO001 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine which pay rules apply to each employee, e.g., overtime, shift differentials, bonuses" ;
+    hr:outcomeCode "O001" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:GrossToNetPayrollService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO002 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to gather all hours, earnings changes and deductions for a pay period" ;
+    hr:outcomeCode "O002" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:TimesheetApprovalStagingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO003 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a pay change, e.g., a raise, new hire or termination, is missed before payroll is run" ;
+    hr:outcomeCode "O003" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:GrossToNetPayrollService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO004 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to confirm that pay calculations are correct before funds are released" ;
+    hr:outcomeCode "O004" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:GrossToNetPayrollService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO005 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of miscalculating overtime under federal and state rules" ;
+    hr:outcomeCode "O005" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:GrossToNetPayrollService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO006 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an employee is paid late, e.g., due to a missed funding deadline or bank cutoff" ;
+    hr:outcomeCode "O006" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:DirectDepositOffCycleService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO007 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of withholding a garnishment incorrectly or in the wrong priority order" ;
+    hr:outcomeCode "O007" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:WageGarnishmentService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO008 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the number of pay-related questions employees raise after each payroll" ;
+    hr:outcomeCode "O008" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:GrossToNetPayrollService , hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO009 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to issue a correct off-cycle payment when an error or termination requires one" ;
+    hr:outcomeCode "O009" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:DirectDepositOffCycleService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO010 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to reconcile payroll to the bank account and general ledger after each run" ;
+    hr:outcomeCode "O010" ;
+    hr:isOutcomeOfJob hr:JobJ01 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO011 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine tax registration and withholding requirements when an employee starts working in a new state or locality" ;
+    hr:outcomeCode "O011" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO012 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of setting up a state or local tax account incorrectly" ;
+    hr:outcomeCode "O012" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO013 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a late or underpaid payroll tax deposit" ;
+    hr:outcomeCode "O013" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO014 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of filing a quarterly tax return with errors, e.g., federal Form 941, state unemployment" ;
+    hr:outcomeCode "O014" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO015 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to detect a notice or penalty from a tax agency" ;
+    hr:outcomeCode "O015" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO016 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of losing tax credits or paying wage-base taxes twice when the employer-of-record arrangement changes" ;
+    hr:outcomeCode "O016" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:CPEOComplianceMonitoringService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO017 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to resolve a tax notice once it is received" ;
+    hr:outcomeCode "O017" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:MultiStateTaxFilingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO018 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that year-end wage statements, e.g., W-2s and 1099s, contain errors" ;
+    hr:outcomeCode "O018" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:YearEndTaxDocService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO019 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to deliver year-end tax forms to every employee and contractor" ;
+    hr:outcomeCode "O019" ;
+    hr:isOutcomeOfJob hr:JobJ02 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:YearEndTaxDocService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO020 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine whether an employee is eligible for protected leave, e.g., FMLA, state paid family leave" ;
+    hr:outcomeCode "O020" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:StatutoryLeaveFMLAService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO021 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that hours worked are not captured, e.g., missed punches, work done off-site" ;
+    hr:outcomeCode "O021" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:TimeCapturePunchService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO022 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a meal or rest break violation going unnoticed" ;
+    hr:outcomeCode "O022" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:TimeCapturePunchService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO023 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for managers to review and approve timesheets before the payroll cutoff" ;
+    hr:outcomeCode "O023" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:TimesheetApprovalStagingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO024 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for an employee to request time off and receive a decision" ;
+    hr:outcomeCode "O024" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:CustomPTOAccrualService , hr:MobileWorkforceAppService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO025 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a time-off balance being calculated incorrectly, e.g., accrual by seniority, carryover caps" ;
+    hr:outcomeCode "O025" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:CustomPTOAccrualService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO026 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of mismanaging intermittent leave, e.g., counting hours incorrectly against an entitlement" ;
+    hr:outcomeCode "O026" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:StatutoryLeaveFMLAService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO027 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of paying for time that was not worked, e.g., buddy punching, rounding errors" ;
+    hr:outcomeCode "O027" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:TimeCapturePunchService , hr:MobileWorkforceAppService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO028 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of underpaying accrued time off to a departing employee under state law" ;
+    hr:outcomeCode "O028" ;
+    hr:isOutcomeOfJob hr:JobJ03 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:CustomPTOAccrualService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO029 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to define how labor cost should be allocated, e.g., by department, client, job or grant" ;
+    hr:outcomeCode "O029" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO030 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that labor hours are charged to the wrong job or cost center" ;
+    hr:outcomeCode "O030" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:LaborAllocationCostingService , hr:TimeCapturePunchService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO031 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to post payroll and employer costs to the general ledger" ;
+    hr:outcomeCode "O031" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO032 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to see the fully loaded cost of an employee, e.g., wages, taxes, benefits, insurance" ;
+    hr:outcomeCode "O032" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO033 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine whether a job or project is over its labor budget" ;
+    hr:outcomeCode "O033" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO034 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of billing a customer or grant for incorrect labor amounts" ;
+    hr:outcomeCode "O034" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO035 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to close the month with accurate labor accruals" ;
+    hr:outcomeCode "O035" ;
+    hr:isOutcomeOfJob hr:JobJ04 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:LaborAllocationCostingService ;
+    hr:benchmarkTheme hr:ServiceLinePayroll ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO036 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine which benefits matter most to current and prospective employees" ;
+    hr:outcomeCode "O036" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO037 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to compare plan options on cost and coverage" ;
+    hr:outcomeCode "O037" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO038 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of an unexpected premium increase at renewal" ;
+    hr:outcomeCode "O038" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO039 a hr:DesiredOutcome ;
+    rdfs:label "Increase the likelihood of offering coverage comparable to large employers, e.g., plan choice, network breadth" ;
+    hr:outcomeCode "O039" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO040 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the employer cost per covered employee for an equivalent level of coverage" ;
+    hr:outcomeCode "O040" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO041 a hr:DesiredOutcome ;
+    rdfs:label "Increase the number of supplemental benefits employees can choose without adding employer cost, e.g., dental, vision, life" ;
+    hr:outcomeCode "O041" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:VoluntaryAncillaryBenefitsService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO042 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to see what the company spends on benefits by plan and by employee" ;
+    hr:outcomeCode "O042" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:PretaxDeductionReconService , hr:ClientAdminPortalReportingService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO043 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of losing a candidate or employee because benefits are not competitive" ;
+    hr:outcomeCode "O043" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO044 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to add or change a plan offering outside the normal renewal cycle" ;
+    hr:outcomeCode "O044" ;
+    hr:isOutcomeOfJob hr:JobJ05 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO045 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to prepare and communicate enrollment options to employees" ;
+    hr:outcomeCode "O045" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO046 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to verify a qualifying life event and its documentation" ;
+    hr:outcomeCode "O046" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO047 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that payroll deductions do not match elected coverage" ;
+    hr:outcomeCode "O047" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:PretaxDeductionReconService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO048 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an employee misses an enrollment window" ;
+    hr:outcomeCode "O048" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO049 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an enrollment change is not transmitted correctly to the insurance carrier" ;
+    hr:outcomeCode "O049" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO050 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to reconcile carrier invoices with enrolled employees" ;
+    hr:outcomeCode "O050" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:PretaxDeductionReconService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO051 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of exceeding annual contribution limits on tax-advantaged accounts, e.g., FSA, HSA" ;
+    hr:outcomeCode "O051" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:FlexibleSpendingAccountsService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO052 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of paying premiums for people who are no longer eligible" ;
+    hr:outcomeCode "O052" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:PretaxDeductionReconService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO053 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of failing to issue a required continuation-coverage notice after a qualifying event, e.g., COBRA" ;
+    hr:outcomeCode "O053" ;
+    hr:isOutcomeOfJob hr:JobJ06 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:COBRAAdministrationService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO054 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine which retirement plan design fits the company's budget and goals" ;
+    hr:outcomeCode "O054" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:SafeHarborEmployerMatchService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO055 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the administrative effort required to start and sponsor a retirement plan" ;
+    hr:outcomeCode "O055" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:MultipleEmployerPlan401kService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricEffort .
+
+hr:OutcomeO056 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that employee deferrals are deposited late" ;
+    hr:outcomeCode "O056" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MultipleEmployerPlan401kService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO057 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of calculating employer contributions incorrectly, e.g., safe harbor match, profit sharing" ;
+    hr:outcomeCode "O057" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SafeHarborEmployerMatchService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO058 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of failing nondiscrimination testing" ;
+    hr:outcomeCode "O058" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:NondiscriminationComplianceTestingService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO059 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the fiduciary liability the business owner carries for the plan" ;
+    hr:outcomeCode "O059" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MultipleEmployerPlan401kService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO060 a hr:DesiredOutcome ;
+    rdfs:label "Increase the percentage of eligible employees who participate in the plan" ;
+    hr:outcomeCode "O060" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MultipleEmployerPlan401kService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO061 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to correct excess contributions after a failed test" ;
+    hr:outcomeCode "O061" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:NondiscriminationComplianceTestingService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO062 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to complete the annual plan filing and audit, e.g., Form 5500" ;
+    hr:outcomeCode "O062" ;
+    hr:isOutcomeOfJob hr:JobJ07 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:ConsolidatedForm5500AuditService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO063 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to understand what each plan option covers and what it will cost me" ;
+    hr:outcomeCode "O063" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO064 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine whether my doctors and prescriptions are covered" ;
+    hr:outcomeCode "O064" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO065 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of choosing a plan that costs me more than an alternative for my expected use" ;
+    hr:outcomeCode "O065" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO066 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to add or remove a dependent after a life event" ;
+    hr:outcomeCode "O066" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO067 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a spending-account claim is denied for missing documentation" ;
+    hr:outcomeCode "O067" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:FlexibleSpendingAccountsService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO068 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to find my benefit cards, plan documents and account balances" ;
+    hr:outcomeCode "O068" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO069 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to get help when a claim is denied or a medical bill looks wrong" ;
+    hr:outcomeCode "O069" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO070 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of forfeiting unused funds in a spending account at year end" ;
+    hr:outcomeCode "O070" ;
+    hr:isOutcomeOfJob hr:JobJ08 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:FlexibleSpendingAccountsService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO071 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine which federal, state and local employment laws apply to the company" ;
+    hr:outcomeCode "O071" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO072 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of an employee policy being out of date with state requirements" ;
+    hr:outcomeCode "O072" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO073 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to confirm that every employee has acknowledged current policies" ;
+    hr:outcomeCode "O073" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO074 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that required training, e.g., harassment prevention, is not completed by its deadline" ;
+    hr:outcomeCode "O074" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:HarassmentPreventionTrainingService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO075 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of an incomplete or late employment eligibility verification, e.g., Form I-9" ;
+    hr:outcomeCode "O075" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:FormI9EVerifyService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO076 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of misclassifying a worker, e.g., exempt vs non-exempt, employee vs contractor" ;
+    hr:outcomeCode "O076" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO077 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to learn about a new or changed employment law that affects the company" ;
+    hr:outcomeCode "O077" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO078 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of missing a required workplace posting or employee notice" ;
+    hr:outcomeCode "O078" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO079 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of failing a government audit, e.g., wage and hour, I-9" ;
+    hr:outcomeCode "O079" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO080 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to produce compliance records when an agency requests them" ;
+    hr:outcomeCode "O080" ;
+    hr:isOutcomeOfJob hr:JobJ09 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO081 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine the right course of action for a performance or conduct problem" ;
+    hr:outcomeCode "O081" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:EPLIDefenseService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO082 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to get expert advice on a sensitive employee issue" ;
+    hr:outcomeCode "O082" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO083 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that documentation is insufficient to support a disciplinary decision" ;
+    hr:outcomeCode "O083" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:EPLIDefenseService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO084 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a termination being perceived as discriminatory or retaliatory" ;
+    hr:outcomeCode "O084" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:EPLIDefenseService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO085 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to investigate a complaint, e.g., harassment, discrimination" ;
+    hr:outcomeCode "O085" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SpeakUpEthicsChannelService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO086 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an employee concern goes unreported because the employee fears retaliation" ;
+    hr:outcomeCode "O086" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SpeakUpEthicsChannelService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO087 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the out-of-pocket cost of defending an employment claim" ;
+    hr:outcomeCode "O087" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:EPLIDefenseService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO088 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to respond to an agency charge, e.g., an EEOC position statement" ;
+    hr:outcomeCode "O088" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO089 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a separated employee filing a claim, e.g., wrongful termination" ;
+    hr:outcomeCode "O089" ;
+    hr:isOutcomeOfJob hr:JobJ10 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:EPLIDefenseService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO090 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to identify the highest-risk hazards at each worksite" ;
+    hr:outcomeCode "O090" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:WorksiteSafetyHazardService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO091 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a hazard identified in an inspection is left uncorrected" ;
+    hr:outcomeCode "O091" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:WorksiteSafetyHazardService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO092 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of employees being assigned to the wrong workers' compensation class code" ;
+    hr:outcomeCode "O092" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:WorkersCompMasterPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO093 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the number of recordable workplace injuries" ;
+    hr:outcomeCode "O093" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:WorksiteSafetyHazardService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO094 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to report an injury and get the employee appropriate care" ;
+    hr:outcomeCode "O094" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:FNOIClaimsTriageService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO095 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time an injured employee is away from work" ;
+    hr:outcomeCode "O095" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ModifiedDutyReturnToWorkService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO096 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an injured employee's wage replacement is delayed" ;
+    hr:outcomeCode "O096" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:FNOIClaimsTriageService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO097 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the cost of workers' compensation coverage, e.g., premium per payroll dollar, experience modifier" ;
+    hr:outcomeCode "O097" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:WorkersCompMasterPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO098 a hr:DesiredOutcome ;
+    rdfs:label "Increase the likelihood of finding suitable modified duty for an injured employee" ;
+    hr:outcomeCode "O098" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ModifiedDutyReturnToWorkService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO099 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of an injury log or electronic submission being late or inaccurate, e.g., OSHA 300/300A" ;
+    hr:outcomeCode "O099" ;
+    hr:isOutcomeOfJob hr:JobJ11 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:OSHA300ComplianceReportingService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO100 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to define the skills and experience a role actually requires" ;
+    hr:outcomeCode "O100" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService , hr:SkillsGapTrainingPlanService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO101 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to build a pool of qualified candidates for an open role" ;
+    hr:outcomeCode "O101" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO102 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the cost of filling an open position" ;
+    hr:outcomeCode "O102" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricCostexposure .
+
+hr:OutcomeO103 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of extending an offer below the market rate for the role" ;
+    hr:outcomeCode "O103" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:MarketWageBenchmarkingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO104 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to complete background and drug screening" ;
+    hr:outcomeCode "O104" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:PreEmploymentScreeningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO105 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a screening decision violating consumer reporting rules, e.g., FCRA adverse action" ;
+    hr:outcomeCode "O105" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:PreEmploymentScreeningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO106 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time from opening a position to an accepted offer" ;
+    hr:outcomeCode "O106" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO107 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of an interview or selection practice creating discrimination exposure" ;
+    hr:outcomeCode "O107" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService , hr:EEOC_DOL_DefenseConsultService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO108 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of hiring someone who leaves or is let go within the first 90 days" ;
+    hr:outcomeCode "O108" ;
+    hr:isOutcomeOfJob hr:JobJ12 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:RecruitingProcessOutsourcingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO109 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for a new hire to complete required forms before the first day" ;
+    hr:outcomeCode "O109" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:DigitalNewHireOnboardingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO110 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a new hire lacks system access or credentials on the first day" ;
+    hr:outcomeCode "O110" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:SingleSignOnIdentityManagementService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO111 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a new hire being paid incorrectly or late on the first paycheck" ;
+    hr:outcomeCode "O111" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:DigitalNewHireOnboardingService , hr:GrossToNetPayrollService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO112 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for a new hire to understand the company's values, policies and expectations" ;
+    hr:outcomeCode "O112" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ValuesCommunicationEmbeddingService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO113 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to enroll a new hire in benefits within the eligibility window" ;
+    hr:outcomeCode "O113" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:OpenEnrollmentLifeEventService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO114 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for a new hire to reach full productivity in the role" ;
+    hr:outcomeCode "O114" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SkillsGapTrainingPlanService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO115 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a new hire feeling unsupported during the first 90 days" ;
+    hr:outcomeCode "O115" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:PeerMentoringService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO116 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a required onboarding step, e.g., I-9, benefits election, is missed" ;
+    hr:outcomeCode "O116" ;
+    hr:isOutcomeOfJob hr:JobJ13 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:DigitalNewHireOnboardingService , hr:FormI9EVerifyService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO117 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine the market rate for each role in each location" ;
+    hr:outcomeCode "O117" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:MarketWageBenchmarkingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO118 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to build pay ranges for the company's roles" ;
+    hr:outcomeCode "O118" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:MarketWageBenchmarkingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO119 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of pay differences that cannot be explained by job-related factors" ;
+    hr:outcomeCode "O119" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:MarketWageBenchmarkingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO120 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to allocate an annual merit budget across employees" ;
+    hr:outcomeCode "O120" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MeritMatrixCompensationPlanningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO121 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that pay increases are inconsistent with performance" ;
+    hr:outcomeCode "O121" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MeritMatrixCompensationPlanningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO122 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of losing an employee because their pay has fallen behind market" ;
+    hr:outcomeCode "O122" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MarketWageBenchmarkingService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO123 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of violating a pay transparency or pay equity law, e.g., salary range posting" ;
+    hr:outcomeCode "O123" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:MarketWageBenchmarkingService , hr:MultiStateHandbookPolicyService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO124 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to explain a pay decision and its rationale to an employee" ;
+    hr:outcomeCode "O124" ;
+    hr:isOutcomeOfJob hr:JobJ14 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:MeritMatrixCompensationPlanningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO125 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to set goals that connect each employee's work to company objectives" ;
+    hr:outcomeCode "O125" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:StrategicGoalAlignmentOKRService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO126 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an employee is unclear about what is expected of them" ;
+    hr:outcomeCode "O126" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:StrategicGoalAlignmentOKRService , hr:ContinuousPerformanceCheckInService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO127 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of bias in performance ratings" ;
+    hr:outcomeCode "O127" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:Feedback360AppraisalCycleService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO128 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to hold regular performance conversations" ;
+    hr:outcomeCode "O128" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ContinuousPerformanceCheckInService ;
+    hr:benchmarkTheme hr:ServiceLineMonitoring ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO129 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to gather balanced feedback from peers and others who work with the employee" ;
+    hr:outcomeCode "O129" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:Feedback360AppraisalCycleService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO130 a hr:DesiredOutcome ;
+    rdfs:label "Increase the likelihood that conduct consistent with company values is recognized in performance discussions" ;
+    hr:outcomeCode "O130" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ValuesInPerformanceDialogueService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO131 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to see how each team member is progressing toward goals" ;
+    hr:outcomeCode "O131" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ContinuousPerformanceCheckInService ;
+    hr:benchmarkTheme hr:ServiceLineMonitoring ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO132 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a performance problem goes unaddressed until it becomes serious" ;
+    hr:outcomeCode "O132" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ContinuousPerformanceCheckInService ;
+    hr:benchmarkTheme hr:ServiceLineMonitoring ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO133 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to complete the annual appraisal cycle" ;
+    hr:outcomeCode "O133" ;
+    hr:isOutcomeOfJob hr:JobJ15 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:Feedback360AppraisalCycleService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO134 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to identify the skills gaps that most limit the business" ;
+    hr:outcomeCode "O134" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:SkillsGapTrainingPlanService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO135 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to find training that fits each employee's development needs" ;
+    hr:outcomeCode "O135" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:CorporateLMSDeliveryService , hr:InstructorLedVirtualTrainingService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO136 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a key role has no ready successor" ;
+    hr:outcomeCode "O136" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:LeadershipSuccessionPlanningService ;
+    hr:benchmarkTheme hr:ServiceLineTalentManagement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO137 a hr:DesiredOutcome ;
+    rdfs:label "Increase the number of employees with a documented development plan" ;
+    hr:outcomeCode "O137" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SkillsGapTrainingPlanService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO138 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time employees spend away from productive work to complete training" ;
+    hr:outcomeCode "O138" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:CorporateLMSDeliveryService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO139 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine whether training improved performance on the job" ;
+    hr:outcomeCode "O139" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:LearningImpactMeasurementService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO140 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of losing a high-performing employee without warning" ;
+    hr:outcomeCode "O140" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO141 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to reskill employees when roles or tools change" ;
+    hr:outcomeCode "O141" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:SkillsGapTrainingPlanService , hr:InnovationChangeEnablementService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO142 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to track required certifications and continuing-education credits" ;
+    hr:outcomeCode "O142" ;
+    hr:isOutcomeOfJob hr:JobJ16 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:CorporateLMSDeliveryService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO143 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to identify the leadership skills I most need to develop" ;
+    hr:outcomeCode "O143" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:ManagerCoachingService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO144 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to get confidential advice on a difficult people situation" ;
+    hr:outcomeCode "O144" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:ManagerCoachingService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO145 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that what I share in coaching is disclosed to my employer" ;
+    hr:outcomeCode "O145" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:ManagerCoachingService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO146 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of handling a difficult conversation in a way that damages trust" ;
+    hr:outcomeCode "O146" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ManagerCoachingService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO147 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to learn from experienced leaders in similar roles" ;
+    hr:outcomeCode "O147" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:PeerMentoringService ;
+    hr:benchmarkTheme hr:ServiceLineCoaching ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO148 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to see whether my team's engagement is improving" ;
+    hr:outcomeCode "O148" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:CulturePulseSurveyService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO149 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to apply new leadership practices on the job" ;
+    hr:outcomeCode "O149" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:InstructorLedVirtualTrainingService ;
+    hr:benchmarkTheme hr:ServiceLineTraining ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO150 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of my team's turnover exceeding the company average" ;
+    hr:outcomeCode "O150" ;
+    hr:isOutcomeOfJob hr:JobJ17 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO151 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to describe the company's values as specific, observable behaviors" ;
+    hr:outcomeCode "O151" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:ValuesCommunicationEmbeddingService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO152 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that employees cannot describe what the company's values mean in their own work" ;
+    hr:outcomeCode "O152" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:ValuesCommunicationEmbeddingService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO153 a hr:DesiredOutcome ;
+    rdfs:label "Increase the frequency with which employees recognize colleagues for living the company's values" ;
+    hr:outcomeCode "O153" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ValuesRecognitionService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO154 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that recognition is unevenly distributed across teams or groups" ;
+    hr:outcomeCode "O154" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ValuesRecognitionService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO155 a hr:DesiredOutcome ;
+    rdfs:label "Increase the number of employee improvement ideas that are implemented" ;
+    hr:outcomeCode "O155" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:InnovationChangeEnablementService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO156 a hr:DesiredOutcome ;
+    rdfs:label "Increase the percentage of employees who take part in community volunteering and giving without feeling obligated to" ;
+    hr:outcomeCode "O156" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:CommunityEngagementService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO157 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to understand how employees experience the culture across teams and sites" ;
+    hr:outcomeCode "O157" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:CulturePulseSurveyService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO158 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that employees doubt their survey responses are anonymous" ;
+    hr:outcomeCode "O158" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:CulturePulseSurveyService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO159 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of employees resisting a significant change, e.g., new systems, reorganization" ;
+    hr:outcomeCode "O159" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:InnovationChangeEnablementService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO160 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for leaders to act on what employees report in surveys" ;
+    hr:outcomeCode "O160" ;
+    hr:isOutcomeOfJob hr:JobJ18 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ValuesIndexAnalyticsService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO161 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine whether a proposed workforce measure is proportionate to its purpose" ;
+    hr:outcomeCode "O161" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:PeopleAnalyticsPrivacyImpactService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO162 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of adopting a monitoring practice that is prohibited or unlawful where employees work" ;
+    hr:outcomeCode "O162" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:PeopleAnalyticsPrivacyImpactService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO163 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to tell employees what is measured, why, and who can see it" ;
+    hr:outcomeCode "O163" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:NoticeConsentPurposeService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO164 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of people data being used for a purpose other than the one it was collected for" ;
+    hr:outcomeCode "O164" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:NoticeConsentPurposeService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO165 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that an individual can be identified from aggregate workforce reports" ;
+    hr:outcomeCode "O165" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:DeIdentificationAggregationService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO166 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of collecting biometric data without written consent, e.g., fingerprint time clocks" ;
+    hr:outcomeCode "O166" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:NoticeConsentPurposeService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO167 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that employee data is accessed by someone without a need to know" ;
+    hr:outcomeCode "O167" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:DataPrivacySecurityGovernanceService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO168 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to fulfill an employee's request to access or delete their personal data" ;
+    hr:outcomeCode "O168" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:PeopleDataRetentionRightsService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO169 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of retaining employee data beyond its required retention period" ;
+    hr:outcomeCode "O169" ;
+    hr:isOutcomeOfJob hr:JobJ19 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:PeopleDataRetentionRightsService ;
+    hr:benchmarkTheme hr:ServiceLineValuesStewardship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO170 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to define the workforce metrics that matter most to the business" ;
+    hr:outcomeCode "O170" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:OrganizationalScorecardService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO171 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to bring headcount, turnover and cost data into one view" ;
+    hr:outcomeCode "O171" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:ClientAdminPortalReportingService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO172 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a workforce report contains inaccurate or out-of-date data" ;
+    hr:outcomeCode "O172" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO173 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to answer an ad-hoc workforce question, e.g., overtime trend, open roles" ;
+    hr:outcomeCode "O173" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ClientAdminPortalReportingService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO174 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to spot an emerging workforce risk, e.g., rising turnover in one team" ;
+    hr:outcomeCode "O174" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO175 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to compare the company's workforce metrics with similar companies" ;
+    hr:outcomeCode "O175" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO176 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to model the cost of a workforce change, e.g., adding headcount, raising wages" ;
+    hr:outcomeCode "O176" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:WorkforceAnalyticsReportingService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO177 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to prepare workforce information for a board, lender or investor" ;
+    hr:outcomeCode "O177" ;
+    hr:isOutcomeOfJob hr:JobJ20 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:OrganizationalScorecardService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO178 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine which systems need to exchange employee data" ;
+    hr:outcomeCode "O178" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:HRISDataIntegrationConnectorService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO179 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to set up a data connection with an accounting, scheduling or other business system" ;
+    hr:outcomeCode "O179" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:HRISDataIntegrationConnectorService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO180 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of data fields being mapped incorrectly between systems" ;
+    hr:outcomeCode "O180" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:HRISDataIntegrationConnectorService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO181 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a data sync fails without anyone noticing" ;
+    hr:outcomeCode "O181" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:HRISDataIntegrationConnectorService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO182 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the number of separate logins employees and administrators must maintain" ;
+    hr:outcomeCode "O182" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:SingleSignOnIdentityManagementService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO183 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of unauthorized access to employee records, e.g., through a compromised password" ;
+    hr:outcomeCode "O183" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:SingleSignOnIdentityManagementService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO184 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to demonstrate data security controls to a customer or auditor" ;
+    hr:outcomeCode "O184" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:DataPrivacySecurityGovernanceService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO185 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to grant or remove an administrator's access when roles change" ;
+    hr:outcomeCode "O185" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ClientAdminPortalReportingService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO186 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to remove all system access when an employee leaves" ;
+    hr:outcomeCode "O186" ;
+    hr:isOutcomeOfJob hr:JobJ21 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:SingleSignOnIdentityManagementService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO187 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to find my pay stubs, tax forms and employment documents" ;
+    hr:outcomeCode "O187" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO188 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that a change I make is not reflected in my next paycheck" ;
+    hr:outcomeCode "O188" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO189 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to update my personal information, e.g., address, bank account, tax withholding" ;
+    hr:outcomeCode "O189" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO190 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to get an accurate answer to an HR or pay question" ;
+    hr:outcomeCode "O190" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO191 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to clock in or out when I am not at a fixed location" ;
+    hr:outcomeCode "O191" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MobileWorkforceAppService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO192 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of missing an important notice, e.g., an enrollment deadline or policy change" ;
+    hr:outcomeCode "O192" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:MobileWorkforceAppService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO193 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to check my time-off balance" ;
+    hr:outcomeCode "O193" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService , hr:CustomPTOAccrualService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO194 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to obtain proof of employment or income, e.g., for a loan or lease" ;
+    hr:outcomeCode "O194" ;
+    hr:isOutcomeOfJob hr:JobJ22 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:EmployeeSelfServicePortalService ;
+    hr:benchmarkTheme hr:ServiceLineHRTechnologyData ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO195 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to decide which HR responsibilities to keep in-house and which to hand off" ;
+    hr:outcomeCode "O195" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepDefine ;
+    hr:addressedByService hr:ProspectQualificationRFPService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO196 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to compare providers on total cost, e.g., fees, benefits, insurance, taxes" ;
+    hr:outcomeCode "O196" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:ProspectQualificationRFPService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO197 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of hidden or unexpected fees after signing" ;
+    hr:outcomeCode "O197" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:MasterServiceAgreementContractingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO198 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to understand which employer responsibilities and liabilities are shared and which the company keeps" ;
+    hr:outcomeCode "O198" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:MasterServiceAgreementContractingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO199 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of choosing a provider that is not financially sound or properly certified, e.g., IRS CPEO status" ;
+    hr:outcomeCode "O199" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:CPEOComplianceMonitoringService ;
+    hr:benchmarkTheme hr:ServiceLineHRCompliance ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO200 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to negotiate and sign the service agreement" ;
+    hr:outcomeCode "O200" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MasterServiceAgreementContractingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO201 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of committing to contract terms that are difficult to exit" ;
+    hr:outcomeCode "O201" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:MasterServiceAgreementContractingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO202 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that employees react negatively to a change in how they are paid and covered" ;
+    hr:outcomeCode "O202" ;
+    hr:isOutcomeOfJob hr:JobC1 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ClientOnboardingKickoffService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO203 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to gather the employee census and payroll history needed for setup" ;
+    hr:outcomeCode "O203" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:ClientOnboardingKickoffService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO204 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that historical payroll, tax or time-off data is lost or corrupted in the move" ;
+    hr:outcomeCode "O204" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepPrepare ;
+    hr:addressedByService hr:ClientImplementationDataMigrationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO205 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to verify that transferred employee data is correct" ;
+    hr:outcomeCode "O205" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:ClientImplementationDataMigrationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO206 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that the first payroll after the move contains errors" ;
+    hr:outcomeCode "O206" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ClientImplementationDataMigrationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO207 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a gap or disruption in employees' benefits coverage during the move" ;
+    hr:outcomeCode "O207" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:PEOMasterHealthPlanService ;
+    hr:benchmarkTheme hr:ServiceLineBenefits ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO208 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required for administrators and managers to become proficient on new tools" ;
+    hr:outcomeCode "O208" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ClientOnboardingKickoffService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO209 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to see where the transition stands against the plan" ;
+    hr:outcomeCode "O209" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ClientImplementationDataMigrationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO210 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the total elapsed time from signing to the first successful payroll" ;
+    hr:outcomeCode "O210" ;
+    hr:isOutcomeOfJob hr:JobC2 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:ClientImplementationDataMigrationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO211 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to reach someone who knows the company's situation" ;
+    hr:outcomeCode "O211" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepLocate ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO212 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that guidance received is incorrect or inconsistent" ;
+    hr:outcomeCode "O212" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO213 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the number of times an issue must be explained to different people" ;
+    hr:outcomeCode "O213" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricOutput .
+
+hr:OutcomeO214 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to resolve an urgent issue, e.g., a missed paycheck" ;
+    hr:outcomeCode "O214" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepExecute ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO215 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to know the status of an open request" ;
+    hr:outcomeCode "O215" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO216 a hr:DesiredOutcome ;
+    rdfs:label "Increase the likelihood that a risk or opportunity is raised to the company before it has to ask" ;
+    hr:outcomeCode "O216" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ClientHealthScoringRetentionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO217 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood that the same problem recurs after it has been resolved" ;
+    hr:outcomeCode "O217" ;
+    hr:isOutcomeOfJob hr:JobC3 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ClientEscalationResolutionService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO218 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to understand each charge on a service invoice" ;
+    hr:outcomeCode "O218" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:ClientInvoicingBillingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO219 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of being billed incorrectly" ;
+    hr:outcomeCode "O219" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepConfirm ;
+    hr:addressedByService hr:ClientInvoicingBillingService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO220 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to determine the return the company gets from its HR provider" ;
+    hr:outcomeCode "O220" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:OrganizationalScorecardService , hr:ClientRenewalRenegotiationService ;
+    hr:benchmarkTheme hr:ServiceLineMeasurement ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO221 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the likelihood of a large cost increase at renewal without advance notice" ;
+    hr:outcomeCode "O221" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepMonitor ;
+    hr:addressedByService hr:ClientRenewalRenegotiationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricStability .
+
+hr:OutcomeO222 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to adjust services as the company changes, e.g., adding states or headcount" ;
+    hr:outcomeCode "O222" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ClientRenewalRenegotiationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+hr:OutcomeO223 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the effort required to renegotiate service levels that are not being met" ;
+    hr:outcomeCode "O223" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepModify ;
+    hr:addressedByService hr:ClientRenewalRenegotiationService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricEffort .
+
+hr:OutcomeO224 a hr:DesiredOutcome ;
+    rdfs:label "Minimize the time required to exit the relationship and take the company's data with it, if needed" ;
+    hr:outcomeCode "O224" ;
+    hr:isOutcomeOfJob hr:JobC4 ;
+    hr:atJobStep hr:StepConclude ;
+    hr:addressedByService hr:ClientRenewalRenegotiationService , hr:PeopleDataRetentionRightsService ;
+    hr:benchmarkTheme hr:ServiceLinePEORelationship ;
+    hr:hasMetricType hr:MetricSpeed .
+
+# --- SHACL: every desired outcome is well-formed and traceable ---
+hr:DesiredOutcomeShape a sh:NodeShape ;
+    sh:targetClass hr:DesiredOutcome ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:pattern "^(Minimize|Increase) the " ;
+                  sh:message "Outcome statements start with a direction (Minimize/Increase) and a metric." ] ;
+    sh:property [ sh:path hr:isOutcomeOfJob ; sh:class hr:JobToBeDone ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path hr:atJobStep ; sh:class hr:JobStep ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path hr:addressedByService ; sh:class hr:DomainService ; sh:minCount 1 ;
+                  sh:message "Every outcome must trace to at least one domain service." ] ;
+    sh:property [ sh:path hr:benchmarkTheme ; sh:class hr:ServiceLine ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+hr:JobToBeDoneShape a sh:NodeShape ;
+    sh:targetClass hr:JobToBeDone ;
+    sh:property [ sh:path hr:executedByPersona ; sh:class hr:ClientPersona ; sh:minCount 1 ] ;
+    sh:property [ sh:path hr:hasDesiredOutcome ; sh:minCount 5 ] .

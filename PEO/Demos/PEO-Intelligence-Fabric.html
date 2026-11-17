@@ -1,0 +1,808 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}[hidden]{display:none!important}</style></head><body>
+<title>PEO Intelligence Fabric</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: Accelerator Console design system (schematic grid paper, Big Shoulders + IBM Plex, deontic colors).
+   Working console with five tabs: blueprint / governed pipeline / decision trace / taxonomies / agent fabric. */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-ink:#ffffff;
+  --obligation:#4A3AA7; --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --in:#1F7FA8; --proc:#7A4BC4; --out:#C0620F; --keel:#1C2B3A; --keel-ink:#E8EEF4;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --in:#5EBBE0; --proc:#B08CF0; --out:#F0A15A; --keel:#253545; --keel-ink:#E8EEF4; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --in:#5EBBE0; --proc:#B08CF0; --out:#F0A15A; --keel:#253545; --keel-ink:#E8EEF4; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:24px 56px}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px 24px;margin-bottom:18px}
+h1{font-size:clamp(30px,4.2vw,44px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:72ch}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:8px 13px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.hdr-ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.theme-btn{display:inline-grid;place-items:center;width:40px;height:40px;flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:50%;padding:0;cursor:pointer}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.theme-btn svg{width:19px;height:19px}
+.theme-btn .i-sun{display:none}
+.theme-btn.is-dark .i-sun{display:inline}
+.theme-btn.is-dark .i-moon{display:none}
+.hook{font-size:14.5px;color:var(--muted);margin:0 0 16px;max-width:90ch}
+.hook b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:20px;margin-bottom:8px}
+.sec-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+.hint{font-size:12.5px;color:var(--muted)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;background:var(--surface)}
+.pill .sw{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--muted)}
+.pill.ok,.pill.pass{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}.pill.ok .sw,.pill.pass .sw{background:var(--permission)}
+.pill.corr{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}.pill.corr .sw{background:var(--accent)}
+.pill.no,.pill.trip{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}.pill.no .sw,.pill.trip .sw{background:var(--prohibition)}
+.pill.hold,.pill.appr{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}.pill.hold .sw,.pill.appr .sw{background:var(--warning)}
+.pill.ob{color:var(--obligation);border-color:color-mix(in srgb,var(--obligation) 45%,var(--line))}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;font:600 13.5px var(--font-body);cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--warning);color:#1b1300}
+.cite{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);text-decoration:none;vertical-align:super;margin-left:1px}
+.cite:hover{text-decoration:underline}
+.data-note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:28px;max-width:100ch}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:bottom}
+td{padding:10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tbl-wrap{overflow-x:auto}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.stat .v{font-family:var(--font-mono);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13.5px}
+.banner.no{border:1px solid color-mix(in srgb,var(--prohibition) 45%,var(--line));background:color-mix(in srgb,var(--prohibition) 9%,transparent)}
+.banner.hold{border:1px solid color-mix(in srgb,var(--warning) 45%,var(--line));background:color-mix(in srgb,var(--warning) 9%,transparent)}
+.banner.ok{border:1px solid color-mix(in srgb,var(--permission) 45%,var(--line));background:color-mix(in srgb,var(--permission) 8%,transparent)}
+.banner.info{border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+/* BLUEPRINT */
+.arch{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.arch svg{display:block;min-width:980px;width:100%;height:auto}
+.arch text{font-family:var(--font-body)}
+.bench{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:1050px){.bench{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.bench{grid-template-columns:minmax(0,1fr)}}
+.bco{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.bco.self{border-style:dashed}
+.bco h3{font-size:22px;line-height:1}
+.bco .what{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.bco dl{display:grid;grid-template-columns:62px minmax(0,1fr);gap:6px 10px;margin:0;font-size:13px}
+.bco dt{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.bco dt.i{color:var(--in)}.bco dt.p{color:var(--proc)}.bco dt.o{color:var(--out)}.bco dt.t{color:var(--obligation)}
+.bco dd{margin:0;min-width:0}
+.borrow{margin-top:auto;border-top:1px solid var(--line-soft);padding-top:8px;font-size:13px}
+.borrow b{font-weight:600}
+.patterns td:first-child{font-weight:600;white-space:nowrap}
+
+/* PIPELINE */
+.run-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1000px){.run-grid{grid-template-columns:minmax(0,1fr)}}
+.slist{display:flex;flex-direction:column;gap:8px}
+.slist button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:5px}
+.slist button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.slist .sid{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.slist .st{font-weight:600;font-size:14px;line-height:1.3}
+.lanes{display:grid;grid-template-columns:2fr 2fr 2fr;gap:10px;margin-bottom:6px}
+.lanes div{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:4px 0;border-top:3px solid}
+.lanes .li{border-color:var(--in);color:var(--in)}.lanes .lp{border-color:var(--proc);color:var(--proc)}.lanes .lo{border-color:var(--out);color:var(--out)}
+.stages{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:1180px){.lanes{display:none}.stages{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stg{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0;transition:border-color .25s,background .25s}
+.stg .g{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);display:flex;justify-content:space-between;gap:4px}
+.stg .n{font-weight:600;font-size:13.5px;line-height:1.25}
+.stg .sub{font-size:11.5px;color:var(--muted);line-height:1.35;min-height:2.7em}
+.qrt{display:grid;grid-template-columns:12px minmax(0,1fr) 24px;gap:4px 6px;align-items:center;font-family:var(--font-mono);font-size:10.5px}
+.qrt .b{height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden}
+.qrt .b span{display:block;height:100%;width:0;transition:width .35s;background:var(--muted)}
+.qrt .v{text-align:right;color:var(--muted)}
+.stg.run{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--surface))}
+.stg.pass{border-color:color-mix(in srgb,var(--permission) 60%,var(--line))}
+.stg.corr{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.stg.hold,.stg.appr{border-color:var(--warning);background:color-mix(in srgb,var(--warning) 7%,var(--surface))}
+.stg.trip{border-color:var(--prohibition);background:color-mix(in srgb,var(--prohibition) 8%,var(--surface))}
+.stg.skip,.stg.wait{opacity:.5}
+.sig-card{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.sig-card .txt{font-size:17px;font-weight:500;line-height:1.4;max-width:80ch}
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-family:var(--font-mono);font-size:10.5px;padding:1px 6px;border-radius:4px;background:var(--paper);border:1px solid var(--line-soft);color:var(--ink-soft);cursor:pointer}
+.tag:hover{border-color:var(--accent)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 4px}
+.log{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.log .ent{border:1px solid var(--line-soft);border-radius:8px;padding:9px 12px;background:var(--surface);font-size:13.5px}
+.log .ent h4{font-family:var(--font-body);font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.log ul{margin:0;padding-left:18px;color:var(--ink-soft);font-size:13px}
+.log li+li{margin-top:2px}
+.claim{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;margin-top:4px;font-size:13px}
+.claim s{color:var(--muted)}
+.mtbh{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.mtbh .stat .v{font-size:20px}
+.outbox{margin-top:12px}
+.thr{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* DECISION */
+.dec-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1000px){.dec-grid{grid-template-columns:minmax(0,1fr)}}
+.dlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.dlist button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:5px}
+.dlist button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.dlist .did{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.dlist .dt{font-weight:600;font-size:14px;line-height:1.3}
+.trace{position:relative}
+.trace-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;position:relative;z-index:1}
+@media (max-width:1180px){.trace-cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.trace-cols{grid-template-columns:minmax(0,1fr)}}
+.col h4{font-family:var(--font-mono);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.col .stack{display:flex;flex-direction:column;gap:8px}
+.node{border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--surface);font-size:13px}
+.node .nid{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.node b{display:block;font-weight:600;font-size:13.5px;line-height:1.3;margin:1px 0 3px}
+.node p{color:var(--muted);font-size:12.5px}
+.node.sig{box-shadow:inset 3px 0 0 var(--in)}
+.node.sig.blocked{box-shadow:inset 3px 0 0 var(--prohibition)}
+.node.ins{box-shadow:inset 3px 0 0 var(--accent)}
+.node.decision{border:2px solid var(--ink)}
+.node.out{box-shadow:inset 3px 0 0 var(--obligation)}
+.node.meas.good{box-shadow:inset 3px 0 0 var(--permission)}.node.meas.warn{box-shadow:inset 3px 0 0 var(--warning)}.node.meas.pend{border-style:dashed}
+.node.missing{border:2px dashed var(--prohibition);background:color-mix(in srgb,var(--prohibition) 7%,transparent)}
+.gstrip{display:flex;gap:3px;margin-top:5px;align-items:center}
+.gstrip i{width:14px;height:8px;border-radius:2px;background:var(--line);display:inline-block}
+.gstrip i.pass{background:var(--permission)}.gstrip i.corr{background:var(--accent)}.gstrip i.appr,.gstrip i.hold{background:var(--warning)}.gstrip i.trip{background:var(--prohibition)}
+.gstrip span{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:4px}
+.score-row{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:6px;font-size:12px;align-items:center;margin-top:4px}
+.bar{height:6px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--accent)}
+svg.wires{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+svg.wires path{fill:none;stroke:var(--accent);stroke-opacity:.45;stroke-width:1.5}
+svg.wires path.bad{stroke:var(--prohibition);stroke-dasharray:4 4}
+.meter{height:8px;background:var(--line-soft);border-radius:4px;overflow:hidden;margin-top:6px}
+.meter span{display:block;height:100%}
+
+/* TAXONOMY */
+.tax-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:16px 0 12px}
+.seg{display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:8px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--font-body);padding:7px 12px;border-radius:5px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+input[type=search]{font:14px var(--font-body);padding:8px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);min-width:0;width:280px;max-width:100%}
+.tax-grid{display:grid;grid-template-columns:250px minmax(0,1fr) minmax(0,1.15fr);gap:14px;align-items:start}
+@media (max-width:1100px){.tax-grid{grid-template-columns:220px minmax(0,1fr)}.tax-grid .detail{grid-column:1/-1}}
+@media (max-width:640px){.tax-grid{grid-template-columns:minmax(0,1fr)}}
+.schemes{display:flex;flex-direction:column;gap:4px}
+.schemes button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;text-align:left;border:1px solid transparent;background:transparent;border-radius:7px;padding:7px 9px;cursor:pointer;color:var(--ink);font:500 13.5px var(--font-body)}
+.schemes button:hover{background:var(--surface)}
+.schemes button[aria-pressed="true"]{background:var(--surface);border-color:var(--accent)}
+.schemes .cnt{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.schemes .lyr{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 9px 2px}
+.tree{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:640px;overflow:auto;min-width:0}
+.tree button{display:flex;width:100%;gap:8px;align-items:baseline;text-align:left;border:0;background:transparent;border-radius:6px;padding:5px 8px;cursor:pointer;color:var(--ink);font:13.5px var(--font-body)}
+.tree button:hover{background:var(--paper)}
+.tree button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.tree .code{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.tree .sch{font-family:var(--font-mono);font-size:10px;color:var(--muted);padding:8px 8px 2px;letter-spacing:.1em;text-transform:uppercase}
+.detail h3{font-size:26px;line-height:1.05}
+.kv{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 14px;font-size:13.5px;margin:12px 0 0}
+.kv dt{color:var(--muted);font-size:12px;padding-top:1px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:2px 8px;border-radius:99px;border:1px solid var(--line);background:var(--paper);font:500 12px var(--font-body);color:var(--ink-soft)}
+.chip.ft{font-family:var(--font-mono);font-size:10.5px}
+.chip.lnk{cursor:pointer;color:var(--accent);background:var(--surface)}
+.code-view{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:11.5px;white-space:pre;overflow-x:auto;color:var(--ink-soft);line-height:1.5;margin:8px 0 0;max-height:260px}
+.roles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}
+@media (max-width:900px){.roles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.roles div{border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--surface);font-size:12.5px;min-width:0}
+.roles b{font-family:var(--font-mono);font-size:11px;display:block;color:var(--accent)}
+
+/* AGENTS */
+.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.people{grid-template-columns:minmax(0,1fr)}}
+.person{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;gap:14px;min-width:0}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 18px var(--font-display);color:var(--accent-ink);background:var(--accent);flex:none}
+.avatar.b{background:var(--obligation)}
+.person p{font-size:13px;color:var(--muted)}
+.tiers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tier{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface);font-size:12.5px}
+.tier b{font-family:var(--font-mono);font-size:12px;display:block;margin-bottom:2px}
+.tier.a3{border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.agents td:first-child{white-space:nowrap}
+.agents .an{font-weight:600}
+.agents .aj{font-size:12.5px;color:var(--muted)}
+.owner{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font:700 11px var(--font-display);color:var(--accent-ink);background:var(--accent)}
+.owner.b{background:var(--obligation)}
+.cap{display:grid;grid-template-columns:minmax(0,210px) minmax(0,1fr) 70px;gap:4px 12px;align-items:center;font-size:13px}
+.cap .track{display:flex;flex-direction:column;gap:3px}
+.cap .bb{height:9px;border-radius:2px}
+.cap .bb.before{background:var(--line)}
+.cap .bb.after{background:var(--accent)}
+.cap .n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.cap .rowline{grid-column:1/-1;border-top:1px solid var(--line-soft);margin:3px 0}
+.week{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.week{grid-template-columns:minmax(0,1fr)}}
+.day{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface);font-size:12.5px;min-width:0}
+.day b{font-family:var(--font-display);font-size:16px;display:block;margin-bottom:4px}
+.day ul{margin:0;padding-left:16px}
+.two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:980px){.two{grid-template-columns:minmax(0,1fr)}}
+.sources ol{columns:2 380px;column-gap:32px;padding-left:22px;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.sources li{break-inside:avoid;margin-bottom:5px}
+.sources a{color:var(--ink)}
+.tierb{font:500 10px var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:4px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Competitive intelligence · Insights · Data &amp; Analytics — one governed fabric</div>
+      <h1>PEO Intelligence Fabric</h1>
+      <p class="dek">An intelligence platform for a two-person CI team, modeled on what Nestlé, Disney and the largest PEOs run. AI works only on knowledge grounded in the keel and in vetted third-party data, and the AI Circuit Breaker scores quality, relevancy and trust at every step from input to published card.</p>
+    </div>
+    <div class="hdr-ctrl">
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" id="tab-blue" aria-selected="true" aria-controls="view-blue">Blueprint</button>
+      <button role="tab" id="tab-run" aria-selected="false" aria-controls="view-run">Governed pipeline</button>
+      <button role="tab" id="tab-dec" aria-selected="false" aria-controls="view-dec">Decision trace</button>
+      <button role="tab" id="tab-tax" aria-selected="false" aria-controls="view-tax">Taxonomies</button>
+      <button role="tab" id="tab-agt" aria-selected="false" aria-controls="view-agt">Agent fabric</button>
+    </nav>
+    <button type="button" class="theme-btn" id="themebtn" aria-label="Switch to dark mode" title="Switch to dark mode"><svg viewBox="0 0 20 20" aria-hidden="true"><path class="i-moon" d="M15.5 12.2A6.5 6.5 0 0 1 7.8 4.5a6.5 6.5 0 1 0 7.7 7.7Z" fill="currentColor"/><g class="i-sun" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="3.6" fill="currentColor" stroke="none"/><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></g></svg></button>
+    </div>
+  </header>
+
+  <!-- BLUEPRINT -->
+  <section id="view-blue" role="tabpanel" aria-labelledby="tab-blue">
+    <p class="hook"><b>Inputs → processing → outputs</b>, with a deterministic keel underneath and a Circuit Breaker gate after every stage. Internal PEO knowledge and third-party data enter on the left; nothing reaches a battlecard, a brief or an AI answer on the right without passing six gates.</p>
+    <div class="arch" id="arch"></div>
+
+    <div class="sec-label">Benchmarks · what the leaders publish about their intelligence platforms</div>
+    <div class="bench" id="bench"></div>
+
+    <div class="sec-label">Patterns borrowed, and where they land in this fabric</div>
+    <div class="card tbl-wrap"><table class="patterns" id="patterns"></table></div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section id="view-run" role="tabpanel" aria-labelledby="tab-run" hidden>
+    <p class="hook"><b>Pick a signal and run it.</b> Each gate scores Quality, Relevancy and Trust from 0 to 100. The lowest score sets the verdict: <span class="pill pass"><span class="sw"></span>Pass</span> at 75 or more, <span class="pill hold"><span class="sw"></span>Hold</span> for a person at 60–74, <span class="pill trip"><span class="sw"></span>Trip</span> below 60, which stops everything downstream. <span class="pill corr"><span class="sw"></span>Corrected</span> means a deterministic fix from the keel was applied first.</p>
+    <div class="run-grid">
+      <div>
+        <div class="mtbh" id="mtbh"></div>
+        <div class="slist" id="slist" role="group" aria-label="Signals"></div>
+      </div>
+      <div class="card">
+        <div class="sig-card" id="sigcard"></div>
+        <div class="lanes"><div class="li">Inputs</div><div class="lp">Processing</div><div class="lo">Outputs</div></div>
+        <div class="stages" id="stages"></div>
+        <div class="ctrl">
+          <button class="btn" id="runbtn" type="button">Run through the gates</button>
+          <button class="btn warn" id="apprbtn" type="button" hidden>Approve hold as Analyst</button>
+          <button class="btn ghost" id="resetbtn" type="button">Reset</button>
+          <span class="hint" id="runstate"></span>
+        </div>
+        <div class="outbox" id="outbox"></div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DECISION -->
+  <section id="view-dec" role="tabpanel" aria-labelledby="tab-dec" hidden>
+    <p class="hook"><b>Decision traceability, extended to the source.</b> The Insights demo traced insight → decision → outcome → measured result. Here every insight also traces back to the signals behind it, and each signal carries its six-gate lineage. Rule <b>MET-014</b> still requires an outcome bound to a Released metric card, and a decision built on a tripped signal is stopped before it is recorded.</p>
+    <div class="dec-grid">
+      <div>
+        <div class="stats" id="dstats" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>
+        <div class="dlist" id="dlist" role="group" aria-label="Decisions"></div>
+      </div>
+      <div class="card">
+        <div id="dhead"></div>
+        <div class="trace" id="trace">
+          <svg class="wires" id="wires" aria-hidden="true"></svg>
+          <div class="trace-cols" id="cols"></div>
+        </div>
+        <div id="verdict"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAXONOMY -->
+  <section id="view-tax" role="tabpanel" aria-labelledby="tab-tax" hidden>
+    <p class="hook"><b>Core taxonomies</b> are shared by every domain: parties, offerings, segments, sources, signals, trust and decisions. <b>Domain taxonomies</b> specialize them for competitive intelligence, PEO services, regulation, client metrics and AI governance. Every concept carries alternate labels, a definition, mappings to SSOT rules and ontology classes, and the fine-tuning roles it can play.</p>
+    <div class="stats" id="tstats"></div>
+    <div class="roles" id="roles"></div>
+    <div class="tax-top">
+      <div class="seg" role="group" aria-label="Layer">
+        <button type="button" data-l="all" aria-pressed="true">All</button>
+        <button type="button" data-l="core" aria-pressed="false">Core</button>
+        <button type="button" data-l="domain" aria-pressed="false">Domain</button>
+      </div>
+      <input type="search" id="tq" placeholder="Search labels, synonyms, rule IDs" aria-label="Search concepts">
+    </div>
+    <div class="tax-grid">
+      <nav class="schemes" id="schemes" aria-label="Schemes"></nav>
+      <div class="tree" id="tree" role="group" aria-label="Concepts"></div>
+      <div class="card detail" id="detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- AGENTS -->
+  <section id="view-agt" role="tabpanel" aria-labelledby="tab-agt" hidden>
+    <p class="hook"><b>Two people, eight agents.</b> Agents collect, tag, verify, correlate, draft and keep records. People set the rules, review holds, approve new vocabulary and own every decision and every publish. No agent can act past its tier, and every agent passes through the same gates as the pipeline.</p>
+    <div class="people">
+      <div class="person"><div class="avatar">L</div><div><h3 style="font-size:20px">Lead · Director of Competitive Intelligence</h3><p>Owns decisions, sets thresholds and freshness windows, approves new taxonomy concepts, publishes outside the team (A3). About 18 hours a week back from collection and upkeep.</p></div></div>
+      <div class="person"><div class="avatar b">A</div><div><h3 style="font-size:20px">Analyst · CI &amp; insights</h3><p>Reviews holds, audits samples of agent work, writes analysis and briefs, runs win/loss interviews. About 17 hours a week back for analysis and coverage.</p></div></div>
+    </div>
+    <div class="sec-label">Autonomy tiers · what an agent may do without a person</div>
+    <div class="tiers" id="tiers"></div>
+    <div class="sec-label">The agents</div>
+    <div class="card tbl-wrap"><table class="agents" id="agents"></table></div>
+    <div class="two" style="margin-top:16px">
+      <div class="card">
+        <h3>Where the team’s 80 hours go</h3>
+        <p class="hint" style="margin-bottom:12px">Planning estimate for discussion, not a measurement. Grey: today. Blue: with the fabric.</p>
+        <div class="cap" id="cap"></div>
+      </div>
+      <div class="card">
+        <h3>Always a person</h3>
+        <ul style="margin:6px 0 0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:6px">
+          <li>Publishing anything outside the CI team: battlecards, exec briefs, Compass and HR360 agent answer sources.</li>
+          <li>Releasing a held signal or claim (amber verdicts).</li>
+          <li>Adding, merging or retiring a taxonomy concept.</li>
+          <li>Changing a gate threshold or a freshness window.</li>
+          <li>Recording a decision and choosing its outcomes.</li>
+          <li>Approving the monthly fine-tuning and evaluation set.</li>
+        </ul>
+        <h3 style="margin-top:16px">Escalates immediately</h3>
+        <ul style="margin:6px 0 0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:6px">
+          <li>Any trip on a claim already in a published card.</li>
+          <li>A policy leak at G5 (internal figure headed outside, small cut).</li>
+          <li>MTBH falling below the floor the Lead sets.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sec-label">A week with the fabric</div>
+    <div class="week" id="week"></div>
+  </section>
+
+  <section class="sources" style="margin-top:28px">
+    <h2 style="font-size:20px">Sources</h2>
+    <p class="hint">Public sources dated through October 2, 2026. Tier is the authority the Circuit Breaker assigns.</p>
+    <ol id="srcList"></ol>
+  </section>
+  <p class="data-note">Benchmarks and competitor facts come from the public sources listed. Insperity's internal data, win/loss records, decisions, scores, gate results, MTBH figures and capacity hours are synthetic for the demo. SSOT rules GOV-007, GOV-009, GOV-010, GOV-019, PAY-003, PAY-004 and TEC-006 come from your register; MET-001 to MET-014 are the proposed metric rules from the Insights demo; CI-001 to CI-005, the competitive-win-rate and card-usage metric cards, and all taxonomy concepts are proposed for this demo.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TAX={"schemes": [{"id": "ORG", "layer": "core", "title": "Parties & Organizations", "definition": "Who is involved: companies, people roles and institutions that appear in PEO intelligence."}, {"id": "OFR", "layer": "core", "title": "Offerings & Pricing", "definition": "What is sold: service bundles, product lines, features and how they are priced."}, {"id": "SEG", "layer": "core", "title": "Market Segments", "definition": "Who buys: client size bands, industries and regions used to slice the market."}, {"id": "JUR", "layer": "core", "title": "Jurisdictions", "definition": "Where a rule or fact applies: federal, state, municipal and multi-state scope."}, {"id": "CHN", "layer": "core", "title": "Channels", "definition": "How offerings reach buyers: direct, broker, partner and self-serve routes."}, {"id": "SRC", "layer": "core", "title": "Sources & Evidence", "definition": "Where a fact came from and how much authority the Circuit Breaker gives it."}, {"id": "EVT", "layer": "core", "title": "Events & Time", "definition": "When something happened, took effect, was observed and how long it stays fresh."}, {"id": "SIG", "layer": "core", "title": "Signal Types", "definition": "What kind of change a signal reports. Drives routing, freshness windows and alerting."}, {"id": "TRU", "layer": "core", "title": "Quality, Relevancy & Trust", "definition": "The three dimensions the Circuit Breaker scores at every gate, and its verdicts."}, {"id": "DEC", "layer": "core", "title": "Decisions & Outcomes", "definition": "The Decision Model & Measurement vocabulary used for decision traceability."}, {"id": "CI", "layer": "domain", "title": "Competitive Intelligence", "definition": "Competitor holons, moves, threats, openings, positioning claims and win/loss reasons."}, {"id": "SVC", "layer": "domain", "title": "PEO Service Domains", "definition": "The HR service lines a PEO delivers under co-employment."}, {"id": "REG", "layer": "domain", "title": "PEO Regulation & Credentials", "definition": "Credentials, licenses and employment-law concepts that shape PEO competition."}, {"id": "MET", "layer": "domain", "title": "Client Insight Metrics", "definition": "Released metric definition cards and the SSOT rules behind them."}, {"id": "AIG", "layer": "domain", "title": "AI Governance & Failure Modes", "definition": "Hallucination types, autonomy tiers and MTBH terms used to evaluate and fine-tune AI."}], "concepts": [{"scheme": "ORG", "code": "ORG.party", "label": "Party", "alt": ["entity", "organization or person"], "definition": "Any organization or person that intelligence can be about.", "broader": null, "maps": ["prov:Agent"], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.peo", "label": "PEO provider", "alt": ["professional employer organization", "co-employer", "HR outsourcing provider"], "definition": "A company that co-employs a client's workforce and delivers payroll, benefits, compliance and HR services.", "broader": "ORG.party", "maps": ["MKT holarchy: Competitor holon"], "ft": ["NER", "CLS"]}, {"scheme": "ORG", "code": "ORG.client", "label": "Client company", "alt": ["customer", "client", "employer client"], "definition": "A business that contracts with a PEO and shares employer responsibilities with it.", "broader": "ORG.party", "maps": ["SSOT GOV-007 identity registry"], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.wse", "label": "Worksite employee", "alt": ["WSE", "co-employee", "paid worksite employee"], "definition": "A worker employed jointly by a client company and a PEO. Counting rules live in MET-006 to MET-008.", "broader": "ORG.party", "maps": ["MET-006", "MET-008"], "ft": ["NER", "FAC"]}, {"scheme": "ORG", "code": "ORG.broker", "label": "Broker or advisor", "alt": ["benefits broker", "PEO advisor", "consultant"], "definition": "An intermediary who recommends a PEO to buyers and is often paid a share of admin revenue.", "broader": "ORG.party", "maps": [], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.carrier", "label": "Carrier", "alt": ["insurer", "health carrier", "workers' comp carrier"], "definition": "An insurance company that underwrites the health, workers' compensation or other plans a PEO offers.", "broader": "ORG.party", "maps": [], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.regulator", "label": "Regulator", "alt": ["agency", "IRS", "state labor department"], "definition": "A government body that licenses, certifies or enforces rules on PEOs and employers.", "broader": "ORG.party", "maps": [], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.techpartner", "label": "Technology partner", "alt": ["platform partner", "HCM vendor", "alliance partner"], "definition": "A software company whose platform a PEO embeds or resells, such as Workday under HRScale.", "broader": "ORG.party", "maps": [], "ft": ["NER"]}, {"scheme": "ORG", "code": "ORG.dataprovider", "label": "Data provider", "alt": ["syndicated data vendor", "third-party data", "benchmark provider"], "definition": "A company that licenses market, labor or benchmark data used as an input.", "broader": "ORG.party", "maps": ["SRC.licensed"], "ft": ["NER"]}, {"scheme": "OFR", "code": "OFR.offering", "label": "Offering", "alt": ["product", "service"], "definition": "Anything a PEO or competitor sells.", "broader": null, "maps": [], "ft": ["NER"]}, {"scheme": "OFR", "code": "OFR.bundle", "label": "Service bundle", "alt": ["PEO plan", "tier", "package"], "definition": "A named tier that groups services at one price, such as PEO Basic or PEO Plus.", "broader": "OFR.offering", "maps": [], "ft": ["NER", "FAC"]}, {"scheme": "OFR", "code": "OFR.line", "label": "Product line", "alt": ["platform", "suite"], "definition": "A family of offerings sold under one brand, such as HR360, HRCore or HRScale.", "broader": "OFR.offering", "maps": ["MKT holarchy: Product line"], "ft": ["NER", "FAC"]}, {"scheme": "OFR", "code": "OFR.feature", "label": "Feature", "alt": ["capability", "module"], "definition": "A single function inside a product line, such as leave management or an AI assistant.", "broader": "OFR.line", "maps": ["MKT holarchy: Feature"], "ft": ["NER"]}, {"scheme": "OFR", "code": "OFR.addon", "label": "Add-on", "alt": ["upsell", "optional module"], "definition": "An offering bought on top of a base platform, such as PEO layered on an HRIS.", "broader": "OFR.offering", "maps": [], "ft": ["NER", "CLS"]}, {"scheme": "OFR", "code": "OFR.price", "label": "Pricing model", "alt": ["pricing", "fee structure"], "definition": "How an offering is charged.", "broader": "OFR.offering", "maps": [], "ft": ["FAC"]}, {"scheme": "OFR", "code": "OFR.price.pepm", "label": "Per employee per month", "alt": ["PEPM", "per head", "per employee fee"], "definition": "A flat fee per worksite employee per month.", "broader": "OFR.price", "maps": [], "ft": ["NER", "CLS"]}, {"scheme": "OFR", "code": "OFR.price.pctpay", "label": "Percent of payroll", "alt": ["% of payroll", "bundled rate"], "definition": "A fee set as a percentage of gross payroll, often bundling benefits and workers' comp.", "broader": "OFR.price", "maps": [], "ft": ["NER", "CLS"]}, {"scheme": "OFR", "code": "OFR.price.quote", "label": "Custom quote", "alt": ["quote-only", "unpublished pricing"], "definition": "Pricing set per prospect and not published.", "broader": "OFR.price", "maps": [], "ft": ["CLS"]}, {"scheme": "SEG", "code": "SEG.segment", "label": "Segment", "alt": ["market segment", "cohort"], "definition": "A slice of the market used for targeting, metrics and threat roll-ups.", "broader": null, "maps": [], "ft": ["FAC"]}, {"scheme": "SEG", "code": "SEG.small", "label": "Small business (5–49)", "alt": ["small business", "SB", "under 50"], "definition": "Clients with 5 to 49 worksite employees.", "broader": "SEG.segment", "maps": ["Insights demo segment small"], "ft": ["CLS", "FAC"]}, {"scheme": "SEG", "code": "SEG.grow", "label": "Growing SMB (50–149)", "alt": ["growing SMB", "50–149", "lower mid-size"], "definition": "Clients with 50 to 149 worksite employees.", "broader": "SEG.segment", "maps": ["Insights demo segment grow"], "ft": ["CLS", "FAC"]}, {"scheme": "SEG", "code": "SEG.mid", "label": "Mid-market (150–5,000)", "alt": ["mid-market", "HRScale segment", "150+"], "definition": "Clients with 150 to 5,000 workers, the stated focus of HRScale.", "broader": "SEG.segment", "maps": [], "ft": ["CLS", "FAC"]}, {"scheme": "SEG", "code": "SEG.industry", "label": "Industry vertical", "alt": ["NAICS sector", "vertical"], "definition": "An industry grouping, coded to NAICS so third-party data joins cleanly.", "broader": "SEG.segment", "maps": ["NAICS 2022"], "ft": ["FAC"]}, {"scheme": "SEG", "code": "SEG.region", "label": "Region", "alt": ["territory", "metro"], "definition": "A geographic sales or reporting area.", "broader": "SEG.segment", "maps": ["JUR"], "ft": ["FAC"]}, {"scheme": "JUR", "code": "JUR.scope", "label": "Jurisdiction scope", "alt": ["scope", "applicability"], "definition": "The legal level at which a rule applies.", "broader": null, "maps": ["SSOT Jurisdiction_Scope field"], "ft": ["FAC"]}, {"scheme": "JUR", "code": "JUR.fed", "label": "Federal", "alt": ["U.S. federal", "national"], "definition": "Applies across the United States.", "broader": "JUR.scope", "maps": [], "ft": ["CLS"]}, {"scheme": "JUR", "code": "JUR.state", "label": "State", "alt": ["state law"], "definition": "Applies within one state.", "broader": "JUR.scope", "maps": [], "ft": ["CLS"]}, {"scheme": "JUR", "code": "JUR.muni", "label": "Municipal", "alt": ["city", "county", "local ordinance"], "definition": "Applies within a city or county, subject to state preemption.", "broader": "JUR.scope", "maps": [], "ft": ["CLS"]}, {"scheme": "JUR", "code": "JUR.multi", "label": "Multi-state", "alt": ["nexus", "multi-jurisdiction"], "definition": "A client or rule spanning several states; most-protective rule governs (GOV-009).", "broader": "JUR.scope", "maps": ["GOV-009"], "ft": ["CLS", "GRD"]}, {"scheme": "CHN", "code": "CHN.channel", "label": "Channel", "alt": ["route to market"], "definition": "How an offering reaches a buyer.", "broader": null, "maps": [], "ft": ["FAC"]}, {"scheme": "CHN", "code": "CHN.direct", "label": "Direct sales", "alt": ["field sales", "inside sales"], "definition": "Sold by the provider's own sales team.", "broader": "CHN.channel", "maps": [], "ft": ["CLS"]}, {"scheme": "CHN", "code": "CHN.broker", "label": "Broker channel", "alt": ["broker-led", "advisor channel"], "definition": "Sold through benefits brokers or PEO advisors.", "broader": "CHN.channel", "maps": [], "ft": ["CLS"]}, {"scheme": "CHN", "code": "CHN.partner", "label": "Partner channel", "alt": ["marketplace", "alliance"], "definition": "Sold with or through a technology partner.", "broader": "CHN.channel", "maps": [], "ft": ["CLS"]}, {"scheme": "CHN", "code": "CHN.self", "label": "Self-serve digital", "alt": ["online signup", "PLG"], "definition": "Bought online without a salesperson.", "broader": "CHN.channel", "maps": [], "ft": ["CLS"]}, {"scheme": "SRC", "code": "SRC.source", "label": "Source", "alt": ["evidence", "citation", "reference"], "definition": "A document, dataset or system a fact was taken from.", "broader": null, "maps": ["prov:Entity"], "ft": ["FAC", "GRD"]}, {"scheme": "SRC", "code": "SRC.t3", "label": "Tier 3 · Filing or regulator", "alt": ["SEC filing", "8-K", "10-K", "regulator list"], "definition": "Legally accountable disclosure. Highest authority; can settle conflicts alone.", "broader": "SRC.source", "maps": ["prov:wasDerivedFrom"], "ft": ["CLS", "GRD"]}, {"scheme": "SRC", "code": "SRC.t2", "label": "Tier 2 · Company or press", "alt": ["press release", "earnings call", "trade press", "broker notice"], "definition": "Attributed statements by the company or reputable press. Settles a conflict only with corroboration.", "broader": "SRC.source", "maps": [], "ft": ["CLS", "GRD"]}, {"scheme": "SRC", "code": "SRC.t1", "label": "Tier 1 · Review or analyst", "alt": ["review site", "advisor blog", "comparison page"], "definition": "Third-party commentary. Useful for pricing estimates; never sole support for a battlecard claim.", "broader": "SRC.source", "maps": [], "ft": ["CLS", "GRD"]}, {"scheme": "SRC", "code": "SRC.t0", "label": "Tier 0 · Unattributed", "alt": ["tracker site", "social post", "forum", "rumor"], "definition": "Unattributed or aggregated claims. Can open an investigation; cannot support a published claim.", "broader": "SRC.source", "maps": [], "ft": ["CLS", "GRD"]}, {"scheme": "SRC", "code": "SRC.internal", "label": "Internal system of record", "alt": ["CRM", "payroll ledger", "SSOT"], "definition": "An Insperity system that is authoritative for its own data, such as the payroll ledger for client loss dates (MET-001).", "broader": "SRC.source", "maps": ["MET-001", "GOV-007"], "ft": ["CLS", "GRD"]}, {"scheme": "SRC", "code": "SRC.licensed", "label": "Licensed third-party data", "alt": ["syndicated data", "benchmark feed"], "definition": "Data bought under licence. Carries usage terms that the Composer must respect.", "broader": "SRC.source", "maps": [], "ft": ["CLS", "GRD"]}, {"scheme": "EVT", "code": "EVT.event", "label": "Event", "alt": ["occurrence", "change"], "definition": "Something that happened to a party or offering.", "broader": null, "maps": ["prov:Activity"], "ft": ["NER"]}, {"scheme": "EVT", "code": "EVT.effective", "label": "Effective date", "alt": ["takes effect", "go-live"], "definition": "When a change applies, such as a new price for new business.", "broader": "EVT.event", "maps": [], "ft": ["NER", "GRD"]}, {"scheme": "EVT", "code": "EVT.observed", "label": "Observed date", "alt": ["published", "reported on"], "definition": "When a source reported the change.", "broader": "EVT.event", "maps": ["prov:generatedAtTime"], "ft": ["NER", "GRD"]}, {"scheme": "EVT", "code": "EVT.period", "label": "Reporting period", "alt": ["quarter", "fiscal year", "FY"], "definition": "The period a financial or metric value covers. Fiscal years differ by company (Paychex FY ends May).", "broader": "EVT.event", "maps": [], "ft": ["NER", "GRD"]}, {"scheme": "EVT", "code": "EVT.window", "label": "Freshness window", "alt": ["shelf life", "staleness threshold"], "definition": "How long a fact of a given signal type stays current before the Circuit Breaker treats it as background.", "broader": "EVT.event", "maps": ["TRU.q.fresh"], "ft": ["GRD"]}, {"scheme": "SIG", "code": "SIG.signal", "label": "Signal", "alt": ["intel item", "market signal"], "definition": "One observed change worth tracking.", "broader": null, "maps": [], "ft": ["CLS"]}, {"scheme": "SIG", "code": "SIG.price", "label": "Pricing change", "alt": ["price increase", "repricing", "fee change"], "definition": "A change in list price, fee structure or discounting. Freshness window: 90 days.", "broader": "SIG.signal", "maps": ["OFR.price"], "ft": ["CLS"], "ex": ["Justworks raised PEO Plus to $124 per employee per month for new business starting June 1.", "The broker notice says renewal admin fees go up 6% in January."]}, {"scheme": "SIG", "code": "SIG.launch", "label": "Product or AI launch", "alt": ["new feature", "release", "launch"], "definition": "A new offering, feature or AI capability. Freshness window: 180 days.", "broader": "SIG.signal", "maps": [], "ft": ["CLS"], "ex": ["Paychex expanded WISE so its workforce intelligence works inside Microsoft 365.", "ADP introduced Assist agents for payroll practitioners and managers."]}, {"scheme": "SIG", "code": "SIG.deal", "label": "Funding, M&A or valuation", "alt": ["acquisition", "funding round", "IPO"], "definition": "A capital event that changes a competitor's resources or ownership. Freshness window: 365 days.", "broader": "SIG.signal", "maps": [], "ft": ["CLS"], "ex": ["Rippling closed a Series G at a $16.8 billion valuation."]}, {"scheme": "SIG", "code": "SIG.lead", "label": "Leadership change", "alt": ["new CEO", "executive hire"], "definition": "A change in executive leadership.", "broader": "SIG.signal", "maps": [], "ft": ["CLS"]}, {"scheme": "SIG", "code": "SIG.chan", "label": "Channel or compensation change", "alt": ["broker commission", "partner program"], "definition": "A change in how brokers or partners are paid or engaged.", "broader": "SIG.signal", "maps": ["CHN"], "ft": ["CLS"], "ex": ["Broker pay is moving to a percentage of admin revenue."]}, {"scheme": "SIG", "code": "SIG.reg", "label": "Regulatory action", "alt": ["new law", "certification change", "enforcement"], "definition": "A rule, license or certification change affecting PEOs.", "broader": "SIG.signal", "maps": ["REG"], "ft": ["CLS"]}, {"scheme": "SIG", "code": "SIG.hire", "label": "Hiring signal", "alt": ["job posting", "team build-out"], "definition": "Job postings that reveal investment direction.", "broader": "SIG.signal", "maps": [], "ft": ["CLS"], "ex": ["The competitor posted six openings for AI product managers in benefits."]}, {"scheme": "SIG", "code": "SIG.sent", "label": "Customer sentiment", "alt": ["reviews", "NPS", "complaints"], "definition": "Changes in what clients say about a provider.", "broader": "SIG.signal", "maps": [], "ft": ["CLS"], "ex": ["Three reviews this month complain about slow claims responses."]}, {"scheme": "SIG", "code": "SIG.fin", "label": "Financial results", "alt": ["earnings", "WSE count", "guidance"], "definition": "Reported revenue, worksite employees, margin or guidance.", "broader": "SIG.signal", "maps": ["EVT.period"], "ft": ["CLS"], "ex": ["TriNet reported about 298,000 average worksite employees in Q2."]}, {"scheme": "SIG", "code": "SIG.winloss", "label": "Win/loss outcome", "alt": ["closed-lost", "closed-won", "displacement"], "definition": "An internal sales outcome against a named competitor.", "broader": "SIG.signal", "maps": ["CI.wl"], "ft": ["CLS"], "ex": ["Closed-lost to ADP TotalSource; prospect cited benefit plan cost."]}, {"scheme": "TRU", "code": "TRU.q", "label": "Quality", "alt": ["data quality"], "definition": "Is the input complete, valid and current?", "broader": null, "maps": ["ISO 8000"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.q.complete", "label": "Completeness", "alt": ["missing fields"], "definition": "Required fields present: party, event, date, source.", "broader": "TRU.q", "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.q.fresh", "label": "Freshness", "alt": ["staleness", "currency"], "definition": "Observed or effective date inside the freshness window for its signal type.", "broader": "TRU.q", "maps": ["EVT.window"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.q.valid", "label": "Validity", "alt": ["format", "units"], "definition": "Values parse and carry units, currency and period.", "broader": "TRU.q", "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.r", "label": "Relevancy", "alt": ["pertinence"], "definition": "Does it matter to an Insperity capability, segment, claim or open decision?", "broader": null, "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.r.holon", "label": "Holon match", "alt": ["mapped to capability"], "definition": "Resolves to at least one Insperity capability, segment or positioning claim in the market holarchy.", "broader": "TRU.r", "maps": ["MKT holarchy"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.r.dq", "label": "Decision question match", "alt": ["watchlist match"], "definition": "Answers a question attached to an open decision record.", "broader": "TRU.r", "maps": ["DEC.decision"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.r.aud", "label": "Audience fit", "alt": ["need to know"], "definition": "Appropriate for the channel and audience it is headed to.", "broader": "TRU.r", "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.t", "label": "Trust", "alt": ["credibility", "assurance"], "definition": "Can we stand behind it?", "broader": null, "maps": ["MTBH"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.t.auth", "label": "Source authority", "alt": ["tier"], "definition": "Highest source tier supporting the claim.", "broader": "TRU.t", "maps": ["SRC.t0", "SRC.t3"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.t.corr", "label": "Corroboration", "alt": ["independent confirmation"], "definition": "Number of independent sources that agree.", "broader": "TRU.t", "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.t.ground", "label": "Grounding ratio", "alt": ["determinism ratio", "cited share"], "definition": "Share of sentences in an AI output that bind to a deterministic fact in the keel.", "broader": "TRU.t", "maps": ["GOV-010"], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.t.conf", "label": "Conflict check", "alt": ["contradiction"], "definition": "Whether the claim contradicts a higher-tier fact already in the graph.", "broader": "TRU.t", "maps": [], "ft": ["EVAL", "GRD"]}, {"scheme": "TRU", "code": "TRU.v", "label": "Circuit Breaker verdict", "alt": ["gate verdict", "breaker state"], "definition": "The outcome of one gate, set by the lowest of the three dimension scores.", "broader": null, "maps": ["AI Circuit Breaker"], "ft": ["CLS", "EVAL"]}, {"scheme": "TRU", "code": "TRU.v.pass", "label": "Verdict: Pass", "alt": ["verified", "green"], "definition": "All three dimensions at or above 75. Continues automatically.", "broader": "TRU.v", "maps": [], "ft": ["CLS", "EVAL"]}, {"scheme": "TRU", "code": "TRU.v.corr", "label": "Verdict: Corrected", "alt": ["stale corrected", "auto-fixed"], "definition": "A deterministic fix was applied from a higher-tier fact, then passed.", "broader": "TRU.v", "maps": [], "ft": ["CLS", "EVAL"]}, {"scheme": "TRU", "code": "TRU.v.hold", "label": "Verdict: Hold", "alt": ["review", "amber"], "definition": "A dimension scored 60 to 74. Waits for a person.", "broader": "TRU.v", "maps": [], "ft": ["CLS", "EVAL"]}, {"scheme": "TRU", "code": "TRU.v.trip", "label": "Verdict: Trip", "alt": ["quarantined", "red", "breaker open"], "definition": "A dimension scored below 60. Stops downstream steps and counts toward MTBH.", "broader": "TRU.v", "maps": [], "ft": ["CLS", "EVAL"]}, {"scheme": "DEC", "code": "DEC.decision", "label": "Decision", "alt": ["call", "choice"], "definition": "A recorded business choice with an owner, date and question.", "broader": null, "maps": ["DMM"], "ft": ["CLS"]}, {"scheme": "DEC", "code": "DEC.question", "label": "Decision question", "alt": ["question"], "definition": "The question the decision answers. Signals are matched to it for relevancy.", "broader": "DEC.decision", "maps": [], "ft": ["FAC"]}, {"scheme": "DEC", "code": "DEC.option", "label": "Option", "alt": ["alternative"], "definition": "One alternative scored with the Decision Modeling criteria.", "broader": "DEC.decision", "maps": [], "ft": ["FAC"]}, {"scheme": "DEC", "code": "DEC.criterion", "label": "Criterion", "alt": ["weight"], "definition": "A weighted scoring factor such as customer outcome alignment.", "broader": "DEC.option", "maps": [], "ft": ["FAC"]}, {"scheme": "DEC", "code": "DEC.insight", "label": "Insight", "alt": ["finding"], "definition": "A conclusion drawn from one or more gated signals or metrics.", "broader": "DEC.decision", "maps": [], "ft": ["CLS"]}, {"scheme": "DEC", "code": "DEC.outcome", "label": "Committed outcome", "alt": ["target", "KPI commitment"], "definition": "A target bound to a Released metric card (MET-014).", "broader": "DEC.decision", "maps": ["MET-014"], "ft": ["GRD"]}, {"scheme": "DEC", "code": "DEC.guard", "label": "Guardrail outcome", "alt": ["do-no-harm metric"], "definition": "A metric that must not get worse while pursuing the main outcome.", "broader": "DEC.outcome", "maps": [], "ft": ["GRD"]}, {"scheme": "DEC", "code": "DEC.check", "label": "Checkpoint", "alt": ["review date"], "definition": "A scheduled date when the outcome is measured.", "broader": "DEC.outcome", "maps": [], "ft": ["FAC"]}, {"scheme": "DEC", "code": "DEC.result", "label": "Measured result", "alt": ["actual"], "definition": "The value read from the metric card at a checkpoint.", "broader": "DEC.check", "maps": [], "ft": ["FAC"]}, {"scheme": "CI", "code": "CI.market", "label": "Market holon", "alt": ["PEO market", "landscape"], "definition": "The whole PEO market. Every competitor, product line and feature rolls up here.", "broader": null, "maps": ["MKT holarchy root"], "ft": ["FAC"]}, {"scheme": "CI", "code": "CI.comp", "label": "Competitor holon", "alt": ["competitor", "rival"], "definition": "A competing provider modeled as a holon inside the market holon.", "broader": "CI.market", "maps": ["ORG.peo"], "ft": ["NER", "FAC"]}, {"scheme": "CI", "code": "CI.threat", "label": "Threat", "alt": ["pressure", "risk"], "definition": "A competitor feature or move that weakens an Insperity capability, segment or claim. Severity 1 to 3.", "broader": "CI.market", "maps": [], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.open", "label": "Opening", "alt": ["opportunity", "gap"], "definition": "A competitor weakness Insperity can use.", "broader": "CI.market", "maps": [], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.claim", "label": "Positioning claim", "alt": ["value proposition", "differentiator"], "definition": "A statement Insperity makes about itself that intel can support or undercut.", "broader": "CI.market", "maps": [], "ft": ["NER", "FAC"]}, {"scheme": "CI", "code": "CI.card", "label": "Battlecard", "alt": ["competitive card", "kill sheet"], "definition": "A sales-facing summary assembled only from claims that passed every gate.", "broader": "CI.market", "maps": [], "ft": ["FAC"]}, {"scheme": "CI", "code": "CI.move", "label": "Competitive move", "alt": ["play", "strategic move"], "definition": "A type of competitor action, used to classify signals.", "broader": "CI.market", "maps": ["SIG"], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.move.reprice", "label": "Repricing", "alt": ["price war", "discounting"], "definition": "Raising, lowering or restructuring price.", "broader": "CI.move", "maps": ["SIG.price"], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.move.up", "label": "Upmarket move", "alt": ["moving upmarket"], "definition": "Targeting larger clients than before.", "broader": "CI.move", "maps": ["SEG.mid"], "ft": ["CLS"], "ex": ["The provider now targets companies with up to 5,000 employees."]}, {"scheme": "CI", "code": "CI.move.down", "label": "Downmarket move", "alt": ["SMB push"], "definition": "Targeting smaller clients than before.", "broader": "CI.move", "maps": ["SEG.small"], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.move.bundle", "label": "Bundle expansion", "alt": ["platform bundling"], "definition": "Adding adjacent products (IT, spend, EOR) to the PEO offer.", "broader": "CI.move", "maps": [], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.move.ai", "label": "AI capability launch", "alt": ["agent launch", "AI assistant"], "definition": "Launching AI agents or assistants for clients or service teams.", "broader": "CI.move", "maps": ["SIG.launch"], "ft": ["CLS"], "ex": ["The company says its assistant now handles half of customer chats."]}, {"scheme": "CI", "code": "CI.move.chan", "label": "Channel shift", "alt": ["broker program change"], "definition": "Changing broker or partner economics.", "broader": "CI.move", "maps": ["SIG.chan"], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.wl", "label": "Win/loss reason", "alt": ["loss reason", "win reason"], "definition": "Why a deal was won or lost against a competitor.", "broader": "CI.market", "maps": ["SIG.winloss"], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.wl.price", "label": "Reason: price", "alt": ["too expensive", "cheaper option"], "definition": "Price or total cost drove the outcome.", "broader": "CI.wl", "maps": [], "ft": ["CLS"], "ex": ["They chose the cheaper option at $79 per employee."]}, {"scheme": "CI", "code": "CI.wl.ben", "label": "Reason: benefits", "alt": ["health plan", "plan options"], "definition": "Benefit plan quality or cost drove the outcome.", "broader": "CI.wl", "maps": ["SVC.ben"], "ft": ["CLS"], "ex": ["The prospect said the other PEO's health plans had lower premiums for their team."]}, {"scheme": "CI", "code": "CI.wl.tech", "label": "Reason: technology", "alt": ["platform", "integrations", "AI"], "definition": "Software experience or integrations drove the outcome.", "broader": "CI.wl", "maps": ["SVC.tech"], "ft": ["CLS"], "ex": ["They wanted payroll, devices and spend on one platform."]}, {"scheme": "CI", "code": "CI.wl.svc", "label": "Reason: service", "alt": ["responsiveness", "HR expertise"], "definition": "Service quality or HR expertise drove the outcome.", "broader": "CI.wl", "maps": [], "ft": ["CLS"]}, {"scheme": "CI", "code": "CI.wl.broker", "label": "Reason: broker influence", "alt": ["advisor recommendation"], "definition": "The broker's recommendation drove the outcome.", "broader": "CI.wl", "maps": ["CHN.broker"], "ft": ["CLS"], "ex": ["Their broker recommended the other provider."]}, {"scheme": "SVC", "code": "SVC.hr", "label": "HR services", "alt": ["human resources services"], "definition": "Services a PEO provides under co-employment.", "broader": null, "maps": [], "ft": ["FAC"]}, {"scheme": "SVC", "code": "SVC.pay", "label": "Payroll & tax", "alt": ["payroll", "tax filing"], "definition": "Paying worksite employees and filing employment taxes.", "broader": "SVC.hr", "maps": ["SSOT PAY-*"], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.ben", "label": "Benefits administration", "alt": ["benefits", "health plan"], "definition": "Sponsoring and administering health and other benefit plans.", "broader": "SVC.hr", "maps": [], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.wc", "label": "Workers' compensation", "alt": ["workers' comp", "WC"], "definition": "Workplace injury insurance and claims handling.", "broader": "SVC.hr", "maps": [], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.risk", "label": "Risk & compliance", "alt": ["employment law compliance", "EPLI"], "definition": "Helping clients follow employment law and manage liability.", "broader": "SVC.hr", "maps": ["REG"], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.talent", "label": "Talent & learning", "alt": ["recruiting", "training", "performance"], "definition": "Hiring, development and performance services.", "broader": "SVC.hr", "maps": [], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.tech", "label": "HR technology", "alt": ["HCM platform", "HRIS"], "definition": "The software clients and employees use.", "broader": "SVC.hr", "maps": [], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.analytics", "label": "Workforce analytics & reporting", "alt": ["HR analytics", "conversational reporting"], "definition": "Reports and insights about a client's workforce.", "broader": "SVC.tech", "maps": ["hr:WorkforceAnalyticsReportingService"], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.health", "label": "Client health & retention", "alt": ["health score", "churn risk"], "definition": "Scoring client health to prevent loss.", "broader": "SVC.hr", "maps": ["hr:ClientHealthScoringRetentionService"], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.score", "label": "Organizational scorecards", "alt": ["service satisfaction", "scorecard"], "definition": "Measuring service and organizational performance.", "broader": "SVC.hr", "maps": ["hr:OrganizationalScorecardService"], "ft": ["CLS", "FAC"]}, {"scheme": "SVC", "code": "SVC.agent", "label": "Employee support assistant", "alt": ["HR assistant", "chat agent", "HR360 agent"], "definition": "An AI or human channel that answers client and employee questions.", "broader": "SVC.tech", "maps": [], "ft": ["NER", "CLS"]}, {"scheme": "REG", "code": "REG.coemp", "label": "Co-employment", "alt": ["joint employment", "shared employer"], "definition": "The arrangement where a PEO and client share employer responsibilities.", "broader": null, "maps": [], "ft": ["NER", "CLS"]}, {"scheme": "REG", "code": "REG.cpeo", "label": "IRS CPEO certification", "alt": ["CPEO", "certified PEO"], "definition": "IRS certification that makes the PEO solely liable for federal employment taxes on wages it pays. Verify against the IRS public list.", "broader": "REG.coemp", "maps": ["SRC.t3"], "ft": ["NER", "GRD"]}, {"scheme": "REG", "code": "REG.esac", "label": "ESAC accreditation", "alt": ["ESAC", "accredited PEO"], "definition": "Industry accreditation of a PEO's financial and operational standards.", "broader": "REG.coemp", "maps": [], "ft": ["NER", "GRD"]}, {"scheme": "REG", "code": "REG.lic", "label": "State PEO licensing", "alt": ["PEO license", "registration"], "definition": "State registration or licensing of PEOs, such as under the Texas PEO Act.", "broader": "REG.coemp", "maps": ["JUR.state"], "ft": ["NER", "GRD"]}, {"scheme": "REG", "code": "REG.aca", "label": "ACA employer mandate", "alt": ["ACA", "employer shared responsibility"], "definition": "Affordable Care Act coverage requirements for applicable large employers.", "broader": "REG.coemp", "maps": ["JUR.fed"], "ft": ["NER", "GRD"]}, {"scheme": "REG", "code": "REG.class", "label": "Worker classification", "alt": ["FLSA", "ABC test", "contractor status"], "definition": "Rules that decide employee vs contractor status; stricter state ABC tests govern (PAY-003, PAY-004).", "broader": "REG.coemp", "maps": ["PAY-003", "PAY-004"], "ft": ["NER", "GRD"]}, {"scheme": "REG", "code": "REG.priv", "label": "Data privacy", "alt": ["CCPA", "CPRA", "state privacy acts"], "definition": "Privacy duties for people data, which drive small-cut suppression (MET-013).", "broader": "REG.coemp", "maps": ["TEC-006", "MET-013"], "ft": ["NER", "GRD"]}, {"scheme": "MET", "code": "MET.card", "label": "Metric definition card", "alt": ["metric card", "KPI definition"], "definition": "A Released, versioned metric definition in the SSOT. Every number in a CI output must cite one.", "broader": null, "maps": ["GOV-019"], "ft": ["FAC", "GRD"]}, {"scheme": "MET", "code": "MET.ret", "label": "Client retention", "alt": ["churn", "client attrition"], "definition": "Share of starting clients still active, under MET-001 to MET-005.", "broader": "MET.card", "maps": ["MET-001", "MET-002", "MET-003", "MET-004", "MET-005"], "ft": ["CLS", "FAC"]}, {"scheme": "MET", "code": "MET.wse", "label": "Worksite employee growth", "alt": ["WSE growth", "paid WSEs"], "definition": "Change in average monthly paid worksite employees, under MET-006 to MET-008.", "broader": "MET.card", "maps": ["MET-006", "MET-007", "MET-008"], "ft": ["CLS", "FAC"]}, {"scheme": "MET", "code": "MET.csat", "label": "Service satisfaction", "alt": ["CSAT", "top-two box"], "definition": "Share of valid case surveys rated 4 or 5, under MET-009 to MET-012.", "broader": "MET.card", "maps": ["MET-009", "MET-010", "MET-011", "MET-012"], "ft": ["CLS", "FAC"]}, {"scheme": "MET", "code": "MET.fallout", "label": "Onboarding fallout", "alt": ["early exits"], "definition": "Clients who exit within 90 days of payroll go-live (MET-003).", "broader": "MET.card", "maps": ["MET-003"], "ft": ["CLS", "FAC"]}, {"scheme": "MET", "code": "MET.winrate", "label": "Competitive win rate", "alt": ["win rate vs competitor"], "definition": "Closed-won share of decided opportunities where a named competitor was present. Proposed card.", "broader": "MET.card", "maps": ["proposed: winrate v1.0"], "ft": ["CLS", "FAC"]}, {"scheme": "MET", "code": "MET.k", "label": "Small-cut suppression", "alt": ["k-anonymity", "k ≥ 5"], "definition": "No people-data cut under 5 workers or respondents is shown (MET-013).", "broader": "MET.card", "maps": ["MET-013", "GOV-009"], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.fail", "label": "AI failure mode", "alt": ["hallucination type", "error class"], "definition": "How an AI output can be wrong. Each type has a detector in the Circuit Breaker.", "broader": null, "maps": ["MTBH"], "ft": ["CLS", "EVAL"]}, {"scheme": "AIG", "code": "AIG.fab", "label": "Fabricated fact", "alt": ["made-up number", "invented claim"], "definition": "A specific fact with no supporting source.", "broader": "AIG.fail", "maps": [], "ft": ["CLS", "EVAL"], "ex": ["Rippling PEO is sold at a flat $35 per employee per month."]}, {"scheme": "AIG", "code": "AIG.stale", "label": "Stale fact", "alt": ["out-of-date"], "definition": "A fact that was true but has been superseded.", "broader": "AIG.fail", "maps": ["TRU.q.fresh"], "ft": ["CLS", "EVAL"], "ex": ["Justworks PEO Plus costs $109 per employee per month."]}, {"scheme": "AIG", "code": "AIG.misattr", "label": "Misattribution", "alt": ["wrong company", "wrong source"], "definition": "A true fact tied to the wrong party, period or source.", "broader": "AIG.fail", "maps": [], "ft": ["CLS", "EVAL"], "ex": ["TriNet reported 305,764 average paid worksite employees in Q2 2026."]}, {"scheme": "AIG", "code": "AIG.infer", "label": "Unsupported inference", "alt": ["speculation", "leap"], "definition": "A conclusion that goes beyond what the cited facts support.", "broader": "AIG.fail", "maps": ["TRU.t.ground"], "ft": ["CLS", "EVAL"], "ex": ["Paychex will cut its service staff by 20% next year."]}, {"scheme": "AIG", "code": "AIG.precision", "label": "False precision", "alt": ["over-precise"], "definition": "A range or estimate stated as an exact figure.", "broader": "AIG.fail", "maps": [], "ft": ["CLS", "EVAL"], "ex": ["Insperity charges exactly $225 PEPM."]}, {"scheme": "AIG", "code": "AIG.scope", "label": "Scope drift", "alt": ["off-topic", "irrelevant"], "definition": "Content that does not serve the decision question or audience.", "broader": "AIG.fail", "maps": ["TRU.r"], "ft": ["CLS", "EVAL"]}, {"scheme": "AIG", "code": "AIG.leak", "label": "Policy leak", "alt": ["confidential exposure", "small cut shown"], "definition": "Output that breaks a deterministic policy, such as an internal figure in an external card or a cut under k = 5.", "broader": "AIG.fail", "maps": ["MET-013"], "ft": ["CLS", "EVAL", "GRD"], "ex": ["Win rate vs ADP in Austin fell to 0 of 4 deals."]}, {"scheme": "AIG", "code": "AIG.tier", "label": "Autonomy tier", "alt": ["agent permission level"], "definition": "How far an agent may act without a person.", "broader": null, "maps": [], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.a0", "label": "A0 · Observe and suggest", "alt": ["suggest only"], "definition": "May read and recommend. Writes nothing.", "broader": "AIG.tier", "maps": [], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.a1", "label": "A1 · Draft for review", "alt": ["draft"], "definition": "May create drafts that a person approves.", "broader": "AIG.tier", "maps": [], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.a2", "label": "A2 · Act within policy, reversible", "alt": ["auto-act reversible"], "definition": "May take reversible actions inside deterministic policy, such as quarantining a claim.", "broader": "AIG.tier", "maps": [], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.a3", "label": "A3 · Irreversible or external", "alt": ["publish", "send"], "definition": "Publishing outside the team or anything irreversible. Reserved for people.", "broader": "AIG.tier", "maps": [], "ft": ["GRD"]}, {"scheme": "AIG", "code": "AIG.mtbh", "label": "Mean time between hallucinations", "alt": ["MTBH"], "definition": "Gated claims processed per tripped claim. Rising MTBH means the fabric is getting more trustworthy.", "broader": "AIG.fail", "maps": ["AI Circuit Breaker"], "ft": ["EVAL"]}]};
+const RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ================= SOURCES ================= */
+const SRC={
+ n1:{t:"Purina named first publicly announced NIQ ConnectAI charter client (NIQ)",u:"https://nielseniq.com/global/en/news-center/2026/purina-named-as-first-publicly-announced-niq-connectai-charter-client/",d:"Aug 6, 2026",tier:"Company"},
+ n2:{t:"Unlocking new opportunities with gen AI (Nestlé USA)",u:"https://www.nestleusa.com/stories/unlocking-new-opportunities-gen-ai",d:"Jun 2024",tier:"Company"},
+ n3:{t:"Nestlé employees save 45 minutes per week using internal generative AI (WorkLife)",u:"https://www.worklife.news/technology/nesgpt-nestle-genai/",d:"Jul 23, 2024",tier:"Press"},
+ n4:{t:"Nestlé creates AI, digital-twin content platform (Pet Food Processing)",u:"https://www.petfoodprocessing.net/articles/19381-nestle-creates-ai-digital-twin-content-platform",d:"Jun 17, 2025",tier:"Press"},
+ n5:{t:"Nestlé’s AI push brings new marketing tools into daily workflows (MarketingTech)",u:"https://www.marketingtechnews.net/news/nestles-ai-push-brings-new-marketing-tools-into-daily-workflows/",d:"Feb 26, 2026",tier:"Press"},
+ d1:{t:"Introducing Disney Compass (Disney Advertising)",u:"https://press.disneyadvertising.com/introducing-disney-compass:-new-proprietary-data-platform-unifying-insights-for-advertisers",d:"Jan 6, 2025",tier:"Company"},
+ d2:{t:"Disney is leaning into brand-building tools using AI (AdExchanger, CES 2026)",u:"https://www.adexchanger.com/ces-2026/disney-is-leaning-into-brand-building-tools-using-you-guessed-it-ai/",d:"Jan 2026",tier:"Press"},
+ d3:{t:"Disney’s award-winning clean room celebrates rapid adoption (Disney Advertising)",u:"https://press.disneyadvertising.com/disney-award-winning-clean-room-solution-celebrates-rapid-adoption",d:"Nov 8, 2023",tier:"Company"},
+ d4:{t:"How Disney uses PyTorch for animated character recognition (PyTorch blog)",u:"https://medium.com/pytorch/how-disney-uses-pytorch-for-animated-character-recognition-a1722a182627",d:"2020",tier:"Company"},
+ a1:{t:"ADP accelerates AI leadership with launch of new AI agents (ADP)",u:"https://mediacenter.adp.com/2026-01-28-ADP-R-Accelerates-AI-Leadership-with-Launch-of-New-AI-Agents-Designed-to-Solve-Workforce-Challenges",d:"Jan 28, 2026",tier:"Company"},
+ p1:{t:"Paychex launches WISE: AI platform for an agentic workforce (Paychex)",u:"https://www.paychex.com/newsroom/news-releases/announcing-wise-ai-for-agentic-workforce",d:"May 19, 2026",tier:"Company"},
+ p2:{t:"WISE at work: early results (Paychex via GlobeNewswire)",u:"https://www.globenewswire.com/news-release/2026/08/31/3353324/0/en/wise-at-work-early-results-show-paychex-ai-is-reducing-payroll-errors-and-improving-service-efficiency-at-scale.html",d:"Aug 31, 2026",tier:"Company"},
+ t1:{t:"TriNet Q2 2026 earnings call highlights (GuruFocus)",u:"https://www.gurufocus.com/news/8992323/trinet-group-inc-tnet-q2-2026-earnings-call-highlights-ai-drives-efficiency-as-sales-momentum-returns",d:"Jul 30, 2026",tier:"Press"},
+ i1:{t:"Insperity Q2 earnings call highlights (Yahoo Finance)",u:"https://finance.yahoo.com/markets/stocks/articles/insperity-q2-earnings-call-highlights-060354113.html",d:"Jul 30, 2026",tier:"Press"},
+ i2:{t:"Insperity showcases HR solutions at SHRM26 (Stock Titan)",u:"https://www.stocktitan.net/news/NSP/insperity-showcases-hr-solutions-for-today-s-evolving-workforce-at-0eedtp3h4anc.html",d:"Jun 11, 2026",tier:"Company"},
+ s14:{t:"Justworks compensation and pricing updates (PGP Benefits broker notice)",u:"https://www.pgpbenefits.com/important-justworks-compensation-pricing-updates/",d:"May 11, 2026",tier:"Broker"},
+ s15:{t:"Justworks pricing 2026 (Ignition Benefits)",u:"https://www.ignitionbenefits.com/blog/justworks-pricing",d:"Sep 2026",tier:"Review"},
+ s19:{t:"Rippling raises $450m at $16.8bn valuation (Verdict via Yahoo Finance)",u:"https://finance.yahoo.com/news/rippling-raises-450m-16-8bn-161120814.html",d:"May 2025",tier:"Press"},
+ s20:{t:"Rippling IPO page (TechStackIPO)",u:"https://techstackipo.com/ipo/rippling",d:"Jun 2026",tier:"Tracker"}
+};
+const ORDER=Object.keys(SRC);
+const cite=ids=>ids.map(i=>`<a class="cite" href="#src-${i}">[${ORDER.indexOf(i)+1}]</a>`).join("");
+$("srcList").innerHTML=ORDER.map(k=>{const s=SRC[k];return `<li id="src-${k}"><a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a> · ${esc(s.d)}<span class="tierb">${esc(s.tier)}</span></li>`}).join("");
+
+/* ================= BLUEPRINT ================= */
+(function arch(){
+  const W=1180,H=470;
+  const gate=(x,y,lab)=>`<g><path d="M${x} ${y-13} L${x+13} ${y} L${x} ${y+13} L${x-13} ${y}Z" fill="var(--surface)" stroke="var(--obligation)" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--obligation)" font-family="IBM Plex Mono, monospace">${lab}</text></g>`;
+  const box=(x,y,w,h,title,sub,col)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7" fill="var(--surface)" stroke="${col}" stroke-width="1.6"/><text x="${x+10}" y="${y+20}" font-size="13" font-weight="600" fill="var(--ink)">${title}</text>${sub.map((s,i)=>`<text x="${x+10}" y="${y+38+i*15}" font-size="11" fill="var(--muted)">${s}</text>`).join("")}`;
+  const lane=(x,w,lab,col)=>`<rect x="${x}" y="16" width="${w}" height="4" fill="${col}"/><text x="${x}" y="40" font-size="11" letter-spacing="2" fill="${col}" font-family="IBM Plex Mono, monospace">${lab}</text>`;
+  const arr=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink-soft)" stroke-width="1.4" marker-end="url(#ah)"/>`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Architecture: internal and third-party inputs flow through ingest, resolve, ground and synthesize stages to assemble and publish outputs, with a Circuit Breaker gate after each stage and a deterministic keel underneath."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--ink-soft)"/></marker></defs>`;
+  s+=lane(20,250,"INPUTS","var(--in)")+lane(300,560,"PROCESSING","var(--proc)")+lane(890,270,"OUTPUTS","var(--out)");
+  s+=box(20,56,250,128,"Internal PEO knowledge",["CRM opportunities and win/loss","Payroll ledger · client lifecycle","Service cases and surveys","Released metric cards (MET-*)","Insperity product and claim catalog"],"var(--in)");
+  s+=box(20,196,250,142,"Third-party data",["SEC filings and earnings transcripts","Pricing pages and broker notices","Review and advisor sites","Job postings · press","IRS CPEO list · state PEO registries","Licensed benchmark data"],"var(--in)");
+  const st=[["1 Ingest",["parse, date, tier"]],["2 Resolve & tag",["identity, taxonomy"]],["3 Ground",["bind to keel facts"]],["4 Synthesize",["AI drafts from","grounded facts only"]]];
+  st.forEach((t,i)=>{const x=300+i*142;s+=box(x,120,112,82,t[0],t[1],"var(--proc)");s+=gate(x+56,226,"G"+(i+1));if(i<3)s+=arr(x+126,161,x+140,161)});
+  s+=arr(272,161,298,161)+arr(272,250,288,250)+`<line x1="288" y1="250" x2="288" y2="163" stroke="var(--ink-soft)" stroke-width="1.4"/>`;
+  s+=arr(868,161,888,161);
+  s+=box(890,120,124,82,"5 Assemble",["cards, briefs,","decision packages"],"var(--out)")+gate(952,226,"G5");
+  s+=box(1032,120,128,82,"6 Publish & learn",["people approve;","feedback to keel"],"var(--out)")+gate(1096,226,"G6")+arr(1016,161,1030,161);
+  s+=box(890,262,270,90,"Consumers",["Battlecards · exec briefs · alerts","Compass search · HR360 agent grounding","Decision records (MET-014)"],"var(--out)");
+  s+=arr(1096,240,1096,260);
+  // breaker band
+  s+=`<rect x="300" y="250" width="560" height="26" rx="4" fill="color-mix(in srgb,var(--obligation) 10%,transparent)" stroke="var(--obligation)" stroke-dasharray="3 3"/><text x="580" y="267" text-anchor="middle" font-size="11.5" fill="var(--obligation)" font-weight="600">AI Circuit Breaker · Quality · Relevancy · Trust at every gate · MTBH</text>`;
+  // keel
+  s+=`<rect x="20" y="372" width="1140" height="80" rx="6" fill="var(--keel)"/><text x="36" y="396" font-size="13" font-weight="700" fill="var(--keel-ink)" letter-spacing="1">KEEL · deterministic knowledge the AI may stand on</text>`;
+  const k=["SSOT rules register (142 + MET + CI)","HR Services ontology","Market holarchy","Metric cards","Core + domain taxonomies","Identity registry (GOV-007)","Source authority tiers"];
+  let kx=36;k.forEach(t=>{const w=t.length*5.9+16;s+=`<rect x="${kx}" y="410" width="${w}" height="26" rx="13" fill="none" stroke="var(--keel-ink)" stroke-opacity=".45"/><text x="${kx+w/2}" y="427" text-anchor="middle" font-size="11" fill="var(--keel-ink)">${t}</text>`;kx+=w+8});
+  [356,498,640].forEach(x=>{s+=`<line x1="${x}" y1="370" x2="${x}" y2="280" stroke="var(--keel)" stroke-width="1.4" stroke-dasharray="2 3"/>`});
+  s+=`<text x="664" y="330" font-size="11" fill="var(--muted)">every gate reads the keel;</text><text x="664" y="345" font-size="11" fill="var(--muted)">stage 6 writes approved changes back</text>`;
+  s+="</svg>";$("arch").innerHTML=s;
+})();
+
+const BENCH=[
+ {n:"Nestlé",w:"CPG · consumer and market intelligence",
+  i:"NIQ consumer and market intelligence joined with Purina’s own data"+cite(["n1"])+"; inputs from 20+ brands plus real-time trends for innovation"+cite(["n2"])+"; one SAP data foundation for 50,000+ users in 112 countries"+cite(["n5"]),
+  p:"NIQ engineers configure data connections, business context and AI workflows inside Purina’s own AI environment"+cite(["n1"])+"; innovation AI cut ideation from six months to six weeks"+cite(["n2"]),
+  o:"Forecasting, competitive analysis, assortment and trend detection"+cite(["n1"])+"; NesGPT used by 7,000+ North American staff, about 45 minutes a week saved"+cite(["n3"])+"; 4,000 product digital twins, 10,000 targeted"+cite(["n4"]),
+  t:"Private, secure environment and prompt training to curb shadow AI"+cite(["n2","n3"]),
+  b:"Bring licensed third-party intelligence into your own governed environment, with your business context attached."},
+ {n:"Disney",w:"Media · audience and content intelligence",
+  i:"First-party data across properties, a clean room, and partners including LiveRamp, Snowflake and VideoAmp"+cite(["d1"]),
+  p:"A proprietary Audience Graph resolves identity"+cite(["d1"])+"; the Content Genome knowledge graph links episodes to characters and locations, with human annotation while it was built"+cite(["d4"]),
+  o:"Objective-based measurement"+cite(["d1"])+"; Compass Assistant for audience questions, an Ads Agent that drafts plans from briefs, and a Brand Impact Metric"+cite(["d2"]),
+  t:"Clean-room measurement without third-party cookies, used by about 140 brands by 2023"+cite(["d3"])+"; guardrails in development for generative creative"+cite(["d2"]),
+  b:"One identity graph and one metric of record, so every team and agent counts the same thing."},
+ {n:"ADP TotalSource",w:"Largest PEO · HCM data platform",
+  i:"Data from 1.1 million clients and 42 million wage earners in 140 countries"+cite(["a1"]),
+  p:"Persona-based ADP Assist agents that plan and act with human oversight"+cite(["a1"]),
+  o:"Payroll variance fixes, tax registration gaps, policy answers, custom reports"+cite(["a1"]),
+  t:"Human oversight and privacy by design; mechanisms not detailed publicly"+cite(["a1"]),
+  b:"Scope each agent to a persona and a job, not to the whole platform."},
+ {n:"Paychex",w:"PEO and HR outsourcing · WISE",
+  i:"Five decades of payroll, regulatory and HR data across about 800,000 customers"+cite(["p1"]),
+  p:"WISE agents act inside customer-set parameters; experts are alerted at critical moments"+cite(["p1"]),
+  o:"About 90% of time and pay-rate errors fixed before payroll day; 350,000+ conversations, 20%+ resolved without a person"+cite(["p2"]),
+  t:"Customer-defined autonomy limits and published outcome metrics"+cite(["p1","p2"]),
+  b:"Set autonomy by policy, and publish measured results instead of claims."},
+ {n:"TriNet",w:"PEO · service and retention AI",
+  i:"Service chats, customer and benefits data"+cite(["t1"]),
+  p:"AI customer health scores flag at-risk accounts; AI helps select benefits packages"+cite(["t1"]),
+  o:"TriNet Assistant handles about half of customer chat sessions"+cite(["t1"]),
+  t:"Not described in public materials",
+  b:"Connect outside signals to retention, so intel is judged by what it changes."},
+ {n:"Insperity today",w:"Starting point for this fabric",self:true,
+  i:"HR360, HRCore and Workday-powered HRScale for 150–5,000 workers"+cite(["i1"]),
+  p:"HR360 agent helps clients and employees find answers, resources and support"+cite(["i1"]),
+  o:"Conversational reporting and real-time insights planned for the agent"+cite(["i1"]),
+  t:"Public positioning stresses balancing AI with human expertise"+cite(["i2"]),
+  b:"The leaders above describe oversight in general terms. None publishes step-level scoring of quality, relevancy and trust or a hallucination rate. That is the gap this fabric fills."}
+];
+$("bench").innerHTML=BENCH.map(b=>`<article class="bco${b.self?" self":""}"><div><h3>${b.n}</h3><div class="what">${b.w}</div></div><dl><dt class="i">Inputs</dt><dd>${b.i}</dd><dt class="p">Process</dt><dd>${b.p}</dd><dt class="o">Outputs</dt><dd>${b.o}</dd><dt class="t">Trust</dt><dd>${b.t}</dd></dl><p class="borrow"><b>${b.self?"Opening":"Borrow"}:</b> ${b.b}</p></article>`).join("");
+
+const PAT=[
+ ["Licensed data in your own environment","Nestlé + NIQ","Stage 1 and 3","Third-party feeds carry a source tier (SRC.t0–t3, SRC.licensed) and are grounded against the keel before any AI sees them."],
+ ["One identity graph","Disney Audience Graph","Stage 2 · G2","Every competitor, product line and client resolves through the GOV-007 identity registry and the market holarchy. Unresolved names go to the Steward queue."],
+ ["Knowledge graph with human annotation","Disney Content Genome","Taxonomies tab","Core and domain taxonomies, with alt labels and examples, seed tagging and fine-tuning; new concepts need a person to approve them."],
+ ["Persona-scoped agents","ADP Assist","Agent fabric tab","Eight agents, each with one job, named inputs, a gate set and an autonomy tier."],
+ ["Autonomy set by policy, results published","Paychex WISE","Gates + MTBH","Tiers A0–A3; A3 is reserved for people. MTBH and gate pass rates are reported monthly."],
+ ["Intel tied to retention","TriNet health score","Decision trace","Signals bind to decisions, decisions bind to Released metric cards (MET-014), and checkpoints read the result."],
+ ["Step-level trust scoring","(new)","Every gate","Quality, relevancy and trust scored at all six gates. A trip stops downstream work and counts toward MTBH."]
+];
+$("patterns").innerHTML=`<thead><tr><th>Pattern</th><th>Seen at</th><th>Lands in</th><th>How it works here</th></tr></thead><tbody>${PAT.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono" style="font-size:12px;white-space:nowrap">${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody>`;
+
+/* ================= PIPELINE ================= */
+const STAGES=[
+ ["G1","Ingest","Parse, date and tier the input","in"],
+ ["G2","Resolve & tag","Identity and taxonomy","in"],
+ ["G3","Ground","Bind to keel facts","proc"],
+ ["G4","Synthesize","AI drafts from grounded facts","proc"],
+ ["G5","Assemble","Card, brief or decision package","out"],
+ ["G6","Publish & learn","Person approves; feedback","out"]
+];
+const verdictOf=g=>{const m=Math.min(g.q,g.r,g.t);if(m<60)return"trip";if(m<75)return"hold";return g.fix?"corr":"pass"};
+const VL={pass:"Pass",corr:"Corrected",hold:"Hold",trip:"Trip",appr:"Approved",skip:"Skipped",wait:"Waiting",run:"Scoring",idle:"Not run"};
+const SCN=[
+ {id:"SG-101",title:"Justworks raises PEO Plus price",type:"Pricing change",src:["s14","s15"],tier:"Tier 2 broker notice + tier 1 review",
+  text:"Justworks PEO Plus is $124 per employee per month for new business from June 1, 2026, up from $109.",
+  tags:["CI.comp","OFR.bundle","OFR.price.pepm","SIG.price","CI.move.reprice","SEG.small","CHN.broker"],claims:3,caught:1,dec:"D-26-034",
+  gates:[
+   {q:92,r:88,t:80,checks:["Required fields present: party, offering, price, effective date, source","Source tier 2 (broker notice) · CI-001 allows tier 2 to support a card claim","Watchlist hit: pricing for the six tracked PEOs"]},
+   {q:90,r:93,t:90,checks:["“Justworks” → competitor holon justworks (identity registry, GOV-007)","“PEO Plus” → OFR.bundle; “per employee per month” → OFR.price.pepm","Relevant to Insperity claim “best value for growing small businesses” and segment SEG.small"]},
+   {q:95,r:93,t:92,fix:true,checks:["Graph held $109 (prior fact). Conflict resolved by tier: tier 2 notice plus tier 1 corroboration (Sep 2026) supersede it","Old fact retired with provenance, not deleted (CI-005)","Freshness: latest corroboration Sep 2026, inside the 90-day pricing window (CI-004)"],note:"Stale fact corrected from the keel"},
+   {q:88,r:90,t:84,checks:["Claims checked one by one; grounding ratio 2 of 3 before removal"],
+    claims:[["pass","Justworks PEO Plus is $124 PEPM for new business from June 1, 2026."],["pass","That is a 13.8% increase on the $109 list price (computed: 124 ÷ 109)."],["trip","Justworks is losing small-business share as a result. · Unsupported inference (AIG.infer), removed"]]},
+   {q:90,r:91,t:90,checks:["Small business battlecard · pricing section","No internal figures on an externally shareable card (CI-002)","Linked to decision D-26-034 as signal SG-101"]},
+   {q:92,r:90,t:94,checks:["Lead approves publish (A3)","Alt label “PEO Plus” confirmed for OFR.bundle","Two rows added to the fine-tuning seed: one SIG.price positive, one AIG.infer negative"]}],
+  out:["ok","Published to the Small business battlecard: “Justworks PEO Plus: $124 PEPM for new business since June 1, 2026 (was $109).” The inference about share loss never left G4."]},
+ {id:"SG-102",title:"Paychex publishes WISE results",type:"AI capability launch",src:["p2","p1"],tier:"Tier 2 company release",
+  text:"Paychex says WISE corrected nearly 90% of time and pay-rate errors before payroll day and resolved 20%+ of 350,000 conversations without a person.",
+  tags:["CI.comp","OFR.feature","SIG.launch","CI.move.ai","SVC.agent","SVC.pay"],claims:4,caught:2,dec:"D-26-036",
+  gates:[
+   {q:90,r:85,t:82,checks:["Company release, Aug 31, 2026 · tier 2","Inside the 180-day launch window"]},
+   {q:88,r:92,t:88,checks:["“WISE” → Paychex product line feature (launched May 19, 2026, prior fact)","Tags CI.move.ai, SVC.agent, SVC.pay","Relevant to Insperity claim “technology plus human expertise” and the HR360 agent roadmap"]},
+   {q:88,r:90,t:80,checks:["Figures are company-reported and unaudited: wording must keep “Paychex says”","No conflicting fact in the graph"]},
+   {q:85,r:88,t:70,checks:["Two of four drafted claims removed","Trust 70: single company source, no independent corroboration → Hold for the Analyst"],
+    claims:[["pass","Paychex says about 90% of time and pay-rate errors were corrected before payroll day."],["pass","Paychex says 20%+ of 350,000+ conversations were resolved without a person."],["trip","Paychex will cut service staff by 20% next year. · Fabricated (AIG.fab), removed"],["trip","WISE outperforms the HR360 agent. · Unsupported comparison (AIG.infer), removed"]]},
+   {q:88,r:92,t:86,checks:["Exec brief: “Competitor AI now reports outcomes”","Company-reported figures labeled as such","Linked to decision D-26-036"]},
+   {q:90,r:90,t:88,checks:["Lead approves brief for the exec team (A3)","Analyst’s release note stored with the claim"]}],
+  out:["ok","Released by the Analyst with the attribution kept. Exec brief line: “Paychex says WISE fixed about 90% of time and pay-rate errors before payroll day (company-reported, Aug 31).”"]},
+ {id:"SG-103",title:"Rippling valued at $25B, IPO in 2026",type:"Funding, M&A or valuation",src:["s20","s19"],tier:"Tier 0 tracker site",
+  text:"Rippling is now valued at $25 billion and is heading for an IPO in 2026.",
+  tags:["CI.comp","SIG.deal","SEG.mid"],claims:1,caught:1,dec:"D-26-029",
+  gates:[
+   {q:80,r:78,t:76,checks:["Source identified: IPO tracker site · tier 0","Tier 0 enters as a lead only; it cannot support a card claim (CI-001)"]},
+   {q:86,r:84,t:82,checks:["“Rippling” → competitor holon rippling","Tags SIG.deal, SEG.mid; relevant to the mid-market card"]},
+   {q:84,r:80,t:31,checks:["Conflicts with a tier 2 fact in the graph: $16.8B at the May 2025 Series G","No IPO filing in the filings feed","Lower-tier claim cannot override a higher-tier fact → breaker opens"],note:"Fabricated or unverified valuation (AIG.fab)"},
+   {},{},{}],
+  out:["no","Quarantined at G3. Nothing downstream ran, so no AI draft, card or decision used it. The mid-market card keeps “$16.8B at its May 2025 Series G; no IPO date announced.”"]},
+ {id:"SG-104",title:"Win/loss vs ADP TotalSource, Austin",type:"Win/loss outcome",src:[],tier:"Internal CRM (synthetic)",internal:true,
+  text:"Growing SMB deals vs ADP TotalSource in Austin, Q3: 0 won of 4 decided; benefits cost cited in 3.",
+  tags:["SIG.winloss","CI.wl.ben","SEG.grow","SEG.region","MET.winrate"],claims:2,caught:0,dec:"D-26-031",
+  gates:[
+   {q:94,r:90,t:95,checks:["Internal system of record (CRM) · authoritative for its own records","Opportunity IDs resolved through GOV-007"]},
+   {q:92,r:94,t:93,checks:["Loss reasons coded to CI.wl.ben","Region → Austin metro holon under Texas"]},
+   {q:92,r:92,t:94,checks:["Grounded on metric card competitive-win-rate v1.0 (Released)","Decided-deal definition applied"]},
+   {q:88,r:90,t:88,checks:["Draft: win rate and top loss reason, both from the card"],claims:[["pass","Win rate vs ADP TotalSource, Growing SMB, Austin: 0 of 4."],["pass","Benefits cost was the top loss reason (3 of 4)."]]},
+   {q:90,r:88,t:90,fix:true,checks:["n = 4 is below the 10 decided deals CI-003 requires for a win-rate cut","Deterministic fix: rolled up to the parent holon, Growing SMB · Texas (n = 19): 8 of 19 won, 42%","Internal figure kept to the internal brief, off the external card (CI-002)"],note:"Policy fix by holonic roll-up"},
+   {q:90,r:90,t:92,checks:["Analyst approves internal brief","Feeds decision D-26-031 as insight evidence"]}],
+  out:["ok","Internal brief: “Growing SMB vs ADP TotalSource, Texas, Q3: 8 of 19 won (42%); benefits cost is the leading loss reason.” The Austin-only cut was never shown."]},
+ {id:"SG-105",title:"ADP launches Assist agents",type:"AI capability launch",src:["a1"],tier:"Tier 2 company release",
+  text:"ADP launched ADP Assist agents for employees, managers and HR and payroll practitioners, grounded in data on 42 million wage earners.",
+  tags:["CI.comp","SIG.launch","CI.move.ai","SVC.agent"],claims:2,caught:0,dec:"D-26-036",
+  gates:[
+   {q:64,r:84,t:88,checks:["Observed Jan 28, 2026: 247 days ago","Outside the 180-day launch window (CI-004) → Hold: file as background, not news"]},
+   {q:88,r:86,t:88,checks:["“ADP Assist” → ADP product line feature","Tags CI.move.ai, SVC.agent"]},
+   {q:86,r:84,t:88,checks:["Grounded: 1.1M clients, 42M wage earners, 140 countries (same release)"]},
+   {q:86,r:84,t:86,checks:["Both claims bind to the release"],claims:[["pass","ADP launched persona-based Assist agents in January 2026."],["pass","ADP says they draw on data from 42 million wage earners."]]},
+   {q:86,r:82,t:88,checks:["Background section of the AI landscape brief, not the alert feed"]},
+   {q:88,r:84,t:90,checks:["Lead approves brief update"]}],
+  out:["ok","Filed as background in the AI landscape brief, not sent as an alert."]}
+];
+let cur=SCN[0].id, state={}, runs={}, timer=null;
+const TALLY={claims:0,caught:0,policy:0,done:new Set()};
+const BASE={claims:1284,caught:31};
+function mtbh(){
+  const c=BASE.claims+TALLY.claims,h=BASE.caught+TALLY.caught;
+  $("mtbh").innerHTML=[[c.toLocaleString(),"claims"],[h,"caught"],[(c/h).toFixed(1),"MTBH"]].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("")+`<p class="hint" style="grid-column:1/-1">MTBH = claims gated per hallucination caught. Starts from a synthetic 30-day baseline; each signal you run adds its claims once.</p>`;
+}
+function sList(){
+  $("slist").innerHTML=SCN.map(s=>{const r=runs[s.id];return `<button type="button" data-s="${s.id}" aria-pressed="${s.id===cur}"><span class="sid">${s.id} · ${esc(s.type)}</span><span class="st">${esc(s.title)}</span><span>${r?`<span class="pill ${r}"><span class="sw"></span>${r==="trip"?"Quarantined":r==="hold"?"Held":"Published"}</span>`:`<span class="pill">Not run</span>`}</span></button>`}).join("");
+}
+$("slist").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;cur=b.dataset.s;resetRun();sList()});
+function stageHTML(i,g,v){
+  const S=STAGES[i];const sc=k=>g&&g[k]!=null&&v!=="idle"&&v!=="run"&&v!=="skip"&&v!=="wait";
+  const row=(k,lab)=>`<span>${lab}</span><span class="b"><span style="width:${sc(k)?g[k]:0}%;background:var(--${sc(k)?(g[k]<60?"prohibition":g[k]<75?"warning":"permission"):"muted"})"></span></span><span class="v">${sc(k)?g[k]:"–"}</span>`;
+  return `<div class="stg ${v}"><div class="g"><span>${S[0]}</span><span style="color:var(--${S[3]==="in"?"in":S[3]==="proc"?"proc":"out"})">${S[3]==="in"?"input":S[3]==="proc"?"process":"output"}</span></div><div class="n">${S[1]}</div><div class="sub">${S[2]}</div><div class="qrt">${row("q","Q")}${row("r","R")}${row("t","T")}</div><span class="pill ${v}"><span class="sw"></span>${VL[v]}</span></div>`;
+}
+function render(){
+  const s=SCN.find(x=>x.id===cur),st=state;
+  $("sigcard").innerHTML=`<div class="eyebrow">${s.id} · ${esc(s.type)} · ${esc(s.tier)}${s.src.length?cite(s.src):""}</div><div class="txt">${esc(s.text)}</div><div class="tags">${s.tags.map(t=>`<button type="button" class="tag" data-c="${t}" title="Open in Taxonomies">${t}</button>`).join("")}</div>`;
+  $("stages").innerHTML=STAGES.map((_,i)=>stageHTML(i,s.gates[i],st.v[i])).join("");
+  // log
+  const ent=[];st.v.forEach((v,i)=>{if(["pass","corr","hold","trip","appr"].includes(v)){const g=s.gates[i];
+    ent.push(`<div class="ent"><h4><span class="mono" style="color:var(--muted)">${STAGES[i][0]}</span>${STAGES[i][1]}<span class="pill ${v}"><span class="sw"></span>${VL[v]}</span><span class="hint">Q ${g.q} · R ${g.r} · T ${g.t}${g.note?" · "+esc(g.note):""}</span></h4><ul>${g.checks.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>${g.claims?g.claims.map(c=>`<div class="claim"><span class="pill ${c[0]}"><span class="sw"></span>${c[0]==="pass"?"Kept":"Removed"}</span><span>${c[0]==="pass"?esc(c[1]):`<s>${esc(c[1].split(" · ")[0])}</s> <span class="hint">${esc(c[1].split(" · ")[1]||"")}</span>`}</span></div>`).join(""):""}</div>`)}});
+  $("log").innerHTML=ent.join("");
+  const holdAt=st.v.indexOf("hold");
+  $("apprbtn").hidden=holdAt<0;
+  $("runbtn").disabled=st.phase!=="idle";
+  $("runstate").textContent=st.phase==="running"?"Scoring…":holdAt>=0?`Waiting for a person at ${STAGES[holdAt][0]}.`:st.phase==="done"?"Run complete.":"";
+  $("outbox").innerHTML=st.phase==="done"?`<div class="banner ${s.out[0]}"><div><b>${s.out[0]==="no"?"Breaker open.":"Output."}</b> ${esc(s.out[1])} <span class="hint">Decision link: ${s.dec}.</span></div></div>`:holdAt>=0?`<div class="banner hold"><div><b>Held for review.</b> ${esc(s.gates[holdAt].checks.slice(-1)[0])}</div></div>`:"";
+}
+function resetRun(){clearTimeout(timer);state={phase:"idle",v:STAGES.map(()=>"idle")};render()}
+function step(i){
+  const s=SCN.find(x=>x.id===cur);
+  if(i>=STAGES.length){finish();return}
+  state.v[i]="run";render();
+  timer=setTimeout(()=>{
+    const v=verdictOf(s.gates[i]);state.v[i]=v;
+    if(v==="trip"){for(let j=i+1;j<STAGES.length;j++)state.v[j]="skip";finish();return}
+    if(v==="hold"){for(let j=i+1;j<STAGES.length;j++)state.v[j]="wait";state.phase="held";render();return}
+    render();step(i+1);
+  },RM?0:380);
+}
+function finish(){
+  const s=SCN.find(x=>x.id===cur);state.phase="done";
+  runs[s.id]=state.v.includes("trip")?"trip":"pass";
+  if(!TALLY.done.has(s.id)){TALLY.done.add(s.id);TALLY.claims+=s.claims;TALLY.caught+=s.caught}
+  mtbh();sList();render();
+}
+$("runbtn").addEventListener("click",()=>{if(state.phase!=="idle")return;state.phase="running";step(0)});
+$("apprbtn").addEventListener("click",()=>{const i=state.v.indexOf("hold");if(i<0)return;state.v[i]="appr";state.phase="running";for(let j=i+1;j<STAGES.length;j++)state.v[j]="idle";step(i+1)});
+$("resetbtn").addEventListener("click",resetRun);
+$("sigcard").addEventListener("click",e=>{const t=e.target.closest(".tag");if(t)openConcept(t.dataset.c)});
+mtbh();sList();resetRun();
+
+/* ================= DECISIONS ================= */
+const CRIT=[["Customer outcome alignment",.35],["Compliance risk (lower = riskier)",.25],["Time-to-value",.2],["Build-vs-buy fit",.2]];
+const score=v=>v.reduce((a,x,i)=>a+x*CRIT[i][1],0);
+const rec=s=>s>=7.5?["Prioritize","ok"]:s>=5?["Refine","hold"]:["Hold","no"];
+const G=s=>s.split("");// p=pass c=corr a=appr h=hold t=trip -=skip
+const GM={p:"pass",c:"corr",a:"appr",h:"hold",t:"trip","-":""};
+const DEC=[
+ {id:"D-26-034",title:"Arm brokers against Justworks’ PEO Plus repricing in Small business",date:"Jun 18, 2026",owner:"Lead, CI · with VP Sales",status:["Measuring","hold"],met14:true,
+  q:"Should we change how we sell against Justworks to small business now that PEO Plus costs more?",
+  sig:[{id:"SG-101",t:"Justworks PEO Plus $124 PEPM for new business",g:"ppcppp",src:["s14","s15"]},{id:"SG-106",t:"Justworks moved broker pay to a share of admin revenue",g:"pppppp",src:["s14"]},{id:"SG-107",t:"Q2 losses to Justworks: price top reason (internal)",g:"pppppp",src:[]}],
+  ins:[{id:"I-11",t:"Price gap to Justworks narrowed by $15 PEPM for new business",d:"From SG-101; computed in the keel.",from:["SG-101"]},{id:"I-12",t:"Price is still the main reason we lose to Justworks",d:"From SG-107, competitive-win-rate v1.0.",from:["SG-107"]},{id:"I-13",t:"Broker economics changed alongside price",d:"From SG-106. Effect on broker behavior is a hypothesis, labeled as one.",from:["SG-106"]}],
+  opts:[{id:"A",t:"No change",v:[4,8,9,6]},{id:"B",t:"Broker kit: total value vs PEO Plus",v:[8,8,8,8],chosen:true},{id:"C",t:"Small-business price promotion",v:[7,6,6,4]}],
+  out:[{id:"O-1",t:"Win rate vs Justworks, Small business",target:"+5 pts by Q4",metric:"competitive-win-rate v1.0"},{id:"O-2",t:"Guardrail: Small business retention",target:"≥ 87.5%",metric:"client-retention v2.1"}],
+  meas:[{o:"O-1",when:"60-day check · Aug 17",res:"+2.1 pts",st:"warn",p:.42,note:"On track for a Q4 read; small sample."},{o:"O-2",when:"Q3 read · Sep 11",res:"88.0%",st:"good",p:1,note:"Guardrail holding."}],
+  verdict:["hold","In flight. Every signal behind it passed all six gates; SG-101 needed a keel correction at G3 because the graph still held the old $109 price."]},
+ {id:"D-26-031",title:"Prioritize Growing SMB (50–149) in the fall selling campaign",date:"Aug 12, 2026",owner:"VP Sales & Marketing",status:["Measuring","hold"],met14:true,
+  q:"Which SMB segment should get extra sales capacity and broker incentives this fall?",
+  sig:[{id:"SG-090",t:"Competitor threat score 9 on Growing SMB (graph roll-up)",g:"pppppp",src:[]},{id:"SG-104",t:"Win/loss vs ADP TotalSource, Texas: 8 of 19",g:"ppppcp",src:[]},{id:"SG-091",t:"Segment metrics: retention, WSE growth, satisfaction",g:"pppppp",src:[]}],
+  ins:[{id:"I-1",t:"Growing SMB retains best among SMB segments",d:"client-retention v2.1",from:["SG-091"]},{id:"I-4",t:"Competitors concentrate on 50–149",d:"ADP, TriNet, Paychex and Rippling all press here.",from:["SG-090"]},{id:"I-14",t:"Benefits cost is the leading loss reason vs ADP",d:"Texas roll-up after CI-003 suppressed the Austin cut.",from:["SG-104"]}],
+  opts:[{id:"A",t:"Small business (5–49)",v:[6,7,6,5]},{id:"B",t:"Growing SMB (50–149)",v:[9,7,8,6],chosen:true},{id:"C",t:"Mid-market via HRScale",v:[7,5,4,7]}],
+  out:[{id:"O-1",t:"Growing SMB WSEs sold, fall campaign",target:"+8% vs last fall",metric:"wse-sold v1.1"},{id:"O-2",t:"Growing SMB client retention holds",target:"≥ 90.5%",metric:"client-retention v2.1"}],
+  meas:[{o:"O-1",when:"30-day check · Sep 11",res:"+5.2% vs last fall",st:"warn",p:.65,note:"Behind pace, within range for day 30."},{o:"O-2",when:"Q3 check · Oct 15",res:"Pending",st:"pend",note:"Scheduled."}],
+  verdict:["hold","Same record as the Insights demo. The CI signals that fed it now show their gate lineage, including the G5 roll-up that kept a four-deal cut out of the brief."]},
+ {id:"D-26-036",title:"Lead with governed AI plus human expertise against ADP Assist and Paychex WISE",date:"Sep 9, 2026",owner:"Lead, CI · with Product Marketing",status:["Measuring","hold"],met14:true,
+  q:"How should sales answer “their AI does more” in deals against ADP and Paychex?",
+  sig:[{id:"SG-102",t:"Paychex reports WISE outcome metrics",g:"pppapp",src:["p2"]},{id:"SG-105",t:"ADP Assist agents (background, 247 days old)",g:"appppp",src:["a1"]},{id:"SG-108",t:"TriNet Assistant handles about half of chats",g:"pppppp",src:["t1"]}],
+  ins:[{id:"I-15",t:"Competitors now publish AI outcome numbers",d:"Paychex and TriNet both report AI service results.",from:["SG-102","SG-108"]},{id:"I-16",t:"None publishes how it checks AI accuracy",d:"Gap Insperity can fill with MTBH and gate pass rates.",from:["SG-102","SG-105"]}],
+  opts:[{id:"A",t:"Match feature claims",v:[5,6,7,6]},{id:"B",t:"Governed AI + human expertise, with published MTBH",v:[8,9,6,8],chosen:true},{id:"C",t:"Avoid the topic",v:[3,8,9,5]}],
+  out:[{id:"O-1",t:"AI-objection card used in AI-raised deals",target:"≥ 60% of those deals",metric:"card-usage v1.0"},{id:"O-2",t:"Win rate vs Paychex where AI was raised",target:"+3 pts by Q1",metric:"competitive-win-rate v1.0"}],
+  meas:[{o:"O-1",when:"45-day check · Oct 24",res:"Pending",st:"pend",note:"Scheduled."},{o:"O-2",when:"Q1 check · Jan 15",res:"Pending",st:"pend",note:"Scheduled."}],
+  verdict:["hold","Recorded and bound to two Released metric cards. Two of its signals needed a person: SG-102 at G4 (single-source trust) and SG-105 at G1 (outside the freshness window)."]},
+ {id:"D-26-029",title:"Add Rippling’s valuation and IPO timing to the mid-market card",date:"Sep 2, 2026",owner:"Analyst",status:["Stopped by breaker","no"],met14:false,blocked:true,
+  q:"Should the mid-market card warn reps that Rippling is about to IPO at $25B?",
+  sig:[{id:"SG-103",t:"Rippling valued at $25B, IPO in 2026 (tier 0)",g:"ppt---",src:["s20"]}],
+  ins:[],opts:[],out:[],meas:[],
+  verdict:["no","Stopped before it was recorded. SG-103 tripped at G3 against the tier 2 $16.8B Series G fact, so no insight could be formed and nothing reached a rep. The card still reads “no IPO date announced.”"]}
+];
+let curD=DEC[0].id;
+(function(){const sig=DEC.flatMap(d=>d.sig),all=sig.length,clean=sig.filter(s=>!s.g.includes("t")).length;
+  $("dstats").innerHTML=[[`${clean}/${all}`,"signals passed all gates"],[`${DEC.filter(d=>d.met14).length}/${DEC.length}`,"decisions pass MET-014"],[`${sig.filter(s=>/[ah]/.test(s.g)).length}`,"signals a person released"],["1","claim stopped before sales"]].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("")})();
+$("dlist").innerHTML=DEC.map(d=>`<button type="button" data-d="${d.id}" aria-pressed="${d.id===curD}"><span class="did">${d.id} · ${d.date}</span><span class="dt">${esc(d.title)}</span><span><span class="pill ${d.status[1]}"><span class="sw"></span>${d.status[0]}</span></span></button>`).join("");
+$("dlist").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curD=b.dataset.d;$("dlist").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));decRender()});
+const strip=g=>`<div class="gstrip" title="Gates G1–G6">${G(g).map((c,i)=>`<i class="${GM[c]}" title="G${i+1}: ${VL[GM[c]]||"not run"}"></i>`).join("")}<span>G1–G6</span></div>`;
+function decRender(){
+  const d=DEC.find(x=>x.id===curD);
+  $("dhead").innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h3 style="margin:0;font-size:22px">${esc(d.title)}</h3><span class="pill ${d.status[1]}"><span class="sw"></span>${d.status[0]}</span></div><p class="hint" style="margin:4px 0 14px">${d.id} · ${d.date} · owner ${esc(d.owner)} · ${esc(d.q)}</p>`;
+  const col=(h,b)=>`<div class="col"><h4>${h}</h4><div class="stack">${b}</div></div>`;
+  const sig=d.sig.map(s=>`<div class="node sig ${s.g.includes("t")?"blocked":""}" data-n="${s.id}"><span class="nid">${s.id}${s.src.length?cite(s.src):" · internal"}</span><b>${esc(s.t)}</b>${strip(s.g)}</div>`).join("");
+  const ins=d.ins.length?d.ins.map(i=>`<div class="node ins" data-n="${i.id}"><span class="nid">${i.id}</span><b>${esc(i.t)}</b><p>${esc(i.d)}</p></div>`).join(""):`<div class="node missing" data-n="NOINS"><span class="nid">G3 trip</span><b>No insight formed</b><p>A tripped signal cannot feed an insight.</p></div>`;
+  const opts=d.opts.length?d.opts.map(o=>{const s=score(o.v),r=rec(s);return `<div class="node ${o.chosen?"decision":""}" data-n="${o.chosen?"DEC":"OPT"+o.id}"><span class="nid">Option ${o.id}${o.chosen?" · chosen":""}</span><b>${esc(o.t)}</b><div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span class="num" style="font-size:15px;font-weight:600">${s.toFixed(2)}</span><span class="pill ${r[1]}">${r[0]}</span></div>${o.chosen?CRIT.map((c,i)=>`<div class="score-row"><span class="hint">${c[0]} · ${Math.round(c[1]*100)}%</span><span class="num" style="font-size:11.5px;text-align:right">${o.v[i]}/10</span></div><div class="bar"><span style="width:${o.v[i]*10}%"></span></div>`).join(""):""}</div>`}).join(""):`<div class="node missing" data-n="DEC"><b>Not recorded</b><p>The decision intake refused it.</p></div>`;
+  const out=d.out.length?d.out.map(o=>`<div class="node out" data-n="${o.id}"><span class="nid">${o.id} · ${o.metric}</span><b>${esc(o.t)}</b><p>Target: ${esc(o.target)}</p></div>`).join(""):`<div class="node missing" data-n="NOOUT"><span class="nid">MET-014</span><b>No outcome</b><p>Nothing to bind.</p></div>`;
+  const meas=d.meas.length?d.meas.map(m=>`<div class="node meas ${m.st}" data-n="M${m.o}"><span class="nid">${m.o} · ${m.when}</span><b>${esc(m.res)}</b><p>${esc(m.note)}</p>${m.p!=null?`<div class="meter"><span style="width:${m.p*100}%;background:var(--${m.st==="good"?"permission":"warning"})"></span></div>`:""}</div>`).join(""):`<div class="node missing" data-n="NOMEAS"><b>Nothing to measure</b><p>No checkpoint was scheduled.</p></div>`;
+  $("cols").innerHTML=col("Signals · gate lineage",sig)+col("Insights",ins)+col("Options · decision score",opts)+col("Committed outcomes",out)+col("Measured results",meas);
+  $("verdict").innerHTML=`<div class="banner ${d.verdict[0]}" style="margin-top:16px"><div>${esc(d.verdict[1])}</div></div>`;
+  requestAnimationFrame(wires);
+}
+function wires(){
+  const d=DEC.find(x=>x.id===curD),svg=$("wires"),box=$("trace").getBoundingClientRect();
+  if(getComputedStyle($("cols")).gridTemplateColumns.split(" ").length<5||!box.width){svg.innerHTML="";return}
+  const pt=(id,side)=>{const el=$("cols").querySelector(`[data-n="${id}"]`);if(!el)return null;const r=el.getBoundingClientRect();return {x:(side==="r"?r.right:r.left)-box.left,y:r.top+r.height/2-box.top}};
+  const L=[];
+  if(d.blocked){L.push([d.sig[0].id,"NOINS","bad"],["NOINS","DEC","bad"],["DEC","NOOUT","bad"],["NOOUT","NOMEAS","bad"])}
+  else{d.ins.forEach(i=>i.from.forEach(f=>L.push([f,i.id,""])));d.ins.forEach(i=>L.push([i.id,"DEC",""]));d.out.forEach(o=>L.push(["DEC",o.id,""]));d.meas.forEach(m=>L.push([m.o,"M"+m.o,""]))}
+  svg.setAttribute("viewBox",`0 0 ${box.width} ${box.height}`);
+  svg.innerHTML=L.map(([a,b,c])=>{const p=pt(a,"r"),q=pt(b,"l");if(!p||!q)return"";const mx=(p.x+q.x)/2;return `<path class="${c}" d="M${p.x},${p.y} C${mx},${p.y} ${mx},${q.y} ${q.x},${q.y}"/>`}).join("");
+}
+window.addEventListener("resize",()=>{if(!$("view-dec").hidden)wires()});
+decRender();
+
+/* ================= TAXONOMY ================= */
+const SCH=Object.fromEntries(TAX.schemes.map(s=>[s.id,s]));
+const BY=Object.fromEntries(TAX.concepts.map(c=>[c.code,c]));
+const KIDS={};TAX.concepts.forEach(c=>{if(c.broader)(KIDS[c.broader]=KIDS[c.broader]||[]).push(c.code)});
+const USED={};SCN.forEach(s=>s.tags.forEach(t=>(USED[t]=USED[t]||[]).push(s.id)));
+const ROLE={NER:["Extraction","Mention spotting and entity linking"],CLS:["Classifier label","Signal and verdict classification"],FAC:["Retrieval facet","Filters for Compass search and RAG"],GRD:["Guardrail input","Rules the Circuit Breaker evaluates"],EVAL:["Eval rubric","Labels for scoring AI outputs and MTBH"]};
+const alts=TAX.concepts.reduce((a,c)=>a+c.alt.length,0);
+const seedRows=TAX.concepts.reduce((a,c)=>a+(c.ft.includes("NER")?1+c.alt.length:0)+((c.ex||[]).length),0);
+const core=TAX.concepts.filter(c=>SCH[c.scheme].layer==="core").length;
+$("tstats").innerHTML=[[TAX.schemes.length,"schemes · 10 core, 5 domain"],[TAX.concepts.length,`concepts · ${core} core, ${TAX.concepts.length-core} domain`],[alts,"alternate labels"],[seedRows,"fine-tuning seed rows"]].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+$("roles").innerHTML=Object.entries(ROLE).map(([k,v])=>`<div><b>${k} · ${v[0]}</b>${v[1]}</div>`).join("");
+let layer="all",curS="CI",curC="CI.comp",q="";
+function schemesRender(){
+  const groups=["core","domain"].filter(l=>layer==="all"||layer===l);
+  $("schemes").innerHTML=groups.map(l=>`<div class="lyr">${l}</div>`+TAX.schemes.filter(s=>s.layer===l).map(s=>`<button type="button" data-s="${s.id}" aria-pressed="${!q&&s.id===curS}"><span>${esc(s.title)}</span><span class="cnt">${TAX.concepts.filter(c=>c.scheme===s.id).length}</span></button>`).join("")).join("");
+}
+function match(c){if(!q)return true;const h=[c.label,c.code,c.definition,...c.alt,...c.maps].join(" ").toLowerCase();return h.includes(q)}
+function treeRender(){
+  let html="";
+  if(q){const hits=TAX.concepts.filter(c=>(layer==="all"||SCH[c.scheme].layer===layer)&&match(c));
+    html=hits.length?hits.map(c=>`<button type="button" data-c="${c.code}" aria-pressed="${c.code===curC}"><span>${esc(c.label)}</span><span class="code">${c.code}</span></button>`).join(""):`<p class="hint" style="padding:8px">No concept matches “${esc(q)}”. Try a synonym, a rule ID such as MET-013, or a code such as SIG.</p>`;
+    html=`<div class="sch">${q?"Search results":""}</div>`+html;
+  }else{
+    const roots=TAX.concepts.filter(c=>c.scheme===curS&&(!c.broader||BY[c.broader].scheme!==curS));
+    const walk=(code,d)=>{const c=BY[code];let h=`<button type="button" data-c="${code}" aria-pressed="${code===curC}" style="padding-left:${8+d*16}px"><span>${d?"└ ":""}${esc(c.label)}</span><span class="code">${code}</span></button>`;(KIDS[code]||[]).filter(k=>BY[k].scheme===curS).forEach(k=>h+=walk(k,d+1));return h};
+    html=`<div class="sch">${esc(SCH[curS].title)} · ${SCH[curS].layer}</div>`+roots.map(r=>walk(r.code,0)).join("");
+  }
+  $("tree").innerHTML=html;
+}
+function pathOf(code){const p=[];let c=BY[code];while(c){p.unshift(c);c=c.broader?BY[c.broader]:null}return p}
+function detailRender(){
+  const c=BY[curC];if(!c){$("detail").innerHTML="";return}
+  const rows=[];if(c.ft.includes("NER"))[c.label,...c.alt].forEach(t=>rows.push({task:"entity_linking",text:t,label:c.code}));
+  (c.ex||[]).forEach(t=>rows.push({task:c.scheme==="AIG"?"failure_mode":c.scheme==="SIG"?"signal_classification":"intel_classification",text:t,label:c.code}));
+  const kids=(KIDS[c.code]||[]);
+  $("detail").innerHTML=`<div class="eyebrow">${esc(SCH[c.scheme].title)} · ${SCH[c.scheme].layer} taxonomy</div><h3 style="margin-top:4px">${esc(c.label)}</h3><p class="mono hint" style="margin-top:2px">${c.code} · pit:${c.code.replace(/\./g,"_")}</p>
+   <p style="margin-top:10px;max-width:62ch">${esc(c.definition)}</p>
+   <dl class="kv">
+    <dt>Path</dt><dd class="chips">${pathOf(c.code).map(p=>`<button type="button" class="chip lnk" data-c="${p.code}">${esc(p.label)}</button>`).join(" ")}</dd>
+    ${kids.length?`<dt>Narrower</dt><dd class="chips">${kids.map(k=>`<button type="button" class="chip lnk" data-c="${k}">${esc(BY[k].label)}</button>`).join("")}</dd>`:""}
+    <dt>Alt labels</dt><dd class="chips">${c.alt.map(a=>`<span class="chip">${esc(a)}</span>`).join("")||"–"}</dd>
+    <dt>Mappings</dt><dd class="chips">${c.maps.map(m=>BY[m]?`<button type="button" class="chip lnk" data-c="${m}">${esc(m)}</button>`:`<span class="chip ft">${esc(m)}</span>`).join("")||"–"}</dd>
+    <dt>Fine-tuning</dt><dd class="chips">${c.ft.map(f=>`<span class="chip ft" title="${esc(ROLE[f][1])}">${f} · ${esc(ROLE[f][0])}</span>`).join("")}</dd>
+    <dt>In the demo</dt><dd>${USED[c.code]?USED[c.code].map(s=>`<span class="chip ft">${s}</span>`).join(" "):"<span class='hint'>Not tagged on a sample signal</span>"}</dd>
+   </dl>
+   ${rows.length?`<div class="sec-label" style="margin-top:16px">Fine-tuning seed rows (JSONL)</div><pre class="code-view">${rows.map(r=>esc(JSON.stringify(r))).join("\n")}</pre>`:""}
+   <div class="sec-label" style="margin-top:16px">SKOS</div><pre class="code-view">${esc(`pit:${c.code.replace(/\./g,"_")} a skos:Concept ;\n  skos:inScheme pits:${c.scheme} ;\n  skos:prefLabel "${c.label}"@en ;\n${c.alt.map(a=>`  skos:altLabel "${a}"@en ;\n`).join("")}${c.broader?`  skos:broader pit:${c.broader.replace(/\./g,"_")} ;\n`:""}  skos:definition "${c.definition}"@en .`)}</pre>`;
+}
+function taxAll(){schemesRender();treeRender();detailRender()}
+function openConcept(code){if(!BY[code])return;curC=code;curS=BY[code].scheme;q="";$("tq").value="";layer="all";document.querySelectorAll('#view-tax .seg button').forEach(b=>b.setAttribute("aria-pressed",b.dataset.l==="all"));taxAll();show("tab-tax");$("detail").scrollIntoView({block:"nearest"})}
+$("schemes").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curS=b.dataset.s;q="";$("tq").value="";const first=TAX.concepts.find(c=>c.scheme===curS);curC=first.code;taxAll()});
+$("tree").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;curC=b.dataset.c;treeRender();detailRender()});
+$("detail").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;curC=b.dataset.c;curS=BY[curC].scheme;taxAll()});
+$("tq").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();schemesRender();treeRender()});
+document.querySelector("#view-tax .seg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;layer=b.dataset.l;document.querySelectorAll('#view-tax .seg button').forEach(x=>x.setAttribute("aria-pressed",x===b));if(layer!=="all"&&SCH[curS].layer!==layer){curS=TAX.schemes.find(s=>s.layer===layer).id;curC=TAX.concepts.find(c=>c.scheme===curS).code}taxAll()});
+taxAll();
+
+/* ================= AGENTS ================= */
+$("tiers").innerHTML=[["A0","Observe and suggest","Reads and recommends. Writes nothing."],["A1","Draft for review","Creates drafts a person approves."],["A2","Act within policy","Reversible actions inside deterministic rules, such as quarantining a claim."],["A3","Irreversible or external","Publishing outside the team. People only."]].map((t,i)=>`<div class="tier ${i===3?"a3":""}"><b>${t[0]} · ${t[1]}</b>${t[2]}</div>`).join("");
+const AG=[
+ ["Scout","Watches filings, transcripts, pricing pages, broker notices, review sites, job posts, IRS CPEO list and state registries; files each change as a signal.","SEC EDGAR, web monitors, licensed feeds","G1","A1","A","Analyst audits 10 a week"],
+ ["Librarian","Resolves names to holons, tags with core and domain taxonomies, dedupes; proposes new concepts from unmatched terms.","Identity registry, taxonomies","G2","A1","L","Lead approves new concepts monthly"],
+ ["Verifier","Runs the Circuit Breaker: freshness, tier, corroboration, conflict with the graph; corrects stale facts from higher tiers.","Market graph, source tiers, CI-001…005","G1–G4","A2","A","Analyst releases holds"],
+ ["Analyst agent","Drafts threats, openings and briefs from grounded facts only; every sentence cites a keel fact.","Grounded facts, metric cards","G4","A1","A","Analyst edits and signs"],
+ ["Correlator","Joins signals to win/loss, retention and WSE metrics through the semantic layer; applies roll-ups when cuts are too small.","Semantic layer, MET-*, CI-003","G3, G5","A1","A","Analyst reviews outliers"],
+ ["Composer","Assembles battlecards, exec briefs and the sources Compass and the HR360 agent ground on, from passed claims only.","Approved claims, card templates","G5","A1","L","Lead publishes (A3)"],
+ ["Decision clerk","Opens decision records, binds outcomes to Released cards (MET-014), schedules checkpoints and reads results.","Decision register, metric cards","G5","A2","L","Lead records decisions"],
+ ["Steward","Curates fine-tuning and eval sets from kept and removed claims; reports MTBH and gate pass rates; flags drift.","Gate logs, taxonomies","G6","A1","L","Lead approves monthly set"]
+];
+$("agents").innerHTML=`<thead><tr><th>Agent</th><th>Job</th><th>Reads</th><th>Gates</th><th>Tier</th><th>Owner</th><th>Human checkpoint</th></tr></thead><tbody>${AG.map(a=>`<tr><td class="an">${a[0]}</td><td class="aj" style="min-width:260px">${a[1]}</td><td style="font-size:12.5px">${a[2]}</td><td class="mono" style="font-size:12px;white-space:nowrap">${a[3]}</td><td><span class="pill ${a[4]==="A2"?"hold":"ob"}">${a[4]}</span></td><td><span class="owner ${a[5]==="A"?"b":""}" title="${a[5]==="L"?"Lead":"Analyst"}">${a[5]}</span></td><td style="font-size:12.5px">${a[6]}</td></tr>`).join("")}</tbody>`;
+const CAP=[["Source monitoring and collection",20,3],["Tagging, filing, deduping",9,2],["Fact-checking and verification",11,4],["Analysis and synthesis",14,14],["Battlecards and brief upkeep",10,3],["Win/loss and metric pulls",8,2],["Decision follow-up",2,3],["Stakeholder briefings",6,10],["Taxonomy and model stewardship",0,4]];
+const MX=20;const tb=CAP.reduce((a,c)=>a+c[1],0),ta=CAP.reduce((a,c)=>a+c[2],0);
+$("cap").innerHTML=CAP.map(c=>`<span>${c[0]}</span><span class="track"><span class="bb before" style="width:${c[1]/MX*100}%"></span><span class="bb after" style="width:${c[2]/MX*100}%"></span></span><span class="n">${c[1]} → ${c[2]} h</span>`).join("")+`<span class="rowline"></span><b>Total per week</b><span class="hint">${tb-ta} hours a week freed for new coverage and win/loss interviews</span><span class="n" style="color:var(--ink);font-weight:600">${tb} → ${ta} h</span>`;
+$("week").innerHTML=[["Monday",["Steward posts MTBH and gate pass rates","Lead reviews weekend holds","Scout digest: what changed"]],["Tuesday",["Analyst audits 10 Scout signals","Correlator refreshes win/loss by competitor"]],["Wednesday",["Composer drafts card updates","Lead publishes approved cards (A3)"]],["Thursday",["Decision clerk reads due checkpoints","Lead and Analyst brief Sales and Product"]],["Friday",["Librarian queue: new terms and merges","Analyst writes the weekly brief"]]].map(d=>`<div class="day"><b>${d[0]}</b><ul>${d[1].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+/* ================= THEME ================= */
+(function(){
+  const root=document.documentElement,b=$("themebtn");
+  const mq=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;
+  const isDark=()=>root.dataset.theme?root.dataset.theme==="dark":!!(mq&&mq.matches);
+  const sync=()=>{const d=isDark();b.classList.toggle("is-dark",d);const l=d?"Switch to light mode":"Switch to dark mode";b.setAttribute("aria-label",l);b.title=l;if(!$("view-dec").hidden)requestAnimationFrame(wires)};
+  try{const t=localStorage.getItem("pif-theme");if(t==="dark"||t==="light")root.dataset.theme=t}catch(e){}
+  b.addEventListener("click",()=>{const t=isDark()?"light":"dark";root.dataset.theme=t;try{localStorage.setItem("pif-theme",t)}catch(e){}sync()});
+  if(mq&&mq.addEventListener)mq.addEventListener("change",sync);
+  sync();
+})();
+
+/* ================= TABS ================= */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);$(t.getAttribute("aria-controls")).hidden=!on});if(id==="tab-dec")requestAnimationFrame(wires);try{localStorage.setItem("pif-tab",id)}catch(e){}}
+tabs.forEach(t=>t.addEventListener("click",()=>show(t.id)));
+const H={blueprint:"tab-blue",pipeline:"tab-run",decisions:"tab-dec",taxonomies:"tab-tax",agents:"tab-agt"};
+let start=H[(location.hash||"").slice(1)];
+if(!start){try{start=localStorage.getItem("pif-tab")}catch(e){}}
+if(start&&$(start))show(start);
+})();
+</script>
+
+</body></html>

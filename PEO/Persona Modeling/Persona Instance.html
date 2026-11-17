@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elena Vance — Persona Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#eef1f1;
+    --surface:#ffffff;
+    --surface-2:#f4f7f7;
+    --surface-3:#e7ecec;
+    --ink:#111a20;
+    --ink-soft:#2b383f;
+    --muted:#55666d;
+    --faint:#8b989d;
+    --line:#d3dbdd;
+    --line-strong:#b7c2c5;
+    --accent-human:#a4590d;
+    --accent-human-soft:#f1e2cd;
+    --accent-machine:#0d7379;
+    --accent-machine-soft:#d9edee;
+    --warn:#a13a32;
+    --warn-soft:#f4e0dd;
+    --good:#2e7a4f;
+    --good-soft:#dcefe2;
+    --shadow: 0 1px 2px rgba(17,26,32,.06), 0 8px 24px -12px rgba(17,26,32,.18);
+    --radius: 3px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0b1215;
+      --surface:#121a1e;
+      --surface-2:#172023;
+      --surface-3:#1d272b;
+      --ink:#e9eff1;
+      --ink-soft:#c7d3d7;
+      --muted:#93a4aa;
+      --faint:#66787e;
+      --line:#263136;
+      --line-strong:#344247;
+      --accent-human:#e5a750;
+      --accent-human-soft:#3a2c17;
+      --accent-machine:#4bc7cd;
+      --accent-machine-soft:#123236;
+      --warn:#e37a72;
+      --warn-soft:#3a1e1c;
+      --good:#69c290;
+      --good-soft:#173428;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b1215;
+    --surface:#121a1e;
+    --surface-2:#172023;
+    --surface-3:#1d272b;
+    --ink:#e9eff1;
+    --ink-soft:#c7d3d7;
+    --muted:#93a4aa;
+    --faint:#66787e;
+    --line:#263136;
+    --line-strong:#344247;
+    --accent-human:#e5a750;
+    --accent-human-soft:#3a2c17;
+    --accent-machine:#4bc7cd;
+    --accent-machine-soft:#123236;
+    --warn:#e37a72;
+    --warn-soft:#3a1e1c;
+    --good:#69c290;
+    --good-soft:#173428;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+
+  *{ box-sizing:border-box; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  }
+
+  html, body{ background:var(--bg); }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- Header ---------- */
+  .masthead{
+    border-bottom:1px solid var(--line);
+    background:var(--surface);
+  }
+  .masthead-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 24px 22px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    align-items:flex-end;
+    justify-content:space-between;
+  }
+  .id-plate h1{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:56px;
+    line-height:.9;
+    letter-spacing:.005em;
+    margin:6px 0 8px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .id-plate .role{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:56ch;
+    font-weight:500;
+  }
+  .stat-rail{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:8px 14px;
+    min-width:96px;
+  }
+  .stat .n{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1;
+    color:var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .l{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-top:3px;
+  }
+  .stat.human{ border-color: color-mix(in srgb, var(--accent-human) 40%, var(--line)); }
+  .stat.human .n{ color:var(--accent-human); }
+  .stat.machine{ border-color: color-mix(in srgb, var(--accent-machine) 40%, var(--line)); }
+  .stat.machine .n{ color:var(--accent-machine); }
+
+  /* ---------- Control panel ---------- */
+  .controls{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .controls-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:14px 24px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .row1{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px 18px;
+    align-items:center;
+  }
+  .search-box{
+    position:relative;
+    flex:1 1 220px;
+    min-width:180px;
+  }
+  .search-box input{
+    width:100%;
+    padding:9px 12px 9px 30px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    background:var(--surface);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13.5px;
+  }
+  .search-box input:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .search-box svg{
+    position:absolute; left:9px; top:50%; transform:translateY(-50%);
+    width:14px; height:14px; color:var(--faint); pointer-events:none;
+  }
+  .chipset{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.02em;
+    padding:6px 11px;
+    border-radius:100px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--muted);
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .chip:hover{ border-color:var(--accent-machine); color:var(--ink); }
+  .chip:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .chip[aria-pressed="true"]{
+    background:var(--ink);
+    color:var(--surface);
+    border-color:var(--ink);
+  }
+  .toggles{ display:flex; gap:16px; flex-wrap:wrap; margin-left:auto; }
+  .toggle{
+    display:flex; align-items:center; gap:7px;
+    font-size:12.5px; color:var(--ink-soft); cursor:pointer; user-select:none;
+  }
+  .toggle input{ accent-color:var(--accent-machine); width:14px; height:14px; }
+
+  .row2{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:14px 22px;
+    padding-top:2px;
+  }
+  .gauge{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 14px 12px;
+  }
+  .gauge-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;
+  }
+  .gauge-head .name{ font-size:12px; font-weight:600; color:var(--ink); }
+  .gauge-head .val{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; font-variant-numeric: tabular-nums;
+  }
+  .gauge input[type=range]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:5px; border-radius:4px;
+    background:var(--line-strong);
+    margin:6px 0 7px;
+  }
+  .gauge input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:15px; height:15px; border-radius:50%;
+    background:var(--surface); border:2.5px solid var(--gauge-color, var(--accent-machine));
+    cursor:pointer; margin-top:-5px;
+    box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  .gauge input[type=range]::-moz-range-thumb{
+    width:15px; height:15px; border-radius:50%;
+    background:var(--surface); border:2.5px solid var(--gauge-color, var(--accent-machine));
+    cursor:pointer;
+  }
+  .gauge input[type=range]:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:3px; }
+  .gauge-foot{ display:flex; justify-content:space-between; font-size:11px; color:var(--faint); }
+  .verdict{
+    margin-top:7px; font-size:11.5px; font-weight:600; padding:4px 8px; border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .verdict.pass{ background:var(--good-soft); color:var(--good); }
+  .verdict.warn{ background:var(--warn-soft); color:var(--warn); }
+
+  /* ---------- Main ---------- */
+  main{ max-width:1180px; margin:0 auto; padding:30px 24px 80px; }
+
+  .section{ margin-bottom:36px; }
+  .section-head{
+    display:flex; align-items:baseline; gap:12px; margin-bottom:14px;
+    padding-bottom:8px; border-bottom:2px solid var(--line-strong);
+  }
+  .section-head h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:26px; font-weight:700; margin:0; letter-spacing:.01em;
+    color:var(--ink);
+  }
+  .section-head .count{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted);
+  }
+  .section-head .def{
+    font-size:12.5px; color:var(--muted); margin-left:auto; max-width:42ch; text-align:right;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(270px, 1fr));
+    gap:14px;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px solid var(--card-accent, var(--line-strong));
+    border-radius:var(--radius);
+    padding:14px 16px 13px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .card:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:2px; }
+  .breadcrumb{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--faint);
+    line-height:1.4;
+  }
+  .breadcrumb b{ color:var(--muted); }
+  .card h3{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:21px; font-weight:700; margin:0; color:var(--ink); line-height:1.05;
+  }
+  .card .value{
+    font-size:13px; color:var(--ink-soft);
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card.expanded .value{ -webkit-line-clamp:unset; }
+  .card .extra{ display:none; font-size:12px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; margin-top:2px; }
+  .card.expanded .extra{ display:block; }
+  .extra .def-label{ font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--faint); margin-bottom:3px; }
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+  .badge{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.03em;
+    padding:3px 8px; border-radius:100px; text-transform:uppercase;
+  }
+  .badge.grounded{ background:var(--good-soft); color:var(--good); }
+  .badge.illustrative{ background:var(--accent-human-soft); color:var(--accent-human); }
+  .expand-hint{ font-size:11px; color:var(--faint); }
+
+  .card.dim-human{ --card-accent: var(--accent-human); }
+  .card.dim-machine{ --card-accent: var(--accent-machine); }
+
+  /* Ghost (unpopulated) cards */
+  .ghost{
+    background:transparent;
+    border:1px dashed var(--line-strong);
+    box-shadow:none;
+    opacity:.72;
+  }
+  .ghost h3{ color:var(--muted); }
+  .ghost .value{ color:var(--faint); font-style:italic; -webkit-line-clamp:4; }
+  .ghost .badge{ background:var(--surface-3); color:var(--faint); }
+  .ghost.closematch{ border-style:solid; opacity:1; border-left:3px solid var(--accent-machine); }
+  .ghost.closematch h3{ color:var(--ink); }
+
+  .no-results{
+    grid-column:1/-1; padding:34px 10px; text-align:center; color:var(--muted);
+    border:1px dashed var(--line-strong); border-radius:var(--radius);
+  }
+
+  footer{
+    max-width:1180px; margin:0 auto; padding:0 24px 60px;
+    color:var(--muted); font-size:12px; line-height:1.7;
+    border-top:1px solid var(--line); padding-top:20px;
+  }
+  footer code{ font-family:'IBM Plex Mono', monospace; background:var(--surface-2); padding:1px 5px; border-radius:3px; }
+
+  [hidden]{ display:none !important; }
+
+  @media (max-width:640px){
+    .id-plate h1{ font-size:38px; }
+    .stat-rail{ width:100%; }
+    .section-head{ flex-wrap:wrap; }
+    .section-head .def{ text-align:left; margin-left:0; }
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabbar{
+    max-width:1180px; margin:0 auto; padding:14px 24px 0;
+    display:flex; gap:6px;
+  }
+  .tabbtn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px; letter-spacing:.05em; text-transform:uppercase;
+    padding:9px 18px; border:1px solid var(--line); border-bottom:none;
+    background:var(--surface-2); color:var(--muted); cursor:pointer;
+    border-radius:4px 4px 0 0; position:relative; top:1px;
+  }
+  .tabbtn:hover{ color:var(--ink); }
+  .tabbtn:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:2px; }
+  .tabbtn[aria-selected="true"]{
+    background:var(--surface); color:var(--ink); font-weight:600;
+    border-color:var(--line); border-bottom:1px solid var(--surface);
+  }
+
+  /* ---------- Graph view ---------- */
+  #view-graph{ max-width:1180px; margin:0 auto; padding:22px 24px 70px; }
+  .graph-frame{
+    position:relative; border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--surface); box-shadow:var(--shadow); overflow:hidden;
+  }
+  .graph-toolbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+    padding:10px 16px; border-bottom:1px solid var(--line);
+  }
+  .graph-legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); align-items:center; }
+  .legend-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
+  .legend-ring{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:-1px; border:1.5px dashed var(--line-strong); }
+  .reset-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; padding:6px 13px;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
+    border-radius:100px; cursor:pointer;
+  }
+  .reset-btn:hover{ border-color:var(--accent-machine); color:var(--ink); }
+  .reset-btn:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .graph-frame svg{ display:block; width:100%; height:640px; cursor:grab; background:var(--bg); }
+  .graph-frame svg:active{ cursor:grabbing; }
+  .graph-hint{ padding:9px 16px; font-size:11.5px; color:var(--faint); border-top:1px dashed var(--line); }
+
+  .node-circle{ stroke-width:2px; cursor:pointer; }
+  .node-circle.faded, .node-label.faded, .link.faded{ opacity:.08; pointer-events:none; }
+  .link{ stroke:var(--line-strong); stroke-opacity:.8; fill:none; transition:opacity .15s; }
+  .link.dim-human{ stroke:var(--accent-human); stroke-opacity:.4; }
+  .link.dim-machine{ stroke:var(--accent-machine); stroke-opacity:.4; }
+  .node-label{
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; fill:var(--ink-soft);
+    paint-order:stroke; stroke:var(--bg); stroke-width:3px; pointer-events:none;
+    transition:opacity .15s;
+  }
+  .node-label.root{
+    font-family:'Big Shoulders Display', sans-serif; font-size:16px; font-weight:700; fill:var(--ink);
+    stroke-width:5px;
+  }
+  .node-label.category{ font-weight:600; font-size:10.5px; }
+
+  .graph-detail{
+    position:absolute; top:14px; right:14px; width:280px; max-height:calc(100% - 28px);
+    overflow:auto; background:var(--surface); border:1px solid var(--line-strong);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px 16px;
+  }
+  .graph-detail[hidden]{ display:none; }
+  .graph-detail .gd-close{
+    float:right; cursor:pointer; color:var(--faint); font-size:18px; line-height:1;
+    background:none; border:none; padding:0 0 0 8px;
+  }
+  .graph-detail .gd-close:hover{ color:var(--ink); }
+  .graph-detail h4{
+    font-family:'Big Shoulders Display', sans-serif; font-size:20px; margin:6px 0 6px; color:var(--ink);
+  }
+  .graph-detail .gd-value{ font-size:12.5px; color:var(--ink-soft); margin-bottom:8px; }
+  .graph-detail .gd-def{ font-size:11.5px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="id-plate">
+      <div class="eyebrow">Persona Instance &middot; Taxonomy | Core | Persona v1.0</div>
+      <h1>Elena Vance</h1>
+      <div class="role">Senior Cell Assembly Operator / Hybrid Station Technician &mdash; teamed with a cobot, an AI vision-inspection system and AMR logistics on an Industry&nbsp;5.0 EV battery-module line.</div>
+    </div>
+    <div class="stat-rail">
+      <div class="stat human"><div class="n">8 yr</div><div class="l">Manufacturing tenure</div></div>
+      <div class="stat human"><div class="n">1 yr</div><div class="l">With cobots &amp; AI tools</div></div>
+      <div class="stat machine"><div class="n">A&middot;B&middot;C</div><div class="l">Stations covered</div></div>
+      <div class="stat"><div class="n" id="stat-populated">28/46</div><div class="l">Classes instantiated</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" role="tablist" aria-label="View">
+  <button class="tabbtn" id="tab-explore" role="tab" aria-selected="true" aria-controls="view-explore">Explore</button>
+  <button class="tabbtn" id="tab-graph" role="tab" aria-selected="false" aria-controls="view-graph">Graph</button>
+</nav>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="row1">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" type="text" placeholder="Search labels, values, definitions&hellip;" autocomplete="off">
+      </div>
+      <div class="chipset" id="category-chips" role="group" aria-label="Filter by category"></div>
+      <div class="toggles">
+        <label class="toggle"><input type="checkbox" id="toggle-ghosts" checked> Show unpopulated classes</label>
+        <label class="toggle"><input type="checkbox" id="toggle-illustrative"> Illustrative fields only</label>
+      </div>
+    </div>
+    <div class="row2" id="gauges"></div>
+  </div>
+</div>
+
+<main id="view-explore">
+  <!-- sections injected by JS -->
+</main>
+
+<div id="view-graph" hidden>
+  <div class="graph-frame">
+    <div class="graph-toolbar">
+      <div class="graph-legend">
+        <span><span class="legend-dot" style="background:var(--ink)"></span>Persona</span>
+        <span><span class="legend-dot" style="background:var(--surface);border:2px solid var(--accent-human)"></span>Human-side category</span>
+        <span><span class="legend-dot" style="background:var(--surface);border:2px solid var(--accent-machine)"></span>System-side category</span>
+        <span><span class="legend-dot" style="background:var(--accent-human)"></span>Human attribute</span>
+        <span><span class="legend-dot" style="background:var(--accent-machine)"></span>System attribute</span>
+        <span><span class="legend-ring"></span>Not instantiated</span>
+      </div>
+      <button class="reset-btn" id="graph-reset" type="button">Reset view</button>
+    </div>
+    <svg id="graph-svg" role="img" aria-label="Node-link diagram of the Elena Vance persona instance and the Taxonomy | Core | Persona ontology classes it uses"></svg>
+    <div class="graph-detail" id="graph-detail" hidden>
+      <button class="gd-close" id="graph-detail-close" aria-label="Close">&times;</button>
+      <div class="breadcrumb" id="gd-breadcrumb"></div>
+      <h4 id="gd-label"></h4>
+      <div class="gd-value" id="gd-value"></div>
+      <div class="gd-def" id="gd-def"></div>
+    </div>
+  </div>
+  <div class="graph-hint">Drag nodes to rearrange, scroll or pinch to zoom, click a node for its full definition and value. The same search, category and toggle controls above filter this graph too. (Needs internet once, to fetch the D3 library from cdnjs — the Explore tab works fully offline either way.)</div>
+</div>
+
+<footer>
+  Built from <code>taxonomy-core-persona/</code> (ontology) and <code>vocabularies.verizon.com/core-persona</code> (SKOS definitions), instantiated for the sample operator persona in <em>INCOSE&nbsp;EMEASEC&nbsp;2026 &mdash; Human-Centric Engineering</em>. Fields marked <span class="badge illustrative" style="vertical-align:1px;">illustrative</span> (email, phone, employer, location, language, identifier) have no basis in the source paper and are placeholders consistent with the ontology's own definition of a persona as &ldquo;a semi-fictional representation.&rdquo; Dashed cards/rings are taxonomy classes with no populated individual in this instance. Click any card or graph node to expand its full value, definition and lineage. This offline copy has no live commenting — open the shared web version for that.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<script>
+(function(){
+
+  // Forward-declared hooks the Graph view fills in once built; safe no-ops until then.
+  let applyGraphFilter = function(){};
+  let pulseGraphNode = function(){};
+
+  // ---------------------------------------------------------------
+  // Data: populated attribute individuals, grouped by top-level category
+  // ---------------------------------------------------------------
+  const CATS = [
+    { key:'profile',  label:'Profile Data',        parent:'ProfileData',        dim:'human',   def:'Information directly provided by the user for their account or profile.' },
+    { key:'persona',  label:'Persona Data',         parent:'PersonaData',        dim:'human',   def:'Information collected and used to create and refine personas.' },
+    { key:'pref',     label:'Preference Data',      parent:'PreferenceData',     dim:'human',   def:'Data reflecting user’s choices, likes, dislikes, and configurations.' },
+    { key:'personal', label:'Personalization Data', parent:'PersonalizationData',dim:'machine', def:'Information used to tailor user experiences, often collected from individual user interactions and preferences.' },
+    { key:'behavior', label:'User Behavior Data',   parent:'UserBehaviorData',   dim:'machine', def:'Information about how users interact with a system or product, including their actions, patterns, and choices.' },
+    { key:'history',  label:'Prior History Data',   parent:'PriorHistoryData',   dim:'machine', def:'All past interactions and data associated with a user.' },
+    { key:'type',     label:'Persona Type',         parent:'PersonaType',        dim:'human',   def:'A categorization of personas based on shared characteristics, needs, or goals.' },
+  ];
+
+  const ITEMS = [
+    // -------- Profile Data --------
+    { cat:'profile', label:'Persona Name', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'Elena Vance', def:'A fictitious name given to a persona to make it more relatable and memorable.', grounded:true },
+    { cat:'profile', label:'Persona Email', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'elena.vance@meridianbattery.example', def:'A fictional email address used for a persona, often used for prototyping.', grounded:false,
+      note:'Not stated in source material; generated for prototyping consistency.' },
+    { cat:'profile', label:'Persona Phone', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'+1-555-010-0142', def:'A fictional phone number used for a persona, often used for prototyping.', grounded:false,
+      note:'Fictional placeholder (reserved "555" exchange) — not stated in source material.' },
+    { cat:'profile', label:'Persona Organization', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'Meridian Battery Systems — illustrative name for an EV battery / powertrain manufacturing plant.', def:'The fictional company or organization a persona is associated with.', grounded:false,
+      note:'Source describes "a new battery production facility" without naming an organization.' },
+    { cat:'profile', label:'Persona Location', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'Battery-module sub-assembly production floor, advanced EV battery manufacturing facility (illustrative).', def:'The geographical location associated with a persona.', grounded:false,
+      note:'No specific geography stated in source material.' },
+    { cat:'profile', label:'Persona Language', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'English (assumed)', def:'The language a persona is assumed to speak, often based on location or demographics.', grounded:false,
+      note:'Assumed default — not explicitly stated in source material.' },
+    { cat:'profile', label:'Persona User Identifier', breadcrumb:['Persona','Persona Data','Profile Data'],
+      value:'PERSONA-EMEASEC2026-ELENA-VANCE-001', def:'A unique identifier assigned to each persona within a system or dataset.', grounded:true },
+
+    // -------- Persona Data (direct) --------
+    { cat:'persona', label:'Persona Role', breadcrumb:['Persona','Persona Data'],
+      value:'Senior Cell Assembly Operator / Hybrid Station Technician: works station-side alongside a collaborative robot (cobot), an AI vision-based quality-inspection system, and Autonomous Mobile Robots (AMRs) on a semi-automated EV battery-module assembly line.',
+      def:'A persona’s job title and responsibilities within their organization.', grounded:true },
+    { cat:'persona', label:'Persona Industry', breadcrumb:['Persona','Persona Data'],
+      value:'EV battery / powertrain manufacturing, Industry 5.0 human-machine teaming environment.', def:'The industry or sector that a persona typically works in.', grounded:true },
+    { cat:'persona', label:'Persona Demographics', breadcrumb:['Persona','Persona Data'],
+      value:'8 years of experience in powertrain manufacturing; 1 year of experience working alongside collaborative robots (cobots) and AI decision-support tools; works in a high-variability, semi-automated assembly line handling novel battery-module integration.',
+      def:'Statistical data about a persona’s age, gender, location, education, income, etc.', grounded:true },
+    { cat:'persona', label:'Persona Ethnographics', breadcrumb:['Persona','Persona Data'],
+      value:'Wants to remain the ultimate decision-maker on the line, acting as a system governor rather than being controlled or passively monitored by automation. Needs transparent, explainable system behavior to calibrate trust. Values shared ownership in early system-design discussions. Expects explicit role clarity between what she handles (judgment, flexible handling, quality verification) and what machine agents handle (speed, repetitive positioning, sensor logging). Frustrated by black-box automation, mode errors, cognitive overload during simultaneous alarms, and rigid task allocation that ignores worker fatigue.',
+      def:'Qualitative data about a persona’s values, beliefs, motivations, and behaviors.', grounded:true },
+
+    // -------- Preference Data --------
+    { cat:'pref', label:'Preference Accessibility', breadcrumb:['Persona','Preference Data'],
+      value:'Requires clear, real-time visual status updates at the workstation HMI without navigating multi-layered text menus; needs displays that minimize cognitive load during multi-alarm events.',
+      def:'How easily users can access and manage their preference settings.', grounded:true },
+    { cat:'pref', label:'Preferred Communication', breadcrumb:['Persona','Preference Data'],
+      value:'Graphical HMI displays (visual heatmaps, confidence-score overlays, floor-projected paths) over text-based logs; distinct color-coding and audible confirmation for system-mode changes.',
+      def:'User’s preferred channels and formats for receiving communications.', grounded:true },
+    { cat:'pref', label:'Preferred Content', breadcrumb:['Persona','Preference Data'],
+      value:'Explainable-AI (XAI) defect-classification rationale with confidence scores and visual bounding-box heatmaps, delivered within 0.5s of scan completion, over raw sensor/text logs.',
+      def:'Types of content a user favors or engages with most.', grounded:true },
+    { cat:'pref', label:'Preferred Topics', breadcrumb:['Persona','Preference Data'],
+      value:'Process transparency, ergonomic/assistive automation, preserved human agency and decision authority, shared mental models with AI/cobot teammates.',
+      def:'Subjects or themes a user shows interest in.', grounded:true },
+    { cat:'pref', label:'Preference Notification', breadcrumb:['Persona','Preference Data'],
+      value:'Advance notice (≥10s) of AMR approach path, arrival ETA and docking orientation before a delivery reaches her cell; real-time notice of any AI-flagged defect or process-change recommendation.',
+      def:'Communication informing users about changes or updates related to their preferences.', grounded:true },
+
+    // -------- Personalization Data --------
+    { cat:'personal', label:'User Segment Data', breadcrumb:['Persona','Personalization Data'],
+      value:'Hybrid Station Technician / Human-Machine Teaming Operator segment — experienced operators newly paired with cobots, AI decision-support tools and AMR logistics in Industry 5.0 assembly.',
+      def:'Information used to group users with similar characteristics, behaviors, or needs.', grounded:true },
+    { cat:'personal', label:'Personalization Algorithm', breadcrumb:['Persona','Personalization Data'],
+      value:'Adaptive Task Allocation & Feedback Loop: dynamically shifts task assignments between Elena and the machine/cobot agent based on real-time cognitive-workload and cycle-time metrics, targeting NASA-TLX < 40/100 without stopping line throughput.',
+      def:'A set of rules and calculations used to process personalization data and deliver personalized experiences.', grounded:true },
+    { cat:'personal', label:'Recommendation History', breadcrumb:['Persona','Personalization Data'],
+      value:'AI vision-inspection system’s defect classifications and confidence scores, presented to Elena at Station B for expert validation, root-cause verification, or single-touch override.',
+      def:'A record of items or content previously suggested to a user.', grounded:true },
+
+    // -------- User Behavior Data --------
+    { cat:'behavior', label:'Device & Platform Data', breadcrumb:['Persona','User Behavior Data'],
+      value:'Station-side HMI touchscreen workstation; AR/VR operator-training subsystem; digital-twin operator dashboard.',
+      def:'Information about the device and operating system used by a user.', grounded:true },
+    { cat:'behavior', label:'Engagement Metric', breadcrumb:['Persona','User Behavior Data'], id:'engagement',
+      value:'Target HMI display/response latency < 0.5–1s; NASA-TLX workload score < 40/100; line rate ≥ 98%; zero mode-confusion / zero-collision at the AMR interface.',
+      def:'A quantifiable measure of user engagement.', grounded:true },
+    { cat:'behavior', label:'Event Tracking', breadcrumb:['Persona','User Behavior Data'],
+      value:'Single-touch HMI override events overturning AI defect classifications (with logged rationale); AMR docking/arrival events; system mode-change events.',
+      def:'Monitoring and recording specific user actions or events within a system.', grounded:true },
+    { cat:'behavior', label:'Navigation Pattern', breadcrumb:['Persona','User Behavior Data'],
+      value:'Physical workflow across three stations per shift: A (sub-assembly, cobot-assisted) → B (AI-assisted inspection) → C (AMR material handling).',
+      def:'The typical paths users take while navigating through a system.', grounded:true },
+    { cat:'behavior', label:'Session Data', breadcrumb:['Persona','User Behavior Data'],
+      value:'Per-shift interaction spanning cobot-assisted assembly, AI-assisted inspection/override actions, and AMR-driven replenishment, including HMI status checks throughout.',
+      def:'Information collected during a single user visit to a system.', grounded:true },
+
+    // -------- Prior History Data --------
+    { cat:'history', label:'Feedback & Rating', breadcrumb:['Persona','Prior History Data'],
+      value:'Provides expert quality-verification judgments and root-cause rationale each time she overrides an AI defect classification; feedback is logged to refine the digital twin’s model.',
+      def:'User-provided reviews, ratings, or opinions on products, services, or content.', grounded:true },
+    { cat:'history', label:'Interaction Timestamp', breadcrumb:['Persona','Prior History Data'],
+      value:'Continuous, shift-based interaction throughout ongoing Industry 5.0 production operations; specific timestamps not given in source material.',
+      def:'Date and time of specific user actions or engagements.', grounded:true },
+    { cat:'history', label:'Selection History', breadcrumb:['Persona','Prior History Data'],
+      value:'History of manual single-touch HMI override selections used to overturn AI-flagged defect classifications during quality inspection at Station B.',
+      def:'Record of items chosen or interacted with by a user.', grounded:true },
+    { cat:'history', label:'User Journey Data', breadcrumb:['Persona','Prior History Data'],
+      value:'Daily journey: Station A sub-assembly (heavy lifting to cobot, precision fastening) → Station B AI-assisted inspection (reviews/overrides AI calls) → Station C AMR replenishment (monitors approach, completes manual takeover).',
+      def:'Information about the steps a user takes while interacting with a system.', grounded:true },
+  ];
+
+  // -------- Unpopulated ("ghost") classes --------
+  const GHOSTS = [
+    { cat:'pref', label:'Preference Privacy Settings', breadcrumb:['Persona','Preference Data'],
+      def:'Controls available to users to manage the collection, storage, and usage of their preference data.',
+      reason:'Not addressed anywhere in the source material.' },
+    { cat:'history', label:'Browsing History', breadcrumb:['Persona','Prior History Data'],
+      def:'Record of web pages visited by a user.',
+      reason:'Elena is a physical factory-floor operator — no web-browsing behavior in scope.' },
+    { cat:'history', label:'Search History', breadcrumb:['Persona','Prior History Data'],
+      def:'Record of search queries submitted by a user.',
+      reason:'No web-search behavior described for a factory-floor operator.' },
+    { cat:'type', label:'Analytic Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals focused on data analysis, building data pipelines, and generating insights.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'Data Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals responsible for building and maintaining data infrastructure, ensuring data quality, and enabling data access.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'Knowledge Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals focused on capturing, organizing, and applying knowledge within systems or organizations.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'Platform Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals responsible for building and maintaining the underlying infrastructure and tools that support software development and deployment.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'Quality Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals focused on ensuring the quality of software and systems through testing, automation, and process improvement.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'UX Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'],
+      def:'Represents individuals focused on the design and development of user interfaces, ensuring usability, accessibility, and a positive user experience.', reason:'Not Elena’s role.' },
+    { cat:'type', label:'Systems Engineering Persona', breadcrumb:['Persona','Persona Data','Persona Type'], closematch:true,
+      def:'Represents individuals responsible for designing, building, and managing complex systems, considering all aspects from hardware to software and human interaction.',
+      reason:'Closest conceptual neighbor (skos:closeMatch) — not asserted directly. Elena is an operator embedded in a systems-engineering case study, not an engineer herself.' },
+    { cat:'type', label:'Persona Type', breadcrumb:['Persona','Persona Data'],
+      def:'A categorization of personas based on shared characteristics, needs, or goals.',
+      reason:'No individual PersonaType subclass cleanly fits a production-line operator; see Systems Engineering Persona above.' },
+  ];
+
+  const TOTAL_CLASSES = ITEMS.length + GHOSTS.length; // 28 + 11 = 39 leaf/type classes tracked here (plus 7 category container classes)
+  document.getElementById('stat-populated').textContent = ITEMS.length + '/' + TOTAL_CLASSES;
+
+  // ---------------------------------------------------------------
+  // Render category chips
+  // ---------------------------------------------------------------
+  const chipWrap = document.getElementById('category-chips');
+  const state = { cats: new Set(CATS.map(c=>c.key)), search:'', ghosts:true, illustrativeOnly:false };
+
+  function makeChip(key, label){
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type='button'; b.textContent = label;
+    b.setAttribute('aria-pressed','true');
+    b.addEventListener('click', ()=>{
+      if(state.cats.has(key)){ state.cats.delete(key); b.setAttribute('aria-pressed','false'); }
+      else { state.cats.add(key); b.setAttribute('aria-pressed','true'); }
+      renderAll();
+    });
+    return b;
+  }
+  const allChip = document.createElement('button');
+  allChip.className='chip'; allChip.type='button'; allChip.textContent='All categories';
+  allChip.setAttribute('aria-pressed','true');
+  allChip.addEventListener('click', ()=>{
+    const allOn = state.cats.size === CATS.length;
+    if(allOn){ state.cats.clear(); } else { CATS.forEach(c=>state.cats.add(c.key)); }
+    document.querySelectorAll('#category-chips .chip[data-cat]').forEach(c=>{
+      c.setAttribute('aria-pressed', String(!allOn));
+    });
+    renderAll();
+  });
+  chipWrap.appendChild(allChip);
+  CATS.forEach(c=>{
+    const chip = makeChip(c.key, c.label);
+    chip.dataset.cat = c.key;
+    chipWrap.appendChild(chip);
+  });
+
+  function renderAll(){ render(); if(typeof applyGraphFilter === 'function') applyGraphFilter(); }
+
+  document.getElementById('search').addEventListener('input', e=>{ state.search = e.target.value.trim().toLowerCase(); renderAll(); });
+  document.getElementById('toggle-ghosts').addEventListener('change', e=>{ state.ghosts = e.target.checked; renderAll(); });
+  document.getElementById('toggle-illustrative').addEventListener('change', e=>{ state.illustrativeOnly = e.target.checked; renderAll(); });
+
+  // ---------------------------------------------------------------
+  // Card builders
+  // ---------------------------------------------------------------
+  function matches(text){
+    if(!state.search) return true;
+    return text.toLowerCase().includes(state.search);
+  }
+
+  function buildCard(item, cat){
+    const card = document.createElement('article');
+    card.className = 'card dim-' + cat.dim;
+    card.tabIndex = 0;
+    card.setAttribute('role','button');
+    card.setAttribute('aria-expanded','false');
+    if(item.id) card.id = 'card-' + item.id;
+    card.innerHTML = `
+      <div class="breadcrumb">${item.breadcrumb.map((b,i)=> i===item.breadcrumb.length-1 ? '<b>'+b+'</b>' : b).join(' &rsaquo; ')}</div>
+      <h3>${item.label}</h3>
+      <div class="value">${item.value}</div>
+      <div class="extra">
+        <div class="def-label">SKOS definition</div>
+        <div>${item.def}</div>
+        ${item.note ? '<div class="def-label" style="margin-top:8px;">Curation note</div><div>'+item.note+'</div>' : ''}
+      </div>
+      <div class="card-foot">
+        <span class="badge ${item.grounded ? 'grounded' : 'illustrative'}">${item.grounded ? 'from source' : 'illustrative'}</span>
+        <span class="expand-hint">${'click to ' + 'expand'}</span>
+      </div>`;
+    function toggle(){
+      const open = card.classList.toggle('expanded');
+      card.setAttribute('aria-expanded', String(open));
+      card.querySelector('.expand-hint').textContent = open ? 'click to collapse' : 'click to expand';
+    }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+    const searchable = [item.label, item.value, item.def, item.note||''].join(' ');
+    card._visible = () => matches(searchable) && (!state.illustrativeOnly || !item.grounded);
+    return card;
+  }
+
+  function buildGhost(g){
+    const card = document.createElement('article');
+    card.className = 'ghost' + (g.closematch ? ' closematch' : '');
+    card.innerHTML = `
+      <div class="breadcrumb">${g.breadcrumb.map((b,i)=> i===g.breadcrumb.length-1 ? '<b>'+b+'</b>' : b).join(' &rsaquo; ')}</div>
+      <h3>${g.label}</h3>
+      <div class="value">${g.def}</div>
+      <div class="card-foot">
+        <span class="badge">${g.closematch ? 'close match' : 'not instantiated'}</span>
+      </div>
+      <div class="value" style="margin-top:2px;"><em>${g.reason}</em></div>`;
+    const searchable = [g.label, g.def, g.reason].join(' ');
+    card._visible = () => matches(searchable) && !state.illustrativeOnly;
+    return card;
+  }
+
+  // ---------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------
+  const main = document.getElementById('view-explore');
+  function render(){
+    main.innerHTML = '';
+    let anyShown = false;
+    CATS.forEach(cat=>{
+      if(!state.cats.has(cat.key)) return;
+      const catItems = ITEMS.filter(i=>i.cat===cat.key);
+      const catGhosts = state.ghosts ? GHOSTS.filter(g=>g.cat===cat.key) : [];
+      if(catItems.length===0 && catGhosts.length===0) return;
+
+      const section = document.createElement('section');
+      section.className = 'section';
+      const head = document.createElement('div');
+      head.className = 'section-head';
+      head.innerHTML = `<h2>${cat.label}</h2><span class="count">${catItems.length} instantiated${catGhosts.length? ' &middot; '+catGhosts.length+' not instantiated':''}</span><span class="def">${cat.def}</span>`;
+      section.appendChild(head);
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      let shownInSection = 0;
+      catItems.forEach(item=>{
+        const card = buildCard(item, cat);
+        if(card._visible()){ grid.appendChild(card); shownInSection++; }
+      });
+      catGhosts.forEach(g=>{
+        const card = buildGhost(g);
+        if(card._visible()){ grid.appendChild(card); shownInSection++; }
+      });
+      if(shownInSection===0){
+        const empty = document.createElement('div');
+        empty.className = 'no-results';
+        empty.textContent = 'No matches in ' + cat.label + '.';
+        grid.appendChild(empty);
+      } else { anyShown = true; }
+      section.appendChild(grid);
+      main.appendChild(section);
+    });
+    if(!anyShown){
+      const empty = document.createElement('div');
+      empty.className = 'no-results';
+      empty.style.margin = '0';
+      empty.textContent = 'Nothing matches the current filters. Try clearing the search or re-enabling categories.';
+      main.appendChild(empty);
+    }
+  }
+  render();
+
+  // ---------------------------------------------------------------
+  // KPI gauges (Engagement Metric, made interactive)
+  // ---------------------------------------------------------------
+  const GAUGES = [
+    { key:'tlx', label:'Cognitive Workload Ceiling (NASA-TLX)', min:0, max:100, step:1, start:40, unit:'/100',
+      direction:'below', target:40, targetLabel:'Elena’s target: below 40', color:'var(--accent-human)' },
+    { key:'rate', label:'Production Line Rate', min:90, max:100, step:0.5, start:98, unit:'%',
+      direction:'above', target:98, targetLabel:'Elena’s target: 98% or higher', color:'var(--accent-machine)' },
+    { key:'latency', label:'HMI / XAI Response Latency', min:0, max:2, step:0.1, start:0.5, unit:'s',
+      direction:'below', target:0.5, targetLabel:'Elena’s target: under 0.5s', color:'var(--accent-machine)' },
+  ];
+  const gaugeWrap = document.getElementById('gauges');
+  GAUGES.forEach(g=>{
+    const box = document.createElement('div');
+    box.className = 'gauge';
+    box.style.setProperty('--gauge-color', g.color);
+    box.innerHTML = `
+      <div class="gauge-head"><span class="name">${g.label}</span><span class="val" id="val-${g.key}">${g.start}${g.unit}</span></div>
+      <input type="range" id="range-${g.key}" min="${g.min}" max="${g.max}" step="${g.step}" value="${g.start}" aria-label="${g.label}, ${g.targetLabel}">
+      <div class="gauge-foot"><span>${g.min}${g.unit}</span><span>${g.targetLabel}</span><span>${g.max}${g.unit}</span></div>
+      <div class="verdict" id="verdict-${g.key}"></div>`;
+    gaugeWrap.appendChild(box);
+
+    const range = box.querySelector('#range-'+g.key);
+    const val = box.querySelector('#val-'+g.key);
+    const verdict = box.querySelector('#verdict-'+g.key);
+
+    function update(){
+      const v = parseFloat(range.value);
+      val.textContent = (g.step<1 ? v.toFixed(1) : v) + g.unit;
+      const pass = g.direction==='below' ? v <= g.target : v >= g.target;
+      verdict.className = 'verdict ' + (pass ? 'pass' : 'warn');
+      verdict.innerHTML = pass
+        ? '✓ meets Elena’s stated requirement'
+        : '⚠ tighter than what the persona calls for — flag for review';
+      const engCard = document.getElementById('card-engagement');
+      if(engCard){
+        engCard.style.transition = 'box-shadow .5s';
+        engCard.style.boxShadow = pass ? '0 0 0 2px var(--good)' : '0 0 0 2px var(--warn)';
+        clearTimeout(engCard._t);
+        engCard._t = setTimeout(()=>{ engCard.style.boxShadow=''; }, 900);
+      }
+      if(typeof pulseGraphNode === 'function') pulseGraphNode('engagement', pass);
+    }
+    range.addEventListener('input', update);
+    update();
+  });
+
+  // ---------------------------------------------------------------
+  // Tabs: Explore <-> Graph
+  // ---------------------------------------------------------------
+  const tabExplore = document.getElementById('tab-explore');
+  const tabGraph = document.getElementById('tab-graph');
+  const viewExplore = document.getElementById('view-explore');
+  const viewGraph = document.getElementById('view-graph');
+  let graphBuilt = false;
+
+  function activateTab(which){
+    const toGraph = which === 'graph';
+    tabExplore.setAttribute('aria-selected', String(!toGraph));
+    tabGraph.setAttribute('aria-selected', String(toGraph));
+    viewExplore.hidden = toGraph;
+    viewGraph.hidden = !toGraph;
+    if(toGraph){
+      if(!graphBuilt){ buildGraph(); graphBuilt = true; }
+      applyGraphFilter();
+    }
+  }
+  tabExplore.addEventListener('click', ()=>activateTab('explore'));
+  tabGraph.addEventListener('click', ()=>activateTab('graph'));
+
+  // ---------------------------------------------------------------
+  // Graph view: node-link diagram of the persona instance graph
+  // (Persona -> taxonomy category -> attribute / ghost class)
+  // ---------------------------------------------------------------
+  function buildGraph(){
+    if(typeof d3 === 'undefined'){
+      document.getElementById('graph-svg').outerHTML =
+        '<div style="padding:60px 20px;text-align:center;color:var(--muted);">The graph library did not load (no internet connection right now). Try the Explore tab instead, or reopen this file online once.</div>';
+      return;
+    }
+    const svg = d3.select('#graph-svg');
+    const frame = svg.node().closest('.graph-frame');
+    let width = frame.clientWidth || 900, height = 640;
+    svg.attr('viewBox', [0, 0, width, height]);
+
+    const nodes = [];
+    const links = [];
+    const byItemId = {};
+
+    nodes.push({ id:'root', type:'root', label:'Elena Vance', r:32, breadcrumb:['Taxonomy | Core | Persona'],
+      title:'Persona', def:'A semi-fictional representation of your ideal customer, based on research and data about existing and potential customers.',
+      value:'Senior Cell Assembly Operator / Hybrid Station Technician — the full persona instance.' });
+
+    CATS.forEach(cat=>{
+      const cid = 'cat-'+cat.key;
+      nodes.push({ id:cid, type:'category', cat:cat.key, dim:cat.dim, label:cat.label, r:19, def:cat.def,
+        breadcrumb:['Persona'], title:cat.label });
+      links.push({ source:'root', target:cid, dim:cat.dim });
+    });
+
+    ITEMS.forEach((item, i)=>{
+      const nid = 'item-'+i;
+      const n = { id:nid, type:'item', cat:item.cat, dim: (CATS.find(c=>c.key===item.cat)||{}).dim,
+        label:item.label, r:11, def:item.def, value:item.value, note:item.note, grounded:item.grounded,
+        breadcrumb:item.breadcrumb, title:item.label };
+      nodes.push(n);
+      if(item.id) byItemId[item.id] = nid;
+      links.push({ source:'cat-'+item.cat, target:nid, dim:n.dim });
+    });
+
+    GHOSTS.forEach((g, i)=>{
+      const nid = 'ghost-'+i;
+      const dim = (CATS.find(c=>c.key===g.cat)||{}).dim;
+      nodes.push({ id:nid, type:'ghost', cat:g.cat, dim, label:g.label, r: g.closematch?11:9, def:g.def,
+        reason:g.reason, closematch:g.closematch, breadcrumb:g.breadcrumb, title:g.label });
+      links.push({ source:'cat-'+g.cat, target:nid, dim, ghostLink:true });
+    });
+
+    const sim = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d=>d.id).distance(l=> l.source.type==='root' ? 130 : (l.ghostLink?55:70)).strength(0.85))
+      .force('charge', d3.forceManyBody().strength(d=> d.type==='root' ? -900 : d.type==='category' ? -420 : -140))
+      .force('center', d3.forceCenter(width/2, height/2))
+      .force('collide', d3.forceCollide().radius(d=>d.r + 14));
+
+    const g = svg.append('g');
+
+    svg.call(d3.zoom().scaleExtent([0.35, 3]).on('zoom', (ev)=> g.attr('transform', ev.transform)));
+
+    const link = g.append('g').selectAll('line')
+      .data(links).join('line')
+      .attr('class', d=>'link dim-'+d.dim)
+      .attr('stroke-dasharray', d=> d.ghostLink ? '3,3' : null);
+
+    const node = g.append('g').selectAll('circle')
+      .data(nodes).join('circle')
+      .attr('class', d=>'node-circle')
+      .attr('r', d=>d.r)
+      .attr('fill', d=> d.type==='root' ? 'var(--ink)' : d.type==='category' ? 'var(--surface)' : d.type==='ghost' ? 'var(--surface-3)' : (d.dim==='human' ? 'var(--accent-human)' : 'var(--accent-machine)'))
+      .attr('stroke', d=> d.type==='root' ? 'var(--bg)' : d.type==='category' ? (d.dim==='human'?'var(--accent-human)':'var(--accent-machine)') : d.type==='ghost' ? 'var(--line-strong)' : (d.grounded===false ? 'var(--ink)' : 'var(--bg)'))
+      .attr('stroke-dasharray', d=> d.type==='ghost' ? '3,2' : (d.grounded===false ? '2,1' : null))
+      .attr('stroke-width', d=> d.type==='category' ? 2.5 : 2)
+      .call(drag(sim))
+      .on('click', (ev,d)=> showDetail(d));
+
+    const label = g.append('g').selectAll('text')
+      .data(nodes).join('text')
+      .attr('class', d=> 'node-label' + (d.type==='root'?' root':d.type==='category'?' category':''))
+      .attr('dy', '.32em')
+      .attr('x', d=> d.type==='root' ? 0 : d.r + 5)
+      .attr('y', d=> d.type==='root' ? d.r + 16 : 0)
+      .attr('text-anchor', d=> d.type==='root' ? 'middle' : 'start')
+      .text(d=>d.label);
+
+    sim.on('tick', ()=>{
+      link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+      node.attr('cx',d=>d.x).attr('cy',d=>d.y);
+      label.attr('transform', d=> `translate(${d.x},${d.y})`);
+    });
+
+    function drag(simulation){
+      function started(ev,d){ if(!ev.active) simulation.alphaTarget(0.25).restart(); d.fx=d.x; d.fy=d.y; }
+      function dragged(ev,d){ d.fx=ev.x; d.fy=ev.y; }
+      function ended(ev,d){ if(!ev.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; }
+      return d3.drag().on('start',started).on('drag',dragged).on('end',ended);
+    }
+
+    document.getElementById('graph-reset').addEventListener('click', ()=>{
+      svg.transition().duration(400).call(d3.zoom().transform, d3.zoomIdentity);
+      nodes.forEach(n=>{ n.fx=null; n.fy=null; });
+      sim.alpha(0.6).restart();
+    });
+
+    const detail = document.getElementById('graph-detail');
+    function showDetail(d){
+      document.getElementById('gd-breadcrumb').innerHTML = d.breadcrumb ? d.breadcrumb.join(' &rsaquo; ') : d.type.toUpperCase();
+      document.getElementById('gd-label').textContent = d.label;
+      document.getElementById('gd-value').textContent = d.value || d.reason || '';
+      let defHtml = '<strong>Definition:</strong> ' + d.def;
+      if(d.note) defHtml += '<br><br><strong>Curation note:</strong> ' + d.note;
+      if(d.type==='ghost') defHtml += '<br><br><em>Not instantiated' + (d.closematch ? ' — closest conceptual match only.' : '.') + '</em>';
+      document.getElementById('gd-def').innerHTML = defHtml;
+      detail.hidden = false;
+    }
+    document.getElementById('graph-detail-close').addEventListener('click', ()=>{ detail.hidden = true; });
+
+    window.addEventListener('resize', ()=>{
+      width = frame.clientWidth || width;
+      svg.attr('viewBox', [0,0,width,height]);
+    });
+
+    applyGraphFilter = function(){
+      function itemVisible(d){
+        if(!state.cats.has(d.cat)) return false;
+        if(state.illustrativeOnly && d.grounded !== false) return false;
+        const text = [d.label, d.value||'', d.def||'', d.note||''].join(' ').toLowerCase();
+        return !state.search || text.includes(state.search);
+      }
+      function ghostVisible(d){
+        if(!state.ghosts || !state.cats.has(d.cat)) return false;
+        if(state.illustrativeOnly) return false;
+        const text = [d.label, d.def||'', d.reason||''].join(' ').toLowerCase();
+        return !state.search || text.includes(state.search);
+      }
+      const visible = new Set(['root']);
+      nodes.forEach(n=>{
+        if(n.type==='item' && itemVisible(n)) visible.add(n.id);
+        if(n.type==='ghost' && ghostVisible(n)) visible.add(n.id);
+      });
+      CATS.forEach(cat=>{
+        const cid='cat-'+cat.key;
+        const hasVisibleChild = nodes.some(n=> n.cat===cat.key && visible.has(n.id));
+        if(state.cats.has(cat.key) && (hasVisibleChild || !state.search)) visible.add(cid);
+      });
+      node.classed('faded', d=>!visible.has(d.id));
+      label.classed('faded', d=>!visible.has(d.id));
+      link.classed('faded', d=> !(visible.has(d.source.id||d.source) && visible.has(d.target.id||d.target)));
+    };
+
+    pulseGraphNode = function(itemKey, pass){
+      const nid = byItemId[itemKey];
+      if(!nid) return;
+      const el = node.filter(d=>d.id===nid);
+      el.transition().duration(150).attr('r', d=>d.r+5).attr('stroke', pass?'var(--good)':'var(--warn)').attr('stroke-width', 4)
+        .transition().duration(500).attr('r', d=>d.r).attr('stroke-width', 2)
+        .attr('stroke', d=> d.type==='root' ? 'var(--bg)' : (d.grounded===false ? 'var(--ink)' : 'var(--bg)'));
+    };
+  }
+
+})();
+</script>
+</body>
+</html>

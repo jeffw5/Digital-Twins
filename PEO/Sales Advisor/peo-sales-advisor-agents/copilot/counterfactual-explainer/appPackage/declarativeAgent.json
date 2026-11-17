@@ -1,0 +1,32 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Counterfactual Explainer${{APP_NAME_SUFFIX}}",
+    "description": "Counterfactual Explainer: Which what-if to explain. Runs the hosted agent under its circuit breaker and cites every result.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "text": "What if eligibility rules were mapped before quoting?"
+        },
+        {
+            "text": "Explain the top-ranked risk in plain language"
+        },
+        {
+            "text": "What would time to a binding quote be without census errors?"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

@@ -1,0 +1,1434 @@
+{
+  "tools": [
+    {
+      "name": "pdp_evaluate",
+      "title": "Pdp evaluate",
+      "description": "Ask the policy decision service whether an action is permitted, with the deciding rule versions and explanation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Action being requested, e.g. read, serve_to_persona, publish, send"
+          },
+          "resource_uri": {
+            "type": "string",
+            "description": "URI of the resource or record"
+          },
+          "context": {
+            "type": "object",
+            "description": "Context bundle values: who, persona, tenant, jurisdiction, purpose"
+          }
+        },
+        "required": [
+          "action",
+          "resource_uri"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "pdp_explain",
+      "title": "Pdp explain",
+      "description": "Explain a past policy decision: which rules and versions decided it and why.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "description": "Policy decision ID returned by pdp_evaluate"
+          }
+        },
+        "required": [
+          "decision_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "pep_check_response",
+      "title": "Pep check response",
+      "description": "Check a draft response against the viewer's entitlements and return allow, redact or deny per part.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "persona": {
+            "type": "string",
+            "description": "Persona role reading the response",
+            "enum": [
+              "client_admin",
+              "hr_specialist",
+              "bpa",
+              "steward"
+            ]
+          },
+          "parts": {
+            "type": "array",
+            "description": "Response parts, each {id, label, tenant}",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "persona",
+          "parts"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "ssot_get_rule",
+      "title": "Ssot get rule",
+      "description": "Get a Released SSOT rule, constraint or calculation by ID, optionally as of a date.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Rule, constraint or calc ID, e.g. PAY-002, CON-019, CALC-003"
+          },
+          "as_of": {
+            "type": "string",
+            "description": "ISO date; defaults to today"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "ssot_search_rules",
+      "title": "Ssot search rules",
+      "description": "Search Released SSOT rules by text, domain or jurisdiction.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search text"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Register domain filter"
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "Jurisdiction filter, e.g. US-CA"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "ssot_propose_change",
+      "title": "Ssot propose change",
+      "description": "Open a Draft change request on a rule, constraint or calc in the SSOT Editor. Never releases anything.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "description": "ID of the rule, constraint or calc"
+          },
+          "kgcl": {
+            "type": "string",
+            "description": "KGCL change statements"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the change is needed"
+          }
+        },
+        "required": [
+          "target_id",
+          "kgcl",
+          "reason"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "identity_resolve",
+      "title": "Identity resolve",
+      "description": "Resolve a source ID, URL or name to its canonical URI.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Source ID, URL or name"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Entity kind",
+            "enum": [
+              "content",
+              "prospect",
+              "jurisdiction",
+              "concept"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "kind"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "identity_mint",
+      "title": "Identity mint",
+      "description": "Mint a provisional canonical URI for a new entity, with provenance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Entity kind",
+            "enum": [
+              "content",
+              "prospect",
+              "jurisdiction",
+              "concept"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source system and ID"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "source"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "graph_query",
+      "title": "Graph query",
+      "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "context_bundle_id": {
+            "type": "string",
+            "description": "RCB ID from the Intent & RCB Agent"
+          },
+          "template_id": {
+            "type": "string",
+            "description": "Approved query template ID"
+          },
+          "params": {
+            "type": "object",
+            "description": "Template parameters"
+          }
+        },
+        "required": [
+          "context_bundle_id",
+          "template_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "graph_facets",
+      "title": "Graph facets",
+      "description": "Return ranked facets (stage, job step, jurisdiction, product) for a query result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "context_bundle_id": {
+            "type": "string",
+            "description": "RCB ID"
+          },
+          "result_id": {
+            "type": "string",
+            "description": "Query result ID"
+          }
+        },
+        "required": [
+          "context_bundle_id",
+          "result_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "content_get",
+      "title": "Content get",
+      "description": "Get a governed content item or claim by URI, with version, labels, validity and source spans.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "Canonical URI"
+          }
+        },
+        "required": [
+          "uri"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "content_validate",
+      "title": "Content validate",
+      "description": "Validate candidate JSON-LD triples against the isp-cnt SHACL shapes without writing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jsonld": {
+            "type": "object",
+            "description": "Candidate triples as JSON-LD"
+          }
+        },
+        "required": [
+          "jsonld"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "content_publish",
+      "title": "Content publish",
+      "description": "Publish validated triples to the content graph with a KGCL record. Rejected if any shape fails.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jsonld": {
+            "type": "object",
+            "description": "Validated triples as JSON-LD"
+          },
+          "kgcl": {
+            "type": "string",
+            "description": "KGCL record for the change"
+          }
+        },
+        "required": [
+          "jsonld",
+          "kgcl"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "events_publish",
+      "title": "Events publish",
+      "description": "Publish a CloudEvent on the broker after schema validation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "CloudEvents type, e.g. com.insperity.advisor.brief.released"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Event subject URI"
+          },
+          "data": {
+            "type": "object",
+            "description": "Event payload"
+          }
+        },
+        "required": [
+          "type",
+          "subject",
+          "data"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "events_schema",
+      "title": "Events schema",
+      "description": "Get the registered schema for an event type.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "CloudEvents type"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "schedule_deadline",
+      "title": "Schedule deadline",
+      "description": "Schedule a deadline event from a deadline rule.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "description": "Deadline rule ID"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject URI"
+          },
+          "due": {
+            "type": "string",
+            "description": "ISO due date-time"
+          }
+        },
+        "required": [
+          "rule_id",
+          "subject",
+          "due"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "deadlines_list",
+      "title": "Deadlines list",
+      "description": "List open deadlines for a subject.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Subject URI"
+          }
+        },
+        "required": [
+          "subject"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "saga_start",
+      "title": "Saga start",
+      "description": "Start a multi-step saga with compensation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "saga_type": {
+            "type": "string",
+            "description": "Saga type, e.g. incremental_refresh"
+          },
+          "input": {
+            "type": "object",
+            "description": "Saga input"
+          }
+        },
+        "required": [
+          "saga_type",
+          "input"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "saga_status",
+      "title": "Saga status",
+      "description": "Get the status of a saga.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "saga_id": {
+            "type": "string",
+            "description": "Saga ID"
+          }
+        },
+        "required": [
+          "saga_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "decision_record",
+      "title": "Decision record",
+      "description": "Record an immutable decision with options considered, choice, rationale and decider.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brief_id": {
+            "type": "string",
+            "description": "Brief the decision was made from"
+          },
+          "option_id": {
+            "type": "string",
+            "description": "Chosen option ID"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this option"
+          },
+          "decided_by": {
+            "type": "string",
+            "description": "Person who decided (Entra object ID)"
+          }
+        },
+        "required": [
+          "brief_id",
+          "option_id",
+          "rationale",
+          "decided_by"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "decision_get",
+      "title": "Decision get",
+      "description": "Get a recorded decision with its bound outcomes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "description": "Decision ID"
+          }
+        },
+        "required": [
+          "decision_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "simplex_request_approval",
+      "title": "Simplex request approval",
+      "description": "Ask a human to approve a binding or irreversible action. Returns a pending approval ID; nothing executes until approved.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Action to approve"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Exact payload that would execute"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why the action is proposed"
+          }
+        },
+        "required": [
+          "action",
+          "payload",
+          "rationale"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "simplex_status",
+      "title": "Simplex status",
+      "description": "Get the status of an approval request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "approval_id": {
+            "type": "string",
+            "description": "Approval ID"
+          }
+        },
+        "required": [
+          "approval_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "breaker_state",
+      "title": "Breaker state",
+      "description": "Get an agent's circuit-breaker state (CLOSED, HALF-OPEN, OPEN) and MTBH.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID, e.g. AG-21"
+          }
+        },
+        "required": [
+          "agent_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "probes_results",
+      "title": "Probes results",
+      "description": "Get the latest decision-question probe results for a job step or agent.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "description": "Job step ID (e.g. CA-J1.2) or agent ID"
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "qbd_get_baseline",
+      "title": "Qbd get baseline",
+      "description": "Get the frozen QbD baseline for a decision question.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "Decision question ID"
+          }
+        },
+        "required": [
+          "question_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "qbd_classify_change",
+      "title": "Qbd classify change",
+      "description": "Classify a new answer against its baseline as benign, material or breaking, with the risk score.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "Decision question ID"
+          },
+          "answer_fingerprint": {
+            "type": "string",
+            "description": "Fingerprint of the new answer"
+          },
+          "upstream_change_id": {
+            "type": "string",
+            "description": "KGCL or content change that explains it"
+          }
+        },
+        "required": [
+          "question_id",
+          "answer_fingerprint"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "metrics_query",
+      "title": "Metrics query",
+      "description": "Query a published calc at a grain. Cells under k = 5 are suppressed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "calc_id": {
+            "type": "string",
+            "description": "Calc ID, e.g. CALC-001"
+          },
+          "grain": {
+            "type": "string",
+            "description": "Grain, e.g. persona x job step x week"
+          },
+          "filters": {
+            "type": "object",
+            "description": "Filters"
+          }
+        },
+        "required": [
+          "calc_id",
+          "grain"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "metrics_definition",
+      "title": "Metrics definition",
+      "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "calc_id": {
+            "type": "string",
+            "description": "Calc ID"
+          }
+        },
+        "required": [
+          "calc_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "evidence_get",
+      "title": "Evidence get",
+      "description": "Get control evidence for a control and period.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "control_id": {
+            "type": "string",
+            "description": "Control ID, e.g. A.5.15"
+          },
+          "period": {
+            "type": "string",
+            "description": "Period, e.g. 2026-Q4"
+          }
+        },
+        "required": [
+          "control_id",
+          "period"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "controls_status",
+      "title": "Controls status",
+      "description": "Get the latest automated test status for a control.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "control_id": {
+            "type": "string",
+            "description": "Control ID"
+          }
+        },
+        "required": [
+          "control_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "census_validate",
+      "title": "Census validate",
+      "description": "Validate an uploaded prospect census against the census schema and rules; returns errors and warnings, stores nothing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "census_file_id": {
+            "type": "string",
+            "description": "Uploaded census file ID"
+          }
+        },
+        "required": [
+          "census_file_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "census_status",
+      "title": "Census status",
+      "description": "Get the status of a census intake.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intake_id": {
+            "type": "string",
+            "description": "Census intake ID"
+          }
+        },
+        "required": [
+          "intake_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "quote_request",
+      "title": "Quote request",
+      "description": "Request an indicative (non-binding) quote for a prospect from a validated census.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prospect_uri": {
+            "type": "string",
+            "description": "Prospect URI"
+          },
+          "census_intake_id": {
+            "type": "string",
+            "description": "Validated census intake ID"
+          },
+          "products": {
+            "type": "array",
+            "description": "Products to price, e.g. [workforce_optimization, benefits]",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "prospect_uri",
+          "census_intake_id",
+          "products"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "quote_get",
+      "title": "Quote get",
+      "description": "Get a quote with its cost lines, assumptions and sources.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "description": "Quote ID"
+          }
+        },
+        "required": [
+          "quote_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "consent_check",
+      "title": "Consent check",
+      "description": "Check outreach consent for a contact and channel.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contact_uri": {
+            "type": "string",
+            "description": "Contact URI"
+          },
+          "channel": {
+            "type": "string",
+            "description": "Channel",
+            "enum": [
+              "email",
+              "sms",
+              "call"
+            ]
+          }
+        },
+        "required": [
+          "contact_uri",
+          "channel"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "proposal_draft",
+      "title": "Proposal draft",
+      "description": "Draft a proposal from a quote and brief for a licensed producer to review. Does not send anything.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prospect_uri": {
+            "type": "string",
+            "description": "Prospect URI"
+          },
+          "quote_id": {
+            "type": "string",
+            "description": "Quote ID"
+          },
+          "brief_id": {
+            "type": "string",
+            "description": "Brief ID"
+          }
+        },
+        "required": [
+          "prospect_uri",
+          "quote_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "contract_send_for_signature",
+      "title": "Contract send for signature",
+      "description": "Send a client service agreement for e-signature. Binding: always routed through the Simplex gate.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "description": "Proposal ID"
+          },
+          "approval_id": {
+            "type": "string",
+            "description": "Simplex approval ID"
+          }
+        },
+        "required": [
+          "proposal_id",
+          "approval_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "retention_preview",
+      "title": "Retention preview",
+      "description": "Preview which records a retention run would delete or de-identify.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Dataset name"
+          }
+        },
+        "required": [
+          "dataset"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "agent_status",
+      "title": "Agent status",
+      "description": "Get an agent's registration, version, autonomy mode and breaker state.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          }
+        },
+        "required": [
+          "agent_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "analytics_catalog",
+      "title": "Analytics catalog",
+      "description": "List published metrics with names, versions and owners.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "advisor_ask",
+      "title": "Advisor ask",
+      "description": "Ask the Sales Advisor a persona question. Runs intent, query, extraction, assembly, entitlement and grounding, and returns a cited brief or a held result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "persona": {
+            "type": "string",
+            "description": "Persona the brief is for",
+            "enum": [
+              "client_admin",
+              "hr_specialist"
+            ]
+          },
+          "question": {
+            "type": "string",
+            "description": "The question in the persona's words"
+          },
+          "job_step": {
+            "type": "string",
+            "description": "Job step ID if known, e.g. CA-J1.3"
+          },
+          "prospect_uri": {
+            "type": "string",
+            "description": "Prospect URI if the question is about a specific prospect"
+          }
+        },
+        "required": [
+          "persona",
+          "question"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "advisor_job_steps",
+      "title": "Advisor job steps",
+      "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "persona": {
+            "type": "string",
+            "description": "Persona",
+            "enum": [
+              "client_admin",
+              "hr_specialist"
+            ]
+          }
+        },
+        "required": [
+          "persona"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "advisor_record_decision",
+      "title": "Advisor record decision",
+      "description": "Record the decision a person made from a brief, binding it to desired outcomes. Requires the person's explicit confirmation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brief_id": {
+            "type": "string",
+            "description": "Brief ID"
+          },
+          "option_id": {
+            "type": "string",
+            "description": "Chosen option ID"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why"
+          },
+          "confirmed_by_person": {
+            "type": "boolean",
+            "description": "True only after the person confirmed the decision in chat"
+          }
+        },
+        "required": [
+          "brief_id",
+          "option_id",
+          "rationale",
+          "confirmed_by_person"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_concept_mapping_agent",
+      "title": "Run Concept Mapping Agent",
+      "description": "Ask the hosted Concept Mapping Agent (AG-12) to do its job: Which concept a claim or field maps to. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_value_gap_monitor",
+      "title": "Run Value-Gap Monitor",
+      "description": "Ask the hosted Value-Gap Monitor (AG-26) to do its job: Gap, no gap, or not enough data. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_decision_impact_tracker",
+      "title": "Run Decision Impact Tracker",
+      "description": "Ask the hosted Decision Impact Tracker (AG-27) to do its job: Which downstream effects a decision caused. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_impact_analyzer",
+      "title": "Run Impact Analyzer",
+      "description": "Ask the hosted Impact Analyzer (AG-31) to do its job: Which questions, briefs and decisions a change affects. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_risk_and_opportunity_ranker",
+      "title": "Run Risk & Opportunity Ranker",
+      "description": "Ask the hosted Risk & Opportunity Ranker (AG-36) to do its job: How to rank risks and opportunities. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_counterfactual_explainer",
+      "title": "Run Counterfactual Explainer",
+      "description": "Ask the hosted Counterfactual Explainer (AG-37) to do its job: Which what-if to explain. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "run_action_proposer",
+      "title": "Run Action Proposer",
+      "description": "Ask the hosted Action Proposer (AG-38) to do its job: Which action to propose to a human owner. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": "string",
+            "description": "What you want the agent to do, in plain words"
+          },
+          "context": {
+            "type": "object",
+            "description": "Optional context: persona, job step, prospect URI, period"
+          }
+        },
+        "required": [
+          "request"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

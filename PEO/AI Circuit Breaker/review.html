@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review queue · Sales Advisor Circuit Breaker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="cb.css"></head>
+<body>
+<div id="topbar" data-page="review" data-controls="1"></div>
+<main class="gut"><div class="wrap">
+<header><div class="eyebrow">Human-in-the-loop dispositioning</div><h1>Review queue</h1><p class="lede">Trips, sampled COMPLY decisions and manual requests wait here for a reviewer. Each disposition is recorded and changes the agent: rejections correct its drift, recalibration restores it, and approving a FREEZE counts against its trust.</p></header>
+<div class="kpis" id="kpis"></div>
+<div class="two">
+  <section class="card sec" aria-labelledby="h-q">
+    <div class="sec-h"><div><h2 id="h-q">Open items</h2><p>HALT is a deterministic veto: it can be rejected or escalated, never approved.</p></div><div class="qfilter" id="qfilter"></div></div>
+    <div class="qhead" id="qhead"></div>
+    <div class="queue" id="queue"></div>
+  </section>
+  <div class="stack">
+    <section class="card sec" aria-labelledby="h-rs">
+      <div class="sec-h"><div><h2 id="h-rs">Recent dispositions</h2></div></div>
+      <div class="scroll" id="resolved"></div>
+    </section>
+    <section class="card sec" aria-labelledby="h-rl">
+      <div class="sec-h"><div><h2 id="h-rl">Provenance, latest</h2><p>Full record on Guardrails &amp; audit.</p></div></div>
+      <div class="log" id="log" data-limit="14"></div>
+    </section>
+  </div>
+</div>
+</div></main>
+<script src="cb-engine.js"></script><script src="cb-ui.js"></script>
+</body></html>

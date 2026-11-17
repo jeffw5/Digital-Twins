@@ -1,0 +1,32 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "Action Proposer${{APP_NAME_SUFFIX}}",
+    "description": "Action Proposer: Which action to propose to a human owner. Runs the hosted agent under its circuit breaker and cites every result.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "text": "What actions are proposed for this week's top risks?"
+        },
+        {
+            "text": "Draft a change request for the late-exclusion finding"
+        },
+        {
+            "text": "What is waiting for my approval?"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

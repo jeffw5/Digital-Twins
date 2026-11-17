@@ -1,0 +1,549 @@
+<title>Keel and North Star Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one vessel cross-section as a layered solution architecture.
+   Rows = North Star / superstructure / waterline / hull / keel / ballast; right column = the sea (sources).
+   Demo selector highlights each demo's numbered path; flow + component detail below. Accelerator Console design system. */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-ink:#ffffff;
+  --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --sky:#16202B; --sky-ink:#EAF0F6; --star:#C9A227;
+  --sea:#DCE7F0; --sea-line:#7C93A8;
+  --hull:#E3EAF3; --keel:#1C2A3A; --keel-ink:#EAF0F6; --keel-card:#273A50; --keel-line:#3B5370;
+  --ballast:#F3EAD0; --ballast-line:#C9A227;
+  --d-ci:#C0620F; --d-met:#6A4FC4; --d-sem:#1F7FA8;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --sky:#070B10; --sky-ink:#EAF0F6; --star:#E3BE47; --sea:#12202D; --sea-line:#4E6A85;
+  --hull:#17222E; --keel:#0A1119; --keel-ink:#EAF0F6; --keel-card:#16212D; --keel-line:#2E4560;
+  --ballast:#2A2412; --ballast-line:#B8952A;
+  --d-ci:#F0A15A; --d-met:#A893F0; --d-sem:#5EBBE0; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --sky:#070B10; --sky-ink:#EAF0F6; --star:#E3BE47; --sea:#12202D; --sea-line:#4E6A85;
+  --hull:#17222E; --keel:#0A1119; --keel-ink:#EAF0F6; --keel-card:#16212D; --keel-line:#2E4560;
+  --ballast:#2A2412; --ballast-line:#B8952A;
+  --d-ci:#F0A15A; --d-met:#A893F0; --d-sem:#5EBBE0; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:20px;padding-block:24px 56px}
+header.top{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:end;margin-bottom:16px}
+@media (max-width:820px){header.top{grid-template-columns:minmax(0,1fr)}.vessel{display:none}}
+h1{font-size:clamp(32px,4.4vw,48px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:72ch}
+.vessel svg{width:100%;height:auto;display:block}
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin:6px 0 12px}
+.seg{display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:7px 12px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.dot.ci{background:var(--d-ci)}.dot.met{background:var(--d-met)}.dot.sem{background:var(--d-sem)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);align-items:center}
+.tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;border-radius:3px;padding:0 4px;border:1px solid currentColor;white-space:nowrap}
+.tag.real{color:var(--permission)}.tag.prop{color:var(--warning)}.tag.demo{color:var(--muted)}
+
+/* SHIP */
+.ship{display:grid;grid-template-columns:170px minmax(0,1fr) 220px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+@media (max-width:980px){.ship{grid-template-columns:minmax(0,1fr)}.ship .lbl{border-right:0!important}}
+.lbl{padding:14px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px}
+.lbl h2{font-size:22px;line-height:1}
+.lbl .m{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lbl p{font-size:12.5px;color:var(--muted);margin-top:4px}
+.zone{padding:12px;min-width:0}
+.grid{display:grid;gap:8px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1180px){.g5{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.g3,.g4,.g5{grid-template-columns:minmax(0,1fr)}}
+/* rows */
+.r-north{background:var(--sky);color:var(--sky-ink)}
+.r-north .lbl{border-color:color-mix(in srgb,var(--sky-ink) 15%,transparent)}
+.r-north .lbl .m,.r-north .lbl p{color:color-mix(in srgb,var(--sky-ink) 70%,transparent)}
+.r-north .lbl h2{color:var(--star)}
+.ns{display:flex;flex-direction:column;gap:10px}
+.ns .stmt{font-family:var(--font-display);font-weight:700;font-size:clamp(20px,2.4vw,27px);line-height:1.1;max-width:44ch}
+.outs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.outs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.out{border:1px solid color-mix(in srgb,var(--star) 55%,transparent);border-radius:8px;padding:8px 10px;font-size:12.5px;transition:opacity .2s;background:transparent;color:inherit;text-align:left;font-family:inherit}
+.out b{display:block;font-size:13.5px;color:var(--star)}
+.out .dots{display:flex;gap:4px;margin-top:6px}
+.r-sup{background:var(--surface)}
+.r-water{background:var(--sea);position:relative}
+.r-water .lbl,.r-water .zone{padding-top:22px}
+.wave{position:absolute;left:0;right:0;top:0;height:14px;display:block;width:100%}
+.r-hull{background:var(--hull)}
+.r-keel{background:var(--keel);color:var(--keel-ink)}
+.r-keel .lbl{border-color:var(--keel-line)}
+.r-keel .lbl .m,.r-keel .lbl p{color:color-mix(in srgb,var(--keel-ink) 70%,transparent)}
+.r-ballast{background:var(--ballast)}
+.r-ballast .lbl h2{color:var(--ink)}
+.sea{background:var(--sea);border-left:1px solid var(--line-soft);padding:12px;display:flex;flex-direction:column;gap:8px}
+@media (max-width:980px){.sea{border-left:0;border-top:1px solid var(--line-soft)}}
+.sea h3{font-size:18px}
+.sea .m{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.blank{background:var(--surface)}
+@media (max-width:980px){.ship>*{grid-column:auto!important;grid-row:auto!important}.blank{display:none}}
+/* component chips */
+.cmp{position:relative;display:flex;flex-direction:column;gap:3px;text-align:left;border:1px solid var(--line);border-radius:8px;padding:8px 10px 8px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;min-width:0;transition:opacity .2s,box-shadow .2s,border-color .2s}
+.cmp .nm{font-weight:600;font-size:13px;line-height:1.25}
+.cmp .rf{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);overflow-wrap:anywhere}
+.cmp .ft{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px}
+.cmp .dots{display:flex;gap:3px}
+.cmp.big{padding:12px}
+.cmp.big .nm{font-family:var(--font-display);font-size:20px;font-weight:700}
+.cmp.big .who{font-size:12px;color:var(--muted)}
+.cmp.big .tabs{font-size:12px;color:var(--ink-soft)}
+.cmp.big.ci{box-shadow:inset 4px 0 0 var(--d-ci)}.cmp.big.met{box-shadow:inset 4px 0 0 var(--d-met)}.cmp.big.sem{box-shadow:inset 4px 0 0 var(--d-sem)}
+.r-keel .cmp{background:var(--keel-card);border-color:var(--keel-line);color:var(--keel-ink)}
+.r-keel .cmp .rf{color:color-mix(in srgb,var(--keel-ink) 65%,transparent)}
+.r-ballast .cmp{border-color:color-mix(in srgb,var(--ballast-line) 60%,var(--line))}
+.cmp.dim{opacity:.22}
+.cmp.on{border-color:var(--hl);box-shadow:0 0 0 2px var(--hl)}
+.cmp.sel{outline:2px dashed var(--ink);outline-offset:2px}
+.r-keel .cmp.sel{outline-color:var(--keel-ink)}
+.step{position:absolute;top:-9px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--hl);color:var(--accent-ink);font:600 11px var(--font-mono);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--surface)}
+/* below */
+.below{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:980px){.below{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:21px;margin-bottom:8px}
+.flow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.flow li button{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;width:100%;text-align:left;border:0;background:transparent;font:inherit;color:inherit;padding:7px 6px;border-radius:6px;cursor:pointer}
+.flow li button:hover,.flow li button[aria-current="true"]{background:color-mix(in srgb,var(--hl) 10%,transparent)}
+.flow .n{width:24px;height:24px;border-radius:12px;background:var(--hl);color:var(--accent-ink);font:600 11.5px var(--font-mono);display:flex;align-items:center;justify-content:center}
+.flow .t{font-size:13.5px}
+.flow .t b{font-weight:600}
+.flow .t small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:13.5px;margin:10px 0 0}
+.kv dt{color:var(--muted);font-size:12px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.threads{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+@media (max-width:1000px){.threads{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.threads{grid-template-columns:minmax(0,1fr)}}
+.thread{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:12px;font-size:13px}
+.thread .hd{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:4px}
+.thread b{display:block;font-size:14px;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tbl-wrap{overflow-x:auto}
+.note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:24px;max-width:96ch}
+/* capability sections */
+.sh{font-size:clamp(24px,3vw,32px);margin:22px 0 4px}
+.sec-dek{color:var(--muted);max-width:86ch;font-size:14.5px;margin-bottom:12px}
+.triad{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;overflow-x:auto}
+.triad svg{display:block;width:100%;min-width:720px;height:auto}
+.triad text{font-family:var(--font-body)}
+.cap-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:900px){.cap-grid{grid-template-columns:minmax(0,1fr)}}
+.capcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.capcard h3{font-size:26px;margin-bottom:2px}
+.capcard .what{font-size:14px;margin:6px 0 10px}
+.capcard ul{margin:0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.capcard.compass{box-shadow:inset 4px 0 0 var(--accent)}
+.capcard.copilot{box-shadow:inset 4px 0 0 var(--star)}
+.linkbtn{border:0;background:none;padding:0;font:inherit;color:var(--accent);cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:2px}
+.ftable td.role{font-size:13px}
+.ftable td.role.none{color:var(--muted)}
+.ftable td .fname{font-weight:600;font-size:14px;display:block}
+.ftable td .fdesc{font-size:12.5px;color:var(--muted)}
+.ftable th.k,.ftable td.k{background:color-mix(in srgb,var(--keel) 7%,transparent)}
+.ftable tr.cur td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.pill{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;border-radius:99px;padding:1px 7px;border:1px solid currentColor;white-space:nowrap}
+.pill.in{color:var(--permission)}.pill.next{color:var(--warning)}
+.showbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 12px var(--font-body);border-radius:6px;padding:4px 8px;cursor:pointer;white-space:nowrap;margin-top:6px}
+.r-bridge{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.cmp.cap .nm{font-family:var(--font-display);font-size:21px;font-weight:700}
+.cmp.cap.compass{box-shadow:inset 4px 0 0 var(--accent)}
+.cmp.cap.copilot{box-shadow:inset 4px 0 0 var(--star)}
+.cmp.cap.compass.on,.cmp.cap.copilot.on{box-shadow:0 0 0 2px var(--hl)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Solution architecture · three Insperity demos on one semantic fabric</div>
+      <h1>Keel and North Star Architecture</h1>
+      <p class="dek">The three demos are not three products. They are three views from the deck of one vessel. Each is held upright by the same keel of governed meaning and ballast of governance, and each steers by the same North Star. Two core capabilities on the bridge, Compass and Copilot, read that keel to create every experiential feature. Start with how the keel enables them, then see each demo’s features, then trace any path through the vessel.</p>
+    </div>
+    <div class="vessel" aria-hidden="true">
+      <svg viewBox="0 0 300 230">
+        <rect x="0" y="118" width="300" height="112" fill="var(--sea)"/>
+        <path d="M0 118 q12.5 -6 25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0 t25 0" fill="none" stroke="var(--sea-line)" stroke-width="2"/>
+        <line x1="150" y1="78" x2="150" y2="24" stroke="var(--ink)" stroke-width="2.5"/>
+        <line x1="150" y1="28" x2="40" y2="30" stroke="var(--star)" stroke-width="2" stroke-dasharray="6 5"/>
+        <polygon points="28,14 31.5,24.5 42.5,24.5 33.6,31 37,41.5 28,35 19,41.5 22.4,31 13.5,24.5 24.5,24.5" fill="var(--star)"/>
+        <rect x="95" y="78" width="110" height="30" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+        <rect x="104" y="86" width="26" height="14" rx="2" fill="var(--d-ci)"/>
+        <rect x="137" y="86" width="26" height="14" rx="2" fill="var(--d-met)"/>
+        <rect x="170" y="86" width="26" height="14" rx="2" fill="var(--d-sem)"/>
+        <polygon points="55,108 245,108 205,168 95,168" fill="var(--keel-line)"/>
+        <polygon points="141,168 159,168 156,206 144,206" fill="var(--keel)"/>
+        <ellipse cx="150" cy="212" rx="34" ry="11" fill="var(--star)"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="var(--muted)">
+          <text x="214" y="96">demos</text><text x="250" y="140">hull</text><text x="166" y="192">keel</text><text x="190" y="216">ballast</text><text x="48" y="12">north star</text>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <h2 class="sh">Keel, Compass, Copilot</h2>
+  <p class="sec-dek">The keel holds meaning. Compass and Copilot hold none of their own: they read it through the hull. Compass is how people find and understand meaning; Copilot is how AI answers and acts on it, and it grounds every phrase through Compass’s index before it speaks.</p>
+  <div class="triad">
+    <svg viewBox="0 0 960 330" role="img" aria-label="Compass and Copilot sit above the hull and keel. Both read concepts, labels, rules and metric cards from the keel through the hull. Copilot grounds every phrase through Compass's index. Both feed the three demos.">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <!-- demos -->
+      <g font-size="13" font-weight="600">
+        <rect x="150" y="12" width="200" height="34" rx="6" fill="var(--surface)" stroke="var(--d-ci)" stroke-width="2"/><text x="250" y="34" text-anchor="middle" fill="var(--ink)">PEO Competitive Graph</text>
+        <rect x="380" y="12" width="200" height="34" rx="6" fill="var(--surface)" stroke="var(--d-met)" stroke-width="2"/><text x="480" y="34" text-anchor="middle" fill="var(--ink)">PEO Metrics Single Source</text>
+        <rect x="610" y="12" width="200" height="34" rx="6" fill="var(--surface)" stroke="var(--d-sem)" stroke-width="2"/><text x="710" y="34" text-anchor="middle" fill="var(--ink)">PEO Semantic Layer</text>
+      </g>
+      <text x="480" y="66" text-anchor="middle" font-size="12" fill="var(--muted)">experiential features</text>
+      <line x1="270" y1="98" x2="270" y2="52" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="690" y1="98" x2="690" y2="52" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+      <!-- compass -->
+      <rect x="110" y="100" width="320" height="86" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="130" y="128" font-size="20" font-weight="700" fill="var(--accent)" font-family="Big Shoulders, Arial Narrow, sans-serif">COMPASS</text>
+      <text x="130" y="150" font-size="13" fill="var(--ink)">Finds and explains meaning</text>
+      <text x="130" y="170" font-size="12" fill="var(--muted)">search · browse by holon · explain this number</text>
+      <!-- copilot -->
+      <rect x="530" y="100" width="320" height="86" rx="8" fill="var(--surface)" stroke="var(--star)" stroke-width="2"/>
+      <text x="550" y="128" font-size="20" font-weight="700" fill="var(--star)" font-family="Big Shoulders, Arial Narrow, sans-serif">COPILOT</text>
+      <text x="550" y="150" font-size="13" fill="var(--ink)">Answers and acts on meaning</text>
+      <text x="550" y="170" font-size="12" fill="var(--muted)">HR360 agent · conversational reporting · M365</text>
+      <!-- copilot grounds through compass -->
+      <line x1="528" y1="143" x2="434" y2="143" stroke="var(--ink-soft)" stroke-width="1.8" marker-end="url(#ah)"/>
+      <text x="481" y="135" text-anchor="middle" font-size="11" fill="var(--ink-soft)">grounds</text>
+      <text x="481" y="160" text-anchor="middle" font-size="11" fill="var(--ink-soft)">through</text>
+      <!-- hull -->
+      <rect x="60" y="212" width="840" height="34" rx="4" fill="var(--hull)" stroke="var(--line)"/>
+      <text x="76" y="234" font-size="12" font-weight="600" fill="var(--ink)">HULL</text>
+      <text x="120" y="234" font-size="12" fill="var(--ink-soft)">grounding (GOV-010) · mapping graph · identity · request decomposition · PEPs · engines · circuit breaker</text>
+      <line x1="270" y1="211" x2="270" y2="190" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="690" y1="211" x2="690" y2="190" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+      <!-- keel -->
+      <rect x="60" y="256" width="840" height="62" rx="4" fill="var(--keel)"/>
+      <text x="76" y="280" font-size="13" font-weight="700" fill="var(--keel-ink)">KEEL · governed meaning</text>
+      <text x="76" y="303" font-size="12" fill="var(--keel-ink)" opacity=".85">holarchy ontology · core entities · SKOS vocabulary · rules register · LKIF + SHACL · metric cards · market holarchy · decision model</text>
+    </svg>
+  </div>
+  <div class="cap-grid">
+    <div class="capcard compass"><span class="eyebrow">Core capability · people-led</span><h3>Compass</h3>
+      <p class="what">Company-wide search and navigation, steering by the North Star. It finds things by meaning, shows how they connect, and explains where every number comes from.</p>
+      <ul><li>Search resolves words to concepts, not keywords</li><li>Browse by holon: domain → context → service → concept</li><li>“Explain this number” down to card, rules, calc and URI</li><li>Shows only what the user’s role and tenant allow</li></ul></div>
+    <div class="capcard copilot"><span class="eyebrow">Core capability · AI-led</span><h3>Copilot</h3>
+      <p class="what">Insperity’s HR360 agent strategy and conversational reporting, with Microsoft 365 Copilot as another front door. It answers, drafts and proposes, but only on grounded meaning.</p>
+      <ul><li>Decomposes every request (GOV-011) before acting</li><li>Grounds each phrase through Compass’s index, or trips the breaker</li><li>Quotes version-pinned numbers with a URI</li><li>Drafts changes; humans approve anything irreversible (GOV-015)</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>What the keel gives each capability</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Keel asset</th><th>Enables Compass to…</th><th>Enables Copilot to…</th></tr></thead>
+      <tbody id="enable"></tbody></table></div>
+  </div>
+
+  <h2 class="sh">Experiential features by demo</h2>
+  <p class="sec-dek">Each feature a director sees is a combination of the three: the keel supplies the meaning, Compass makes it findable and explainable, Copilot makes it conversational and actionable. Features marked <span class="pill next">next</span> are the natural extension on the same keel.</p>
+  <div class="seg" role="group" aria-label="Choose a demo" id="featSel" style="margin-bottom:10px">
+    <button data-f="ci" aria-pressed="true"><span class="dot ci"></span>PEO Competitive Graph</button>
+    <button data-f="met" aria-pressed="false"><span class="dot met"></span>PEO Metrics Single Source</button>
+    <button data-f="sem" aria-pressed="false"><span class="dot sem"></span>PEO Semantic Layer</button>
+  </div>
+  <div class="card" style="padding:0"><div class="tbl-wrap"><table class="ftable">
+    <thead><tr><th>Feature</th><th class="k">Keel provides</th><th>Compass does</th><th>Copilot does</th><th>Status</th></tr></thead>
+    <tbody id="feat"></tbody></table></div></div>
+
+  <h2 class="sh" id="vesselH">The vessel: every component and path</h2>
+  <p class="sec-dek">Pick a demo to number its path through the layers, use “Show on vessel” on any feature above, or click a component for detail.</p>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Trace a demo" id="demoSel">
+      <button data-d="all" aria-pressed="true">Whole vessel</button>
+      <button data-d="ci" aria-pressed="false"><span class="dot ci"></span>PEO Competitive Graph</button>
+      <button data-d="met" aria-pressed="false"><span class="dot met"></span>PEO Metrics Single Source</button>
+      <button data-d="sem" aria-pressed="false"><span class="dot sem"></span>PEO Semantic Layer</button>
+    </div>
+    <div class="legend"><span><span class="tag real">your SSOT</span> from your register / ontology</span><span><span class="tag prop">proposed</span> designed for these demos</span><span><span class="tag demo">simulated</span> stand-in data in the demo</span></div>
+  </div>
+
+  <div class="ship" id="ship">
+    <!-- NORTH STAR -->
+    <div class="lbl r-north"><span class="m">Bearing</span><h2>North Star</h2><p>What every layer is steering toward</p></div>
+    <div class="zone r-north" style="grid-column:span 2">
+      <div class="ns">
+        <p class="stmt">Every client decision, insight and AI answer rests on governed, traceable, unambiguous meaning.</p>
+        <div class="outs" id="outs"></div>
+      </div>
+    </div>
+    <!-- SUPERSTRUCTURE -->
+    <div class="lbl r-sup"><span class="m">Superstructure</span><h2>Experiences</h2><p>What each director sees and uses</p></div>
+    <div class="zone r-sup"><div class="grid g4" data-layer="sup"></div></div>
+    <div class="blank r-sup" style="border-left:1px solid var(--line-soft)"></div>
+    <!-- BRIDGE -->
+    <div class="lbl r-bridge"><span class="m">Bridge</span><h2>Core capabilities</h2><p>Where people and AI steer from</p></div>
+    <div class="zone r-bridge"><div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))" data-layer="bridge"></div></div>
+    <div class="blank r-bridge" style="border-left:1px solid var(--line-soft)"></div>
+    <!-- WATERLINE -->
+    <div class="lbl r-water"><svg class="wave" viewBox="0 0 170 14" preserveAspectRatio="none"><path d="M0 7 q10.6 -6 21.25 0 t21.25 0 t21.25 0 t21.25 0 t21.25 0 t21.25 0 t21.25 0 t21.25 0" fill="none" stroke="var(--sea-line)" stroke-width="2"/></svg><span class="m">Waterline</span><h2>Drift</h2><p>Where the moving world meets the vessel</p></div>
+    <div class="zone r-water"><svg class="wave" viewBox="0 0 800 14" preserveAspectRatio="none"><path d="M0 7 q20 -6 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" fill="none" stroke="var(--sea-line)" stroke-width="2"/></svg><div class="grid g3" data-layer="water"></div></div>
+    <div class="sea" style="grid-row:span 4" id="seaCol"><svg class="wave" viewBox="0 0 220 14" preserveAspectRatio="none" style="position:static;margin:-12px -12px 0;width:calc(100% + 24px)"><path d="M0 7 q11 -6 22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0" fill="none" stroke="var(--sea-line)" stroke-width="2"/></svg><span class="m">The sea</span><h3>Sources that move</h3><p style="font-size:12px;color:var(--muted)">Everything below the waterline sits in moving water; only the hull touches it directly.</p><div class="grid" data-layer="sea"></div></div>
+    <!-- HULL -->
+    <div class="lbl r-hull"><span class="m">Hull · Run-Time</span><h2>Mediation</h2><p>Virtualized graph, AI fabric and compiled policy. Keeps the sea out.</p></div>
+    <div class="zone r-hull"><div class="grid g5" data-layer="hull"></div></div>
+    <!-- KEEL -->
+    <div class="lbl r-keel"><span class="m">Keel · Definition-Time</span><h2>Governed meaning</h2><p>Deterministic semantics, authored once, materialized as graphs</p></div>
+    <div class="zone r-keel"><div class="grid g3" data-layer="keel"></div></div>
+    <!-- BALLAST -->
+    <div class="lbl r-ballast"><span class="m">Ballast</span><h2>Governance</h2><p>The weight that keeps the vessel upright</p></div>
+    <div class="zone r-ballast"><div class="grid g4" data-layer="ballast"></div></div>
+  </div>
+
+  <div class="below">
+    <div class="card" id="flowCard"></div>
+    <div class="card" id="detail" aria-live="polite"></div>
+  </div>
+
+  <h2 style="font-size:24px;margin:24px 0 2px">Where the demos reinforce each other</h2>
+  <p class="dek" style="font-size:14px">Shared layers mean each director’s work shows up in the others’ demos. These are the threads to point out if you meet them in sequence.</p>
+  <div class="threads" id="threads"></div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>From demo to build</h3>
+    <p class="hint" style="font-size:13px;color:var(--muted);margin-bottom:8px">Today each demo is a single self-contained web page with its data embedded. This is what each layer becomes in a real build.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Layer</th><th>In the demos today</th><th>Target build</th></tr></thead>
+      <tbody>
+        <tr><td><b>Superstructure</b></td><td>Three HTML pages, one design system</td><td>Embedded in Insperity’s analytics portal, client admin portal and the Jarvis HR Assistant</td></tr>
+        <tr><td><b>Bridge</b></td><td>Compass behaviors (semantic map, lineage, reverse trace) and Copilot behaviors (AI brief, Ask the fabric) inside each demo</td><td>Compass as enterprise search across Insperity portals; Copilot as the HR360 agent, conversational reporting and Microsoft 365 Copilot through an API or connector, all on one hull</td></tr>
+        <tr><td><b>Waterline</b></td><td>Scripted drift scenarios; dated claims checked for staleness</td><td>Anti-drift agents watching CRM, payroll, leave and survey schemas; scheduled source refresh for CI</td></tr>
+        <tr><td><b>Hull</b></td><td>Query plans, grounding, PEP results and breaker trips simulated in the browser</td><td>Virtual graph over sources, RAG anchor index on canonical URIs, OPA/Rego and dbt engines, MTBH telemetry</td></tr>
+        <tr><td><b>Keel</b></td><td>Your ontology concepts and 142-rule register embedded; 14 MET rules and the market holarchy added</td><td>Ontology, register and metric cards in the SSOT Git repository, compiled to a triple store</td></tr>
+        <tr><td><b>Ballast</b></td><td>Pipeline stages, gates and KGCL records shown as they would run</td><td>GOV-019 pipeline in CI, CODEOWNERS routing, Semantic Governance Council approvals</td></tr>
+      </tbody></table></div>
+  </div>
+
+  <p class="note">Rule IDs, ontology concepts and holon structure come from your SSOT files. MET-001 to MET-015, the competitive market holarchy, the six correspondence-type names and Compass as a named capability are proposed for these demos. Copilot reflects Insperity’s public description of its HR360 agent strategy (Q1 2026 earnings call). Source systems, data volumes and results in the demos are synthetic; competitor facts in the CI demo are from public sources dated through Sept 30, 2026.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DEMO={ci:{name:"PEO Competitive Graph",who:"Director of Competitive Intelligence",color:"var(--d-ci)"},met:{name:"PEO Metrics Single Source",who:"Director of Insights",color:"var(--d-met)"},sem:{name:"PEO Semantic Layer",who:"Director of Data & Analytics",color:"var(--d-sem)"}};
+/* status: real = from your SSOT files, prop = proposed for the demos, demo = simulated stand-in */
+const C=[
+ // superstructure
+ {id:"d-ci",layer:"sup",big:"ci",name:"PEO Competitive Graph",who:"Director of Competitive Intelligence",tabs:"Threat graph · Landscape matrix · AI Circuit Breaker",demos:["ci"],st:"demo",
+  what:"Competitors as holons in a market holon, traced to the Insperity capabilities, segments and claims they pressure; AI-drafted briefs checked claim by claim before they reach a battlecard."},
+ {id:"d-met",layer:"sup",big:"met",name:"PEO Metrics Single Source",who:"Director of Insights",tabs:"Churn question · SSOT register · Dashboard & lineage · Decision trace",demos:["met"],st:"demo",
+  what:"One churn number for four teams; metric rules in your register schema, compiled by GOV-019, traced to immutable URIs, and decisions bound to measured outcomes."},
+ {id:"d-sem",layer:"sup",big:"sem",name:"PEO Semantic Layer",who:"Director of Data & Analytics",tabs:"Semantic map · Ask the fabric · Planned + on-demand · Drift sentinel",demos:["sem"],st:"demo",
+  what:"Holons top-down meet source schemas bottom-up through typed mappings; questions answered through the AI fabric over a virtual graph, with the same policy checks as planned analytics."},
+ {id:"x-future",layer:"sup",name:"Next on the same keel",ref:"Jarvis HR Assistant (IIH) · client admin dashboards · board packs",demos:[],st:"prop",
+  what:"Further experiences that reuse Compass, Copilot and the keel without new definitions. The Jarvis HR Assistant from the Insperity Intelligence Holarchy would be one more Copilot surface on the same URIs and PEPs."},
+ // bridge
+ {id:"x-compass",layer:"bridge",cap:"compass",name:"Compass",ref:"search · browse by holon · explain this number",demos:["ci","met","sem"],st:"prop",
+  what:"Company-wide search and navigation, named for the compass in Insperity’s logo. Finds by meaning through the SKOS vocabulary and RAG anchor index, browses the holarchy, explains every number, and filters by the user’s role and tenant."},
+ {id:"x-copilot",layer:"bridge",cap:"copilot",name:"Copilot",ref:"HR360 agent · conversational reporting · Microsoft 365 Copilot",demos:["ci","met","sem"],st:"prop",
+  what:"Insperity’s copilot and conversational reporting, with Microsoft 365 Copilot reaching the same hull through an API or connector. Decomposes each request, grounds it through Compass, answers or drafts within compiled guardrails, and stops at the Circuit Breaker or Simplex gate."},
+ // waterline
+ {id:"w-fresh",layer:"water",name:"Freshness & staleness checks",ref:"dated claims · source authority tiers",demos:["ci"],st:"demo",
+  what:"External facts drift too. Every competitor claim carries a source date and authority tier; Justworks PEO Plus at $109 is caught as stale because it rose to $124 on June 1, 2026."},
+ {id:"w-drift",layer:"water",name:"Anti-drift lineage agent",ref:"GOV-006",demos:["sem"],st:"real",
+  what:"Watches every correspondence between canonical concepts and physical implementations, and raises a change the moment a source field moves under a mapping."},
+ {id:"w-diff",layer:"water",name:"Schema Diff Classifier",ref:"MAJOR / MINOR / PATCH · privacy hold",demos:["sem"],st:"real",
+  what:"From your compliance dashboard’s component inventory. Grades each source change; in the demo an additive survey column is escalated to a privacy hold because it breaks anonymity."},
+ // sea
+ {id:"s-ext",layer:"sea",name:"Public market sources",ref:"SEC filings · earnings calls · pricing reviews",demos:["ci"],st:"real",
+  what:"Real, dated public sources for ADP, TriNet, Paychex, Justworks, Rippling and Insperity, through Sept 30, 2026."},
+ {id:"s-crm",layer:"sea",name:"CRM",ref:"Account · Case",demos:["met","sem"],st:"demo",what:"Client segment, health score, at-risk flag, escalation tier and root cause (synthetic field names)."},
+ {id:"s-pay",layer:"sea",name:"Payroll ledger",ref:"pay_run_line · worker",demos:["met","sem"],st:"demo",what:"System of record for paid worksite employees, last payroll date, overtime and work state."},
+ {id:"s-leave",layer:"sea",name:"Time & leave",ref:"eligibility · leave_case",demos:["sem"],st:"demo",what:"FMLA hours and intermittent leave flags."},
+ {id:"s-survey",layer:"sea",name:"Survey platform",ref:"post-case surveys · culture pulse",demos:["met","sem"],st:"demo",what:"Service satisfaction responses and the anonymous Respect & Inclusion pulse."},
+ {id:"s-ana",layer:"sea",name:"Analytics & AI stores",ref:"dbt · LookML · Neo4j · vector store",demos:["sem"],st:"demo",what:"Existing models and stores are mapped too, so the fabric reuses them instead of rebuilding them."},
+ // hull
+ {id:"h-rcb",layer:"hull",name:"AI fabric · request decomposition",ref:"GOV-011 RCB",demos:["sem"],st:"real",what:"Breaks a question into WHO, WHAT, WHEN, WHERE and WHY before anything executes."},
+ {id:"h-ground",layer:"hull",name:"Grounding · RAG anchor index",ref:"GOV-010",demos:["ci","sem"],st:"real",what:"Every phrase or claim must resolve to a canonical URI or a dated source. The CI demo grounds claims to sources; the semantic layer grounds phrases to ontology URIs."},
+ {id:"h-map",layer:"hull",name:"Persistent mapping graph",ref:"GOV-006 · 6 correspondence types",demos:["sem"],st:"real",what:"Typed, scored, owned correspondences between holon concepts and source fields. The six type names (four SKOS match relations plus derivedFrom and partOf) are proposed."},
+ {id:"h-id",layer:"hull",name:"Identity & URI registry",ref:"GOV-007",demos:["met","sem"],st:"real",what:"One Enterprise Entity ID per client and worker. It lets MET-002 tell a merger from a loss, and lets the fabric join CRM to payroll on meaning."},
+ {id:"h-vg",layer:"hull",name:"Virtual graph",ref:"SPARQL rewrite · source pushdown",demos:["sem"],st:"prop",what:"On-demand questions are answered in place; only aggregates leave the source, and existing planned models are reused."},
+ {id:"h-pep",layer:"hull",name:"Policy enforcement points",ref:"GOV-012 · TEC-001 · TEC-005",demos:["met","sem"],st:"real",what:"The same checks govern transactions, dashboards and AI answers: tenant isolation, data classification, small-cut suppression."},
+ {id:"h-engA",layer:"hull",name:"Engine A · dbt / SQL",ref:"GOV-020 · GOV-024",demos:["met","sem"],st:"real",what:"Batch target for compiled metric rules: fct_client_retention, fct_wse_monthly, fct_service_satisfaction. Zero graph latency at run time."},
+ {id:"h-engB",layer:"hull",name:"Engine B · OPA / Rego",ref:"GOV-020 · MET-013 · MET-014",demos:["met","sem"],st:"real",what:"Real-time target: suppresses people-data cuts under k = 5 and rejects decisions with no measurable outcome."},
+ {id:"h-cb",layer:"hull",name:"AI Circuit Breaker · MTBH",ref:"GOV-014 · GOV-015 · GOV-021",demos:["ci","sem"],st:"real",what:"Trips when failures or ungrounded phrases exceed the threshold. In CI it holds an AI brief from the battlecard; in the fabric it refuses to answer a question it cannot ground."},
+ {id:"h-ret",layer:"hull",name:"Decision intake & measurement",ref:"Decision Modeling & Measurement",demos:["met","ci"],st:"prop",what:"Records each decision with its insights, scored options and committed outcomes, then schedules the measurement checkpoints."},
+ // keel
+ {id:"k-onto",layer:"keel",name:"HR Services ontology · holarchy",ref:"8 domains · 17 contexts · 74 services · 147 concepts",demos:["met","sem"],st:"real",what:"Your HSGA business model ontology: the top-down meaning every mapping, metric card and question resolves to."},
+ {id:"k-core",layer:"keel",name:"Core entity model",ref:"GOV-004 · isp-core",demos:["met","sem"],st:"real",what:"ClientCompany, Worker, Jurisdiction, EmploymentType, StatutoryStandard. Every domain federates to these via owl:imports (GOV-005)."},
+ {id:"k-skos",layer:"keel",name:"SKOS vocabulary",ref:"prefLabel · altLabel · broader / narrower",demos:["met","sem","ci"],st:"real",what:"From your compliance dashboard’s SKOS Vocabulary: preferred and alternate labels so many words resolve to one concept. Compass ranks by it; Copilot grounds with it."},
+ {id:"k-reg",layer:"keel",name:"SSOT rules register",ref:"142 rules + MET-001…015",demos:["met","sem"],st:"real",what:"Your 142-rule register in its 14-field schema, extended with proposed Analytics & Measurement rules for metrics, privacy and decisions."},
+ {id:"k-shapes",layer:"keel",name:"LKIF norms + SHACL shapes",ref:"GOV-017 · AnonymousNotAttributableShape",demos:["met","sem"],st:"real",what:"Each rule as a deontic statement plus a structural shape. The ontology’s privacy shapes block the individual-level inclusion query."},
+ {id:"k-cards",layer:"keel",name:"Metric Definition Cards + Calc Library",ref:"hr:ConceptMetricDefinitionCard · ALN-CALC",demos:["met","sem"],st:"real",what:"Purpose, formula, owner, granularity and privacy class for each metric, with formulas governed in the Calc Library. The three new cards and calc IDs are proposed."},
+ {id:"k-mkt",layer:"keel",name:"Competitive market holarchy",ref:"market → competitor → product line → feature",demos:["ci"],st:"prop",what:"A materialized graph of competitor holons with typed threat and opening edges to Insperity capabilities, segments and positioning claims. Proposed as an isp-ci namespace federated to isp-core."},
+ {id:"k-dec",layer:"keel",name:"Decision model",ref:"criteria weights · decision records",demos:["met"],st:"prop",what:"The Accelerator Console’s weighted criteria (outcome 35%, risk 25%, time 20%, build-vs-buy 20%) and decision records that bind outcomes to metric cards."},
+ {id:"k-src",layer:"keel",name:"Source authority model",ref:"filing › company › transcript › review › tracker",demos:["ci"],st:"prop",what:"Authority tiers for external sources, used by the Circuit Breaker to weigh conflicting claims, such as a tracker’s $25B Rippling valuation against its $16.8B priced round."},
+ // ballast
+ {id:"b-sep",layer:"ballast",name:"Definition-Time / Run-Time separation",ref:"GOV-001",demos:["ci","met","sem"],st:"real",what:"Truth is authored once in RDF/OWL/LKIF/SHACL and compiled for execution. Every demo shows the definition behind what runs."},
+ {id:"b-pipe",layer:"ballast",name:"6-stage compile pipeline",ref:"GOV-019",demos:["met","sem"],st:"real",what:"Shape Parser, Constraint Extractor, Harmonization Check, Target Mapper, Policy Generator, KGCL Version & Publish."},
+ {id:"b-prec",layer:"ballast",name:"Most-protective-rule precedence",ref:"GOV-009 · GOV-008",demos:["met","sem"],st:"real",what:"Why switching off MET-013 is rejected at Harmonization, and why privacy shapes override an analyst’s question."},
+ {id:"b-gates",layer:"ballast",name:"Lifecycle gates + council",ref:"GOV-003 · GOV-002 · CODEOWNERS",demos:["met","sem"],st:"real",what:"DEV, STG, PRD promotion with Semantic Governance Council approval; remaps from the drift sentinel are routed to the owning team."},
+ {id:"b-prov",layer:"ballast",name:"Provenance & immutable URIs",ref:"GOV-018 KGCL · GOV-022",demos:["ci","met","sem"],st:"real",what:"WHO, WHAT, WHEN, WHERE and WHY on every change, and a URI on every number or answer that leads back to its definition. CI cites a dated source on every cleared claim."},
+ {id:"b-prop",layer:"ballast",name:"SSOT propagation",ref:"GOV-023",demos:["met"],st:"real",what:"Change one canonical triple and every downstream engine and consumer updates together: the reason four churn numbers become one."},
+ {id:"b-cov",layer:"ballast",name:"Coverage & closure checks",ref:"Ontology Closure Checker · Concept Search Agent",demos:["sem"],st:"real",what:"From your component inventory: fail the build if a term has no path to a core root, and find near-duplicates before a new concept is minted."},
+ {id:"b-hitl",layer:"ballast",name:"Human-in-the-loop gate",ref:"GOV-015 Simplex Action Gate",demos:["ci","met"],st:"real",what:"Nothing irreversible or published happens on a model’s say-so: AI briefs are held, rule changes wait for approval."}
+];
+const BY=Object.fromEntries(C.map(c=>[c.id,c]));
+const OUTS=[
+ {t:"Trustworthy AI",d:"Answers grounded or refused, never guessed",demos:["ci","sem"]},
+ {t:"Drift-proof integration",d:"Source changes caught before numbers break",demos:["sem","ci"]},
+ {t:"Audit-grade lineage",d:"Every number traced to its definition",demos:["met","sem"]},
+ {t:"Weeks, not months",d:"New questions reuse the keel instead of rebuilding",demos:["met","sem"]}
+];
+const FLOW={
+ ci:[["s-ext","Collect dated public facts","filings, earnings calls, pricing reviews with authority tier"],["k-mkt","Materialize the market holarchy","competitors as holons inside the market holon"],["d-ci","Trace threats and roll up","feature → product line → competitor → market"],["x-compass","Navigate the market by holon","click a competitor or reverse-trace from Insperity"],["k-src","Weigh sources by authority","filing beats tracker"],["x-copilot","Draft a competitor brief","AI-written; untrusted until checked"],["h-ground","Ground each AI-drafted claim","claim → dated source"],["w-fresh","Check freshness","Justworks $109 → $124 caught as stale"],["h-cb","Trip the Circuit Breaker","failure rate over threshold holds the draft"],["b-hitl","Hold for human review","only cleared claims move on"],["b-prov","Publish with citations","every battlecard line cites its source"],["h-ret","Feed the decision trace","becomes insight I-4 in the Insights demo"]],
+ met:[["k-reg","Author MET rules in your register schema","MET-001…014, 14 fields"],["k-cards","Define metric cards and calcs","client-retention v2.1 and two more"],["k-shapes","Express rules as LKIF + SHACL","canonical Definition-Time form"],["b-pipe","Compile through GOV-019","six stages"],["b-prec","Harmonize against precedence","switching off MET-013 is rejected"],["b-gates","Promote DEV → STG → PRD","council approval"],["h-engA","Run Engine A models","dbt / SQL, zero graph latency"],["h-engB","Run Engine B policy","k ≥ 5 suppression, MET-014 intake"],["h-id","Resolve identities","transfers vs losses via GOV-007"],["b-prop","Propagate to every consumer","four churn numbers become one"],["d-met","Show the dashboard","company → segment → client"],["x-compass","Explain any number","card, rules, calc, model, URI"],["h-ret","Bind decisions to outcomes","the HRScale decision fails MET-014"],["x-copilot","Answer churn questions (next)","Copilot as a fifth consumer of v2.1"]],
+ sem:[["k-onto","Start top-down from the holarchy","domain → context → service → concept"],["k-core","Anchor to core entities","isp-core via GOV-004"],["k-skos","Resolve vocabulary","churn, attrition, client loss → one concept"],["s-crm","Lift source schemas bottom-up","CRM, payroll, leave, survey, analytics stores"],["h-map","Record typed correspondences","exactMatch … partOf, scored and owned"],["h-id","Resolve identities across silos","Account.Id ↔ client_id"],["x-compass","Navigate the semantic map","top-down and bottom-up"],["x-copilot","Take a question","conversational reporting"],["h-rcb","Decompose the question","WHO / WHAT / WHEN / WHERE / WHY"],["h-ground","Ground every phrase through Compass","URI or breaker"],["h-vg","Query in place","SPARQL pushdown; reuse Engine A models"],["h-pep","Enforce policy","PEPs + ontology privacy shapes"],["h-cb","Refuse what can’t be grounded","“quantum payroll module”"],["d-sem","Return a governed answer","provisional, with provenance"],["b-pipe","Promote recurring questions","on-demand → MET-015 planned metric"],["w-drift","Watch for drift","backup demo: rename, widen, privacy hold"]]
+};
+const THREADS=[
+ {from:"ci",to:"met",t:"CI becomes an insight",d:"The competitive threat score on Growing SMB is insight I-4 in the decision to prioritize that segment."},
+ {from:"met",to:"sem",t:"Planned models serve on-demand questions",d:"The fabric reuses Engine A’s compiled models instead of rescanning the payroll ledger."},
+ {from:"sem",to:"met",t:"Questions become metrics",d:"A question asked 14 times by 6 teams is promoted to MET-015 through the same GOV-019 pipeline."},
+ {from:"ci",to:"sem",t:"One breaker, two fabrics",d:"The same MTBH Circuit Breaker holds a hallucinated competitor fact and refuses an ungrounded data question."}
+];
+// render outcomes
+$("outs").innerHTML=OUTS.map((o,i)=>`<div class="out" data-o="${i}"><b>${o.t}</b>${o.d}<div class="dots">${o.demos.map(d=>`<span class="dot ${d}" title="${DEMO[d].name}"></span>`).join("")}</div></div>`).join("");
+// render components
+const tagHtml=s=>s==="real"?'<span class="tag real">your SSOT</span>':s==="prop"?'<span class="tag prop">proposed</span>':'<span class="tag demo">simulated</span>';
+document.querySelectorAll("[data-layer]").forEach(g=>{const L=g.dataset.layer;
+  g.innerHTML=C.filter(c=>c.layer===L).map(c=>c.cap
+   ?`<button class="cmp cap ${c.cap}" data-c="${c.id}" id="c-${c.id}"><span class="nm">${esc(c.name)}</span><span class="rf">${esc(c.ref)}</span><span class="ft"><span class="dots">${c.demos.map(d=>`<span class="dot ${d}"></span>`).join("")}</span>${tagHtml(c.st)}</span></button>`
+   :c.big
+   ?`<button class="cmp big ${c.big}" data-c="${c.id}" id="c-${c.id}"><span class="nm">${esc(c.name)}</span><span class="who">${esc(c.who)}</span><span class="tabs">${esc(c.tabs)}</span></button>`
+   :`<button class="cmp" data-c="${c.id}" id="c-${c.id}"><span class="nm">${esc(c.name)}</span><span class="rf">${esc(c.ref)}</span><span class="ft"><span class="dots">${c.demos.map(d=>`<span class="dot ${d}"></span>`).join("")}</span>${tagHtml(c.st)}</span></button>`).join("")});
+let cur="all",selC="d-met",featHL=null;
+function render(){
+  if(featHL)return renderFeat();
+  const steps={};if(cur!=="all")FLOW[cur].forEach(([id],i)=>{(steps[id]=steps[id]||[]).push(i+1)});
+  // sea column for the semantic flow uses all internal sources
+  if(cur==="sem")["s-pay","s-leave","s-survey","s-ana"].forEach(id=>{steps[id]=steps[id]||steps["s-crm"]});
+  document.documentElement.style.setProperty("--hl",cur==="all"?"var(--accent)":DEMO[cur].color);
+  C.forEach(c=>{const el=$("c-"+c.id);el.querySelectorAll(".step").forEach(s=>s.remove());
+    const used=cur==="all"||c.demos.includes(cur);
+    el.classList.toggle("dim",!used);el.classList.toggle("on",cur!=="all"&&!!steps[c.id]);el.classList.toggle("sel",c.id===selC);
+    if(cur!=="all"&&steps[c.id])el.insertAdjacentHTML("beforeend",`<span class="step">${steps[c.id].join(", ")}</span>`)});
+  document.querySelectorAll(".out").forEach(o=>{o.style.opacity=cur==="all"||OUTS[+o.dataset.o].demos.includes(cur)?1:.3});
+  // flow card
+  if(cur==="all"){
+    const n={ci:0,met:0,sem:0};C.forEach(c=>c.demos.forEach(d=>n[d]++));
+    const shared=C.filter(c=>c.demos.length>=2&&!c.big).length;
+    $("flowCard").innerHTML=`<h3>One vessel, three views</h3><p style="font-size:14px">${C.length} components across six layers. ${shared} are shared by two or more demos, which is the point: each new experience is mostly reuse of the hull, keel and ballast.</p>
+     <dl class="kv">${Object.entries(DEMO).map(([k,d])=>`<dt><span class="dot ${k}"></span></dt><dd><b>${d.name}</b> · ${d.who}<br><span style="color:var(--muted);font-size:12.5px">uses ${n[k]} components · ${FLOW[k].length}-step path</span></dd>`).join("")}</dl>
+     <p style="font-size:13px;color:var(--muted);margin-top:12px">Choose a demo above to see its numbered path through the layers.</p>`;
+  } else {
+    $("flowCard").innerHTML=`<h3><span class="dot ${cur}" style="width:12px;height:12px"></span> ${DEMO[cur].name}</h3><p style="font-size:13px;color:var(--muted);margin-bottom:8px">${DEMO[cur].who} · path through the vessel</p>
+     <ol class="flow">${FLOW[cur].map(([id,t,s],i)=>`<li><button data-go="${id}" aria-current="${id===selC}"><span class="n">${i+1}</span><span class="t"><b>${esc(t)}</b><small>${esc(BY[id].name)} · ${esc(s)}</small></span></button></li>`).join("")}</ol>`;
+    $("flowCard").querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{selC=b.dataset.go;render();$("c-"+selC).scrollIntoView({block:"nearest",behavior:"smooth"})}));
+  }
+  detail();
+}
+const LAYERS={sup:"Superstructure · experiences",bridge:"Bridge · core capabilities",water:"Waterline · drift",sea:"The sea · sources",hull:"Hull · mediation (Run-Time)",keel:"Keel · governed meaning (Definition-Time)",ballast:"Ballast · governance"};
+function detail(){const c=BY[selC];
+  $("detail").innerHTML=`<div class="eyebrow">${LAYERS[c.layer]}</div><h3 style="margin:4px 0 6px">${esc(c.name)}</h3>${c.big?"":`<p class="mono" style="font-size:12px;color:var(--muted)">${esc(c.ref)}</p>`}
+   <p style="font-size:14px;margin-top:8px">${esc(c.what)}</p>
+   <dl class="kv"><dt>Used by</dt><dd>${c.demos.length?c.demos.map(d=>`<span class="dot ${d}"></span> ${DEMO[d].name}`).join("<br>"):"Future experiences"}</dd>
+   <dt>Status</dt><dd>${tagHtml(c.st)} ${c.st==="real"?"Defined in your SSOT files":c.st==="prop"?"Designed for these demos; not yet in your SSOT":"Stand-in data inside the demo"}</dd>
+   ${Object.keys(FLOW).filter(d=>FLOW[d].some(f=>f[0]===c.id)).map(d=>`<dt>Step</dt><dd>${FLOW[d].map((f,i)=>f[0]===c.id?`${i+1}. ${esc(f[1])}`:null).filter(Boolean).join("; ")} <span class="dot ${d}"></span></dd>`).join("")}</dl>`;
+}
+document.querySelectorAll(".cmp").forEach(b=>b.addEventListener("click",()=>{selC=b.dataset.c;if(featHL){renderFeat();return}
+  const c=BY[selC];if(c.big&&cur==="all"){cur=c.big;$("demoSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.d===cur))}render()}));
+$("demoSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;cur=b.dataset.d;featHL=null;
+  $("demoSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(cur!=="all")selC=FLOW[cur][0][0];render()});
+$("threads").innerHTML=THREADS.map(t=>`<div class="thread"><div class="hd"><span class="dot ${t.from}"></span>${DEMO[t.from].name.replace("PEO ","")} → <span class="dot ${t.to}"></span>${DEMO[t.to].name.replace("PEO ","")}</div><b>${esc(t.t)}</b>${esc(t.d)}</div>`).join("");
+
+/* ===== Keel → Compass + Copilot ===== */
+const ENABLE=[
+ [["k-onto"],"Holarchy ontology","Browse by domain, context, service and concept; rank results by concept, not keyword","Use the holon path to decide which domain rules and owners apply before answering"],
+ [["k-core","h-id"],"Core entities + identity registry","Show one result per real client or worker, not one per system","Join CRM to payroll on meaning, not matching strings"],
+ [["k-skos"],"SKOS vocabulary","Land “churn”, “attrition” and “client loss” on one concept","Resolve the user’s own words to canonical URIs"],
+ [["k-reg"],"Rules register (142 + MET)","Show which rules govern anything you find","Know which rules bound its answer"],
+ [["k-shapes"],"LKIF norms + SHACL shapes","Hide what the user may not see","Decide what an answer may say, and refuse what it may not"],
+ [["k-cards"],"Metric cards + Calc Library","Explain any number down to formula, owner and version","Quote version-pinned numbers with a URI"],
+ [["k-mkt","k-src"],"Market holarchy + source authority","Navigate competitors and the threats they pose","Weigh competitor claims by source authority and date"],
+ [["k-dec"],"Decision model","Trace decisions back to insights and forward to outcomes","Check a decision is measurable before recording it"]
+];
+$("enable").innerHTML=ENABLE.map(([ids,n,c,p])=>`<tr><td><button class="linkbtn" data-ids="${ids.join(",")}">${esc(n)}</button></td><td>${esc(c)}</td><td>${esc(p)}</td></tr>`).join("");
+$("enable").addEventListener("click",e=>{const b=e.target.closest("[data-ids]");if(!b)return;featHL={demo:null,ids:b.dataset.ids.split(","),title:b.textContent,desc:"Keel asset and what it enables"};selC=featHL.ids[0];renderFeat();$("vesselH").scrollIntoView({behavior:"smooth"})});
+const FEAT={
+ci:[
+ ["Threat trace","Click a competitor to see which Insperity capabilities, segments and claims it pressures.","Market holarchy: competitors, product lines and features as holons with typed threat edges","Navigates the graph by holon; reverse-traces from any Insperity node","","in",["k-mkt","x-compass","d-ci"]],
+ ["Market roll-up","Exposure and pressure scores at market level.","Holon nesting lets feature-level facts roll up without rewriting","Shows where exposure concentrates and why","","in",["k-mkt","x-compass","b-sep"]],
+ ["Landscape matrix","The same facts as the familiar table, every cell cited.","Source authority model and dated sources","Links every cell to its source and date","","in",["k-src","s-ext","b-prov","x-compass"]],
+ ["AI competitor brief","An AI-drafted brief on one competitor.","Market facts and authority tiers as ground truth","Finds the dated source behind each claim","Drafts the brief","in",["x-copilot","x-compass","h-ground","k-src"]],
+ ["Circuit Breaker & battlecard","Claims checked, MTBH measured, only cleared claims released.","Freshness and authority rules decide pass, stale, held or failed","Attaches citations to every cleared line","Draft held when the failure rate passes the threshold","in",["h-cb","w-fresh","k-src","b-hitl","b-prov","x-copilot","x-compass"]],
+ ["Ask about a competitor","“How does Rippling price PEO?” answered in chat.","The same market holarchy and authority model","Grounds “Rippling” and “PEO pricing” to holons","Answers with citations, or refuses","next",["x-copilot","x-compass","h-ground","h-cb","k-mkt","k-skos"]]],
+met:[
+ ["One churn number","Four team definitions collapse to 11.5%.","MET-001–005 and the client-retention card, authored once","Names each old difference as its own governed metric","","in",["k-reg","k-cards","b-prop","h-engA","x-compass"]],
+ ["Register browse & change preview","Rules, inherited policy, and the effect of switching one off.","Your register schema, LKIF + SHACL, GOV-009 precedence","Browses MET rules and the policy rules they inherit","Next: drafts the KGCL change record and ORSD","in",["k-reg","k-shapes","b-pipe","b-prec","b-gates","x-compass"]],
+ ["Dashboard drill & lineage","Company → segment → client, with lineage on every tile.","Holarchy levels, metric cards, immutable URIs","“Explain this number”: card, rules, calc, model, URI","","in",["k-onto","k-cards","h-engA","h-id","b-prov","x-compass"]],
+ ["Privacy suppression","Small cuts suppressed; MET-013 can’t be switched off.","MET-013 derived from TEC-006 under GOV-009","Hides cuts under k = 5 in every view","Cannot be talked into revealing a suppressed cut","in",["k-shapes","h-engB","b-prec","x-compass","x-copilot"]],
+ ["Decision trace","Insights → scored options → outcomes → measured results.","Decision model and MET-014","Traces which insights informed each decision","Next: checks a new decision for a measurable outcome at intake","in",["k-dec","h-ret","h-engB","x-compass"]],
+ ["Conversational reporting","“What was churn last quarter, and why?”","client-retention v2.1 and its rules","Resolves “churn” to the one definition","Answers with the number, version and URI","next",["x-copilot","x-compass","k-skos","k-cards","h-engA","b-prov"]]],
+sem:[
+ ["Semantic map","Holons top-down meet source schemas bottom-up.","Ontology holarchy, core entities, SKOS labels","Navigates both directions; flags gaps and near-misses","","in",["k-onto","k-core","k-skos","h-map","h-id","x-compass"]],
+ ["Ask the fabric","A plain-language question answered across CRM, payroll and leave.","Concepts and URIs to ground every phrase","Grounds each phrase through the RAG anchor index","Decomposes the question, queries in place, answers","in",["x-copilot","x-compass","k-onto","k-skos","h-rcb","h-ground","h-vg","h-pep"]],
+ ["Privacy block & safe alternative","Individual inclusion scores refused; a team view offered.","AnonymousNotAttributableShape and k ≥ 5","Offers the nearest allowed view","Refuses the individual-level request","in",["k-shapes","h-pep","x-copilot","x-compass"]],
+ ["Ungrounded refusal","“Quantum payroll module” trips the breaker.","No concept exists, so nothing can be grounded","Suggests the nearest real concepts","Trips the breaker instead of guessing","in",["h-cb","h-ground","k-skos","x-copilot","x-compass"]],
+ ["Planned + on-demand promotion","A recurring question becomes MET-015.","A new metric card through GOV-019","Shows which questions recur across teams","Drafts the card from the on-demand query","in",["k-cards","b-pipe","x-copilot","x-compass"]],
+ ["Drift sentinel","A source change traced up the holarchy before numbers break.","The mappings and concepts that need repair","Shows the impact path up the holarchy","Proposes the remap for human approval","in",["w-drift","w-diff","k-onto","b-cov","b-gates","x-compass","x-copilot"]]]
+};
+let fd="ci",fi=-1;
+function featRender(){
+  $("feat").innerHTML=FEAT[fd].map((f,i)=>`<tr class="${i===fi?"cur":""}"><td><span class="fname">${esc(f[0])}</span><span class="fdesc">${esc(f[1])}</span><br><button class="showbtn" data-fi="${i}">Show on vessel</button></td><td class="role k">${esc(f[2])}</td><td class="role ${f[3]?"":"none"}">${f[3]?esc(f[3]):"—"}</td><td class="role ${f[4]?"":"none"}">${f[4]?esc(f[4]):"—"}</td><td><span class="pill ${f[5]}">${f[5]==="in"?"in demo":"next"}</span></td></tr>`).join("");
+}
+$("featSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;fd=b.dataset.f;fi=-1;$("featSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));featRender()});
+$("feat").addEventListener("click",e=>{const b=e.target.closest("[data-fi]");if(!b)return;fi=+b.dataset.fi;const f=FEAT[fd][fi];
+  featHL={demo:fd,ids:f[6],title:f[0],desc:f[1],roles:[f[2],f[3],f[4]]};selC=f[6][0];featRender();
+  cur=fd;$("demoSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.d===cur));
+  renderFeat();$("vesselH").scrollIntoView({behavior:"smooth"})});
+function renderFeat(){
+  const ids=new Set(featHL.ids);
+  document.documentElement.style.setProperty("--hl",featHL.demo?DEMO[featHL.demo].color:"var(--accent)");
+  C.forEach(c=>{const el=$("c-"+c.id);el.querySelectorAll(".step").forEach(s=>s.remove());
+    const on=ids.has(c.id)||(featHL.demo&&c.big===featHL.demo);
+    el.classList.toggle("dim",!on);el.classList.toggle("on",on);el.classList.toggle("sel",c.id===selC)});
+  document.querySelectorAll(".out").forEach(o=>{o.style.opacity=!featHL.demo||OUTS[+o.dataset.o].demos.includes(featHL.demo)?1:.3});
+  const r=featHL.roles;
+  $("flowCard").innerHTML=`<div class="eyebrow">${featHL.demo?`<span class="dot ${featHL.demo}"></span> ${DEMO[featHL.demo].name} · feature`:"Keel asset"}</div><h3 style="margin:4px 0 6px">${esc(featHL.title)}</h3><p style="font-size:14px">${esc(featHL.desc)}</p>
+   ${r?`<dl class="kv"><dt>Keel</dt><dd>${esc(r[0])}</dd><dt>Compass</dt><dd>${r[1]?esc(r[1]):"—"}</dd><dt>Copilot</dt><dd>${r[2]?esc(r[2]):"—"}</dd></dl>`:""}
+   <div class="sec-label" style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px">Components lit on the vessel</div>
+   <ul class="flow">${featHL.ids.map(id=>`<li><button data-go="${id}" aria-current="${id===selC}"><span class="n">•</span><span class="t"><b>${esc(BY[id].name)}</b><small>${esc(LAYERS[BY[id].layer])}</small></span></button></li>`).join("")}</ul>
+   <button class="showbtn" id="clearFeat" style="margin-top:10px">Clear and show the whole vessel</button>`;
+  $("flowCard").querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{selC=b.dataset.go;renderFeat();$("c-"+selC).scrollIntoView({block:"nearest",behavior:"smooth"})}));
+  $("clearFeat").addEventListener("click",()=>{featHL=null;fi=-1;featRender();cur="all";$("demoSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.d==="all"));render()});
+  detail();
+}
+featRender();
+render();
+})();
+</script>

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelag38",
+  "functions": [
+    {
+      "name": "ssot_propose_change",
+      "description": "Open a Draft change request on a rule, constraint or calc in the SSOT Editor. Never releases anything."
+    },
+    {
+      "name": "simplex_request_approval",
+      "description": "Ask a human to approve a binding or irreversible action. Returns a pending approval ID; nothing executes until approved."
+    },
+    {
+      "name": "simplex_status",
+      "description": "Get the status of an approval request."
+    },
+    {
+      "name": "run_action_proposer",
+      "description": "Ask the hosted Action Proposer (AG-38) to do its job: Which action to propose to a human owner. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/AG-38",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "ssot_propose_change",
+              "title": "Ssot propose change",
+              "description": "Open a Draft change request on a rule, constraint or calc in the SSOT Editor. Never releases anything.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "target_id": {
+                    "type": "string",
+                    "description": "ID of the rule, constraint or calc"
+                  },
+                  "kgcl": {
+                    "type": "string",
+                    "description": "KGCL change statements"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Why the change is needed"
+                  }
+                },
+                "required": [
+                  "target_id",
+                  "kgcl",
+                  "reason"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "simplex_request_approval",
+              "title": "Simplex request approval",
+              "description": "Ask a human to approve a binding or irreversible action. Returns a pending approval ID; nothing executes until approved.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "description": "Action to approve"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "description": "Exact payload that would execute"
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "description": "Why the action is proposed"
+                  }
+                },
+                "required": [
+                  "action",
+                  "payload",
+                  "rationale"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": false,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "simplex_status",
+              "title": "Simplex status",
+              "description": "Get the status of an approval request.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "approval_id": {
+                    "type": "string",
+                    "description": "Approval ID"
+                  }
+                },
+                "required": [
+                  "approval_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "run_action_proposer",
+              "title": "Run Action Proposer",
+              "description": "Ask the hosted Action Proposer (AG-38) to do its job: Which action to propose to a human owner. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "string",
+                    "description": "What you want the agent to do, in plain words"
+                  },
+                  "context": {
+                    "type": "object",
+                    "description": "Optional context: persona, job step, prospect URI, period"
+                  }
+                },
+                "required": [
+                  "request"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "ssot_propose_change",
+        "simplex_request_approval",
+        "simplex_status",
+        "run_action_proposer"
+      ]
+    }
+  ]
+}

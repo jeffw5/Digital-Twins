@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEO Client Personas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="common.css">
+<style>
+.personas{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.persona{padding:16px;display:grid;gap:12px;align-content:start;scroll-margin-top:16px}
+.persona.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.persona .hd{display:flex;align-items:center;gap:8px}
+.persona dl{display:grid;grid-template-columns:76px 1fr;gap:4px 10px;margin:0;font-size:12.5px}
+.persona dt{color:var(--ink-3);font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.persona dd{margin:0;color:var(--ink-2)}
+.persona ul{margin:0;padding-left:16px;color:var(--ink-2);font-size:12.5px}
+.persona .ft{display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid var(--rule-2);padding-top:10px}
+.jl{display:grid;gap:2px}
+.jl a{display:grid;grid-template-columns:auto 1fr auto;gap:8px;font-size:12.5px;color:var(--ink);text-decoration:none;padding:3px 6px;border-radius:4px;align-items:baseline}
+.jl a:hover{background:var(--accent-soft)}
+.jl a.part{color:var(--ink-2)}
+.tm{display:grid;grid-template-columns:minmax(0,150px) 1fr 24px;gap:3px 8px;align-items:center;font-size:12px}
+.tm a{color:var(--ink-2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm a:hover{color:var(--accent)}
+.tm .b i{display:block;height:8px;background:var(--h3);border-radius:0 4px 4px 0}
+.tm .mono{text-align:right;color:var(--ink-2)}
+table.pt th,table.pt td{padding:6px 6px;font-size:12px;border-bottom:1px solid var(--rule-2)}
+table.pt th{font:500 10.5px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;text-align:center;white-space:nowrap}
+table.pt th.rl,table.pt td.rl{text-align:left;white-space:nowrap}
+table.pt td.c{padding:2px}
+table.pt td.c div{height:28px;border-radius:3px;display:grid;place-items:center;font:500 11.5px var(--f-mono)}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">PEO Outcome Benchmark · who we survey</div>
+  <h1>Client personas</h1>
+  <p class="lede">Seven roles at a client company that execute, or take part in, the jobs a PEO helps get done. Each persona rates the outcomes of the jobs it executes, in its own survey module.</p>
+</div></header>
+<main><div class="wrap">
+  <section aria-labelledby="h-g">
+    <div class="sec-head"><div><h2 id="h-g">Profiles</h2><p>Jobs link to the Job Explorer. The bar shows how each persona's rated outcomes split across benchmark themes.</p></div></div>
+    <div class="personas" id="pgrid"></div>
+  </section>
+  <section aria-labelledby="h-t">
+    <div class="sec-head"><div><h2 id="h-t">Rated outcomes by persona and theme</h2><p>Number of outcomes each persona rates in each theme. Darker cells mean more outcomes. Follow a theme name to the Theme Explorer.</p></div></div>
+    <div class="card scroll" style="padding:12px"><table class="pt" id="pt"></table></div>
+  </section>
+</div></main>
+<script src="data.js"></script><script src="common.js"></script>
+<script>
+H.nav('personas.html');
+const D=H.D, esc=H.esc;
+const sel = H.hashGet();
+document.getElementById('pgrid').innerHTML = D.personas.map(p=>{
+  const ex=D.jobs.filter(j=>j.ex.includes(p.id)), pa=D.jobs.filter(j=>j.part.includes(p.id));
+  const outs=D.outcomes.filter(o=>ex.some(j=>j.id===o.job));
+  const tc={}; outs.forEach(o=>tc[o.theme]=(tc[o.theme]||0)+1);
+  const mods=D.modules.filter(m=>m.persona===p.id);
+  return `<article class="card persona ${sel===p.id?'on':''}" id="${p.id}">
+    <div class="hd"><span class="dot" style="background:${H.PCOL[p.id]}"></span><h3>${esc(p.name)}</h3></div>
+    <dl><dt>Titles</dt><dd>${esc(p.titles)}</dd><dt>Context</dt><dd>${esc(p.context)}</dd><dt>Buying role</dt><dd>${esc(p.buying)}</dd><dt>Goal</dt><dd>${esc(p.goal)}</dd></dl>
+    <div><div class="eyebrow" style="margin-bottom:4px">Emotional and social jobs</div><ul>${p.emotional.map(e=>`<li>${esc(e)}</li>`).join('')}</ul></div>
+    <div><div class="eyebrow" style="margin-bottom:4px">Executes · ${ex.length} jobs</div><div class="jl">${ex.map(j=>`<a href="jobs.html#${j.id}"><span class="jid">${j.id}</span><span>${esc(j.stmt)}</span><span class="mono small muted">${j.out.length}</span></a>`).join('')}</div></div>
+    ${pa.length?`<div><div class="eyebrow" style="margin-bottom:4px">Takes part · ${pa.length} jobs</div><div class="jl">${pa.map(j=>`<a class="part" href="jobs.html#${j.id}"><span class="jid">${j.id}</span><span>${esc(j.stmt)}</span><span></span></a>`).join('')}</div></div>`:''}
+    <div><div class="eyebrow" style="margin-bottom:6px">Theme mix of ${outs.length} rated outcomes</div>
+      <div class="tm">${Object.entries(tc).sort((x,y)=>y[1]-x[1]).map(([k,v])=>`<a href="themes.html#${H.slug(k)}">${esc(k)}</a><span class="b"><i style="width:${v/Math.max(...Object.values(tc))*100}%"></i></span><span class="mono">${v}</span>`).join('')}</div></div>
+    <div class="ft"><span class="chip">${outs.length} outcomes rated</span>${mods.map(m=>`<span class="chip">Module ${esc(m.name)} · ~${m.minutes} min · n ${m.n}</span>`).join('')}</div>
+  </article>`;}).join('');
+if(sel && document.getElementById(sel)) setTimeout(()=>document.getElementById(sel).scrollIntoView({block:'start'}),50);
+// persona x theme table
+const cnt={}; let max=1;
+D.personas.forEach(p=>{const ex=new Set(D.jobs.filter(j=>j.ex.includes(p.id)).map(j=>j.id)); D.outcomes.forEach(o=>{if(ex.has(o.job)){const k=p.id+'|'+o.theme; cnt[k]=(cnt[k]||0)+1; max=Math.max(max,cnt[k]);}});});
+document.getElementById('pt').innerHTML=`<thead><tr><th class="rl">Theme</th>${D.personas.map(p=>`<th><span class="dot" style="background:${H.PCOL[p.id]};margin-right:4px"></span>${esc(p.short)}</th>`).join('')}</tr></thead><tbody>`+
+  D.themes.map(t=>`<tr><td class="rl"><a href="themes.html#${H.slug(t.name)}" style="color:var(--ink)">${esc(t.name)}</a>${t.added?' <span class="muted small">(added)</span>':''}</td>${D.personas.map(p=>{const v=cnt[p.id+'|'+t.name]||0; return `<td class="c"><div style="background:${H.heat(v,max)};color:${v/max>.4?'var(--panel)':'var(--ink)'}">${v||''}</div></td>`;}).join('')}</tr>`).join('')+'</tbody>';
+</script>
+</body></html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insperity Impact Tracer</title>
+<style>
+:root{
+  --navy:#0B1F3A;--navy2:#12305A;--navy-soft:#1C3A63;
+  --gold:#C8A951;--gold-hi:#E4C572;
+  --ice:#EDF2F8;--ice2:#F6F9FC;--surface:#FFFFFF;
+  --ink:#20344B;--muted:#5E7188;--hair:#D8E1EC;
+  --up:#B8842B;--down:#2E7D5B;--inf:#7A5AA6;--reg:#B23A3A;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--ice);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+h1,h2,h3,h4{margin:0;font-weight:600}
+header.top{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold);flex:0 0 auto}
+.top .wrap{display:flex;align-items:center;gap:14px;padding:12px 18px;flex-wrap:wrap}
+.brandmark{width:30px;height:30px}
+.brandtext .k{font-family:var(--serif);font-size:18px}
+.brandtext .s{font-size:11px;color:#9db4d4;letter-spacing:.06em;text-transform:uppercase}
+.top .spacer{flex:1}
+.applink{font-size:12px;font-weight:600;text-decoration:none;color:var(--navy);background:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:5px 12px}
+.applink:hover{background:var(--gold-hi)}
+/* controls */
+.controls{flex:0 0 auto;background:var(--ice2);border-bottom:1px solid var(--hair);display:flex;gap:14px;align-items:center;padding:9px 18px;flex-wrap:wrap}
+.controls label{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.controls select,.controls input{font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--hair);border-radius:7px;background:#fff;color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:7px;overflow:hidden}
+.seg button{font:inherit;font-size:12.5px;padding:6px 11px;border:0;background:#fff;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--navy);color:#fff}
+.btn{font:inherit;font-size:12.5px;padding:6px 11px;border:1px solid var(--hair);border-radius:7px;background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--navy-soft)}
+.zoom{display:inline-flex;gap:4px;align-items:center}
+.zoom button{width:28px;height:28px;font-size:16px;line-height:1;border:1px solid var(--hair);border-radius:7px;background:#fff;cursor:pointer}
+/* body split */
+.main{flex:1 1 auto;display:flex;min-height:0}
+.canvas{flex:1 1 auto;overflow:auto;background:
+  radial-gradient(circle at 1px 1px, #dbe4ef 1px, transparent 0) 0 0/22px 22px, var(--ice)}
+.panel{flex:0 0 330px;background:var(--surface);border-left:1px solid var(--hair);overflow-y:auto;padding:16px 16px 40px}
+.panel h3{font-family:var(--serif);font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.panel h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--navy2);margin:14px 0 6px;border-bottom:1px solid var(--hair);padding-bottom:3px}
+.panel .row{font-size:12.5px;margin:3px 0;display:flex;gap:6px;align-items:baseline;justify-content:space-between}
+.panel .row .nm{flex:1}
+.tag{font-size:10px;font-weight:700;letter-spacing:.03em;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.tag.d{background:#E6F1EC;color:var(--down)}
+.tag.i{background:#EDE7F4;color:var(--inf)}
+.tag.reg{background:#F6E4E4;color:var(--reg)}
+.metric{background:var(--ice2);border:1px solid var(--hair);border-radius:8px;padding:10px 12px;margin:8px 0}
+.metric .big{font-family:var(--serif);font-size:22px;color:var(--navy)}
+.metric .lbl{font-size:11px;color:var(--muted)}
+.bar{height:7px;border-radius:4px;background:#EDE7F4;overflow:hidden;margin-top:6px}
+.bar > i{display:block;height:100%;background:var(--down)}
+.hint{font-size:12.5px;color:var(--muted)}
+.hint b{color:var(--ink)}
+.legend{display:flex;flex-direction:column;gap:5px;font-size:11.5px;margin-top:6px}
+.legend .li{display:flex;align-items:center;gap:7px}
+.sw{width:22px;height:0;border-top:3px solid #9DB2C8;display:inline-block}
+.sw.dash{border-top-style:dashed}
+.sw.up{border-top-color:var(--up)}
+.sw.down{border-top-color:var(--down)}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+/* svg node/edge states */
+.edge{fill:none;stroke:#AFC0D3;stroke-width:1.4}
+.edge.inf{stroke-dasharray:5 4}
+.edge.dim{opacity:.05}
+.edge.act-up{stroke:var(--up);stroke-width:2.4;opacity:1}
+.edge.act-down{stroke:var(--down);stroke-width:2.4;opacity:1}
+.node rect{fill:#fff;stroke:var(--hair);stroke-width:1.3;rx:7}
+.node text{font-size:10.5px;fill:var(--ink);font-family:var(--sans)}
+.node.infnode rect{stroke:var(--inf);stroke-dasharray:4 3}
+.node{cursor:pointer}
+.node:hover rect{stroke:var(--navy-soft)}
+.node.dim{opacity:.13}
+.node.sel rect{fill:var(--navy);stroke:var(--navy)}
+.node.sel text{fill:#fff}
+.node.up rect{fill:#FBF3DF;stroke:var(--up);stroke-width:2}
+.node.down rect{fill:#E9F3ED;stroke:var(--down);stroke-width:2}
+.colhead{font-size:11px;font-weight:700;fill:var(--navy2);font-family:var(--sans)}
+.colguide{stroke:#E1E9F2;stroke-width:1}
+@media (max-width:820px){.panel{flex-basis:250px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <svg class="brandmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#C8A951" stroke-width="1.5"/><path d="M20 7 L31 26 H9 Z" fill="none" stroke="#C8A951" stroke-width="1.5"/><circle cx="20" cy="21" r="3.5" fill="#C8A951"/></svg>
+  <div class="brandtext"><div class="k">Insperity Impact Tracer</div><div class="s">Statute → defect → SSOT rule → project → capability → business operation</div></div>
+  <div class="spacer"></div>
+  <a class="applink" href="Insperity%20Solution%20Architecture.html">Solution Architecture</a>
+  <a class="applink" href="Insperity%20PLM%20Dashboard.html">PLM Dashboard</a>
+</div></header>
+
+<div class="controls">
+  <label>Start from regime</label>
+  <select id="regimeSel"><option value="">— pick a governance regime —</option></select>
+  <label>or project</label>
+  <select id="projSel"><option value="">— pick a project —</option></select>
+  <label>Trace via</label>
+  <div class="seg" id="scopeSeg">
+    <button data-scope="all" class="on">All relations</button>
+    <button data-scope="direct">Direct only</button>
+  </div>
+  <input id="search" placeholder="find a node…" style="min-width:150px">
+  <button class="btn" id="resetBtn">Reset</button>
+  <div class="spacer" style="flex:1"></div>
+  <div class="zoom"><button id="zOut">−</button><span id="zLbl" style="font-size:12px;color:var(--muted);width:38px;text-align:center">100%</span><button id="zIn">+</button></div>
+</div>
+
+<div class="main">
+  <div class="canvas" id="canvas"></div>
+  <aside class="panel" id="panel"></aside>
+</div>
+
+<script>
+/* ============================================================
+   MODEL — 10-tier scaffold. Each node: [id, layer, label, meta]
+   Edges: 'from|to|kind|relation'  (kind: direct | inferred)
+   ============================================================ */
+const LAYERS = [
+  {k:"Regime / statute", c:"#8A6D1F"},
+  {k:"Defect class", c:"#B23A3A"},
+  {k:"SSOT rule", c:"#2E6E8E"},
+  {k:"Project", c:"#12305A"},
+  {k:"Capability", c:"#7A5AA6"},
+  {k:"Business process", c:"#2E7D5B"},
+  {k:"Service / asset", c:"#2E6E8E"},
+  {k:"Business domain", c:"#8A6D1F"},
+  {k:"Value stream", c:"#B8842B"},
+  {k:"Business operation", c:"#0B1F3A"}
+];
+
+const N = [["R_FLSA", 0, "FLSA & state wage-hour", {"s": "overtime · exemption · min wage", "w": "1.5", "reg": 1}], ["R_TAX", 0, "Multi-state tax nexus", {"s": "SUTA · SIT · local", "w": "1.3", "reg": 1}], ["R_CPEO", 0, "IRC §7705 CPEO", {"s": "IRS certified PEO", "w": "1.5", "reg": 1}], ["R_ERISA", 0, "ERISA & SECURE 2.0", {"s": "MEP/PEP fiduciary", "w": "1.5", "reg": 1}], ["R_ACA", 0, "ACA employer mandate", {"s": "ALE · affordability · 1095-C", "w": "1.4", "reg": 1}], ["R_CAA", 0, "CAA / TiC / MHPAEA", {"s": "transparency · parity", "w": "1.2", "reg": 1}], ["R_COBRA", 0, "COBRA / HIPAA / §125", {"s": "continuation · PHI", "w": "1.3", "reg": 1}], ["R_EEO", 0, "Title VII · ADA · PWFA", {"s": "EEOC civil rights", "w": "1.4", "reg": 1}], ["R_AEDT", 0, "AI hiring laws", {"s": "NYC LL 144 · Colorado AI Act", "w": "1.3", "reg": 1}], ["R_PAYT", 0, "Pay transparency laws", {"s": "CA · CO · NY · MA · IL", "w": "1.2", "reg": 1}], ["R_OSHA", 0, "OSHA & state plans", {"s": "ITA · SB 553 · heat", "w": "1.3", "reg": 1}], ["R_LEAVE", 0, "PFML / paid sick leave", {"s": "state & municipal", "w": "1.2", "reg": 1}], ["R_SOC", 0, "SOC 1 / SOC 2 / ESAC", {"s": "attestation · accreditation", "w": "1.4", "reg": 1}], ["R_PRIV", 0, "CCPA/CPRA & state privacy", {"s": "consent · minimization", "w": "1.3", "reg": 1}], ["R_AI", 0, "NIST AI RMF / ISO 42001", {"s": "AI management", "w": "1.2", "reg": 1}], ["D_OT", 1, "Wrong overtime multiplier", {"s": "PAY-005/006", "dv": "SHACL"}], ["D_EXEMPT", 1, "Misclassified exempt / 1099", {"s": "PAY-002/004", "dv": "SHACL"}], ["D_WH", 1, "Wrong jurisdiction withholding", {"s": "PAY-013/014", "dv": "SHACL"}], ["D_ATTEST", 1, "Missed CPEO / SOC evidence", {"s": "PAY-023 · TEC-016", "dv": "SHACL"}], ["D_AFFORD", 1, "ACA affordability failure", {"s": "BEN-003", "dv": "SHACL"}], ["D_FIDUC", 1, "Late 5500 / failed NDT", {"s": "BEN-006/008", "dv": "SHACL"}], ["D_MRF", 1, "Missing MRF / parity analysis", {"s": "BEN-012/014", "dv": "SHACL"}], ["D_BENANS", 1, "Hallucinated benefits answer", {"s": "MTBH WHAT/WHEN", "dv": "LLM", "inf": 1}], ["D_XTEN", 1, "Cross-tenant data exposure", {"s": "TEC-001 · MTBH WHERE", "dv": "SHACL"}], ["D_AEDT", 1, "Unaudited / biased AEDT", {"s": "TAL-003/004", "dv": "LLM", "inf": 1}], ["D_RANGE", 1, "Posting without salary range", {"s": "TAL-005", "dv": "SHACL"}], ["D_ACCOM", 1, "Missed accommodation process", {"s": "CMP-011/012", "dv": "SHACL"}], ["D_OSHA", 1, "Late OSHA ITA / missing WVPP", {"s": "CMP-001/003", "dv": "SHACL"}], ["D_LEAVE", 1, "Leave accrual / PFML error", {"s": "CMP-016/018/019", "dv": "SHACL"}], ["D_ACTION", 1, "Ungated irreversible action", {"s": "GOV-015 · PAY-028", "dv": "SHACL"}], ["D_TRAIN", 1, "Stale mandatory training", {"s": "TAL-012 · CMP-005", "dv": "SHACL"}], ["RU_PAY005", 2, "PAY-005 · California Daily Overtime - Tier 1", {"s": "Obligation · California Labor Code Section 510"}], ["RU_PAY002", 2, "PAY-002 · State Exemption Salary Thresholds Override Federal", {"s": "Obligation · State labor codes (e.g., CA, NY, WA)"}], ["RU_PAY004", 2, "PAY-004 · State 'ABC' Test for Contractor Status", {"s": "Prohibition · State statutes (e.g., CA AB5-style ABC tests)"}], ["RU_PAY013", 2, "PAY-013 · State Income Tax (SIT) Withholding by Jurisdiction", {"s": "Obligation · State tax codes"}], ["RU_PAY023", 2, "PAY-023 · Quarterly CPEO Tax Attestations", {"s": "Reporting Deadline · IRC Section 7705 (CPEO)"}], ["RU_TEC016", 2, "TEC-016 · Continuous SOC 1/SOC 2 Type II Attestation Cycle", {"s": "Reporting Deadline · AICPA SSAE 18 / SOC 2"}], ["RU_BEN003", 2, "BEN-003 · Affordability Safe Harbor Calculation", {"s": "Threshold · ACA affordability safe harbor rules"}], ["RU_BEN008", 2, "BEN-008 · Annual Non-Discrimination Testing (NDT)", {"s": "Reporting Deadline · IRC Section 105/125"}], ["RU_BEN012", 2, "BEN-012 · Machine-Readable File (MRF) Disclosure", {"s": "Obligation · Consolidated Appropriations Act / Transparency in Coverage"}], ["RU_GOV014", 2, "GOV-014 · Circuit Breaker & MTBH Monitoring", {"s": "Structural Invariant · RDSG Semantic Gateway Protocol"}], ["RU_GOV021", 2, "GOV-021 · AI Agent Guardrails - Compiled JSON Schema Constraints", {"s": "Structural Invariant · RDSG Semantic Gateway Protocol"}], ["RU_TEC001", 2, "TEC-001 · Multi-Tenant Data Isolation Model", {"s": "Structural Invariant · Internal architecture standard / PEO Client Allocation Matrix"}], ["RU_TEC021", 2, "TEC-021 · Compiled Runtime Access Policy - HIPAA PHI Read Rule", {"s": "Structural Invariant · Compiled from isp-tech:HIPAASecurityShape (HIPAA Security Rule)"}], ["RU_TAL003", 2, "TAL-003 · Automated Employment Decision Tool (AEDT) Bias Audit", {"s": "Obligation · NYC Local Law 144; Colorado AI Act"}], ["RU_TAL005", 2, "TAL-005 · State Salary Range Disclosure on Job Postings", {"s": "Obligation · State pay transparency laws (CA, CO, NY, MA, IL, etc.)"}], ["RU_CMP012", 2, "CMP-012 · Pregnant Workers Fairness Act (PWFA) Accommodation Workflow", {"s": "Obligation · PWFA (federal)"}], ["RU_CMP001", 2, "CMP-001 · OSHA Form 300/300A/301 Electronic Submission", {"s": "Reporting Deadline · OSHA Injury Tracking Application (ITA)"}], ["RU_CMP003", 2, "CMP-003 · CA SB 553 Workplace Violence Prevention Plan", {"s": "Obligation · California SB 553"}], ["RU_CMP018", 2, "CMP-018 · State PFML Withholding, Reporting & Claims Administration", {"s": "Obligation · State PFML statutes (MA, WA, NY, NJ, CA, CO, OR, MN, ME, DE, etc.)"}], ["RU_GOV015", 2, "GOV-015 · Simplex Action Gate - Irreversible/Destructive Action Interception", {"s": "Structural Invariant · RDSG Semantic Gateway Protocol"}], ["RU_PAY028", 2, "PAY-028 · Simplex Action Gate - High-Value Batch Tax Remittance", {"s": "Structural Invariant · Internal governance control (STPA/STAMP-informed)"}], ["RU_TAL012", 2, "TAL-012 · Statutory Sexual Harassment Prevention Training Cadence", {"s": "Reporting Deadline · NY state training mandate; CA SB 1343"}], ["RU_CMP005", 2, "CMP-005 · Annual Workplace Violence Prevention Training", {"s": "Reporting Deadline · California SB 553"}], ["PJ_ISP01", 3, "ISP-01 Core PEO Ontology (isp-core) & ORSD Templates", {"s": "P0 · Enterprise L4 / isp-core"}], ["PJ_ISP02", 3, "ISP-02 SSOT Policy Rules Register & LKIF Wave 1", {"s": "P0 · All L2 domain holons"}], ["PJ_ISP03", 3, "ISP-03 Box AI Admission Bridge (33M records → L1 holons)", {"s": "P0 · Mediation Holon"}], ["PJ_ISP04", 3, "ISP-04 SAML Identity & URI Resolution Registry v1", {"s": "P0 · Mediation Holon"}], ["PJ_ISP05", 3, "ISP-05 KGCL Change Governance & Semantic Governance Council Charter", {"s": "P0 · Enterprise L4"}], ["PJ_ISP06", 3, "ISP-06 Payroll & Tax Domain Holon (isp-pay)", {"s": "P1 · L2 · Payroll & Tax"}], ["PJ_ISP07", 3, "ISP-07 Benefits & Retirement Domain Holon (isp-ben)", {"s": "P1 · L2 · Benefits"}], ["PJ_ISP08", 3, "ISP-08 SHACL-to-Policy Compilation Pipeline", {"s": "P1 · Mediation Holon"}], ["PJ_ISP09", 3, "ISP-09 Rule Harmonization Engine (most-stringent-rule)", {"s": "P1 · Mediation Holon"}], ["PJ_ISP10", 3, "ISP-10 RDSG Gateway, MTBH Circuit Breaker & Simplex Action Gate", {"s": "P1 · L3 · Gateway Holon"}], ["PJ_ISP11", 3, "ISP-11 Multi-Tenant Isolation & PHI Policy Enforcement Points", {"s": "P1 · L2 · HR Technology"}], ["PJ_ISP12", 3, "ISP-12 Employee Jarvis & Machine APIs (pilot, 3–5 clients)", {"s": "P1 · Knowledge services"}], ["PJ_ISP13", 3, "ISP-13 Compliance & Risk Domain Holon (isp-comp, 50-state library)", {"s": "P2 · L2 · Compliance & Risk"}], ["PJ_ISP14", 3, "ISP-14 Talent Domain Holon (isp-tal) & AEDT Governance", {"s": "P2 · L2 · Talent Management"}], ["PJ_ISP15", 3, "ISP-15 HR Technology Holon — Identity Backbone & Attestation Controls", {"s": "P2 · L2 · HR Technology"}], ["PJ_ISP16", 3, "ISP-16 Client Relationship Holon & Client Allocation Matrix", {"s": "P2 · L2 · Client Relationship"}], ["PJ_ISP17", 3, "ISP-17 Employer/HRBP & Service Rep Jarvis", {"s": "P2 · Knowledge services"}], ["PJ_ISP18", 3, "ISP-18 Governed Personal Models (employee & role profiles)", {"s": "P2 · L2 · Talent / isp-core"}], ["PJ_ISP19", 3, "ISP-19 On-Demand Compliance Training Engine", {"s": "P2 · L2 · Talent / Compliance"}], ["PJ_ISP20", 3, "ISP-20 Compliance SSOT Dashboard & Governed Analytics Publishing", {"s": "P2 · Mediation Holon"}], ["PJ_ISP21", 3, "ISP-21 MTBH Ops Workbench", {"s": "P2 · Governance plane"}], ["PJ_ISP22", 3, "ISP-22 Enterprise Semantic Governance Council & Compliance-as-Code", {"s": "P3 · Enterprise L4"}], ["PJ_ISP23", 3, "ISP-23 Continuous Values Measurement & Calibration", {"s": "P3 · L2 · Talent"}], ["PJ_ISP24", 3, "ISP-24 Self-Evolving Holarchy — Regulatory Change Discovery", {"s": "P3 · Mediation Holon"}], ["PJ_ISP25", 3, "ISP-25 Executive Jarvis & Workforce Benchmarking Data Product", {"s": "P3 · Knowledge services"}], ["PJ_ISP26", 3, "ISP-26 Contractor & Gig Worker Holon (classification governance)", {"s": "P3 · L2 · New Ventures"}], ["PJ_ISP27", 3, "ISP-27 PEO Attestation Automation (CPEO · ESAC · SOC)", {"s": "P3 · Enterprise L4"}], ["PJ_ISP28", 3, "ISP-28 50-State Digital Orchestration Rollout", {"s": "P3 · Program Office"}], ["CAP_C1", 4, "C1 Single source of truth for policy", {"s": "value proposition"}], ["CAP_C2", 4, "C2 Personal-model-driven compliance", {"s": "value proposition"}], ["CAP_C3", 4, "C3 On-demand compliance training", {"s": "value proposition"}], ["CAP_C4", 4, "C4 Continuous values measurement", {"s": "value proposition"}], ["CAP_C5", 4, "C5 Faster, auditable compliance response", {"s": "value proposition"}], ["CAP_C6", 4, "C6 Analytics you can trust", {"s": "value proposition"}], ["CAP_C7", 4, "C7 Governance that scales", {"s": "value proposition"}], ["CAP_C8", 4, "C8 Trusted HR assistant (Jarvis, MTBH-governed)", {"s": "value proposition"}], ["CAP_C9", 4, "C9 Co-employment tenant isolation", {"s": "value proposition"}], ["PR_G2N", 5, "Gross-to-net payroll run", {}], ["PR_TAX", 5, "Tax filing & remittance", {}], ["PR_ENR", 5, "Benefits enrollment & QLE", {}], ["PR_ACA", 5, "ACA / ERISA reporting", {}], ["PR_LEAVE", 5, "Leave & accommodation admin", {}], ["PR_SAFE", 5, "Incident & OSHA recordkeeping", {}], ["PR_HIRE", 5, "Requisition & hiring", {}], ["PR_TRAIN", 5, "Mandatory training delivery", {}], ["PR_ASK", 5, "Employee self-service inquiry", {}], ["PR_ONB", 5, "Client onboarding & MSA", {}], ["PR_ACCESS", 5, "Access & tenant management", {}], ["PR_REGCH", 5, "Regulatory change management", {}], ["S_PAYENG", 6, "Payroll engine (dbt/SQL)", {"s": "asset"}], ["S_OPA", 6, "Policy gateway (OPA/Rego)", {"s": "asset"}], ["S_JEMP", 6, "Employee Jarvis", {"s": "service"}], ["S_JER", 6, "Employer/HRBP Jarvis", {"s": "service"}], ["S_JSR", 6, "Service Rep Jarvis", {"s": "service"}], ["S_BENADM", 6, "Benefits administration", {"s": "service"}], ["S_COMPL", 6, "Compliance filings service", {"s": "service"}], ["S_LMS", 6, "LMS / training platform", {"s": "asset"}], ["S_ATS", 6, "ATS / recruiting", {"s": "asset"}], ["S_PORTAL", 6, "Client & employee portals", {"s": "asset"}], ["S_SSOT", 6, "Compliance SSOT dashboard", {"s": "asset"}], ["DOM_PAY", 7, "Payroll & Tax", {}], ["DOM_BEN", 7, "Benefits", {}], ["DOM_CMP", 7, "Compliance & Risk", {}], ["DOM_TAL", 7, "Talent Management", {}], ["DOM_TEC", 7, "HR Technology", {}], ["DOM_CLI", 7, "Client Relationship", {}], ["VS_PAY", 8, "Pay-to-Remit", {}], ["VS_BEN", 8, "Enroll-to-Benefit", {}], ["VS_HIRE", 8, "Hire-to-Retire", {}], ["VS_PROT", 8, "Risk-to-Resolution", {}], ["VS_CLIENT", 8, "Prospect-to-Client", {}], ["VS_REG", 8, "Regulation-to-Rule", {}], ["OP_PEN", 9, "Statutory penalty avoidance", {}], ["OP_AUDIT", 9, "Audit & attestation readiness", {}], ["OP_CTS", 9, "Cost-to-serve / admin time", {}], ["OP_RET", 9, "Client retention & growth", {}], ["OP_TRUST", 9, "Employee trust & self-service", {}], ["OP_REV", 9, "New data-product revenue", {}]];
+
+const E = ["R_FLSA|D_OT|direct|produces", "R_FLSA|D_EXEMPT|direct|produces", "R_TAX|D_WH|direct|produces", "R_LEAVE|D_WH|direct|produces", "R_CPEO|D_ATTEST|direct|produces", "R_SOC|D_ATTEST|direct|produces", "R_ACA|D_AFFORD|direct|produces", "R_ERISA|D_FIDUC|direct|produces", "R_CAA|D_MRF|direct|produces", "R_AI|D_BENANS|inferred|produces", "R_COBRA|D_BENANS|inferred|produces", "R_PRIV|D_XTEN|direct|produces", "R_SOC|D_XTEN|direct|produces", "R_COBRA|D_XTEN|direct|produces", "R_AEDT|D_AEDT|inferred|produces", "R_EEO|D_AEDT|inferred|produces", "R_PAYT|D_RANGE|direct|produces", "R_EEO|D_ACCOM|direct|produces", "R_OSHA|D_OSHA|direct|produces", "R_LEAVE|D_LEAVE|direct|produces", "R_AI|D_ACTION|direct|produces", "R_CPEO|D_ACTION|direct|produces", "R_EEO|D_TRAIN|direct|produces", "R_OSHA|D_TRAIN|direct|produces", "D_OT|RU_PAY005|direct|governedBy", "D_EXEMPT|RU_PAY002|direct|governedBy", "D_EXEMPT|RU_PAY004|direct|governedBy", "D_WH|RU_PAY013|direct|governedBy", "D_ATTEST|RU_PAY023|direct|governedBy", "D_ATTEST|RU_TEC016|direct|governedBy", "D_AFFORD|RU_BEN003|direct|governedBy", "D_FIDUC|RU_BEN008|direct|governedBy", "D_MRF|RU_BEN012|direct|governedBy", "D_BENANS|RU_GOV014|direct|governedBy", "D_BENANS|RU_GOV021|direct|governedBy", "D_XTEN|RU_TEC001|direct|governedBy", "D_XTEN|RU_TEC021|direct|governedBy", "D_AEDT|RU_TAL003|direct|governedBy", "D_RANGE|RU_TAL005|direct|governedBy", "D_ACCOM|RU_CMP012|direct|governedBy", "D_OSHA|RU_CMP001|direct|governedBy", "D_OSHA|RU_CMP003|direct|governedBy", "D_LEAVE|RU_CMP018|direct|governedBy", "D_WH|RU_CMP018|direct|governedBy", "D_ACTION|RU_GOV015|direct|governedBy", "D_ACTION|RU_PAY028|direct|governedBy", "D_TRAIN|RU_TAL012|direct|governedBy", "D_TRAIN|RU_CMP005|direct|governedBy", "PJ_ISP01|CAP_C1|direct|realizes", "PJ_ISP01|CAP_C7|direct|realizes", "RU_PAY002|PJ_ISP02|direct|implementedBy", "RU_CMP001|PJ_ISP02|direct|implementedBy", "PJ_ISP02|CAP_C1|direct|realizes", "PJ_ISP02|CAP_C5|direct|realizes", "PJ_ISP03|CAP_C1|direct|realizes", "PJ_ISP03|CAP_C8|direct|realizes", "RU_TEC001|PJ_ISP04|direct|implementedBy", "PJ_ISP04|CAP_C9|direct|realizes", "PJ_ISP04|CAP_C7|direct|realizes", "PJ_ISP05|CAP_C7|direct|realizes", "PJ_ISP05|CAP_C5|direct|realizes", "RU_PAY005|PJ_ISP06|direct|implementedBy", "RU_PAY002|PJ_ISP06|direct|implementedBy", "RU_PAY013|PJ_ISP06|direct|implementedBy", "RU_CMP018|PJ_ISP06|direct|implementedBy", "PJ_ISP06|CAP_C1|direct|realizes", "PJ_ISP06|CAP_C5|direct|realizes", "PJ_ISP06|CAP_C8|direct|realizes", "RU_BEN003|PJ_ISP07|direct|implementedBy", "RU_BEN008|PJ_ISP07|direct|implementedBy", "RU_BEN012|PJ_ISP07|direct|implementedBy", "PJ_ISP07|CAP_C1|direct|realizes", "PJ_ISP07|CAP_C8|direct|realizes", "PJ_ISP07|CAP_C2|direct|realizes", "RU_TEC021|PJ_ISP08|direct|implementedBy", "PJ_ISP08|CAP_C1|direct|realizes", "PJ_ISP08|CAP_C7|direct|realizes", "RU_PAY002|PJ_ISP09|direct|implementedBy", "RU_PAY004|PJ_ISP09|direct|implementedBy", "PJ_ISP09|CAP_C1|direct|realizes", "PJ_ISP09|CAP_C5|direct|realizes", "RU_GOV014|PJ_ISP10|direct|implementedBy", "RU_GOV021|PJ_ISP10|direct|implementedBy", "RU_GOV015|PJ_ISP10|direct|implementedBy", "RU_PAY028|PJ_ISP10|direct|implementedBy", "PJ_ISP10|CAP_C8|direct|realizes", "PJ_ISP10|CAP_C9|direct|realizes", "PJ_ISP10|CAP_C5|direct|realizes", "RU_TEC001|PJ_ISP11|direct|implementedBy", "RU_TEC021|PJ_ISP11|direct|implementedBy", "PJ_ISP11|CAP_C9|direct|realizes", "RU_GOV014|PJ_ISP12|direct|implementedBy", "RU_GOV021|PJ_ISP12|direct|implementedBy", "PJ_ISP12|CAP_C8|direct|realizes", "PJ_ISP12|CAP_C2|direct|realizes", "RU_CMP012|PJ_ISP13|direct|implementedBy", "RU_CMP001|PJ_ISP13|direct|implementedBy", "RU_CMP003|PJ_ISP13|direct|implementedBy", "PJ_ISP13|CAP_C1|direct|realizes", "PJ_ISP13|CAP_C5|direct|realizes", "RU_TAL003|PJ_ISP14|direct|implementedBy", "RU_TAL005|PJ_ISP14|direct|implementedBy", "PJ_ISP14|CAP_C1|direct|realizes", "PJ_ISP14|CAP_C4|direct|realizes", "PJ_ISP14|CAP_C5|direct|realizes", "RU_TEC016|PJ_ISP15|direct|implementedBy", "PJ_ISP15|CAP_C9|direct|realizes", "PJ_ISP15|CAP_C7|direct|realizes", "RU_TEC001|PJ_ISP16|direct|implementedBy", "PJ_ISP16|CAP_C1|direct|realizes", "PJ_ISP16|CAP_C6|direct|realizes", "RU_GOV014|PJ_ISP17|direct|implementedBy", "RU_GOV021|PJ_ISP17|direct|implementedBy", "RU_GOV015|PJ_ISP17|direct|implementedBy", "PJ_ISP17|CAP_C8|direct|realizes", "PJ_ISP17|CAP_C5|direct|realizes", "PJ_ISP17|CAP_C6|direct|realizes", "PJ_ISP18|CAP_C2|direct|realizes", "PJ_ISP18|CAP_C4|direct|realizes", "PJ_ISP18|CAP_C9|direct|realizes", "RU_TAL012|PJ_ISP19|direct|implementedBy", "RU_CMP005|PJ_ISP19|direct|implementedBy", "PJ_ISP19|CAP_C3|direct|realizes", "PJ_ISP19|CAP_C5|direct|realizes", "PJ_ISP19|CAP_C2|direct|realizes", "PJ_ISP20|CAP_C6|direct|realizes", "PJ_ISP20|CAP_C1|direct|realizes", "RU_GOV014|PJ_ISP21|direct|implementedBy", "PJ_ISP21|CAP_C8|direct|realizes", "PJ_ISP21|CAP_C5|direct|realizes", "PJ_ISP22|CAP_C7|direct|realizes", "PJ_ISP22|CAP_C1|direct|realizes", "PJ_ISP23|CAP_C4|direct|realizes", "PJ_ISP23|CAP_C2|direct|realizes", "RU_CMP018|PJ_ISP24|direct|implementedBy", "PJ_ISP24|CAP_C5|direct|realizes", "PJ_ISP24|CAP_C7|direct|realizes", "PJ_ISP24|CAP_C1|direct|realizes", "PJ_ISP25|CAP_C6|direct|realizes", "PJ_ISP25|CAP_C8|direct|realizes", "RU_PAY004|PJ_ISP26|direct|implementedBy", "PJ_ISP26|CAP_C1|direct|realizes", "PJ_ISP26|CAP_C7|direct|realizes", "RU_PAY023|PJ_ISP27|direct|implementedBy", "RU_TEC016|PJ_ISP27|direct|implementedBy", "PJ_ISP27|CAP_C5|direct|realizes", "PJ_ISP27|CAP_C6|direct|realizes", "RU_PAY013|PJ_ISP28|direct|implementedBy", "PJ_ISP28|CAP_C7|direct|realizes", "PJ_ISP28|CAP_C8|direct|realizes", "CAP_C1|PR_G2N|direct|enables", "CAP_C1|PR_TAX|direct|enables", "CAP_C1|PR_ACA|direct|enables", "CAP_C1|PR_HIRE|direct|enables", "CAP_C1|PR_REGCH|direct|enables", "CAP_C1|PR_LEAVE|direct|enables", "CAP_C2|PR_TRAIN|direct|enables", "CAP_C2|PR_LEAVE|inferred|enables", "CAP_C2|PR_ASK|inferred|enables", "CAP_C3|PR_TRAIN|direct|enables", "CAP_C3|PR_REGCH|direct|enables", "CAP_C4|PR_TRAIN|inferred|enables", "CAP_C4|PR_HIRE|inferred|enables", "CAP_C5|PR_ACA|direct|enables", "CAP_C5|PR_SAFE|direct|enables", "CAP_C5|PR_REGCH|direct|enables", "CAP_C5|PR_TAX|direct|enables", "CAP_C6|PR_ONB|inferred|enables", "CAP_C6|PR_ACA|inferred|enables", "CAP_C7|PR_REGCH|direct|enables", "CAP_C7|PR_ONB|inferred|enables", "CAP_C8|PR_ASK|direct|enables", "CAP_C8|PR_ENR|direct|enables", "CAP_C8|PR_G2N|inferred|enables", "CAP_C9|PR_ACCESS|direct|enables", "CAP_C9|PR_ASK|direct|enables", "CAP_C9|PR_ONB|direct|enables", "PR_G2N|S_PAYENG|direct|uses", "PR_G2N|S_OPA|direct|uses", "PR_TAX|S_PAYENG|direct|uses", "PR_TAX|S_COMPL|direct|uses", "PR_ENR|S_BENADM|direct|uses", "PR_ENR|S_JEMP|direct|uses", "PR_ACA|S_BENADM|direct|uses", "PR_ACA|S_COMPL|direct|uses", "PR_LEAVE|S_JER|direct|uses", "PR_LEAVE|S_PAYENG|direct|uses", "PR_SAFE|S_COMPL|direct|uses", "PR_SAFE|S_JER|direct|uses", "PR_HIRE|S_ATS|direct|uses", "PR_HIRE|S_OPA|direct|uses", "PR_TRAIN|S_LMS|direct|uses", "PR_ASK|S_JEMP|direct|uses", "PR_ASK|S_JSR|direct|uses", "PR_ONB|S_PORTAL|direct|uses", "PR_ONB|S_JSR|direct|uses", "PR_ACCESS|S_OPA|direct|uses", "PR_ACCESS|S_PORTAL|direct|uses", "PR_REGCH|S_SSOT|direct|uses", "PR_REGCH|S_OPA|direct|uses", "S_PAYENG|DOM_PAY|direct|partOf", "S_OPA|DOM_TEC|direct|partOf", "S_JEMP|DOM_BEN|direct|partOf", "S_JEMP|DOM_TEC|direct|partOf", "S_JER|DOM_CMP|direct|partOf", "S_JER|DOM_CLI|direct|partOf", "S_JSR|DOM_CLI|direct|partOf", "S_BENADM|DOM_BEN|direct|partOf", "S_COMPL|DOM_CMP|direct|partOf", "S_COMPL|DOM_PAY|direct|partOf", "S_LMS|DOM_TAL|direct|partOf", "S_ATS|DOM_TAL|direct|partOf", "S_PORTAL|DOM_TEC|direct|partOf", "S_PORTAL|DOM_CLI|direct|partOf", "S_SSOT|DOM_CMP|direct|partOf", "DOM_PAY|VS_PAY|direct|contributesTo", "DOM_PAY|VS_REG|direct|contributesTo", "DOM_BEN|VS_BEN|direct|contributesTo", "DOM_BEN|VS_HIRE|inferred|contributesTo", "DOM_CMP|VS_PROT|direct|contributesTo", "DOM_CMP|VS_REG|direct|contributesTo", "DOM_TAL|VS_HIRE|direct|contributesTo", "DOM_TAL|VS_PROT|inferred|contributesTo", "DOM_TEC|VS_PROT|direct|contributesTo", "DOM_TEC|VS_CLIENT|inferred|contributesTo", "DOM_CLI|VS_CLIENT|direct|contributesTo", "DOM_CLI|VS_PROT|inferred|contributesTo", "VS_PAY|OP_PEN|direct|drives", "VS_PAY|OP_CTS|direct|drives", "VS_PAY|OP_AUDIT|direct|drives", "VS_BEN|OP_TRUST|direct|drives", "VS_BEN|OP_PEN|direct|drives", "VS_BEN|OP_RET|inferred|drives", "VS_HIRE|OP_TRUST|inferred|drives", "VS_HIRE|OP_PEN|direct|drives", "VS_HIRE|OP_REV|inferred|drives", "VS_PROT|OP_PEN|direct|drives", "VS_PROT|OP_AUDIT|direct|drives", "VS_PROT|OP_RET|inferred|drives", "VS_CLIENT|OP_RET|direct|drives", "VS_CLIENT|OP_REV|inferred|drives", "VS_REG|OP_AUDIT|direct|drives", "VS_REG|OP_CTS|direct|drives"];
+
+/* ============================================================
+   INDEXES
+   ============================================================ */
+const NODE = {}; N.forEach(([id,l,t,m])=>NODE[id]={id,l,t,m:m||{}});
+const EDGES = E.map((s,i)=>{const [f,t,k,r]=s.split("|");return {id:"e"+i,f,t,k,r};});
+const OUT={},IN={};
+EDGES.forEach(e=>{(OUT[e.f]=OUT[e.f]||[]).push(e);(IN[e.t]=IN[e.t]||[]).push(e);});
+
+function bfs(start,dir,scope){
+  const sn=new Set([start]),se=new Set(),q=[start];
+  while(q.length){const cur=q.shift();
+    const list=(dir==="out"?OUT[cur]:IN[cur])||[];
+    for(const e of list){ if(scope==="direct"&&e.k!=="direct")continue;
+      se.add(e.id); const nx=dir==="out"?e.t:e.f;
+      if(!sn.has(nx)){sn.add(nx);q.push(nx);} }
+  }
+  return {sn,se};
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+const NODEW=172,NODEH=38,ROWGAP=44,COLGAP=204,MARGINL=30,TOPPAD=44;
+const byLayer={}; N.forEach(([id,l])=>{(byLayer[l]=byLayer[l]||[]).push(id);});
+let maxRows=0; for(const l in byLayer) maxRows=Math.max(maxRows,byLayer[l].length);
+const H=TOPPAD+maxRows*ROWGAP+20;
+const W=MARGINL+(LAYERS.length-1)*COLGAP+NODEW+MARGINL;
+const POS={};
+for(let l=0;l<LAYERS.length;l++){
+  const ids=byLayer[l]||[]; const off=(maxRows-ids.length)/2*ROWGAP;
+  ids.forEach((id,i)=>{POS[id]={x:MARGINL+l*COLGAP, y:TOPPAD+off+i*ROWGAP};});
+}
+
+const SVGNS="http://www.w3.org/2000/svg";
+const NODEEL={},EDGEEL={};
+let scale=1;
+
+function wrap(t){
+  const M=28; if(t.length<=M) return [t];
+  const w=t.split(" "); let a="";
+  while(w.length && (a+(a?" ":"")+w[0]).length<=M){a+=(a?" ":"")+w.shift();}
+  if(!a){a=t.slice(0,M);return [a,t.slice(M,M*2-1)+(t.length>M*2-1?"…":"")];}
+  let b=w.join(" "); if(b.length>M) b=b.slice(0,M-1)+"…";
+  return [a,b];
+}
+function E_(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function render(){
+  const svg=document.createElementNS(SVGNS,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.setAttribute("width",W*scale); svg.setAttribute("height",H*scale);
+  // column guides + headers
+  for(let l=0;l<LAYERS.length;l++){
+    const cx=MARGINL+l*COLGAP;
+    const g=document.createElementNS(SVGNS,"line");
+    g.setAttribute("x1",cx-14);g.setAttribute("x2",cx-14);g.setAttribute("y1",34);g.setAttribute("y2",H-10);
+    g.setAttribute("class","colguide"); svg.appendChild(g);
+    const h=document.createElementNS(SVGNS,"text");
+    h.setAttribute("x",cx);h.setAttribute("y",22);h.setAttribute("class","colhead");
+    h.textContent=(l+1)+" · "+LAYERS[l].k; svg.appendChild(h);
+  }
+  // edges
+  EDGES.forEach(e=>{
+    const s=POS[e.f],t=POS[e.t]; if(!s||!t)return;
+    const sx=s.x+NODEW,sy=s.y+NODEH/2,tx=t.x,ty=t.y+NODEH/2,dx=(tx-sx)*0.45;
+    const p=document.createElementNS(SVGNS,"path");
+    p.setAttribute("d",`M${sx},${sy} C${sx+dx},${sy} ${tx-dx},${ty} ${tx},${ty}`);
+    p.setAttribute("class","edge"+(e.k==="inferred"?" inf":""));
+    EDGEEL[e.id]=p; svg.appendChild(p);
+  });
+  // nodes
+  N.forEach(([id,l,t,m])=>{
+    const p=POS[id]; const g=document.createElementNS(SVGNS,"g");
+    g.setAttribute("class","node"+(m&&m.inf?" infnode":"")); g.dataset.id=id;
+    g.setAttribute("transform",`translate(${p.x},${p.y})`);
+    const r=document.createElementNS(SVGNS,"rect");
+    r.setAttribute("width",NODEW);r.setAttribute("height",NODEH);r.setAttribute("rx",7);
+    g.appendChild(r);
+    const tx=document.createElementNS(SVGNS,"text");
+    tx.setAttribute("x",NODEW/2);tx.setAttribute("text-anchor","middle");
+    const lines=wrap(t);
+    lines.forEach((ln,i)=>{const ts=document.createElementNS(SVGNS,"tspan");
+      ts.setAttribute("x",NODEW/2);ts.setAttribute("y",lines.length===1?NODEH/2+4:14+i*13);
+      ts.textContent=ln;tx.appendChild(ts);});
+    g.appendChild(tx);
+    const title=document.createElementNS(SVGNS,"title");
+    title.textContent=t+(m&&m.s?" — "+m.s:"")+(m&&m.dv?" ["+m.dv+"]":"");
+    g.appendChild(title);
+    NODEEL[id]=g; svg.appendChild(g);
+  });
+  const c=document.getElementById("canvas"); c.innerHTML=""; c.appendChild(svg);
+  svg.addEventListener("click",ev=>{const g=ev.target.closest(".node"); if(g)select(g.dataset.id); else clearSel();});
+}
+
+/* ============================================================
+   SELECTION + PANEL
+   ============================================================ */
+let curId=null;
+function scope(){return document.querySelector("#scopeSeg .on").dataset.scope;}
+
+function select(id){
+  curId=id; const sc=scope();
+  const up=bfs(id,"in",sc), down=bfs(id,"out",sc);
+  const active=new Set([...up.sn,...down.sn]);
+  for(const nid in NODEEL){const el=NODEEL[nid];el.classList.remove("sel","up","down","dim");
+    if(nid===id)el.classList.add("sel");
+    else if(active.has(nid))el.classList.add(down.sn.has(nid)?"down":"up");
+    else el.classList.add("dim");}
+  for(const eid in EDGEEL){const el=EDGEEL[eid];el.classList.remove("act-up","act-down","dim");
+    if(down.se.has(eid))el.classList.add("act-down");
+    else if(up.se.has(eid))el.classList.add("act-up");
+    else el.classList.add("dim");}
+  buildPanel(id);
+  const rs=document.getElementById("regimeSel"); rs.value=(NODE[id].l===0?id:""); document.getElementById("projSel").value=(NODE[id].l===3?id:"");
+}
+function clearSel(){curId=null;
+  for(const nid in NODEEL)NODEEL[nid].classList.remove("sel","up","down","dim");
+  for(const eid in EDGEEL)EDGEEL[eid].classList.remove("act-up","act-down","dim");
+  document.getElementById("regimeSel").value=""; defaultPanel();
+}
+
+function buildPanel(id){
+  const n=NODE[id];
+  const downAll=bfs(id,"out","all"), downDir=bfs(id,"out","direct");
+  const upAll=bfs(id,"in","all"), upDir=bfs(id,"in","direct");
+  const layerC=LAYERS[n.l].c;
+  const pick=(set,layer)=>[...set.sn].filter(x=>NODE[x].l===layer&&x!==id);
+  const both={sn:new Set([...upAll.sn,...downAll.sn])};const rulesOn=pick(both,2), projs=pick(both,3), caps=pick(both,4);
+  const regimes=pick(upAll,0), domains=pick(downAll,7), vs=pick(downAll,8), ops=pick(downAll,9);
+  const tag=(x,dirset)=> dirset.sn.has(x)
+    ? `<span class="tag d">direct</span>` : `<span class="tag i">inferred</span>`;
+  let html=`<h3><span class="dot" style="background:${layerC};margin-right:7px"></span>${E_(n.t)}</h3>`;
+  html+=`<div class="sub">${E_(LAYERS[n.l].k)}${n.m.s?" · "+E_(n.m.s):""}${n.m.w?" · impact weight "+n.m.w:""}${n.m.dv?' · <span class="tag '+(n.m.inf?"i":"d")+'">'+n.m.dv+"</span>":""}${n.m.reg?' <span class="tag reg">regulated</span>':""}</div>`;
+
+  if(ops.length){
+    const opsDir=ops.filter(x=>downDir.sn.has(x)).length;
+    const pct=Math.round(100*opsDir/ops.length);
+    html+=`<div class="metric"><div class="lbl">Business operations reached</div>
+      <div class="big">${ops.length}<span style="font-size:13px;color:var(--muted)"> total · ${opsDir} via direct-only</span></div>
+      <div class="lbl">${ops.length-opsDir} depend on an inferred link · path purity ${pct}%</div>
+      <div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  }
+  if(regimes.length){
+    html+=`<h4>Traces back to</h4>`;
+    regimes.forEach(r=>{html+=`<div class="row"><span class="nm">${E_(NODE[r].t)}</span>${tag(r,upDir)}</div>`;});
+  }
+  if(rulesOn.length){
+    html+=`<h4>SSOT rules on path (${rulesOn.length})</h4>`;
+    rulesOn.forEach(r=>{html+=`<div class="row"><span class="nm">${E_(NODE[r].t)}</span></div>`;});
+  }
+  if(projs.length){
+    html+=`<h4>Projects on path (${projs.length})</h4>`;
+    projs.forEach(p=>{html+=`<div class="row"><span class="nm">${E_(NODE[p].t)}</span><span class="tag d">${E_((NODE[p].m.s||"").split(" · ")[0])}</span></div>`;});
+  }
+  if(caps.length){
+    html+=`<h4>Value-prop capabilities (${caps.length})</h4>`;
+    caps.forEach(c=>{html+=`<div class="row"><span class="nm">${E_(NODE[c].t)}</span></div>`;});
+  }
+  if(domains.length){
+    html+=`<h4>Domains touched (${domains.length})</h4>`;
+    domains.forEach(d=>{html+=`<div class="row"><span class="nm">${E_(NODE[d].t)}</span>${tag(d,downDir)}</div>`;});
+    if(domains.length>1) html+=`<div class="hint" style="margin-top:4px">Crosses ${domains.length} domains — cross-domain impact.</div>`;
+  }
+  if(vs.length){
+    html+=`<h4>Value streams (${vs.length})</h4>`;
+    vs.forEach(v=>{html+=`<div class="row"><span class="nm">${E_(NODE[v].t)}</span>${tag(v,downDir)}</div>`;});
+  }
+  if(ops.length){
+    html+=`<h4>Operations (${ops.length})</h4>`;
+    ops.forEach(o=>{html+=`<div class="row"><span class="nm">${E_(NODE[o].t)}</span>${tag(o,downDir)}</div>`;});
+  }
+  if(!ops.length && !regimes.length){
+    html+=`<div class="hint" style="margin-top:12px">This node is a roll-up / terminal node in the current trace scope. Switch <b>Trace via</b> or pick another node.</div>`;
+  }
+  html+=legendHTML();
+  document.getElementById("panel").innerHTML=html;
+}
+
+function legendHTML(){
+  return `<h4>Legend</h4><div class="legend">
+    <div class="li"><span class="sw"></span> direct relation (deterministic)</div>
+    <div class="li"><span class="sw dash"></span> inferred relation (AI / estimated)</div>
+    <div class="li"><span class="sw up"></span> upstream — why this is flagged</div>
+    <div class="li"><span class="sw down"></span> downstream — what it impacts</div>
+    <div class="li"><span class="dot" style="background:var(--inf)"></span> dashed border = LLM-judgment node</div>
+  </div>`;
+}
+function defaultPanel(){
+  document.getElementById("panel").innerHTML=
+   `<h3>Trace an impact path</h3>
+    <div class="sub">From Insperity's governing statutes, through the SSOT rules and program projects, to the business operations they protect.</div>
+    <div class="hint">
+      <p><b>Click any node</b> to light up its full trace: gold = upstream (which regime / defect drives it), green = downstream (which services, value streams and operations it moves).</p>
+      <p>Or <b>start from a regime</b> (e.g. FLSA) or <b>a project</b> (e.g. ISP-10) in the dropdowns to see which rules it carries, which capabilities it realizes and which business operations it protects.</p>
+      <p>Toggle <b>Trace via → Direct only</b> to drop every AI-inferred link and watch which business impacts <i>disappear</i> — those are the conclusions that depend on inference rather than deterministic knowledge.</p>
+    </div>${legendHTML()}`;
+}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+const rs=document.getElementById("regimeSel");
+N.filter(n=>n[1]===0).forEach(([id,,t])=>{const o=document.createElement("option");o.value=id;o.textContent=t;rs.appendChild(o);});
+const ps=document.getElementById("projSel");
+N.filter(n=>n[1]===3).forEach(([id,,t])=>{const o=document.createElement("option");o.value=id;o.textContent=t;ps.appendChild(o);});
+ps.addEventListener("change",()=>{ if(ps.value){select(ps.value); const p=POS[ps.value];
+  document.getElementById("canvas").scrollTo({left:Math.max(0,p.x*scale-300),top:Math.max(0,(p.y-200)*scale),behavior:"smooth"});} else clearSel();});
+rs.addEventListener("change",()=>{ if(rs.value){select(rs.value); const p=POS[rs.value];
+  document.getElementById("canvas").scrollTo({left:Math.max(0,p.x*scale-40),top:Math.max(0,(p.y-120)*scale),behavior:"smooth"});} else clearSel();});
+
+document.querySelectorAll("#scopeSeg button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("#scopeSeg button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); if(curId)select(curId);}));
+
+document.getElementById("resetBtn").addEventListener("click",clearSel);
+
+const search=document.getElementById("search");
+search.addEventListener("keydown",e=>{ if(e.key!=="Enter")return;
+  const q=search.value.trim().toLowerCase(); if(!q)return;
+  const hit=N.find(n=>n[2].toLowerCase().includes(q)); if(hit){select(hit[0]);
+    const p=POS[hit[0]];document.getElementById("canvas").scrollTo({left:Math.max(0,p.x*scale-200),top:Math.max(0,(p.y-120)*scale),behavior:"smooth"});}
+});
+
+function setZoom(z){scale=Math.min(1.6,Math.max(0.5,z));
+  const svg=document.querySelector("#canvas svg"); if(svg){svg.setAttribute("width",W*scale);svg.setAttribute("height",H*scale);}
+  document.getElementById("zLbl").textContent=Math.round(scale*100)+"%";}
+document.getElementById("zIn").addEventListener("click",()=>setZoom(scale+0.15));
+document.getElementById("zOut").addEventListener("click",()=>setZoom(scale-0.15));
+
+render(); defaultPanel();
+</script>
+</body>
+</html>

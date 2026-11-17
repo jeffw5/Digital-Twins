@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEO Compliance Map Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky section rail on the left, reading column on the right; rail becomes a horizontal chip bar under 900px.
+   Palette follows the map itself so the guide and the tool read as one product. */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --sunk:#E8ECF0; --ink:#17212B; --muted:#5A6774; --line:#D3DAE1;
+  --accent:#1F5FBF; --accent-tint:#E4ECF9; --sel:#C2255C;
+  --r-exec:#2F5DA8; --r-legal:#8A5A2B; --r-comp:#0F7C86; --r-risk:#B42D3A; --r-tech:#6A55B8;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --accent:#7FAEF5; --accent-tint:#1A2A42; --sel:#F06595;
+  --r-exec:#7BA4EA; --r-legal:#D29B63; --r-comp:#46C3CC; --r-risk:#EE7A84; --r-tech:#AE9CF0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --accent:#7FAEF5; --accent-tint:#1A2A42; --sel:#F06595;
+  --r-exec:#7BA4EA; --r-legal:#D29B63; --r-comp:#46C3CC; --r-risk:#EE7A84; --r-tech:#AE9CF0; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);margin:0;padding-inline:16px;padding-block:0}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:40px;padding-block:28px 80px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:16px;padding-block:16px 60px}}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* rail */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;display:flex;flex-direction:column;gap:18px}
+.rail .brand{font-weight:700;font-size:1rem;line-height:1.3}
+.rail .brand small{display:block;font-weight:400;color:var(--muted);font-size:.8rem;margin-top:2px}
+.toc{display:flex;flex-direction:column;gap:1px;border-left:1px solid var(--line)}
+.toc a{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 14px;margin-left:-1px;border-left:2px solid transparent;text-decoration:none;color:var(--muted);font-size:.9rem;line-height:1.3}
+.toc a:hover{color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--ink);border-left-color:var(--accent);font-weight:600}
+.toc .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.toc .grp{font:600 .68rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 0 4px 14px}
+.theme{display:flex;gap:4px;font-size:.78rem}
+.theme button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:3px 8px;cursor:pointer;color:var(--muted)}
+.theme button[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
+@media (max-width:900px){
+  .rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--line);gap:6px}
+  .rail .brand small,.theme{display:none}
+  .toc{flex-direction:row;overflow-x:auto;border-left:0;gap:6px;scrollbar-width:none}
+  .toc::-webkit-scrollbar{display:none}
+  .toc .grp{display:none}
+  .toc a{border:1px solid var(--line);border-radius:999px;margin:0;padding:4px 11px;white-space:nowrap;background:var(--surface);font-size:.82rem}
+  .toc a[aria-current="true"]{border-color:var(--accent);background:var(--accent-tint)}
+}
+
+/* main */
+main{min-width:0;display:flex;flex-direction:column;gap:22px}
+header.hero h1{font-size:clamp(1.6rem,3.2vw,2.2rem);line-height:1.15;margin:0 0 10px;letter-spacing:-.015em;text-wrap:balance}
+header.hero p{margin:0;max-width:68ch;color:var(--muted);font-size:1.05rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font:500 .76rem var(--f-mono);color:var(--muted)}
+.picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:6px}
+@media (max-width:760px){.picker{grid-template-columns:repeat(2,minmax(0,1fr))}.role:last-child{grid-column:span 2}}
+.role{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 12px 12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative;min-width:0}
+.role::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--c)}
+.role b{font-size:.95rem}
+.role span{color:var(--muted);font-size:.8rem;line-height:1.35}
+.role:hover{border-color:var(--c)}
+.role[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c);background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+.pickerhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:22px}
+.pickerhead h2{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.pickerhead button{border:0;background:none;color:var(--accent);cursor:pointer;font-size:.85rem;padding:0}
+
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;scroll-margin-top:24px;transition:opacity .2s}
+@media (max-width:900px){section.card{scroll-margin-top:70px}}
+section.card.faded{opacity:.5}
+section.card.faded:hover,section.card.faded:focus-within{opacity:1}
+.card>button.head{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;padding:18px 22px;cursor:pointer}
+.card>button.head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:12px}
+.head .tag{font:600 .68rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--muted));min-width:0}
+.head h2{margin:0;font-size:1.2rem;line-height:1.25;flex:1;text-wrap:balance}
+.head .chev{width:20px;height:20px;flex:none;color:var(--muted);transition:transform .2s}
+.card[data-open="false"] .chev{transform:rotate(-90deg)}
+.head .titles{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.body{padding:0 22px 22px;display:flex;flex-direction:column;gap:14px}
+.card[data-open="false"] .body{display:none}
+.body p{margin:0;max-width:70ch}
+.lead{font-size:1.02rem}
+.body ul,.body ol{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.body li::marker{color:var(--muted)}
+.body strong{font-weight:600}
+.note{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--muted);font-size:.93rem}
+.try{display:flex;gap:12px;align-items:flex-start;background:var(--accent-tint);border-radius:8px;padding:12px 14px;font-size:.93rem}
+.try b{font:600 .68rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding-top:3px}
+.try div{min-width:0}
+.ui{font-weight:600;background:var(--sunk);border:1px solid var(--line);border-radius:5px;padding:0 5px;font-size:.88em;overflow-wrap:anywhere;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--sunk);border:1px solid var(--line);display:grid;place-items:center;font:600 .8rem var(--f-mono);color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th{text-align:left;font:600 .7rem var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--sunk);padding:9px 12px}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:color-mix(in srgb,var(--sunk) 60%,transparent)}
+tr.clickable td:first-child{font-weight:600;white-space:nowrap}
+tr.clickable td:first-child span{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;background:var(--c)}
+tr.hl td{background:color-mix(in srgb,var(--c) 8%,transparent)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.stat b{display:block;font:600 1.35rem var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:.8rem;line-height:1.3;display:block}
+.prec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.prec{grid-template-columns:minmax(0,1fr)}}
+.prec div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.9rem}
+.prec div b{display:block;font-family:var(--f-mono);font-size:.82rem;color:var(--r-legal);margin-bottom:2px}
+.diagram{overflow-x:auto}
+.diagram svg{display:block;width:100%;min-width:620px;height:auto}
+.diagram .hot{cursor:pointer}
+.diagram .hot rect{transition:stroke-width .15s}
+.diagram .hot:hover rect,.diagram .hot:focus-visible rect{stroke-width:2.4}
+.diagram .hot:focus{outline:none}
+.diagram text{font-family:var(--f-body)}
+footer{color:var(--muted);font-size:.82rem;display:flex;flex-wrap:wrap;gap:6px 16px;padding-top:8px}
+.top{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:.82rem;cursor:pointer;color:var(--muted);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <nav class="rail" aria-label="Sections">
+    <div class="brand">PEO Standards &amp; Compliance Map<small>Guide for leaders and subject-matter experts</small></div>
+    <div class="toc" id="toc">
+      <div class="grp">Orientation</div>
+      <a href="#glance"><span class="dot" style="background:var(--muted)"></span>At a glance</a>
+      <a href="#start"><span class="dot" style="background:var(--muted)"></span>Start in five minutes</a>
+      <a href="#who"><span class="dot" style="background:var(--muted)"></span>Who uses it for what</a>
+      <div class="grp">By role</div>
+      <a href="#executives"><span class="dot" style="background:var(--r-exec)"></span>Executives</a>
+      <a href="#legal"><span class="dot" style="background:var(--r-legal)"></span>Legal</a>
+      <a href="#compliance"><span class="dot" style="background:var(--r-comp)"></span>Compliance</a>
+      <a href="#risk"><span class="dot" style="background:var(--r-risk)"></span>Risk</a>
+      <a href="#technical"><span class="dot" style="background:var(--r-tech)"></span>Technical leaders</a>
+      <div class="grp">Before you rely on it</div>
+      <a href="#limits"><span class="dot" style="background:var(--muted)"></span>Limits</a>
+    </div>
+    <div class="theme" role="group" aria-label="Theme"><button data-t="auto" aria-pressed="true">Auto</button><button data-t="light" aria-pressed="false">Light</button><button data-t="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>Find the employment laws that apply to any client worksite, and who carries each one</h1>
+      <p>The PEO Standards &amp; Compliance Map shows, for any client worksite, which federal, state and local employment laws apply at its headcount, what each law requires, and whether the PEO or the client carries it. It runs in a web browser from one file and needs no install.</p>
+      <div class="meta"><span>Updated 30 Sep 2026</span><span>47 standards · 26 requirements · 9 jurisdictions</span><span>Sample data · not legal advice</span></div>
+      <div class="pickerhead"><h2>Pick your role to focus the guide</h2><button id="showAll" hidden>Show all sections</button></div>
+      <div class="picker" id="picker">
+        <button class="role" data-role="executives" style="--c:var(--r-exec)" aria-pressed="false"><b>Executives</b><span>Exposure and the co-employment split</span></button>
+        <button class="role" data-role="legal" style="--c:var(--r-legal)" aria-pressed="false"><b>Legal</b><span>Citations and which law yields</span></button>
+        <button class="role" data-role="compliance" style="--c:var(--r-comp)" aria-pressed="false"><b>Compliance</b><span>Duties and owners per client</span></button>
+        <button class="role" data-role="risk" style="--c:var(--r-risk)" aria-pressed="false"><b>Risk</b><span>Thresholds, flux, unverified data</span></button>
+        <button class="role" data-role="technical" style="--c:var(--r-tech)" aria-pressed="false"><b>Technical</b><span>Files, governance, deployment</span></button>
+      </div>
+    </header>
+
+    <!-- AT A GLANCE -->
+    <section class="card" id="glance" data-roles="all" data-open="true">
+      <button class="head" aria-expanded="true" aria-controls="glance-b"><span class="titles"><span class="tag">Orientation</span><h2>At a glance</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="glance-b">
+        <p class="lead">Four knowledge layers feed one map, and each leader reads it a different way. Click a leader to jump to their section.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 760 464" role="img" aria-label="Four knowledge layers feed one map that each leader reads a different way" font-size="13">
+            <defs><marker id="ga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+            <g fill="none" stroke="var(--line)" stroke-width="1.25">
+              <rect x="24" y="16" width="308" height="296" rx="8"/>
+            </g>
+            <text x="40" y="40" font-weight="600" fill="var(--muted)">Knowledge layers (six Turtle files)</text>
+            <g class="hot" tabindex="0" role="link" aria-label="Client data — see Technical leaders" data-go="technical"><rect x="40" y="52" width="276" height="56" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.25"/><text x="56" y="76" font-weight="600" fill="var(--ink)">Client data</text><text x="56" y="92" font-size="11.5" fill="var(--muted)">PEO, clients, worksites, agreements</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Reference data — see Technical leaders" data-go="technical"><rect x="40" y="116" width="276" height="56" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.25"/><text x="56" y="140" font-weight="600" fill="var(--ink)">Reference data</text><text x="56" y="156" font-size="11.5" fill="var(--muted)">47 laws, 26 requirements, wage rates</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Ontology — see Technical leaders" data-go="technical"><rect x="40" y="180" width="276" height="56" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.25"/><text x="56" y="204" font-weight="600" fill="var(--ink)">Ontology</text><text x="56" y="220" font-size="11.5" fill="var(--muted)">Classes and rules, aligned to BFO</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Topic taxonomy — see Technical leaders" data-go="technical"><rect x="40" y="244" width="276" height="56" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.25"/><text x="56" y="268" font-weight="600" fill="var(--ink)">Topic taxonomy</text><text x="56" y="284" font-size="11.5" fill="var(--muted)">30 compliance topics (SKOS)</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Governance — see Technical leaders" data-go="technical"><rect x="24" y="344" width="308" height="56" rx="8" fill="var(--sunk)" stroke="var(--line)" stroke-width="1.25"/><text x="40" y="368" font-weight="600" fill="var(--ink)">Governance</text><text x="40" y="384" font-size="11.5" fill="var(--muted)">Quality gates, 10-stage lifecycle, ISO map</text></g>
+            <g fill="none" stroke="var(--muted)" stroke-width="1.25">
+              <path d="M178 344V314" marker-end="url(#ga)"/><path d="M332 170H370" marker-end="url(#ga)"/>
+              <path d="M522 170H541V48H558" marker-end="url(#ga)"/><path d="M541 116H558" marker-end="url(#ga)"/><path d="M541 170V184H558" marker-end="url(#ga)"/><path d="M541 184V252H558" marker-end="url(#ga)"/><path d="M541 252V320H558" marker-end="url(#ga)"/>
+            </g>
+            <text x="188" y="334" font-size="11.5" fill="var(--muted)">checks every release</text>
+            <text x="351" y="162" text-anchor="middle" font-size="11.5" fill="var(--muted)">feeds</text>
+            <g class="hot" tabindex="0" role="link" aria-label="The map — see Start in five minutes" data-go="start"><rect x="372" y="110" width="150" height="120" rx="8" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="2"/><text x="447" y="150" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">The map</text><text x="447" y="174" text-anchor="middle" font-size="11.5" fill="var(--ink)">Views, layouts and</text><text x="447" y="190" text-anchor="middle" font-size="11.5" fill="var(--ink)">applicability check</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Executives section" data-go="executives"><rect x="560" y="20" width="176" height="56" rx="8" fill="var(--surface)" stroke="var(--r-exec)" stroke-width="1.25"/><text x="576" y="44" font-weight="600" fill="var(--ink)">Executives</text><text x="576" y="60" font-size="11.5" fill="var(--muted)">Cluster by level</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Legal section" data-go="legal"><rect x="560" y="88" width="176" height="56" rx="8" fill="var(--surface)" stroke="var(--r-legal)" stroke-width="1.25"/><text x="576" y="112" font-weight="600" fill="var(--ink)">Legal</text><text x="576" y="128" font-size="11.5" fill="var(--muted)">Jurisdiction map</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Compliance section" data-go="compliance"><rect x="560" y="156" width="176" height="56" rx="8" fill="var(--surface)" stroke="var(--r-comp)" stroke-width="1.25"/><text x="576" y="180" font-weight="600" fill="var(--ink)">Compliance</text><text x="576" y="196" font-size="11.5" fill="var(--muted)">Applicability check</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Risk section" data-go="risk"><rect x="560" y="224" width="176" height="56" rx="8" fill="var(--surface)" stroke="var(--r-risk)" stroke-width="1.25"/><text x="576" y="248" font-weight="600" fill="var(--ink)">Risk</text><text x="576" y="264" font-size="11.5" fill="var(--muted)">Status filters, List</text></g>
+            <g class="hot" tabindex="0" role="link" aria-label="Technical leaders section" data-go="technical"><rect x="560" y="292" width="176" height="56" rx="8" fill="var(--surface)" stroke="var(--r-tech)" stroke-width="1.25"/><text x="576" y="316" font-weight="600" fill="var(--ink)">Technical leaders</text><text x="576" y="332" font-size="11.5" fill="var(--muted)">TBox, Governance views</text></g>
+          </svg>
+        </div>
+        <p class="note">The browser page reads all six files at once, so every view shows the same facts. Governance rules check each layer before a release.</p>
+      </div>
+    </section>
+
+    <!-- START -->
+    <section class="card" id="start" data-roles="all" data-open="true">
+      <button class="head" aria-expanded="true" aria-controls="start-b"><span class="titles"><span class="tag">Orientation</span><h2>Start in five minutes</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="start-b">
+        <p class="lead">One question — which laws apply at a client worksite — takes about five minutes the first time.</p>
+        <ol class="steps">
+          <li><div>Open <strong>PEO Standards &amp; Compliance Map.html</strong> in any browser. It needs an internet connection the first time to load its drawing library.</div></li>
+          <li><div>Pick a <strong>view</strong> on the left. <span class="ui">Jurisdiction map</span> shows every law by level and where it applies; <span class="ui">Co-employment</span> shows the PEO, clients, worksites and who carries what.</div></li>
+          <li><div><strong>Hover</strong> any box to read its attributes and a plain-language explanation. <strong>Click</strong> to pin it in the right-hand panel with every statement about it. <strong>Double-click</strong> to show only its neighbours.</div></li>
+          <li><div>Run the <strong>Applicability check</strong>: choose a worksite (or a state or city), enter the client's headcount, press <span class="ui">Check</span>. The map lists what applies, what is below the headcount threshold, what a local law displaces, and who is responsible for each requirement.</div></li>
+          <li><div>Switch <strong>layout</strong> above the graph: <span class="ui">Network</span> for relationships, <span class="ui">Cluster</span> to group by level, topic or status, <span class="ui">Hierarchy</span> for nation → state → county → city, <span class="ui">List</span> for a sortable table.</div></li>
+        </ol>
+        <p class="note">The <span class="ui">Path finder</span> traces how any two items connect — for example, a worksite to the ISO standard that governs how its data is managed.</p>
+      </div>
+    </section>
+
+    <!-- WHO -->
+    <section class="card" id="who" data-roles="all" data-open="true">
+      <button class="head" aria-expanded="true" aria-controls="who-b"><span class="titles"><span class="tag">Orientation</span><h2>Who uses it for what</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="who-b">
+        <p class="lead">Each leader starts from a different question. Click a row to open that role's section.</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Leader</th><th>Questions the map answers</th><th>Start here</th><th>Then</th></tr></thead>
+          <tbody>
+            <tr class="clickable" data-go="executives" style="--c:var(--r-exec)" tabindex="0"><td><span></span>Executives</td><td>Where are we most exposed? What do we carry versus the client?</td><td><span class="ui">Jurisdiction map</span>, <span class="ui">Cluster</span> grouped by level</td><td>Applicability check for a key client</td></tr>
+            <tr class="clickable" data-go="legal" style="--c:var(--r-legal)" tabindex="0"><td><span></span>Legal</td><td>Which law governs, and which yields? What is the citation? Is it still in force?</td><td><span class="ui">Jurisdiction map</span>, <span class="ui">Network</span> layout</td><td>Pin a law; read its preemption and displacement links</td></tr>
+            <tr class="clickable" data-go="compliance" style="--c:var(--r-comp)" tabindex="0"><td><span></span>Compliance</td><td>What must this client do at this headcount, and who owns each duty?</td><td>Applicability check</td><td><span class="ui">Co-employment</span> view; <span class="ui">List</span> layout</td></tr>
+            <tr class="clickable" data-go="risk" style="--c:var(--r-risk)" tabindex="0"><td><span></span>Risk</td><td>Where are thresholds close? Which laws are challenged, new or unverified?</td><td>Filters: legal status, "not yet verified"</td><td><span class="ui">List</span> layout sorted by status</td></tr>
+            <tr class="clickable" data-go="technical" style="--c:var(--r-tech)" tabindex="0"><td><span></span>Technical leaders</td><td>How is the knowledge built, governed and deployed?</td><td><span class="ui">Ontology (TBox)</span> and <span class="ui">Governance lifecycle</span> views</td><td><span class="ui">Hierarchy</span> layout; the six Turtle files</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- EXECUTIVES -->
+    <section class="card" id="executives" data-roles="executives" data-open="true" style="--c:var(--r-exec)">
+      <button class="head" aria-expanded="true" aria-controls="exec-b"><span class="titles"><span class="tag">By role</span><h2>Executives</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="exec-b">
+        <p class="lead">Use the map to see where compliance load concentrates, and how much of it the PEO carries under each client agreement.</p>
+        <div class="stats">
+          <div class="stat"><b>47</b><span>standards in the sample: 18 federal, 20 state, 9 local</span></div>
+          <div class="stat"><b>21</b><span>apply to the Chicago bakery at 38 employees</span></div>
+          <div class="stat"><b>+4</b><span>more start at 50 or 100 employees</span></div>
+          <div class="stat"><b>10 of 17</b><span>of its requirements have no clause in its agreement yet</span></div>
+        </div>
+        <ul>
+          <li><strong>Exposure by market.</strong> Choose <span class="ui">Cluster</span> layout, group by <span class="ui">Level of government</span>. Local rules cluster in Chicago, Cook County and New York City; Texas bars most local employment rules.</li>
+          <li><strong>Exposure by client.</strong> Run the applicability check. The fictional Chicago bakery with 38 employees is subject to 21 standards: 13 federal, 5 state and 3 local. The ACA employer mandate, FMLA, WARN and Chicago Fair Workweek start at 50 or 100 employees, so growth changes the obligation set.</li>
+          <li><strong>The co-employment split.</strong> Its client service agreement assigns 8 requirements: 1 to the PEO, 3 shared and 4 to the client. Ten of the 17 requirements that apply at that site have no clause yet — a contract and pricing question, not only a compliance one.</li>
+          <li><strong>Entering a market.</strong> Pick a state in the applicability check before signing a client there. Texas, for example, requires a PEO license for even one assigned employee.</li>
+        </ul>
+        <div class="try"><b>Ask your team</b><div>Which clients sit just below a threshold, and which requirements are unassigned in their agreements?</div></div>
+      </div>
+    </section>
+
+    <!-- LEGAL -->
+    <section class="card" id="legal" data-roles="legal" data-open="true" style="--c:var(--r-legal)">
+      <button class="head" aria-expanded="true" aria-controls="legal-b"><span class="titles"><span class="tag">By role</span><h2>Legal</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="legal-b">
+        <p class="lead">Use the map to trace which rule governs where levels of government overlap, and to check each record's source before relying on it.</p>
+        <ul>
+          <li><strong>Every standard carries its citation</strong>, enforcing agency, effective date, headcount threshold and legal status. Pin a law to see them, plus the requirements it creates.</li>
+        </ul>
+        <p><strong>Precedence is explicit.</strong> Four relationships say how laws interact:</p>
+        <div class="prec">
+          <div><b>preempted by</b>The lower law has no effect. The Austin paid sick time ordinance is held preempted by the Texas Minimum Wage Act.</div>
+          <div><b>displaced by</b>The law yields where another applies. The Illinois Paid Leave for All Workers Act and the Cook County ordinance yield to Chicago's paid leave ordinance for Chicago workers.</div>
+          <div><b>supplemented by</b>Both apply and the more protective governs. Chicago's $17.05 minimum wage supplements the Illinois and Cook County rates.</div>
+          <div><b>amends</b>Illinois HB 3773 adds AI-in-employment duties to the Illinois Human Rights Act from January 1, 2026.</div>
+        </div>
+        <ul>
+          <li><strong>History is kept, not overwritten.</strong> The 2024 federal overtime rule stays in the map marked <em>Rescinded</em>. Its status note records the court vacatur and DOL's rescission effective May 15, 2026, which restored the $684-per-week threshold.</li>
+          <li><strong>Check verification before citing.</strong> Each record shows <em>Checked</em> with a date and source link, or <em>Not yet verified</em>. Use <span class="ui">Filter → Laws: only those not yet verified</span> to see the review queue.</li>
+        </ul>
+        <p class="note">The map is a model of the law, not legal advice. Counsel should review the rules for co-employment headcount counting, which vary by statute.</p>
+      </div>
+    </section>
+
+    <!-- COMPLIANCE -->
+    <section class="card" id="compliance" data-roles="compliance" data-open="true" style="--c:var(--r-comp)">
+      <button class="head" aria-expanded="true" aria-controls="comp-b"><span class="titles"><span class="tag">By role</span><h2>Compliance</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="comp-b">
+        <p class="lead">Use the applicability check as the working tool: it turns a location and a headcount into a list of duties, with an owner for each.</p>
+        <ol class="steps">
+          <li><div>Choose the client's worksite and confirm its headcount.</div></li>
+          <li><div>Read the five result groups: <em>Applies</em>, <em>Below headcount threshold</em>, <em>Displaced by a local ordinance</em>, <em>Not in force here</em>, and <em>PEO obligations</em> such as CPEO tax certification.</div></li>
+          <li><div>Read the requirements list. Each row names the responsible party from the client service agreement, or <em>no clause yet</em>.</div></li>
+          <li><div>Press <span class="ui">Show only these</span> to see just the applicable laws, their jurisdictions and enforcing agencies. Switch to <span class="ui">List</span> layout to sort and scan them.</div></li>
+        </ol>
+        <div class="try"><b>Worked example</b><div>A 12-person design studio in Brooklyn. Title VII, the ADA and six other federal laws do not reach it, but the New York State Human Rights Law covers every employer. NYC Local Law 144 applies if it screens candidates with an automated tool. Its agreement assigns the annual bias audit to the PEO, which runs the screening tool, and shares the candidate notice.</div></div>
+        <p class="note">The <span class="ui">Requirements</span> view groups every duty by compliance topic. Use it to build control checklists by topic rather than by statute.</p>
+      </div>
+    </section>
+
+    <!-- RISK -->
+    <section class="card" id="risk" data-roles="risk" data-open="true" style="--c:var(--r-risk)">
+      <button class="head" aria-expanded="true" aria-controls="risk-b"><span class="titles"><span class="tag">By role</span><h2>Risk</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="risk-b">
+        <p class="lead">Use the map to find exposure that a law-by-law review misses: thresholds about to be crossed, laws in flux, new AI duties, and records nobody has verified.</p>
+        <ul>
+          <li><strong>Threshold proximity.</strong> Change the headcount in the applicability check and rerun it. Laws move from <em>Below headcount threshold</em> to <em>Applies</em> at 15, 20, 50 and 100 employees.</li>
+          <li><strong>Laws in flux.</strong> <span class="ui">Filter → Legal status</span> separates in-force, challenged, preempted and rescinded laws. Texas HB 2127, which bars most local employment rules, is in force but still under legal challenge.</li>
+          <li><strong>AI in employment decisions.</strong> The <em>Worker privacy and AI</em> topic links Illinois HB 3773 and NYC Local Law 144 to their notice, bias-audit and non-discrimination duties. Pair it with the ISO/IEC 42005 impact-assessment standard in the governance view.</li>
+          <li><strong>Data you can trust.</strong> 15 of the 47 standards have been checked against a published source; 32 have not. The quality rules (<code>peo-shapes.ttl</code>) list the gap as warnings, so it is visible rather than hidden.</li>
+          <li><strong>Unassigned duties.</strong> A requirement with <em>no clause yet</em> in the agreement is an allocation risk between the PEO and the client.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TECHNICAL -->
+    <section class="card" id="technical" data-roles="technical" data-open="true" style="--c:var(--r-tech)">
+      <button class="head" aria-expanded="true" aria-controls="tech-b"><span class="titles"><span class="tag">By role</span><h2>Technical leaders</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="tech-b">
+        <p class="lead">The map is a working prototype of a governed knowledge graph: one OWL ontology, one SKOS taxonomy, reference data, client data and quality rules, read directly by the browser page.</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>File</th><th>Artifact type</th><th>What it holds</th></tr></thead>
+          <tbody>
+            <tr><td><code>peo-es.ttl</code></td><td>Ontology (OWL 2 DL, aligned to BFO, ISO/IEC 21838-2)</td><td>27 classes and 43 properties: standards, requirements, jurisdictions, employers, worksites, agreements</td></tr>
+            <tr><td><code>peo-topics.ttl</code></td><td>Taxonomy (SKOS)</td><td>30 compliance topics</td></tr>
+            <tr><td><code>peo-standards.ttl</code></td><td>Knowledge graph, reference data</td><td>47 standards, 26 requirements, 9 jurisdictions, 20 agencies, 11 wage rates</td></tr>
+            <tr><td><code>peo-examples.ttl</code></td><td>Knowledge graph, client data</td><td>A fictional PEO, four clients, five worksites, two agreements</td></tr>
+            <tr><td><code>peo-shapes.ttl</code></td><td>Quality rules (SHACL)</td><td>Release gates and the verification backlog</td></tr>
+            <tr><td><code>ke-governance-scheme.ttl</code></td><td>Governance scheme (SKOS)</td><td>A 10-stage lifecycle and 40 ISO standards mapped to it</td></tr>
+          </tbody>
+        </table></div>
+        <ul>
+          <li><strong>Reasoning.</strong> The ontology infers which standards a worksite is subject to from its jurisdiction chain, and classifies each law as federal, state or local.</li>
+          <li><strong>Governance.</strong> The <span class="ui">Governance lifecycle</span> view, best in <span class="ui">Hierarchy</span> layout, shows each stage from scoping to retirement and the ISO standards that guide it. No single ISO standard covers the whole lifecycle; ISO/IEC 5392:2024 is the umbrella, and 24 of the 40 standards are new or revised since 2022.</li>
+          <li><strong>Deployment.</strong> Persist the slow-changing reference data in a graph store (RDF, or a property graph queried with ISO GQL). Expose client, worksite and headcount data from the HR system as a virtual graph (SQL/PGQ or R2RML) so it is never copied or stale.</li>
+          <li><strong>Change control.</strong> Edit the Turtle files, run the quality rules, then rebuild the page, which embeds the files.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LIMITS -->
+    <section class="card" id="limits" data-roles="all" data-open="true">
+      <button class="head" aria-expanded="true" aria-controls="lim-b"><span class="titles"><span class="tag">Before you rely on it</span><h2>Limits</h2></span><svg class="chev" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button>
+      <div class="body" id="lim-b">
+        <p class="lead">Treat the map as a prototype for decisions about scope and investment, not as a compliance system of record.</p>
+        <ul>
+          <li><strong>Not legal advice.</strong> It models the law; counsel confirms how each rule applies.</li>
+          <li><strong>Sample scope.</strong> Federal law plus Illinois, Texas, California and New York, and Chicago, Cook County, New York City and Austin. California cities are not modeled.</li>
+          <li><strong>Partly verified.</strong> 15 of 47 standards were checked against a source on September 30, 2026. Clear the other 32 before any production use.</li>
+          <li><strong>Simplified thresholds.</strong> The check compares headcount with each law's minimum. Real counting rules (employees within 75 miles for FMLA, full-time equivalents for the ACA, co-employed headcount) are noted per law but not calculated.</li>
+          <li><strong>Fictional client data.</strong> The PEO, clients and agreements are invented to show the method.</li>
+          <li><strong>Point in time.</strong> Wage rates and statuses are dated records; the page does not update itself.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer><span>Companion to <strong>PEO Standards &amp; Compliance Map.html</strong></span><span>Content current as of 30 Sep 2026</span></footer>
+  </main>
+</div>
+<button class="top" id="toTop" hidden>↑ Top</button>
+
+<script>
+(function(){
+  const cards=[...document.querySelectorAll('section.card')];
+  const links=[...document.querySelectorAll('#toc a')];
+  const roleBtns=[...document.querySelectorAll('.role')];
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+
+  function setOpen(card,open){ card.dataset.open=String(open); card.querySelector('button.head').setAttribute('aria-expanded',String(open)) }
+  cards.forEach(c=>c.querySelector('button.head').addEventListener('click',()=>setOpen(c,c.dataset.open!=='true')));
+
+  function go(id,{open=true}={}){ const c=document.getElementById(id); if(!c) return; if(open) setOpen(c,true);
+    c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+    try{ history.replaceState(null,'','#'+id) }catch(e){}
+    c.querySelector('button.head').focus({preventScroll:true}) }
+  links.forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); go(a.getAttribute('href').slice(1)) }));
+  document.querySelectorAll('[data-go]').forEach(el=>{
+    el.addEventListener('click',()=>go(el.dataset.go));
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(el.dataset.go) } });
+  });
+
+  /* role focus: fade other roles' sections, highlight their table row */
+  function setRole(role){
+    roleBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===role)));
+    cards.forEach(c=>{ const r=c.dataset.roles; c.classList.toggle('faded',!!role&&r!=='all'&&r!==role) });
+    document.querySelectorAll('tr.clickable').forEach(tr=>tr.classList.toggle('hl',tr.dataset.go===role));
+    links.forEach(a=>{ const id=a.getAttribute('href').slice(1); const c=document.getElementById(id); a.style.opacity=role&&c.classList.contains('faded')?'.5':'' });
+    document.getElementById('showAll').hidden=!role; store.set('peo-guide-role',role||null);
+  }
+  roleBtns.forEach(b=>b.addEventListener('click',()=>{ const r=b.getAttribute('aria-pressed')==='true'?null:b.dataset.role; setRole(r); if(r) go(r) }));
+  document.getElementById('showAll').addEventListener('click',()=>setRole(null));
+
+  /* scroll spy */
+  const io=new IntersectionObserver(entries=>{
+    const vis=cards.map(c=>({c,top:c.getBoundingClientRect().top})).filter(o=>o.top<window.innerHeight*0.45);
+    const cur=vis.length?vis.at(-1).c.id:cards[0].id;
+    links.forEach(a=>{ const on=a.getAttribute('href')==='#'+cur; a.setAttribute('aria-current',String(on)); if(on&&matchMedia('(max-width:900px)').matches) a.scrollIntoView({block:'nearest',inline:'center'}) });
+  },{rootMargin:'0px 0px -50% 0px',threshold:[0,1]});
+  cards.forEach(c=>io.observe(c));
+  window.addEventListener('scroll',()=>{ document.getElementById('toTop').hidden=window.scrollY<600 },{passive:true});
+  document.getElementById('toTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  links[0].setAttribute('aria-current','true');
+
+  /* theme */
+  const setTheme=t=>{ if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+    document.querySelectorAll('.theme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===t))); store.set('peo-guide-theme',t==='auto'?null:t) };
+  document.querySelectorAll('.theme button').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.t)));
+  const t=store.get('peo-guide-theme'); if(t) setTheme(t);
+  const r=store.get('peo-guide-role'); if(r&&document.getElementById(r)) setRole(r);
+  const h=(location.hash||'').slice(1); if(h&&document.getElementById(h)) setTimeout(()=>go(h),50);
+})();
+</script>
+
+</body>
+</html>

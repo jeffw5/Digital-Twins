@@ -1,0 +1,1480 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PEO Buyer Personas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+
+  :root{
+    --bg:#eef1f1;
+    --surface:#ffffff;
+    --surface-2:#f4f7f7;
+    --surface-3:#e7ecec;
+    --ink:#111a20;
+    --ink-soft:#2b383f;
+    --muted:#55666d;
+    --faint:#8b989d;
+    --line:#d3dbdd;
+    --line-strong:#b7c2c5;
+    --accent-human:#a4590d;
+    --accent-human-soft:#f1e2cd;
+    --accent-machine:#0d7379;
+    --accent-machine-soft:#d9edee;
+    --warn:#a13a32;
+    --warn-soft:#f4e0dd;
+    --good:#2e7a4f;
+    --good-soft:#dcefe2;
+    --shadow: 0 1px 2px rgba(17,26,32,.06), 0 8px 24px -12px rgba(17,26,32,.18);
+    --radius: 3px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0b1215;
+      --surface:#121a1e;
+      --surface-2:#172023;
+      --surface-3:#1d272b;
+      --ink:#e9eff1;
+      --ink-soft:#c7d3d7;
+      --muted:#93a4aa;
+      --faint:#66787e;
+      --line:#263136;
+      --line-strong:#344247;
+      --accent-human:#e5a750;
+      --accent-human-soft:#3a2c17;
+      --accent-machine:#4bc7cd;
+      --accent-machine-soft:#123236;
+      --warn:#e37a72;
+      --warn-soft:#3a1e1c;
+      --good:#69c290;
+      --good-soft:#173428;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b1215;
+    --surface:#121a1e;
+    --surface-2:#172023;
+    --surface-3:#1d272b;
+    --ink:#e9eff1;
+    --ink-soft:#c7d3d7;
+    --muted:#93a4aa;
+    --faint:#66787e;
+    --line:#263136;
+    --line-strong:#344247;
+    --accent-human:#e5a750;
+    --accent-human-soft:#3a2c17;
+    --accent-machine:#4bc7cd;
+    --accent-machine-soft:#123236;
+    --warn:#e37a72;
+    --warn-soft:#3a1e1c;
+    --good:#69c290;
+    --good-soft:#173428;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+
+  *{ box-sizing:border-box; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  }
+
+  html, body{ background:var(--bg); }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    font-size:15px;
+    line-height:1.5;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- Header ---------- */
+  .masthead{
+    border-bottom:1px solid var(--line);
+    background:var(--surface);
+  }
+  .masthead-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 24px 22px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    align-items:flex-end;
+    justify-content:space-between;
+  }
+  .id-plate h1{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:56px;
+    line-height:.9;
+    letter-spacing:.005em;
+    margin:6px 0 8px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .id-plate .role{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:58ch;
+    font-weight:500;
+  }
+  .stat-rail{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:8px 14px;
+    min-width:96px;
+  }
+  .stat .n{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1;
+    color:var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .l{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-top:3px;
+  }
+  .stat.human{ border-color: color-mix(in srgb, var(--accent-human) 40%, var(--line)); }
+  .stat.human .n{ color:var(--accent-human); }
+  .stat.machine{ border-color: color-mix(in srgb, var(--accent-machine) 40%, var(--line)); }
+  .stat.machine .n{ color:var(--accent-machine); }
+
+  /* ---------- Control panel ---------- */
+  .controls{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .controls-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:14px 24px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .row1{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px 18px;
+    align-items:center;
+  }
+  .search-box{
+    position:relative;
+    flex:1 1 220px;
+    min-width:180px;
+  }
+  .search-box input{
+    width:100%;
+    padding:9px 12px 9px 30px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    background:var(--surface);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13.5px;
+  }
+  .search-box input:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .search-box svg{
+    position:absolute; left:9px; top:50%; transform:translateY(-50%);
+    width:14px; height:14px; color:var(--faint); pointer-events:none;
+  }
+  .chipset{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.02em;
+    padding:6px 11px;
+    border-radius:100px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--muted);
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .12s, color .12s, border-color .12s;
+  }
+  .chip:hover{ border-color:var(--accent-machine); color:var(--ink); }
+  .chip:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .chip[aria-pressed="true"]{
+    background:var(--ink);
+    color:var(--surface);
+    border-color:var(--ink);
+  }
+  .toggles{ display:flex; gap:16px; flex-wrap:wrap; margin-left:auto; }
+  .toggle{
+    display:flex; align-items:center; gap:7px;
+    font-size:12.5px; color:var(--ink-soft); cursor:pointer; user-select:none;
+  }
+  .toggle input{ accent-color:var(--accent-machine); width:14px; height:14px; }
+
+  .row2{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:14px 22px;
+    padding-top:2px;
+  }
+  .gauge{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 14px 12px;
+  }
+  .gauge-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;
+  }
+  .gauge-head .name{ font-size:12px; font-weight:600; color:var(--ink); }
+  .gauge-head .val{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; font-variant-numeric: tabular-nums;
+  }
+  .gauge input[type=range]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:5px; border-radius:4px;
+    background:var(--line-strong);
+    margin:6px 0 7px;
+  }
+  .gauge input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:15px; height:15px; border-radius:50%;
+    background:var(--surface); border:2.5px solid var(--gauge-color, var(--accent-machine));
+    cursor:pointer; margin-top:-5px;
+    box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  .gauge input[type=range]::-moz-range-thumb{
+    width:15px; height:15px; border-radius:50%;
+    background:var(--surface); border:2.5px solid var(--gauge-color, var(--accent-machine));
+    cursor:pointer;
+  }
+  .gauge input[type=range]:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:3px; }
+  .gauge-foot{ display:flex; justify-content:space-between; font-size:11px; color:var(--faint); }
+  .verdict{
+    margin-top:7px; font-size:11.5px; font-weight:600; padding:4px 8px; border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .verdict.pass{ background:var(--good-soft); color:var(--good); }
+  .verdict.warn{ background:var(--warn-soft); color:var(--warn); }
+
+  /* ---------- Main ---------- */
+  main{ max-width:1180px; margin:0 auto; padding:30px 24px 80px; }
+
+  .section{ margin-bottom:36px; }
+  .section-head{
+    display:flex; align-items:baseline; gap:12px; margin-bottom:14px;
+    padding-bottom:8px; border-bottom:2px solid var(--line-strong);
+  }
+  .section-head h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:26px; font-weight:700; margin:0; letter-spacing:.01em;
+    color:var(--ink);
+  }
+  .section-head .count{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted);
+  }
+  .section-head .def{
+    font-size:12.5px; color:var(--muted); margin-left:auto; max-width:42ch; text-align:right;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(270px, 1fr));
+    gap:14px;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px solid var(--card-accent, var(--line-strong));
+    border-radius:var(--radius);
+    padding:14px 16px 13px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .card:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:2px; }
+  .breadcrumb{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--faint);
+    line-height:1.4;
+  }
+  .breadcrumb b{ color:var(--muted); }
+  .card h3{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:21px; font-weight:700; margin:0; color:var(--ink); line-height:1.05;
+  }
+  .card .value{
+    font-size:13px; color:var(--ink-soft);
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card.expanded .value{ -webkit-line-clamp:unset; }
+  .card .extra{ display:none; font-size:12px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; margin-top:2px; }
+  .card.expanded .extra{ display:block; }
+  .extra .def-label{ font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--faint); margin-bottom:3px; }
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+  .badge{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.03em;
+    padding:3px 8px; border-radius:100px; text-transform:uppercase;
+  }
+  .badge.grounded{ background:var(--good-soft); color:var(--good); }
+  .badge.illustrative{ background:var(--accent-human-soft); color:var(--accent-human); }
+  .expand-hint{ font-size:11px; color:var(--faint); }
+
+  .card.dim-human{ --card-accent: var(--accent-human); }
+  .card.dim-machine{ --card-accent: var(--accent-machine); }
+
+  /* Ghost (unpopulated) cards */
+  .ghost{
+    background:transparent;
+    border:1px dashed var(--line-strong);
+    box-shadow:none;
+    opacity:.72;
+  }
+  .ghost h3{ color:var(--muted); }
+  .ghost .value{ color:var(--faint); font-style:italic; -webkit-line-clamp:4; }
+  .ghost .badge{ background:var(--surface-3); color:var(--faint); }
+  .ghost.closematch{ border-style:solid; opacity:1; border-left:3px solid var(--accent-machine); }
+  .ghost.closematch h3{ color:var(--ink); }
+
+  .no-results{
+    grid-column:1/-1; padding:34px 10px; text-align:center; color:var(--muted);
+    border:1px dashed var(--line-strong); border-radius:var(--radius);
+  }
+
+  footer{
+    max-width:1180px; margin:0 auto; padding:0 24px 60px;
+    color:var(--muted); font-size:12px; line-height:1.7;
+    border-top:1px solid var(--line); padding-top:20px;
+  }
+  footer code{ font-family:'IBM Plex Mono', monospace; background:var(--surface-2); padding:1px 5px; border-radius:3px; }
+
+  [hidden]{ display:none !important; }
+
+  @media (max-width:640px){
+    .id-plate h1{ font-size:38px; }
+    .stat-rail{ width:100%; }
+    .section-head{ flex-wrap:wrap; }
+    .section-head .def{ text-align:left; margin-left:0; }
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabbar{
+    max-width:1180px; margin:0 auto; padding:14px 24px 0;
+    display:flex; gap:6px;
+  }
+  .tabbtn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px; letter-spacing:.05em; text-transform:uppercase;
+    padding:9px 18px; border:1px solid var(--line); border-bottom:none;
+    background:var(--surface-2); color:var(--muted); cursor:pointer;
+    border-radius:4px 4px 0 0; position:relative; top:1px;
+  }
+  .tabbtn:hover{ color:var(--ink); }
+  .tabbtn:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:2px; }
+  .tabbtn[aria-selected="true"]{
+    background:var(--surface); color:var(--ink); font-weight:600;
+    border-color:var(--line); border-bottom:1px solid var(--surface);
+  }
+
+  /* ---------- Graph view ---------- */
+  #view-graph{ max-width:1180px; margin:0 auto; padding:22px 24px 70px; }
+  .graph-frame{
+    position:relative; border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--surface); box-shadow:var(--shadow); overflow:hidden;
+  }
+  .graph-toolbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+    padding:10px 16px; border-bottom:1px solid var(--line);
+  }
+  .graph-legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); align-items:center; }
+  .legend-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
+  .legend-ring{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:-1px; border:1.5px dashed var(--line-strong); }
+  .reset-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; padding:6px 13px;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
+    border-radius:100px; cursor:pointer;
+  }
+  .reset-btn:hover{ border-color:var(--accent-machine); color:var(--ink); }
+  .reset-btn:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .graph-frame svg{ display:block; width:100%; height:640px; cursor:grab; background:var(--bg); }
+  .graph-frame svg:active{ cursor:grabbing; }
+  .graph-hint{ padding:9px 16px; font-size:11.5px; color:var(--faint); border-top:1px dashed var(--line); }
+
+  .node-circle{ stroke-width:2px; cursor:pointer; }
+  .node-circle.faded, .node-label.faded, .link.faded{ opacity:.08; pointer-events:none; }
+  .link{ stroke:var(--line-strong); stroke-opacity:.8; fill:none; transition:opacity .15s; }
+  .link.dim-human{ stroke:var(--accent-human); stroke-opacity:.4; }
+  .link.dim-machine{ stroke:var(--accent-machine); stroke-opacity:.4; }
+  .node-label{
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px; fill:var(--ink-soft);
+    paint-order:stroke; stroke:var(--bg); stroke-width:3px; pointer-events:none;
+    transition:opacity .15s;
+  }
+  .node-label.root{
+    font-family:'Big Shoulders Display', sans-serif; font-size:16px; font-weight:700; fill:var(--ink);
+    stroke-width:5px;
+  }
+  .node-label.category{ font-weight:600; font-size:10.5px; }
+
+  .graph-detail{
+    position:absolute; top:14px; right:14px; width:280px; max-height:calc(100% - 28px);
+    overflow:auto; background:var(--surface); border:1px solid var(--line-strong);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px 16px;
+  }
+  .graph-detail[hidden]{ display:none; }
+  .graph-detail .gd-close{
+    float:right; cursor:pointer; color:var(--faint); font-size:18px; line-height:1;
+    background:none; border:none; padding:0 0 0 8px;
+  }
+  .graph-detail .gd-close:hover{ color:var(--ink); }
+  .graph-detail h4{
+    font-family:'Big Shoulders Display', sans-serif; font-size:20px; margin:6px 0 6px; color:var(--ink);
+  }
+  .graph-detail .gd-value{ font-size:12.5px; color:var(--ink-soft); margin-bottom:8px; }
+  .graph-detail .gd-def{ font-size:11.5px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; }
+
+  /* ---------- PEO buyer persona additions ---------- */
+  :root{ --p-admin:#1f5fa8; --p-admin-soft:#dde8f5; --p-hr:#7b3fa0; --p-hr-soft:#ece0f3; --proposed:#5a6a1d; --proposed-soft:#e9eed3; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --p-admin:#7fb0ec; --p-admin-soft:#16263a; --p-hr:#c79be2; --p-hr-soft:#2c1d38; --proposed:#c4d27a; --proposed-soft:#283015; }
+  }
+  :root[data-theme="dark"]{ --p-admin:#7fb0ec; --p-admin-soft:#16263a; --p-hr:#c79be2; --p-hr-soft:#2c1d38; --proposed:#c4d27a; --proposed-soft:#283015; }
+
+  .persona-switch{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .pbtn{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:.04em; text-transform:uppercase;
+    padding:7px 13px; border-radius:100px; border:1px solid var(--line-strong); background:var(--surface-2);
+    color:var(--muted); cursor:pointer;
+  }
+  .pbtn:hover{ color:var(--ink); }
+  .pbtn:focus-visible{ outline:2px solid var(--accent-machine); outline-offset:1px; }
+  .pbtn[aria-pressed="true"][data-p="admin"]{ background:var(--p-admin); border-color:var(--p-admin); color:var(--surface); }
+  .pbtn[aria-pressed="true"][data-p="hr"]{ background:var(--p-hr); border-color:var(--p-hr); color:var(--surface); }
+  .id-plate .eyebrow b{ color:var(--pcol); font-weight:600; }
+  .id-plate h1{ border-left:5px solid var(--pcol); padding-left:12px; margin-left:-17px; }
+  @media (max-width:640px){ .id-plate h1{ margin-left:0; } }
+  .badge.proposed{ background:var(--proposed-soft); color:var(--proposed); }
+  .card.proposed-card{ --card-accent: var(--proposed); border-style:solid; }
+  .jobs{ margin:6px 0 0; padding:0; list-style:none; display:grid; gap:3px; font-size:12.5px; }
+  .jobs li{ display:grid; grid-template-columns:76px minmax(0,1fr); gap:8px; }
+  .jobs li span{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); padding-top:1px; }
+  .card.expanded .jobs{ display:grid; }
+  .masthead-inner, .controls-inner, main, .tabbar, #view-graph, footer{ padding-left:max(16px, 24px); padding-right:max(16px, 24px); }
+  @media (max-width:480px){
+    .masthead-inner, .controls-inner, main, .tabbar, #view-graph, footer{ padding-left:16px; padding-right:16px; }
+    .graph-detail{ position:static; width:auto; margin:10px; }
+    .graph-frame svg{ height:480px; }
+    .tabbtn{ padding:9px 12px; }
+  }
+  .gauge .target-note{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+  /* ---------- Job study view ---------- */
+  .jobs-view{ max-width:1180px; margin:0 auto; padding-block:26px 70px; }
+  .js-head{ display:grid; gap:6px; margin-bottom:16px; }
+  .js-title{ font-family:'Big Shoulders Display', sans-serif; font-size:30px; line-height:1.05; margin:2px 0 0; text-wrap:balance; border-left:5px solid var(--pcol); padding-left:10px; }
+  .js-scope{ margin:0; color:var(--ink-soft); max-width:80ch; font-size:14px; }
+  .js-id, .js-jid, .js-sid{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); background:var(--surface-3); padding:2px 7px; border-radius:3px; }
+  .js-stats{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .js-stats .stat{ min-width:88px; }
+  .stat.warnstat .n{ color:var(--warn); } .stat.goodstat .n{ color:var(--good); }
+  .js-tools{ display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; padding:12px 0 16px; border-bottom:2px solid var(--line-strong); margin-bottom:20px; }
+  .js-tools .search-box{ flex:1 1 240px; }
+  .js-tools .chip[aria-pressed="true"]{ background:var(--ink); color:var(--surface); border-color:var(--ink); }
+  #js-copy-fallback textarea{ width:100%; height:140px; font-family:'IBM Plex Mono', monospace; font-size:11px; background:var(--surface); color:var(--ink); border:1px solid var(--line-strong); }
+  .js-note{ font-size:12px; color:var(--muted); margin:0 0 6px; }
+  .js-job{ margin-bottom:34px; }
+  .js-job-head{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin-bottom:12px; }
+  .js-job-head h3{ flex-basis:100%; font-family:'Big Shoulders Display', sans-serif; font-size:24px; margin:0; line-height:1.1; text-wrap:balance; }
+  .js-job-head p{ flex-basis:100%; margin:0; color:var(--muted); font-size:13.5px; max-width:80ch; }
+  .js-step{ background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--pcol); border-radius:var(--radius); margin-bottom:12px; box-shadow:var(--shadow); min-width:0; }
+  .js-step-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 10px; padding:12px 14px 8px; }
+  .js-step-head h4{ margin:0; font-size:16px; font-weight:600; color:var(--ink); }
+  .js-stage{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--pcol); border:1px solid var(--pcol); border-radius:100px; padding:1px 8px; }
+  .js-svc{ flex-basis:100%; font-size:12px; color:var(--muted); }
+  .js-tablewrap{ overflow-x:auto; border-top:1px dashed var(--line); }
+  .js-table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:860px; }
+  .js-table th{ text-align:left; font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:500; padding:7px 10px; background:var(--surface-2); border-bottom:1px solid var(--line); white-space:nowrap; }
+  .js-table td{ padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink-soft); }
+  .js-table tr:last-child td{ border-bottom:none; }
+  .js-table .num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .js-table .mono{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; }
+  .js-table td:first-child{ white-space:nowrap; }
+  .js-table .small{ font-size:10.5px; }
+  .js-table .faint{ color:var(--faint); }
+  .js-table .stmt{ min-width:280px; color:var(--ink); }
+  .js-table .stmt b{ color:var(--pcol); font-weight:600; }
+  .st{ font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.04em; padding:2px 7px; border-radius:100px; white-space:nowrap; }
+  .st-gap{ background:var(--warn-soft); color:var(--warn); }
+  .st-met{ background:var(--good-soft); color:var(--good); }
+  .st-pending{ background:var(--surface-3); color:var(--muted); }
+  .js-model{ margin-top:10px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:12px 16px; }
+  .js-model summary{ cursor:pointer; font-weight:600; color:var(--ink); }
+  .js-model p{ font-size:13px; color:var(--ink-soft); max-width:85ch; }
+  .js-model pre{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; background:var(--surface-2); border:1px solid var(--line); padding:12px; overflow-x:auto; color:var(--ink-soft); margin:0; }
+  .jobs-view{ padding-left:24px; padding-right:24px; }
+  @media (max-width:480px){ .jobs-view{ padding-left:16px; padding-right:16px; } .js-title{ font-size:24px; } }
+  @media (max-width:640px){ .controls{ position:static; } }
+</style>
+<header class="masthead" id="masthead">
+  <div class="masthead-inner">
+    <div class="id-plate">
+      <div class="persona-switch" role="group" aria-label="Choose persona">
+        <button class="pbtn" type="button" data-p="admin" aria-pressed="true">Client Admin</button>
+        <button class="pbtn" type="button" data-p="hr" aria-pressed="false">HR Specialist</button>
+      </div>
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 id="pname"></h1>
+      <div class="role" id="prole"></div>
+    </div>
+    <div class="stat-rail" id="stat-rail"></div>
+  </div>
+</header>
+
+<nav class="tabbar" role="tablist" aria-label="View">
+  <button class="tabbtn" id="tab-explore" role="tab" aria-selected="true" aria-controls="view-explore">Explore</button>
+  <button class="tabbtn" id="tab-graph" role="tab" aria-selected="false" aria-controls="view-graph">Graph</button>
+  <button class="tabbtn" id="tab-jobs" role="tab" aria-selected="false" aria-controls="view-jobs">Job study</button>
+</nav>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="row1">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" type="text" placeholder="Search labels, values, definitions&hellip;" autocomplete="off">
+      </div>
+      <div class="chipset" id="category-chips" role="group" aria-label="Filter by category"></div>
+      <div class="toggles">
+        <label class="toggle"><input type="checkbox" id="toggle-ghosts" checked> Show unpopulated classes</label>
+        <label class="toggle"><input type="checkbox" id="toggle-illustrative"> Illustrative fields only</label>
+      </div>
+    </div>
+    <div class="row2" id="gauges"></div>
+  </div>
+</div>
+
+<main id="view-explore"></main>
+<main id="view-jobs" class="jobs-view" hidden></main>
+
+<div id="view-graph" hidden>
+  <div class="graph-frame">
+    <div class="graph-toolbar">
+      <div class="graph-legend">
+        <span><span class="legend-dot" style="background:var(--ink)"></span>Persona</span>
+        <span><span class="legend-dot" style="background:var(--surface);border:2px solid var(--accent-human)"></span>Human-side category</span>
+        <span><span class="legend-dot" style="background:var(--surface);border:2px solid var(--accent-machine)"></span>System-side category</span>
+        <span><span class="legend-dot" style="background:var(--accent-human)"></span>Human attribute</span>
+        <span><span class="legend-dot" style="background:var(--accent-machine)"></span>System attribute</span>
+        <span><span class="legend-dot" style="background:var(--proposed)"></span>Proposed extension</span>
+        <span><span class="legend-ring"></span>Not instantiated</span>
+      </div>
+      <button class="reset-btn" id="graph-reset" type="button">Reset view</button>
+    </div>
+    <svg id="graph-svg" role="img" aria-label="Node-link diagram of the selected PEO buyer persona instance and the Taxonomy | Core | Persona classes it uses"></svg>
+    <div class="graph-detail" id="graph-detail" hidden>
+      <button class="gd-close" id="graph-detail-close" aria-label="Close">&times;</button>
+      <div class="breadcrumb" id="gd-breadcrumb"></div>
+      <h4 id="gd-label"></h4>
+      <div class="gd-value" id="gd-value"></div>
+      <div class="gd-def" id="gd-def"></div>
+    </div>
+  </div>
+  <div class="graph-hint">Drag nodes to rearrange, scroll or pinch to zoom, click a node for its definition and value. The search, category and toggle controls above filter this graph too.</div>
+</div>
+
+<footer>
+  Two instances of the same <code>taxonomy-core-persona/</code> ontology used for the Dana Whitfield commuter instance, populated for the two buyer personas the PEO Sales Advisor serves. Fields marked <span class="badge grounded" style="vertical-align:1px;">from advisor model</span> come straight from the Sales Advisor design: its job maps, decision scenarios, value-gap measurements, SSOT extraction rules (EXT-001&ndash;016) and governance controls (GOV-007, GOV-011, GOV-014). Those figures are themselves synthetic design values, not Insperity data. Fields marked <span class="badge illustrative" style="vertical-align:1px;">illustrative</span> (names, emails, phone numbers, cities, exact dates) are placeholders. <span class="badge proposed" style="vertical-align:1px;">proposed extension</span> marks the one class the ontology lacks: it has PersonaType subclasses only for engineering roles, so each buyer persona is asserted as a new <code>isp-sal</code> subclass of PersonaType, pending steward review. Unlike the commuter case, almost every class is instantiated here, because the advisor runs the personalization, feedback and selection loops that the smart-city pilots never had. The <b>Job study</b> tab maps each persona to its jobs, job steps and desired outcomes (written as Minimize/Maximize statements with a metric, target and metric card). Baselines are filled only where the advisor’s value-gap monitor already measures them; importance and satisfaction columns are left empty for the outcome survey. Prepared by Jeffrey Wallk, The Value Enablement Group, LLC.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+// Job study > Job > Job step > Desired outcome, per persona.
+// Outcome tuple: [statement, unit, direction('min'|'max'), target, baseline (null = not yet measured), metric card, measurement source]
+window.JOB_STUDIES = {
+  admin: {
+    id:'JS-CA', title:'Client Admin job study: buying and adopting a PEO (prospect side)',
+    scope:'Prospect companies with 5–150 employees evaluating a PEO; jobs the Client Admin performs from first enquiry to first PEO payroll.',
+    jobs:[
+      { id:'CA-J1', name:'Decide whether a PEO is the right way to run HR for our company', kind:'Core functional job',
+        statement:'Decide, with evidence the owners will accept, whether moving HR, payroll and benefits to a PEO lowers our cost and risk.',
+        steps:[
+          { id:'CA-J1.1', stage:'Discover', name:'Understand what a PEO takes off my plate', service:'Discover brief (Brief Assembler, Client Admin template)',
+            outcomes:[
+              ['Minimize the time it takes to understand which HR, payroll, benefits and compliance tasks the PEO would take over','minutes to useful answer','min',10,7.5,'time-to-useful-answer v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of misunderstanding which tasks stay with our company','% sessions needing clarification','min',10,null,'scope-clarity v1.0','Advisor telemetry + BPA notes'],
+              ['Maximize the share of our current HR tasks matched to a named PEO service','% of tasks mapped','max',90,null,'task-coverage v1.0','Advisor session capture'] ]},
+          { id:'CA-J1.2', stage:'Qualify', name:'Confirm we fit (size, industry, states)', service:'Fit check (federated query over eligibility rules)',
+            outcomes:[
+              ['Minimize the number of steps it takes to confirm we are eligible','steps','min',3,4,'fit-steps v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of learning about an industry or state exclusion after a quote is issued','late exclusions per 100 opportunities','min',0,null,'late-exclusion v1.0','CRM'],
+              ['Minimize the time it takes to see which of our states and worksites are covered','minutes','min',5,null,'coverage-lookup v1.0','Advisor telemetry'] ]},
+          { id:'CA-J1.3', stage:'Evaluate', name:'Compare total cost against our current stack', service:'Cost comparison brief + quoting service',
+            outcomes:[
+              ['Minimize the time from first cost question to a binding quote','days','min',10,16,'sales-cycle-time v1.0','CRM + quoting service'],
+              ['Minimize the likelihood that the signed price differs from the quoted price','re-quotes per deal','min',0,null,'quote-accuracy v1.0','Quoting service'],
+              ['Maximize the share of cost lines that show their source and assumptions','% of cost lines cited','max',100,null,'cost-citation v1.0','Brief audit (EXT-013)'] ]},
+          { id:'CA-J1.4', stage:'Propose', name:'See the co-employment split before signing', service:'Responsibility allocation brief + BPA walkthrough',
+            outcomes:[
+              ['Maximize the share of proposal sessions that end with no follow-up question about who does what','% sessions','max',85,81,'allocation-clarity v1.0','Advisor telemetry'],
+              ['Minimize the number of state-specific responsibilities missing from the allocation','missing items per multi-state proposal','min',0,null,'allocation-completeness v1.0','Brief audit'],
+              ['Minimize the number of contract redline rounds','rounds','min',2,null,'contract-cycle v1.0','Contract system'] ]},
+          { id:'CA-J1.5', stage:'Decide', name:'Get sign-off from owners and finance', service:'Owner decision package (shareable brief)',
+            outcomes:[
+              ['Maximize the share of first drafts the owners approve without changes','% approved first time','max',80,64,'proposal-acceptance v1.1','CRM'],
+              ['Minimize the time from proposal to signed decision','days','min',14,null,'pipeline-velocity v1.0','CRM'],
+              ['Maximize the share of decision packages that state the risk the PEO removes','% packages with risk line','max',90,null,'risk-in-package v1.0','Brief audit'] ]},
+          { id:'CA-J1.6', stage:'Onboard', name:'Move payroll without a missed paycheck', service:'Cut-over plan + payroll parallel run',
+            outcomes:[
+              ['Minimize payroll errors in the first PEO payroll','errors per 100 employees','min',0.5,0.4,'cutover-errors v1.0','Payroll system'],
+              ['Minimize the number of employees paid late in the first PEO payroll','employees','min',0,null,'on-time-pay v1.0','Payroll system'],
+              ['Minimize the time it takes to reconcile the first PEO payroll against our last payroll register','hours','min',4,null,'reconcile-time v1.0','Client survey'] ]}
+        ]},
+      { id:'CA-J2', name:'Control the total cost of employing our workforce', kind:'Related financial job',
+        statement:'Know and predict what employing our people really costs, before and after the switch.',
+        steps:[
+          { id:'CA-J2.1', stage:'Evaluate', name:'Establish our current all-in cost per employee', service:'Current-cost worksheet (pre-filled from census)',
+            outcomes:[
+              ['Minimize the time it takes to assemble our current all-in cost (payroll fees, benefits, workers’ comp, SUTA, broker fees)','hours','min',2,null,'baseline-cost-time v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of leaving a cost category out of the baseline','omitted categories per baseline','min',0,null,'baseline-completeness v1.0','Brief audit'],
+              ['Minimize the variance between our baseline and what we actually paid last year','% variance to GL','min',3,null,'baseline-accuracy v1.0','Client GL comparison'] ]},
+          { id:'CA-J2.2', stage:'Evaluate', name:'Project cost as headcount grows', service:'Growth scenario (cost model rerun, BEN-001 ACA check)',
+            outcomes:[
+              ['Minimize the time it takes to see cost at a different headcount','minutes','min',5,null,'scenario-time v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of crossing a regulatory threshold (such as ACA 50 FTE) without warning','unflagged threshold crossings','min',0,null,'threshold-warning v1.0','Rule engine log'],
+              ['Maximize the accuracy of projected first-year cost','% variance to actual','min',5,null,'projection-accuracy v1.0','Invoice vs projection'] ]},
+          { id:'CA-J2.3', stage:'Evaluate', name:'Provide clean census data for quoting', service:'Census validation (TAL-014, PAY-026)',
+            outcomes:[
+              ['Minimize the share of census uploads that fail validation','% failed uploads','min',10,38,'census-pass v1.0','Quoting service'],
+              ['Minimize the time it takes to fix a rejected census','hours','min',1,null,'census-fix-time v1.0','Quoting service'],
+              ['Minimize the amount of employee personal data shared beyond what quoting needs','fields beyond minimum set','min',0,null,'data-minimization v1.0','EXT-006 audit'] ]},
+          { id:'CA-J2.4', stage:'Onboard', name:'Budget for the first year after go-live', service:'First-year budget brief',
+            outcomes:[
+              ['Minimize the difference between the budgeted and invoiced amount in the first quarter','% variance','min',3,null,'invoice-variance v1.0','Invoice vs budget'],
+              ['Minimize the time it takes to explain an invoice line to finance','minutes','min',10,null,'invoice-explain v1.0','Client survey'],
+              ['Minimize the likelihood of an unexpected fee in the first year','unexpected fees','min',0,null,'fee-surprise v1.0','Client survey'] ]}
+        ]},
+      { id:'CA-J3', name:'Keep the business protected from employer liability', kind:'Related emotional/risk job',
+        statement:'Be certain which employer obligations we keep and which the PEO takes, and that nothing falls between us.',
+        steps:[
+          { id:'CA-J3.1', stage:'Qualify', name:'Inventory the employer liabilities we carry today', service:'Liability inventory brief (shared with HR Specialist)',
+            outcomes:[
+              ['Minimize the time it takes to list our current employer liabilities (tax filings, workers’ comp, EPLI, benefits)','hours','min',1,null,'liability-inventory-time v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of missing an open liability (such as an unresolved claim or tax notice)','missed items found later','min',0,null,'liability-completeness v1.0','Post-onboard review'],
+              ['Maximize the share of liabilities linked to the rule or contract that creates them','% linked','max',100,null,'liability-citation v1.0','Brief audit'] ]},
+          { id:'CA-J3.2', stage:'Propose', name:'Confirm which liabilities move under co-employment', service:'Co-employment allocation (MSA template v9)',
+            outcomes:[
+              ['Maximize the share of liabilities with a named owner (us, PEO or shared)','% assigned','max',100,null,'liability-owner v1.0','Contract system'],
+              ['Minimize the number of liabilities described differently in the brief and the contract','mismatches','min',0,null,'brief-contract-match v1.0','Contract diff'],
+              ['Minimize the time it takes to get counsel comfortable with the allocation','days','min',5,null,'counsel-time v1.0','Contract system'] ]},
+          { id:'CA-J3.3', stage:'Onboard', name:'Confirm tax accounts and filings transfer correctly', service:'Tax transition checklist (SUTA, Form 941/940)',
+            outcomes:[
+              ['Minimize the number of tax notices received in the first two quarters','notices','min',0,null,'tax-notice v1.0','Client survey + payroll tax ops'],
+              ['Minimize the time it takes to confirm each state account has transferred','days','min',10,null,'suta-transfer-time v1.0','Payroll tax ops'],
+              ['Minimize double or missed filings in the transition quarter','filing errors','min',0,null,'filing-integrity v1.0','Payroll tax ops'] ]},
+          { id:'CA-J3.4', stage:'Evaluate', name:'Protect employee data shared during the sale', service:'Entitlement Enforcer (EXT-006) + tenant scoping',
+            outcomes:[
+              ['Minimize the number of people outside the deal team who can see our census','unauthorized viewers','min',0,null,'census-exposure v1.0','Access logs'],
+              ['Minimize the time it takes to confirm where our data is stored and who can access it','minutes','min',5,null,'data-transparency v1.0','Advisor telemetry'],
+              ['Maximize the share of shared documents carrying an access label','% labelled','max',100,null,'label-coverage v1.0','Control stage log'] ]}
+        ]}
+    ]
+  },
+
+  hr: {
+    id:'JS-HR', title:'HR Specialist job study: keeping people compliant and covered through a PEO move (prospect side)',
+    scope:'HR generalists or HR leads at prospects with 5–150 employees; jobs performed from the first risk question to the first PEO benefits month.',
+    jobs:[
+      { id:'HR-J1', name:'Make sure the move to a PEO leaves us compliant and our people covered', kind:'Core functional job',
+        statement:'Confirm, before and through the switch, that every compliance obligation is met and no employee loses coverage.',
+        steps:[
+          { id:'HR-J1.1', stage:'Discover', name:'Find where we carry compliance risk today', service:'Risk discovery brief (HR template)',
+            outcomes:[
+              ['Minimize the time it takes to see where we carry compliance risk','minutes to useful answer','min',15,12,'time-to-useful-answer v1.0','Advisor telemetry'],
+              ['Maximize the share of risk items that cite a rule or regulator','% cited','max',100,null,'risk-citation v1.0','Brief audit (EXT-013)'],
+              ['Minimize the likelihood of missing a risk area (I-9, leave, postings, wage and hour)','areas missed and found later','min',0,null,'risk-completeness v1.0','Gap assessment'] ]},
+          { id:'HR-J1.2', stage:'Qualify', name:'Check coverage for every state we hire in', service:'State coverage check (SSOT rules by jurisdiction)',
+            outcomes:[
+              ['Maximize the share of hiring states assessed','% of states','max',100,88,'coverage-assessed v1.0','Advisor telemetry'],
+              ['Minimize the time it takes to resolve a remote employee’s jurisdiction','days','min',2,null,'remote-jurisdiction v1.0','GOV-007 registry'],
+              ['Minimize the time it takes to learn of a rule change in a hiring state','days','min',7,null,'reg-latency v1.0','Regulatory feed + alerts'] ]},
+          { id:'HR-J1.3', stage:'Evaluate', name:'Compare benefit plans employees will see', service:'Plan comparison brief (v14)',
+            outcomes:[
+              ['Minimize the time it takes to compare current plans with PEO plans','minutes','min',20,34,'plan-compare-time v1.0','Advisor telemetry'],
+              ['Maximize the share of employees whose per-paycheck cost change is shown','% of employees','max',100,null,'paycheck-impact v1.0','Brief audit'],
+              ['Minimize the share of employees whose current doctors fall out of network','% of employees','min',5,null,'network-disruption v1.0','Carrier network check'] ]},
+          { id:'HR-J1.4', stage:'Propose', name:'Map our handbook to PEO policy', service:'Handbook mapping (OCR + policy mappings)',
+            outcomes:[
+              ['Minimize the share of handbook policies left unmapped','% unmapped','min',5,18,'handbook-mapped v1.0','Mapping agent log'],
+              ['Minimize the time it takes to map the handbook','days','min',5,null,'handbook-time v1.0','Advisor telemetry'],
+              ['Minimize the number of conflicts between our policies and PEO policy left open at signing','open conflicts','min',0,null,'policy-conflicts v1.0','Mapping agent log'] ]},
+          { id:'HR-J1.5', stage:'Decide', name:'Show leadership the risk we remove', service:'Risk brief linked into the owner decision package',
+            outcomes:[
+              ['Maximize the share of decisions with a risk brief attached','% decisions','max',90,71,'risk-awareness v1.0','Decision records (isp-dec)'],
+              ['Maximize the share of risk reduction stated in dollars or penalties avoided','% of risk items quantified','max',75,null,'risk-quantified v1.0','Brief audit'],
+              ['Minimize the time it takes to prepare the leadership risk summary','hours','min',2,null,'risk-summary-time v1.0','Advisor telemetry'] ]},
+          { id:'HR-J1.6', stage:'Onboard', name:'Re-enroll employees with no coverage gap', service:'Enrollment calendar + carrier 834 files',
+            outcomes:[
+              ['Minimize the number of employees with a coverage gap','employees per 1,000','min',0,1.2,'coverage-continuity v1.0','Carrier EDI'],
+              ['Maximize the share of employees who finish enrollment by the deadline','% enrolled on time','max',98,null,'enrollment-completion v1.0','Enrollment system'],
+              ['Minimize carrier file rejections','% of 834 files rejected','min',1,null,'edi-acceptance v1.0','Carrier EDI'] ]}
+        ]},
+      { id:'HR-J2', name:'Keep employees informed and confident through the change', kind:'Related social job',
+        statement:'Help employees understand what changes for them, when, and who to ask.',
+        steps:[
+          { id:'HR-J2.1', stage:'Decide', name:'Plan employee communications', service:'Communication kit (templated from SSOT notices)',
+            outcomes:[
+              ['Minimize the time it takes to produce the change announcement and FAQ','hours','min',3,null,'comms-prep-time v1.0','Advisor telemetry'],
+              ['Maximize the share of employees reached in their preferred language','% of employees','max',100,null,'language-reach v1.0','Comms log'],
+              ['Minimize the likelihood of announcing a date that later changes','date changes after announcement','min',0,null,'date-stability v1.0','Onboarding plan'] ]},
+          { id:'HR-J2.2', stage:'Onboard', name:'Answer employee questions during the switch', service:'Employee FAQ assistant (grounded answers, MTBH)',
+            outcomes:[
+              ['Minimize the time it takes an employee to get a correct answer','hours','min',4,null,'employee-answer-time v1.0','Service desk'],
+              ['Minimize the number of questions HR has to answer personally','questions per 100 employees','min',10,null,'hr-question-load v1.0','Service desk'],
+              ['Minimize the share of answers later found to be wrong','% incorrect','min',1,null,'answer-accuracy v1.0','QA sample'] ]},
+          { id:'HR-J2.3', stage:'Onboard', name:'Track enrollment progress', service:'Enrollment progress view',
+            outcomes:[
+              ['Minimize the time it takes to see who has not enrolled','minutes','min',2,null,'enrollment-visibility v1.0','Enrollment system'],
+              ['Minimize the number of manual reminders HR sends','reminders per 100 employees','min',5,null,'manual-reminders v1.0','Comms log'],
+              ['Maximize the share of waivers recorded with a reason','% of waivers','max',100,null,'waiver-recorded v1.0','Enrollment system'] ]},
+          { id:'HR-J2.4', stage:'Onboard', name:'Gauge employee sentiment after the first payroll', service:'Pulse survey',
+            outcomes:[
+              ['Maximize the share of employees who say the change went smoothly','% favourable','max',85,null,'switch-sentiment v1.0','Pulse survey'],
+              ['Minimize the time it takes to spot a widespread problem','days','min',2,null,'issue-detection v1.0','Service desk trends'],
+              ['Minimize voluntary turnover attributed to the switch','departures citing the switch','min',0,null,'switch-attrition v1.0','Exit interviews'] ]}
+        ]},
+      { id:'HR-J3', name:'Keep HR records and policies intact through the transition', kind:'Related functional job',
+        statement:'Move every record, balance and required notice without loss or exposure.',
+        steps:[
+          { id:'HR-J3.1', stage:'Propose', name:'Inventory the HR records and data to move', service:'Records inventory checklist',
+            outcomes:[
+              ['Minimize the time it takes to list every record type to move (personnel files, I-9s, PTO, benefits elections)','hours','min',2,null,'records-inventory-time v1.0','Advisor telemetry'],
+              ['Minimize the likelihood of leaving a required record type off the list','record types missed','min',0,null,'records-completeness v1.0','Post-onboard review'],
+              ['Maximize the share of record types with a retention rule attached','% with rule','max',100,null,'retention-rule v1.0','SSOT register'] ]},
+          { id:'HR-J3.2', stage:'Onboard', name:'Transfer records securely', service:'Secure transfer + access labelling',
+            outcomes:[
+              ['Minimize the number of records exposed to people who should not see them','exposure incidents','min',0,null,'records-exposure v1.0','Access logs'],
+              ['Minimize the time it takes to transfer all records','days','min',5,null,'transfer-time v1.0','Onboarding plan'],
+              ['Minimize the share of records that fail to load','% failed','min',0.5,null,'load-integrity v1.0','HRIS import log'] ]},
+          { id:'HR-J3.3', stage:'Onboard', name:'Carry over leave and PTO balances', service:'Balance conversion',
+            outcomes:[
+              ['Minimize the number of employees whose balance is wrong after conversion','employees','min',0,null,'balance-accuracy v1.0','HRIS'],
+              ['Minimize the time it takes to reconcile balances','hours','min',4,null,'balance-reconcile v1.0','Client survey'],
+              ['Minimize the likelihood of a state leave rule being applied incorrectly after conversion','misapplied rules','min',0,null,'leave-rule-integrity v1.0','Rule engine log'] ]},
+          { id:'HR-J3.4', stage:'Onboard', name:'Keep required postings and notices current', service:'Posting and notice tracker (by jurisdiction)',
+            outcomes:[
+              ['Maximize the share of worksites and remote employees with current required notices','% covered','max',100,null,'notice-coverage v1.0','Notice tracker'],
+              ['Minimize the time between a notice change and its delivery to employees','days','min',7,null,'notice-latency v1.0','Regulatory feed + tracker'],
+              ['Minimize the number of jurisdictions without a confirmed posting owner','jurisdictions','min',0,null,'posting-owner v1.0','Notice tracker'] ]}
+        ]}
+    ]
+  }
+};
+
+</script>
+<script>
+// Job study view: Job study > Job > Job step > Desired outcome
+(function(){
+  const root = document.getElementById('view-jobs');
+  const js = { p:'admin', status:'all', q:'' };
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmt = v => (v===null||v===undefined) ? '—' : String(v);
+
+  function statusOf(o){
+    const [, , dir, target, base] = o;
+    if(base===null) return 'pending';
+    return (dir==='min' ? base <= target : base >= target) ? 'met' : 'gap';
+  }
+  function outcomeId(stepId, i){ return 'DO-' + stepId.replace(/\./g,'-') + '-' + (i+1); }
+
+  function rows(study){
+    const out = [];
+    study.jobs.forEach(job=>job.steps.forEach(step=>step.outcomes.forEach((o,i)=>{
+      out.push({ job, step, o, id:outcomeId(step.id,i), status:statusOf(o) });
+    })));
+    return out;
+  }
+
+  function counts(study){
+    const r = rows(study);
+    return { jobs:study.jobs.length, steps:study.jobs.reduce((a,j)=>a+j.steps.length,0), outcomes:r.length,
+      gap:r.filter(x=>x.status==='gap').length, met:r.filter(x=>x.status==='met').length, pending:r.filter(x=>x.status==='pending').length };
+  }
+  window.jobCounts = p => counts(window.JOB_STUDIES[p]);
+
+  function csv(){
+    const head = ['persona','job_study_id','job_id','job_name','job_kind','step_id','pipeline_stage','job_step','advisor_service','outcome_id','desired_outcome','direction','metric_unit','target','baseline','status','metric_card','measurement_source','importance_1_5','satisfaction_1_5','opportunity_score'];
+    const q = v => { const s = String(v===null||v===undefined?'':v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+    const lines = [head.join(',')];
+    Object.entries(window.JOB_STUDIES).forEach(([p,study])=>{
+      rows(study).forEach(({job,step,o,id,status})=>{
+        lines.push([p==='admin'?'Client Admin':'HR Specialist', study.id, job.id, job.name, job.kind, step.id, step.stage, step.name, step.service,
+          id, o[0], o[2]==='min'?'Minimize':'Maximize', o[1], o[3], o[4], status, o[5], o[6], '', '', ''].map(q).join(','));
+      });
+    });
+    return lines.join('\n');
+  }
+
+  function render(){
+    const study = window.JOB_STUDIES[js.p];
+    const c = counts(study);
+    const ql = js.q.toLowerCase();
+    let html = `
+      <div class="js-head">
+        <div class="breadcrumb">Persona &rsaquo; performsJob &rsaquo; <b>Job study</b> &rsaquo; Job &rsaquo; Job step &rsaquo; Desired outcome</div>
+        <h2 class="js-title">${esc(study.title)}</h2>
+        <p class="js-scope">${esc(study.scope)} <span class="js-id">${study.id}</span></p>
+        <div class="js-stats">
+          <div class="stat"><div class="n">${c.jobs}</div><div class="l">Jobs</div></div>
+          <div class="stat"><div class="n">${c.steps}</div><div class="l">Job steps</div></div>
+          <div class="stat"><div class="n">${c.outcomes}</div><div class="l">Desired outcomes</div></div>
+          <div class="stat warnstat"><div class="n">${c.gap}</div><div class="l">Gap at baseline</div></div>
+          <div class="stat goodstat"><div class="n">${c.met}</div><div class="l">Met at baseline</div></div>
+          <div class="stat"><div class="n">${c.pending}</div><div class="l">Awaiting baseline</div></div>
+        </div>
+      </div>
+      <div class="js-tools">
+        <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="js-search" type="text" placeholder="Search jobs, steps, outcomes, metric cards…" value="${esc(js.q)}" autocomplete="off"></div>
+        <div class="chipset" role="group" aria-label="Filter by baseline status">
+          ${[['all','All outcomes'],['gap','Gap'],['met','Met'],['pending','Awaiting baseline']].map(([k,l])=>`<button type="button" class="chip" data-st="${k}" aria-pressed="${js.status===k}">${l}</button>`).join('')}
+        </div>
+        <button type="button" class="reset-btn" id="js-copy">Copy both personas as CSV</button>
+      </div>
+      <div id="js-copy-fallback" hidden><p class="js-note">Your browser blocked the clipboard. Select the text below and copy it.</p><textarea readonly></textarea></div>`;
+
+    let shown = 0;
+    study.jobs.forEach(job=>{
+      let jobHtml = '';
+      job.steps.forEach(step=>{
+        const list = step.outcomes.map((o,i)=>({o,id:outcomeId(step.id,i),status:statusOf(o)}))
+          .filter(x => js.status==='all' || x.status===js.status)
+          .filter(x => !ql || [job.name,step.name,step.stage,step.service,x.o[0],x.o[1],x.o[5],x.o[6],x.id].join(' ').toLowerCase().includes(ql));
+        if(!list.length) return;
+        shown += list.length;
+        jobHtml += `
+          <div class="js-step">
+            <div class="js-step-head">
+              <span class="js-sid">${step.id}</span>
+              <span class="js-stage">${step.stage}</span>
+              <h4>${esc(step.name)}</h4>
+              <span class="js-svc">Advisor service: ${esc(step.service)}</span>
+            </div>
+            <div class="js-tablewrap"><table class="js-table">
+              <thead><tr><th>Outcome ID</th><th>Desired outcome</th><th>Metric</th><th class="num">Target</th><th class="num">Baseline</th><th>Status</th><th>Metric card · source</th><th class="num" title="Importance, 1–5, from the outcome survey">Imp</th><th class="num" title="Satisfaction, 1–5, from the outcome survey">Sat</th><th class="num" title="Opportunity = Imp + max(Imp − Sat, 0)">Opp</th></tr></thead>
+              <tbody>${list.map(({o,id,status})=>`
+                <tr>
+                  <td class="mono">${id}</td>
+                  <td class="stmt"><b>${o[0].split(' ')[0]}</b> ${esc(o[0].split(' ').slice(1).join(' '))}</td>
+                  <td>${esc(o[1])}</td>
+                  <td class="num mono">${o[2]==='min'?'≤':'≥'} ${fmt(o[3])}</td>
+                  <td class="num mono">${fmt(o[4])}</td>
+                  <td><span class="st st-${status}">${status==='gap'?'gap':status==='met'?'met':'awaiting'}</span></td>
+                  <td class="mono small">${esc(o[5])}<br><span class="faint">${esc(o[6])}</span></td>
+                  <td class="num faint">—</td><td class="num faint">—</td><td class="num faint">—</td>
+                </tr>`).join('')}</tbody>
+            </table></div>
+          </div>`;
+      });
+      if(!jobHtml) return;
+      html += `
+        <section class="js-job">
+          <div class="js-job-head">
+            <span class="js-jid">${job.id}</span>
+            <span class="badge ${job.kind.startsWith('Core')?'grounded':'illustrative'}">${esc(job.kind)}</span>
+            <h3>${esc(job.name)}</h3>
+            <p>${esc(job.statement)}</p>
+          </div>
+          ${jobHtml}
+        </section>`;
+    });
+    if(!shown) html += '<div class="no-results">No desired outcomes match the current filters.</div>';
+
+    html += `
+      <details class="js-model">
+        <summary>How this extends the persona model (RDF)</summary>
+        <p>The persona instance links to its job study with a proposed <code>isp-sal:performsJob</code> property. Each desired outcome is bound to a Metric Definition Card, so the Value-Gap Monitor (EXT-015) can compare delivered against desired once baselines and survey scores arrive. Importance and satisfaction come from an outcome survey of the persona; opportunity = importance + max(importance − satisfaction, 0).</p>
+<pre>isp-sal:persona/${js.p==='admin'?'client-admin/harbor-point-001':'hr-specialist/summit-ridge-001'}
+    isp-sal:performsJob isp-sal:${study.jobs[0].id} .
+
+isp-sal:${study.jobs[0].id} a isp-sal:Job ;
+    isp-sal:inJobStudy isp-sal:${study.id} ;
+    isp-sal:hasJobStep isp-sal:${study.jobs[0].steps[0].id} .
+
+isp-sal:${study.jobs[0].steps[0].id} a isp-sal:JobStep ;
+    isp-sal:pipelineStage isp-sal:${study.jobs[0].steps[0].stage} ;
+    isp-vg:hasDesiredOutcome isp-vg:${outcomeId(study.jobs[0].steps[0].id,0)} .
+
+isp-vg:${outcomeId(study.jobs[0].steps[0].id,0)} a isp-vg:DesiredOutcome ;
+    isp-vg:direction isp-vg:${study.jobs[0].steps[0].outcomes[0][2]==='min'?'Minimize':'Maximize'} ;
+    isp-vg:target ${study.jobs[0].steps[0].outcomes[0][3]} ;
+    isp-vg:baseline ${fmt(study.jobs[0].steps[0].outcomes[0][4])==='—'?'"not measured"':study.jobs[0].steps[0].outcomes[0][4]} ;
+    isp-vg:measuredBy isp-met:${study.jobs[0].steps[0].outcomes[0][5].replace(/\s.*$/,'')} .</pre>
+      </details>`;
+
+    root.innerHTML = html;
+
+    root.querySelectorAll('[data-st]').forEach(b=>b.addEventListener('click', ()=>{ js.status = b.dataset.st; render(); }));
+    const s = root.querySelector('#js-search');
+    s.addEventListener('input', e=>{ js.q = e.target.value; const pos = e.target.selectionStart; render(); const n = root.querySelector('#js-search'); n.focus(); n.setSelectionRange(pos,pos); });
+    root.querySelector('#js-copy').addEventListener('click', ()=>{
+      const text = csv(), btn = root.querySelector('#js-copy');
+      const fallback = ()=>{ const f = root.querySelector('#js-copy-fallback'); f.hidden = false; const t = f.querySelector('textarea'); t.value = text; t.focus(); t.select(); };
+      try{
+        navigator.clipboard.writeText(text).then(()=>{ btn.textContent = 'Copied ' + (text.split('\n').length-1) + ' rows'; setTimeout(()=>btn.textContent='Copy both personas as CSV', 1800); }, fallback);
+      }catch(e){ fallback(); }
+    });
+  }
+
+  window.renderJobs = function(p){ js.p = p; render(); };
+})();
+
+</script>
+<script>
+(function(){
+  let applyGraphFilter = function(){};
+  let pulseGraphNode = function(){};
+
+  const CATS = [
+    { key:'profile',  label:'Profile Data',        dim:'human',   def:'Information directly provided by the user for their account or profile.' },
+    { key:'persona',  label:'Persona Data',         dim:'human',   def:'Information collected and used to create and refine personas.' },
+    { key:'pref',     label:'Preference Data',      dim:'human',   def:'Data reflecting user’s choices, likes, dislikes, and configurations.' },
+    { key:'personal', label:'Personalization Data', dim:'machine', def:'Information used to tailor user experiences, often collected from individual user interactions and preferences.' },
+    { key:'behavior', label:'User Behavior Data',   dim:'machine', def:'Information about how users interact with a system or product, including their actions, patterns, and choices.' },
+    { key:'history',  label:'Prior History Data',   dim:'machine', def:'All past interactions and data associated with a user.' },
+    { key:'type',     label:'Persona Type',         dim:'human',   def:'A categorization of personas based on shared characteristics, needs, or goals.' },
+  ];
+
+  const B = { prof:['Persona','Persona Data','Profile Data'], pd:['Persona','Persona Data'], pref:['Persona','Preference Data'],
+    pers:['Persona','Personalization Data'], beh:['Persona','User Behavior Data'], hist:['Persona','Prior History Data'], type:['Persona','Persona Data','Persona Type'] };
+
+  const D = {
+    name:'A fictitious name given to a persona to make it more relatable and memorable.',
+    email:'A fictional email address used for a persona, often used for prototyping.',
+    phone:'A fictional phone number used for a persona, often used for prototyping.',
+    org:'The fictional company or organization a persona is associated with.',
+    loc:'The geographical location associated with a persona.',
+    lang:'The language a persona is assumed to speak, often based on location or demographics.',
+    uid:'A unique identifier assigned to each persona within a system or dataset.',
+    role:'A persona’s job title and responsibilities within their organization.',
+    ind:'The industry or sector that a persona typically works in.',
+    demo:'Statistical data about a persona’s age, gender, location, education, income, etc.',
+    eth:'Qualitative data about a persona’s values, beliefs, motivations, and behaviors.',
+    acc:'How easily users can access and manage their preference settings.',
+    comm:'User’s preferred channels and formats for receiving communications.',
+    cont:'Types of content a user favors or engages with most.',
+    top:'Subjects or themes a user shows interest in.',
+    notif:'Communication informing users about changes or updates related to their preferences.',
+    priv:'Controls available to users to manage the collection, storage, and usage of their preference data.',
+    seg:'Information used to group users with similar characteristics, behaviors, or needs.',
+    alg:'A set of rules and calculations used to process personalization data and deliver personalized experiences.',
+    rec:'A record of items or content previously suggested to a user.',
+    dev:'Information about the device and operating system used by a user.',
+    eng:'A quantifiable measure of user engagement.',
+    evt:'Monitoring and recording specific user actions or events within a system.',
+    nav:'The typical paths users take while navigating through a system.',
+    sess:'Information collected during a single user visit to a system.',
+    ts:'Date and time of specific user actions or engagements.',
+    jour:'Information about the steps a user takes while interacting with a system.',
+    brow:'Record of web pages visited by a user.',
+    srch:'Record of search queries submitted by a user.',
+    fb:'User-provided reviews, ratings, or opinions on products, services, or content.',
+    sel:'Record of items chosen or interacted with by a user.',
+    ptype:'A categorization of personas based on shared characteristics, needs, or goals.'
+  };
+
+  const STAGES = ['Discover','Qualify','Evaluate','Propose','Decide','Onboard'];
+  function jobs(list){ return '<ul class="jobs">' + list.map((j,i)=>'<li><span>'+STAGES[i]+'</span>'+j+'</li>').join('') + '</ul>'; }
+
+  // Engineering PersonaType subclasses: not instantiated for either buyer persona
+  function engGhosts(who, closeNote){
+    return [
+      ['Analytic Engineering Persona','Represents individuals focused on data analysis, building data pipelines, and generating insights.'],
+      ['Data Engineering Persona','Represents individuals responsible for building and maintaining data infrastructure, ensuring data quality, and enabling data access.'],
+      ['Knowledge Engineering Persona','Represents individuals focused on capturing, organizing, and applying knowledge within systems or organizations.'],
+      ['Platform Engineering Persona','Represents individuals responsible for building and maintaining the underlying infrastructure and tools that support software development and deployment.'],
+      ['Quality Engineering Persona','Represents individuals focused on ensuring the quality of software and systems through testing, automation, and process improvement.'],
+      ['Systems Engineering Persona','Represents individuals responsible for designing, building, and managing complex systems, considering all aspects from hardware to software and human interaction.'],
+      ['UX Engineering Persona','Represents individuals focused on the design and development of user interfaces, ensuring usability, accessibility, and a positive user experience.']
+    ].map(([label,def])=>{
+      const g = { cat:'type', label, breadcrumb:B.type, def, reason:'Not '+who+'’s role. '+who+' consumes what these roles build.' };
+      if(label==='UX Engineering Persona'){ g.closematch = true; g.reason = closeNote; }
+      return g;
+    });
+  }
+
+  const PERSONAS = {
+    admin: {
+      key:'admin', color:'var(--p-admin)', hash:'client-admin',
+      name:'Marisol Reyes', typeLabel:'Client Admin',
+      eyebrow:'Persona Instance &middot; Taxonomy | Core | Persona v1.0 &mdash; <b>PEO buyer extension &middot; Client Admin</b>',
+      role:'Client Admin &mdash; the controller who owns cost, the contract and payroll cut-over at a 121-person logistics company, deciding whether a PEO is cheaper and safer than running payroll in-house, buying benefits through a broker and carrying a standalone workers’ comp policy.',
+      stats:[['human','121','Employees · TX & LA'],['human','16 days','First cost question → binding quote'],['machine','64%','Owner first-draft approval (target 80%)']],
+      gauges:[
+        { key:'quote', label:'Time to binding quote', min:0, max:30, step:1, start:16, unit:' days', direction:'below', target:10, targetLabel:'target ≤ 10 days · card sales-cycle-time v1.0', color:'var(--accent-machine)' },
+        { key:'approve', label:'Owner approval of first draft', min:0, max:100, step:1, start:64, unit:'%', direction:'above', target:80, targetLabel:'target ≥ 80% · card proposal-acceptance v1.1', color:'var(--accent-human)' },
+        { key:'clarity', label:'Co-employment clarity', min:0, max:100, step:1, start:81, unit:'%', direction:'above', target:85, targetLabel:'sessions with no follow-up question · target ≥ 85%', color:'var(--accent-machine)' }
+      ],
+      items:[
+        { cat:'profile', label:'Persona Name', breadcrumb:B.prof, value:'Marisol Reyes', def:D.name, grounded:false, note:'Invented for this instance; a persona is “a semi-fictional representation.”' },
+        { cat:'profile', label:'Persona Email', breadcrumb:B.prof, value:'marisol.reyes@harborpoint.example', def:D.email, grounded:false, note:'Placeholder on a reserved example domain.' },
+        { cat:'profile', label:'Persona Phone', breadcrumb:B.prof, value:'+1-555-013-4410', def:D.phone, grounded:false, note:'Fictional placeholder (reserved “555” exchange).' },
+        { cat:'profile', label:'Persona Organization', breadcrumb:B.prof, value:'Controller and office manager at Harbor Point Logistics: 121 employees, freight brokerage and warehousing. Prospect in the advisor’s first Client Admin scenario.', def:D.org, grounded:true, note:'Company and size come from advisor scenario A1 (cost comparison at Evaluate). The company itself is fictional.' },
+        { cat:'profile', label:'Persona Location', breadcrumb:B.prof, value:'Head office in Houston, Texas; a warehouse crew in Lake Charles, Louisiana. Two states means two SUTA accounts, two sets of wage-and-hour rules and two workers’ comp rate tables.', def:D.loc, grounded:false, note:'TX and LA come from scenario A1; the cities are invented.' },
+        { cat:'profile', label:'Persona Language', breadcrumb:B.prof, value:'English (assumed); about a third of the warehouse crew prefers Spanish, which matters for employee-facing enrollment notices.', def:D.lang, grounded:false, note:'Assumed; not stated in the advisor model.' },
+        { cat:'profile', label:'Persona User Identifier', breadcrumb:B.prof, value:'isp-sal:persona/client-admin/harbor-point-001', def:D.uid, grounded:true, note:'Minted through the GOV-007 identity registry, the same way the advisor mints content URIs at the Identify stage.' },
+
+        { cat:'persona', label:'Persona Role', breadcrumb:B.pd, id:'role',
+          value:'Client Admin (owner, controller or office manager at a prospect with 5–150 employees). Owns cost, payroll cut-over and the contract. Her jobs across the sales pipeline:' + jobs(['Understand what a PEO takes off my plate','Confirm we fit (size, industry, states)','Compare total cost against our current stack','See the co-employment split before signing','Get sign-off from owners and finance','Move payroll without a missed paycheck']),
+          def:D.role, grounded:true, note:'Job map copied from the advisor’s isp-sal:ClientAdmin definition.' },
+        { cat:'persona', label:'Persona Industry', breadcrumb:B.pd, value:'Transportation and warehousing (NAICS 48–49). Workers’ comp class codes and safety programs drive a large share of her total cost, so the advisor ranks the workers’ comp class-code guide high for her.', def:D.ind, grounded:true, note:'The class-code guide is one of the three content objects in scenario A1’s trace.' },
+        { cat:'persona', label:'Persona Demographics', breadcrumb:B.pd, value:'Prospect segment 100–149 employees, multi-state, growing toward 150 (the scenario’s growth option re-checks ACA status under BEN-001). Current stack: in-house payroll, broker-placed benefits, standalone workers’ comp.', def:D.demo, grounded:true },
+        { cat:'persona', label:'Persona Job Study', breadcrumb:B.pd, proposed:true, value:'JS-CA · 3 jobs · 14 job steps · 42 desired outcomes. Core job: decide whether a PEO is the right way to run HR for our company. Related jobs: control the total cost of employing our workforce; keep the business protected from employer liability.', def:'Proposed property isp-sal:performsJob linking a persona to the jobs, job steps and measurable desired outcomes it is trying to get done.', grounded:true, note:'Open the Job study tab for the full hierarchy: Job study › Job › Job step › Desired outcome, with targets, baselines and survey columns for the gap analysis.' },
+        { cat:'persona', label:'Persona Ethnographics', breadcrumb:B.pd,
+          value:'Wants cost certainty more than features. Distrusts “all-in” prices that bury admin fees, and wants every number to show where it came from. Her biggest fear is a missed paycheck at cut-over. Wants to keep control of hiring and firing and needs the co-employment split in plain terms before she signs. Has minutes, not hours: one page she can forward to the owners beats a forty-slide deck.',
+          def:D.eth, grounded:true, note:'Drawn from her job map and the gaps measured at Propose and Decide (follow-up questions, owner approvals).' },
+
+        { cat:'pref', label:'Preference Accessibility', breadcrumb:B.pref, value:'Briefs inside the proposal portal, at most six statements each (EXT-013), every statement cited, and a client-shareable version she can send to owners without redacting anything herself.', def:D.acc, grounded:true },
+        { cat:'pref', label:'Preferred Communication', breadcrumb:B.pref, value:'Email summary after each session plus a named BPA for live questions. No automated nurture sequences once she is in Evaluate.', def:D.comm, grounded:false, note:'Channel preference assumed; the BPA walkthrough is a decision option in scenario A2.' },
+        { cat:'pref', label:'Preferred Content', breadcrumb:B.pref, value:'Side-by-side total cost (admin fee PEPM, workers’ comp, SUTA, benefits) for her size and states; customer stories from the same industry and size band; competitor offers as facts and summaries with a source link (EXT-004).', def:D.cont, grounded:true },
+        { cat:'pref', label:'Preferred Topics', breadcrumb:B.pref, value:'Total cost, payroll cut-over timing, who is employer of record for what, contract terms, and growth past 150 employees.', def:D.top, grounded:true },
+        { cat:'pref', label:'Preference Notification', breadcrumb:B.pref, value:'Alert when a quote changes or when an assumption in her brief expires: competitor facts expire 30 days after crawl (EXT-005), and Candidate items are labeled “pending review.”', def:D.notif, grounded:true },
+        { cat:'pref', label:'Preference Privacy Settings', breadcrumb:B.pref, value:'Her census holds employee PII. It is scoped to her tenant, used only for quoting, and never assembled into content for anyone else. Internal pricing, margin and win-loss content is never assembled for her (EXT-006 Persona Entitlements).', def:D.priv, grounded:true, note:'In the commuter instance this class was empty; here it is enforced by the Entitlement Enforcer agent.' },
+
+        { cat:'personal', label:'User Segment Data', breadcrumb:B.pers, value:'Client Admin · 100–149 employees · TX + LA · transportation · Evaluate stage. This is the scope the Intent & RCB agent writes into her context bundle.', def:D.seg, grounded:true },
+        { cat:'personal', label:'Personalization Algorithm', breadcrumb:B.pers, value:'Five-part context bundle (WHO, WHAT, WHEN, WHERE, WHY; GOV-011) scopes a federated graph query (EXT-011), then mappings, the RDF content graph, precision extraction (grounding must stay ≥ 0.80, GOV-014) and assembly with her brief template.', def:D.alg, grounded:true },
+        { cat:'personal', label:'Recommendation History', breadcrumb:B.pers, value:'At Evaluate the advisor offered three options: request a binding quote; run a cost scenario with growth to 150; pause and share the brief with owners. Each came with its downstream effect and the outcome it commits to.', def:D.rec, grounded:true },
+
+        { cat:'behavior', label:'Device & Platform Data', breadcrumb:B.beh, value:'Laptop browser during business hours for sessions and census uploads; phone for approvals and reading forwarded briefs.', def:D.dev, grounded:false, note:'Reasonable inference; not measured in the advisor model.' },
+        { cat:'behavior', label:'Engagement Metric', breadcrumb:B.beh, id:'engagement', value:'16 days from first cost question to binding quote (target ≤ 10). Owner approval of the first draft at 64% (target 80%). 81% of Propose sessions end with no follow-up question (target 85%).', def:D.eng, grounded:true, note:'Value-gap monitor readings, last 90 days. The quote gap sits downstream: census uploads fail validation 38% of the time.' },
+        { cat:'behavior', label:'Event Tracking', breadcrumb:B.beh, value:'CloudEvents from her decisions: quote.requested, census.validate, task.created (BPA follow-up in 2 business days), brief.shared.', def:D.evt, grounded:true },
+        { cat:'behavior', label:'Navigation Pattern', breadcrumb:B.beh, value:'Discover → Qualify (fit confirmed in 4 steps against a target of 3, because industry exclusions sit in an unmapped SharePoint list) → Evaluate (stalls while census fixes are made by hand) → Propose.', def:D.nav, grounded:true },
+        { cat:'behavior', label:'Session Data', breadcrumb:B.beh, value:'About 7.5 minutes to a useful answer at Discover (target 10). Typical Evaluate session: one question, one brief, three options, one decision recorded.', def:D.sess, grounded:true },
+
+        { cat:'history', label:'Interaction Timestamp', breadcrumb:B.hist, value:'First session 18 Aug 2026; binding quote requested 3 Sep 2026; MSA review pending.', def:D.ts, grounded:false, note:'Dates invented for the instance.' },
+        { cat:'history', label:'User Journey Data', breadcrumb:B.hist, value:'Asked what a PEO would take off her plate, confirmed fit, compared total cost at 121 and 150 employees, requested a binding quote, then waited a week while her census was fixed. The owners’ first-draft review came back asking for a risk line the HR Specialist’s compliance brief already had.', def:D.jour, grounded:true, note:'Mirrors the Decide-stage gap: the HR Specialist’s compliance brief is not linked into the Admin’s package.' },
+        { cat:'history', label:'Browsing History', breadcrumb:B.hist, value:'Content objects opened: plan comparison v14 (client-shareable parts only; slide 19 excluded), workers’ comp class-code guide, one competitor offer (facts only).', def:D.brow, grounded:true },
+        { cat:'history', label:'Search History', breadcrumb:B.hist, value:'“What does a PEO take off my plate?” · “What will this cost at 121 versus 150 people?” · “Who is the employer of record for payroll taxes?”', def:D.srch, grounded:false, note:'Wording invented; each maps to one of her job steps.' },
+        { cat:'history', label:'Feedback & Rating', breadcrumb:B.hist, value:'Marks each brief “answered my question” or not; one flag at Decide: “missing the risk we remove.” Ratings feed the Value-Gap Monitor (EXT-015).', def:D.fb, grounded:true },
+        { cat:'history', label:'Selection History', breadcrumb:B.hist, value:'Chose “Request a binding quote” at Evaluate. Recorded as an isp-dec decision bound to sales-cycle-time v1.0 (MET-014).', def:D.sel, grounded:true },
+
+        { cat:'type', label:'Client Admin Persona', breadcrumb:B.type, proposed:true, value:'Proposed: isp-sal:ClientAdmin rdfs:subClassOf PersonaType. A buyer-side persona who owns cost, contract and payroll cut-over for a PEO prospect.', def:'Proposed new PersonaType subclass for PEO buyer personas.', grounded:true, note:'Raised as a KGCL change request (GOV-018). The ontology has no PersonaType for a buyer or end user, only engineering roles.' },
+      ],
+      ghosts: engGhosts('Marisol','Closest existing neighbour (skos:closeMatch), not asserted. Like the commuter, she is the person UX work designs for, not a UX engineer. The proposed Client Admin subclass replaces this gap.')
+    },
+
+    hr: {
+      key:'hr', color:'var(--p-hr)', hash:'hr-specialist',
+      name:'Jordan Ellis', typeLabel:'HR Specialist',
+      eyebrow:'Persona Instance &middot; Taxonomy | Core | Persona v1.0 &mdash; <b>PEO buyer extension &middot; HR Specialist</b>',
+      role:'HR Specialist &mdash; a one-person HR team at a 96-person engineering firm hiring across Colorado, California, Texas and fully remote, who carries the compliance risk today and has to live with whatever the PEO changes for employees.',
+      stats:[['human','96','Employees · CO, CA, TX, remote'],['human','88%','Hiring states assessed (target 100%)'],['machine','34 min','To compare plans (target ≤ 20)']],
+      gauges:[
+        { key:'states', label:'Hiring states assessed', min:0, max:100, step:1, start:88, unit:'%', direction:'above', target:100, targetLabel:'target 100% · card coverage-assessed v1.0', color:'var(--accent-machine)' },
+        { key:'plans', label:'Time to compare plans', min:0, max:60, step:1, start:34, unit:' min', direction:'below', target:20, targetLabel:'target ≤ 20 min', color:'var(--accent-human)' },
+        { key:'handbook', label:'Handbook policies unmapped', min:0, max:40, step:1, start:18, unit:'%', direction:'below', target:5, targetLabel:'target ≤ 5%', color:'var(--accent-machine)' }
+      ],
+      items:[
+        { cat:'profile', label:'Persona Name', breadcrumb:B.prof, value:'Jordan Ellis', def:D.name, grounded:false, note:'Invented for this instance.' },
+        { cat:'profile', label:'Persona Email', breadcrumb:B.prof, value:'jordan.ellis@summitridge.example', def:D.email, grounded:false, note:'Placeholder on a reserved example domain.' },
+        { cat:'profile', label:'Persona Phone', breadcrumb:B.prof, value:'+1-555-016-2287', def:D.phone, grounded:false, note:'Fictional placeholder (reserved “555” exchange).' },
+        { cat:'profile', label:'Persona Organization', breadcrumb:B.prof, value:'HR Lead at Summit Ridge Engineering: 96 employees, civil and structural engineering. Prospect in the advisor’s first HR Specialist scenario.', def:D.org, grounded:true, note:'Company and size from advisor scenario H1 (compliance coverage at Qualify). The company is fictional.' },
+        { cat:'profile', label:'Persona Location', breadcrumb:B.prof, value:'Office in Denver, Colorado; project staff in California and Texas; a growing group of remote employees with no registered worksite.', def:D.loc, grounded:false, note:'CO, CA, TX and remote come from scenario H1; the city is invented.' },
+        { cat:'profile', label:'Persona Language', breadcrumb:B.prof, value:'English (assumed).', def:D.lang, grounded:false, note:'Assumed default.' },
+        { cat:'profile', label:'Persona User Identifier', breadcrumb:B.prof, value:'isp-sal:persona/hr-specialist/summit-ridge-001', def:D.uid, grounded:true, note:'Minted through the GOV-007 identity registry.' },
+
+        { cat:'persona', label:'Persona Role', breadcrumb:B.pd, id:'role',
+          value:'HR Specialist (HR generalist or HR lead at the prospect). Owns compliance, benefits and policy, and has to live with the change. Their jobs across the sales pipeline:' + jobs(['Find where we carry compliance risk today','Check coverage for every state we hire in','Compare benefit plans employees will see','Map our handbook to PEO policy','Show leadership the risk we remove','Re-enroll employees with no coverage gap']),
+          def:D.role, grounded:true, note:'Job map copied from the advisor’s isp-sal:HRSpecialist definition.' },
+        { cat:'persona', label:'Persona Industry', breadcrumb:B.pd, value:'Professional, scientific and technical services (NAICS 5413, engineering). Licensed staff, project-based travel and remote work make jurisdiction the hardest question.', def:D.ind, grounded:false, note:'Industry chosen to fit the multi-state, remote pattern in scenario H1.' },
+        { cat:'persona', label:'Persona Demographics', breadcrumb:B.pd, value:'Prospect segment 50–99 employees, four jurisdictions including remote, one HR person. Below the 100-employee band but above the ACA 50-FTE threshold, so ACA reporting already applies.', def:D.demo, grounded:true },
+        { cat:'persona', label:'Persona Job Study', breadcrumb:B.pd, proposed:true, value:'JS-HR · 3 jobs · 14 job steps · 42 desired outcomes. Core job: make sure the move to a PEO leaves us compliant and our people covered. Related jobs: keep employees informed and confident; keep HR records and policies intact.', def:'Proposed property isp-sal:performsJob linking a persona to the jobs, job steps and measurable desired outcomes it is trying to get done.', grounded:true, note:'Open the Job study tab for the full hierarchy: Job study › Job › Job step › Desired outcome, with targets, baselines and survey columns for the gap analysis.' },
+        { cat:'persona', label:'Persona Ethnographics', breadcrumb:B.pd,
+          value:'Carries the compliance risk alone and knows it. Trusts a claim only when it cites a rule or a regulator. Worries most about employees losing coverage or seeing worse plans after the switch. Wants the handbook to survive the move and wants to be part of the decision, not handed it. Sceptical of sales material, which is why the advisor never shows them uncited statements.',
+          def:D.eth, grounded:true, note:'Drawn from the job map and the gaps measured at Evaluate, Propose and Onboard.' },
+
+        { cat:'pref', label:'Preference Accessibility', breadcrumb:B.pref, value:'State-by-state checklists generated from SSOT rules, each line showing its rule ID and release state; plan comparisons showing what employees will pay.', def:D.acc, grounded:true },
+        { cat:'pref', label:'Preferred Communication', breadcrumb:B.pref, value:'In-app briefs plus a weekly email digest of state changes; a call with an HR specialist on the PEO side for the gap assessment.', def:D.comm, grounded:false, note:'Channel mix assumed; the assessment call is a decision option in scenario H1.' },
+        { cat:'pref', label:'Preferred Content', breadcrumb:B.pref, value:'Regulatory change items bound to an SSOT rule (EXT-008), plan comparison v14, handbook-to-policy mappings, and a risk brief they can attach to the leadership decision.', def:D.cont, grounded:true },
+        { cat:'pref', label:'Preferred Topics', breadcrumb:B.pref, value:'Multi-state compliance (Colorado and California above all), ACA reporting, benefits continuity, handbook policy, remote-employee jurisdiction.', def:D.top, grounded:true },
+        { cat:'pref', label:'Preference Notification', breadcrumb:B.pref, value:'Subscribed to Colorado and California changes; wants to learn of a rule change within 7 days (card reg-latency v1.0). The Colorado feed item updates their brief once its rule owner approves it.', def:D.notif, grounded:true },
+        { cat:'pref', label:'Preference Privacy Settings', breadcrumb:B.pref, value:'Their handbook and employee roster are scoped to their tenant. Employee health information is never assembled into briefs. Content blocked at Control (for example a case study containing PII) never reaches them.', def:D.priv, grounded:true, note:'Enforced by EXT-006 and the Control stage of the ingestion pipeline.' },
+
+        { cat:'personal', label:'User Segment Data', breadcrumb:B.pers, value:'HR Specialist · 50–99 employees · CO, CA, TX + remote · engineering services · Qualify stage.', def:D.seg, grounded:true },
+        { cat:'personal', label:'Personalization Algorithm', breadcrumb:B.pers, value:'Same chain as the Client Admin with a different template: context bundle (GOV-011) → federated query scoped by jurisdiction (EXT-011) → mappings → RDF content → precision extraction (grounding ≥ 0.80) → HR brief with rule citations.', def:D.alg, grounded:true },
+        { cat:'personal', label:'Recommendation History', breadcrumb:B.pers, value:'At Qualify the advisor offered: order a compliance gap assessment; subscribe to state updates; share the brief with the Client Admin.', def:D.rec, grounded:true },
+
+        { cat:'behavior', label:'Device & Platform Data', breadcrumb:B.beh, value:'Laptop for long reading sessions and handbook uploads (often scanned PDFs).', def:D.dev, grounded:true, note:'Scanned-PDF handbooks are the measured cause of the Propose-stage gap.' },
+        { cat:'behavior', label:'Engagement Metric', breadcrumb:B.beh, id:'engagement', value:'88% of hiring states assessed (target 100%). 34 minutes to compare plans (target ≤ 20). 18% of handbook policies left unmapped (target ≤ 5%). 71% of decisions carry a risk brief (target 90%).', def:D.eng, grounded:true, note:'Value-gap monitor readings, last 90 days.' },
+        { cat:'behavior', label:'Event Tracking', breadcrumb:B.beh, value:'CloudEvents: assessment.requested, checklist.generated, subscription.created, brief.shared (to the Client Admin).', def:D.evt, grounded:true },
+        { cat:'behavior', label:'Navigation Pattern', breadcrumb:B.beh, value:'Discover → Qualify, where remote employees with no registered worksite cannot be resolved to a jurisdiction (GOV-007 gap) → Evaluate, where plan comparison v14 has two claims still held as Candidate, so briefs fall back to the older deck.', def:D.nav, grounded:true },
+        { cat:'behavior', label:'Session Data', breadcrumb:B.beh, value:'About 12 minutes to a useful answer at Discover (target 15). Evaluate sessions run long because of manual plan lookups.', def:D.sess, grounded:true },
+
+        { cat:'history', label:'Interaction Timestamp', breadcrumb:B.hist, value:'First session 25 Aug 2026; gap assessment ordered 9 Sep 2026; Colorado subscription active since the same day.', def:D.ts, grounded:false, note:'Dates invented for the instance.' },
+        { cat:'history', label:'User Journey Data', breadcrumb:B.hist, value:'Asked where the company carries risk today, ran the state coverage check, found the remote staff unresolved, ordered the gap assessment and subscribed to Colorado and California updates. Their compliance brief exists, but it is not yet linked into the Client Admin’s package for the owners.', def:D.jour, grounded:true },
+        { cat:'history', label:'Browsing History', breadcrumb:B.hist, value:'Content objects opened: Colorado regulatory change item (Candidate, awaiting rule owner), plan comparison v14, state compliance checklists generated from SSOT rules.', def:D.brow, grounded:true },
+        { cat:'history', label:'Search History', breadcrumb:B.hist, value:'“Which states do we have compliance gaps in?” · “What changes in Colorado next year?” · “Will employees see different plans after the switch?”', def:D.srch, grounded:false, note:'Wording invented; each maps to a job step.' },
+        { cat:'history', label:'Feedback & Rating', breadcrumb:B.hist, value:'Flags any statement without a rule citation; marked the plan comparison brief “had to look this up myself.” Ratings feed the Value-Gap Monitor (EXT-015).', def:D.fb, grounded:true },
+        { cat:'history', label:'Selection History', breadcrumb:B.hist, value:'Chose “Order a compliance gap assessment” at Qualify. Recorded as an isp-dec decision bound to coverage-assessed v1.0 (MET-014).', def:D.sel, grounded:true },
+
+        { cat:'type', label:'HR Specialist Persona', breadcrumb:B.type, proposed:true, value:'Proposed: isp-sal:HRSpecialist rdfs:subClassOf PersonaType. A buyer-side persona who owns compliance, benefits and policy for a PEO prospect.', def:'Proposed new PersonaType subclass for PEO buyer personas.', grounded:true, note:'Raised as a KGCL change request (GOV-018) alongside the Client Admin subclass.' },
+      ],
+      ghosts: engGhosts('Jordan','Closest existing neighbour (skos:closeMatch), not asserted. The proposed HR Specialist subclass replaces this gap.')
+    }
+  };
+
+  // ---------------------------------------------------------------
+  const state = { p:'admin', cats:new Set(CATS.map(c=>c.key)), search:'', ghosts:true, illustrativeOnly:false };
+  const P = ()=>PERSONAS[state.p];
+
+  // Category chips
+  const chipWrap = document.getElementById('category-chips');
+  const allChip = document.createElement('button');
+  allChip.className='chip'; allChip.type='button'; allChip.textContent='All categories'; allChip.setAttribute('aria-pressed','true');
+  allChip.addEventListener('click', ()=>{
+    const allOn = state.cats.size === CATS.length;
+    if(allOn) state.cats.clear(); else CATS.forEach(c=>state.cats.add(c.key));
+    chipWrap.querySelectorAll('.chip[data-cat]').forEach(c=>c.setAttribute('aria-pressed', String(!allOn)));
+    allChip.setAttribute('aria-pressed', String(!allOn));
+    renderAll();
+  });
+  chipWrap.appendChild(allChip);
+  CATS.forEach(c=>{
+    const b = document.createElement('button');
+    b.className='chip'; b.type='button'; b.textContent=c.label; b.dataset.cat=c.key; b.setAttribute('aria-pressed','true');
+    b.addEventListener('click', ()=>{
+      if(state.cats.has(c.key)){ state.cats.delete(c.key); b.setAttribute('aria-pressed','false'); }
+      else { state.cats.add(c.key); b.setAttribute('aria-pressed','true'); }
+      allChip.setAttribute('aria-pressed', String(state.cats.size===CATS.length));
+      renderAll();
+    });
+    chipWrap.appendChild(b);
+  });
+
+  function renderAll(){ render(); applyGraphFilter(); }
+  document.getElementById('search').addEventListener('input', e=>{ state.search = e.target.value.trim().toLowerCase(); renderAll(); });
+  document.getElementById('toggle-ghosts').addEventListener('change', e=>{ state.ghosts = e.target.checked; renderAll(); });
+  document.getElementById('toggle-illustrative').addEventListener('change', e=>{ state.illustrativeOnly = e.target.checked; renderAll(); });
+
+  const strip = s => String(s).replace(/<[^>]+>/g,' ');
+  function matches(text){ return !state.search || strip(text).toLowerCase().includes(state.search); }
+  const crumb = bc => bc.map((b,i)=> i===bc.length-1 ? '<b>'+b+'</b>' : b).join(' &rsaquo; ');
+
+  function badgeFor(item){
+    if(item.proposed) return '<span class="badge proposed">proposed extension</span>';
+    return '<span class="badge '+(item.grounded?'grounded':'illustrative')+'">'+(item.grounded?'from advisor model':'illustrative')+'</span>';
+  }
+
+  function buildCard(item, cat){
+    const card = document.createElement('article');
+    card.className = 'card dim-' + cat.dim + (item.proposed ? ' proposed-card' : '');
+    card.tabIndex = 0; card.setAttribute('role','button'); card.setAttribute('aria-expanded','false');
+    if(item.id) card.id = 'card-' + item.id;
+    card.innerHTML = `
+      <div class="breadcrumb">${crumb(item.breadcrumb)}</div>
+      <h3>${item.label}</h3>
+      <div class="value">${item.value}</div>
+      <div class="extra">
+        <div class="def-label">SKOS definition</div><div>${item.def}</div>
+        ${item.note ? '<div class="def-label" style="margin-top:8px;">Curation note</div><div>'+item.note+'</div>' : ''}
+      </div>
+      <div class="card-foot">${badgeFor(item)}<span class="expand-hint">click to expand</span></div>`;
+    function toggle(){
+      const open = card.classList.toggle('expanded');
+      card.setAttribute('aria-expanded', String(open));
+      card.querySelector('.expand-hint').textContent = open ? 'click to collapse' : 'click to expand';
+    }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+    card._visible = () => matches([item.label,item.value,item.def,item.note||''].join(' ')) && (!state.illustrativeOnly || !item.grounded);
+    return card;
+  }
+
+  function buildGhost(g){
+    const card = document.createElement('article');
+    card.className = 'ghost' + (g.closematch ? ' closematch' : '');
+    card.innerHTML = `
+      <div class="breadcrumb">${crumb(g.breadcrumb)}</div>
+      <h3>${g.label}</h3>
+      <div class="value">${g.def}</div>
+      <div class="card-foot"><span class="badge">${g.closematch ? 'close match' : 'not instantiated'}</span></div>
+      <div class="value" style="margin-top:2px;"><em>${g.reason}</em></div>`;
+    card._visible = () => matches([g.label,g.def,g.reason].join(' ')) && !state.illustrativeOnly;
+    return card;
+  }
+
+  const main = document.getElementById('view-explore');
+  function render(){
+    const p = P();
+    main.innerHTML = '';
+    let anyShown = false;
+    CATS.forEach(cat=>{
+      if(!state.cats.has(cat.key)) return;
+      const catItems = p.items.filter(i=>i.cat===cat.key);
+      const catGhosts = state.ghosts ? p.ghosts.filter(g=>g.cat===cat.key) : [];
+      if(!catItems.length && !catGhosts.length) return;
+      const section = document.createElement('section'); section.className='section';
+      const allGhosts = p.ghosts.filter(g=>g.cat===cat.key).length;
+      section.innerHTML = `<div class="section-head"><h2>${cat.label}</h2><span class="count">${catItems.length} instantiated${allGhosts? ' &middot; '+allGhosts+' not instantiated':''}</span><span class="def">${cat.def}</span></div>`;
+      const grid = document.createElement('div'); grid.className='grid';
+      let shown = 0;
+      catItems.forEach(item=>{ const c=buildCard(item,cat); if(c._visible()){ grid.appendChild(c); shown++; } });
+      catGhosts.forEach(g=>{ const c=buildGhost(g); if(c._visible()){ grid.appendChild(c); shown++; } });
+      if(!shown){ const e=document.createElement('div'); e.className='no-results'; e.textContent='No matches in '+cat.label+'.'; grid.appendChild(e); }
+      else anyShown = true;
+      section.appendChild(grid); main.appendChild(section);
+    });
+    if(!anyShown){
+      const e=document.createElement('div'); e.className='no-results'; e.style.margin='0';
+      e.textContent='Nothing matches the current filters. Try clearing the search or re-enabling categories.';
+      main.appendChild(e);
+    }
+  }
+
+  // Masthead + stats
+  function renderMast(){
+    const p = P();
+    document.documentElement.style.setProperty('--pcol', p.color);
+    document.getElementById('eyebrow').innerHTML = p.eyebrow;
+    document.getElementById('pname').textContent = p.name;
+    document.getElementById('prole').innerHTML = p.role;
+    const total = p.items.length + p.ghosts.length;
+    document.getElementById('stat-rail').innerHTML =
+      p.stats.map(([cls,n,l])=>`<div class="stat ${cls}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('') +
+      `<div class="stat"><div class="n">${p.items.length}/${total}</div><div class="l">Classes instantiated</div></div>` +
+      (window.jobCounts ? (c=>`<div class="stat"><div class="n">${c.outcomes}</div><div class="l">Desired outcomes · ${c.jobs} jobs</div></div>`)(window.jobCounts(state.p)) : '');
+    document.querySelectorAll('.pbtn').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.p===state.p)));
+    document.title = p.name + ' — ' + p.typeLabel + ' Persona';
+  }
+
+  // Gauges
+  const gaugeWrap = document.getElementById('gauges');
+  function renderGauges(){
+    gaugeWrap.innerHTML = '';
+    P().gauges.forEach(g=>{
+      const box = document.createElement('div');
+      box.className='gauge'; box.style.setProperty('--gauge-color', g.color);
+      box.innerHTML = `
+        <div class="gauge-head"><span class="name">${g.label}</span><span class="val">${g.start}${g.unit}</span></div>
+        <input type="range" min="${g.min}" max="${g.max}" step="${g.step}" value="${g.start}" aria-label="${g.label}, ${g.targetLabel}">
+        <div class="gauge-foot"><span>${g.min}${g.unit}</span><span>${g.max}${g.unit}</span></div>
+        <div class="target-note">${g.targetLabel}</div>
+        <div class="verdict"></div>`;
+      gaugeWrap.appendChild(box);
+      const range = box.querySelector('input'), val = box.querySelector('.val'), verdict = box.querySelector('.verdict');
+      function update(pulse){
+        const v = parseFloat(range.value);
+        val.textContent = v + g.unit;
+        const pass = g.direction==='below' ? v <= g.target : v >= g.target;
+        verdict.className = 'verdict ' + (pass?'pass':'warn');
+        verdict.textContent = pass ? '✓ desired outcome met at this job step' : '⚠ value gap: delivered outcome short of target';
+        if(!pulse) return;
+        const eng = document.getElementById('card-engagement');
+        if(eng){
+          eng.style.transition='box-shadow .5s';
+          eng.style.boxShadow = pass ? '0 0 0 2px var(--good)' : '0 0 0 2px var(--warn)';
+          clearTimeout(eng._t); eng._t = setTimeout(()=>{ eng.style.boxShadow=''; }, 900);
+        }
+        pulseGraphNode('engagement', pass);
+      }
+      range.addEventListener('input', ()=>update(true));
+      update(false);
+    });
+  }
+
+  // Persona switch
+  function setPersona(k, fromHash){
+    if(!PERSONAS[k]) return;
+    state.p = k;
+    renderMast(); renderGauges(); render(); if(window.renderJobs) window.renderJobs(k);
+    graphBuilt = false;
+    if(!viewGraph.hidden){ buildGraph(); graphBuilt = true; applyGraphFilter(); }
+    if(!fromHash){ try{ history.replaceState(null,'','#'+PERSONAS[k].hash); }catch(e){} }
+    try{ localStorage.setItem('peo-persona', k); }catch(e){}
+  }
+  document.querySelectorAll('.pbtn').forEach(b=>b.addEventListener('click', ()=>setPersona(b.dataset.p)));
+
+  // Tabs
+  const tabExplore = document.getElementById('tab-explore');
+  const tabGraph = document.getElementById('tab-graph');
+  const viewExplore = document.getElementById('view-explore');
+  const viewGraph = document.getElementById('view-graph');
+  let graphBuilt = false;
+  const tabJobs = document.getElementById('tab-jobs');
+  const viewJobs = document.getElementById('view-jobs');
+  const controls = document.querySelector('.controls');
+  function activateTab(which){
+    const toGraph = which==='graph', toJobs = which==='jobs';
+    tabExplore.setAttribute('aria-selected', String(which==='explore'));
+    tabGraph.setAttribute('aria-selected', String(toGraph));
+    tabJobs.setAttribute('aria-selected', String(toJobs));
+    viewExplore.hidden = which!=='explore'; viewGraph.hidden = !toGraph; viewJobs.hidden = !toJobs;
+    controls.hidden = toJobs;
+    try{ localStorage.setItem('peo-tab', which); }catch(e){}
+    if(toGraph){ if(!graphBuilt){ buildGraph(); graphBuilt = true; } applyGraphFilter(); }
+  }
+  tabExplore.addEventListener('click', ()=>activateTab('explore'));
+  tabGraph.addEventListener('click', ()=>activateTab('graph'));
+  tabJobs.addEventListener('click', ()=>activateTab('jobs'));
+
+  // Graph
+  const detail = document.getElementById('graph-detail');
+  document.getElementById('graph-detail-close').addEventListener('click', ()=>{ detail.hidden = true; });
+  let resetHandler = null;
+
+  function buildGraph(){
+    const svgEl = document.getElementById('graph-svg');
+    if(typeof d3 === 'undefined'){
+      if(svgEl) svgEl.outerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--muted);">The graph library did not load. The Explore tab has the same content.</div>';
+      return;
+    }
+    const p = P();
+    detail.hidden = true;
+    const svg = d3.select(svgEl);
+    svg.selectAll('*').remove();
+    const frame = svgEl.closest('.graph-frame');
+    let width = frame.clientWidth || 900;
+    const height = svgEl.getBoundingClientRect().height || 640;
+    svg.attr('viewBox', [0,0,width,height]);
+
+    const nodes = [], links = [], byItemId = {};
+    nodes.push({ id:'root', type:'root', label:p.name, r:30, breadcrumb:['Taxonomy | Core | Persona'],
+      def:'A semi-fictional representation of your ideal customer, based on research and data about existing and potential customers.',
+      value:p.typeLabel + ' — the full persona instance.' });
+    CATS.forEach(cat=>{
+      nodes.push({ id:'cat-'+cat.key, type:'category', cat:cat.key, dim:cat.dim, label:cat.label, r:18, def:cat.def, breadcrumb:['Persona'] });
+      links.push({ source:'root', target:'cat-'+cat.key, dim:cat.dim });
+    });
+    p.items.forEach((item,i)=>{
+      const dim = CATS.find(c=>c.key===item.cat).dim;
+      const n = { id:'item-'+i, type:'item', cat:item.cat, dim, label:item.label, r:item.proposed?13:10, def:item.def,
+        value:strip(item.value), note:item.note, grounded:item.grounded, proposed:item.proposed, breadcrumb:item.breadcrumb };
+      nodes.push(n);
+      if(item.id) byItemId[item.id] = n.id;
+      links.push({ source:'cat-'+item.cat, target:n.id, dim });
+    });
+    p.ghosts.forEach((g,i)=>{
+      const dim = CATS.find(c=>c.key===g.cat).dim;
+      nodes.push({ id:'ghost-'+i, type:'ghost', cat:g.cat, dim, label:g.label, r:g.closematch?10:8, def:g.def, reason:g.reason, closematch:g.closematch, breadcrumb:g.breadcrumb });
+      links.push({ source:'cat-'+g.cat, target:'ghost-'+i, dim, ghostLink:true });
+    });
+
+    const sim = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d=>d.id).distance(l=> l.source.type==='root' ? 120 : (l.ghostLink?50:64)).strength(0.85))
+      .force('charge', d3.forceManyBody().strength(d=> d.type==='root' ? -900 : d.type==='category' ? -400 : -130))
+      .force('center', d3.forceCenter(width/2, height/2))
+      .force('collide', d3.forceCollide().radius(d=>d.r+13));
+
+    const g = svg.append('g');
+    const zoom = d3.zoom().scaleExtent([0.3,3]).on('zoom', ev=>g.attr('transform', ev.transform));
+    svg.call(zoom);
+
+    const fillFor = d => d.type==='root' ? p.color : d.type==='category' ? 'var(--surface)' : d.type==='ghost' ? 'var(--surface-3)'
+      : d.proposed ? 'var(--proposed)' : (d.dim==='human' ? 'var(--accent-human)' : 'var(--accent-machine)');
+    const strokeFor = d => d.type==='root' ? 'var(--bg)' : d.type==='category' ? (d.dim==='human'?'var(--accent-human)':'var(--accent-machine)')
+      : d.type==='ghost' ? 'var(--line-strong)' : (d.grounded===false ? 'var(--ink)' : 'var(--bg)');
+
+    const link = g.append('g').selectAll('line').data(links).join('line')
+      .attr('class', d=>'link dim-'+d.dim).attr('stroke-dasharray', d=>d.ghostLink?'3,3':null);
+    const node = g.append('g').selectAll('circle').data(nodes).join('circle')
+      .attr('class','node-circle').attr('r', d=>d.r).attr('fill', fillFor).attr('stroke', strokeFor)
+      .attr('stroke-dasharray', d=> d.type==='ghost' ? '3,2' : (d.grounded===false ? '2,1' : null))
+      .attr('stroke-width', d=> d.type==='category' ? 2.5 : 2)
+      .call(d3.drag()
+        .on('start',(ev,d)=>{ if(!ev.active) sim.alphaTarget(0.25).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag',(ev,d)=>{ d.fx=ev.x; d.fy=ev.y; })
+        .on('end',(ev,d)=>{ if(!ev.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('click', (ev,d)=>showDetail(d));
+    const label = g.append('g').selectAll('text').data(nodes).join('text')
+      .attr('class', d=>'node-label' + (d.type==='root'?' root':d.type==='category'?' category':''))
+      .attr('dy','.32em')
+      .attr('x', d=> d.type==='root' ? 0 : d.r+5).attr('y', d=> d.type==='root' ? d.r+16 : 0)
+      .attr('text-anchor', d=> d.type==='root' ? 'middle' : 'start')
+      .text(d=>d.label);
+
+    sim.on('tick', ()=>{
+      link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+      node.attr('cx',d=>d.x).attr('cy',d=>d.y);
+      label.attr('transform', d=>`translate(${d.x},${d.y})`);
+    });
+
+    const resetBtn = document.getElementById('graph-reset');
+    if(resetHandler) resetBtn.removeEventListener('click', resetHandler);
+    resetHandler = ()=>{ svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity); nodes.forEach(n=>{n.fx=null;n.fy=null;}); sim.alpha(0.6).restart(); };
+    resetBtn.addEventListener('click', resetHandler);
+
+    function showDetail(d){
+      document.getElementById('gd-breadcrumb').innerHTML = d.breadcrumb ? d.breadcrumb.join(' &rsaquo; ') : '';
+      document.getElementById('gd-label').textContent = d.label;
+      document.getElementById('gd-value').textContent = d.value || d.reason || '';
+      let h = '<strong>Definition:</strong> ' + d.def;
+      if(d.note) h += '<br><br><strong>Curation note:</strong> ' + d.note;
+      if(d.proposed) h += '<br><br><em>Proposed extension, pending steward review.</em>';
+      if(d.type==='ghost') h += '<br><br><em>Not instantiated' + (d.closematch ? ', closest conceptual match only.' : '.') + '</em>';
+      document.getElementById('gd-def').innerHTML = h;
+      detail.hidden = false;
+    }
+
+    applyGraphFilter = function(){
+      const vis = new Set(['root']);
+      nodes.forEach(n=>{
+        if(!state.cats.has(n.cat)) return;
+        if(n.type==='item'){
+          if(state.illustrativeOnly && n.grounded!==false) return;
+          if(matches([n.label,n.value||'',n.def||'',n.note||''].join(' '))) vis.add(n.id);
+        } else if(n.type==='ghost'){
+          if(!state.ghosts || state.illustrativeOnly) return;
+          if(matches([n.label,n.def||'',n.reason||''].join(' '))) vis.add(n.id);
+        }
+      });
+      CATS.forEach(cat=>{
+        const has = nodes.some(n=>n.cat===cat.key && n.type!=='category' && vis.has(n.id));
+        if(state.cats.has(cat.key) && (has || !state.search)) vis.add('cat-'+cat.key);
+      });
+      node.classed('faded', d=>!vis.has(d.id));
+      label.classed('faded', d=>!vis.has(d.id));
+      link.classed('faded', d=>!(vis.has(d.source.id||d.source) && vis.has(d.target.id||d.target)));
+    };
+
+    pulseGraphNode = function(key, pass){
+      const nid = byItemId[key]; if(!nid) return;
+      node.filter(d=>d.id===nid).transition().duration(150).attr('r', d=>d.r+5).attr('stroke', pass?'var(--good)':'var(--warn)').attr('stroke-width',4)
+        .transition().duration(500).attr('r', d=>d.r).attr('stroke-width',2).attr('stroke', strokeFor);
+    };
+  }
+
+  // Initial persona: hash, then remembered choice, then Client Admin
+  let start = 'admin';
+  try{ const s = localStorage.getItem('peo-persona'); if(PERSONAS[s]) start = s; }catch(e){}
+  const h = (location.hash||'').slice(1);
+  Object.values(PERSONAS).forEach(p=>{ if(p.hash===h) start = p.key; });
+  setPersona(start, true);
+  try{ const t = localStorage.getItem('peo-tab'); if(t==='graph'||t==='jobs') activateTab(t); }catch(e){}
+  if(location.hash.endsWith('jobs')) activateTab('jobs');
+})();
+</script>
+
+</body></html>

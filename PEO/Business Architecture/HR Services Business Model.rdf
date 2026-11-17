@@ -1,0 +1,2628 @@
+@prefix hr:       <http://example.org/hrservices/ddd#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+# =================================================================
+# ONTOLOGY & CLASS DEFINITIONS
+# =================================================================
+
+hr:HRServicesEnterpriseModel a owl:Ontology ;
+    rdfs:label "HR Services & PEO Enterprise Business Model Ontology" ;
+    rdfs:comment "A Domain-Driven Design ontology defining L1-L3 service topologies, business processes, and operational mappings for an HR/PEO provider." .
+
+# --- DDD Core Classes ---
+hr:Domain a owl:Class ;
+    rdfs:label "Business Domain (L1)" .
+
+hr:SubDomain a owl:Class ;
+    rdfs:subClassOf hr:Domain ;
+    rdfs:label "Sub-Domain / Bounded Context (L2)" .
+
+hr:DomainService a owl:Class ;
+    rdfs:label "Domain Service (L3)" .
+
+hr:BusinessProcess a owl:Class ;
+    rdfs:label "Underlying Business Process" .
+
+hr:OperationalArea a owl:Class ;
+    rdfs:label "Functional Operational Area" .
+
+hr:OntologyConcept a owl:Class ;
+    rdfs:label "Domain-Specific Ontology Concept" .
+
+# --- DDD Object Properties ---
+hr:hasSubDomain a owl:ObjectProperty ;
+    rdfs:domain hr:Domain ;
+    rdfs:range hr:SubDomain .
+
+hr:providesService a owl:ObjectProperty ;
+    rdfs:domain hr:SubDomain ;
+    rdfs:range hr:DomainService .
+
+hr:executedByProcess a owl:ObjectProperty ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:BusinessProcess .
+
+hr:supportedByOperation a owl:ObjectProperty ;
+    rdfs:domain hr:BusinessProcess ;
+    rdfs:range hr:OperationalArea .
+
+hr:mapsToOntologyConcept a owl:ObjectProperty ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:OntologyConcept .
+
+
+# --- Inverse DDD Object Properties (added for full bidirectional traversal) ---
+hr:isSubDomainOf a owl:ObjectProperty ;
+    owl:inverseOf hr:hasSubDomain ;
+    rdfs:domain hr:SubDomain ;
+    rdfs:range hr:Domain ;
+    rdfs:label "Is Sub-Domain Of" .
+
+hr:isProvidedBySubDomain a owl:ObjectProperty ;
+    owl:inverseOf hr:providesService ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:SubDomain ;
+    rdfs:label "Is Provided By Sub-Domain" .
+
+hr:realizesService a owl:ObjectProperty ;
+    owl:inverseOf hr:executedByProcess ;
+    rdfs:domain hr:BusinessProcess ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Realizes Domain Service" .
+
+hr:supportsProcess a owl:ObjectProperty ;
+    owl:inverseOf hr:supportedByOperation ;
+    rdfs:domain hr:OperationalArea ;
+    rdfs:range hr:BusinessProcess ;
+    rdfs:label "Supports Business Process" .
+
+hr:isConceptOfService a owl:ObjectProperty ;
+    owl:inverseOf hr:mapsToOntologyConcept ;
+    rdfs:domain hr:OntologyConcept ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Is Ontology Concept Of Service" .
+
+# =================================================================
+# FUNCTIONAL & CORPORATE OPERATIONAL AREAS
+# =================================================================
+
+hr:OpPayrollTaxAccounting a hr:OperationalArea ;
+    rdfs:label "Payroll Tax Accounting & Treasury Operations" ;
+    rdfs:comment "Multi-jurisdiction tax impounding, disbursement, and general ledger reconciliation." .
+
+hr:OpBenefitsUnderwriting a hr:OperationalArea ;
+    rdfs:label "Benefits Plan Underwriting & Carrier Relations" ;
+    rdfs:comment "Carrier EDI feeds, master trust management, and stop-loss underwriting." .
+
+hr:OpLegalCompliance a hr:OperationalArea ;
+    rdfs:label "Employment Legal, Regulatory & Compliance Operations" ;
+    rdfs:comment "EPLI defense coordination, CPEO compliance, and labor standards adherence." .
+
+hr:OpRiskSafety a hr:OperationalArea ;
+    rdfs:label "Risk Management & Worksite Safety Operations" ;
+    rdfs:comment "Workers' compensation claims triage, safety audits, and OSHA reporting." .
+
+hr:OpTalentAdvisory a hr:OperationalArea ;
+    rdfs:label "Talent Acquisition & Organizational Consulting Operations" ;
+    rdfs:comment "Recruiting pipeline delivery, HR advisory, and compensation benchmarking." .
+
+hr:OpHRTechnologyCyber a hr:OperationalArea ;
+    rdfs:label "HR Technology Platform & Cybersecurity Operations" ;
+    rdfs:comment "Single Sign-On (SSO), data connectors, and self-service portal infrastructure." .
+
+
+hr:OpBusinessDevelopmentSales a hr:OperationalArea ;
+    rdfs:label "Sales, Contracting & Client Implementation Operations" ;
+    rdfs:comment "Prospect qualification, master service agreement contracting, and new-client implementation/onboarding delivery." .
+
+hr:OpClientFinanceBilling a hr:OperationalArea ;
+    rdfs:label "Client Invoicing, Billing & Accounts Receivable Operations" ;
+    rdfs:comment "Service fee invoicing, accounts receivable collection, and client-facing financial reporting, distinct from worksite-employee payroll treasury." .
+
+# =================================================================
+# DOMAIN 1: WORKFORCE ADMINISTRATION & PAYROLL DOMAIN (L1)
+# =================================================================
+
+hr:WorkforceAdminDomain a hr:Domain ;
+    rdfs:label "Workforce Administration & Payroll Domain" ;
+    hr:hasSubDomain hr:PayrollTaxSubDomain ,
+                    hr:TimeAttendanceLeaveSubDomain .
+
+# --- Sub-Domain: Payroll Processing & Multi-State Tax Context (L2) ---
+hr:PayrollTaxSubDomain a hr:SubDomain ;
+    rdfs:label "Payroll Processing & Multi-State Tax Bounded Context" ;
+    hr:providesService hr:GrossToNetPayrollService ,
+                       hr:MultiStateTaxFilingService ,
+                       hr:WageGarnishmentService ,
+                       hr:DirectDepositOffCycleService ,
+                       hr:YearEndTaxDocService .
+
+hr:GrossToNetPayrollService a hr:DomainService ;
+    rdfs:label "Gross-to-Net Payroll Calculation Service" ;
+    hr:executedByProcess hr:ProcGrossToNetCalculation , hr:ProcOvertimeRuleEnforce ;
+    hr:mapsToOntologyConcept hr:ConceptGrossToNetRule , hr:ConceptOvertimeCalculation .
+
+hr:MultiStateTaxFilingService a hr:DomainService ;
+    rdfs:label "Multi-Jurisdiction Payroll Tax Filing Service" ;
+    hr:executedByProcess hr:ProcTaxImpoundSchedule , hr:ProcQuarterlyTaxFilingAuto ;
+    hr:mapsToOntologyConcept hr:ConceptTaxImpoundEngine , hr:ConceptQuarterlyForm941 .
+
+hr:WageGarnishmentService a hr:DomainService ;
+    rdfs:label "Wage Garnishment & Deduction Administration Service" ;
+    hr:executedByProcess hr:ProcGarnishmentPriorityOrder , hr:ProcAgencyRemittanceSync ;
+    hr:mapsToOntologyConcept hr:ConceptGarnishmentOrder , hr:ConceptChildSupportWithholding .
+
+hr:DirectDepositOffCycleService a hr:DomainService ;
+    rdfs:label "Direct Deposit & Off-Cycle Payment Service" ;
+    hr:executedByProcess hr:ProcACHDirectDepositBatch , hr:ProcOffCyclePaymentGen ;
+    hr:mapsToOntologyConcept hr:ConceptACHBatchOrchestration , hr:ConceptOffCycleCheck .
+
+hr:YearEndTaxDocService a hr:DomainService ;
+    rdfs:label "Year-End Tax Document (W-2 / 1099) Service" ;
+    hr:executedByProcess hr:ProcYearEndWageLedgerRecon , hr:ProcAutomatedW2Distribution ;
+    hr:mapsToOntologyConcept hr:ConceptWageLedgerRecon , hr:ConceptDigitalW2Filing .
+
+# --- Sub-Domain: Time, Attendance & Leave Management Context (L2) ---
+hr:TimeAttendanceLeaveSubDomain a hr:SubDomain ;
+    rdfs:label "Time, Attendance & Leave Management Bounded Context" ;
+    hr:providesService hr:TimeCapturePunchService ,
+                       hr:TimesheetApprovalStagingService ,
+                       hr:CustomPTOAccrualService ,
+                       hr:StatutoryLeaveFMLAService ,
+                       hr:LaborAllocationCostingService .
+
+hr:TimeCapturePunchService a hr:DomainService ;
+    rdfs:label "Time Capture & Punch Ingestion Service" ;
+    hr:executedByProcess hr:ProcPunchIngestionAudit , hr:ProcMealBreakRuleAudit ;
+    hr:mapsToOntologyConcept hr:ConceptPunchRecord , hr:ConceptMealBreakAudit .
+
+hr:TimesheetApprovalStagingService a hr:DomainService ;
+    rdfs:label "Timesheet Approval & Payroll Staging Service" ;
+    hr:executedByProcess hr:ProcSupervisorApprovalRoute , hr:ProcPrePayrollTimesheetLock ;
+    hr:mapsToOntologyConcept hr:ConceptSupervisorRoute , hr:ConceptPayrollDataStaging .
+
+hr:CustomPTOAccrualService a hr:DomainService ;
+    rdfs:label "Custom PTO Accrual & Balance Ledger Service" ;
+    hr:executedByProcess hr:ProcSeniorityPTOAccrual , hr:ProcLeaveCarryoverValidation ;
+    hr:mapsToOntologyConcept hr:ConceptPTOAccrualLedger , hr:ConceptLeaveBalanceCarryover .
+
+hr:StatutoryLeaveFMLAService a hr:DomainService ;
+    rdfs:label "Statutory Leave & FMLA Administration Service" ;
+    hr:executedByProcess hr:ProcFMLAEligibilityVerify , hr:ProcIntermittentLeaveTrack ;
+    hr:mapsToOntologyConcept hr:ConceptFMLAEligibility , hr:ConceptPFLIntermittentTracking .
+
+hr:LaborAllocationCostingService a hr:DomainService ;
+    rdfs:label "Labor Allocation & Job Costing Service" ;
+    hr:executedByProcess hr:ProcLaborCostDistribution , hr:ProcGLWageAllocationExport ;
+    hr:mapsToOntologyConcept hr:ConceptMultiDeptLaborDist , hr:ConceptGLWageExport .
+
+
+# =================================================================
+# DOMAIN 2: EMPLOYEE BENEFITS & RETIREMENT SPONSORSHIP DOMAIN (L1)
+# =================================================================
+
+hr:BenefitsRetirementDomain a hr:Domain ;
+    rdfs:label "Employee Benefits & Retirement Sponsorship Domain" ;
+    hr:hasSubDomain hr:HealthWelfareSponsorshipSubDomain ,
+                    hr:RetirementMEP401kSubDomain .
+
+# --- Sub-Domain: Group Health & Welfare Plan Sponsorship Context (L2) ---
+hr:HealthWelfareSponsorshipSubDomain a hr:SubDomain ;
+    rdfs:label "Group Health & Welfare Plan Sponsorship Bounded Context" ;
+    hr:providesService hr:PEOMasterHealthPlanService ,
+                       hr:OpenEnrollmentLifeEventService ,
+                       hr:PretaxDeductionReconService ,
+                       hr:COBRAAdministrationService ,
+                       hr:FlexibleSpendingAccountsService ,
+                       hr:VoluntaryAncillaryBenefitsService .
+
+hr:PEOMasterHealthPlanService a hr:DomainService ;
+    rdfs:label "PEO Master Health Plan Administration Service" ;
+    hr:executedByProcess hr:ProcCarrierEDI834Sync , hr:ProcLargeGroupUnderwrite ;
+    hr:mapsToOntologyConcept hr:ConceptLargeGroupPoolTier , hr:ConceptCarrierEDI834 .
+
+hr:OpenEnrollmentLifeEventService a hr:DomainService ;
+    rdfs:label "Open Enrollment & Life Event Election Service" ;
+    hr:executedByProcess hr:ProcOpenEnrollmentOrchestrate , hr:ProcQLEVerificationWorkflow ;
+    hr:mapsToOntologyConcept hr:ConceptOpenEnrollmentPortal , hr:ConceptQLEVerification .
+
+hr:PretaxDeductionReconService a hr:DomainService ;
+    rdfs:label "Pre-Tax Premium Payroll Deduction Reconciliation Service" ;
+    hr:executedByProcess hr:ProcSection125MatchingSync , hr:ProcCarrierInvoiceRecon ;
+    hr:mapsToOntologyConcept hr:ConceptSection125Matching , hr:ConceptCarrierInvoiceRecon .
+
+hr:COBRAAdministrationService a hr:DomainService ;
+    rdfs:label "COBRA Qualifying Event & Continuation Service" ;
+    hr:executedByProcess hr:ProcCOBRANoticeGeneration , hr:ProcPremiumDirectBilling ;
+    hr:mapsToOntologyConcept hr:ConceptCOBRAQualifyingEvent , hr:ConceptDirectBillingNotice .
+
+hr:FlexibleSpendingAccountsService a hr:DomainService ;
+    rdfs:label "Flexible Spending & Account Integration (FSA/HSA/HRA) Service" ;
+    hr:executedByProcess hr:ProcClaimsAutoSubstantiation , hr:ProcAnnualCapMonitor ;
+    hr:mapsToOntologyConcept hr:ConceptDebitCardAutoSubstantiation , hr:ConceptAnnualCapMonitor .
+
+hr:VoluntaryAncillaryBenefitsService a hr:DomainService ;
+    rdfs:label "Voluntary Ancillary Benefits Service" ;
+    hr:executedByProcess hr:ProcCarrierDataAggregation , hr:ProcVoluntaryBenefitRosterSync ;
+    hr:mapsToOntologyConcept hr:ConceptVoluntaryRosterSync , hr:ConceptDentalVisionLifeAgg .
+
+# --- Sub-Domain: Retirement & 401(k) Multiple Employer Plan (MEP) Context (L2) ---
+hr:RetirementMEP401kSubDomain a hr:SubDomain ;
+    rdfs:label "Retirement & 401(k) Multiple Employer Plan (MEP) Bounded Context" ;
+    hr:providesService hr:MultipleEmployerPlan401kService ,
+                       hr:SafeHarborEmployerMatchService ,
+                       hr:ConsolidatedForm5500AuditService ,
+                       hr:NondiscriminationComplianceTestingService .
+
+hr:MultipleEmployerPlan401kService a hr:DomainService ;
+    rdfs:label "Insperity 401(k) Multiple Employer Plan (MEP) Service" ;
+    hr:executedByProcess hr:Proc401kPayrollContributionSync , hr:ProcAutoEnrollmentSync ;
+    hr:mapsToOntologyConcept hr:Concept401kDeferralFeed , hr:ConceptAutoEnrollmentSync .
+
+hr:SafeHarborEmployerMatchService a hr:DomainService ;
+    rdfs:label "Safe Harbor & Discretionary Employer Match Service" ;
+    hr:executedByProcess hr:ProcSafeHarborCalculationEngine , hr:ProcDiscretionaryAllocationModel ;
+    hr:mapsToOntologyConcept hr:ConceptSafeHarborMatchCalc , hr:ConceptProfitSharingModel .
+
+hr:ConsolidatedForm5500AuditService a hr:DomainService ;
+    rdfs:label "Consolidated Form 5500 & ERISA Plan Audit Service" ;
+    hr:executedByProcess hr:ProcConsolidated5500Audit , hr:ProcThirdPartyAuditAssembly ;
+    hr:mapsToOntologyConcept hr:ConceptConsolidated5500 , hr:ConceptThirdPartyAuditFile .
+
+hr:NondiscriminationComplianceTestingService a hr:DomainService ;
+    rdfs:label "Nondiscrimination (ADP/ACP) & Compliance Testing Service" ;
+    hr:executedByProcess hr:ProcADP_ACPRatioTesting , hr:ProcExcessContributionRefund ;
+    hr:mapsToOntologyConcept hr:ConceptADP_ACPTesting , hr:ConceptExcessRefundCorrection .
+
+
+# =================================================================
+# DOMAIN 3: GOVERNMENT COMPLIANCE & EMPLOYER RISK MANAGEMENT DOMAIN (L1)
+# =================================================================
+
+hr:ComplianceRiskDomain a hr:Domain ;
+    rdfs:label "Government Compliance & Employer Risk Management Domain" ;
+    hr:hasSubDomain hr:EmployerLiabilityPracticesSubDomain ,
+                    hr:WorkersCompWorksiteSafetySubDomain .
+
+# --- Sub-Domain: Co-Employment Liability & Employment Practices Context (L2) ---
+hr:EmployerLiabilityPracticesSubDomain a hr:SubDomain ;
+    rdfs:label "Co-Employment Liability & Employment Practices Bounded Context" ;
+    hr:providesService hr:EPLIDefenseService ,
+                       hr:MultiStateHandbookPolicyService ,
+                       hr:HarassmentPreventionTrainingService ,
+                       hr:EEOC_DOL_DefenseConsultService ,
+                       hr:CPEOComplianceMonitoringService .
+
+hr:EPLIDefenseService a hr:DomainService ;
+    rdfs:label "Employment Practices Liability Insurance (EPLI) Defense Service" ;
+    hr:executedByProcess hr:ProcSeparationRiskReview , hr:ProcEPLIClaimDefenseCoordination ;
+    hr:mapsToOntologyConcept hr:ConceptEPLITenMillionCoverage , hr:ConceptWrongfulTerminationReview .
+
+hr:MultiStateHandbookPolicyService a hr:DomainService ;
+    rdfs:label "Multi-State Employee Policy & Handbook Service" ;
+    hr:executedByProcess hr:ProcHandbookRegulatoryUpdate , hr:ProcPolicySignatureAudit ;
+    hr:mapsToOntologyConcept hr:ConceptStateSpecificAddendum , hr:ConceptDigitalSignatureAcknowledge .
+
+hr:HarassmentPreventionTrainingService a hr:DomainService ;
+    rdfs:label "Harassment Prevention & Mandatory Training Service" ;
+    hr:executedByProcess hr:ProcTrainingCompletionTracking , hr:ProcComplianceCertificateRenew ;
+    hr:mapsToOntologyConcept hr:ConceptMandatoryTrainingTracking , hr:ConceptCertificateRenewal .
+
+hr:EEOC_DOL_DefenseConsultService a hr:DomainService ;
+    rdfs:label "EEOC & Department of Labor Defense Consultation Service" ;
+    hr:executedByProcess hr:ProcEEOCInquiryResponse , hr:ProcDOLWageHourAuditSupport ;
+    hr:mapsToOntologyConcept hr:ConceptEEOCPositionStatement , hr:ConceptDOLWageHourSupport .
+
+hr:CPEOComplianceMonitoringService a hr:DomainService ;
+    rdfs:label "IRS Certified PEO (CPEO) Compliance Monitoring Service" ;
+    hr:executedByProcess hr:ProcTaxSuretyBondMaintain , hr:ProcQuarterlyCPEOForm8973 ;
+    hr:mapsToOntologyConcept hr:ConceptSuretyBondMaintenance , hr:ConceptCPEOForm8973 .
+
+# --- Sub-Domain: Workers' Compensation & Worksite Safety Context (L2) ---
+hr:WorkersCompWorksiteSafetySubDomain a hr:SubDomain ;
+    rdfs:label "Workers' Compensation & Worksite Safety Bounded Context" ;
+    hr:providesService hr:WorkersCompMasterPolicyService ,
+                       hr:FNOIClaimsTriageService ,
+                       hr:ModifiedDutyReturnToWorkService ,
+                       hr:WorksiteSafetyHazardService ,
+                       hr:OSHA300ComplianceReportingService .
+
+hr:WorkersCompMasterPolicyService a hr:DomainService ;
+    rdfs:label "Workers' Compensation Master Policy Administration Service" ;
+    hr:executedByProcess hr:ProcClassCodePayrollReport , hr:ProcEMRAnalysisProcess ;
+    hr:mapsToOntologyConcept hr:ConceptClassCodeExposure , hr:ConceptEMRAnalysis .
+
+hr:FNOIClaimsTriageService a hr:DomainService ;
+    rdfs:label "First Notice of Injury (FNOI) & Claims Triage Service" ;
+    hr:executedByProcess hr:ProcFirstReportOfInjury , hr:ProcWageReplacementProcess ;
+    hr:mapsToOntologyConcept hr:ConceptFNOITriage , hr:ConceptWageReplacementProcessing .
+
+hr:ModifiedDutyReturnToWorkService a hr:DomainService ;
+    rdfs:label "Modified-Duty Return-to-Work Program Service" ;
+    hr:executedByProcess hr:ProcModifiedDutyReturnToWork , hr:ProcPhysicianWorkStatusFollowUp ;
+    hr:mapsToOntologyConcept hr:ConceptModifiedDutyMatch , hr:ConceptPhysicianStatusFollowUp .
+
+hr:WorksiteSafetyHazardService a hr:DomainService ;
+    rdfs:label "Worksite Safety Survey & Hazard Mitigation Service" ;
+    hr:executedByProcess hr:ProcOnSiteSafetyInspection , hr:ProcHazardAbatementTracking ;
+    hr:mapsToOntologyConcept hr:ConceptHazardInspectionReport , hr:ConceptCorrectiveActionTrack .
+
+hr:OSHA300ComplianceReportingService a hr:DomainService ;
+    rdfs:label "OSHA Form 300 / 300A Compliance & Reporting Service" ;
+    hr:executedByProcess hr:ProcOSHA300LogGeneration , hr:ProcElectronicOSHASubmission ;
+    hr:mapsToOntologyConcept hr:ConceptRecordableInjuryClass , hr:ConceptElectronicOSHASubmission .
+
+
+# =================================================================
+# DOMAIN 4: TALENT MANAGEMENT & ORGANIZATIONAL DEVELOPMENT DOMAIN (L1)
+# =================================================================
+
+hr:TalentManagementDomain a hr:Domain ;
+    rdfs:label "Talent Management & Organizational Development Domain" ;
+    hr:hasSubDomain hr:TalentAcquisitionOnboardingSubDomain ,
+                    hr:LearningPerformanceSuccessionSubDomain .
+
+# --- Sub-Domain: Talent Acquisition & Digital Onboarding Context (L2) ---
+hr:TalentAcquisitionOnboardingSubDomain a hr:SubDomain ;
+    rdfs:label "Talent Acquisition & Digital Onboarding Bounded Context" ;
+    hr:providesService hr:RecruitingProcessOutsourcingService ,
+                       hr:MarketWageBenchmarkingService ,
+                       hr:PreEmploymentScreeningService ,
+                       hr:FormI9EVerifyService ,
+                       hr:DigitalNewHireOnboardingService .
+
+hr:RecruitingProcessOutsourcingService a hr:DomainService ;
+    rdfs:label "Recruiting Process Outsourcing (RPO) & Sourcing Service" ;
+    hr:executedByProcess hr:ProcCandidateSourcingScreen , hr:ProcJobRequisitionDistribution ;
+    hr:mapsToOntologyConcept hr:ConceptCandidateATSWorkflow , hr:ConceptMultiBoardDistribution .
+
+hr:MarketWageBenchmarkingService a hr:DomainService ;
+    rdfs:label "Market Compensation & Wage Benchmarking Service" ;
+    hr:executedByProcess hr:ProcRegionalSalaryDataExtract , hr:ProcPayBandEquityModel ;
+    hr:mapsToOntologyConcept hr:ConceptRegionalSalaryData , hr:ConceptPayBandEquityModel .
+
+hr:PreEmploymentScreeningService a hr:DomainService ;
+    rdfs:label "Pre-Employment Background & Drug Screening Service" ;
+    hr:executedByProcess hr:ProcFCRABackgroundDispatch , hr:ProcAdverseActionWorkflow ;
+    hr:mapsToOntologyConcept hr:ConceptFCRABackground , hr:ConceptAdverseActionNotice .
+
+hr:FormI9EVerifyService a hr:DomainService ;
+    rdfs:label "Form I-9 & Automated E-Verify Service" ;
+    hr:executedByProcess hr:ProcEVerifySubmission , hr:ProcSection2DocValidation ;
+    hr:mapsToOntologyConcept hr:ConceptEVerifyRemoteDoc , hr:ConceptSection2Validation .
+
+hr:DigitalNewHireOnboardingService a hr:DomainService ;
+    rdfs:label "Self-Service Digital New Hire Onboarding Service" ;
+    hr:executedByProcess hr:ProcNewHirePaperworkSync , hr:ProcDayOneProfileActivation ;
+    hr:mapsToOntologyConcept hr:ConceptDirectDepositSignature , hr:ConceptMasterProfileActivation .
+
+# --- Sub-Domain: Learning, Performance & Succession Context (L2) ---
+hr:LearningPerformanceSuccessionSubDomain a hr:SubDomain ;
+    rdfs:label "Learning, Performance & Succession Bounded Context" ;
+    hr:providesService hr:CorporateLMSDeliveryService ,
+                       hr:Feedback360AppraisalCycleService ,
+                       hr:StrategicGoalAlignmentOKRService ,
+                       hr:MeritMatrixCompensationPlanningService ,
+                       hr:LeadershipSuccessionPlanningService .
+
+hr:CorporateLMSDeliveryService a hr:DomainService ;
+    rdfs:label "Corporate Learning Management (LMS) Delivery Service" ;
+    hr:executedByProcess hr:ProcCourseProgressTracking , hr:ProcCEUCreditVerification ;
+    hr:mapsToOntologyConcept hr:ConceptSCORMContentStream , hr:ConceptCEUCreditVerify .
+
+hr:Feedback360AppraisalCycleService a hr:DomainService ;
+    rdfs:label "360-Degree Feedback & Appraisal Cycle Service" ;
+    hr:executedByProcess hr:ProcAppraisalWorkflowCycle , hr:ProcMultiRaterFeedbackCollect ;
+    hr:mapsToOntologyConcept hr:ConceptMultiRaterFeedback , hr:ConceptAppraisalCycleRecon .
+
+hr:StrategicGoalAlignmentOKRService a hr:DomainService ;
+    rdfs:label "Strategic Goal Alignment (OKR) & Tracking Service" ;
+    hr:executedByProcess hr:ProcCascadingOKRsAlign , hr:ProcGoalProgressWeighting ;
+    hr:mapsToOntologyConcept hr:ConceptCascadingOKRs , hr:ConceptGoalWeighting .
+
+hr:MeritMatrixCompensationPlanningService a hr:DomainService ;
+    rdfs:label "Merit Matrix & Compensation Planning Service" ;
+    hr:executedByProcess hr:ProcMeritIncreaseGuidance , hr:ProcExecCompensationAllocation ;
+    hr:mapsToOntologyConcept hr:ConceptMeritIncreaseMatrix , hr:ConceptExecCompAllocation .
+
+hr:LeadershipSuccessionPlanningService a hr:DomainService ;
+    rdfs:label "Leadership Development & Succession Planning Service" ;
+    hr:executedByProcess hr:ProcNineBoxMatrixCalibrate , hr:ProcExecCoachingTrack ;
+    hr:mapsToOntologyConcept hr:ConceptNineBoxTalentMatrix , hr:ConceptHighPotentialCoaching .
+
+
+# =================================================================
+# DOMAIN 5: CLIENT RELATIONSHIP & BUSINESS DEVELOPMENT DOMAIN (L1)
+# =================================================================
+
+hr:ClientRelationshipDomain a hr:Domain ;
+    rdfs:label "Client Relationship & Business Development Domain" ;
+    hr:hasSubDomain hr:SalesClientOnboardingSubDomain ,
+                    hr:ClientSuccessAccountMgmtSubDomain .
+
+# --- Sub-Domain: Sales & Client Onboarding Context (L2) ---
+hr:SalesClientOnboardingSubDomain a hr:SubDomain ;
+    rdfs:label "Sales & Client Onboarding Bounded Context" ;
+    hr:providesService hr:ProspectQualificationRFPService ,
+                       hr:MasterServiceAgreementContractingService ,
+                       hr:ClientImplementationDataMigrationService ,
+                       hr:ClientOnboardingKickoffService .
+
+hr:ProspectQualificationRFPService a hr:DomainService ;
+    rdfs:label "Prospect Qualification & RFP Response Service" ;
+    hr:executedByProcess hr:ProcLeadQualificationScoring , hr:ProcRFPProposalAssembly ;
+    hr:mapsToOntologyConcept hr:ConceptLeadScoringModel , hr:ConceptRFPProposalTemplate .
+
+hr:MasterServiceAgreementContractingService a hr:DomainService ;
+    rdfs:label "Master Service Agreement & Co-Employment Contracting Service" ;
+    hr:executedByProcess hr:ProcMSAContractDrafting , hr:ProcCoEmploymentRiskAssessment ;
+    hr:mapsToOntologyConcept hr:ConceptMSATemplate , hr:ConceptCoEmploymentRiskProfile .
+
+hr:ClientImplementationDataMigrationService a hr:DomainService ;
+    rdfs:label "Client Implementation & Legacy Data Migration Service" ;
+    hr:executedByProcess hr:ProcLegacyPayrollDataMigration , hr:ProcImplementationMilestoneTracking ;
+    hr:mapsToOntologyConcept hr:ConceptDataMigrationMapping , hr:ConceptImplementationMilestonePlan .
+
+hr:ClientOnboardingKickoffService a hr:DomainService ;
+    rdfs:label "Client Onboarding Kickoff & Census Intake Service" ;
+    hr:executedByProcess hr:ProcKickoffMeetingOrchestration , hr:ProcWorksiteEmployeeCensusIntake ;
+    hr:mapsToOntologyConcept hr:ConceptKickoffPlaybook , hr:ConceptEmployeeCensusFile .
+
+# --- Sub-Domain: Client Success & Account Management Context (L2) ---
+hr:ClientSuccessAccountMgmtSubDomain a hr:SubDomain ;
+    rdfs:label "Client Success & Account Management Bounded Context" ;
+    hr:providesService hr:ClientHealthScoringRetentionService ,
+                       hr:ClientRenewalRenegotiationService ,
+                       hr:ClientEscalationResolutionService ,
+                       hr:ClientInvoicingBillingService .
+
+hr:ClientHealthScoringRetentionService a hr:DomainService ;
+    rdfs:label "Client Health Scoring & Retention Service" ;
+    hr:executedByProcess hr:ProcClientHealthScoreCalculation , hr:ProcAtRiskAccountEscalation ;
+    hr:mapsToOntologyConcept hr:ConceptClientHealthScoreModel , hr:ConceptAtRiskAccountFlag .
+
+hr:ClientRenewalRenegotiationService a hr:DomainService ;
+    rdfs:label "Client Renewal & Service Level Renegotiation Service" ;
+    hr:executedByProcess hr:ProcAnnualRenewalPricingReview , hr:ProcServiceLevelAgreementRenegotiation ;
+    hr:mapsToOntologyConcept hr:ConceptRenewalPricingModel , hr:ConceptSLARenegotiationRecord .
+
+hr:ClientEscalationResolutionService a hr:DomainService ;
+    rdfs:label "Client Escalation & Issue Resolution Service" ;
+    hr:executedByProcess hr:ProcTieredEscalationRouting , hr:ProcRootCauseResolutionReview ;
+    hr:mapsToOntologyConcept hr:ConceptEscalationTierMatrix , hr:ConceptRootCauseAnalysisRecord .
+
+hr:ClientInvoicingBillingService a hr:DomainService ;
+    rdfs:label "Client Service Fee Invoicing & Billing Service" ;
+    hr:executedByProcess hr:ProcClientInvoiceGeneration , hr:ProcAccountsReceivableCollection ;
+    hr:mapsToOntologyConcept hr:ConceptServiceFeeInvoiceSchema , hr:ConceptARAgingLedger .
+
+
+# =================================================================
+# DOMAIN 6: HR TECHNOLOGY PLATFORM & EMPLOYEE EXPERIENCE DOMAIN (L1)
+# =================================================================
+
+hr:HRTechnologyPlatformDomain a hr:Domain ;
+    rdfs:label "HR Technology Platform & Employee Experience Domain" ;
+    hr:hasSubDomain hr:DigitalSelfServiceExperienceSubDomain ,
+                    hr:DataIntegrationAnalyticsSubDomain .
+
+# --- Sub-Domain: Digital Self-Service & Platform Experience Context (L2) ---
+hr:DigitalSelfServiceExperienceSubDomain a hr:SubDomain ;
+    rdfs:label "Digital Self-Service & Platform Experience Bounded Context" ;
+    hr:providesService hr:EmployeeSelfServicePortalService ,
+                       hr:ClientAdminPortalReportingService ,
+                       hr:SingleSignOnIdentityManagementService ,
+                       hr:MobileWorkforceAppService .
+
+hr:EmployeeSelfServicePortalService a hr:DomainService ;
+    rdfs:label "Employee Self-Service Portal Service" ;
+    hr:executedByProcess hr:ProcPortalProfileSelfUpdate , hr:ProcPayStubDocumentAccessLog ;
+    hr:mapsToOntologyConcept hr:ConceptSelfServiceProfileSchema , hr:ConceptDigitalPayStubArchive .
+
+hr:ClientAdminPortalReportingService a hr:DomainService ;
+    rdfs:label "Client Admin Portal & Reporting Service" ;
+    hr:executedByProcess hr:ProcClientDashboardReportGen , hr:ProcAdminRoleBasedAccessControl ;
+    hr:mapsToOntologyConcept hr:ConceptClientReportingDashboard , hr:ConceptRoleBasedAccessModel .
+
+hr:SingleSignOnIdentityManagementService a hr:DomainService ;
+    rdfs:label "Single Sign-On & Identity Management Service" ;
+    hr:executedByProcess hr:ProcSSOFederationSetup , hr:ProcMultiFactorAuthEnforcement ;
+    hr:mapsToOntologyConcept hr:ConceptSSOFederationProtocol , hr:ConceptMFAPolicyRule .
+
+hr:MobileWorkforceAppService a hr:DomainService ;
+    rdfs:label "Mobile Workforce Application Service" ;
+    hr:executedByProcess hr:ProcMobilePushNotificationDispatch , hr:ProcGeofencedClockInValidation ;
+    hr:mapsToOntologyConcept hr:ConceptMobileAppNotificationSchema , hr:ConceptGeofenceBoundaryModel .
+
+# --- Sub-Domain: Data Integration & Workforce Analytics Context (L2) ---
+hr:DataIntegrationAnalyticsSubDomain a hr:SubDomain ;
+    rdfs:label "Data Integration & Workforce Analytics Bounded Context" ;
+    hr:providesService hr:HRISDataIntegrationConnectorService ,
+                       hr:WorkforceAnalyticsReportingService ,
+                       hr:DataPrivacySecurityGovernanceService .
+
+hr:HRISDataIntegrationConnectorService a hr:DomainService ;
+    rdfs:label "HRIS Data Integration & API Connector Service" ;
+    hr:executedByProcess hr:ProcAPIConnectorSyncMonitoring , hr:ProcThirdPartyHRISFileMapping ;
+    hr:mapsToOntologyConcept hr:ConceptAPIConnectorRegistry , hr:ConceptHRISFieldMappingSchema .
+
+hr:WorkforceAnalyticsReportingService a hr:DomainService ;
+    rdfs:label "Workforce Analytics & Predictive Reporting Service" ;
+    hr:executedByProcess hr:ProcWorkforceKPIDashboardBuild , hr:ProcTurnoverPredictiveModeling ;
+    hr:mapsToOntologyConcept hr:ConceptWorkforceKPILibrary , hr:ConceptTurnoverPredictionModel .
+
+hr:DataPrivacySecurityGovernanceService a hr:DomainService ;
+    rdfs:label "Data Privacy & Security Governance Service" ;
+    hr:executedByProcess hr:ProcDataAccessAuditLogging , hr:ProcPIIEncryptionKeyRotation ;
+    hr:mapsToOntologyConcept hr:ConceptDataAccessAuditTrail , hr:ConceptEncryptionKeyRotationPolicy .
+
+
+# =================================================================
+# BUSINESS PROCESS DEFINITIONS (Process Instances)
+# =================================================================
+
+# --- Workforce Administration & Payroll Domain Processes ---
+hr:ProcGrossToNetCalculation a hr:BusinessProcess ;
+    rdfs:label "Gross-to-Net Wage Calculation Process" .
+
+hr:ProcOvertimeRuleEnforce a hr:BusinessProcess ;
+    rdfs:label "FLSA Overtime Rule Enforcement Process" .
+
+hr:ProcTaxImpoundSchedule a hr:BusinessProcess ;
+    rdfs:label "Payroll Tax Impound Scheduling Process" .
+
+hr:ProcQuarterlyTaxFilingAuto a hr:BusinessProcess ;
+    rdfs:label "Automated Quarterly Tax Filing Process" .
+
+hr:ProcGarnishmentPriorityOrder a hr:BusinessProcess ;
+    rdfs:label "Wage Garnishment Priority Ordering Process" .
+
+hr:ProcAgencyRemittanceSync a hr:BusinessProcess ;
+    rdfs:label "Garnishment Agency Remittance Synchronization Process" .
+
+hr:ProcACHDirectDepositBatch a hr:BusinessProcess ;
+    rdfs:label "ACH Direct Deposit Batch Processing" .
+
+hr:ProcOffCyclePaymentGen a hr:BusinessProcess ;
+    rdfs:label "Off-Cycle Payment Generation Process" .
+
+hr:ProcYearEndWageLedgerRecon a hr:BusinessProcess ;
+    rdfs:label "Year-End Wage Ledger Reconciliation Process" .
+
+hr:ProcAutomatedW2Distribution a hr:BusinessProcess ;
+    rdfs:label "Automated W-2/1099 Distribution Process" .
+
+hr:ProcPunchIngestionAudit a hr:BusinessProcess ;
+    rdfs:label "Time Punch Ingestion & Audit Process" .
+
+hr:ProcMealBreakRuleAudit a hr:BusinessProcess ;
+    rdfs:label "Meal & Rest Break Compliance Audit Process" .
+
+hr:ProcSupervisorApprovalRoute a hr:BusinessProcess ;
+    rdfs:label "Supervisor Timesheet Approval Routing Process" .
+
+hr:ProcPrePayrollTimesheetLock a hr:BusinessProcess ;
+    rdfs:label "Pre-Payroll Timesheet Locking Process" .
+
+hr:ProcSeniorityPTOAccrual a hr:BusinessProcess ;
+    rdfs:label "Seniority-Based PTO Accrual Process" .
+
+hr:ProcLeaveCarryoverValidation a hr:BusinessProcess ;
+    rdfs:label "PTO Carryover Limit Validation Process" .
+
+hr:ProcFMLAEligibilityVerify a hr:BusinessProcess ;
+    rdfs:label "FMLA Eligibility Verification Process" .
+
+hr:ProcIntermittentLeaveTrack a hr:BusinessProcess ;
+    rdfs:label "Intermittent Leave Tracking Process" .
+
+hr:ProcLaborCostDistribution a hr:BusinessProcess ;
+    rdfs:label "Multi-Department Labor Cost Distribution Process" .
+
+hr:ProcGLWageAllocationExport a hr:BusinessProcess ;
+    rdfs:label "General Ledger Wage Allocation Export Process" .
+
+
+# --- Employee Benefits & Retirement Sponsorship Domain Processes ---
+hr:ProcCarrierEDI834Sync a hr:BusinessProcess ;
+    rdfs:label "Carrier EDI 834 Enrollment Synchronization Process" .
+
+hr:ProcLargeGroupUnderwrite a hr:BusinessProcess ;
+    rdfs:label "Large-Group Master Plan Underwriting Process" .
+
+hr:ProcOpenEnrollmentOrchestrate a hr:BusinessProcess ;
+    rdfs:label "Open Enrollment Orchestration Process" .
+
+hr:ProcQLEVerificationWorkflow a hr:BusinessProcess ;
+    rdfs:label "Qualifying Life Event Verification Workflow Process" .
+
+hr:ProcSection125MatchingSync a hr:BusinessProcess ;
+    rdfs:label "Section 125 Pre-Tax Deduction Matching Process" .
+
+hr:ProcCarrierInvoiceRecon a hr:BusinessProcess ;
+    rdfs:label "Carrier Premium Invoice Reconciliation Process" .
+
+hr:ProcCOBRANoticeGeneration a hr:BusinessProcess ;
+    rdfs:label "COBRA Qualifying Event Notice Generation Process" .
+
+hr:ProcPremiumDirectBilling a hr:BusinessProcess ;
+    rdfs:label "COBRA Premium Direct Billing Process" .
+
+hr:ProcClaimsAutoSubstantiation a hr:BusinessProcess ;
+    rdfs:label "FSA/HSA Claims Auto-Substantiation Process" .
+
+hr:ProcAnnualCapMonitor a hr:BusinessProcess ;
+    rdfs:label "Annual Pre-Tax Contribution Cap Monitoring Process" .
+
+hr:ProcCarrierDataAggregation a hr:BusinessProcess ;
+    rdfs:label "Ancillary Carrier Data Aggregation Process" .
+
+hr:ProcVoluntaryBenefitRosterSync a hr:BusinessProcess ;
+    rdfs:label "Voluntary Benefit Roster Synchronization Process" .
+
+hr:Proc401kPayrollContributionSync a hr:BusinessProcess ;
+    rdfs:label "401(k) Payroll Contribution Synchronization Process" .
+
+hr:ProcAutoEnrollmentSync a hr:BusinessProcess ;
+    rdfs:label "401(k) Automatic Enrollment & Escalation Synchronization Process" .
+
+hr:ProcSafeHarborCalculationEngine a hr:BusinessProcess ;
+    rdfs:label "Safe Harbor Match Calculation Process" .
+
+hr:ProcDiscretionaryAllocationModel a hr:BusinessProcess ;
+    rdfs:label "Discretionary Profit-Sharing Allocation Process" .
+
+hr:ProcConsolidated5500Audit a hr:BusinessProcess ;
+    rdfs:label "Consolidated Form 5500 Audit Process" .
+
+hr:ProcThirdPartyAuditAssembly a hr:BusinessProcess ;
+    rdfs:label "Third-Party ERISA Audit File Assembly Process" .
+
+hr:ProcADP_ACPRatioTesting a hr:BusinessProcess ;
+    rdfs:label "ADP/ACP Nondiscrimination Ratio Testing Process" .
+
+hr:ProcExcessContributionRefund a hr:BusinessProcess ;
+    rdfs:label "401(k) Excess Contribution Refund Process" .
+
+
+# --- Government Compliance & Employer Risk Management Domain Processes ---
+hr:ProcSeparationRiskReview a hr:BusinessProcess ;
+    rdfs:label "Employee Separation Risk Review Process" .
+
+hr:ProcEPLIClaimDefenseCoordination a hr:BusinessProcess ;
+    rdfs:label "EPLI Claim Defense Coordination Process" .
+
+hr:ProcHandbookRegulatoryUpdate a hr:BusinessProcess ;
+    rdfs:label "Employee Handbook Regulatory Update Process" .
+
+hr:ProcPolicySignatureAudit a hr:BusinessProcess ;
+    rdfs:label "Policy Acknowledgment Signature Audit Process" .
+
+hr:ProcTrainingCompletionTracking a hr:BusinessProcess ;
+    rdfs:label "Mandatory Training Completion Tracking Process" .
+
+hr:ProcComplianceCertificateRenew a hr:BusinessProcess ;
+    rdfs:label "Compliance Certificate Renewal Process" .
+
+hr:ProcEEOCInquiryResponse a hr:BusinessProcess ;
+    rdfs:label "EEOC Inquiry Response Process" .
+
+hr:ProcDOLWageHourAuditSupport a hr:BusinessProcess ;
+    rdfs:label "DOL Wage & Hour Audit Support Process" .
+
+hr:ProcTaxSuretyBondMaintain a hr:BusinessProcess ;
+    rdfs:label "CPEO Tax Surety Bond Maintenance Process" .
+
+hr:ProcQuarterlyCPEOForm8973 a hr:BusinessProcess ;
+    rdfs:label "Quarterly CPEO Form 8973 Filing Process" .
+
+hr:ProcClassCodePayrollReport a hr:BusinessProcess ;
+    rdfs:label "Workers' Comp Class Code Payroll Reporting Process" .
+
+hr:ProcEMRAnalysisProcess a hr:BusinessProcess ;
+    rdfs:label "Experience Modification Rate Analysis Process" .
+
+hr:ProcFirstReportOfInjury a hr:BusinessProcess ;
+    rdfs:label "First Report of Injury Intake Process" .
+
+hr:ProcWageReplacementProcess a hr:BusinessProcess ;
+    rdfs:label "Temporary Disability Wage Replacement Process" .
+
+hr:ProcModifiedDutyReturnToWork a hr:BusinessProcess ;
+    rdfs:label "Modified-Duty Return-to-Work Matching Process" .
+
+hr:ProcPhysicianWorkStatusFollowUp a hr:BusinessProcess ;
+    rdfs:label "Treating Physician Work Status Follow-Up Process" .
+
+hr:ProcOnSiteSafetyInspection a hr:BusinessProcess ;
+    rdfs:label "On-Site Safety Inspection Process" .
+
+hr:ProcHazardAbatementTracking a hr:BusinessProcess ;
+    rdfs:label "Safety Hazard Abatement Tracking Process" .
+
+hr:ProcOSHA300LogGeneration a hr:BusinessProcess ;
+    rdfs:label "OSHA Form 300 Log Generation Process" .
+
+hr:ProcElectronicOSHASubmission a hr:BusinessProcess ;
+    rdfs:label "Electronic OSHA ITA Submission Process" .
+
+
+# --- Talent Management & Organizational Development Domain Processes ---
+hr:ProcCandidateSourcingScreen a hr:BusinessProcess ;
+    rdfs:label "Candidate Sourcing & Screening Process" .
+
+hr:ProcJobRequisitionDistribution a hr:BusinessProcess ;
+    rdfs:label "Job Requisition Multi-Board Distribution Process" .
+
+hr:ProcRegionalSalaryDataExtract a hr:BusinessProcess ;
+    rdfs:label "Regional Salary Data Extraction Process" .
+
+hr:ProcPayBandEquityModel a hr:BusinessProcess ;
+    rdfs:label "Pay Band Equity Modeling Process" .
+
+hr:ProcFCRABackgroundDispatch a hr:BusinessProcess ;
+    rdfs:label "FCRA Background Screening Dispatch Process" .
+
+hr:ProcAdverseActionWorkflow a hr:BusinessProcess ;
+    rdfs:label "Pre-Adverse & Adverse Action Notice Workflow Process" .
+
+hr:ProcEVerifySubmission a hr:BusinessProcess ;
+    rdfs:label "E-Verify Case Submission Process" .
+
+hr:ProcSection2DocValidation a hr:BusinessProcess ;
+    rdfs:label "Form I-9 Section 2 Document Validation Process" .
+
+hr:ProcNewHirePaperworkSync a hr:BusinessProcess ;
+    rdfs:label "New Hire Paperwork Synchronization Process" .
+
+hr:ProcDayOneProfileActivation a hr:BusinessProcess ;
+    rdfs:label "Day-One Employee Profile Activation Process" .
+
+hr:ProcCourseProgressTracking a hr:BusinessProcess ;
+    rdfs:label "LMS Course Progress Tracking Process" .
+
+hr:ProcCEUCreditVerification a hr:BusinessProcess ;
+    rdfs:label "CEU Credit Verification Process" .
+
+hr:ProcAppraisalWorkflowCycle a hr:BusinessProcess ;
+    rdfs:label "Performance Appraisal Workflow Cycle Process" .
+
+hr:ProcMultiRaterFeedbackCollect a hr:BusinessProcess ;
+    rdfs:label "360-Degree Multi-Rater Feedback Collection Process" .
+
+hr:ProcCascadingOKRsAlign a hr:BusinessProcess ;
+    rdfs:label "Cascading OKR Alignment Process" .
+
+hr:ProcGoalProgressWeighting a hr:BusinessProcess ;
+    rdfs:label "Goal Progress Weighting Process" .
+
+hr:ProcMeritIncreaseGuidance a hr:BusinessProcess ;
+    rdfs:label "Merit Increase Guidance Process" .
+
+hr:ProcExecCompensationAllocation a hr:BusinessProcess ;
+    rdfs:label "Executive Compensation Allocation Process" .
+
+hr:ProcNineBoxMatrixCalibrate a hr:BusinessProcess ;
+    rdfs:label "9-Box Talent Matrix Calibration Process" .
+
+hr:ProcExecCoachingTrack a hr:BusinessProcess ;
+    rdfs:label "Executive Coaching Track Process" .
+
+
+# --- Client Relationship & Business Development Domain Processes ---
+hr:ProcLeadQualificationScoring a hr:BusinessProcess ;
+    rdfs:label "Lead Qualification & Scoring Process" .
+
+hr:ProcRFPProposalAssembly a hr:BusinessProcess ;
+    rdfs:label "RFP Proposal Assembly Process" .
+
+hr:ProcMSAContractDrafting a hr:BusinessProcess ;
+    rdfs:label "Master Service Agreement Contract Drafting Process" .
+
+hr:ProcCoEmploymentRiskAssessment a hr:BusinessProcess ;
+    rdfs:label "Co-Employment Risk Assessment Process" .
+
+hr:ProcLegacyPayrollDataMigration a hr:BusinessProcess ;
+    rdfs:label "Legacy Payroll & HRIS Data Migration Process" .
+
+hr:ProcImplementationMilestoneTracking a hr:BusinessProcess ;
+    rdfs:label "Implementation Milestone Tracking Process" .
+
+hr:ProcKickoffMeetingOrchestration a hr:BusinessProcess ;
+    rdfs:label "Client Kickoff Meeting Orchestration Process" .
+
+hr:ProcWorksiteEmployeeCensusIntake a hr:BusinessProcess ;
+    rdfs:label "Worksite Employee Census Intake Process" .
+
+hr:ProcClientHealthScoreCalculation a hr:BusinessProcess ;
+    rdfs:label "Client Health Score Calculation Process" .
+
+hr:ProcAtRiskAccountEscalation a hr:BusinessProcess ;
+    rdfs:label "At-Risk Account Escalation Process" .
+
+hr:ProcAnnualRenewalPricingReview a hr:BusinessProcess ;
+    rdfs:label "Annual Renewal Pricing Review Process" .
+
+hr:ProcServiceLevelAgreementRenegotiation a hr:BusinessProcess ;
+    rdfs:label "Service Level Agreement Renegotiation Process" .
+
+hr:ProcTieredEscalationRouting a hr:BusinessProcess ;
+    rdfs:label "Tiered Escalation Routing Process" .
+
+hr:ProcRootCauseResolutionReview a hr:BusinessProcess ;
+    rdfs:label "Root Cause Resolution Review Process" .
+
+hr:ProcClientInvoiceGeneration a hr:BusinessProcess ;
+    rdfs:label "Client Service Fee Invoice Generation Process" .
+
+hr:ProcAccountsReceivableCollection a hr:BusinessProcess ;
+    rdfs:label "Accounts Receivable Collection Process" .
+
+
+# --- HR Technology Platform & Employee Experience Domain Processes ---
+hr:ProcPortalProfileSelfUpdate a hr:BusinessProcess ;
+    rdfs:label "Employee Portal Profile Self-Update Process" .
+
+hr:ProcPayStubDocumentAccessLog a hr:BusinessProcess ;
+    rdfs:label "Pay Stub Document Access Logging Process" .
+
+hr:ProcClientDashboardReportGen a hr:BusinessProcess ;
+    rdfs:label "Client Dashboard Report Generation Process" .
+
+hr:ProcAdminRoleBasedAccessControl a hr:BusinessProcess ;
+    rdfs:label "Admin Role-Based Access Control Process" .
+
+hr:ProcSSOFederationSetup a hr:BusinessProcess ;
+    rdfs:label "SSO Federation Setup Process" .
+
+hr:ProcMultiFactorAuthEnforcement a hr:BusinessProcess ;
+    rdfs:label "Multi-Factor Authentication Enforcement Process" .
+
+hr:ProcMobilePushNotificationDispatch a hr:BusinessProcess ;
+    rdfs:label "Mobile Push Notification Dispatch Process" .
+
+hr:ProcGeofencedClockInValidation a hr:BusinessProcess ;
+    rdfs:label "Geofenced Clock-In Validation Process" .
+
+hr:ProcAPIConnectorSyncMonitoring a hr:BusinessProcess ;
+    rdfs:label "API Connector Synchronization Monitoring Process" .
+
+hr:ProcThirdPartyHRISFileMapping a hr:BusinessProcess ;
+    rdfs:label "Third-Party HRIS File Mapping Process" .
+
+hr:ProcWorkforceKPIDashboardBuild a hr:BusinessProcess ;
+    rdfs:label "Workforce KPI Dashboard Build Process" .
+
+hr:ProcTurnoverPredictiveModeling a hr:BusinessProcess ;
+    rdfs:label "Turnover Predictive Modeling Process" .
+
+hr:ProcDataAccessAuditLogging a hr:BusinessProcess ;
+    rdfs:label "Data Access Audit Logging Process" .
+
+hr:ProcPIIEncryptionKeyRotation a hr:BusinessProcess ;
+    rdfs:label "PII Encryption Key Rotation Process" .
+
+
+# =================================================================
+# PROCESS-TO-OPERATIONS SEMANTIC BINDINGS
+# =================================================================
+
+# Workforce Admin Processes
+hr:ProcGrossToNetCalculation hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcOvertimeRuleEnforce hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpLegalCompliance .
+hr:ProcTaxImpoundSchedule hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcQuarterlyTaxFilingAuto hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcGarnishmentPriorityOrder hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpLegalCompliance .
+hr:ProcAgencyRemittanceSync hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcACHDirectDepositBatch hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcOffCyclePaymentGen hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcYearEndWageLedgerRecon hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcAutomatedW2Distribution hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpHRTechnologyCyber .
+
+hr:ProcPunchIngestionAudit hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcMealBreakRuleAudit hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcSupervisorApprovalRoute hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcPrePayrollTimesheetLock hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcSeniorityPTOAccrual hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcLeaveCarryoverValidation hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcFMLAEligibilityVerify hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcIntermittentLeaveTrack hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcLaborCostDistribution hr:supportedByOperation hr:OpPayrollTaxAccounting .
+hr:ProcGLWageAllocationExport hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpHRTechnologyCyber .
+
+# Benefits & Retirement Processes
+hr:ProcCarrierEDI834Sync hr:supportedByOperation hr:OpBenefitsUnderwriting , hr:OpHRTechnologyCyber .
+hr:ProcLargeGroupUnderwrite hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcOpenEnrollmentOrchestrate hr:supportedByOperation hr:OpBenefitsUnderwriting , hr:OpHRTechnologyCyber .
+hr:ProcQLEVerificationWorkflow hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcSection125MatchingSync hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpBenefitsUnderwriting .
+hr:ProcCarrierInvoiceRecon hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcCOBRANoticeGeneration hr:supportedByOperation hr:OpLegalCompliance , hr:OpBenefitsUnderwriting .
+hr:ProcPremiumDirectBilling hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcClaimsAutoSubstantiation hr:supportedByOperation hr:OpBenefitsUnderwriting , hr:OpHRTechnologyCyber .
+hr:ProcAnnualCapMonitor hr:supportedByOperation hr:OpBenefitsUnderwriting , hr:OpPayrollTaxAccounting .
+hr:ProcCarrierDataAggregation hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcVoluntaryBenefitRosterSync hr:supportedByOperation hr:OpBenefitsUnderwriting , hr:OpPayrollTaxAccounting .
+
+hr:Proc401kPayrollContributionSync hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpBenefitsUnderwriting .
+hr:ProcAutoEnrollmentSync hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcSafeHarborCalculationEngine hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcDiscretionaryAllocationModel hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcConsolidated5500Audit hr:supportedByOperation hr:OpLegalCompliance , hr:OpBenefitsUnderwriting .
+hr:ProcThirdPartyAuditAssembly hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcADP_ACPRatioTesting hr:supportedByOperation hr:OpBenefitsUnderwriting .
+hr:ProcExcessContributionRefund hr:supportedByOperation hr:OpPayrollTaxAccounting , hr:OpBenefitsUnderwriting .
+
+# Compliance & Risk Processes
+hr:ProcSeparationRiskReview hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcEPLIClaimDefenseCoordination hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcHandbookRegulatoryUpdate hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcPolicySignatureAudit hr:supportedByOperation hr:OpLegalCompliance , hr:OpHRTechnologyCyber .
+hr:ProcTrainingCompletionTracking hr:supportedByOperation hr:OpLegalCompliance , hr:OpTalentAdvisory .
+hr:ProcComplianceCertificateRenew hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcEEOCInquiryResponse hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcDOLWageHourAuditSupport hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcTaxSuretyBondMaintain hr:supportedByOperation hr:OpLegalCompliance , hr:OpPayrollTaxAccounting .
+hr:ProcQuarterlyCPEOForm8973 hr:supportedByOperation hr:OpLegalCompliance .
+
+hr:ProcClassCodePayrollReport hr:supportedByOperation hr:OpRiskSafety , hr:OpPayrollTaxAccounting .
+hr:ProcEMRAnalysisProcess hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcFirstReportOfInjury hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcWageReplacementProcess hr:supportedByOperation hr:OpRiskSafety , hr:OpPayrollTaxAccounting .
+hr:ProcModifiedDutyReturnToWork hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcPhysicianWorkStatusFollowUp hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcOnSiteSafetyInspection hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcHazardAbatementTracking hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcOSHA300LogGeneration hr:supportedByOperation hr:OpRiskSafety .
+hr:ProcElectronicOSHASubmission hr:supportedByOperation hr:OpRiskSafety , hr:OpHRTechnologyCyber .
+
+# Talent & Development Processes
+hr:ProcCandidateSourcingScreen hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcJobRequisitionDistribution hr:supportedByOperation hr:OpTalentAdvisory , hr:OpHRTechnologyCyber .
+hr:ProcRegionalSalaryDataExtract hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcPayBandEquityModel hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcFCRABackgroundDispatch hr:supportedByOperation hr:OpLegalCompliance , hr:OpTalentAdvisory .
+hr:ProcAdverseActionWorkflow hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcEVerifySubmission hr:supportedByOperation hr:OpLegalCompliance , hr:OpHRTechnologyCyber .
+hr:ProcSection2DocValidation hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcNewHirePaperworkSync hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcDayOneProfileActivation hr:supportedByOperation hr:OpHRTechnologyCyber .
+
+hr:ProcCourseProgressTracking hr:supportedByOperation hr:OpTalentAdvisory , hr:OpHRTechnologyCyber .
+hr:ProcCEUCreditVerification hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcAppraisalWorkflowCycle hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcMultiRaterFeedbackCollect hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcCascadingOKRsAlign hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcGoalProgressWeighting hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcMeritIncreaseGuidance hr:supportedByOperation hr:OpTalentAdvisory , hr:OpPayrollTaxAccounting .
+hr:ProcExecCompensationAllocation hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcNineBoxMatrixCalibrate hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcExecCoachingTrack hr:supportedByOperation hr:OpTalentAdvisory .
+
+
+# Client Relationship & Business Development Processes
+hr:ProcLeadQualificationScoring hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcRFPProposalAssembly hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcMSAContractDrafting hr:supportedByOperation hr:OpBusinessDevelopmentSales , hr:OpLegalCompliance .
+hr:ProcCoEmploymentRiskAssessment hr:supportedByOperation hr:OpLegalCompliance , hr:OpBusinessDevelopmentSales .
+hr:ProcLegacyPayrollDataMigration hr:supportedByOperation hr:OpBusinessDevelopmentSales , hr:OpHRTechnologyCyber .
+hr:ProcImplementationMilestoneTracking hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcKickoffMeetingOrchestration hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcWorksiteEmployeeCensusIntake hr:supportedByOperation hr:OpBusinessDevelopmentSales , hr:OpPayrollTaxAccounting .
+hr:ProcClientHealthScoreCalculation hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcAtRiskAccountEscalation hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcAnnualRenewalPricingReview hr:supportedByOperation hr:OpBusinessDevelopmentSales , hr:OpClientFinanceBilling .
+hr:ProcServiceLevelAgreementRenegotiation hr:supportedByOperation hr:OpBusinessDevelopmentSales , hr:OpLegalCompliance .
+hr:ProcTieredEscalationRouting hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcRootCauseResolutionReview hr:supportedByOperation hr:OpBusinessDevelopmentSales .
+hr:ProcClientInvoiceGeneration hr:supportedByOperation hr:OpClientFinanceBilling .
+hr:ProcAccountsReceivableCollection hr:supportedByOperation hr:OpClientFinanceBilling .
+
+# HR Technology Platform & Employee Experience Processes
+hr:ProcPortalProfileSelfUpdate hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcPayStubDocumentAccessLog hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpPayrollTaxAccounting .
+hr:ProcClientDashboardReportGen hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpClientFinanceBilling .
+hr:ProcAdminRoleBasedAccessControl hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcSSOFederationSetup hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcMultiFactorAuthEnforcement hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcMobilePushNotificationDispatch hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcGeofencedClockInValidation hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpLegalCompliance .
+hr:ProcAPIConnectorSyncMonitoring hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcThirdPartyHRISFileMapping hr:supportedByOperation hr:OpHRTechnologyCyber .
+hr:ProcWorkforceKPIDashboardBuild hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpTalentAdvisory .
+hr:ProcTurnoverPredictiveModeling hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpTalentAdvisory .
+hr:ProcDataAccessAuditLogging hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpLegalCompliance .
+hr:ProcPIIEncryptionKeyRotation hr:supportedByOperation hr:OpHRTechnologyCyber .
+
+# =================================================================
+# SHARED ONTOLOGY CONCEPTS
+# =================================================================
+
+hr:ConceptGrossToNetRule a hr:OntologyConcept ;
+    rdfs:label "Gross-to-Net Computation Calculation Rule" .
+
+hr:ConceptOvertimeCalculation a hr:OntologyConcept ;
+    rdfs:label "FLSA Statutory Overtime Calculation Standard" .
+
+hr:ConceptTaxImpoundEngine a hr:OntologyConcept ;
+    rdfs:label "Multi-State Tax Impound Engine" .
+
+hr:ConceptQuarterlyForm941 a hr:OntologyConcept ;
+    rdfs:label "Quarterly Federal/State Form 941 Return" .
+
+hr:ConceptGarnishmentOrder a hr:OntologyConcept ;
+    rdfs:label "Court-Ordered Wage Garnishment Directive" .
+
+hr:ConceptChildSupportWithholding a hr:OntologyConcept ;
+    rdfs:label "Statutory Child Support Withholding Schedule" .
+
+hr:ConceptACHBatchOrchestration a hr:OntologyConcept ;
+    rdfs:label "NACHA Direct Deposit Batch File" .
+
+hr:ConceptOffCycleCheck a hr:OntologyConcept ;
+    rdfs:label "Emergency Off-Cycle Payment Record" .
+
+hr:ConceptWageLedgerRecon a hr:OntologyConcept ;
+    rdfs:label "Annual Cumulative Wage Ledger" .
+
+hr:ConceptDigitalW2Filing a hr:OntologyConcept ;
+    rdfs:label "IRS Form W-2 / 1099 Electronic Transmission" .
+
+hr:ConceptPunchRecord a hr:OntologyConcept ;
+    rdfs:label "Geofenced Mobile & Biometric Punch Timecard" .
+
+hr:ConceptMealBreakAudit a hr:OntologyConcept ;
+    rdfs:label "Mandatory Meal Break Penalty Audit Record" .
+
+hr:ConceptSupervisorRoute a hr:OntologyConcept ;
+    rdfs:label "Multi-Level Management Approval Chain" .
+
+hr:ConceptPayrollDataStaging a hr:OntologyConcept ;
+    rdfs:label "Pre-Payroll Locked Calculation Staging Table" .
+
+hr:ConceptPTOAccrualLedger a hr:OntologyConcept ;
+    rdfs:label "Seniority-Tiered Paid Time Off Accrual Ledger" .
+
+hr:ConceptLeaveBalanceCarryover a hr:OntologyConcept ;
+    rdfs:label "Year-End PTO Carryover Limit Specification" .
+
+hr:ConceptFMLAEligibility a hr:OntologyConcept ;
+    rdfs:label "Statutory FMLA 1,250-Hour Eligibility Requirement" .
+
+hr:ConceptPFLIntermittentTracking a hr:OntologyConcept ;
+    rdfs:label "Paid Family Leave Intermittent Absence Matrix" .
+
+hr:ConceptMultiDeptLaborDist a hr:OntologyConcept ;
+    rdfs:label "Multi-Department Labor Cost Distribution Model" .
+
+hr:ConceptGLWageExport a hr:OntologyConcept ;
+    rdfs:label "General Ledger Payroll Journal Entry Schema" .
+
+hr:ConceptLargeGroupPoolTier a hr:OntologyConcept ;
+    rdfs:label "PEO Master Large-Group Underwriting Tier" .
+
+hr:ConceptCarrierEDI834 a hr:OntologyConcept ;
+    rdfs:label "ANSI X12 834 Benefit Enrollment Electronic Feed" .
+
+hr:ConceptOpenEnrollmentPortal a hr:OntologyConcept ;
+    rdfs:label "Annual Benefit Open Enrollment Digital Portal" .
+
+hr:ConceptQLEVerification a hr:OntologyConcept ;
+    rdfs:label "Qualifying Life Event Statutory Documentation" .
+
+hr:ConceptSection125Matching a hr:OntologyConcept ;
+    rdfs:label "IRS Section 125 Pre-Tax Deduction Schedule" .
+
+hr:ConceptCarrierInvoiceRecon a hr:OntologyConcept ;
+    rdfs:label "Health Carrier Premium Reconciliation Record" .
+
+hr:ConceptCOBRAQualifyingEvent a hr:OntologyConcept ;
+    rdfs:label "COBRA Statutory Separation Event Notice" .
+
+hr:ConceptDirectBillingNotice a hr:OntologyConcept ;
+    rdfs:label "COBRA Continuation Direct Billing Account" .
+
+hr:ConceptDebitCardAutoSubstantiation a hr:OntologyConcept ;
+    rdfs:label "FSA/HSA IIAS Auto-Substantiation Record" .
+
+hr:ConceptAnnualCapMonitor a hr:OntologyConcept ;
+    rdfs:label "Statutory Pre-Tax Contribution Cap Model" .
+
+hr:ConceptVoluntaryRosterSync a hr:OntologyConcept ;
+    rdfs:label "Voluntary Dental/Vision/Life Payroll Sync" .
+
+hr:ConceptDentalVisionLifeAgg a hr:OntologyConcept ;
+    rdfs:label "Ancillary Insurance Carrier API Connector" .
+
+hr:Concept401kDeferralFeed a hr:OntologyConcept ;
+    rdfs:label "Pre-Tax / Roth 401(k) Payroll Deferral Feed" .
+
+hr:ConceptAutoEnrollmentSync a hr:OntologyConcept ;
+    rdfs:label "Automatic 401(k) Escalation & Enrollment Protocol" .
+
+hr:ConceptSafeHarborMatchCalc a hr:OntologyConcept ;
+    rdfs:label "ERISA Safe Harbor Matching Formula" .
+
+hr:ConceptProfitSharingModel a hr:OntologyConcept ;
+    rdfs:label "Discretionary Employer Profit Sharing Matrix" .
+
+hr:ConceptConsolidated5500 a hr:OntologyConcept ;
+    rdfs:label "Consolidated Multiple Employer Form 5500" .
+
+hr:ConceptThirdPartyAuditFile a hr:OntologyConcept ;
+    rdfs:label "ERISA Independent Auditor Package" .
+
+hr:ConceptADP_ACPTesting a hr:OntologyConcept ;
+    rdfs:label "Annual ADP/ACP Non-Discrimination Test Metric" .
+
+hr:ConceptExcessRefundCorrection a hr:OntologyConcept ;
+    rdfs:label "401(k) Excess Contribution Corrective Refund" .
+
+hr:ConceptEPLITenMillionCoverage a hr:OntologyConcept ;
+    rdfs:label "Employment Practices Liability Insurance Policy" .
+
+hr:ConceptWrongfulTerminationReview a hr:OntologyConcept ;
+    rdfs:label "Involuntary Termination Legal Risk Assessment" .
+
+hr:ConceptStateSpecificAddendum a hr:OntologyConcept ;
+    rdfs:label "Multi-Jurisdiction Employee Handbook Addendum" .
+
+hr:ConceptDigitalSignatureAcknowledge a hr:OntologyConcept ;
+    rdfs:label "Policy Acknowledgment E-Signature Audit Trail" .
+
+hr:ConceptMandatoryTrainingTracking a hr:OntologyConcept ;
+    rdfs:label "State-Mandated Anti-Harassment Course Progress" .
+
+hr:ConceptCertificateRenewal a hr:OntologyConcept ;
+    rdfs:label "Annual Compliance Certification Renewal Record" .
+
+hr:ConceptEEOCPositionStatement a hr:OntologyConcept ;
+    rdfs:label "Formal EEOC Charge Position Statement Document" .
+
+hr:ConceptDOLWageHourSupport a hr:OntologyConcept ;
+    rdfs:label "Department of Labor Wage Audit Support Dossier" .
+
+hr:ConceptSuretyBondMaintenance a hr:OntologyConcept ;
+    rdfs:label "IRS Certified PEO Federal Surety Bond" .
+
+hr:ConceptCPEOForm8973 a hr:OntologyConcept ;
+    rdfs:label "IRS Form 8973 CPEO Client Notification File" .
+
+hr:ConceptClassCodeExposure a hr:OntologyConcept ;
+    rdfs:label "Workers' Comp Class Code Payroll Exposure Report" .
+
+hr:ConceptEMRAnalysis a hr:OntologyConcept ;
+    rdfs:label "Experience Modification Rate (EMR) Model" .
+
+hr:ConceptFNOITriage a hr:OntologyConcept ;
+    rdfs:label "First Notice of Injury (FNOI) Intake Schema" .
+
+hr:ConceptWageReplacementProcessing a hr:OntologyConcept ;
+    rdfs:label "Temporary Total Disability (TTD) Wage Calculation" .
+
+hr:ConceptModifiedDutyMatch a hr:OntologyConcept ;
+    rdfs:label "Transitional Return-to-Work Position Match" .
+
+hr:ConceptPhysicianStatusFollowUp a hr:OntologyConcept ;
+    rdfs:label "Treating Physician Functional Capacity Evaluation" .
+
+hr:ConceptHazardInspectionReport a hr:OntologyConcept ;
+    rdfs:label "On-Site Worksite Hazard Inspection Report" .
+
+hr:ConceptCorrectiveActionTrack a hr:OntologyConcept ;
+    rdfs:label "OSHA Safety Hazard Abatement Log" .
+
+hr:ConceptRecordableInjuryClass a hr:OntologyConcept ;
+    rdfs:label "OSHA Form 300 Recordable Incident Log" .
+
+hr:ConceptElectronicOSHASubmission a hr:OntologyConcept ;
+    rdfs:label "Electronic OSHA ITA Form 300A Filing File" .
+
+hr:ConceptCandidateATSWorkflow a hr:OntologyConcept ;
+    rdfs:label "Applicant Tracking System (ATS) Pipeline Stage" .
+
+hr:ConceptMultiBoardDistribution a hr:OntologyConcept ;
+    rdfs:label "Programmatic Job Requisition Distribution Schema" .
+
+hr:ConceptRegionalSalaryData a hr:OntologyConcept ;
+    rdfs:label "Geographic Compensation Market Survey Dataset" .
+
+hr:ConceptPayBandEquityModel a hr:OntologyConcept ;
+    rdfs:label "Internal Pay Band Equity & Compression Model" .
+
+hr:ConceptFCRABackground a hr:OntologyConcept ;
+    rdfs:label "FCRA-Compliant Background Screening Package" .
+
+hr:ConceptAdverseActionNotice a hr:OntologyConcept ;
+    rdfs:label "Pre-Adverse & Adverse Action Notice Schedule" .
+
+hr:ConceptEVerifyRemoteDoc a hr:OntologyConcept ;
+    rdfs:label "Department of Homeland Security E-Verify Case File" .
+
+hr:ConceptSection2Validation a hr:OntologyConcept ;
+    rdfs:label "Form I-9 Section 2 Document Verification Audit" .
+
+hr:ConceptDirectDepositSignature a hr:OntologyConcept ;
+    rdfs:label "Digital New Hire Direct Deposit Authorization" .
+
+hr:ConceptMasterProfileActivation a hr:OntologyConcept ;
+    rdfs:label "Active Employee Master Profile Data Schema" .
+
+hr:ConceptSCORMContentStream a hr:OntologyConcept ;
+    rdfs:label "SCORM/xAPI Learning Content Package" .
+
+hr:ConceptCEUCreditVerify a hr:OntologyConcept ;
+    rdfs:label "Continuing Education Unit (CEU) Credit Ledger" .
+
+hr:ConceptMultiRaterFeedback a hr:OntologyConcept ;
+    rdfs:label "360-Degree Multi-Rater Feedback Assessment" .
+
+hr:ConceptAppraisalCycleRecon a hr:OntologyConcept ;
+    rdfs:label "Consolidated Performance Appraisal Score Record" .
+
+hr:ConceptCascadingOKRs a hr:OntologyConcept ;
+    rdfs:label "Enterprise Objectives & Key Results (OKR) Tree" .
+
+hr:ConceptGoalWeighting a hr:OntologyConcept ;
+    rdfs:label "Performance Goal Weighting & Evaluation Metric" .
+
+hr:ConceptMeritIncreaseMatrix a hr:OntologyConcept ;
+    rdfs:label "Performance Rating Merit Increase Grid" .
+
+hr:ConceptExecCompAllocation a hr:OntologyConcept ;
+    rdfs:label "Executive Incentive Compensation Allocation Pool" .
+
+hr:ConceptNineBoxTalentMatrix a hr:OntologyConcept ;
+    rdfs:label "9-Box Performance vs. Potential Grid Mapping" .
+
+hr:ConceptHighPotentialCoaching a hr:OntologyConcept ;
+    rdfs:label "Executive Coaching & Succession Track Record" .
+
+# --- Client Relationship & HR Technology Platform Concepts (added) ---
+
+hr:ConceptLeadScoringModel a hr:OntologyConcept ;
+    rdfs:label "Prospect Lead Qualification Scoring Model" .
+
+hr:ConceptRFPProposalTemplate a hr:OntologyConcept ;
+    rdfs:label "Standardized RFP Proposal Response Template" .
+
+hr:ConceptMSATemplate a hr:OntologyConcept ;
+    rdfs:label "Master Service Agreement Contract Template" .
+
+hr:ConceptCoEmploymentRiskProfile a hr:OntologyConcept ;
+    rdfs:label "Co-Employment Liability Risk Profile" .
+
+hr:ConceptDataMigrationMapping a hr:OntologyConcept ;
+    rdfs:label "Legacy System Data Migration Field Mapping" .
+
+hr:ConceptImplementationMilestonePlan a hr:OntologyConcept ;
+    rdfs:label "Client Implementation Milestone Plan" .
+
+hr:ConceptKickoffPlaybook a hr:OntologyConcept ;
+    rdfs:label "Client Onboarding Kickoff Playbook" .
+
+hr:ConceptEmployeeCensusFile a hr:OntologyConcept ;
+    rdfs:label "Worksite Employee Census Data File" .
+
+hr:ConceptClientHealthScoreModel a hr:OntologyConcept ;
+    rdfs:label "Client Account Health Scoring Model" .
+
+hr:ConceptAtRiskAccountFlag a hr:OntologyConcept ;
+    rdfs:label "At-Risk Client Account Escalation Flag" .
+
+hr:ConceptRenewalPricingModel a hr:OntologyConcept ;
+    rdfs:label "Annual Client Renewal Pricing Model" .
+
+hr:ConceptSLARenegotiationRecord a hr:OntologyConcept ;
+    rdfs:label "Service Level Agreement Renegotiation Record" .
+
+hr:ConceptEscalationTierMatrix a hr:OntologyConcept ;
+    rdfs:label "Client Escalation Tier Routing Matrix" .
+
+hr:ConceptRootCauseAnalysisRecord a hr:OntologyConcept ;
+    rdfs:label "Client Issue Root Cause Analysis Record" .
+
+hr:ConceptServiceFeeInvoiceSchema a hr:OntologyConcept ;
+    rdfs:label "PEO Service Fee Invoice Schema" .
+
+hr:ConceptARAgingLedger a hr:OntologyConcept ;
+    rdfs:label "Accounts Receivable Aging Ledger" .
+
+hr:ConceptSelfServiceProfileSchema a hr:OntologyConcept ;
+    rdfs:label "Employee Self-Service Profile Data Schema" .
+
+hr:ConceptDigitalPayStubArchive a hr:OntologyConcept ;
+    rdfs:label "Digital Pay Stub Document Archive" .
+
+hr:ConceptClientReportingDashboard a hr:OntologyConcept ;
+    rdfs:label "Client Admin Portal Reporting Dashboard" .
+
+hr:ConceptRoleBasedAccessModel a hr:OntologyConcept ;
+    rdfs:label "Portal Role-Based Access Control Model" .
+
+hr:ConceptSSOFederationProtocol a hr:OntologyConcept ;
+    rdfs:label "Single Sign-On Federation Protocol (SAML/OIDC)" .
+
+hr:ConceptMFAPolicyRule a hr:OntologyConcept ;
+    rdfs:label "Multi-Factor Authentication Policy Rule" .
+
+hr:ConceptMobileAppNotificationSchema a hr:OntologyConcept ;
+    rdfs:label "Mobile Workforce App Notification Schema" .
+
+hr:ConceptGeofenceBoundaryModel a hr:OntologyConcept ;
+    rdfs:label "Mobile Geofence Boundary Model" .
+
+hr:ConceptAPIConnectorRegistry a hr:OntologyConcept ;
+    rdfs:label "HRIS API Connector Registry" .
+
+hr:ConceptHRISFieldMappingSchema a hr:OntologyConcept ;
+    rdfs:label "Third-Party HRIS Field Mapping Schema" .
+
+hr:ConceptWorkforceKPILibrary a hr:OntologyConcept ;
+    rdfs:label "Workforce Analytics KPI Metric Library" .
+
+hr:ConceptTurnoverPredictionModel a hr:OntologyConcept ;
+    rdfs:label "Employee Turnover Predictive Model" .
+
+hr:ConceptDataAccessAuditTrail a hr:OntologyConcept ;
+    rdfs:label "Data Access Audit Trail Log" .
+
+hr:ConceptEncryptionKeyRotationPolicy a hr:OntologyConcept ;
+    rdfs:label "PII Encryption Key Rotation Policy" .
+
+
+# #################################################################
+# #################################################################
+#
+#   EXTENSION v2.0 — CORE SERVICE LINES, WORKFORCE DEVELOPMENT,
+#   AND PRIVACY-PRESERVING VALUES STEWARDSHIP
+#
+#   Adds:
+#     (1) A business-model layer of Core Service Lines mapped onto the
+#         existing DDD topology (payroll, benefits, talent management,
+#         HR compliance, training, monitoring, coaching, measurement,
+#         values stewardship).
+#     (2) Domain 7 — Workforce Development, Coaching & Performance
+#         Measurement.
+#     (3) Domain 8 — Organizational Values, Culture & Ethics Stewardship,
+#         including a Privacy-Preserving People Analytics bounded context.
+#     (4) A Guiding Principle model that separates behavioral VALUES from
+#         outcome-oriented CORPORATE OBJECTIVES, each evidenced by
+#         indicators that carry explicit privacy metadata.
+#     (5) Privacy safeguards, prohibited monitoring practices, governing
+#         regulations, and SHACL shapes that make the privacy rules
+#         machine-checkable.
+#
+#   Design stance: "monitoring" in this model means monitoring progress,
+#   outcomes and aggregate signals — never covert surveillance of
+#   individuals. Values are promoted through the employee lifecycle,
+#   observed through ordinary work conduct and voluntary self-report,
+#   and measured primarily in aggregate.
+#
+#   The v1 content above is unchanged; everything below is additive.
+#
+# #################################################################
+# #################################################################
+
+@prefix sh:       <http://www.w3.org/ns/shacl#> .
+
+hr:HRServicesEnterpriseModel
+    owl:versionInfo "2.0 — core service lines, workforce development, and privacy-preserving values stewardship" .
+
+# =================================================================
+# EXTENSION TBOX: CLASSES
+# =================================================================
+
+hr:ServiceLine a owl:Class ;
+    rdfs:label "Core Service Line (Business Model Offering)" ;
+    rdfs:comment "A client-facing offering in the PEO business model. Realized by one or more L2 bounded contexts and/or L3 domain services." .
+
+hr:GuidingPrinciple a owl:Class ;
+    rdfs:label "Guiding Principle" ;
+    rdfs:comment "A stated corporate value or objective that the organization commits to promote, monitor and measure." .
+
+hr:OrganizationalValue a owl:Class ;
+    rdfs:subClassOf hr:GuidingPrinciple ;
+    rdfs:label "Organizational Value (Behavioral)" ;
+    rdfs:comment "A principle about HOW people act. Evidenced by observable conduct and culture signals; measured mostly in aggregate." .
+
+hr:CorporateObjective a owl:Class ;
+    rdfs:subClassOf hr:GuidingPrinciple ;
+    rdfs:label "Corporate Objective (Outcome)" ;
+    rdfs:comment "A principle about WHAT the organization achieves. Evidenced by outcome metrics. A principle may be typed as both a value and an objective when it has a behavioral and an outcome face (e.g. Innovation)." .
+
+hr:ValueIndicator a owl:Class ;
+    rdfs:label "Guiding Principle Indicator" ;
+    rdfs:comment "A defined, measurable signal that evidences a guiding principle, carrying its collection mode, reporting granularity and privacy constraints." .
+
+hr:DataCollectionMode a owl:Class ;
+    rdfs:label "Indicator Data Collection Mode" .
+
+hr:ReportingGranularity a owl:Class ;
+    rdfs:label "Indicator Reporting Granularity" .
+
+hr:PrivacySafeguard a owl:Class ;
+    rdfs:label "Privacy Safeguard" ;
+    rdfs:comment "A control that constrains how people data is collected, used, disclosed or retained." .
+
+hr:ProhibitedPractice a owl:Class ;
+    rdfs:label "Prohibited Monitoring Practice" ;
+    rdfs:comment "A monitoring or measurement technique the model explicitly rules out for values and culture measurement." .
+
+hr:RegulatoryInstrument a owl:Class ;
+    rdfs:subClassOf hr:OntologyConcept ;
+    rdfs:label "Governing Law or Regulatory Instrument" .
+
+# =================================================================
+# EXTENSION TBOX: OBJECT PROPERTIES (with inverses)
+# =================================================================
+
+hr:realizedBySubDomain a owl:ObjectProperty ;
+    rdfs:domain hr:ServiceLine ;
+    rdfs:range hr:SubDomain ;
+    rdfs:label "Realized By Sub-Domain" .
+
+hr:realizesServiceLine a owl:ObjectProperty ;
+    owl:inverseOf hr:realizedBySubDomain ;
+    rdfs:domain hr:SubDomain ;
+    rdfs:range hr:ServiceLine ;
+    rdfs:label "Realizes Service Line" .
+
+hr:realizedByService a owl:ObjectProperty ;
+    rdfs:domain hr:ServiceLine ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Realized By Domain Service" ;
+    rdfs:comment "Used where a service line draws on an individual service inside a bounded context owned by another service line." .
+
+hr:contributesToServiceLine a owl:ObjectProperty ;
+    owl:inverseOf hr:realizedByService ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:ServiceLine ;
+    rdfs:label "Contributes To Service Line" .
+
+hr:complementsService a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Complements Domain Service" ;
+    rdfs:comment "Links a v2 service to a v1 service it extends or collaborates with, keeping bounded contexts separate." .
+
+hr:promotesPrinciple a owl:ObjectProperty ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:GuidingPrinciple ;
+    rdfs:label "Promotes Guiding Principle" .
+
+hr:isPromotedByService a owl:ObjectProperty ;
+    owl:inverseOf hr:promotesPrinciple ;
+    rdfs:domain hr:GuidingPrinciple ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Is Promoted By Service" .
+
+hr:evidencedByIndicator a owl:ObjectProperty ;
+    rdfs:domain hr:GuidingPrinciple ;
+    rdfs:range hr:ValueIndicator ;
+    rdfs:label "Evidenced By Indicator" .
+
+hr:isIndicatorOf a owl:ObjectProperty ;
+    owl:inverseOf hr:evidencedByIndicator ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range hr:GuidingPrinciple ;
+    rdfs:label "Is Indicator Of" .
+
+hr:collectedByService a owl:ObjectProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range hr:DomainService ;
+    rdfs:label "Collected By Service" .
+
+hr:collectsIndicator a owl:ObjectProperty ;
+    owl:inverseOf hr:collectedByService ;
+    rdfs:domain hr:DomainService ;
+    rdfs:range hr:ValueIndicator ;
+    rdfs:label "Collects Indicator" .
+
+hr:hasCollectionMode a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range hr:DataCollectionMode ;
+    rdfs:label "Has Collection Mode" .
+
+hr:reportingGranularity a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range hr:ReportingGranularity ;
+    rdfs:label "Reporting Granularity" .
+
+hr:governedBySafeguard a owl:ObjectProperty ;
+    rdfs:range hr:PrivacySafeguard ;
+    rdfs:label "Governed By Privacy Safeguard" ;
+    rdfs:comment "Applies to indicators, domain services and business processes; domain intentionally left open." .
+
+hr:governsResource a owl:ObjectProperty ;
+    owl:inverseOf hr:governedBySafeguard ;
+    rdfs:domain hr:PrivacySafeguard ;
+    rdfs:label "Governs Resource" .
+
+hr:enforcedByProcess a owl:ObjectProperty ;
+    rdfs:domain hr:PrivacySafeguard ;
+    rdfs:range hr:BusinessProcess ;
+    rdfs:label "Enforced By Process" .
+
+hr:enforcesSafeguard a owl:ObjectProperty ;
+    owl:inverseOf hr:enforcedByProcess ;
+    rdfs:domain hr:BusinessProcess ;
+    rdfs:range hr:PrivacySafeguard ;
+    rdfs:label "Enforces Safeguard" .
+
+hr:prohibitsPractice a owl:ObjectProperty ;
+    rdfs:domain hr:PrivacySafeguard ;
+    rdfs:range hr:ProhibitedPractice ;
+    rdfs:label "Prohibits Practice" .
+
+hr:isProhibitedBy a owl:ObjectProperty ;
+    owl:inverseOf hr:prohibitsPractice ;
+    rdfs:domain hr:ProhibitedPractice ;
+    rdfs:range hr:PrivacySafeguard ;
+    rdfs:label "Is Prohibited By" .
+
+hr:derivedFromRegulation a owl:ObjectProperty ;
+    rdfs:domain hr:PrivacySafeguard ;
+    rdfs:range hr:RegulatoryInstrument ;
+    rdfs:label "Derived From Regulation" .
+
+# =================================================================
+# EXTENSION TBOX: DATATYPE PROPERTIES
+# =================================================================
+
+hr:isIndividuallyAttributable a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Is Individually Attributable" ;
+    rdfs:comment "True when a stored data point can be linked to a named employee." .
+
+hr:usableInEmploymentDecisions a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "Usable In Employment Decisions" ;
+    rdfs:comment "True only when the indicator may inform pay, promotion, discipline or termination decisions about an individual." .
+
+hr:minimumGroupSize a owl:DatatypeProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Minimum Reporting Group Size (k)" .
+
+hr:retentionPeriodMonths a owl:DatatypeProperty ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "Raw Data Retention Period (Months)" .
+
+hr:indicatorFormula a owl:DatatypeProperty ;
+    rdfs:domain hr:ValueIndicator ;
+    rdfs:range xsd:string ;
+    rdfs:label "Indicator Formula" .
+
+# =================================================================
+# NEW FUNCTIONAL & CORPORATE OPERATIONAL AREAS
+# =================================================================
+
+hr:OpLearningCoachingDelivery a hr:OperationalArea ;
+    rdfs:label "Learning, Coaching & Development Delivery Operations" ;
+    rdfs:comment "Instructional design, facilitation, coach and mentor network management, and learning impact evaluation." .
+
+hr:OpCultureValuesEthics a hr:OperationalArea ;
+    rdfs:label "Culture, Values & Ethics Office Operations" ;
+    rdfs:comment "Values charter stewardship, recognition and community programs, speak-up channel operation, and culture measurement." .
+
+hr:OpPrivacyOffice a hr:OperationalArea ;
+    rdfs:label "Employee Privacy & People-Data Protection Office Operations" ;
+    rdfs:comment "Privacy impact assessments, notice and consent, de-identification, retention, and data-subject rights for worksite employee data. Operates independently of the teams that consume people analytics." .
+
+# =================================================================
+# CORE SERVICE LINES (BUSINESS MODEL LAYER)
+# =================================================================
+
+hr:ServiceLinePayroll a hr:ServiceLine ;
+    rdfs:label "Payroll" ;
+    hr:realizedBySubDomain hr:PayrollTaxSubDomain , hr:TimeAttendanceLeaveSubDomain .
+
+hr:ServiceLineBenefits a hr:ServiceLine ;
+    rdfs:label "Benefits" ;
+    hr:realizedBySubDomain hr:HealthWelfareSponsorshipSubDomain , hr:RetirementMEP401kSubDomain .
+
+hr:ServiceLineTalentManagement a hr:ServiceLine ;
+    rdfs:label "Talent Management" ;
+    hr:realizedBySubDomain hr:TalentAcquisitionOnboardingSubDomain , hr:LearningPerformanceSuccessionSubDomain .
+
+hr:ServiceLineHRCompliance a hr:ServiceLine ;
+    rdfs:label "HR Compliance" ;
+    hr:realizedBySubDomain hr:EmployerLiabilityPracticesSubDomain , hr:WorkersCompWorksiteSafetySubDomain .
+
+hr:ServiceLineTraining a hr:ServiceLine ;
+    rdfs:label "Training" ;
+    hr:realizedBySubDomain hr:TrainingCoachingSubDomain ;
+    hr:realizedByService hr:CorporateLMSDeliveryService , hr:HarassmentPreventionTrainingService .
+
+hr:ServiceLineCoaching a hr:ServiceLine ;
+    rdfs:label "Coaching" ;
+    hr:realizedBySubDomain hr:TrainingCoachingSubDomain ;
+    hr:realizedByService hr:LeadershipSuccessionPlanningService .
+
+hr:ServiceLineMonitoring a hr:ServiceLine ;
+    rdfs:label "Monitoring" ;
+    rdfs:comment "Monitoring of goals, development progress, compliance status and aggregate culture signals. Excludes covert or individual surveillance (see hr:ProhibitedPractice)." ;
+    hr:realizedBySubDomain hr:PerformanceMonitoringMeasurementSubDomain , hr:ValuesMonitoringMeasurementSubDomain ;
+    hr:realizedByService hr:CPEOComplianceMonitoringService .
+
+hr:ServiceLineMeasurement a hr:ServiceLine ;
+    rdfs:label "Measurement" ;
+    hr:realizedBySubDomain hr:PerformanceMonitoringMeasurementSubDomain ;
+    hr:realizedByService hr:WorkforceAnalyticsReportingService , hr:ValuesIndexAnalyticsService .
+
+hr:ServiceLineValuesStewardship a hr:ServiceLine ;
+    rdfs:label "Values Stewardship (Promote, Monitor & Measure without Violating Privacy)" ;
+    hr:realizedBySubDomain hr:ValuesPromotionCultureSubDomain ,
+                           hr:ValuesMonitoringMeasurementSubDomain ,
+                           hr:PrivacyPreservingPeopleAnalyticsSubDomain .
+
+# =================================================================
+# DOMAIN 7: WORKFORCE DEVELOPMENT, COACHING & PERFORMANCE
+#           MEASUREMENT DOMAIN (L1)
+# =================================================================
+
+hr:WorkforceDevelopmentDomain a hr:Domain ;
+    rdfs:label "Workforce Development, Coaching & Performance Measurement Domain" ;
+    hr:hasSubDomain hr:TrainingCoachingSubDomain ,
+                    hr:PerformanceMonitoringMeasurementSubDomain .
+
+# --- Sub-Domain: Training & Coaching Delivery Context (L2) ---
+hr:TrainingCoachingSubDomain a hr:SubDomain ;
+    rdfs:label "Training & Coaching Delivery Bounded Context" ;
+    hr:providesService hr:SkillsGapTrainingPlanService ,
+                       hr:InstructorLedVirtualTrainingService ,
+                       hr:ManagerCoachingService ,
+                       hr:PeerMentoringService .
+
+hr:SkillsGapTrainingPlanService a hr:DomainService ;
+    rdfs:label "Role-Based Skills Gap Analysis & Development Plan Service" ;
+    hr:executedByProcess hr:ProcSkillsGapAssessment , hr:ProcIndividualDevelopmentPlanBuild ;
+    hr:mapsToOntologyConcept hr:ConceptSkillsTaxonomy , hr:ConceptIndividualDevelopmentPlan ;
+    hr:complementsService hr:CorporateLMSDeliveryService ;
+    hr:promotesPrinciple hr:ValueEmbracingChange , hr:ValueCommitment .
+
+hr:InstructorLedVirtualTrainingService a hr:DomainService ;
+    rdfs:label "Instructor-Led & Virtual Classroom Training Service" ;
+    hr:executedByProcess hr:ProcTrainingSessionScheduling , hr:ProcTrainingEffectivenessEvaluation ;
+    hr:mapsToOntologyConcept hr:ConceptTrainingCatalog , hr:ConceptKirkpatrickEvaluationModel ;
+    hr:complementsService hr:CorporateLMSDeliveryService , hr:HarassmentPreventionTrainingService ;
+    hr:promotesPrinciple hr:ValueIntegrity , hr:ValueRespect .
+
+hr:ManagerCoachingService a hr:DomainService ;
+    rdfs:label "Manager & Frontline Leader Coaching Service" ;
+    rdfs:comment "Confidential developmental coaching. Session content belongs to the coachee and is not reported to the employer." ;
+    hr:executedByProcess hr:ProcCoachingEngagementIntake , hr:ProcCoachingConversationCadence ;
+    hr:mapsToOntologyConcept hr:ConceptCoachingAgreement , hr:ConceptCoachingSessionRecord ;
+    hr:complementsService hr:LeadershipSuccessionPlanningService ;
+    hr:promotesPrinciple hr:ValueAccountability , hr:ValuePerseverance , hr:ValueRespect ;
+    hr:governedBySafeguard hr:SafeguardCoachingConfidentiality .
+
+hr:PeerMentoringService a hr:DomainService ;
+    rdfs:label "Peer Mentoring & Knowledge Transfer Service" ;
+    hr:executedByProcess hr:ProcMentorMenteeMatching , hr:ProcMentoringProgramReview ;
+    hr:mapsToOntologyConcept hr:ConceptMentorMatchProfile , hr:ConceptMentoringProgramCharter ;
+    hr:promotesPrinciple hr:ValueCommitment , hr:ValuePerseverance .
+
+# --- Sub-Domain: Performance Monitoring & Measurement Context (L2) ---
+hr:PerformanceMonitoringMeasurementSubDomain a hr:SubDomain ;
+    rdfs:label "Performance Monitoring & Measurement Bounded Context" ;
+    hr:providesService hr:ContinuousPerformanceCheckInService ,
+                       hr:LearningImpactMeasurementService ,
+                       hr:OrganizationalScorecardService .
+
+hr:ContinuousPerformanceCheckInService a hr:DomainService ;
+    rdfs:label "Continuous Performance Check-In & Progress Monitoring Service" ;
+    hr:executedByProcess hr:ProcPeriodicCheckInCycle , hr:ProcGoalProgressMonitoring ;
+    hr:mapsToOntologyConcept hr:ConceptCheckInRecord , hr:ConceptProgressSignal ;
+    hr:complementsService hr:StrategicGoalAlignmentOKRService , hr:Feedback360AppraisalCycleService ;
+    hr:promotesPrinciple hr:ObjectiveAchievingGoals , hr:ValueAccountability .
+
+hr:LearningImpactMeasurementService a hr:DomainService ;
+    rdfs:label "Learning & Coaching Impact Measurement Service" ;
+    hr:executedByProcess hr:ProcPrePostCompetencyMeasure , hr:ProcTrainingROIAnalysis ;
+    hr:mapsToOntologyConcept hr:ConceptCompetencyProficiencyScale , hr:ConceptLearningROIModel ;
+    hr:complementsService hr:CorporateLMSDeliveryService ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold .
+
+hr:OrganizationalScorecardService a hr:DomainService ;
+    rdfs:label "Organizational Health & Objectives Scorecard Service" ;
+    hr:executedByProcess hr:ProcScorecardMetricDefinition , hr:ProcScorecardPublication ;
+    hr:mapsToOntologyConcept hr:ConceptBalancedScorecard , hr:ConceptMetricDefinitionCard ;
+    hr:complementsService hr:WorkforceAnalyticsReportingService , hr:ClientHealthScoringRetentionService ;
+    hr:promotesPrinciple hr:ObjectiveAchievingGoals , hr:ValueAccountability ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardPurposeLimitation .
+
+# =================================================================
+# DOMAIN 8: ORGANIZATIONAL VALUES, CULTURE & ETHICS
+#           STEWARDSHIP DOMAIN (L1)
+# =================================================================
+
+hr:ValuesCultureStewardshipDomain a hr:Domain ;
+    rdfs:label "Organizational Values, Culture & Ethics Stewardship Domain" ;
+    hr:hasSubDomain hr:ValuesPromotionCultureSubDomain ,
+                    hr:ValuesMonitoringMeasurementSubDomain ,
+                    hr:PrivacyPreservingPeopleAnalyticsSubDomain .
+
+# --- Sub-Domain: Values Promotion & Culture Enablement Context (L2) ---
+hr:ValuesPromotionCultureSubDomain a hr:SubDomain ;
+    rdfs:label "Values Promotion & Culture Enablement Bounded Context" ;
+    hr:providesService hr:ValuesCommunicationEmbeddingService ,
+                       hr:ValuesRecognitionService ,
+                       hr:CommunityEngagementService ,
+                       hr:InnovationChangeEnablementService .
+
+hr:ValuesCommunicationEmbeddingService a hr:DomainService ;
+    rdfs:label "Values Communication & Employee Lifecycle Embedding Service" ;
+    rdfs:comment "Embeds the values charter into onboarding, the handbook, training curricula and performance-dialogue prompts." ;
+    hr:executedByProcess hr:ProcValuesNarrativeCampaign , hr:ProcValuesLifecycleIntegration ;
+    hr:mapsToOntologyConcept hr:ConceptValuesCharter , hr:ConceptBehavioralAnchorLibrary ;
+    hr:complementsService hr:DigitalNewHireOnboardingService , hr:MultiStateHandbookPolicyService ;
+    hr:promotesPrinciple hr:ValueIntegrity , hr:ValueRespect , hr:ValueCommitment ,
+                         hr:ValueAccountability , hr:ValueEmbracingChange , hr:ValuePerseverance ,
+                         hr:ValueInnovation , hr:ObjectiveAchievingGoals , hr:ObjectiveContributingToCommunities .
+
+hr:ValuesRecognitionService a hr:DomainService ;
+    rdfs:label "Values-Based Peer Recognition Service" ;
+    hr:executedByProcess hr:ProcPeerRecognitionNomination , hr:ProcRecognitionEquityReview ;
+    hr:mapsToOntologyConcept hr:ConceptRecognitionTaxonomy , hr:ConceptRecognitionEquityReport ;
+    hr:promotesPrinciple hr:ValueRespect , hr:ValuePerseverance , hr:ValueCommitment , hr:ValueInnovation ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold .
+
+hr:CommunityEngagementService a hr:DomainService ;
+    rdfs:label "Community Volunteering & Giving Program Service" ;
+    rdfs:comment "Voluntary program. Individual participation is never visible to managers and never feeds employment decisions." ;
+    hr:executedByProcess hr:ProcVolunteerOpportunityCoordination , hr:ProcVoluntaryHoursSelfReport ;
+    hr:mapsToOntologyConcept hr:ConceptVolunteerTimeOffPolicy , hr:ConceptCommunityImpactLedger ;
+    hr:promotesPrinciple hr:ObjectiveContributingToCommunities ;
+    hr:governedBySafeguard hr:SafeguardVoluntaryParticipation , hr:SafeguardAggregationThreshold .
+
+hr:InnovationChangeEnablementService a hr:DomainService ;
+    rdfs:label "Idea Program & Change Readiness Enablement Service" ;
+    hr:executedByProcess hr:ProcIdeaSubmissionReview , hr:ProcChangeReadinessEnablement ;
+    hr:mapsToOntologyConcept hr:ConceptIdeaPipeline , hr:ConceptChangeReadinessModel ;
+    hr:promotesPrinciple hr:ValueInnovation , hr:ValueEmbracingChange .
+
+# --- Sub-Domain: Values Monitoring & Measurement Context (L2) ---
+hr:ValuesMonitoringMeasurementSubDomain a hr:SubDomain ;
+    rdfs:label "Values Monitoring & Measurement Bounded Context" ;
+    hr:providesService hr:CulturePulseSurveyService ,
+                       hr:SpeakUpEthicsChannelService ,
+                       hr:ValuesInPerformanceDialogueService ,
+                       hr:ValuesIndexAnalyticsService .
+
+hr:CulturePulseSurveyService a hr:DomainService ;
+    rdfs:label "Anonymous Culture & Values Pulse Survey Service" ;
+    hr:executedByProcess hr:ProcPulseSurveyAdministration , hr:ProcSmallGroupSuppression ;
+    hr:mapsToOntologyConcept hr:ConceptValuesPulseInstrument , hr:ConceptAnonymityThresholdRule ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection , hr:SafeguardTransparencyNotice .
+
+hr:SpeakUpEthicsChannelService a hr:DomainService ;
+    rdfs:label "Speak-Up & Ethics Concern Channel Service" ;
+    hr:executedByProcess hr:ProcConcernIntakeTriage , hr:ProcNonRetaliationMonitoring ;
+    hr:mapsToOntologyConcept hr:ConceptAnonymousReportingChannel , hr:ConceptNonRetaliationCaseRecord ;
+    hr:complementsService hr:HarassmentPreventionTrainingService , hr:EEOC_DOL_DefenseConsultService ;
+    hr:promotesPrinciple hr:ValueIntegrity , hr:ValueRespect ;
+    hr:governedBySafeguard hr:SafeguardAnonymityProtection , hr:SafeguardProtectedActivity .
+
+hr:ValuesInPerformanceDialogueService a hr:DomainService ;
+    rdfs:label "Values-in-Performance Dialogue Service" ;
+    rdfs:comment "Values are discussed in check-ins and appraisals using behavioral anchors, employee self-reflection and manager observation of ordinary work conduct. The employee sees and may respond to any values-related evidence recorded about them." ;
+    hr:executedByProcess hr:ProcValuesSelfReflection , hr:ProcValuesEvidenceCalibration ;
+    hr:mapsToOntologyConcept hr:ConceptBehavioralAnchorLibrary , hr:ConceptValuesReflectionEntry ;
+    hr:complementsService hr:Feedback360AppraisalCycleService , hr:ContinuousPerformanceCheckInService ;
+    hr:promotesPrinciple hr:ValueIntegrity , hr:ValueRespect , hr:ValueAccountability , hr:ValueCommitment ;
+    hr:governedBySafeguard hr:SafeguardHumanReview , hr:SafeguardTransparencyNotice .
+
+hr:ValuesIndexAnalyticsService a hr:DomainService ;
+    rdfs:label "Values & Culture Index Analytics Service" ;
+    hr:executedByProcess hr:ProcValuesIndexComputation , hr:ProcLeaderActionPlanTracking ;
+    hr:mapsToOntologyConcept hr:ConceptValuesIndexModel , hr:ConceptLeaderActionPlan ;
+    hr:complementsService hr:WorkforceAnalyticsReportingService ;
+    hr:promotesPrinciple hr:ValueAccountability ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardPurposeLimitation , hr:SafeguardProtectedTraitExclusion .
+
+# --- Sub-Domain: Privacy-Preserving People Analytics Context (L2) ---
+hr:PrivacyPreservingPeopleAnalyticsSubDomain a hr:SubDomain ;
+    rdfs:label "Privacy-Preserving People Analytics Bounded Context" ;
+    hr:providesService hr:PeopleAnalyticsPrivacyImpactService ,
+                       hr:NoticeConsentPurposeService ,
+                       hr:DeIdentificationAggregationService ,
+                       hr:PeopleDataRetentionRightsService .
+
+hr:PeopleAnalyticsPrivacyImpactService a hr:DomainService ;
+    rdfs:label "Privacy Impact & Monitoring Proportionality Assessment Service" ;
+    hr:executedByProcess hr:ProcPrivacyImpactAssessment , hr:ProcMonitoringProportionalityReview ;
+    hr:mapsToOntologyConcept hr:ConceptPrivacyImpactAssessment , hr:ConceptProhibitedMonitoringRegister ;
+    hr:complementsService hr:DataPrivacySecurityGovernanceService .
+
+hr:NoticeConsentPurposeService a hr:DomainService ;
+    rdfs:label "Employee Notice, Consent & Purpose Limitation Service" ;
+    hr:executedByProcess hr:ProcMonitoringNoticeIssuance , hr:ProcConsentPreferenceManagement ;
+    hr:mapsToOntologyConcept hr:ConceptElectronicMonitoringNotice , hr:ConceptPurposeLimitationRegister ;
+    hr:complementsService hr:MultiStateHandbookPolicyService .
+
+hr:DeIdentificationAggregationService a hr:DomainService ;
+    rdfs:label "De-Identification & Aggregation Enforcement Service" ;
+    hr:executedByProcess hr:ProcKAnonymityThresholdCheck , hr:ProcDifferencingAttackReview ;
+    hr:mapsToOntologyConcept hr:ConceptKAnonymityPolicy , hr:ConceptReidentificationRiskTest ;
+    hr:complementsService hr:WorkforceAnalyticsReportingService .
+
+hr:PeopleDataRetentionRightsService a hr:DomainService ;
+    rdfs:label "People-Data Retention & Employee Data Rights Service" ;
+    hr:executedByProcess hr:ProcRetentionScheduleEnforcement , hr:ProcEmployeeDataRightsRequest ;
+    hr:mapsToOntologyConcept hr:ConceptPeopleDataRetentionSchedule , hr:ConceptEmployeeDataRightsRequest ;
+    hr:complementsService hr:DataPrivacySecurityGovernanceService .
+
+# =================================================================
+# GUIDING PRINCIPLES: VALUES vs. CORPORATE OBJECTIVES
+# =================================================================
+# Values describe conduct; objectives describe outcomes. Innovation is
+# typed as both: the behavior (trying new approaches) is a value, the
+# output (implemented improvements) is an objective.
+
+hr:ValueIntegrity a hr:OrganizationalValue ;
+    rdfs:label "Integrity" ;
+    rdfs:comment "Acting honestly and ethically, and raising concerns when something is wrong." ;
+    hr:evidencedByIndicator hr:IndSpeakUpConfidence , hr:IndSpeakUpResolutionHealth , hr:IndEthicsTrainingCompletion .
+
+hr:ValueRespect a hr:OrganizationalValue ;
+    rdfs:label "Respect" ;
+    rdfs:comment "Treating colleagues, clients and communities with dignity and inclusion." ;
+    hr:evidencedByIndicator hr:IndRespectInclusionIndex , hr:IndSubstantiatedConductRate .
+
+hr:ObjectiveAchievingGoals a hr:CorporateObjective ;
+    rdfs:label "Achieving Goals" ;
+    rdfs:comment "Delivering committed results for clients and the business." ;
+    hr:evidencedByIndicator hr:IndGoalAttainment , hr:IndTeamOKRAttainment .
+
+hr:ValueCommitment a hr:OrganizationalValue ;
+    rdfs:label "Commitment" ;
+    rdfs:comment "Dedication to clients, colleagues and the organization's mission." ;
+    hr:evidencedByIndicator hr:IndEngagementIntentToStay , hr:IndValuesBehaviorEvidence .
+
+hr:ValueAccountability a hr:OrganizationalValue ;
+    rdfs:label "Accountability" ;
+    rdfs:comment "Owning commitments and outcomes, including leaders acting on what employees tell them." ;
+    hr:evidencedByIndicator hr:IndLeaderActionPlanClosure , hr:IndValuesBehaviorEvidence .
+
+hr:ValueInnovation a hr:OrganizationalValue , hr:CorporateObjective ;
+    rdfs:label "Innovation" ;
+    rdfs:comment "Behavior: trying better ways of working. Outcome: improvements actually implemented." ;
+    hr:evidencedByIndicator hr:IndIdeasImplemented , hr:IndInnovationClimate .
+
+hr:ValueEmbracingChange a hr:OrganizationalValue ;
+    rdfs:label "Embracing Change" ;
+    rdfs:comment "Adapting constructively to new tools, processes and market conditions." ;
+    hr:evidencedByIndicator hr:IndChangeReadiness , hr:IndReskillingParticipation .
+
+hr:ObjectiveContributingToCommunities a hr:CorporateObjective ;
+    rdfs:label "Contributing to Communities" ;
+    rdfs:comment "Organizational contribution to the communities where employees live and work. Measured at the organizational level only." ;
+    hr:evidencedByIndicator hr:IndCommunityImpact .
+
+hr:ValuePerseverance a hr:OrganizationalValue ;
+    rdfs:label "Perseverance" ;
+    rdfs:comment "Staying with hard problems through setbacks. Hard to measure directly, so evidenced by recognition stories and aggregate climate items rather than individual scores." ;
+    hr:evidencedByIndicator hr:IndPerseveranceRecognition , hr:IndInnovationClimate .
+
+# =================================================================
+# COLLECTION MODES & REPORTING GRANULARITIES
+# =================================================================
+
+hr:ModeAnonymousSurvey a hr:DataCollectionMode ;
+    rdfs:label "Anonymous Survey Response" ;
+    rdfs:comment "Responses are collected by a third party or with identity stripped at intake; no link back to the respondent is stored." .
+
+hr:ModeVoluntarySelfReport a hr:DataCollectionMode ;
+    rdfs:label "Voluntary Opt-In Self-Report" .
+
+hr:ModeManagerObservedConduct a hr:DataCollectionMode ;
+    rdfs:label "Manager Observation of Ordinary Work Conduct" ;
+    rdfs:comment "Documented against behavioral anchors in the normal course of work. No monitoring technology is used to generate it." .
+
+hr:ModeSystemOfRecordAggregate a hr:DataCollectionMode ;
+    rdfs:label "Aggregation of Existing HR System-of-Record Data" ;
+    rdfs:comment "Reuses data already held for a legitimate HR purpose (e.g. LMS completions, case records); no new collection." .
+
+hr:ModeOrganizationalOutcome a hr:DataCollectionMode ;
+    rdfs:label "Organizational Outcome Metric" ;
+    rdfs:comment "Measured about the organization, not about people (e.g. dollars donated, ideas implemented)." .
+
+hr:GranularityOrganization a hr:ReportingGranularity ;
+    rdfs:label "Organization or Client-Company Level" .
+
+hr:GranularityAggregateGroup a hr:ReportingGranularity ;
+    rdfs:label "Aggregate Group (team, site, function) above minimum group size" .
+
+hr:GranularityIndividualDevelopmental a hr:ReportingGranularity ;
+    rdfs:label "Individual — Visible to Employee and Direct Manager Only" .
+
+# =================================================================
+# GUIDING PRINCIPLE INDICATORS
+# =================================================================
+
+# --- Integrity ---
+hr:IndSpeakUpConfidence a hr:ValueIndicator ;
+    rdfs:label "Speak-Up Confidence Score" ;
+    hr:indicatorFormula "% favorable on 'I can raise a concern without fear of retaliation'" ;
+    hr:collectedByService hr:CulturePulseSurveyService ;
+    hr:hasCollectionMode hr:ModeAnonymousSurvey ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection .
+
+hr:IndSpeakUpResolutionHealth a hr:ValueIndicator ;
+    rdfs:label "Speak-Up Case Resolution & Non-Retaliation Health" ;
+    hr:indicatorFormula "Median days to close concerns; count of substantiated retaliation findings" ;
+    hr:collectedByService hr:SpeakUpEthicsChannelService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityOrganization ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAnonymityProtection , hr:SafeguardProtectedActivity .
+
+hr:IndEthicsTrainingCompletion a hr:ValueIndicator ;
+    rdfs:label "Ethics & Code-of-Conduct Training Completion Rate" ;
+    hr:indicatorFormula "Completed / assigned ethics modules, by work group" ;
+    hr:collectedByService hr:HarassmentPreventionTrainingService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardPurposeLimitation .
+
+# --- Respect ---
+hr:IndRespectInclusionIndex a hr:ValueIndicator ;
+    rdfs:label "Respect & Inclusion Index" ;
+    hr:indicatorFormula "Mean of 4 pulse items on dignity, voice, fairness and belonging" ;
+    hr:collectedByService hr:CulturePulseSurveyService ;
+    hr:hasCollectionMode hr:ModeAnonymousSurvey ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection , hr:SafeguardProtectedTraitExclusion .
+
+hr:IndSubstantiatedConductRate a hr:ValueIndicator ;
+    rdfs:label "Substantiated Harassment & Misconduct Rate" ;
+    hr:indicatorFormula "Substantiated cases per 100 worksite employees per year" ;
+    hr:collectedByService hr:SpeakUpEthicsChannelService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityOrganization ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAnonymityProtection .
+
+# --- Achieving Goals ---
+hr:IndGoalAttainment a hr:ValueIndicator ;
+    rdfs:label "Individual Goal Attainment" ;
+    rdfs:comment "Already part of the v1 appraisal process; listed here to show it is the one goal indicator that feeds employment decisions." ;
+    hr:indicatorFormula "Weighted % of agreed goals met in the review period" ;
+    hr:collectedByService hr:StrategicGoalAlignmentOKRService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityIndividualDevelopmental ;
+    hr:isIndividuallyAttributable true ;
+    hr:usableInEmploymentDecisions true ;
+    hr:retentionPeriodMonths 36 ;
+    hr:governedBySafeguard hr:SafeguardHumanReview , hr:SafeguardTransparencyNotice , hr:SafeguardRetentionLimit .
+
+hr:IndTeamOKRAttainment a hr:ValueIndicator ;
+    rdfs:label "Team & Company OKR Attainment" ;
+    hr:indicatorFormula "Key results achieved / key results committed, by team and company" ;
+    hr:collectedByService hr:OrganizationalScorecardService ;
+    hr:hasCollectionMode hr:ModeOrganizationalOutcome ;
+    hr:reportingGranularity hr:GranularityOrganization ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardPurposeLimitation .
+
+# --- Commitment ---
+hr:IndEngagementIntentToStay a hr:ValueIndicator ;
+    rdfs:label "Engagement & Intent-to-Stay Index" ;
+    hr:collectedByService hr:CulturePulseSurveyService ;
+    hr:hasCollectionMode hr:ModeAnonymousSurvey ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection .
+
+# --- Commitment & Accountability (individual, conduct-based) ---
+hr:IndValuesBehaviorEvidence a hr:ValueIndicator ;
+    rdfs:label "Values-in-Action Behavioral Evidence" ;
+    rdfs:comment "Specific examples of conduct against behavioral anchors, recorded by the employee and manager in check-ins. Narrative, not a numeric score; the employee sees and may respond to every entry." ;
+    hr:collectedByService hr:ValuesInPerformanceDialogueService ;
+    hr:hasCollectionMode hr:ModeManagerObservedConduct ;
+    hr:reportingGranularity hr:GranularityIndividualDevelopmental ;
+    hr:isIndividuallyAttributable true ;
+    hr:usableInEmploymentDecisions true ;
+    hr:retentionPeriodMonths 36 ;
+    hr:governedBySafeguard hr:SafeguardHumanReview , hr:SafeguardTransparencyNotice ,
+                           hr:SafeguardRetentionLimit , hr:SafeguardNoCovertSurveillance ,
+                           hr:SafeguardProtectedActivity .
+
+# --- Accountability (leaders) ---
+hr:IndLeaderActionPlanClosure a hr:ValueIndicator ;
+    rdfs:label "Leader Action-Plan Closure Rate" ;
+    rdfs:comment "Measures whether leaders act on survey results — accountability flows up, not only down." ;
+    hr:indicatorFormula "Action items closed on time / action items committed after each pulse cycle" ;
+    hr:collectedByService hr:ValuesIndexAnalyticsService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold .
+
+# --- Innovation ---
+hr:IndIdeasImplemented a hr:ValueIndicator ;
+    rdfs:label "Improvement Ideas Implemented" ;
+    hr:indicatorFormula "Count and estimated value of implemented ideas per quarter" ;
+    hr:collectedByService hr:InnovationChangeEnablementService ;
+    hr:hasCollectionMode hr:ModeOrganizationalOutcome ;
+    hr:reportingGranularity hr:GranularityOrganization ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardPurposeLimitation .
+
+hr:IndInnovationClimate a hr:ValueIndicator ;
+    rdfs:label "Innovation & Resilience Climate Score" ;
+    hr:indicatorFormula "% favorable on items about safety to experiment and support after setbacks" ;
+    hr:collectedByService hr:CulturePulseSurveyService ;
+    hr:hasCollectionMode hr:ModeAnonymousSurvey ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection .
+
+# --- Embracing Change ---
+hr:IndChangeReadiness a hr:ValueIndicator ;
+    rdfs:label "Change Readiness Index" ;
+    hr:collectedByService hr:CulturePulseSurveyService ;
+    hr:hasCollectionMode hr:ModeAnonymousSurvey ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardAnonymityProtection .
+
+hr:IndReskillingParticipation a hr:ValueIndicator ;
+    rdfs:label "Voluntary Reskilling Participation Rate" ;
+    hr:collectedByService hr:SkillsGapTrainingPlanService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardPurposeLimitation .
+
+# --- Contributing to Communities ---
+hr:IndCommunityImpact a hr:ValueIndicator ;
+    rdfs:label "Community Impact (Volunteer Hours & Giving)" ;
+    rdfs:comment "Organization-level totals only. Individual participation is voluntary and never visible to managers." ;
+    hr:indicatorFormula "Total volunteer hours, dollars given and matched, organizations served" ;
+    hr:collectedByService hr:CommunityEngagementService ;
+    hr:hasCollectionMode hr:ModeVoluntarySelfReport ;
+    hr:reportingGranularity hr:GranularityOrganization ;
+    hr:minimumGroupSize 10 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardVoluntaryParticipation , hr:SafeguardAggregationThreshold .
+
+# --- Perseverance ---
+hr:IndPerseveranceRecognition a hr:ValueIndicator ;
+    rdfs:label "Perseverance Recognition Stories" ;
+    hr:indicatorFormula "Count of peer recognitions tagged 'Perseverance', reported by work group" ;
+    hr:collectedByService hr:ValuesRecognitionService ;
+    hr:hasCollectionMode hr:ModeSystemOfRecordAggregate ;
+    hr:reportingGranularity hr:GranularityAggregateGroup ;
+    hr:minimumGroupSize 5 ;
+    hr:isIndividuallyAttributable false ;
+    hr:usableInEmploymentDecisions false ;
+    hr:governedBySafeguard hr:SafeguardAggregationThreshold .
+
+# =================================================================
+# PRIVACY SAFEGUARDS
+# =================================================================
+
+hr:SafeguardAggregationThreshold a hr:PrivacySafeguard ;
+    rdfs:label "Minimum Group Size (k-Anonymity) Threshold" ;
+    rdfs:comment "Aggregate results are suppressed for any cut with fewer than k respondents (default k = 5), including cuts produced by filtering or differencing." ;
+    hr:enforcedByProcess hr:ProcSmallGroupSuppression , hr:ProcKAnonymityThresholdCheck , hr:ProcDifferencingAttackReview ;
+    hr:prohibitsPractice hr:ProhibitedDeanonymization .
+
+hr:SafeguardAnonymityProtection a hr:PrivacySafeguard ;
+    rdfs:label "Survey & Speak-Up Anonymity Protection" ;
+    hr:enforcedByProcess hr:ProcPulseSurveyAdministration , hr:ProcConcernIntakeTriage ;
+    hr:prohibitsPractice hr:ProhibitedDeanonymization .
+
+hr:SafeguardPurposeLimitation a hr:PrivacySafeguard ;
+    rdfs:label "Purpose Limitation & Data Minimization" ;
+    rdfs:comment "People data is collected only for a registered purpose and not reused for an incompatible one." ;
+    hr:enforcedByProcess hr:ProcPrivacyImpactAssessment , hr:ProcConsentPreferenceManagement ;
+    hr:derivedFromRegulation hr:RegCPRAEmployeeData , hr:RegGDPRArticle88 .
+
+hr:SafeguardTransparencyNotice a hr:PrivacySafeguard ;
+    rdfs:label "Employee Transparency & Monitoring Notice" ;
+    rdfs:comment "Employees are told in advance what is measured, why, at what granularity, and who can see it." ;
+    hr:enforcedByProcess hr:ProcMonitoringNoticeIssuance ;
+    hr:derivedFromRegulation hr:RegNYElectronicMonitoringNotice , hr:RegCTElectronicMonitoringNotice , hr:RegCPRAEmployeeData .
+
+hr:SafeguardHumanReview a hr:PrivacySafeguard ;
+    rdfs:label "Human Review & Employee Right to Respond" ;
+    rdfs:comment "No employment decision is made solely from an automated values or culture score. The employee sees the evidence and may respond before it is used." ;
+    hr:enforcedByProcess hr:ProcValuesEvidenceCalibration , hr:ProcAppraisalWorkflowCycle ;
+    hr:prohibitsPractice hr:ProhibitedAutomatedValuesScoring .
+
+hr:SafeguardNoCovertSurveillance a hr:PrivacySafeguard ;
+    rdfs:label "No Covert or Content-Level Surveillance for Values Measurement" ;
+    hr:enforcedByProcess hr:ProcMonitoringProportionalityReview ;
+    hr:prohibitsPractice hr:ProhibitedKeystrokeScreenCapture , hr:ProhibitedCommunicationsSentimentMining ,
+                         hr:ProhibitedOffDutySocialMonitoring , hr:ProhibitedBiometricWithoutConsent ;
+    hr:derivedFromRegulation hr:RegIllinoisBIPA , hr:RegNYElectronicMonitoringNotice .
+
+hr:SafeguardProtectedTraitExclusion a hr:PrivacySafeguard ;
+    rdfs:label "Protected-Characteristic Inference Exclusion" ;
+    rdfs:comment "Values analytics never infer protected characteristics. Demographic cuts, where lawful, are run only for adverse-impact testing and are subject to the minimum group size." ;
+    hr:enforcedByProcess hr:ProcPrivacyImpactAssessment , hr:ProcRecognitionEquityReview ;
+    hr:prohibitsPractice hr:ProhibitedProtectedTraitInference .
+
+hr:SafeguardProtectedActivity a hr:PrivacySafeguard ;
+    rdfs:label "Protected Concerted & Whistleblower Activity Safeguard" ;
+    rdfs:comment "Speak-up use, complaints and concerted activity are never treated as negative values evidence." ;
+    hr:enforcedByProcess hr:ProcNonRetaliationMonitoring ;
+    hr:prohibitsPractice hr:ProhibitedConcertedActivitySurveillance ;
+    hr:derivedFromRegulation hr:RegNLRASection7 .
+
+hr:SafeguardVoluntaryParticipation a hr:PrivacySafeguard ;
+    rdfs:label "Voluntary Participation — No Employment Consequence" ;
+    hr:enforcedByProcess hr:ProcVoluntaryHoursSelfReport , hr:ProcConsentPreferenceManagement ;
+    hr:prohibitsPractice hr:ProhibitedParticipationInEvaluation .
+
+hr:SafeguardCoachingConfidentiality a hr:PrivacySafeguard ;
+    rdfs:label "Coaching Conversation Confidentiality" ;
+    rdfs:comment "Coaching session content is not disclosed to the employer; only attendance and program-level outcomes are reported, in aggregate." ;
+    hr:enforcedByProcess hr:ProcCoachingEngagementIntake .
+
+hr:SafeguardRetentionLimit a hr:PrivacySafeguard ;
+    rdfs:label "Retention Limit & Secure Disposal" ;
+    hr:enforcedByProcess hr:ProcRetentionScheduleEnforcement , hr:ProcEmployeeDataRightsRequest ;
+    hr:derivedFromRegulation hr:RegCPRAEmployeeData , hr:RegGDPRArticle88 .
+
+# =================================================================
+# PROHIBITED MONITORING PRACTICES
+# =================================================================
+
+hr:ProhibitedKeystrokeScreenCapture a hr:ProhibitedPractice ;
+    rdfs:label "Keystroke logging, screen capture or activity tracking used to score values or culture fit" .
+
+hr:ProhibitedCommunicationsSentimentMining a hr:ProhibitedPractice ;
+    rdfs:label "Sentiment or content mining of employee email, chat or calls to infer values alignment" .
+
+hr:ProhibitedOffDutySocialMonitoring a hr:ProhibitedPractice ;
+    rdfs:label "Monitoring of off-duty conduct or personal social media for values compliance" .
+
+hr:ProhibitedBiometricWithoutConsent a hr:ProhibitedPractice ;
+    rdfs:label "Collection of biometric identifiers without written informed consent" .
+
+hr:ProhibitedDeanonymization a hr:ProhibitedPractice ;
+    rdfs:label "Re-identification of anonymous survey or speak-up respondents, including by small-cell filtering or differencing" .
+
+hr:ProhibitedAutomatedValuesScoring a hr:ProhibitedPractice ;
+    rdfs:label "Automated individual values scores used as the sole basis for an employment decision" .
+
+hr:ProhibitedProtectedTraitInference a hr:ProhibitedPractice ;
+    rdfs:label "Inference of protected characteristics from behavioral or engagement data" .
+
+hr:ProhibitedConcertedActivitySurveillance a hr:ProhibitedPractice ;
+    rdfs:label "Surveillance of union or other protected concerted activity" .
+
+hr:ProhibitedParticipationInEvaluation a hr:ProhibitedPractice ;
+    rdfs:label "Using volunteer, giving or other voluntary participation in performance, pay or promotion decisions" .
+
+# =================================================================
+# GOVERNING LAWS & REGULATORY INSTRUMENTS
+# =================================================================
+
+hr:RegCPRAEmployeeData a hr:RegulatoryInstrument ;
+    rdfs:label "California Consumer Privacy Act as amended by CPRA — employee personal information (full scope since 1 Jan 2023)" .
+
+hr:RegIllinoisBIPA a hr:RegulatoryInstrument ;
+    rdfs:label "Illinois Biometric Information Privacy Act (740 ILCS 14)" .
+
+hr:RegNYElectronicMonitoringNotice a hr:RegulatoryInstrument ;
+    rdfs:label "New York Civil Rights Law §52-c — Electronic Monitoring Notice" .
+
+hr:RegCTElectronicMonitoringNotice a hr:RegulatoryInstrument ;
+    rdfs:label "Connecticut Gen. Stat. §31-48d — Electronic Monitoring Notice" .
+
+hr:RegNLRASection7 a hr:RegulatoryInstrument ;
+    rdfs:label "National Labor Relations Act §7 — Protected Concerted Activity" .
+
+hr:RegGDPRArticle88 a hr:RegulatoryInstrument ;
+    rdfs:label "EU GDPR Article 88 — Processing in the Context of Employment (for non-U.S. worksite employees)" .
+
+# =================================================================
+# DOMAIN 7 & 8 BUSINESS PROCESSES
+# =================================================================
+
+# --- Workforce Development, Coaching & Performance Measurement Processes ---
+hr:ProcSkillsGapAssessment a hr:BusinessProcess ;
+    rdfs:label "Role-Based Skills Gap Assessment Process" .
+
+hr:ProcIndividualDevelopmentPlanBuild a hr:BusinessProcess ;
+    rdfs:label "Individual Development Plan Build Process" .
+
+hr:ProcTrainingSessionScheduling a hr:BusinessProcess ;
+    rdfs:label "Instructor-Led Training Session Scheduling Process" .
+
+hr:ProcTrainingEffectivenessEvaluation a hr:BusinessProcess ;
+    rdfs:label "Training Effectiveness Evaluation (Kirkpatrick L1–L4) Process" .
+
+hr:ProcCoachingEngagementIntake a hr:BusinessProcess ;
+    rdfs:label "Coaching Engagement Intake & Confidentiality Agreement Process" .
+
+hr:ProcCoachingConversationCadence a hr:BusinessProcess ;
+    rdfs:label "Coaching Conversation Cadence Process" .
+
+hr:ProcMentorMenteeMatching a hr:BusinessProcess ;
+    rdfs:label "Mentor–Mentee Matching Process" .
+
+hr:ProcMentoringProgramReview a hr:BusinessProcess ;
+    rdfs:label "Mentoring Program Review Process" .
+
+hr:ProcPeriodicCheckInCycle a hr:BusinessProcess ;
+    rdfs:label "Periodic Manager–Employee Check-In Cycle Process" .
+
+hr:ProcGoalProgressMonitoring a hr:BusinessProcess ;
+    rdfs:label "Goal Progress Monitoring Process" .
+
+hr:ProcPrePostCompetencyMeasure a hr:BusinessProcess ;
+    rdfs:label "Pre/Post Competency Proficiency Measurement Process" .
+
+hr:ProcTrainingROIAnalysis a hr:BusinessProcess ;
+    rdfs:label "Training & Coaching ROI Analysis Process" .
+
+hr:ProcScorecardMetricDefinition a hr:BusinessProcess ;
+    rdfs:label "Scorecard Metric Definition & Privacy Classification Process" .
+
+hr:ProcScorecardPublication a hr:BusinessProcess ;
+    rdfs:label "Organizational Scorecard Publication Process" .
+
+# --- Organizational Values, Culture & Ethics Stewardship Processes ---
+hr:ProcValuesNarrativeCampaign a hr:BusinessProcess ;
+    rdfs:label "Values Narrative & Communication Campaign Process" .
+
+hr:ProcValuesLifecycleIntegration a hr:BusinessProcess ;
+    rdfs:label "Values Integration into Onboarding, Handbook, Training & Appraisal Process" .
+
+hr:ProcPeerRecognitionNomination a hr:BusinessProcess ;
+    rdfs:label "Values-Tagged Peer Recognition Nomination Process" .
+
+hr:ProcRecognitionEquityReview a hr:BusinessProcess ;
+    rdfs:label "Recognition Distribution Equity Review Process" .
+
+hr:ProcVolunteerOpportunityCoordination a hr:BusinessProcess ;
+    rdfs:label "Volunteer Opportunity Coordination Process" .
+
+hr:ProcVoluntaryHoursSelfReport a hr:BusinessProcess ;
+    rdfs:label "Voluntary Volunteer-Hours Self-Report Process" .
+
+hr:ProcIdeaSubmissionReview a hr:BusinessProcess ;
+    rdfs:label "Improvement Idea Submission & Review Process" .
+
+hr:ProcChangeReadinessEnablement a hr:BusinessProcess ;
+    rdfs:label "Change Readiness Enablement Process" .
+
+hr:ProcPulseSurveyAdministration a hr:BusinessProcess ;
+    rdfs:label "Anonymous Pulse Survey Administration Process" .
+
+hr:ProcSmallGroupSuppression a hr:BusinessProcess ;
+    rdfs:label "Small-Group Result Suppression Process" .
+
+hr:ProcConcernIntakeTriage a hr:BusinessProcess ;
+    rdfs:label "Ethics Concern Intake & Triage Process" .
+
+hr:ProcNonRetaliationMonitoring a hr:BusinessProcess ;
+    rdfs:label "Post-Report Non-Retaliation Monitoring Process" .
+
+hr:ProcValuesSelfReflection a hr:BusinessProcess ;
+    rdfs:label "Employee Values Self-Reflection Process" .
+
+hr:ProcValuesEvidenceCalibration a hr:BusinessProcess ;
+    rdfs:label "Values Evidence Calibration & Employee Response Process" .
+
+hr:ProcValuesIndexComputation a hr:BusinessProcess ;
+    rdfs:label "Aggregate Values & Culture Index Computation Process" .
+
+hr:ProcLeaderActionPlanTracking a hr:BusinessProcess ;
+    rdfs:label "Leader Action-Plan Tracking Process" .
+
+hr:ProcPrivacyImpactAssessment a hr:BusinessProcess ;
+    rdfs:label "People-Analytics Privacy Impact Assessment Process" .
+
+hr:ProcMonitoringProportionalityReview a hr:BusinessProcess ;
+    rdfs:label "Monitoring Necessity & Proportionality Review Process" .
+
+hr:ProcMonitoringNoticeIssuance a hr:BusinessProcess ;
+    rdfs:label "Employee Monitoring Notice Issuance & Acknowledgment Process" .
+
+hr:ProcConsentPreferenceManagement a hr:BusinessProcess ;
+    rdfs:label "Consent & Participation Preference Management Process" .
+
+hr:ProcKAnonymityThresholdCheck a hr:BusinessProcess ;
+    rdfs:label "k-Anonymity Threshold Check Process" .
+
+hr:ProcDifferencingAttackReview a hr:BusinessProcess ;
+    rdfs:label "Re-Identification (Differencing) Risk Review Process" .
+
+hr:ProcRetentionScheduleEnforcement a hr:BusinessProcess ;
+    rdfs:label "People-Data Retention Schedule Enforcement Process" .
+
+hr:ProcEmployeeDataRightsRequest a hr:BusinessProcess ;
+    rdfs:label "Employee Data Access, Correction & Deletion Request Process" .
+
+# =================================================================
+# PROCESS-TO-OPERATIONS SEMANTIC BINDINGS (v2)
+# =================================================================
+
+# Workforce Development, Coaching & Measurement Processes
+hr:ProcSkillsGapAssessment hr:supportedByOperation hr:OpLearningCoachingDelivery , hr:OpTalentAdvisory .
+hr:ProcIndividualDevelopmentPlanBuild hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcTrainingSessionScheduling hr:supportedByOperation hr:OpLearningCoachingDelivery , hr:OpHRTechnologyCyber .
+hr:ProcTrainingEffectivenessEvaluation hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcCoachingEngagementIntake hr:supportedByOperation hr:OpLearningCoachingDelivery , hr:OpPrivacyOffice .
+hr:ProcCoachingConversationCadence hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcMentorMenteeMatching hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcMentoringProgramReview hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcPeriodicCheckInCycle hr:supportedByOperation hr:OpTalentAdvisory , hr:OpHRTechnologyCyber .
+hr:ProcGoalProgressMonitoring hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcPrePostCompetencyMeasure hr:supportedByOperation hr:OpLearningCoachingDelivery .
+hr:ProcTrainingROIAnalysis hr:supportedByOperation hr:OpLearningCoachingDelivery , hr:OpClientFinanceBilling .
+hr:ProcScorecardMetricDefinition hr:supportedByOperation hr:OpHRTechnologyCyber , hr:OpPrivacyOffice .
+hr:ProcScorecardPublication hr:supportedByOperation hr:OpHRTechnologyCyber .
+
+# Values, Culture & Ethics Stewardship Processes
+hr:ProcValuesNarrativeCampaign hr:supportedByOperation hr:OpCultureValuesEthics .
+hr:ProcValuesLifecycleIntegration hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpLearningCoachingDelivery .
+hr:ProcPeerRecognitionNomination hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpHRTechnologyCyber .
+hr:ProcRecognitionEquityReview hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpLegalCompliance .
+hr:ProcVolunteerOpportunityCoordination hr:supportedByOperation hr:OpCultureValuesEthics .
+hr:ProcVoluntaryHoursSelfReport hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpPrivacyOffice .
+hr:ProcIdeaSubmissionReview hr:supportedByOperation hr:OpCultureValuesEthics .
+hr:ProcChangeReadinessEnablement hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpLearningCoachingDelivery .
+hr:ProcPulseSurveyAdministration hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpPrivacyOffice .
+hr:ProcSmallGroupSuppression hr:supportedByOperation hr:OpPrivacyOffice .
+hr:ProcConcernIntakeTriage hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpLegalCompliance .
+hr:ProcNonRetaliationMonitoring hr:supportedByOperation hr:OpLegalCompliance .
+hr:ProcValuesSelfReflection hr:supportedByOperation hr:OpTalentAdvisory .
+hr:ProcValuesEvidenceCalibration hr:supportedByOperation hr:OpTalentAdvisory , hr:OpLegalCompliance .
+hr:ProcValuesIndexComputation hr:supportedByOperation hr:OpCultureValuesEthics , hr:OpHRTechnologyCyber .
+hr:ProcLeaderActionPlanTracking hr:supportedByOperation hr:OpCultureValuesEthics .
+
+# Privacy-Preserving People Analytics Processes
+hr:ProcPrivacyImpactAssessment hr:supportedByOperation hr:OpPrivacyOffice , hr:OpLegalCompliance .
+hr:ProcMonitoringProportionalityReview hr:supportedByOperation hr:OpPrivacyOffice , hr:OpLegalCompliance .
+hr:ProcMonitoringNoticeIssuance hr:supportedByOperation hr:OpPrivacyOffice , hr:OpLegalCompliance .
+hr:ProcConsentPreferenceManagement hr:supportedByOperation hr:OpPrivacyOffice , hr:OpHRTechnologyCyber .
+hr:ProcKAnonymityThresholdCheck hr:supportedByOperation hr:OpPrivacyOffice , hr:OpHRTechnologyCyber .
+hr:ProcDifferencingAttackReview hr:supportedByOperation hr:OpPrivacyOffice .
+hr:ProcRetentionScheduleEnforcement hr:supportedByOperation hr:OpPrivacyOffice , hr:OpHRTechnologyCyber .
+hr:ProcEmployeeDataRightsRequest hr:supportedByOperation hr:OpPrivacyOffice , hr:OpLegalCompliance .
+
+# Cross-links from v1 processes to v2 safeguards
+hr:ProcTurnoverPredictiveModeling hr:governedBySafeguard hr:SafeguardProtectedTraitExclusion , hr:SafeguardPurposeLimitation .
+hr:ProcGeofencedClockInValidation hr:governedBySafeguard hr:SafeguardTransparencyNotice .
+hr:ProcPunchIngestionAudit hr:governedBySafeguard hr:SafeguardNoCovertSurveillance .
+hr:WorkforceAnalyticsReportingService hr:governedBySafeguard hr:SafeguardAggregationThreshold , hr:SafeguardProtectedTraitExclusion .
+
+# =================================================================
+# DOMAIN 7 & 8 ONTOLOGY CONCEPTS
+# =================================================================
+
+hr:ConceptSkillsTaxonomy a hr:OntologyConcept ;
+    rdfs:label "Role-Based Skills & Competency Taxonomy" .
+
+hr:ConceptIndividualDevelopmentPlan a hr:OntologyConcept ;
+    rdfs:label "Individual Development Plan (IDP)" .
+
+hr:ConceptTrainingCatalog a hr:OntologyConcept ;
+    rdfs:label "Instructor-Led & Virtual Training Catalog" .
+
+hr:ConceptKirkpatrickEvaluationModel a hr:OntologyConcept ;
+    rdfs:label "Kirkpatrick Four-Level Training Evaluation Model" .
+
+hr:ConceptCoachingAgreement a hr:OntologyConcept ;
+    rdfs:label "Coaching Agreement & Confidentiality Terms" .
+
+hr:ConceptCoachingSessionRecord a hr:OntologyConcept ;
+    rdfs:label "Coachee-Owned Coaching Session Record" .
+
+hr:ConceptMentorMatchProfile a hr:OntologyConcept ;
+    rdfs:label "Mentor–Mentee Match Profile" .
+
+hr:ConceptMentoringProgramCharter a hr:OntologyConcept ;
+    rdfs:label "Mentoring Program Charter" .
+
+hr:ConceptCheckInRecord a hr:OntologyConcept ;
+    rdfs:label "Manager–Employee Check-In Record" .
+
+hr:ConceptProgressSignal a hr:OntologyConcept ;
+    rdfs:label "Goal Progress Status Signal (On Track / At Risk / Off Track)" .
+
+hr:ConceptCompetencyProficiencyScale a hr:OntologyConcept ;
+    rdfs:label "Competency Proficiency Rating Scale" .
+
+hr:ConceptLearningROIModel a hr:OntologyConcept ;
+    rdfs:label "Learning & Coaching Return-on-Investment Model" .
+
+hr:ConceptBalancedScorecard a hr:OntologyConcept ;
+    rdfs:label "Organizational Health & Objectives Balanced Scorecard" .
+
+hr:ConceptMetricDefinitionCard a hr:OntologyConcept ;
+    rdfs:label "Metric Definition Card (purpose, formula, owner, granularity, privacy class)" .
+
+hr:ConceptValuesCharter a hr:OntologyConcept ;
+    rdfs:label "Corporate Values & Objectives Charter" .
+
+hr:ConceptBehavioralAnchorLibrary a hr:OntologyConcept ;
+    rdfs:label "Values Behavioral Anchor Library (observable do / don't behaviors per value)" .
+
+hr:ConceptRecognitionTaxonomy a hr:OntologyConcept ;
+    rdfs:label "Values-Tagged Recognition Taxonomy" .
+
+hr:ConceptRecognitionEquityReport a hr:OntologyConcept ;
+    rdfs:label "Recognition Distribution Equity Report" .
+
+hr:ConceptVolunteerTimeOffPolicy a hr:OntologyConcept ;
+    rdfs:label "Volunteer Time Off (VTO) Policy" .
+
+hr:ConceptCommunityImpactLedger a hr:OntologyConcept ;
+    rdfs:label "Organizational Community Impact Ledger" .
+
+hr:ConceptIdeaPipeline a hr:OntologyConcept ;
+    rdfs:label "Improvement Idea Pipeline" .
+
+hr:ConceptChangeReadinessModel a hr:OntologyConcept ;
+    rdfs:label "Change Readiness Assessment Model" .
+
+hr:ConceptValuesPulseInstrument a hr:OntologyConcept ;
+    rdfs:label "Values & Culture Pulse Survey Instrument" .
+
+hr:ConceptAnonymityThresholdRule a hr:OntologyConcept ;
+    rdfs:label "Survey Anonymity Minimum-Response Threshold Rule" .
+
+hr:ConceptAnonymousReportingChannel a hr:OntologyConcept ;
+    rdfs:label "Third-Party Anonymous Ethics Reporting Channel" .
+
+hr:ConceptNonRetaliationCaseRecord a hr:OntologyConcept ;
+    rdfs:label "Non-Retaliation Follow-Up Case Record" .
+
+hr:ConceptValuesReflectionEntry a hr:OntologyConcept ;
+    rdfs:label "Employee Values Self-Reflection Entry" .
+
+hr:ConceptValuesIndexModel a hr:OntologyConcept ;
+    rdfs:label "Aggregate Values & Culture Index Model" .
+
+hr:ConceptLeaderActionPlan a hr:OntologyConcept ;
+    rdfs:label "Leader Post-Survey Action Plan" .
+
+hr:ConceptPrivacyImpactAssessment a hr:OntologyConcept ;
+    rdfs:label "People-Analytics Privacy Impact Assessment (PIA) Record" .
+
+hr:ConceptProhibitedMonitoringRegister a hr:OntologyConcept ;
+    rdfs:label "Prohibited Monitoring Practices Register" .
+
+hr:ConceptElectronicMonitoringNotice a hr:OntologyConcept ;
+    rdfs:label "Electronic Monitoring Notice & Acknowledgment" .
+
+hr:ConceptPurposeLimitationRegister a hr:OntologyConcept ;
+    rdfs:label "People-Data Purpose Limitation Register" .
+
+hr:ConceptKAnonymityPolicy a hr:OntologyConcept ;
+    rdfs:label "k-Anonymity Minimum Group Size Policy" .
+
+hr:ConceptReidentificationRiskTest a hr:OntologyConcept ;
+    rdfs:label "Re-Identification Risk Test (small-cell & differencing)" .
+
+hr:ConceptPeopleDataRetentionSchedule a hr:OntologyConcept ;
+    rdfs:label "People-Data Retention Schedule" .
+
+hr:ConceptEmployeeDataRightsRequest a hr:OntologyConcept ;
+    rdfs:label "Employee Data Subject Rights Request" .
+
+# =================================================================
+# SHACL SHAPES — MACHINE-CHECKABLE PRIVACY RULES
+# =================================================================
+
+hr:ValueIndicatorShape a sh:NodeShape ;
+    sh:targetClass hr:ValueIndicator ;
+    rdfs:comment "Every indicator must declare what it evidences, how it is collected, its granularity, its privacy flags, and at least one safeguard." ;
+    sh:property [ sh:path hr:isIndicatorOf ; sh:minCount 1 ] ,
+                [ sh:path hr:collectedByService ; sh:minCount 1 ; sh:class hr:DomainService ] ,
+                [ sh:path hr:hasCollectionMode ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:DataCollectionMode ] ,
+                [ sh:path hr:reportingGranularity ; sh:minCount 1 ; sh:maxCount 1 ; sh:class hr:ReportingGranularity ] ,
+                [ sh:path hr:isIndividuallyAttributable ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ,
+                [ sh:path hr:usableInEmploymentDecisions ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ,
+                [ sh:path hr:governedBySafeguard ; sh:minCount 1 ; sh:class hr:PrivacySafeguard ] .
+
+hr:AggregateThresholdShape a sh:NodeShape ;
+    sh:targetClass hr:ValueIndicator ;
+    rdfs:comment "Group-level indicators must set a minimum group size of at least 5 and be governed by the aggregation threshold safeguard." ;
+    sh:sparql [
+        sh:message "Aggregate-group indicator lacks k >= 5 or the aggregation threshold safeguard." ;
+        sh:prefixes hr:HRServicesEnterpriseModel ;
+        sh:select """
+            SELECT $this WHERE {
+                $this hr:reportingGranularity hr:GranularityAggregateGroup .
+                FILTER ( NOT EXISTS { $this hr:minimumGroupSize ?k . FILTER (?k >= 5) }
+                      || NOT EXISTS { $this hr:governedBySafeguard hr:SafeguardAggregationThreshold } )
+            }""" ] .
+
+hr:AnonymousNotAttributableShape a sh:NodeShape ;
+    sh:targetClass hr:ValueIndicator ;
+    sh:sparql [
+        sh:message "Anonymous-survey indicator must not be individually attributable or usable in employment decisions." ;
+        sh:prefixes hr:HRServicesEnterpriseModel ;
+        sh:select """
+            SELECT $this WHERE {
+                $this hr:hasCollectionMode hr:ModeAnonymousSurvey .
+                { $this hr:isIndividuallyAttributable true } UNION { $this hr:usableInEmploymentDecisions true }
+            }""" ] .
+
+hr:EmploymentDecisionShape a sh:NodeShape ;
+    sh:targetClass hr:ValueIndicator ;
+    rdfs:comment "An indicator usable in employment decisions must be conduct- or record-based, transparent to the employee, human-reviewed and retention-limited; survey and voluntary data never qualify." ;
+    sh:sparql [
+        sh:message "Decision-grade indicator is missing a required safeguard or uses a prohibited collection mode." ;
+        sh:prefixes hr:HRServicesEnterpriseModel ;
+        sh:select """
+            SELECT $this WHERE {
+                $this hr:usableInEmploymentDecisions true .
+                FILTER ( NOT EXISTS { $this hr:governedBySafeguard hr:SafeguardHumanReview }
+                      || NOT EXISTS { $this hr:governedBySafeguard hr:SafeguardTransparencyNotice }
+                      || NOT EXISTS { $this hr:governedBySafeguard hr:SafeguardRetentionLimit }
+                      || EXISTS { $this hr:hasCollectionMode hr:ModeAnonymousSurvey }
+                      || EXISTS { $this hr:hasCollectionMode hr:ModeVoluntarySelfReport } )
+            }""" ] .
+
+hr:GuidingPrincipleShape a sh:NodeShape ;
+    sh:targetClass hr:GuidingPrinciple ;
+    rdfs:comment "Every value or objective must be promoted by at least one service and evidenced by at least one indicator." ;
+    sh:property [ sh:path hr:evidencedByIndicator ; sh:minCount 1 ; sh:class hr:ValueIndicator ] ,
+                [ sh:path [ sh:inversePath hr:promotesPrinciple ] ; sh:minCount 1 ] .
+
+hr:HRServicesEnterpriseModel sh:declare
+    [ sh:prefix "hr" ; sh:namespace "http://example.org/hrservices/ddd#"^^xsd:anyURI ] .
+
+# =================================================================
+# COMPETENCY QUESTIONS (sample SPARQL)
+# =================================================================
+# CQ1  Which indicators may be used in employment decisions, and which
+#      safeguards govern them?
+#   SELECT ?ind ?sg WHERE { ?ind hr:usableInEmploymentDecisions true ;
+#                                 hr:governedBySafeguard ?sg . }
+#
+# CQ2  For each value/objective, which services promote it and how is it
+#      measured?
+#   SELECT ?p ?svc ?ind ?mode WHERE { ?svc hr:promotesPrinciple ?p .
+#       ?p hr:evidencedByIndicator ?ind . ?ind hr:hasCollectionMode ?mode . }
+#
+# CQ3  Which practices are prohibited, by which safeguard, under which law?
+#   SELECT ?practice ?sg ?reg WHERE { ?sg hr:prohibitsPractice ?practice .
+#       OPTIONAL { ?sg hr:derivedFromRegulation ?reg } }
+#
+# CQ4  Which operational areas carry the values-stewardship service line?
+#   SELECT DISTINCT ?op WHERE { hr:ServiceLineValuesStewardship hr:realizedBySubDomain ?sd .
+#       ?sd hr:providesService ?svc . ?svc hr:executedByProcess ?proc .
+#       ?proc hr:supportedByOperation ?op . }

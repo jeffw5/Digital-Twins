@@ -1,0 +1,52 @@
+###############################################################################
+#  PEO Employment Standards — SHACL quality gates (W3C SHACL)
+#  Run in the "Validate" lifecycle stage before a release of the reference
+#  data. Violations block a release; warnings go to the verification backlog.
+###############################################################################
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix pes:     <https://enablingvalue.com/ontology/peo-es#> .
+@prefix pesh:    <https://enablingvalue.com/ontology/peo-es/shapes#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+pesh:StandardShape a sh:NodeShape ;
+    sh:targetClass pes:EmploymentStandard ;
+    rdfs:label "Employment standard record"@en ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:message "Every standard needs a name."@en ] ,
+                [ sh:path pes:citation ; sh:minCount 1 ; sh:datatype xsd:string ; sh:message "Every standard needs an official citation."@en ] ,
+                [ sh:path pes:appliesIn ; sh:minCount 1 ; sh:class pes:Jurisdiction ; sh:message "Every standard must say where it applies."@en ] ,
+                [ sh:path pes:legalStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:message "Every standard needs exactly one legal status."@en ] ,
+                [ sh:path pes:coversTopic ; sh:minCount 1 ; sh:class skos:Concept ; sh:message "Classify each standard under at least one compliance topic."@en ] ,
+                [ sh:path pes:minEmployees ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:message "State the headcount threshold (1 = all employers)."@en ] ,
+                [ sh:path pes:enforcedBy ; sh:minCount 1 ; sh:class pes:GovernmentAgency ; sh:severity sh:Warning ;
+                  sh:message "No enforcing agency recorded (acceptable only for privately enforced laws)."@en ] ,
+                [ sh:path pes:lastVerified ; sh:minCount 1 ; sh:datatype xsd:date ; sh:severity sh:Warning ;
+                  sh:message "Not yet verified against a published source; add to the verification backlog."@en ] .
+
+pesh:WageRateShape a sh:NodeShape ;
+    sh:targetClass pes:WageRate ;
+    rdfs:label "Wage rate record"@en ;
+    sh:property [ sh:path pes:amount ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:message "A rate needs one decimal amount."@en ] ,
+                [ sh:path pes:unit ; sh:minCount 1 ; sh:maxCount 1 ; sh:message "A rate needs an explicit unit (ISO 80000-1), e.g. USD/h."@en ] ,
+                [ sh:path pes:effectiveDate ; sh:minCount 1 ; sh:datatype xsd:date ; sh:message "A rate needs the date it takes effect."@en ] ,
+                [ sh:path [ sh:inversePath pes:setsWageRate ] ; sh:minCount 1 ; sh:message "A rate must be linked to the standard that sets it (via pes:setsWageRate)."@en ] .
+
+pesh:RequirementShape a sh:NodeShape ;
+    sh:targetClass pes:Requirement ;
+    rdfs:label "Requirement record"@en ;
+    sh:property [ sh:path pes:deonticModality ; sh:minCount 1 ; sh:maxCount 1 ; sh:class pes:DeonticModality ; sh:message "State whether the requirement obliges, prohibits or permits."@en ] ,
+                [ sh:path pes:establishedBy ; sh:minCount 1 ; sh:class pes:EmploymentStandard ; sh:message "Link the requirement to at least one standard."@en ] .
+
+pesh:AllocationShape a sh:NodeShape ;
+    sh:targetClass pes:ResponsibilityAllocation ;
+    rdfs:label "Responsibility allocation clause"@en ;
+    sh:property [ sh:path pes:forRequirement ; sh:minCount 1 ; sh:maxCount 1 ; sh:class pes:Requirement ; sh:message "An allocation covers exactly one requirement."@en ] ,
+                [ sh:path pes:allocatedTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:in ( pes:PEOResponsible pes:ClientResponsible pes:SharedResponsibility ) ;
+                  sh:message "Allocate to PEO, Client or Shared."@en ] ,
+                [ sh:path pes:clauseText ; sh:minCount 1 ; sh:severity sh:Warning ; sh:message "Record the agreement's clause wording."@en ] .
+
+pesh:WorksiteShape a sh:NodeShape ;
+    sh:targetClass pes:Worksite ;
+    rdfs:label "Worksite record"@en ;
+    sh:property [ sh:path pes:locatedIn ; sh:minCount 1 ; sh:maxCount 1 ; sh:class pes:Jurisdiction ; sh:message "A worksite needs its most specific jurisdiction."@en ] .

@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Living Capital Service Map and Assembly Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Living Capital edition. Layout: sticky chapter bar → eight chapters. Overview and catalog run full width; architecture, assembly, decision and risk chapters split narrative left and a live architecture map right. The catalog is the spine: every service links to its bill of materials and lights up its components on the map. */
+:root{
+  color-scheme:light;
+  --bg:#f6f7f8; --surface:#ffffff; --sunk:#eef1f3; --ink:#16222b; --muted:#5b6973; --line:#dde2e6;
+  --accent:#1f5f7a; --accent-soft:#e3eef3; --brass:#9a6b1f;
+  --ok:#1f7a52; --ok-bg:#e2f2ea; --warn:#8a6510; --warn-bg:#f7eed8; --bad:#a3412b; --bad-bg:#f8e6e1; --info:#5a5fa0; --info-bg:#e9eaf6;
+  --on:#fff3cf; --on-line:#c99a2e;
+  --f-display:"Familjen Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Public Sans",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171c; --surface:#172129; --sunk:#1c2831; --ink:#e4eaee; --muted:#93a1ab; --line:#2a3741;
+  --accent:#6fb3cf; --accent-soft:#1b3340; --brass:#d6a75a;
+  --ok:#6fcf9f; --ok-bg:#16352a; --warn:#e2bd6a; --warn-bg:#3a2f15; --bad:#ee9a85; --bad-bg:#3d221c; --info:#a7abe8; --info-bg:#272a4a;
+  --on:#3a3115; --on-line:#d6a75a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171c; --surface:#172129; --sunk:#1c2831; --ink:#e4eaee; --muted:#93a1ab; --line:#2a3741;
+  --accent:#6fb3cf; --accent-soft:#1b3340; --brass:#d6a75a;
+  --ok:#6fcf9f; --ok-bg:#16352a; --warn:#e2bd6a; --warn-bg:#3a2f15; --bad:#ee9a85; --bad-bg:#3d221c; --info:#a7abe8; --info-bg:#272a4a;
+  --on:#3a3115; --on-line:#d6a75a; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+img{max-width:100%}
+[hidden]{display:none!important}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(22px,2.8vw,30px);font-weight:700}
+h2{font-size:clamp(22px,2.6vw,28px);font-weight:600;line-height:1.15}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+code{font:500 12px var(--f-mono)}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+button{font:inherit;color:inherit;cursor:pointer}
+select,input{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.mast{position:sticky;top:0;z-index:9;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.mast .wrap{padding-block:12px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.brand p{color:var(--muted);font-size:13.5px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:8px 12px 10px;font-size:13.5px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:2.5px solid transparent}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .n{font-family:var(--f-mono);font-size:11px;margin-right:6px}
+
+main .wrap{padding-block:24px 64px}
+.chapter{display:flex;flex-direction:column;gap:18px}
+.chead{display:flex;flex-direction:column;gap:6px;max-width:920px}
+.chead p{color:var(--muted);max-width:80ch}
+.sub{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.sub p{color:var(--muted);max-width:80ch;font-size:14px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:20px;align-items:start}
+@media (max-width:980px){.split{grid-template-columns:minmax(0,1fr)}}
+.sticky{position:sticky;top:112px}
+@media (max-width:980px){.sticky{position:static}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card .k{font:500 11px var(--f-mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.card p{font-size:14px}
+.card .it{font-size:13px;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.callout{border-radius:6px;padding:10px 12px;font-size:14px;background:var(--accent-soft)}
+.callout b{color:var(--accent)}
+.hint{font:500 11.5px var(--f-mono);color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:5px;font:500 11.5px var(--f-mono);padding:2px 8px;border-radius:4px;white-space:nowrap}
+.t-ok{background:var(--ok-bg);color:var(--ok)} .t-warn{background:var(--warn-bg);color:var(--warn)} .t-bad{background:var(--bad-bg);color:var(--bad)} .t-info{background:var(--info-bg);color:var(--info)} .t-mute{background:var(--sunk);color:var(--muted)} .t-acc{background:var(--accent-soft);color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 14px;font-size:13.5px;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn:disabled{opacity:.4;cursor:default}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:2px}
+pre{margin:0;background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow-x:auto;font:400 12.5px/1.6 var(--f-mono);color:var(--ink);white-space:pre}
+.cap{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* overview */
+.path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0;counter-reset:p}
+@media (max-width:860px){.path{grid-template-columns:minmax(0,1fr)}}
+.path li{counter-increment:p;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.path li.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.path li::before{content:"Stage " counter(p);font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.path p{font-size:13.5px;color:var(--muted)}
+.custody{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:stretch}
+.party{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.party.h{border-top:3px solid var(--accent)} .party.c{border-top:3px solid var(--warn)}
+.party ul{margin:0;padding-left:18px;font-size:13.5px}
+.party .was{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.bound{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px;gap:6px}
+.bound i{flex:1;border-left:2px dashed var(--info);min-height:12px}
+.bound span{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--info);writing-mode:vertical-rl;transform:rotate(180deg)}
+@media (max-width:720px){.custody{grid-template-columns:minmax(0,1fr)}.bound{flex-direction:row;padding:8px 0}.bound i{border-left:0;border-top:2px dashed var(--info);min-height:0}.bound span{writing-mode:horizontal-tb;transform:none}}
+.vbar{display:flex;height:34px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.vbar div{display:flex;align-items:center;justify-content:center;font:500 12px var(--f-mono);min-width:0;white-space:nowrap;overflow:hidden}
+.vlegend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+.vlegend b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.m-A{background:var(--ok-bg);color:var(--ok)} .m-E{background:var(--info-bg);color:var(--info)} .m-P{background:var(--accent-soft);color:var(--accent)} .m-B{background:var(--bad-bg);color:var(--bad)}
+.s-A{background:var(--ok)} .s-E{background:var(--info)} .s-P{background:var(--accent)} .s-B{background:var(--bad)}
+.em .eq{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font:500 11.5px var(--f-mono)}
+.em .eq span.op{color:var(--muted)}
+.em .eq code{background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:1px 5px;font-size:11.5px}
+.em .eq strong{font:600 13.5px var(--f-display);color:var(--accent)}
+.em .serves{display:flex;flex-wrap:wrap;gap:4px}
+.chipbtn{font:500 11px var(--f-mono);border:1px solid var(--line);background:var(--bg);color:var(--accent);border-radius:3px;padding:1px 6px}
+.chipbtn:hover{border-color:var(--accent)}
+.howto{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.howto li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.howto li b{font-family:var(--f-display);font-size:15px}
+
+/* primer */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.gloss .card h4{font-size:15px}
+.gloss .an{font-size:13.5px}
+.gloss .diff{font-size:13px;color:var(--muted)}
+.search{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search input{min-width:240px;flex:1;max-width:420px}
+
+/* catalog */
+.filters{display:flex;flex-direction:column;gap:8px}
+.frow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.frow .lbl{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:64px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:4px 11px;border-radius:999px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.active{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--on);border:1px solid var(--on-line);border-radius:6px;padding:6px 10px;font-size:13.5px}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+#cat{min-width:980px}
+#cat thead th{position:sticky;top:0;background:var(--surface);font:600 12.5px var(--f-display);text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);z-index:1}
+#cat th.c,#cat td.c{text-align:center}
+tr.dom td{background:var(--bg);font:600 12px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:12px 14px 6px;border-bottom:1px solid var(--line)}
+tr.dom td small{font:400 11.5px var(--f-body);text-transform:none;letter-spacing:0;margin-left:8px}
+tr.row td{border-bottom:1px solid var(--line);padding:8px;vertical-align:middle}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--accent-soft)}
+tr.row.open td{background:var(--accent-soft)}
+td.svc{padding-left:14px!important;min-width:240px}
+.sid{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-right:8px;white-space:nowrap}
+.newt{display:inline-block;margin-left:6px;font:500 10px var(--f-mono);color:var(--brass);letter-spacing:.04em;text-transform:uppercase}
+.peo{font-size:12.5px;color:var(--muted)}
+.peo code{color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-right:5px;font-size:11px}
+.pill{display:inline-flex;justify-content:center;min-width:64px;padding:2px 7px;border-radius:4px;font:500 11.5px var(--f-mono);white-space:nowrap}
+.cu-A{color:var(--accent);background:var(--accent-soft)} .cu-C{color:var(--warn);background:var(--warn-bg)} .cu-J{color:var(--info);background:var(--info-bg)}
+.b-C{color:var(--ok);background:var(--ok-bg)} .b-A{color:var(--warn);background:var(--warn-bg)} .b-P{color:var(--info);background:var(--info-bg)}
+tr.detail td{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 14px 16px}
+.dg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px 28px;font-size:13.5px}
+@media (max-width:760px){.dg{grid-template-columns:minmax(0,1fr)}}
+.dg dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.dg dt{color:var(--muted)} .dg dd{margin:0}
+.dg ul{margin:4px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.dg li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:baseline}
+.bom{display:flex;flex-wrap:wrap;gap:4px}
+.bc{display:inline-flex;align-items:center;gap:4px;font:500 11px var(--f-mono);padding:1px 6px;border-radius:3px;border:1px solid var(--line);background:var(--bg);white-space:nowrap}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.d-X{background:var(--ok)} .d-T{background:var(--info)} .d-N{background:var(--bad)} .d-P{background:var(--accent)}
+.ref{font:500 11px var(--f-mono);color:var(--brass)}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+details.inv{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+details.inv summary{cursor:pointer;font-family:var(--f-display);font-weight:600}
+.layers{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.layer{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px;align-items:start;border-top:1px solid var(--line);padding-top:8px}
+.layer .ln h4{font-size:14px}
+.layer .ln p{font-size:12px;color:var(--muted)}
+@media (max-width:720px){.layer{grid-template-columns:minmax(0,1fr)}}
+.blocks{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.blk{display:inline-flex;align-items:center;gap:7px;font:500 12.5px var(--f-body);border:1px solid var(--line);background:var(--bg);padding:5px 9px 5px 7px;border-radius:5px;text-align:left;max-width:100%}
+.blk:hover{border-color:var(--accent)}
+.blk[aria-pressed="true"]{background:var(--on);border-color:var(--on-line)}
+.blk .bid{font:500 10.5px var(--f-mono);color:var(--muted)}
+.blk .uses{font:500 11px var(--f-mono);color:var(--muted);border-left:1px solid var(--line);padding-left:7px}
+
+/* stepper narrative */
+.story{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.story h3{font-size:20px}
+.story .body{display:flex;flex-direction:column;gap:10px}
+.story .body p,.story .body li{max-width:70ch}
+.story .body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.stepmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.dots button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font:500 11px var(--f-mono);color:var(--muted);padding:0}
+.dots button[aria-current="step"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.nav{display:flex;gap:8px}
+.fields{display:flex;flex-direction:column;gap:6px}
+.fld{display:grid;grid-template-columns:100px minmax(0,1fr);gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px}
+.fld code{color:var(--accent)}
+.fld .svs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+
+/* architecture map */
+.lens{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.lens select{max-width:100%;flex:1;min-width:200px}
+.lensbar{background:var(--on);border:1px solid var(--on-line);border-radius:6px;padding:8px 10px;font-size:13px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.map{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px}
+@media (max-width:560px){.map{grid-template-columns:minmax(0,1fr)}}
+.bands{display:flex;flex-direction:column;gap:6px;min-width:0}
+.band{border:1px solid var(--line);border-radius:6px;padding:6px 8px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;align-items:center;background:var(--bg)}
+.band.gw{border-color:var(--accent);background:var(--accent-soft)}
+.band .bl,.rail .bl{font:600 11px var(--f-mono);letter-spacing:.04em;color:var(--muted);text-transform:uppercase;line-height:1.3}
+.band.gw .bl{color:var(--accent)}
+.comps{display:flex;flex-wrap:wrap;gap:4px}
+.comp{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:3px 7px;font-size:12px;line-height:1.3;text-align:left;transition:opacity .2s,background .2s}
+.comp:hover{border-color:var(--accent)}
+.comp.on{background:var(--on);border-color:var(--on-line);font-weight:600}
+.comp.sel{outline:2px solid var(--accent);outline-offset:1px}
+.map.focus .comp:not(.on){opacity:.35}
+.railcol{display:flex;flex-direction:column;gap:8px}
+.rail{display:flex;flex-direction:column;gap:6px;border:1px dashed var(--line);border-radius:6px;padding:6px}
+.rail .comps{flex-direction:column}
+.flowline{display:flex;justify-content:center;font:500 10.5px var(--f-mono);color:var(--muted);margin:-2px 0}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.detail dl{margin:0;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 12px;font-size:13.5px}
+.detail dt{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.detail dd{margin:0}
+.ledger{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.ledger div{display:grid;grid-template-columns:26px minmax(0,1fr);gap:6px}
+.ledger div span:first-child{font:500 11px var(--f-mono);color:var(--muted);padding-top:2px}
+.ledger div.new{background:var(--on);border-radius:4px}
+
+/* risk */
+.scen{display:flex;flex-wrap:wrap;gap:6px}
+.scen button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px}
+.scen button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.checks{display:flex;flex-direction:column;gap:6px}
+.chk{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--surface);font-size:13.5px}
+.chk.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.chk.fut{opacity:.4}
+.verdict{border-radius:8px;padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 18px;background:var(--sunk)}
+.verdict .lbl{font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.verdict .v{font-size:14px}
+
+/* governance */
+.mx{min-width:1060px}
+.mx th,.mx td,.st th,.st td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.mx thead th,.st th{font:600 12.5px var(--f-display);background:var(--surface);vertical-align:bottom}
+.mx thead th small{display:block;font:400 10.5px var(--f-mono);color:var(--muted);margin-top:2px}
+.mx td.c{text-align:center;vertical-align:middle}
+.mx tr:last-child td,.st tr:last-child td{border-bottom:0}
+.mx tbody tr{cursor:pointer}
+.mx tbody tr:hover td{background:var(--accent-soft)}
+.st{min-width:760px}
+.st td:first-child{font-weight:600}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.norm{font:500 11.5px var(--f-mono);padding:2px 6px;border-radius:3px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.cell{display:inline-flex;gap:2px}
+.cell span{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:4px;font:600 11px var(--f-mono)}
+.c-P{background:var(--ok-bg);color:var(--ok)} .c-D{background:var(--info-bg);color:var(--info)} .c-R{background:var(--warn-bg);color:var(--warn)} .c-E{background:var(--sunk);color:var(--muted)} .c-T{background:var(--accent-soft);color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted);align-items:center}
+.find{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.find ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+footer{color:var(--muted);font-size:12.5px;padding-block:8px 40px}
+footer a{color:var(--accent)}
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:5px;font-size:13px;z-index:20}
+@media (max-width:720px){.mast{position:static}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.soil-E{background:var(--bad-bg);color:var(--bad)} .soil-K{background:var(--info-bg);color:var(--info)} .soil-T{background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <div class="brand"><h1>Living Capital Service Map and Assembly Walkthrough</h1><p>46 regenerative workforce services, how each is assembled from PEO operations and the governance platform, and how that governance protects people</p></div>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="Chapters"></nav>
+  </div>
+</header>
+<main><div class="wrap" id="main"></div></main>
+<div class="wrap"><footer id="foot"></footer></div>
+<textarea id="copyfallback" hidden aria-label="Export text" style="width:100%;height:140px;font:12px var(--f-mono)"></textarea>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const DOM={REC:["Recovery & renewal benefits","circadian and recovery packaging"],CAP:["Capacity & slack","slack indexing and capacity auditing"],POOL:["Shared talent & redeployment","furlough insurance and secondments"],OWN:["Ownership & reinvestment","profit and stake loops"],STR:["Structure & self-management","pods and lattices"],CARE:["Leadership & care","peer care and life stage"],LAB:["Enterprise lab","PEO-as-sandbox"],MEAS:["Measurement","regeneration scorecard"],MOD:["Delivery models","how the tier is sold"]};
+const PEO={"PAY.03":"Time & attendance","PAY.05":"Garnishments & unemployment claims","BEN.01":"Large-group medical","BEN.02":"401(k) / retirement","BEN.07":"Mental health benefits","RSK.01":"Workers' comp & claims","RSK.04":"Compliance monitoring","RSK.05":"Leave administration","HRA.01":"Dedicated HR specialist","HRA.02":"Handbook & policy","HRA.03":"Employee relations & termination","HRA.05":"Strategic HR & org planning","TAL.01":"Recruiting services","TAL.05":"Performance management","TAL.06":"Learning & development","TAL.07":"Compensation benchmarking","TEC.04":"Reporting & analytics","MOD.01":"Full PEO co-employment","MOD.03":"HCM without co-employment"};
+const SOIL={E:"Energy",K:"Capability",T:"Trust"}, RDY={R:"Ready",B:"Build",L:"Counsel"};
+const PIO={BW:"Barry-Wehmiller",PA:"Patagonia",MO:"Mondragon",BZ:"Buurtzorg",WG:"W.L. Gore","":"–"};
+/* [id, domain, service, PEO base, pioneer, soil, bundle, readiness, definition, launch risk] */
+const SVC=[
+ ["REC.01","REC","Pooled paid parental leave","BEN.01","PA","E","Core","L","Funds paid parental leave across the client pool so a small employer can offer 12+ weeks without carrying the cost of one leave alone. Coordinates with state paid family leave programs.","May be regulated as insurance depending on structure; must integrate with state PFML programs."],
+ ["REC.02","REC","Disconnected sabbatical program","HRA.02","PA","E","Core","R","Policy template, funding schedule and backfill plan for a paid sabbatical every few years, with system access switched off during it. Backfill can come from POOL.02.","Low. Confirm benefit continuation terms in the plan documents."],
+ ["REC.03","REC","Mental-health coaching","BEN.07","","E","Partner","R","Adds coaching and therapy access through a partner (for example Lyra or Modern Health) on top of the EAP, priced on the pool.","Partner data must stay outside client view; utilization reported only in aggregate."],
+ ["REC.04","REC","Circadian scheduling standards","PAY.03","","E","Add-on","B","Shift-design rules in the scheduling tool: minimum rest between shifts, limits on quick returns and rotating nights, predictable schedules posted ahead.","Some cities and states already mandate predictive scheduling; align with those rules."],
+ ["REC.05","REC","Dependent-care subsidy consortium","BEN.01","PA","E","Partner","B","Pools clients in a metro area to buy reserved childcare and eldercare slots near worksites, standing in for the on-site care a 40-person firm cannot build.","Dependent care FSA limits and tax treatment of employer subsidies."],
+ ["REC.06","REC","Civic & environmental leave","RSK.05","PA","T","Core","R","Paid leave for volunteering, environmental work and civic duty, tracked like any other leave type.","Low. Keep leave reasons neutral; political activity policies need care."],
+ ["REC.07","REC","Recovery-first return to work","RSK.01","BW","E","Core","R","Graduated return after injury, illness or long leave, with adjusted load and a check-in plan, run by the workers' comp and leave teams.","Medical details stay C4 under ADA/FMLA confidentiality; the client sees restrictions only."],
+ ["CAP.01","CAP","Workforce slack index","PAY.03","","E","Core","B","Shows planned versus available hours by team and flags teams running above 80% production load for more than two consecutive periods.","Team-level reporting needs at least 5 people per cell."],
+ ["CAP.02","CAP","80/20 capacity cap","TEC.04","","E","Core","L","Caps assigned production work at 80% of paid hours and reserves 20% for development, mentoring and recovery, enforced in scheduling and project intake.","Reserved time is paid working time for non-exempt staff and counts toward overtime."],
+ ["CAP.03","CAP","Protected development ledger","TAL.06","","K","Core","B","Records the reserved 20% by use (learning, mentoring, recovery, cross-training) so the client can see whether it is spent or quietly reabsorbed.","Low."],
+ ["CAP.04","CAP","Overtime & on-call drain alerts","PAY.03","","E","Core","R","Alerts managers when a person's overtime or on-call load exceeds a client-set threshold for several weeks.","Person-level alerts are C3 and go only to the person's manager and HR."],
+ ["CAP.05","CAP","Time-off utilization nudges","RSK.05","","E","Core","R","Prompts workers and managers when someone has taken no time off in a set period or is near a PTO cap.","Low."],
+ ["CAP.06","CAP","After-hours load analysis","","","E","Add-on","L","Aggregate analysis of after-hours messages and meetings from collaboration metadata to find structural overload.","Workplace monitoring notice laws; message content must never be read."],
+ ["POOL.01","POOL","Cross-client talent exchange","TAL.01","MO","K","Add-on","B","Opt-in registry of skills and availability across clients, so a worker with slack at one firm can be matched to need at another.","Worker consent per listing; profiles are C3."],
+ ["POOL.02","POOL","Fractional secondment brokerage","","MO","K","Add-on","L","Brokers temporary loans of staff between non-competing clients, with the home client keeping the employment relationship.","Joint-employer exposure at the host; workers' comp class codes; confidentiality between clients."],
+ ["POOL.03","POOL","Tenure & benefits continuity","BEN.01","MO","T","Core","L","Keeps a seconded or furloughed worker's tenure, benefits eligibility and plan coverage intact.","Plan eligibility rules (hours thresholds) during reduced or loaned hours."],
+ ["POOL.04","POOL","Downturn furlough fund","","BW","T","Partner","L","A reserve clients pay into in good years that tops up wages during furloughs or reduced hours.","Likely regulated as insurance if pooled; a client-segregated reserve avoids that."],
+ ["POOL.05","POOL","Work-share filing support","PAY.05","BW","T","Core","R","Files state short-time compensation plans so workers on cut hours collect partial unemployment instead of being laid off.","Not every state runs a program; rules differ by state."],
+ ["POOL.06","POOL","Shared-sacrifice furlough design","HRA.05","BW","T","Add-on","R","Designs tiered voluntary or rotating furloughs, leadership first, as the default response to a downturn.","Exempt-status pay rules when salaried staff take partial weeks off."],
+ ["POOL.07","POOL","Redeploy-before-reduction review","HRA.03","MO","T","Core","R","A required step before any layoff: check internal moves, POOL.01 matches and work-share before reductions proceed.","WARN Act timing still applies when reductions go ahead."],
+ ["OWN.01","OWN","Profit-sharing loop","BEN.02","MO","T","Add-on","R","Designs and administers profit sharing in cash or through the retirement plan, tied to the scorecard as well as financial results.","Retirement plan nondiscrimination testing."],
+ ["OWN.02","OWN","Ownership transition advisory","","MO","T","Partner","B","Guides owners toward an ESOP, employee ownership trust or worker cooperative at succession, with partner firms for valuation and legal work.","Securities and ERISA fiduciary rules for ESOPs."],
+ ["OWN.03","OWN","Pay-ratio & wage-solidarity report","TAL.07","MO","T","Add-on","R","Reports the ratio of top to median pay inside the client and pay spread by role band, with a target the client chooses.","C2 for the client; never disclosed across clients."],
+ ["OWN.04","OWN","Open-book management training","TAL.06","","K","Add-on","R","Teaches teams to read the business's financials so a profit-sharing loop is understood, not just received.","Low."],
+ ["OWN.05","OWN","Community reinvestment matching","","MO","T","Add-on","B","Matches a share of client surplus into local education or training funds, mirroring Mondragon's reinvestment into schools.","Charitable contribution rules."],
+ ["STR.01","STR","Self-managing pod design","HRA.05","BZ","K","Add-on","R","Designs small autonomous teams with clear decision rights, roles that rotate and a coach instead of a manager.","Supervisory roles under labor law may still be required for some decisions."],
+ ["STR.02","STR","Commitment registry","TAL.05","WG","K","Add-on","B","Replaces fixed job descriptions with commitments people negotiate and record, visible across the team.","Job descriptions still matter for ADA essential functions; keep a version for that."],
+ ["STR.03","STR","Peer sponsorship program","TAL.05","WG","K","Add-on","R","Each person chooses a sponsor who advocates for their growth and contribution, independent of project leads.","Low."],
+ ["STR.04","STR","Peer contribution input to pay","TAL.07","WG","T","Add-on","L","Collects peer rankings of contribution as one input to pay decisions.","Pay equity laws; peer ratings can carry bias and need auditing."],
+ ["STR.05","STR","Classification check for flat structures","RSK.04","BZ","T","Core","R","When titles and managers disappear, checks that exempt status, overtime eligibility and supervisor duties still hold.","This service is itself the mitigation."],
+ ["STR.06","STR","Team coaching for self-management","HRA.01","BZ","K","Add-on","R","Regional coaches who support pods on conflict, planning and decisions, as Buurtzorg's coaches do.","Low."],
+ ["CARE.01","CARE","Care-based leadership development","TAL.06","BW","T","Add-on","R","Leadership training in listening, recognition and life-stage empathy for owners and team leads.","Low."],
+ ["CARE.02","CARE","Peer-care review","TAL.05","BW","T","Add-on","R","Replaces annual ratings with structured peer conversations about growth and support.","Documentation for performance-based terminations still needed."],
+ ["CARE.03","CARE","Life-stage navigation","HRA.01","BW","E","Core","R","One point of contact for caregiving, bereavement, eldercare, health transitions and retirement planning, routing to benefits and leave.","Health details are C4; the navigator shares only what the worker approves."],
+ ["CARE.04","CARE","Psychological safety pulse","TEC.04","","T","Core","B","Short recurring survey on whether people can raise problems without fear, reported by team.","Anonymity requires cell size ≥ 5."],
+ ["LAB.01","LAB","Sandbox entity co-employment","MOD.01","","T","Add-on","L","Co-employs an enterprise's experimental subsidiary under its own handbook, pay design and review cycle.","Controlled-group aggregation for benefits testing and ACA status still applies."],
+ ["LAB.02","LAB","Experiment pre-registration","","","K","Add-on","B","Records hypothesis, practice under test, duration and deciding measures before the lab starts.","Low."],
+ ["LAB.03","LAB","Four-day week & output-pay kit","HRA.05","","E","Add-on","L","Policy, scheduling and pay templates for a four-day week or output-based pay.","Daily overtime in some states (for example California) and FLSA rules for non-exempt staff."],
+ ["LAB.04","LAB","Matched comparison cohort","TEC.04","","K","Add-on","B","Builds an aggregate comparison group of similar SMB clients from the PEO pool.","Cross-tenant aggregate: no client identifiers; cell size ≥ 5."],
+ ["LAB.05","LAB","Scale-back playbook","","","K","Add-on","B","Decides which lab practices move to the parent and estimates harmonization cost.","Changing parent plans triggers notice requirements."],
+ ["MEAS.01","MEAS","Regeneration scorecard","TEC.04","","K","Core","B","Annual and quarterly report on the measures above, per client and against the pool.","Release rules from the classification baseline apply to every cell."],
+ ["MEAS.02","MEAS","Net energy survey","","","E","Core","B","Voluntary start-of-year and end-of-year survey of energy, capability and outlook.","Voluntary and anonymous; never tied to individual pay."],
+ ["MEAS.03","MEAS","Regenerative employer attestation","","","T","Add-on","B","An annual statement a client can publish, based on its scorecard, for recruiting.","Claims must be supportable to avoid misleading advertising."],
+ ["MOD.01","MOD","Living Capital tier","MOD.01","","T","Core","B","A tier above HR360 that bundles the Core services in this map.","Pricing and plan design."],
+ ["MOD.02","MOD","Regenerative modules à la carte","MOD.03","","K","Add-on","B","Selected services sold to HRCore clients without full co-employment.","Pooled benefits need co-employment."],
+ ["MOD.03","MOD","PEO-as-sandbox for enterprise labs","MOD.01","","K","Add-on","L","The LAB services sold as one engagement to enterprises.","See LAB.01."]
+];
+const C={
+ CA:["Client agents","Client-hosted or co-deployed agents","AI agents a client runs on its own business: accounts payable, recruiting, scheduling. Under the AEO they are another agent family on Insperity's contract.","Third-party workloads you must govern but did not write","Nothing on its own; it is what the rest of the platform governs","AEO MSA"],
+ IA:["Insperity agents","Insperity's own advisors","The Sales Advisor, Customer Advisor and HR Advisory 360 agents. They prove the platform internally before clients rely on it.","First-party workloads used as the pilot","Proves every control before clients are exposed","Customer Advisor; circuit breaker"],
+ HU:["People","Client supervisors and Insperity trustees","Humans who approve held actions, review frozen decisions and steward rules. Nothing irreversible happens without them.","Approvers in a change-advisory or two-person-rule process","Final judgment on anything held","v4.2 §13.9"],
+ N1:["Orchestrator","Advisor orchestrator","Works out who is asking, what job they are doing and what outcome they want, then delegates to specialist agents. It has no data access of its own.","An API composition layer with zero direct database grants","Blast radius: a compromised orchestrator reaches nothing directly","Customer Advisor"],
+ N2:["Domain agents","Domain agents (pay, benefits, compliance, talent, tech)","One agent per business domain, each limited to that domain's vocabulary, rules and data.","Microservices scoped to one bounded context","Least privilege per domain","v4.2 §3.1"],
+ N3:["Insights","Insights agent","Answers metric and report questions by running governed metric definitions as compiled SQL. The language model never does the arithmetic.","A semantic layer (like LookML or dbt metrics) the agent must call","Wrong numbers and small-group disclosure","Customer Advisor"],
+ N4:["Composer · Handoff","Composer and Handoff","The Composer writes answers using only content the gateway has released. Handoff routes to a human when trust drops or a question crosses the advice boundary.","Output templating plus an escalation queue","Leakage in generated text; overreach into legal advice","Customer Advisor"],
+ N5:["Envelope SDK","Decision envelope contract","Every agent action leaves as a structured envelope: agent, decision type, output, 5D context, evidence, model version and the rule release it relies on. Agents cannot call action tools directly.","A mandatory structured audit event, like an OpenTelemetry span that must be approved before the call proceeds","No unobserved actions; every decision is measurable","Circuit breaker design"],
+ G1:["Context bundle","Requirement Context Bundle (stage 0)","Breaks each request into WHO, WHAT, WHEN, WHERE and WHY, and picks the domain rules that apply.","Rich request context, like JWT claims extended with purpose and time","Wrong-context answers; purpose misuse","v4.2 §5.1"],
+ G2:["Enforcement","Enforcement engine (steps 1–4)","Four checks in order: structural rules (SHACL), time rules (SWRL), six policy enforcement points (compliance, risk, legal, security, data governance, AI governance), and unsafe-control-action coverage from safety analysis (STPA).","A policy decision point (OPA or Cedar) plus schema validation plus a safety interlock","Invalid data, policy violations, unsafe actions","v4.2 §5.1"],
+ G3:["Directive","Compiled AI directive (step 5)","The agent receives governed context and constraints, not free instructions. Retrieved text is treated as data.","Parameterized queries instead of string concatenation","Prompt injection gaining authority","v4.2 §5.1"],
+ G4:["Service facade","Service facade","Checks every response against acceptance criteria and its classification before it leaves the gateway.","Response validation and DLP at the egress","Leakage and malformed output","v4.2 §5.1"],
+ G5:["Simplex gate","Simplex Action Gateway","Suspends irreversible actions (payments, contracts, record changes) until an authorized human approves.","A two-person rule or approval workflow for production changes","Unrecoverable actions taken by an agent alone","v4.2 §5.1–5.2"],
+ G6:["Circuit breaker","Circuit breaker and MTBH","Measures each decision's distance from the reference model on structure, behavior and context, weighted by persona. Returns PASS, COMPLY, FREEZE or HALT, and sets each agent ONLINE, RESTRICTED or DROPPED. MTBH is mean time between hallucinations, tracked per dimension.","A service-mesh circuit breaker that trips on semantic drift instead of error rates","Hallucination, drift, misaligned agents","v4.2 §5.3; circuit breaker"],
+ G7:["Sanitization","Sanitization layer","Keeps tripped outputs and client-specific content out of any training data.","Quarantining bad records before they reach a training set","Model collapse; cross-client learning","v4.2 §5.3"],
+ R1:["Policy registry","Compiled Policy Registry","Holds the deployable rules: OPA policies, dbt tests, search filters and JSON Schema contracts. Each carries a link back to the rule that produced it.","An artifact repository for policy-as-code","Rules that cannot be traced to an approved source","v4.2 §4.4–4.5"],
+ R2:["Harmonization","Rule Harmonization Engine","Queries the whole rule graph for conflicts, circular dependencies and overlapping jurisdictions before any change is compiled.","Static analysis on policy-as-code across all repositories","Contradictory rules reaching production","v4.2 §4.4"],
+ R3:["Rule projection","Rule Projection Agents (six-stage pipeline)","Compile each canonical rule into runtime-native forms: parse, extract, harmonize, map to target, generate, version and publish.","A compiler from one rule source to many enforcement targets","Drift between where rules are written and where they run","v4.2 §4.5"],
+ K1:["Ontologies","Ontology stack","The business vocabulary, taxonomies and ontologies: what a worker, client, payment or agent is, and how they relate.","An enterprise data model that machines can reason over","Ambiguity; teams meaning different things by one word","v4.2 §2.1"],
+ K2:["ORSD · KGCL","ORSD and KGCL change protocol","ORSD specifies a model element before it exists. KGCL records every change as a reviewable change request. Releases are pinned and replayable.","A requirements spec plus git commits and tagged releases for the data model","Unreviewed change; unreplayable decisions","v4.2 §2.2"],
+ K3:["SHACL · SWRL","SHACL and SWRL invariants","The canonical rules: what valid data looks like (SHACL) and what can be inferred (SWRL).","Schema constraints and business rules written once, as data","Invalid states","v4.2 §3.1"],
+ K4:["LKIF norms","LKIF deontic norms","Rules typed as obligation (must), permission (may), prohibition (must not), violation and sanction.","Policy-as-code with explicit must / may / must-not semantics","Ambiguous accountability; it is the basis of the liability schedule","v4.2 §2.3"],
+ K5:["Classification","Classification facets","Sensitivity C0 (public) to C4 (highly restricted), plus regime, tenancy, purpose and provenance. Attached to concepts, so anything mapped to a concept inherits it, and it only ever rises.","Data classification labels (like Purview) that propagate automatically through lineage","Over-disclosure, cross-tenant leakage","Keel Classification Scheme"],
+ D2:["Agent registry","Agent registry","Every agent with its own identity, owner, tenant, decision types, tools, attested model version, clearance tier and state.","A workload-identity and service-account registry","Unknown or impersonated agents","v4.2 §3.1"],
+ M1:["Mapping graph","Mapping graph","Correspondences between business concepts and physical items (columns, documents, processes, vector chunks), each with a type, confidence and steward status.","A metadata catalog that maps columns to business terms, with lineage","Brittle point-to-point integrations; unlabeled data","v4.2 §4.2, §13.5"],
+ M2:["URI registry","Identity and URI registry","Gives each real-world entity one canonical ID across all systems.","Master data management golden records","Wrong-entity actions, such as paying the wrong vendor","v4.2 §4.6"],
+ M3:["Lineage agents","Lineage Ingestion Agents","Watch OpenLineage events, dbt artifacts and catalogs so mappings update when source schemas drift.","Automated schema-drift detection","Stale mappings silently misrouting data","v4.2 §4.2"],
+ M4:["RAG anchors","RAG Anchor Index","Binds each retrieved text chunk to a canonical entity before governance runs.","Mandatory metadata on every vector-store record","Ungrounded retrieval; hallucinated entities","v4.2 §4.3"],
+ P1:["Port targets","Compiled port targets","Where compiled rules run: OPA behind API Management, Fabric and dbt masks, search filters, Purview labels, JSON Schema output contracts, Sentinel alerts.","The existing enforcement points you already operate","Enforcement without a graph-reasoning bottleneck","Keel Classification Scheme"],
+ P2:["Virtual graph","Virtual graph","Exposes Premier, Workday, Box and Fabric as a graph through R2RML and SQL/PGQ mappings. Nothing is copied.","Data virtualization","Copies, migrations and refactoring of legacy systems","v4.2 §3.2"],
+ SR:["Systems of record","Systems of record","Premier, Workday HRScale, Box, Microsoft Fabric, and the client's own ERP or ATS.","Your existing estate, unchanged","They stay authoritative","Customer Advisor"],
+ O1:["Provenance store","Metrology and provenance store","Time series of every measurement plus a PROV-O record of every evaluation, approval and release.","An immutable audit log with lineage","Unprovable claims; disputes without evidence","Circuit breaker"],
+ O2:["Trustee workbench","Trustee workbench","The review queue where people dispose of held decisions; their corrections pass the rule gates before they change anything.","An incident and case-management queue","Errors fixed in one place but not the rules","Circuit breaker"],
+ O3:["OPS Workbench","OPS Workbench","The observatory: change impact, lifecycle state, MTBH and drift alerts across every level.","Observability and impact-analysis console","Changes with unseen blast radius","v4.2 §8.1"],
+ O4:["DEV/STG/PRD","DEV, STG and PRD lifecycle","Construction, integration and production environments, with valid and invalid test fixtures as release gates.","CI/CD environments with test gates","Untested rules or agents reaching production","v4.2 §3.2"]
+};
+const GLOSS=[
+ ["Holon","A self-contained module with its own rules that also composes into larger modules through standard interfaces.","a microservice for knowledge: own data, own rules, standard contract","Governance travels with the module, so a change in one domain does not force a global schema change."],
+ ["Ontology","A machine-readable model of business concepts and their relationships.","an enterprise data model the system can reason over","It defines meaning, not storage; many schemas can map to one concept."],
+ ["SHACL","W3C language for constraints on graph data.","schema validation and check constraints","Written once against concepts, then compiled to dbt tests, SQL checks and JSON Schema."],
+ ["SWRL","Rules that infer new facts, including time-scoped rules.","business-rules engine","Rules live in the same graph as the data they govern and can be queried for conflicts."],
+ ["LKIF norm","A rule typed as obligation, permission, prohibition, violation or sanction.","policy-as-code with explicit must / may / must-not","Accountability is part of the rule; it drives the AEO liability schedule."],
+ ["KGCL","Knowledge Graph Change Language: one reviewable record per change to the model.","git commits for the data model","Change requests carry rationale, approver and direction (raise or lower a level)."],
+ ["ORSD","Ontology Requirements Specification Document.","a requirements spec for a model element","Written before the element exists; it is the governance contract."],
+ ["Mapping graph","Typed correspondences between concepts and physical items, with confidence and steward status.","a metadata catalog with lineage and business-term mapping","Proposed mappings can raise a sensitivity level immediately but only validated ones can lower it."],
+ ["Mediation Holon","The layer that holds the mapping graph, the URI registry and rule compilation.","a semantic layer plus MDM plus a policy compiler","It insulates the business model from fast-changing physical systems."],
+ ["URI / Enterprise Entity ID","One canonical identifier per real-world entity.","MDM golden record ID","Every system's IDs resolve to it, including vector chunks."],
+ ["RDSG gateway","Requirements-Driven Semantic Gateway: the checkpoint every agent call passes.","API gateway plus policy decision point plus safety interlock","It assembles governed context before the agent acts, not only filters afterward."],
+ ["Requirement Context Bundle","The request decomposed into WHO, WHAT, WHEN, WHERE and WHY.","request context like JWT claims","Purpose (WHY) and time (WHEN) are first-class, so purpose limits can be enforced."],
+ ["PEP","Policy enforcement point; six domains: compliance, risk, legal, security, data governance, AI governance.","authorization checks at the gateway","Rule content is authored and harmonized centrally, then compiled."],
+ ["STPA / UCA","System-theoretic safety analysis; unsafe control actions are the agent actions that could cause harm.","a safety interlock list","Irreversible actions are identified up front and routed to the Simplex gate."],
+ ["Simplex gate","Holds irreversible actions until a person authorizes them.","two-person rule for production changes","Approvals are recorded with the decision they released."],
+ ["Circuit breaker","Measures each decision's distance from the reference model and sets a verdict and agent state.","service-mesh circuit breaker","It trips on meaning (wrong facts, wrong context, wrong intent), not on error rates."],
+ ["MTBH","Mean time between hallucinations, tracked per WHO / WHAT / WHEN / WHERE / WHY.","MTBF for AI reliability","Dimensional, so a routing failure does not shut down unrelated work."],
+ ["Decision envelope","The structured record every agent action must produce.","a mandatory audit event that gates the call","It is also the AEO's onboarding contract for client agents."],
+ ["PROV-O","W3C provenance model.","immutable audit log with lineage","Links each output to inputs, rules, model version and approver."],
+ ["Clearance tier","The highest sensitivity an agent may read, computed from its tools' data.","a security clearance for a workload","Derived, not declared: change the tools and the tier recalculates."],
+ ["Virtual graph","Legacy data exposed as a graph through mappings.","data virtualization","No copies, so no second system of record to secure."],
+ ["Sanitization","Exclusion of tripped outputs and client-specific content from training.","quarantine before a training set","Prevents one client's failure from becoming everyone's model behavior."]
+];
+const SOURCES=[
+ ["Holonic Semantic Governance Architecture v4.2","The reference architecture: holarchy levels, Mediation Holon, compiled governance, RDSG gateway, MTBH, agentic, governance and virtualization layers.","https://docs.google.com/document/d/1ivF7QgPKSan4CeI7XiB3IAzoKm1CjQ8hnq5V8r2MvHg"],
+ ["Customer Advisor on Keel and North Star","The agent fabric, the rule that agent-to-agent calls pass the gateway, and how the platform overlays legacy systems.","https://claude.ai/artifact/8qdVyBAgHKcWQQWpPFPFja"],
+ ["Keel Classification Scheme","Sensitivity levels and facets, propagation through mappings, and compiled targets per port.","https://claude.ai/artifact/8n8aUgjsayU3Eba5ydnbdR"],
+ ["Sales Advisor Circuit Breaker","The decision envelope, distance measures, verdicts, agent states, trustee workbench and rollout phases.","https://claude.ai/artifact/GerKruaJyVr4M24kM2F4Wm"],
+ ["SUDO Agility Blueprint","Micro-agents paired with micro-services, agent choice by decision context, and the prove, industrialize, externalize path.","https://claude.ai/artifact/NZi1ZS3G8bUwJH8gCFWaQb"]
+];
+/* ===== Living Capital assembly model and walkthrough content ===== */
+const BLAYERS={
+ KEEL:["Keel knowledge holons","Definitions, rules, norms and classification · v4.2 §2–3"],
+ MED:["Mediation Holon","Mapping legacy data to concepts · §4"],
+ GOV:["Governance layer","Rule harmonization and compilation · §4.4"],
+ GW:["Gateway and agents","Context, disclosure, approvals, Insights · §5"],
+ OPS:["Operations rail","Provenance, review, lifecycle · §8"],
+ PEO:["PEO operations","Systems and teams Insperity runs today"],
+ ADD:["Additions","Extensions, new builds and partners for Living Capital"]
+};
+/* [id, layer, name, status X/T/N/P, what it is, where defined] */
+const B=[
+ ["K1","KEEL","Ontology stack","X","Business concepts such as paid hours, leave type, team and headcount","§2.1; KE Domains"],
+ ["K2","KEEL","ORSD and KGCL","X","Specification before build; reviewed change requests; pinned releases","§2.2"],
+ ["K3","KEEL","SHACL and SWRL","X","Structural and time rules, such as minimum rest between shifts","§3.1"],
+ ["K4","KEEL","LKIF norms","X","Obligations, permissions and prohibitions: FLSA, BIPA, ADA, consent, purpose limits","§2.3"],
+ ["K5","KEEL","Classification and cell size","X","C0–C4, regime floors, tenancy; minimum cell size 5 and the small-group context rule","Keel Classification Scheme"],
+ ["M1","MED","Mapping graph","X","Ties Premier and Workday columns to concepts, with confidence and steward status","§4.2"],
+ ["M2","MED","Identity and URI registry","X","One canonical ID per worker, team and client across systems","§4.6"],
+ ["M3","MED","Lineage agents","X","Detect schema drift in time, leave and collaboration sources","§4.2"],
+ ["R2","GOV","Rule harmonization","X","Finds conflicting rules across jurisdictions and entities before release","§4.4"],
+ ["P1","GOV","Compiled port targets","X","dbt metrics and minimum-cell tests, Fabric row-level security and masks, OPA disclosure rules","Keel Classification Scheme"],
+ ["P2","MED","Virtual graph","X","Reads Premier, Workday and timekeeping in place; nothing copied","§3.2"],
+ ["G1","GW","Context bundle","X","Who is asking, about what, when, where and why; purpose is enforced","§5.1"],
+ ["G2","GW","Enforcement and disclosure","X","Policy checks and the disclosure matrix by audience and level","§5.1; Keel scheme"],
+ ["G4","GW","Service facade","X","Checks every answer's level and sources before release","§5.1"],
+ ["G5","GW","Approval gate","X","Holds irreversible steps (a reduction in force, a secondment start) for an authorized person","§5.1 Simplex gate"],
+ ["N1","GW","Advisor orchestrator","X","Works out persona, job and outcome, then routes","Customer Advisor"],
+ ["N2","GW","Domain agents","X","Pay, benefits, compliance, talent agents limited to their domain","Customer Advisor"],
+ ["N3","GW","Insights agent","X","Runs governed metric definitions as compiled SQL; never does the arithmetic itself","Customer Advisor"],
+ ["N4","GW","Composer and Handoff","X","Drafts answers from released content; routes to an HR specialist","Customer Advisor"],
+ ["N6","OPS","Review workbench","X","Queue where people review flagged items and record decisions","Circuit breaker design"],
+ ["N7","OPS","Provenance store","X","PROV-O record of every figure, rule, audience and approval","Circuit breaker design"],
+ ["E2","OPS","DEV/STG/PRD lifecycle","X","Rules and metrics promoted only after fixtures pass and fail as designed","§3.2"],
+ ["E3","OPS","OPS Workbench","X","Change impact and health across all levels","§8.1"],
+ ["H1","PEO","Payroll and tax engine","X","Pay runs, pay rules, overtime, multi-state tax",""],
+ ["H2","PEO","Time and attendance","X","Punches, schedules, project codes, overtime and on-call",""],
+ ["H3","PEO","Leave administration","X","PTO, FMLA and state leave, balances and return to work",""],
+ ["H4","PEO","Benefits and carrier administration","X","Master health plan, carriers, eligibility and enrollment",""],
+ ["H5","PEO","Unemployment claims filing","X","State claims and employer responses",""],
+ ["H6","PEO","Retirement plan administration","X","401(k) plan, contributions and nondiscrimination testing",""],
+ ["H7","PEO","Learning and development","X","Training catalog and delivery",""],
+ ["H9","PEO","HR service teams","X","HR specialists and the dedicated-partner model",""],
+ ["H10","PEO","Compliance team","X","Regulatory tracking and wage-and-hour review",""],
+ ["H11","PEO","Client service agreement","X","The co-employment contract and allocation of duties",""],
+ ["H12","PEO","Billing and fee engine","X","PEPM invoicing and client accounts",""],
+ ["H13","PEO","HRScale enterprise path","X","Workday-based co-employment for larger entities",""],
+ ["H14","PEO","Workers' comp and claims","X","Coverage, class codes and claims management",""],
+ ["T1","ADD","Capacity metric pack","T","Definitions for paid, production and reserved hours and capacity load","Extends Insights metrics"],
+ ["T2","ADD","Pulse survey instrument","T","Voluntary, anonymous net-energy and psychological-safety surveys","Extends Insights metrics"],
+ ["T3","ADD","Scheduling rule pack","T","Rest windows, quick-return limits, four-day patterns compiled into scheduling","Extends time and attendance"],
+ ["T4","ADD","Opt-in talent profiles","T","Pseudonymous skills and availability profiles, released by consent","Extends the URI registry"],
+ ["T5","ADD","Lab tenancy and cohort","T","Sandbox entity setup and a matched comparison cohort from the client pool","Extends HRScale path"],
+ ["T6","ADD","Segregated reserve accounting","T","Client-owned reserves for leave and furlough funds, without pooling","Extends billing"],
+ ["T7","ADD","Peer review templates","T","Structured peer-care and sponsorship conversations","Extends HR service teams"],
+ ["T8","ADD","Pay-equity and ratio metrics","T","Pay ratio, pay spread by band and peer-input bias checks","Extends Insights metrics"],
+ ["Z1","ADD","Cross-client matching marketplace","N","Matches opt-in worker profiles to needs at other clients","New build"],
+ ["Z2","ADD","Secondment framework","N","Host agreements, comp class handling and confidentiality between clients","New build; counsel"],
+ ["Z3","ADD","Pooled fund vehicle","N","Legal structure for cross-employer leave or furlough pools","New build; counsel"],
+ ["Q1","ADD","Mental-health providers","P","Coaching and therapy partners priced on the pool","Partner"],
+ ["Q2","ADD","Care providers","P","Childcare and eldercare slots bought by a metro consortium","Partner"],
+ ["Q3","ADD","Ownership advisors","P","ESOP, employee ownership trust and co-op valuation and legal partners","Partner"],
+ ["Q4","ADD","Leadership and coaching partners","P","Care-based leadership and self-management coaching","Partner"]
+];
+/* [service id, blocks, what is assembled] */
+const BOMS=[
+ ["REC.01",["H3","H4","K4","T6","Z3"],"Leave and carrier administration exist. Pooling across employers needs a fund vehicle counsel can clear; client-segregated reserves work in the meantime."],
+ ["REC.02",["H3","H1","K4","H9"],"A leave type with pay continuation in payroll; norms set eligibility; the HR specialist builds the backfill plan."],
+ ["REC.03",["Q1","H4","K5","N3"],"A partner benefit administered like any other plan; utilization released only as aggregates."],
+ ["REC.04",["T3","H2","K3","K4","E2"],"Rest-window rules defined once and compiled into the scheduling tool, promoted through the lifecycle."],
+ ["REC.05",["Q2","H4","H12","K1"],"Partner care slots bought by a metro consortium; billed and administered like a benefit."],
+ ["REC.06",["H3","K1","K4"],"A new leave type with norms for eligibility; tracked like any other leave."],
+ ["REC.07",["H14","H3","K5","G2"],"Workers' comp and leave teams run it; medical detail is C4 and the client sees restrictions only."],
+ ["CAP.01",["H2","P2","M1","N3","K5","T1"],"Time data read in place, mapped to capacity concepts, computed by Insights and released only for teams of 5 or more."],
+ ["CAP.02",["T1","H2","H1","K4","G2"],"The cap is a norm on assigned work; payroll rules keep reserved time paid for non-exempt staff."],
+ ["CAP.03",["H7","H2","N3","T1"],"Reserved hours tagged by use in timekeeping and learning records."],
+ ["CAP.04",["H2","H1","N3","K5","G2"],"An Insights metric over time data with an alert routed only to the manager and HR."],
+ ["CAP.05",["H3","N3","N4"],"Leave balances plus a drafted nudge to the worker and manager."],
+ ["CAP.06",["M3","P2","K4","K5","T1","G4"],"Collaboration metadata mapped as aggregates only; message content is never mapped; purpose-limited."],
+ ["POOL.01",["T4","M2","K5","Z1"],"Opt-in profiles on canonical IDs; the matching marketplace is new."],
+ ["POOL.02",["Z2","H14","H11","K4"],"Needs the secondment framework; comp class and contract handling reuse existing teams."],
+ ["POOL.03",["H4","H1","K3","K4"],"Eligibility rules checked against reduced or loaned hours before the plan is affected."],
+ ["POOL.04",["Z3","T6","H12"],"Client-segregated reserves first; a pooled vehicle only once counsel clears it."],
+ ["POOL.05",["H5","H1","K1","K4"],"The unemployment-claims team files state work-share plans; jurisdiction terms say where programs exist."],
+ ["POOL.06",["H9","H1","K4","H10"],"HR specialists design it; payroll and compliance check exempt-pay rules for partial weeks."],
+ ["POOL.07",["K4","G5","H9","T4","N6"],"A norm requires the review before any reduction; the approval gate holds the step until it is recorded."],
+ ["OWN.01",["H6","H1","N3"],"Profit sharing through the existing retirement plan or payroll."],
+ ["OWN.02",["Q3","H9","H11"],"Partner valuation and legal work, coordinated by the HR specialist."],
+ ["OWN.03",["T8","N3","K5","P1","G4"],"Ratio metrics computed in place; released to the client only, never across clients."],
+ ["OWN.04",["H7","H9"],"A course in the existing learning catalog."],
+ ["OWN.05",["H12","K4","H10"],"Matching contributions billed through the fee engine under charitable rules."],
+ ["STR.01",["H9","K1","K4"],"HR specialists design pods; decision rights recorded as roles and norms."],
+ ["STR.02",["K1","K3","P2","N2"],"Commitments modeled as concepts and validated like any other record."],
+ ["STR.03",["H9","H7","T7"],"Sponsorship conversations on structured templates."],
+ ["STR.04",["T7","T8","K4","N3"],"Peer input collected on templates and tested for bias before it informs pay."],
+ ["STR.05",["K3","K4","H10","H1"],"Exempt-status rules checked against the new roles before payroll changes."],
+ ["STR.06",["H9","Q4"],"Coaching from partners and HR specialists."],
+ ["CARE.01",["H7","Q4"],"Partner leadership curriculum delivered through the learning catalog."],
+ ["CARE.02",["T7","H9"],"Peer conversations on structured templates, kept with existing review records."],
+ ["CARE.03",["N1","N4","H3","H4","K5","G2","G1"],"The advisor routes life-stage questions to leave and benefits; health detail stays C4."],
+ ["CARE.04",["T2","K5","N3","P1"],"A voluntary pulse released only for teams of 5 or more."],
+ ["LAB.01",["H13","H11","R2","T5"],"The HRScale path co-employs the lab entity; harmonization checks its plans against the parent."],
+ ["LAB.02",["K2","K1"],"Hypothesis and measures recorded as a pinned specification before the lab starts."],
+ ["LAB.03",["T3","H1","K4","H10"],"Schedule patterns compiled from the rule pack; daily-overtime rules checked by jurisdiction."],
+ ["LAB.04",["T5","N3","K5","M2"],"A matched cohort from the client pool, released only as an aggregate."],
+ ["LAB.05",["R2","H9","E3"],"Impact analysis shows what changing the parent's rules would touch."],
+ ["MEAS.01",["N3","K5","P1","P2","M1","T1","G1"],"Governed metrics over mapped data, released by the same cell-size and disclosure rules everywhere."],
+ ["MEAS.02",["T2","K5","N7"],"A voluntary survey whose answers never leave the aggregate."],
+ ["MEAS.03",["N3","N7","K2","H10"],"A published claim backed by provenance and a pinned release, reviewed by compliance."],
+ ["MOD.01",["H12","H11","K2"],"A new tier in the fee engine and contract, with its services released as a set."],
+ ["MOD.02",["H12","H13"],"Modules billed on their own for HRCore clients."],
+ ["MOD.03",["T5","H13","H11"],"The lab services sold as one engagement on the HRScale path."]
+];
+const EM=[
+ ["Scorecard without surveillance",["K5","P1","N3"],"Every figure is computed in place and released only with 5 or more people behind it, including totals that would let a small team be subtracted back out.",["MEAS.01","CARE.04","CAP.01"]],
+ ["Wage-and-hour safety by default",["K4","K3","H1"],"Reserved time, rest windows and flattened roles are checked against wage-and-hour norms before anything reaches a pay run.",["CAP.02","REC.04","STR.05","LAB.03"]],
+ ["Redeploy before reduce",["K4","G5","T4"],"A reduction cannot pass the approval gate until internal moves, exchange matches and work-share were checked and recorded.",["POOL.07","POOL.05"]],
+ ["Consent-gated mobility",["T4","M2","K5"],"Profiles are pseudonymous and tenant-scoped; a name is released only when the worker accepts a match.",["POOL.01","POOL.02"]],
+ ["Medical detail stays medical",["K5","G2","N4"],"Health detail is C4 under its regime; clients see restrictions and accommodations, never reasons.",["REC.07","CARE.03"]],
+ ["Lab results you can trust",["K2","T5","N3"],"Hypotheses and measures are pinned before the lab starts and compared against a matched cohort.",["LAB.02","LAB.04","LAB.05"]],
+ ["Claims you can defend",["N7","K2","N3"],"A published regenerative-employer statement traces every number to its rule release and source.",["MEAS.03","OWN.03"]]
+];
+
+/* map */
+const BANDS=[
+ ["callers","Who acts",["WK","CM","HU","IA"]],
+ ["ns","Agents",["N1","N2","N3","N4"]],
+ ["gw","Gateway",["G1","G2","G4","G5"]],
+ ["gov","Governance layer",["R2","R3","R1"]],
+ ["keel","Keel knowledge holons",["K1","K2","K3","K4","K5"]],
+ ["med","Mediation Holon",["M1","M2","M3"]],
+ ["peo","PEO operations",["H1","H2","H3","H4","H5","H6","H7","H9","H10","H11","H12","H13","H14"]],
+ ["data","Ports and data",["P1","P2","SR"]]
+];
+const RAIL=["O1","O2","O3","O4"];
+const RAIL2=["Z1","Z2","Z3","Q1","Q2","Q3","Q4"];
+const BMAP={N6:["O2"],N7:["O1"],E2:["O4"],E3:["O3"],T1:["N3"],T2:["N3"],T3:["H2"],T4:["M2"],T5:["H13"],T6:["H12"],T7:["H9"],T8:["N3"]};
+B.forEach(b=>{if(!BMAP[b[0]])BMAP[b[0]]=[b[0]]});
+const LC_C={
+ WK:["Workers","Workers","Co-employed people at client companies. They see their own data, take part in surveys voluntarily and decide whether to join the talent exchange.","End users with self-service access","Their own data and consent","Living Capital Service Map"],
+ CM:["Owners and managers","Client owners and managers","Client admins see team and client aggregates; managers see their own team and alerts about it. Neither sees another client's data.","Business users with role-scoped dashboards","Team-level decisions without individual surveillance","Living Capital Service Map"],
+ HU:["HR, compliance, counsel","Insperity HR specialists, compliance and counsel","People who deliver the human services (design, coaching, navigation), review flagged items and clear legal gates before a service launches.","Your service desk plus legal review","Human judgment on flagged items; legal sign-off on new constructs","Living Capital Service Map"],
+ H1:["Payroll","Payroll and tax engine","Pay runs, pay rules, overtime and multi-state tax. Living Capital rules that touch pay are checked here before any run.","Your payroll system","Wage-and-hour errors","PEO operations"],
+ H2:["Time","Time and attendance","Punches, schedules, project codes, overtime and on-call. The main source for capacity and scheduling services.","Your timekeeping system","Inaccurate capacity data","PEO operations"],
+ H3:["Leave","Leave administration","PTO, FMLA and state leave, balances and return to work.","Your absence-management system","Leave errors; medical detail exposure","PEO operations"],
+ H4:["Benefits","Benefits and carrier administration","The master health plan, carriers, eligibility and enrollment.","Your benefits-administration platform","Eligibility errors","PEO operations"],
+ H5:["UI filing","Unemployment claims filing","State unemployment claims and employer responses; reused to file work-share plans.","An existing claims workflow","Missed filings","PEO operations"],
+ H6:["Retirement","Retirement plan administration","The 401(k) plan, contributions and nondiscrimination testing.","Your retirement recordkeeping","Plan testing failures","PEO operations"],
+ H7:["Learning","Learning and development","Training catalog and delivery.","Your LMS","Untracked development time","PEO operations"],
+ H9:["HR specialists","HR service teams","HR specialists and the dedicated-partner model; they deliver the human services.","Account and support teams","Unowned client relationships","PEO operations"],
+ H10:["Compliance","Compliance team","Regulatory tracking and wage-and-hour review.","Your compliance function","Missed regulatory change","PEO operations"],
+ H11:["Client agreement","Client service agreement","The co-employment contract and its allocation of duties.","The master contract with each client","Ambiguous duties","PEO operations"],
+ H12:["Billing","Billing and fee engine","PEPM invoicing and client accounts; holds client-segregated reserves.","Your billing system","Revenue leakage","PEO operations"],
+ H13:["HRScale","HRScale enterprise path","Workday-based co-employment for larger entities; hosts enterprise lab entities.","Your enterprise HCM tenant","Lab entities outside governance","PEO operations"],
+ H14:["Workers' comp","Workers' comp and claims","Coverage, class codes and claims management.","Your claims system","Uncovered injuries; wrong class codes","PEO operations"],
+ Z1:["Matching marketplace","Cross-client matching marketplace (new)","Matches opt-in worker profiles to needs at other clients.","A two-sided marketplace","Unconsented exposure of worker identity","New build"],
+ Z2:["Secondment framework","Secondment framework (new)","Host agreements, comp class handling and confidentiality between clients.","A contract and assignment workflow","Joint-employer exposure","New build; counsel"],
+ Z3:["Fund vehicle","Pooled fund vehicle (new)","A legal structure for cross-employer leave or furlough pools.","A trust or captive arrangement","Unlicensed insurance","New build; counsel"],
+ Q1:["Mental health","Mental-health providers (partner)","Coaching and therapy partners priced on the pool.","A benefits vendor","Unmet need","Partner"],
+ Q2:["Care","Care providers (partner)","Childcare and eldercare slots bought by a metro consortium.","A benefits vendor","Caregiving attrition","Partner"],
+ Q3:["Ownership","Ownership advisors (partner)","ESOP, trust and co-op valuation and legal partners.","Professional services firms","Fiduciary errors","Partner"],
+ Q4:["Coaching","Leadership and coaching partners","Care-based leadership and self-management coaching.","Training vendors","Weak adoption","Partner"]
+};
+
+const CH=[
+ {id:"overview",n:"Overview",title:"Living Capital in one view",lede:"What the tier is for, where its practices come from, and how much of it Insperity already runs."},
+ {id:"primer",n:"Primer",title:"The platform in IT terms",lede:"Five ideas, a translation table and the questions IT teams ask first."},
+ {id:"catalog",n:"Service catalog",title:"46 Living Capital services and their bill of materials",lede:"Each service extends a PEO service, borrows a pioneer's practice, renews one layer of workforce reserve and is assembled from named building blocks. Open a row for its definition, launch risk and bill of materials."},
+ {id:"arch",n:"Architecture",title:"The architecture, one layer at a time",lede:"The same governance platform as the AEO, with Insperity's PEO operations as the main data source. Step through it, light up any service, or select a component."},
+ {id:"assemble",n:"Assemble a service",title:"Assemble one service end to end",lede:"The workforce slack index (CAP.01), which also feeds the regeneration scorecard (MEAS.01). Watch what is configured and how little is built."},
+ {id:"decision",n:"Follow a request",title:"Follow one request through the platform",lede:"The owner of Hudson Design Studio, 40 people, asks which teams are running hot. Each step shows what is computed, what is protected and what is recorded."},
+ {id:"risk",n:"Risk scenarios",title:"What happens when things go wrong",lede:"Seven failure scenarios specific to people analytics and workforce programs. Step through each control to see which one catches it."},
+ {id:"gov",n:"Governance and exposure",title:"Where each risk is contained, and what waits for counsel",lede:"Every scenario against every defense layer, the scorecard release rules, the counsel gates and the data the program will never collect."}
+];
+
+const IDEAS=[
+ ["Measure reserve, not only output","The scorecard tracks whether people end the year with more energy, capability and trust: capacity load, development hours, time off taken, regretted turnover and net energy.","IT today: HR dashboards report headcount and cost; nothing measures depletion."],
+ ["Pool what one firm cannot","Leave funds, care consortia and a talent exchange need many employers. Insperity co-employs about 300,000 people across thousands of clients.","IT today: each benefit is a separate vendor integration per client."],
+ ["The data already flows through the PEO","Time, leave, pay, turnover and promotion data sit in Premier and Workday. The platform reads them through mappings; the only new collection is a voluntary survey.","IT today: a new analytics product usually means a new data pipeline."],
+ ["Aggregates, never individuals","Every figure is released as a team or client aggregate with at least 5 people behind it. Person-level data stays with the worker, their manager and HR.","IT today: dashboards filter down to individuals by default."],
+ ["Legal answers become rules","Where counsel must rule (pooled funds, secondments, the 80/20 cap), the answer is encoded as a norm and enforced before the service can act.","IT today: legal guidance lives in a memo the system never reads."]
+];
+const LC_GLOSS=[
+ ["Soil layer","The kind of reserve a service renews: energy (recovery), capability (skills and growth) or trust (security and shared stake).","a category tag on each service","It groups outcomes on the scorecard; it is not a technical layer."],
+ ["Cell size","The number of people behind any reported figure; the Keel minimum is 5.","a k-anonymity threshold","Below 5, figures roll up or are suppressed, including any total that would let a small group be subtracted back out."],
+ ["Work-share (short-time compensation)","State programs that pay partial unemployment when hours are cut instead of jobs.","an existing unemployment-claims workflow","The PEO already files unemployment claims, so this is packaging, not new capability."],
+ ["Controlled group","Tax rules that treat related companies as one employer for benefits testing and ACA status.","an org-hierarchy constraint","A lab subsidiary cannot escape it, so harmonization checks lab plan designs against the parent."],
+ ["Exempt and non-exempt","FLSA status that decides who earns overtime.","a field on the worker record that drives pay rules","Reserved development time is still paid working time for non-exempt staff."],
+ ["Secondment","A temporary loan of a worker to another employer while employment stays with the home employer.","a cross-tenant assignment","It raises joint-employer and workers' comp questions, so it waits for counsel."],
+ ["PEPM","Per employee per month pricing.","per-seat pricing","The Living Capital tier adds a PEPM fee on top of HR360."]
+];
+const KEEP_GLOSS=["Holon","Ontology","SHACL","LKIF norm","KGCL","ORSD","Mapping graph","URI / Enterprise Entity ID","RDSG gateway","Requirement Context Bundle","Simplex gate","PROV-O","Virtual graph"];
+const FAQ=[
+ ["Does Living Capital need a new data platform?","No. It reads Premier, Workday and timekeeping through the virtual graph and adds one voluntary pulse survey. Metrics run as governed definitions compiled to dbt and Fabric."],
+ ["How are workers protected from surveillance?","Team aggregates with a cell size of 5, purpose limits on every metric, message content never read, and no biometric or wearable data. These are compiled rules, not policy statements."],
+ ["Why use the AI governance platform for an HR product?","The classification, disclosure and provenance controls that make agents safe also make people analytics safe. Building them once serves both."],
+ ["What do we actually build?","Three new components: a cross-client matching marketplace, a secondment framework and a pooled fund vehicle. Four partner categories supply mental health, care, ownership advice and coaching. The rest is configuration and eight small extensions."],
+ ["What waits for counsel?","Services marked Counsel in the catalog, such as pooled funds, secondments, the 80/20 cap, after-hours analysis, peer input to pay and enterprise labs. Each has an interim position."],
+ ["Where do agents fit?","The Insights agent computes and explains metrics, the Composer drafts answers and Handoff routes to an HR specialist. People deliver the human services: design, coaching and navigation."]
+];
+const LC_SOURCES=[
+ ["Living Capital Service Map","The 46 services, the pioneers, the scorecard and the enterprise lab protocol.","https://claude.ai/artifact/BRn5PJKTEFBAPw8En8YxxN"],
+ ["Future of Work Proposal","The pilot, pricing units, roadmap and risks for Living Capital and the AEO.","https://claude.ai/artifact/1L7EYFnQw6NAEGy4GVa8DR"]
+];
+const PIONEERS=[
+ ["Barry-Wehmiller","Truly Human Leadership; life-stage empathy","Peer-care frameworks instead of traditional ratings; shared unpaid furloughs, CEO down, instead of layoffs",["POOL.05","POOL.06","CARE.01","CARE.02","CARE.03"]],
+ ["Patagonia","Autonomy, outdoor rhythm, sabbaticals","\"Let My People Go Surfing\"; on-site childcare; paid environmental activism leave",["REC.01","REC.02","REC.05","REC.06"]],
+ ["Mondragon","Worker ownership; systemic reinvestment","Surplus flows to education and wage solidarity; talent redeployed across co-ops in recessions",["POOL.01","POOL.02","POOL.07","OWN.01","OWN.02","OWN.03","OWN.05"]],
+ ["Buurtzorg","Self-managing nurse teams","Small autonomous teams with coaches instead of middle management",["STR.01","STR.05","STR.06"]],
+ ["W.L. Gore","Lattice structure; peer sponsorship","Associates choose sponsors and negotiate commitments instead of reporting lines",["STR.02","STR.03","STR.04"]]
+];
+
+const ARCH=[
+ {t:"Who acts",hl:["WK","CM","HU","IA"],b:`<p><b>Workers</b> see their own data and choose whether to take part in surveys and the talent exchange. <b>Owners and managers</b> see team and client aggregates. <b>Insperity HR specialists, compliance and counsel</b> deliver the human services and clear legal gates. <b>Agents</b> compute and explain.</p><div class="callout"><b>Key idea:</b> most Living Capital services are delivered by people. The platform makes the measurement and the rules safe.</div>`},
+ {t:"PEO operations: the source of everything",hl:["H1","H2","H3","H4","H5","H6","H7","H9","H10","H11","H12","H13","H14"],b:`<p>Every service extends something Insperity runs today: payroll, time, leave, benefits, unemployment filing, retirement, learning and service teams. That is why so many services are ready on day one.</p><p>No new system of record is created. Living Capital reads these systems; it does not replace them.</p>`},
+ {t:"Mediation Holon: map, don't migrate",hl:["M1","M2","M3","P2","SR"],b:`<p>Punches and project codes in Premier, leave in Workday and enrollments with carriers are mapped to concepts such as paid hours, production hours, leave type and team.</p><ul><li>The <b>URI registry</b> gives each worker, team and client one ID across systems.</li><li><b>Lineage agents</b> catch schema changes, so a renamed column updates a mapping instead of breaking a metric.</li><li>The <b>virtual graph</b> reads data in place: no copies, no second store to secure.</li></ul>`},
+ {t:"The Keel: definitions, norms, classification",hl:["K1","K2","K3","K4","K5"],b:`<p>Metrics are defined once, as concepts, so capacity load means the same thing in every report. Laws become typed norms: FLSA pay rules, BIPA and ADA limits, consent for the talent exchange, purpose limits on every metric.</p><p>Classification does the privacy work: person-level hours are C3, medical leave reasons are C4, and team aggregates drop to C2 only with 5 or more people. A context rule raises any smaller group back to C3.</p>`},
+ {t:"Governance layer: compiled into tools you run",hl:["R2","R3","R1","P1"],b:`<p>Each definition and rule is compiled into runtime targets: dbt metrics and minimum-cell tests, Fabric row-level security and masks, OPA disclosure rules and scheduling rule packs. Every artifact links back to the rule that produced it.</p><p>Harmonization runs first. It is what catches, for example, an enterprise lab's benefit plan conflicting with its parent's controlled-group testing.</p>`},
+ {t:"Gateway and agents",hl:["G1","G2","G4","G5","N1","N2","N3","N4"],b:`<p>Every request, whether an owner asking a question or a scheduled manager alert, gets a context bundle that includes its purpose. The disclosure matrix decides what each audience may see; the service facade checks the answer before it leaves.</p><p>The <b>approval gate</b> holds irreversible steps, such as a reduction in force or a secondment start, until an authorized person signs off.</p>`},
+ {t:"Operations rail, new builds and partners",hl:["O1","O2","O3","O4","Z1","Z2","Z3","Q1","Q2","Q3","Q4"],b:`<p>Provenance, review, impact analysis and the DEV/STG/PRD lifecycle run alongside every layer.</p><p>Only three components are new: the matching marketplace, the secondment framework and the pooled fund vehicle. The last two also wait for counsel. Four partner categories supply mental health, care, ownership advice and coaching.</p>`}
+];
+
+const ASM=[
+ {t:"The service and its starting point",hl:[],b:`<p><b>CAP.01 Workforce slack index</b> shows planned versus available hours by team and flags teams running above 80% production load for two consecutive periods. Its output also feeds the <b>MEAS.01 regeneration scorecard</b>.</p><p>Built from scratch, this needs a pipeline from timekeeping, a metrics store, a privacy review, a dashboard and an alerting service. On the platform, every one of those exists. The work is six steps.</p><div class="callout"><b>Watch the map:</b> highlighted components are configured in each step.</div>`,led:[]},
+ {t:"Specify the governance contract",hl:["K2","HU"],b:`<p>A steward writes the ORSD before anything is modeled. The release rule protects small teams, including against subtraction.</p>`,code:["ORSD · illustrative","orsd: lc:CapacityLoad\npurpose: Show where teams run above sustainable load without exposing individuals\nscope: client teams on Living Capital; source: time and attendance\nnorms:\n  obligation:  flag a team above 80% production load for two consecutive periods\n  permission:  show team aggregates to the client admin and that team's manager\n  prohibition: release one person's hours to anyone but the worker, their manager and HR\nrelease rule: a team under 5 is combined with others, and no figure is shown\n              that would let it be subtracted back out\nsteward: Workforce Analytics Domain Governance Team"],led:["ORSD lc:CapacityLoad approved"]},
+ {t:"Model the concepts and norms",hl:["K1","K3","K4","K5","K2"],b:`<p>The concepts, the small-team context rule and the alert norm go into a domain holon as a KGCL change request. Person-level hours are C3; the team metric is C2.</p>`,code:["Turtle · illustrative syntax","lc:paidHours       isp-class:defaultSensitivity isp-class:C3 .\nlc:productionHours isp-class:defaultSensitivity isp-class:C3 .\n\nlc:capacityLoad a owl:Class ;\n    skos:definition \"Production hours divided by paid hours, per team and period.\" ;\n    isp-class:defaultSensitivity isp-class:C2 .\n\nlc:Rule_SmallTeam a isp-class:ContextRule ;\n    isp-class:combines lc:capacityLoad , pes:headcount ;\n    isp-class:condition \"Fewer people in the team than the minimum cell size.\" ;\n    isp-class:resultingSensitivity isp-class:C3 .\n\nlc:Norm_FlagOverload a lkif:Obligation ;\n    lc:condition \"capacityLoad > 0.80 for 2 consecutive periods\" ;\n    lkif:sanction lc:ManagerAlert .\n\n# CR-0212  target: ontology-domain-workforce  approver: Workforce Analytics DGT"],led:["KGCL CR-0212: capacity concepts, small-team rule, alert norm"]},
+ {t:"Map the time data",hl:["M1","M3","P2","H2","SR"],b:`<p>Premier's time columns are mapped to the concepts. Project codes are mapped to production or reserved time through a code list. Codes nobody has mapped stay Held at C3 and are left out of the metric until a steward classifies them.</p>`,code:["Mapping assertions","wb:map_paid_hours a isp-map:Mapping ;\n    isp-map:subject lc:paidHours ; isp-map:predicate skos:exactMatch ;\n    isp-map:object wb:col_premier_time_hours ;\n    isp-map:correspondenceType isp-map:DomainToAssetSchema ;\n    isp-map:status isp-map:Validated .\n\nwb:map_production_codes a isp-map:Mapping ;\n    isp-map:subject lc:productionHours ; isp-map:predicate skos:narrowMatch ;\n    isp-map:object wb:codelist_premier_project_production ;\n    isp-map:correspondenceType isp-map:DomainToAssetSchema ;\n    isp-map:status isp-map:Validated ."],led:["Time columns and project-code list mapped and validated"]},
+ {t:"Compile the rules",hl:["R2","R3","R1","P1"],b:`<p>Harmonization finds no conflicts. The pipeline emits a dbt metric with a minimum-cell test and an OPA disclosure rule, each linked to its source.</p>`,code:["Generated · dbt and Rego","# dbt  (source: lc:capacityLoad, release 2026.10.3)\nmetrics:\n  - name: capacity_load\n    expr: sum(production_hours) / sum(paid_hours)\n    dimensions: [client_id, team_id, period]\ntests:\n  - min_cell_size: {group_by: [client_id, team_id], min: 5,\n                    on_fail: combine, block_subtraction: true}\n\n# Rego  (source: lc:CapacityLoad norms)\npackage lc.capacity\nallow if {\n    input.level == \"team\"\n    input.cell_size >= 5\n    input.role in {\"client_admin\", \"team_manager\"}\n}\nallow if {\n    input.level == \"person\"\n    input.subject == input.requester\n}"],led:["Harmonization: no conflicts","dbt metric and OPA rule published, release 2026.10.3"]},
+ {t:"Compose the experience",hl:["N3","N4","N2","G1"],b:`<p>The metric is registered with the Insights agent and the alert with the Composer. When a team trips the norm, its manager gets an alert with suggested next steps from other Living Capital services.</p>`,code:["Registration","{\n  \"metric\": \"lc:capacityLoad\",\n  \"agent\": \"insights\",\n  \"release\": \"keel:release/2026.10.3\",\n  \"audiences\": [\"client_admin\", \"team_manager\", \"worker_self\"],\n  \"alert\": {\n    \"norm\": \"lc:Norm_FlagOverload\",\n    \"route\": \"team_manager\",\n    \"suggest\": [\"CAP.05\", \"REC.02\", \"POOL.01\"]\n  },\n  \"feeds\": [\"MEAS.01\"]\n}"],led:["Metric and alert registered; feeds the scorecard"]},
+ {t:"Prove and promote",hl:["O4","O2","HU"],b:`<p>Fixtures prove the rules, including the cases that must fail, before promotion from DEV to STG to PRD.</p>`,code:["Fixtures","valid    team of 12 at 86% for 2 periods            → alert to manager\nvalid    team of 12 at 78%                          → no alert\ninvalid  team of 3 shown on its own                 → combined   (expected)\ninvalid  all-teams-but-one total revealing a team of 3 → blocked (expected)\ninvalid  a peer manager asks for one person's hours → denied     (expected)"],after:`<div class="callout"><b>Built new for this service:</b> one extension, the capacity metric pack. Everything else is configuration: one ORSD, one change request, two mappings, two compiled artifacts and one registration.</div>`,led:["Fixtures: 2 pass, 3 fail as designed","Promoted to PRD"]}
+];
+
+const DEC=[
+ {t:"The owner asks a question",hl:["CM","N1"],b:`<p>The owner of Hudson Design Studio asks the advisor: <i>"Which of my teams are running hot?"</i> The orchestrator recognizes a capacity question and routes it to Insights. It holds no data access itself.</p>`,led:["Request received from the client admin"],state:["Received","t-info"]},
+ {t:"Who is asking, and why",hl:["G1","CM"],b:`<p>The gateway resolves the requester: client admin role, tenant Hudson. The context bundle records purpose as <b>advisory</b>, which this metric permits. A request with purpose <i>performance evaluation of individuals</i> would be refused here.</p>`,led:["Role and tenant verified; purpose advisory permitted"],state:["Identified","t-info"]},
+ {t:"Pin the rules",hl:["G1","K2","K5"],b:`<p>The request is evaluated against release 2026.10.3 of the rules, so the answer can be reproduced later. Context: owner persona, capacity load, last three periods, Hudson's Illinois worksite.</p>`,led:["Rules pinned: keel:release/2026.10.3"],state:["In context","t-info"]},
+ {t:"Compute in place",hl:["N3","P2","M1","H2"],b:`<p>Insights runs the compiled metric over Premier's time data through the virtual graph. No data is copied, and the language model does none of the arithmetic.</p>`,code:["Raw result · not yet released","team                  people   load, last 3 periods\nStudio operations        14     88%  91%  87%\nClient services          11     79%  78%  80%\nDesigners                 3     94%  96%  92%\nAdmin and finance        12     71%  70%  73%"],led:["Metric computed for 4 teams (40 people)"],state:["Computed","t-info"]},
+ {t:"Classify every cell",hl:["K5","P1"],b:`<p>Each figure is classified before anyone sees it. Three teams have 5 or more people and drop to C2. The designers are 3 people, so the small-team rule raises their figure to C3.</p><p>The minimum-cell test combines the designers with admin and finance. Because the other two teams are shown and the owner knows the studio's headcount, the studio total is also withheld, so the designers cannot be subtracted back out.</p>`,code:["After classification","Studio operations     14   88% 91% 87%   C2   released, flagged\nClient services       11   79% 78% 80%   C2   released\nDesign, admin, finance 15  77% 76% 78%   C2   combined group\nStudio total          40   —              —    withheld (subtraction)"],led:["Small-team rule applied to Designers (3)","Combined group formed; studio total withheld"],state:["Classified","t-warn"]},
+ {t:"Disclose by audience",hl:["G2","G4"],b:`<p>The disclosure matrix allows a client admin to see team aggregates at C2. No individual's hours are released. The service facade checks that the answer carries its level and sources.</p>`,led:["Disclosure: team aggregates permitted; facade check passed"],state:["Released","t-ok"]},
+ {t:"Answer with next steps",hl:["N4","HU"],b:`<p>The Composer drafts the answer: Studio operations has been above 80% for three periods and has tripped the alert. It suggests time-off nudges (CAP.05), a sabbatical backfill plan (REC.02) and a temporary match from the talent exchange (POOL.01). It explains in one line why design is shown as a combined group, and offers a call with the HR specialist.</p>`,led:["Answer drafted; HR specialist offered"],state:["Answered","t-ok"]},
+ {t:"Record",hl:["O1"],b:`<p>The provenance store records the metric release, cell sizes, the small-team rule, the combined group, the audience and the purpose. The same figures flow into the regeneration scorecard under the same rules.</p><div class="callout"><b>Result:</b> the owner can act on real load data without ever seeing an individual's hours or a 3-person team's figures.</div>`,led:["PROV-O record written; scorecard updated"],state:["Recorded","t-ok"]}
+];
+
+const RISK=[
+ {id:"small",name:"Re-identifying a small team",setup:"A client manager filters the scorecard to the 3-person design team, then asks for \"all teams except design\" to work it out by subtraction.",
+  checks:[["K5","caught","Classification: the design team's figures are raised to C3 by the small-team rule."],["P1","caught","Minimum-cell test: the \"all except design\" slice would let the team be subtracted back out, so it is blocked."],["G2","ok","Disclosure: the manager sees team aggregates only."],["N3","note","Insights offers the combined group instead."],["O1","ok","Provenance records the blocked slice and the rule."]],
+  v:{verdict:["COMPLY (combined)","t-ok"],stops:"The small-team rule and the subtraction check in the compiled minimum-cell test.",evidence:"Cell sizes, rule applied, blocked query",loss:"None.",residual:["Low","t-ok"],note:"The protection is compiled into every metric, not configured per report."}},
+ {id:"bio",name:"Wearable data in the energy score",setup:"A client asks to add employees' wearable sleep scores to the net energy measure.",
+  checks:[["K2","caught","Specification: the net energy survey's ORSD limits it to voluntary, anonymous survey answers."],["K4","caught","Norms: biometric and wellness-device data is prohibited (Illinois BIPA; ADA and GINA wellness limits)."],["M1","caught","Mapping: a proposed mapping of the wearable feed hits the C4 BIPA regime floor and is never validated."],["G2","caught","Compliance policy denies the request."],["HU","ok","The compliance team explains the decision to the client."]],
+  v:{verdict:["HALT","t-bad"],stops:"Four independent controls, starting with the specification.",evidence:"Rejected change request and mapping proposal",loss:"None.",residual:["Low","t-ok"],note:"The data never enters the platform, so there is nothing to protect afterward."}},
+ {id:"unpaid",name:"Reserved time configured as unpaid",setup:"A client sets up the 80/20 cap so the reserved 20% is unpaid for hourly staff.",
+  checks:[["K3","caught","Rule: reserved hours are paid working time for non-exempt workers."],["K4","caught","Norm: the FLSA obligation to pay all hours worked."],["H1","caught","Payroll rule check: the configuration is rejected before it reaches a pay run."],["H10","ok","Compliance reviews and contacts the client."],["O1","ok","Provenance records the rejected configuration."]],
+  v:{verdict:["HALT (configuration rejected)","t-bad"],stops:"The wage-and-hour rule, enforced in payroll.",evidence:"Rejected configuration and rule source",loss:"None. A client that overrode it outside the platform would bear it.",residual:["Medium","t-warn"],note:"State daily-overtime rules (for example California) need jurisdiction terms to be complete."}},
+ {id:"second",name:"Borrowing workers from another client",setup:"A client wants to borrow two technicians from another client starting next week.",
+  checks:[["Z2","caught","The secondment framework does not exist yet; the service is gated for counsel."],["K4","caught","Norm: a host agreement and a comp class check are required before any secondment."],["G5","ok","Approval gate: both clients and the worker must approve."],["H14","ok","Workers' comp verifies the class code at the host."],["K5","ok","Confidentiality: neither client sees the other's data."]],
+  v:{verdict:["FREEZE (until counsel clears)","t-warn"],stops:"The counsel gate, then the host-agreement norm.",evidence:"Request, approvals, agreement status",loss:"Allocated by the host agreement once it exists.",residual:["Medium","t-warn"],note:"Joint-employer exposure is the open legal question."}},
+ {id:"exchange",name:"Browsing another client's people",setup:"Client A browses the talent exchange and tries to find out who at client B is available.",
+  checks:[["M2","caught","Profiles are pseudonymous canonical IDs, not names."],["K5","caught","Profiles are C3 and scoped to the worker's tenant."],["G2","ok","Browsing shows skills and availability only."],["G5","ok","A name is released only when the worker accepts the match."],["O1","ok","Every view and release is recorded."]],
+  v:{verdict:["COMPLY","t-ok"],stops:"Pseudonymous IDs and tenant-scoped classification.",evidence:"View log, consent record",loss:"None.",residual:["Low","t-ok"],note:"Consent is the release condition, enforced at the gate."}},
+ {id:"surveil",name:"A named after-hours list",setup:"A manager asks for a list of who sends email after 10 p.m.",
+  checks:[["G1","caught","Context: the stated purpose (evaluate individuals) does not match the metric's registered purpose (find structural overload)."],["K4","caught","Norm: purpose limit on after-hours analysis; message content is never read."],["G2","caught","Disclosure denies an individual list; team aggregates only."],["N4","ok","The Composer offers the team view and overtime alerts instead."],["HU","note","After-hours analysis is gated for counsel because of monitoring-notice laws."]],
+  v:{verdict:["HALT","t-bad"],stops:"Purpose enforcement in the context bundle and the norm.",evidence:"Request, stated purpose, denial",loss:"None.",residual:["Medium","t-warn"],note:"Monitoring-notice rules vary by state; the service stays gated until counsel sets the notice terms."}},
+ {id:"lab",name:"A lab plan that fails parent testing",setup:"An enterprise lab subsidiary designs a richer benefit plan than its parent's.",
+  checks:[["R2","caught","Harmonization flags a conflict with the parent's controlled-group nondiscrimination testing."],["K4","ok","Norm: lab scope covers handbook, review cycle and pay design, not plan structure."],["HU","ok","Benefits and counsel review the design."],["O4","ok","The lab is released only after the conflict is resolved."]],
+  v:{verdict:["FREEZE","t-warn"],stops:"The harmonization engine, before release.",evidence:"Conflict report and resolution",loss:"None if caught; otherwise plan-qualification exposure for the parent.",residual:["Medium","t-warn"],note:"Relies on harmonization plus human review, which is why LAB services carry a counsel gate."}}
+];
+const XLAYERS=[["Design time","ORSD, norms, counsel"],["Classification","levels, cell size"],["Mapping and consent","mapped sources, opt-in"],["Gateway","purpose, disclosure"],["Human review","HR, compliance, counsel"],["Evidence","PROV-O, pinned release"],["Transfer","contracts, cover"]];
+const EXPO={small:["P","P","","P","","E",""],bio:["P","P","P","P","R","E",""],unpaid:["P","","","P","R","E",""],second:["P","P","","P","R","E","T"],exchange:["P","P","P","P","R","E",""],surveil:["P","","","P","R","E",""],lab:["PD","","","","R","E",""]};
+const RISKSVC={small:["MEAS.01","CARE.04","CAP.01"],bio:["MEAS.02","MEAS.01"],unpaid:["CAP.02","STR.05"],second:["POOL.02","POOL.03"],exchange:["POOL.01"],surveil:["CAP.06","CAP.04"],lab:["LAB.01","LAB.05","MOD.03"]};
+const ASMSVC=["CAP.01","MEAS.01"];
+const LGATE={"REC.01":"Client-segregated reserves; no cross-employer pooling","CAP.02":"Cap applies to assigned work only; reserved time is paid","CAP.06":"Not offered","POOL.02":"Not offered","POOL.03":"Reviewed case by case by the benefits team","POOL.04":"Client-segregated reserves only","STR.04":"Peer input is advisory; not a pay input","LAB.01":"Scoped to handbook, review cycle and pay design","LAB.03":"Exempt staff only until state overtime review","MOD.03":"Scoped by counsel per enterprise"};
+
+/* ================= WEAVE ================= */
+Object.assign(C,LC_C);
+const SOURCES_ALL=[...LC_SOURCES,...SOURCES.filter(s=>!/Circuit Breaker/.test(s[0]))];
+const GLOSS_ALL=[...LC_GLOSS,...GLOSS.filter(g=>KEEP_GLOSS.includes(g[0]))];
+const BI=Object.fromEntries(B.map(b=>[b[0],b]));
+const SVCI=Object.fromEntries(SVC.map(r=>[r[0],r]));
+/* BOMS rows are [id, blocks, text]; normalize to [id, name, blocks, text] like the AEO model */
+BOMS.forEach(s=>{s.splice(1,0,SVCI[s[0]][2])});
+const BOMI=Object.fromEntries(BOMS.map(s=>[s[0],s]));
+const MODE={A:"Assemble",E:"Extend",P:"Partner",B:"Build"};
+const rank={X:0,T:1,P:2,N:3}, toMode=["A","E","P","B"];
+const modeOf=id=>toMode[Math.max(...BOMI[id][2].map(b=>rank[BI[b][3]]))];
+const reuse=id=>BOMI[id][2].filter(b=>BI[b][3]==="X").length;
+const uses={};BOMS.forEach(s=>s[2].forEach(b=>uses[b]=(uses[b]||0)+1));
+const counts={A:0,E:0,P:0,B:0};SVC.forEach(r=>counts[modeOf(r[0])]++);
+const rcounts={R:0,B:0,L:0};SVC.forEach(r=>rcounts[r[7]]++);
+const totalB=BOMS.reduce((a,s)=>a+s[2].length,0), existB=BOMS.reduce((a,s)=>a+reuse(s[0]),0);
+const mapOf=id=>[...new Set(BOMI[id][2].flatMap(b=>BMAP[b]||[]))];
+const STAT={X:"exists",T:"extends an existing block",N:"new build",P:"partner"};
+const svcChip=id=>`<button class="chipbtn" data-svc="${id}" title="${esc(SVCI[id][2])}">${id}</button>`;
+
+/* ================= RENDERING ================= */
+let chap="overview", step={arch:0,assemble:0,decision:0,risk:0}, scen=RISK[0].id, selComp=null, lens=null;
+let fDom="ALL", fSoil="ALL", fRdy="ALL", fMode="ALL", fBlk=null, openSvc=new Set();
+
+function mapHTML(){
+  const comp=id=>`<button class="comp" data-c="${id}" id="c-${id}" title="${esc(C[id][1])}">${esc(C[id][0])}</button>`;
+  return `<div class="sticky">
+   <div class="lens"><label class="hint" for="lensSel">Light up a service</label><select id="lensSel"><option value="">None</option>${SVC.map(r=>`<option value="${r[0]}" ${lens===r[0]?"selected":""}>${r[0]} ${esc(r[2])}</option>`).join("")}</select></div>
+   <div id="lensbar"></div>
+   <div class="map" id="map" aria-label="Architecture map">
+    <div class="bands">${BANDS.map(([k,l,ids],i)=>`${i?'<div class="flowline">↓</div>':''}<div class="band ${k==='gw'?'gw':''}"><span class="bl">${l}</span><div class="comps">${ids.map(comp).join("")}</div></div>`).join("")}</div>
+    <div class="railcol"><div class="rail"><span class="bl">Operations</span><div class="comps">${RAIL.map(comp).join("")}</div></div>
+     <div class="rail"><span class="bl">New builds and partners</span><div class="comps">${RAIL2.map(comp).join("")}</div></div></div>
+   </div><div class="detail" id="cdetail"><span class="hint">Select any component on the map for its definition, IT analogy and the risk it controls.</span></div></div>`;
+}
+function bindMap(stepHL){
+  $$("#map .comp").forEach(b=>b.onclick=()=>{selComp=b.dataset.c;showComp()});
+  $("#lensSel").onchange=e=>{lens=e.target.value||null;applyLens(stepHL)};
+  applyLens(stepHL);
+  if(selComp)showComp();
+}
+function applyLens(stepHL){
+  if(lens){
+    const r=SVCI[lens],m=modeOf(lens);
+    $("#lensbar").innerHTML=`<div class="lensbar"><b>${lens} ${esc(r[2])}</b><span class="pill m-${m}">${MODE[m]}</span><span>${BOMI[lens][2].map(b=>`<span class="bc"><span class="dot d-${BI[b][3]}"></span>${b} ${esc(BI[b][2])}</span>`).join(" ")}</span><button class="btn sm" id="lensClear">Clear</button><button class="btn sm" id="lensCat">Open in catalog</button></div>`;
+    $("#lensClear").onclick=()=>{lens=null;$("#lensSel").value="";applyLens(stepHL)};
+    $("#lensCat").onclick=()=>openInCatalog(lens);
+    highlight(mapOf(lens));
+  }else{$("#lensbar").innerHTML="";highlight(stepHL||[])}
+}
+function showComp(){
+  const d=C[selComp];if(!d)return;
+  $$("#map .comp").forEach(b=>b.classList.toggle("sel",b.dataset.c===selComp));
+  const blocks=Object.keys(BMAP).filter(b=>BMAP[b].includes(selComp));
+  const svcs=BOMS.filter(s=>s[2].some(b=>blocks.includes(b))).map(s=>s[0]);
+  $("#cdetail").innerHTML=`<span class="eyebrow">Component</span><h3>${esc(d[1])}</h3><dl><dt>What it is</dt><dd>${esc(d[2])}</dd><dt>IT analogy</dt><dd>${esc(d[3])}</dd><dt>Controls</dt><dd>${esc(d[4])}</dd><dt>Used by</dt><dd>${svcs.length?`<div class="bom">${svcs.map(svcChip).join("")}</div>`:"No catalog service directly"}</dd></dl><span class="ref">Source: ${esc(d[5])}</span>`;
+  bindSvcChips($("#cdetail"));
+}
+function highlight(ids){
+  const m=$("#map");if(!m)return;
+  m.classList.toggle("focus",ids.length>0);
+  $$("#map .comp").forEach(b=>b.classList.toggle("on",ids.includes(b.dataset.c)));
+}
+function bindSvcChips(root){$$("[data-svc]",root).forEach(b=>b.onclick=e=>{e.stopPropagation();openInCatalog(b.dataset.svc)})}
+function openInCatalog(id){fDom="ALL";fSoil="ALL";fRdy="ALL";fMode="ALL";fBlk=null;openSvc=new Set([id]);go("catalog");requestAnimationFrame(()=>{const el=$(`tr.row[data-id="${id}"]`);el&&el.scrollIntoView({block:"center"});el&&el.focus()})}
+function showOnMap(id){lens=id;step.arch=0;go("arch",true)}
+function stepper(key,steps,i){
+  return `<div class="stepmeta"><div class="dots" role="group" aria-label="Steps">${steps.map((s,j)=>`<button data-j="${j}" ${j===i?'aria-current="step"':''} aria-label="Step ${j+1}: ${esc(s.t)}">${j+1}</button>`).join("")}</div>
+   <div class="nav"><button class="btn" id="prev" ${i===0?"disabled":""}>Back</button><button class="btn pri" id="next">${i===steps.length-1?"Next chapter":"Next"}</button></div></div>`;
+}
+function bindStepper(key,steps){
+  $$(".dots button").forEach(b=>b.onclick=()=>{step[key]=+b.dataset.j;render()});
+  $("#prev").onclick=()=>{if(step[key]>0){step[key]--;render()}};
+  $("#next").onclick=()=>{if(step[key]<steps.length-1){step[key]++;render()}else go(CH[CH.findIndex(c=>c.id===chap)+1].id)};
+}
+function ledgerHTML(steps,i,label){
+  const rows=[];steps.slice(0,i+1).forEach((s,j)=>(s.led||[]).forEach(l=>rows.push([j,l])));
+  if(!rows.length)return "";
+  return `<div class="card" style="margin-top:10px"><span class="cap">${label}</span><div class="ledger">${rows.map(([j,l])=>`<div class="${j===i?'new':''}"><span>${j+1}</span><span>${esc(l)}</span></div>`).join("")}</div></div>`;
+}
+const codeHTML=c=>c?`<span class="cap">${esc(c[0])}</span><pre>${esc(c[1])}</pre>`:"";
+
+/* ---------- Overview ---------- */
+function renderOverview(){
+  const vdesc={A:"existing blocks only; the work is configuration",E:"existing blocks plus a small extension",P:"existing blocks plus a partner",B:"needs one of three new components"};
+  return `<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+   <div class="card"><h3>Extractive <span class="hint">utilization 95–100%</span></h3>
+    <svg viewBox="0 0 320 120" role="img" aria-label="Illustration: reserve declines through the year and is restarted by replacement hires" style="width:100%;max-width:440px;height:auto"><line x1="20" y1="100" x2="310" y2="100" stroke="var(--line)"/><path d="M20 30 L95 55 L150 78 L150 34 L230 64 L280 90" fill="none" stroke="var(--bad)" stroke-width="2.5"/><circle cx="150" cy="34" r="3.5" fill="var(--bad)"/><text x="156" y="30" style="font:500 10px var(--f-mono);fill:var(--muted)">replacement hire</text><text x="20" y="114" style="font:500 10px var(--f-mono);fill:var(--muted)">Jan</text><text x="290" y="114" style="font:500 10px var(--f-mono);fill:var(--muted)">Dec</text></svg>
+    <p class="it">Capacity is drawn down for quarterly output and restored by turnover. The cost shows up as recruiting, ramp time and claims.</p></div>
+   <div class="card"><h3>Regenerative <span class="hint">assigned work capped at 80%</span></h3>
+    <svg viewBox="0 0 320 120" role="img" aria-label="Illustration: reserve dips under load and recovers, ending the year higher" style="width:100%;max-width:440px;height:auto"><line x1="20" y1="100" x2="310" y2="100" stroke="var(--line)"/><path d="M20 60 C60 70 80 50 110 52 C140 54 150 66 180 58 C210 50 230 40 260 42 C280 44 295 36 310 32" fill="none" stroke="var(--ok)" stroke-width="2.5"/><circle cx="310" cy="32" r="3.5" fill="var(--ok)"/><text x="196" y="26" style="font:500 10px var(--f-mono);fill:var(--muted)">higher than January</text><text x="20" y="114" style="font:500 10px var(--f-mono);fill:var(--muted)">Jan</text><text x="290" y="114" style="font:500 10px var(--f-mono);fill:var(--muted)">Dec</text></svg>
+    <p class="it">Twenty percent of capacity goes to development, mentoring and recovery. People come back from peaks and end the year with more reserve.</p></div></div>
+  <p class="hint">Illustrations of the pattern, not measured data. The scorecard in the catalog (MEAS.01) defines how it is measured.</p>
+  <div class="sub"><h2>Three layers of reserve</h2><p>Every service renews one layer of what the brief calls workforce "soil".</p></div>
+  <div class="grid3"><div class="card"><span class="k" style="color:var(--bad)">Energy</span><p>Recovery and physical reserve: leave, sabbaticals, scheduling, care.</p></div><div class="card"><span class="k" style="color:var(--info)">Capability</span><p>Skills, growth and range: development time, exchange, self-management.</p></div><div class="card"><span class="k">Trust</span><p>Security, agency and a shared stake: furlough instead of layoff, ownership, peer care.</p></div></div>
+  <div class="sub"><h2>Where the practices come from</h2><p>Pioneers as described in the brief; verify headcounts and outcomes before external use.</p></div>
+  <div class="tablebox"><table class="st"><thead><tr><th>Organization</th><th>Investment</th><th>Mechanism</th><th>Services it informs</th></tr></thead><tbody>${PIONEERS.map(p=>`<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td><div class="bom">${p[3].map(svcChip).join("")}</div></td></tr>`).join("")}</tbody></table></div>
+  <div class="sub"><h2>How much already exists</h2><p>Assembly mode is set by the least-ready block in each bill of materials. Readiness, a separate rating, says whether counsel must rule first.</p></div>
+  <div class="vbar">${["A","E","P","B"].map(m=>`<div class="m-${m}" style="flex:${counts[m]}">${counts[m]>=4?MODE[m]+" "+counts[m]:counts[m]}</div>`).join("")}</div>
+  <div class="vlegend">${["A","E","P","B"].map(m=>`<span><span class="sw s-${m}"></span><b>${counts[m]}</b> ${MODE[m]}: ${vdesc[m]}</span>`).join("")}<span><b>${Math.round(existB/totalB*100)}%</b> of block uses are blocks that already exist</span><span><b>${rcounts.L}</b> services wait for counsel</span></div>
+  <div class="sub"><h2>Capabilities that emerge</h2><p>The platform's rules combine into protections the program depends on. Select a service code to open it.</p></div>
+  <div class="grid3">${EM.map(([n,bs,d,sv])=>`<div class="card em"><div class="eq">${bs.map(b=>`<code>${b} ${esc(BI[b][2])}</code>`).join('<span class="op">+</span>')}<span class="op">→</span><strong>${n}</strong></div><p>${esc(d)}</p><div class="serves">${sv.map(svcChip).join("")}</div></div>`).join("")}</div>
+  <div class="sub"><h2>How to use this file</h2></div>
+  <ol class="howto"><li><b>New to the concepts?</b>Start with the Primer, then the Architecture tour.</li><li><b>Looking for a service?</b>Use the catalog; every row opens its bill of materials and can light up the map.</li><li><b>Want to see it work?</b>Assemble a service, then Follow a request.</li><li><b>Assessing risk?</b>Run the Risk scenarios, then read Governance and exposure.</li></ol>
+  <div class="stepmeta" style="justify-content:flex-end"><button class="btn pri" data-go="primer">Start the primer</button></div>`;
+}
+/* ---------- Primer ---------- */
+function renderPrimer(){
+  return `<div class="grid3">${IDEAS.map(([t,d,it],i)=>`<div class="card"><span class="k">Idea ${i+1}</span><h3>${t}</h3><p>${d}</p><p class="it">${it}</p></div>`).join("")}</div>
+  <div class="sub"><h2>Translation table</h2><p>Program and platform terms, with the closest thing IT already runs and what is different.</p></div>
+  <div class="search"><input id="gq" type="search" placeholder="Filter terms, for example cell size or gateway" aria-label="Filter terms"><span class="hint" id="gcount"></span></div>
+  <div class="gloss" id="gloss"></div>
+  <div class="sub"><h2>Questions IT usually asks</h2></div>
+  <div class="grid3">${FAQ.map(([q,a])=>`<div class="card"><h3>${q}</h3><p>${a}</p></div>`).join("")}</div>
+  <div class="sub"><h2>Sources</h2></div>
+  <div class="grid3">${SOURCES_ALL.map(([t,d,u])=>`<div class="card"><h3><a href="${u}" target="_blank" rel="noopener" style="color:var(--accent)">${t}</a></h3><p class="it">${d}</p></div>`).join("")}</div>
+  <div class="stepmeta" style="justify-content:flex-end"><button class="btn pri" data-go="catalog">Open the service catalog</button></div>`;
+}
+function bindPrimer(){
+  const draw=()=>{const q=($("#gq").value||"").toLowerCase();const list=GLOSS_ALL.filter(g=>g.join(" ").toLowerCase().includes(q));
+    $("#gloss").innerHTML=list.map(([t,d,a,x])=>`<div class="card"><h4>${t}</h4><p class="an">${d}</p><p class="an"><b>Think of it as</b> ${a}.</p><p class="diff">${x}</p></div>`).join("")||`<p class="hint">No terms match. Clear the filter to see all ${GLOSS_ALL.length}.</p>`;
+    $("#gcount").textContent=`${list.length} of ${GLOSS_ALL.length} terms`};
+  $("#gq").oninput=draw;draw();
+}
+/* ---------- Catalog ---------- */
+const SC={E:"soil-E",K:"soil-K",T:"soil-T"}, RC={R:"t-ok",B:"t-warn",L:"t-bad"};
+function renderCatalog(){
+  const chipset=(id,list,cur)=>`<div class="chips" id="${id}">${list.map(([k,v])=>`<button class="chip" data-k="${k}" aria-pressed="${k===cur}">${v}</button>`).join("")}</div>`;
+  return `<div class="filters">
+   <div class="frow"><span class="lbl">Domain</span>${chipset("fdom",[["ALL","All"],...Object.entries(DOM).map(([k,v])=>[k,v[0]])],fDom)}</div>
+   <div class="frow"><span class="lbl">Soil</span>${chipset("fsoil",[["ALL","All"],...Object.entries(SOIL)],fSoil)}<span class="lbl" style="margin-left:10px">Readiness</span>${chipset("frdy",[["ALL","All"],...Object.entries(RDY).map(([k,v])=>[k,`${v} ${rcounts[k]}`])],fRdy)}</div>
+   <div class="frow"><span class="lbl">Mode</span>${chipset("fmode",[["ALL","All"],...["A","E","P","B"].map(m=>[m,`${MODE[m]} ${counts[m]}`])],fMode)}</div>
+   <div id="fblk"></div>
+   <div class="legend"><span><span class="tag soil-E">Energy</span></span><span><span class="tag soil-K">Capability</span></span><span><span class="tag soil-T">Trust</span></span><span><span class="tag t-ok">Ready</span> runs on today's operations</span><span><span class="tag t-warn">Build</span> product or data work</span><span><span class="tag t-bad">Counsel</span> legal review first</span><span><span class="dot d-X"></span> exists</span><span><span class="dot d-T"></span> extend</span><span><span class="dot d-N"></span> new</span><span><span class="dot d-P"></span> partner</span></div>
+  </div>
+  <div class="tablebox"><table id="cat"><thead><tr><th style="padding-left:14px">Service</th><th>Extends PEO service</th><th>Pioneer</th><th class="c">Soil</th><th class="c">Readiness</th><th>Bill of materials</th><th class="c">Mode</th></tr></thead><tbody></tbody></table></div>
+  <div class="stepmeta"><span class="hint" id="catcount"></span><button class="btn sm" id="copycsv">Copy CSV</button></div>
+  <details class="inv" ${fBlk?"open":""}><summary>Building blocks: select one to show only the services that use it</summary><div class="layers">${Object.entries(BLAYERS).map(([k,[n,d]])=>`<div class="layer"><div class="ln"><h4>${n}</h4><p>${d}</p></div><div class="blocks">${B.filter(b=>b[1]===k).map(b=>`<button class="blk" data-b="${b[0]}" aria-pressed="${fBlk===b[0]}" title="${esc(b[4])}"><span class="dot d-${b[3]}"></span><span class="bid">${b[0]}</span>${esc(b[2])}<span class="uses">${uses[b[0]]||0}</span></button>`).join("")}</div></div>`).join("")}</div></details>`;
+}
+function drawCatalog(){
+  const tb=$("#cat tbody");let h="",last="",n=0;
+  SVC.forEach(r=>{
+    const [id,d,name,peo,pio,soil,bund,rdy,def,risk]=r, m=modeOf(id), bom=BOMI[id];
+    if(fDom!=="ALL"&&d!==fDom||fSoil!=="ALL"&&soil!==fSoil||fRdy!=="ALL"&&rdy!==fRdy||fMode!=="ALL"&&m!==fMode||fBlk&&!bom[2].includes(fBlk))return;
+    n++;
+    if(d!==last){h+=`<tr class="dom"><td colspan="7">${DOM[d][0]}<small>${DOM[d][1]}</small></td></tr>`;last=d}
+    const open=openSvc.has(id);
+    h+=`<tr class="row${open?" open":""}" tabindex="0" data-id="${id}" aria-expanded="${open}"><td class="svc"><span class="sid">${id}</span>${esc(name)}${peo?"":'<span class="newt">new</span>'}<div class="hint" style="margin-top:2px">${esc(bund)}</div></td><td class="peo">${peo?`<code>${peo}</code>${esc(PEO[peo])}`:"No PEO base"}</td><td class="peo">${PIO[pio]}</td><td class="c"><span class="tag ${SC[soil]}">${SOIL[soil]}</span></td><td class="c"><span class="tag ${RC[rdy]}">${RDY[rdy]}</span></td><td><div class="bom">${bom[2].map(b=>`<span class="bc" title="${esc(BI[b][2])}"><span class="dot d-${BI[b][3]}"></span>${b}</span>`).join("")}</div></td><td class="c"><span class="pill m-${m}">${MODE[m]}</span></td></tr>`;
+    if(open){
+      const risks=Object.entries(RISKSVC).filter(([,v])=>v.includes(id)).map(([k])=>RISK.find(x=>x.id===k));
+      h+=`<tr class="detail"><td colspan="7"><div class="dg"><div style="display:flex;flex-direction:column;gap:8px"><p>${esc(def)}</p><dl><dt>Launch risk</dt><dd>${esc(risk)}</dd>${rdy==="L"&&LGATE[id]?`<dt>Until counsel rules</dt><dd>${esc(LGATE[id])}</dd>`:""}<dt>Assembled from</dt><dd>${esc(bom[3])}</dd>${risks.length?`<dt>Risk scenarios</dt><dd>${risks.map(x=>`<button class="linkbtn" data-scen="${x.id}">${esc(x.name)}</button>`).join(" · ")}</dd>`:""}${ASMSVC.includes(id)?`<dt>Walkthrough</dt><dd><button class="linkbtn" data-go="assemble">Watch this service being assembled</button></dd>`:""}</dl><div><button class="btn sm pri" data-map="${id}">Show on the architecture map</button></div></div>
+       <div><span class="cap">Bill of materials · ${reuse(id)} of ${bom[2].length} blocks exist</span><ul>${bom[2].map(b=>`<li><span class="dot d-${BI[b][3]}"></span><span><b>${b} ${esc(BI[b][2])}</b>: ${STAT[BI[b][3]]}. ${esc(BI[b][4])}. ${BI[b][5]?`<span class="ref">${esc(BI[b][5])}</span>`:""}</span></li>`).join("")}</ul></div></div></td></tr>`;
+    }
+  });
+  tb.innerHTML=h||`<tr><td class="empty" colspan="7">No services match these filters. Choose All, or clear the block filter.</td></tr>`;
+  $("#catcount").textContent=`${n} of ${SVC.length} services shown`;
+  $("#fblk").innerHTML=fBlk?`<div class="active">Showing services that use <b>${fBlk} ${esc(BI[fBlk][2])}</b> (${STAT[BI[fBlk][3]]}) <button class="btn sm" id="clrblk">Clear</button></div>`:"";
+  if(fBlk)$("#clrblk").onclick=()=>{fBlk=null;render()};
+  $$("tr.row",tb).forEach(tr=>{const t=()=>{const id=tr.dataset.id;openSvc.has(id)?openSvc.delete(id):openSvc.add(id);drawCatalog();const el=$(`tr.row[data-id="${id}"]`);el&&el.focus()};tr.onclick=t;tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}}});
+  $$("[data-map]",tb).forEach(b=>b.onclick=e=>{e.stopPropagation();showOnMap(b.dataset.map)});
+  $$("[data-scen]",tb).forEach(b=>b.onclick=e=>{e.stopPropagation();scen=b.dataset.scen;step.risk=0;go("risk")});
+  bindGo(tb);
+}
+function bindCatalog(){
+  const set=(id,fn)=>$$(`#${id} .chip`).forEach(b=>b.onclick=()=>{fn(b.dataset.k);render()});
+  set("fdom",v=>fDom=v);set("fsoil",v=>fSoil=v);set("frdy",v=>fRdy=v);set("fmode",v=>fMode=v);
+  $$(".blk").forEach(b=>b.onclick=()=>{fBlk=fBlk===b.dataset.b?null:b.dataset.b;render()});
+  $("#copycsv").onclick=copyCSV;
+  drawCatalog();
+}
+function copyCSV(){
+  const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const txt=[["id","domain","service","peo_base","pioneer","soil","bundle","readiness","mode","blocks","existing_blocks","definition","launch_risk"].map(q).join(","),...SVC.map(r=>[r[0],DOM[r[1]][0],r[2],r[3],PIO[r[4]]==="–"?"":PIO[r[4]],SOIL[r[5]],r[6],RDY[r[7]],MODE[modeOf(r[0])],BOMI[r[0]][2].map(b=>b+" "+BI[b][2]).join("; "),reuse(r[0])+"/"+BOMI[r[0]][2].length,r[8],r[9]].map(q).join(","))].join("\n");
+  const fb=$("#copyfallback");const show=()=>{fb.hidden=false;fb.value=txt;fb.focus();fb.select();toast("Select all and copy from the box")};
+  try{navigator.clipboard.writeText(txt).then(()=>{fb.hidden=true;toast("CSV copied")},show)}catch(e){show()}
+}
+/* ---------- Steppers ---------- */
+function renderSteps(key,steps,label){
+  const i=step[key],s=steps[i];
+  const extra=key==="assemble"&&i===0?`<div class="bom">${ASMSVC.map(svcChip).join("")}<span class="hint">open these services in the catalog</span></div>`:"";
+  return `<div class="split"><div class="story"><span class="eyebrow">Step ${i+1} of ${steps.length}${s.state?` · state <span class="tag ${s.state[1]}">${s.state[0]}</span>`:""}</span><h3>${s.t}</h3><div class="body">${s.b}${codeHTML(s.code)}${s.after||""}${extra}</div>${stepper(key,steps,i)}<span class="hint">Use ← and → to move between steps.</span></div>
+   <div>${mapHTML()}${label?ledgerHTML(steps,i,label):""}</div></div>`;
+}
+/* ---------- Risk ---------- */
+function renderRisk(){
+  const S=RISK.find(r=>r.id===scen), i=Math.min(step.risk,S.checks.length), done=i>=S.checks.length, v=S.v;
+  const checks=S.checks.map(([c,res,t],j)=>{const tag={ok:["passes","t-ok"],caught:["catches it","t-bad"],note:["note","t-info"]}[res];
+    return `<div class="chk ${j===i-1?'cur':''} ${j>=i?'fut':''}"><span class="tag ${tag[1]}">${tag[0]}</span><div><b>${esc(C[c][1])}.</b> ${esc(t)}</div></div>`}).join("");
+  return `<div class="scen" role="group" aria-label="Scenarios">${RISK.map(r=>`<button data-s="${r.id}" aria-pressed="${r.id===scen}">${r.name}</button>`).join("")}</div>
+  <div class="split"><div class="story"><span class="eyebrow">Scenario · control ${i} of ${S.checks.length}</span><h3>${S.name}</h3>
+   <div class="body"><p>${S.setup}</p><div class="bom"><span class="hint">Services involved</span>${(RISKSVC[scen]||[]).map(svcChip).join("")}</div><div class="checks">${checks}</div>
+   ${done?`<div class="verdict"><div><div class="lbl">Verdict</div><div class="v"><span class="tag ${v.verdict[1]}">${v.verdict[0]}</span></div></div><div><div class="lbl">What stopped it</div><div class="v">${v.stops}</div></div><div><div class="lbl">Evidence left</div><div class="v">${v.evidence}</div></div><div><div class="lbl">Who bears loss</div><div class="v">${v.loss}</div></div><div><div class="lbl">Residual exposure</div><div class="v"><span class="tag ${v.residual[1]}">${v.residual[0]}</span> ${v.note}</div></div></div>`:""}</div>
+   <div class="stepmeta"><span class="hint">${done?"All controls shown.":"Step through each control in order."}</span><div class="nav"><button class="btn" id="rprev" ${i===0?"disabled":""}>Back</button><button class="btn pri" id="rnext">${done?"Next scenario":i===0?"Run the controls":"Next control"}</button></div></div></div>
+   <div>${mapHTML()}</div></div>`;
+}
+function bindRisk(){
+  const S=RISK.find(r=>r.id===scen), i=step.risk;
+  $$(".scen button").forEach(b=>b.onclick=()=>{scen=b.dataset.s;step.risk=0;render()});
+  $("#rprev").onclick=()=>{if(step.risk>0){step.risk--;render()}};
+  $("#rnext").onclick=()=>{if(step.risk<S.checks.length){step.risk++;render()}else{const k=RISK.findIndex(r=>r.id===scen);scen=RISK[(k+1)%RISK.length].id;step.risk=0;render()}};
+  bindMap(i===0?[]:S.checks.slice(0,i).flatMap(c=>BMAP[c[0]]||[c[0]]));
+  if(i>0&&!lens){selComp=(BMAP[S.checks[i-1][0]]||[S.checks[i-1][0]])[0];showComp()}
+}
+/* ---------- Governance ---------- */
+function renderGov(){
+  const res=Object.fromEntries(RISK.map(r=>[r.id,r.v]));
+  const depth=id=>EXPO[id].filter(x=>/[PD]/.test(x)).length;
+  const two=RISK.filter(r=>depth(r.id)>=2).length;
+  const gates=SVC.filter(r=>r[7]==="L");
+  return `<div class="legend"><span class="cell"><span class="c-P">P</span></span> Prevents<span class="cell"><span class="c-D">D</span></span> Detects<span class="cell"><span class="c-R">R</span></span> Responds<span class="cell"><span class="c-E">E</span></span> Records evidence<span class="cell"><span class="c-T">T</span></span> Transfers loss</div>
+  <div class="tablebox"><table class="mx"><thead><tr><th>Scenario</th>${XLAYERS.map(([n,s])=>`<th style="text-align:center">${n}<small>${s}</small></th>`).join("")}<th>Independent controls</th><th>Residual</th><th>Bears loss</th></tr></thead>
+  <tbody>${RISK.map(r=>`<tr tabindex="0" data-s="${r.id}"><td><b>${r.name}</b></td>${EXPO[r.id].map(x=>`<td class="c">${x?`<span class="cell">${[...x].map(ch=>`<span class="c-${ch}">${ch}</span>`).join("")}</span>`:""}</td>`).join("")}<td class="c">${depth(r.id)}</td><td><span class="tag ${res[r.id].residual[1]}">${res[r.id].residual[0]}</span></td><td style="min-width:200px">${res[r.id].loss.split(". ")[0].replace(/\.$/,"")}.</td></tr>`).join("")}</tbody></table></div>
+  <p class="hint">Select a row to replay that scenario. Residual ratings are qualitative judgments for discussion, not measured risk scores.</p>
+  <div class="sub"><h2>Scorecard release rules</h2><p>Every measure is a team or client aggregate. An aggregate drops to C2 only when each cell holds at least 5 people; smaller groups are combined, and no figure is shown that would let them be subtracted back out.</p></div>
+  <div class="tablebox"><table class="st"><thead><tr><th>Measure</th><th>What it shows</th><th>Source</th><th>Release level</th><th>Direction</th></tr></thead><tbody>
+   <tr><td>Net energy score</td><td>Self-reported reserve at year start vs. year end</td><td>Voluntary pulse survey ${svcChip("MEAS.02")}</td><td class="num">C2 · cell ≥ 5</td><td class="num">↑</td></tr>
+   <tr><td>Capacity load</td><td>Share of paid hours assigned to production work</td><td>Time and attendance ${svcChip("CAP.01")}</td><td class="num">C2 team · C3 person</td><td class="num">≤ 80%</td></tr>
+   <tr><td>Development hours</td><td>Protected learning and mentoring hours per person</td><td>Development ledger ${svcChip("CAP.03")}</td><td class="num">C2</td><td class="num">↑</td></tr>
+   <tr><td>Time off actually taken</td><td>PTO used as a share of PTO earned</td><td>Leave balances ${svcChip("CAP.05")}</td><td class="num">C2</td><td class="num">↑</td></tr>
+   <tr><td>Regretted voluntary turnover</td><td>Departures the client wanted to keep, trailing 12 months</td><td>Termination records</td><td class="num">C2</td><td class="num">↓</td></tr>
+   <tr><td>Internal promotion velocity</td><td>Months to first internal move or promotion</td><td>Job history</td><td class="num">C2</td><td class="num">↓</td></tr>
+   <tr><td>Claims incidence</td><td>Change in claim rates for stress-linked categories</td><td>Plan data de-identified by the carrier</td><td class="num">C4 source · pooled only</td><td class="num">↓</td></tr>
+   <tr><td>Retained through downturn</td><td>People kept on payroll by work-share, furlough or secondment instead of layoff</td><td>Pool services ${svcChip("POOL.05")}</td><td class="num">C2</td><td class="num">↑</td></tr>
+  </tbody></table></div>
+  <div class="sub"><h2>Counsel gates</h2><p>${gates.length} services need a legal ruling before launch. Each has an interim position; once counsel rules, the answer is written as a norm and enforced like any other rule.</p></div>
+  <div class="tablebox"><table class="st"><thead><tr><th>Service</th><th>Question for counsel</th><th>Until counsel rules</th></tr></thead><tbody>${gates.map(r=>`<tr><td>${svcChip(r[0])} ${esc(r[2])}</td><td>${esc(r[9])}</td><td>${esc(LGATE[r[0]]||"Not offered")}</td></tr>`).join("")}</tbody></table></div>
+  <div class="find">
+   <div class="card"><h3>Never collected</h3><ul><li>Biometric or wearable data of any kind</li><li>Message or meeting content</li><li>Individual survey answers, to anyone but the worker</li><li>Another client's identifiable data</li></ul></div>
+   <div class="card"><h3>Defense in depth</h3><ul><li>${two} of ${RISK.length} scenarios meet at least two independent preventive or detective controls before harm can occur.</li><li>The rest rely on harmonization plus human review, which is why those services carry a counsel gate.</li></ul></div>
+   <div class="card"><h3>Where exposure remains</h3><ul><li>State-specific wage-and-hour and monitoring-notice rules not yet in the jurisdiction terms.</li><li>Unmapped time codes, held at C3 until a steward classifies them.</li><li>Open legal questions on pooled funds and secondments.</li></ul></div>
+  </div>`;
+}
+function bindGov(){
+  $$(".mx tbody tr").forEach(tr=>{const f=()=>{scen=tr.dataset.s;step.risk=RISK.find(r=>r.id===scen).checks.length;go("risk")};tr.onclick=f;tr.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();f()}}});
+}
+
+function bindGo(root){$$("[data-go]",root||document).forEach(b=>b.onclick=e=>{e.stopPropagation();go(b.dataset.go)})}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function render(){
+  const c=CH.find(x=>x.id===chap);
+  $$(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.c===chap));
+  const R={overview:renderOverview,primer:renderPrimer,catalog:renderCatalog,arch:()=>renderSteps("arch",ARCH,""),assemble:()=>renderSteps("assemble",ASM,"Artifacts produced so far"),decision:()=>renderSteps("decision",DEC,"Evidence recorded so far"),risk:renderRisk,gov:renderGov};
+  $("#main").innerHTML=`<section class="chapter" role="tabpanel" aria-labelledby="t-${chap}"><div class="chead"><span class="eyebrow">Chapter ${CH.indexOf(c)+1} of ${CH.length}</span><h2>${c.title}</h2><p>${c.lede}</p></div>${R[chap]()}</section>`;
+  if(chap==="primer")bindPrimer();
+  if(chap==="catalog")bindCatalog();
+  if(["arch","assemble","decision"].includes(chap)){const steps={arch:ARCH,assemble:ASM,decision:DEC}[chap];bindStepper(chap,steps);bindMap(steps[step[chap]].hl)}
+  if(chap==="risk")bindRisk();
+  if(chap==="gov")bindGov();
+  bindGo($("#main"));bindSvcChips($("#main"));
+}
+function go(id,keepLens){if(!keepLens)lens=null;chap=id;try{history.replaceState(null,"","#"+id)}catch(e){}render();window.scrollTo({top:0})}
+
+$("#tabs").innerHTML=CH.map((c,i)=>`<button class="tab" role="tab" id="t-${c.id}" data-c="${c.id}"><span class="n">${i+1}</span>${c.n}</button>`).join("");
+$$(".tab").forEach(t=>t.onclick=()=>go(t.dataset.c));
+addEventListener("keydown",e=>{
+  if(e.target.closest("input,textarea,select"))return;
+  if(!["ArrowRight","ArrowLeft"].includes(e.key))return;
+  const b=e.key==="ArrowRight"?($("#next")||$("#rnext")):($("#prev")||$("#rprev"));
+  if(b&&!b.disabled){e.preventDefault();b.click()}
+});
+$("#foot").innerHTML=`Woven from the Living Capital Service Map with an assembly model on the Keel and North Star platform. Sources: ${SOURCES_ALL.map(([t,,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}. Code, values, names and the Hudson Design Studio example are illustrative. "Exists" means defined in the architecture or run by today's PEO operations; legal questions are flagged, not answered.`;
+const start=(location.hash||"").slice(1);
+go(CH.some(c=>c.id===start)?start:"overview");
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TSIO Graph Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: three-pane workbench — control panel | graph canvas | details; details drops below canvas under 1180px, all stack under 780px. */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --sunk:#E8ECF0; --ink:#17212B; --muted:#5A6774; --line:#D3DAE1;
+  --sel:#C2255C; --link:#1F5FBF; --path:#D9480F;
+  --c-process:#B96D12; --c-object:#12806F; --c-aggregate:#2F73B0; --c-gdc:#7650C4; --c-material:#4C8429; --c-bfo:#8894A1; --c-ke:#9A4F74;
+  --s-current:#2F7D3B; --s-review:#3E6FA3; --s-revise:#B7791F; --s-draft:#7650C4; --s-withdrawn:#B03A3A; --s-series:#5A6774;
+  --shadow:0 8px 28px rgba(23,33,43,.16);
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --sel:#F06595; --link:#7FAEF5; --path:#FF8A4C;
+  --c-process:#E3A04E; --c-object:#3DC0AC; --c-aggregate:#6CA5DD; --c-gdc:#A98BEA; --c-material:#86C35E; --c-bfo:#7C8894; --c-ke:#D38FB0;
+  --s-current:#62BF70; --s-review:#7FA9D8; --s-revise:#E0A94C; --s-draft:#A98BEA; --s-withdrawn:#E07A7A; --s-series:#95A2AF;
+  --shadow:0 8px 28px rgba(0,0,0,.5); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1318; --surface:#151C23; --sunk:#1C252E; --ink:#E3E8ED; --muted:#95A2AF; --line:#2A3540;
+  --sel:#F06595; --link:#7FAEF5; --path:#FF8A4C;
+  --c-process:#E3A04E; --c-object:#3DC0AC; --c-aggregate:#6CA5DD; --c-gdc:#A98BEA; --c-material:#86C35E; --c-bfo:#7C8894; --c-ke:#D38FB0;
+  --s-current:#62BF70; --s-review:#7FA9D8; --s-revise:#E0A94C; --s-draft:#A98BEA; --s-withdrawn:#E07A7A; --s-series:#95A2AF;
+  --shadow:0 8px 28px rgba(0,0,0,.5); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);padding-inline:16px;padding-block:0}
+.app{max-width:1600px;margin:0 auto;padding-block:16px 24px;display:flex;flex-direction:column;gap:12px;min-height:100%}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 20px}
+header h1{margin:0;font-size:1.35rem;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:3px 0 0;color:var(--muted);font-size:.84rem}
+header code,.mono{font-family:var(--f-mono);font-size:.78rem}
+.theme{display:flex;gap:4px}
+.grid{display:grid;grid-template-columns:290px minmax(0,1fr) 340px;gap:12px;align-items:start;flex:1}
+@media (max-width:1180px){.grid{grid-template-columns:290px minmax(0,1fr)}.details{grid-column:1/-1}}
+@media (max-width:780px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+
+/* control panel */
+.controls{display:flex;flex-direction:column;max-height:calc(100vh - 110px);overflow:auto;position:sticky;top:12px}
+@media (max-width:780px){.controls{max-height:none;position:static}}
+.controls details{border-bottom:1px solid var(--line)}
+.controls details:last-child{border-bottom:0}
+.controls summary{cursor:pointer;list-style:none;padding:10px 14px;font-weight:600;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.controls summary::-webkit-details-marker{display:none}
+.controls summary::after{content:"+";font-size:1rem;letter-spacing:0}
+.controls details[open]>summary::after{content:"–"}
+.sec{padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+label.row{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.88rem}
+label.row .ct{margin-left:auto;font:500 .72rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.sw{width:12px;height:12px;border-radius:3px;flex:none;border:1.5px solid}
+.ls{width:24px;height:0;flex:none;border-top-width:1.6px;border-top-style:solid}
+input[type=checkbox],input[type=radio]{accent-color:var(--sel);margin:0}
+input[type=search],input[type=text]{font:inherit;font-size:.86rem;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+input[type=range]{width:100%;accent-color:var(--sel)}
+.lab{font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:500 .74rem var(--f-body);padding:3px 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.chip[aria-pressed=false]{color:var(--muted);background:var(--sunk);text-decoration:line-through;text-decoration-color:var(--muted)}
+.chip .dot{width:8px;height:8px;border-radius:50%}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:600 .8rem var(--f-body);padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{flex:1;font:500 .8rem var(--f-body);padding:5px 6px;border:0;background:var(--surface);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.result{font-size:.82rem;color:var(--muted)}
+.result b{color:var(--ink)}
+button:focus-visible,input:focus-visible,summary:focus-visible,.node:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+
+/* canvas */
+.canvas{position:relative;height:calc(100vh - 110px);min-height:520px;overflow:hidden}
+@media (max-width:780px){.canvas{height:70vh;min-height:440px}}
+.canvas svg{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.canvas svg:active{cursor:grabbing}
+.stat{position:absolute;left:10px;top:10px;font:500 .74rem var(--f-mono);color:var(--muted);background:color-mix(in srgb,var(--surface) 85%,transparent);padding:4px 8px;border-radius:5px;pointer-events:none;font-variant-numeric:tabular-nums}
+.focusbar{position:absolute;right:10px;top:10px;display:flex;gap:6px;align-items:center;font-size:.78rem;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 4px 4px 10px}
+.hint{position:absolute;right:10px;bottom:8px;font-size:.72rem;color:var(--muted);pointer-events:none}
+@media (max-width:600px){.hint{display:none}}
+text.nl{font:600 11.5px var(--f-body);fill:var(--ink);pointer-events:none}
+text.nl.small{font-size:10.5px;font-weight:500}
+text.el{font:500 10px var(--f-mono);fill:var(--muted);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+.node{cursor:pointer}
+.node .shape{stroke-width:1.5px;transition:stroke-width .12s}
+.node.sel .shape{stroke:var(--sel)!important;stroke-width:3px}
+.node.hov .shape{stroke-width:2.6px}
+.node.onpath .shape{stroke:var(--path)!important;stroke-width:3px}
+.node.dim,.edge.dim{opacity:.13}
+.edge path{fill:none}
+.edge.onpath path{stroke:var(--path)!important;stroke-width:2.6px;opacity:1;stroke-dasharray:none}
+.edge.hot path{stroke-width:2.2px;opacity:1}
+
+/* tooltip */
+.tip{position:fixed;z-index:10;max-width:340px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:12px 14px;pointer-events:none;font-size:.82rem;display:flex;flex-direction:column;gap:7px}
+.tip .k{font:600 .66rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tip h3{margin:0;font-size:.98rem;line-height:1.25}
+.tip p{margin:0}
+.tip .note{color:var(--muted);border-left:2px solid var(--line);padding-left:8px}
+.tip dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0}
+.tip dt{color:var(--muted);white-space:nowrap}
+.tip dd{margin:0;overflow-wrap:anywhere}
+.tip .foot{font-size:.7rem;color:var(--muted)}
+.pill{font:600 .66rem var(--f-body);letter-spacing:.02em;text-transform:none;padding:1px 7px;border-radius:999px;color:var(--surface);white-space:nowrap}
+
+/* details */
+.details{padding:16px;display:flex;flex-direction:column;gap:11px;max-height:calc(100vh - 110px);overflow:auto;position:sticky;top:12px}
+@media (max-width:1180px){.details{max-height:none;position:static}}
+.details .kind{font:600 .68rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.details h2{margin:0;font-size:1.15rem;line-height:1.25;text-wrap:balance}
+.iri{font:400 .72rem var(--f-mono);color:var(--muted);word-break:break-all}
+.def{margin:0;font-size:.9rem}
+.note{font-size:.82rem;color:var(--muted);border-left:2px solid var(--line);padding-left:10px;margin:0}
+.note b{color:var(--ink);font-weight:600}
+dl.props{display:grid;grid-template-columns:minmax(84px,36%) minmax(0,1fr);gap:5px 10px;margin:0;font-size:.83rem}
+dl.props dt{color:var(--muted)}
+dl.props dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.shd{font:600 .7rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 0 -3px}
+.ref{background:none;border:0;padding:0;font:inherit;color:var(--link);cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--link) 35%,transparent);text-underline-offset:2px}
+a{color:var(--link)}
+.lit small{color:var(--muted);font-family:var(--f-mono);font-size:.68rem;margin-left:3px}
+.empty{color:var(--muted);font-size:.88rem;margin:0}
+footer{color:var(--muted);font-size:.76rem;display:flex;flex-wrap:wrap;gap:4px 16px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Telecom Service Interoperability Ontology</h1>
+      <p>Graph explorer · parsed in the browser from <code>tsio.ttl</code>, <code>tsio-examples.ttl</code> and <code>tsio-ke-scheme.ttl</code></p>
+    </div>
+    <div class="seg theme" role="group" aria-label="Theme">
+      <button id="th-auto" aria-pressed="true">Auto</button><button id="th-light" aria-pressed="false">Light</button><button id="th-dark" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- CONTROL PANEL -->
+    <aside class="panel controls" aria-label="Controls">
+      <details open><summary>Explore</summary><div class="sec">
+        <input type="search" id="q" list="ents" placeholder="Find a node…" aria-label="Find a node">
+        <datalist id="ents"></datalist>
+        <label class="row"><input type="checkbox" id="focus"> Show only the selected node's neighbourhood</label>
+        <div><div class="lab"><span>Neighbourhood depth</span><span id="hops-v">1 hop</span></div>
+        <input type="range" id="hops" min="1" max="4" value="1" aria-label="Neighbourhood depth"></div>
+        <div class="btns"><button class="btn" id="expand">Show hidden neighbours</button><button class="btn" id="clear">Clear selection</button></div>
+      </div></details>
+
+      <details open><summary>Layers</summary><div class="sec" id="layers"></div></details>
+
+      <details open><summary>Relationships</summary><div class="sec" id="edges"></div></details>
+
+      <details><summary>Filter</summary><div class="sec">
+        <div class="lab"><span>BFO category (classes and instances)</span></div>
+        <div class="chips" id="f-cat"></div>
+        <div class="lab"><span>Standard status</span></div>
+        <div class="chips" id="f-status"></div>
+      </div></details>
+
+      <details><summary>Path finder</summary><div class="sec">
+        <input type="text" id="p-from" list="ents" placeholder="From node" aria-label="Path from">
+        <input type="text" id="p-to" list="ents" placeholder="To node" aria-label="Path to">
+        <div class="btns"><button class="btn primary" id="p-go">Find shortest path</button><button class="btn" id="p-clear">Clear</button></div>
+        <div class="result" id="p-res">Trace how two nodes connect across the model, instances, standards and concept scheme.</div>
+      </div></details>
+
+      <details open><summary>Display</summary><div class="sec">
+        <div class="lab"><span>Node style</span></div>
+        <div class="seg" role="group" aria-label="Node style"><button data-style="pill" aria-pressed="true">Labelled boxes</button><button data-style="dot" aria-pressed="false">Dots by degree</button></div>
+        <label class="row"><input type="checkbox" id="lbl" checked> Node labels</label>
+        <label class="row"><input type="checkbox" id="elbl" checked> Relationship labels</label>
+        <label class="row"><input type="checkbox" id="group" checked> Cluster by layer</label>
+        <div><div class="lab"><span>Link length</span><span id="dist-v"></span></div><input type="range" id="dist" min="40" max="260" value="120" aria-label="Link length"></div>
+        <div><div class="lab"><span>Repulsion</span><span id="rep-v"></span></div><input type="range" id="rep" min="100" max="1400" value="600" aria-label="Repulsion"></div>
+        <div class="btns"><button class="btn" id="fit">Fit to view</button><button class="btn" id="reheat">Re-run layout</button><button class="btn" id="freeze" aria-pressed="false">Freeze</button><button class="btn" id="reset">Reset all</button></div>
+      </div></details>
+    </aside>
+
+    <!-- CANVAS -->
+    <section class="panel canvas" id="canvas">
+      <svg id="svg" role="img" aria-label="Ontology graph"></svg>
+      <div class="stat" id="stat"></div>
+      <div class="hint">Hover for attributes · click to pin · drag nodes · scroll to zoom · double-click to focus</div>
+    </section>
+
+    <!-- DETAILS -->
+    <aside class="panel details" id="details" aria-live="polite"></aside>
+  </div>
+  <footer>
+    <span>Upper layer: BFO (ISO/IEC 21838-2).</span>
+    <span>Standards metadata checked against iso.org, 29 Sep 2026.</span>
+    <span id="ftr"></span>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script type="text/turtle" id="ttl-tsio">
+###############################################################################
+#  Telecom Service Interoperability Ontology (TSIO)
+#  Source: "MindMap (KE).svg" — branch "Service Interoperability Ontology for
+#  Telecom", aligned to an ISO/IEC 21838-2 (BFO) upper ontology per the
+#  "Upper/Top-Level Ontologies" branch.
+#
+#  Modules
+#    tsio.ttl           – this file: TBox (classes, properties, axioms)
+#    tsio-examples.ttl  – ABox (example individuals)
+#    tsio-ke-scheme.ttl – SKOS scheme for the knowledge-engineering branches
+#
+#  Design decisions to review are marked with  skos:editorialNote
+###############################################################################
+
+@prefix tsio:    <https://enablingvalue.com/ontology/tsio#> .
+@prefix obo:     <http://purl.obolibrary.org/obo/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<https://enablingvalue.com/ontology/tsio>
+    a owl:Ontology ;
+    owl:versionIRI <https://enablingvalue.com/ontology/tsio/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    dcterms:title "Telecom Service Interoperability Ontology"@en ;
+    dcterms:description "Domain ontology describing telecom services, the networks and devices that support them, the parties that provide and consume them, and the subscriptions that bind them. Upper-level categories are aligned to BFO (ISO/IEC 21838-2)."@en ;
+    dcterms:source "MindMap (KE).svg" ;
+    dcterms:created "2026-09-29"^^xsd:date ;
+    dcterms:references "ISO/IEC 21838-2:2021 (Basic Formal Ontology)" ,
+                       "ISO/IEC 19763 (Metamodel Framework for Interoperability)" ,
+                       "ISO 704 (Terminology work — Principles and methods)" ,
+                       "ISO 1087 (Terminology work — Vocabulary)" ;
+    rdfs:comment "BFO classes are referenced by IRI (MIREOT style) rather than imported, so the file stays self-contained. Replace with owl:imports <http://purl.obolibrary.org/obo/bfo.owl> for full BFO axiomatization."@en .
+
+#################################################################
+#  Annotation properties
+#################################################################
+dcterms:title a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:source a owl:AnnotationProperty .
+dcterms:created a owl:AnnotationProperty .
+dcterms:references a owl:AnnotationProperty .
+skos:definition a owl:AnnotationProperty .
+skos:editorialNote a owl:AnnotationProperty .
+skos:altLabel a owl:AnnotationProperty .
+
+#################################################################
+#  Upper ontology — BFO (ISO/IEC 21838-2), referenced classes only
+#################################################################
+obo:BFO_0000001 a owl:Class ; rdfs:label "entity"@en .
+obo:BFO_0000002 a owl:Class ; rdfs:label "continuant"@en ;             rdfs:subClassOf obo:BFO_0000001 .
+obo:BFO_0000003 a owl:Class ; rdfs:label "occurrent"@en ;              rdfs:subClassOf obo:BFO_0000001 ;
+                              owl:disjointWith obo:BFO_0000002 .
+obo:BFO_0000004 a owl:Class ; rdfs:label "independent continuant"@en ; rdfs:subClassOf obo:BFO_0000002 .
+obo:BFO_0000031 a owl:Class ; rdfs:label "generically dependent continuant"@en ;
+                              rdfs:subClassOf obo:BFO_0000002 ;
+                              owl:disjointWith obo:BFO_0000004 .
+obo:BFO_0000040 a owl:Class ; rdfs:label "material entity"@en ;        rdfs:subClassOf obo:BFO_0000004 .
+obo:BFO_0000030 a owl:Class ; rdfs:label "object"@en ;                 rdfs:subClassOf obo:BFO_0000040 .
+obo:BFO_0000027 a owl:Class ; rdfs:label "object aggregate"@en ;       rdfs:subClassOf obo:BFO_0000040 ;
+                              owl:disjointWith obo:BFO_0000030 .
+obo:BFO_0000015 a owl:Class ; rdfs:label "process"@en ;                rdfs:subClassOf obo:BFO_0000003 .
+
+#################################################################
+#  Core concepts (classes) — from mind map "Concepts (Classes)"
+#################################################################
+
+### Service ---------------------------------------------------------
+tsio:Service
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000015 ;
+    rdfs:label "Service"@en ;
+    skos:definition "An ongoing process by which a telecommunications capability (voice, data, messaging, etc.) is delivered to a consumer."@en ;
+    skos:editorialNote "Modeled as a BFO process (service delivery). If the intent is the catalog offering rather than its delivery, move to a ServiceOffering class under generically dependent continuant and relate the two."@en .
+
+tsio:VoiceService
+    a owl:Class ; rdfs:subClassOf tsio:Service ;
+    rdfs:label "Voice Service"@en ;
+    skos:definition "A service that carries real-time voice communication."@en .
+
+tsio:DataService
+    a owl:Class ; rdfs:subClassOf tsio:Service ;
+    rdfs:label "Data Service"@en ;
+    skos:definition "A service that carries packet data, e.g. internet access."@en .
+
+### Network ---------------------------------------------------------
+tsio:Network
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000027 ;
+    rdfs:label "Network"@en ;
+    skos:definition "An aggregate of interconnected infrastructure equipment that transports communications traffic."@en .
+
+tsio:Network2G a owl:Class ; rdfs:subClassOf tsio:Network ; rdfs:label "2G Network"@en ; skos:altLabel "GSM/CDMA network"@en .
+tsio:Network3G a owl:Class ; rdfs:subClassOf tsio:Network ; rdfs:label "3G Network"@en ; skos:altLabel "UMTS network"@en .
+tsio:Network4G a owl:Class ; rdfs:subClassOf tsio:Network ; rdfs:label "4G Network"@en ; skos:altLabel "LTE network"@en .
+tsio:Network5G a owl:Class ; rdfs:subClassOf tsio:Network ; rdfs:label "5G Network"@en ; skos:altLabel "NR network"@en ;
+    skos:editorialNote "Added to cover the mind map's 'etc.'"@en .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( tsio:Network2G tsio:Network3G tsio:Network4G tsio:Network5G ) .
+
+### Device ----------------------------------------------------------
+tsio:Device
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000030 ;
+    rdfs:label "Device"@en ;
+    skos:definition "A physical piece of equipment through which a service is accessed or delivered."@en .
+
+tsio:MobilePhone a owl:Class ; rdfs:subClassOf tsio:Device ; rdfs:label "Mobile Phone"@en ;
+    skos:definition "A handheld device that connects to a mobile network."@en .
+tsio:Router a owl:Class ; rdfs:subClassOf tsio:Device ; rdfs:label "Router"@en ;
+    skos:definition "A device that forwards data packets between networks."@en .
+
+tsio:MobilePhone owl:disjointWith tsio:Router .
+
+### Subscription ----------------------------------------------------
+tsio:Subscription
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000031 ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty tsio:coversService ; owl:someValuesFrom tsio:Service ] ;
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty tsio:issuedBy ; owl:someValuesFrom tsio:ServiceProvider ] ;
+    rdfs:label "Subscription"@en ;
+    skos:definition "An agreement between a customer and a service provider that entitles the customer to one or more services under stated commercial terms."@en .
+
+tsio:PrepaidSubscription a owl:Class ; rdfs:subClassOf tsio:Subscription ; rdfs:label "Prepaid Subscription"@en ;
+    skos:definition "A subscription in which services are paid for before use."@en .
+tsio:PostpaidSubscription a owl:Class ; rdfs:subClassOf tsio:Subscription ; rdfs:label "Postpaid Subscription"@en ;
+    skos:definition "A subscription in which services are billed after use, per billing cycle."@en .
+
+tsio:PrepaidSubscription owl:disjointWith tsio:PostpaidSubscription .
+
+### Parties ---------------------------------------------------------
+tsio:Party
+    a owl:Class ;
+    rdfs:subClassOf obo:BFO_0000040 ;
+    rdfs:label "Party"@en ;
+    skos:definition "A person or organization that takes part in a telecom service relationship."@en ;
+    skos:editorialNote "Added as a common parent for Customer and ServiceProvider. A stricter BFO treatment would model customer and provider as roles (BFO_0000023) borne by persons/organizations."@en .
+
+tsio:Customer
+    a owl:Class ; rdfs:subClassOf tsio:Party ;
+    rdfs:label "Customer"@en ;
+    skos:definition "A party that subscribes to and uses telecom services."@en .
+
+tsio:ServiceProvider
+    a owl:Class ; rdfs:subClassOf tsio:Party ;
+    rdfs:label "Service Provider"@en ;
+    skos:definition "A party that provides telecom services to customers."@en ;
+    skos:editorialNote "Deliberately NOT disjoint with Customer: in wholesale and roaming arrangements a provider is also a customer of another provider."@en .
+
+### Top-level disjointness -----------------------------------------
+[] a owl:AllDisjointClasses ;
+   owl:members ( tsio:Service tsio:Network tsio:Device tsio:Subscription tsio:Party ) .
+
+#################################################################
+#  Relationships (object properties) — from mind map
+#################################################################
+tsio:usesService
+    a owl:ObjectProperty ;
+    rdfs:label "uses service"@en ;
+    rdfs:domain tsio:Customer ; rdfs:range tsio:Service ;
+    owl:inverseOf tsio:isUsedBy ;
+    skos:definition "Relates a customer to a service it consumes."@en .
+tsio:isUsedBy a owl:ObjectProperty ; rdfs:label "is used by"@en .
+
+tsio:supportsService
+    a owl:ObjectProperty ;
+    rdfs:label "supports service"@en ;
+    rdfs:domain tsio:Network ; rdfs:range tsio:Service ;
+    owl:inverseOf tsio:isSupportedBy ;
+    skos:definition "Relates a network to a service it is technically capable of carrying."@en .
+tsio:isSupportedBy a owl:ObjectProperty ; rdfs:label "is supported by"@en .
+
+tsio:subscribedTo
+    a owl:ObjectProperty ;
+    rdfs:label "subscribed to"@en ;
+    rdfs:domain tsio:Customer ; rdfs:range tsio:Subscription ;
+    owl:inverseOf tsio:hasSubscriber ;
+    skos:definition "Relates a customer to a subscription it holds."@en .
+tsio:hasSubscriber a owl:ObjectProperty ; rdfs:label "has subscriber"@en .
+
+tsio:providesService
+    a owl:ObjectProperty ;
+    rdfs:label "provides service"@en ;
+    rdfs:domain tsio:ServiceProvider ; rdfs:range tsio:Service ;
+    owl:inverseOf tsio:isProvidedBy ;
+    skos:definition "Relates a service provider to a service it offers and operates."@en .
+tsio:isProvidedBy a owl:ObjectProperty ; rdfs:label "is provided by"@en .
+
+tsio:interoperableWith
+    a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:label "interoperable with"@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( tsio:Service tsio:Network tsio:Device ) ] ;
+    rdfs:range  [ a owl:Class ; owl:unionOf ( tsio:Service tsio:Network tsio:Device ) ] ;
+    skos:definition "Two entities can exchange traffic or information and use it without special adaptation."@en ;
+    skos:editorialNote "Symmetric but intentionally not transitive: A~B and B~C does not guarantee A~C."@en .
+
+tsio:requiresDevice
+    a owl:ObjectProperty ;
+    rdfs:label "requires device"@en ;
+    rdfs:domain tsio:Service ; rdfs:range tsio:Device ;
+    skos:definition "Relates a service to a kind of device needed to access it."@en .
+
+### Added to connect Subscription to the rest of the model ----------
+tsio:coversService
+    a owl:ObjectProperty ;
+    rdfs:label "covers service"@en ;
+    rdfs:domain tsio:Subscription ; rdfs:range tsio:Service ;
+    skos:definition "Relates a subscription to a service it entitles the subscriber to use."@en ;
+    skos:editorialNote "Not in source mind map; added so subscriptions connect to services."@en .
+
+tsio:issuedBy
+    a owl:ObjectProperty ;
+    rdfs:label "issued by"@en ;
+    rdfs:domain tsio:Subscription ; rdfs:range tsio:ServiceProvider ;
+    skos:definition "Relates a subscription to the service provider that is party to it."@en ;
+    skos:editorialNote "Not in source mind map; added so subscriptions connect to providers."@en .
+
+#################################################################
+#  Attributes (data properties) — mind map lists the category only;
+#  these are an illustrative starter set.
+#################################################################
+tsio:identifier
+    a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "identifier"@en ; rdfs:range xsd:string ;
+    skos:definition "A business identifier unique within its class."@en .
+
+tsio:customerId     a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:subPropertyOf tsio:identifier ;
+    rdfs:label "customer id"@en ; rdfs:domain tsio:Customer ; rdfs:range xsd:string .
+tsio:subscriptionId a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:subPropertyOf tsio:identifier ;
+    rdfs:label "subscription id"@en ; rdfs:domain tsio:Subscription ; rdfs:range xsd:string .
+tsio:serviceCode    a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:subPropertyOf tsio:identifier ;
+    rdfs:label "service code"@en ; rdfs:domain tsio:Service ; rdfs:range xsd:string .
+
+tsio:imei a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "IMEI"@en ; rdfs:domain tsio:MobilePhone ; rdfs:range xsd:string ;
+    skos:definition "International Mobile Equipment Identity, 15 digits."@en .
+tsio:macAddress a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "MAC address"@en ; rdfs:domain tsio:Router ; rdfs:range xsd:string .
+
+tsio:activationDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "activation date"@en ; rdfs:domain tsio:Subscription ; rdfs:range xsd:date .
+tsio:billingCycleDay a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "billing cycle day"@en ; rdfs:domain tsio:PostpaidSubscription ; rdfs:range xsd:integer ;
+    skos:definition "Day of month (1–31) on which the billing cycle closes."@en .
+tsio:prepaidBalance a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "prepaid balance"@en ; rdfs:domain tsio:PrepaidSubscription ; rdfs:range xsd:decimal .
+
+tsio:peakDownlinkMbps a owl:DatatypeProperty ;
+    rdfs:label "peak downlink (Mbps)"@en ; rdfs:domain tsio:Network ; rdfs:range xsd:decimal .
+
+</script>
+<script type="text/turtle" id="ttl-examples">
+###############################################################################
+#  TSIO — example individuals (ABox), from mind map "Instances (Individuals)"
+###############################################################################
+@prefix tsio: <https://enablingvalue.com/ontology/tsio#> .
+@prefix ex:   <https://enablingvalue.com/ontology/tsio/examples#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://enablingvalue.com/ontology/tsio/examples>
+    a owl:Ontology ;
+    owl:imports <https://enablingvalue.com/ontology/tsio> ;
+    rdfs:comment "Illustrative individuals only; all names are fictional."@en .
+
+### Providers
+ex:NorthwindTelecom a owl:NamedIndividual , tsio:ServiceProvider ;
+    rdfs:label "Northwind Telecom"@en ;
+    tsio:providesService ex:NW_VoLTE , ex:NW_MobileData .
+
+ex:HarborMobile a owl:NamedIndividual , tsio:ServiceProvider , tsio:Customer ;
+    rdfs:label "Harbor Mobile"@en ;
+    rdfs:comment "Also a wholesale customer of Northwind — shows why Customer and ServiceProvider are not disjoint."@en ;
+    tsio:providesService ex:HM_RoamingData ;
+    tsio:usesService ex:NW_MobileData .
+
+### Services
+ex:NW_VoLTE a owl:NamedIndividual , tsio:VoiceService ;
+    rdfs:label "Northwind VoLTE Voice"@en ;
+    tsio:serviceCode "NW-VOICE-01" ;
+    tsio:requiresDevice ex:Phone_0001 .
+
+ex:NW_MobileData a owl:NamedIndividual , tsio:DataService ;
+    rdfs:label "Northwind Mobile Data"@en ;
+    tsio:serviceCode "NW-DATA-01" ;
+    tsio:interoperableWith ex:HM_RoamingData .
+
+ex:HM_RoamingData a owl:NamedIndividual , tsio:DataService ;
+    rdfs:label "Harbor Mobile Roaming Data"@en ;
+    tsio:serviceCode "HM-ROAM-01" .
+
+### Networks
+ex:NW_LTE_Midwest a owl:NamedIndividual , tsio:Network4G ;
+    rdfs:label "Northwind LTE — Midwest"@en ;
+    tsio:peakDownlinkMbps "300"^^xsd:decimal ;
+    tsio:supportsService ex:NW_VoLTE , ex:NW_MobileData .
+
+ex:NW_NR_Midwest a owl:NamedIndividual , tsio:Network5G ;
+    rdfs:label "Northwind 5G NR — Midwest"@en ;
+    tsio:peakDownlinkMbps "2000"^^xsd:decimal ;
+    tsio:supportsService ex:NW_MobileData ;
+    tsio:interoperableWith ex:NW_LTE_Midwest .
+
+### Devices
+ex:Phone_0001 a owl:NamedIndividual , tsio:MobilePhone ;
+    rdfs:label "Customer handset 0001"@en ;
+    tsio:imei "490154203237518" .
+
+ex:Router_0001 a owl:NamedIndividual , tsio:Router ;
+    rdfs:label "Home router 0001"@en ;
+    tsio:macAddress "00:1A:2B:3C:4D:5E" .
+
+### Customers and subscriptions
+ex:Customer_0001 a owl:NamedIndividual , tsio:Customer ;
+    rdfs:label "Customer 0001"@en ;
+    tsio:customerId "C-0001" ;
+    tsio:subscribedTo ex:Sub_0001 ;
+    tsio:usesService ex:NW_VoLTE , ex:NW_MobileData .
+
+ex:Sub_0001 a owl:NamedIndividual , tsio:PostpaidSubscription ;
+    rdfs:label "Postpaid plan for C-0001"@en ;
+    tsio:subscriptionId "S-0001" ;
+    tsio:activationDate "2025-03-15"^^xsd:date ;
+    tsio:billingCycleDay 15 ;
+    tsio:issuedBy ex:NorthwindTelecom ;
+    tsio:coversService ex:NW_VoLTE , ex:NW_MobileData .
+
+ex:Customer_0002 a owl:NamedIndividual , tsio:Customer ;
+    rdfs:label "Customer 0002"@en ;
+    tsio:customerId "C-0002" ;
+    tsio:subscribedTo ex:Sub_0002 .
+
+ex:Sub_0002 a owl:NamedIndividual , tsio:PrepaidSubscription ;
+    rdfs:label "Prepaid plan for C-0002"@en ;
+    tsio:subscriptionId "S-0002" ;
+    tsio:activationDate "2026-01-04"^^xsd:date ;
+    tsio:prepaidBalance "25.00"^^xsd:decimal ;
+    tsio:issuedBy ex:NorthwindTelecom ;
+    tsio:coversService ex:NW_MobileData .
+
+</script>
+<script type="text/turtle" id="ttl-scheme">
+###############################################################################
+#  Knowledge Engineering concept scheme (SKOS)
+#  Captures the non-domain branches of "MindMap (KE).svg": ontology-based
+#  representation, domain modeling levels, ISO standards, ISO 19763 (MFI),
+#  and upper-ontology rationale. Links to TSIO use rdfs:seeAlso so the SKOS
+#  and OWL layers stay separate.
+#
+#  v0.2.0 — standards reviewed against iso.org (checked 2026-09-29).
+#  Each standard now carries: designation, official title, edition, issued
+#  year, status, committee, content type, replaces/replaced-by, parts,
+#  a brief description, relevance to TSIO, and its iso.org page.
+#  Corrections to the original mind-map list are recorded as
+#  skos:changeNote on the affected concept.
+###############################################################################
+@prefix ke:      <https://enablingvalue.com/ontology/ke-scheme#> .
+@prefix tsio:    <https://enablingvalue.com/ontology/tsio#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+ke:Scheme a skos:ConceptScheme ;
+    skos:prefLabel "Knowledge Engineering Concepts"@en ;
+    dcterms:source "MindMap (KE).svg" ;
+    owl:versionInfo "0.2.0" ;
+    dcterms:modified "2026-09-29"^^xsd:date ;
+    skos:hasTopConcept ke:OntologyBasedRepresentation , ke:DomainModeling , ke:ISOStandardsForKE ,
+                       ke:MFI , ke:ServiceInteroperabilityOntology , ke:UpperOntologies .
+
+#################################################################
+#  Standards metadata vocabulary
+#################################################################
+ke:Standard a owl:Class ;
+    rdfs:label "Standard"@en ;
+    skos:definition "A single published or draft standards document with its own designation and edition."@en .
+ke:StandardSeries a owl:Class ;
+    rdfs:label "Standard Series"@en ;
+    skos:definition "A multipart standard whose parts are published as separate documents under a shared number."@en .
+
+ke:designation   a owl:DatatypeProperty ; rdfs:label "designation"@en ;
+    skos:definition "Reference number including year of the current edition, e.g. 'ISO 704:2022'."@en .
+ke:edition       a owl:DatatypeProperty ; rdfs:label "edition"@en ; rdfs:range xsd:integer .
+ke:committee     a owl:DatatypeProperty ; rdfs:label "committee"@en ;
+    skos:definition "Responsible ISO or ISO/IEC technical committee and subcommittee."@en .
+ke:contentType   a owl:DatatypeProperty ; rdfs:label "content type"@en ;
+    skos:definition "What kind of artifact the standard specifies: vocabulary, guidance, data model, metamodel, ontology, requirements."@en .
+ke:relevanceToTSIO a owl:DatatypeProperty ; rdfs:label "relevance to TSIO"@en ;
+    skos:definition "How the standard is, or could be, applied to the Telecom Service Interoperability Ontology."@en .
+ke:status        a owl:ObjectProperty ; rdfs:label "status"@en ; rdfs:range ke:LifecycleStatus .
+ke:isoPage       a owl:ObjectProperty ; rdfs:label "iso.org page"@en .
+dcterms:title       a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:issued      a owl:AnnotationProperty .
+dcterms:replaces    a owl:ObjectProperty .
+dcterms:isReplacedBy a owl:ObjectProperty ; owl:inverseOf dcterms:replaces .
+dcterms:hasPart     a owl:ObjectProperty .
+dcterms:isPartOf    a owl:ObjectProperty ; owl:inverseOf dcterms:hasPart .
+
+### Lifecycle status values (ISO harmonized stage codes in notation)
+ke:LifecycleStatus a owl:Class ; rdfs:label "Lifecycle Status"@en .
+ke:StatusScheme a skos:ConceptScheme ; skos:prefLabel "Standard lifecycle status"@en .
+ke:Status_Current a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — current"@en ; skos:notation "60.60 / 90.93" ;
+    skos:definition "Published and in force; confirmed at last systematic review."@en .
+ke:Status_UnderReview a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — under systematic review"@en ; skos:notation "90.20" ;
+    skos:definition "In force; its periodic review is open and may lead to confirmation, revision or withdrawal."@en .
+ke:Status_ToBeRevised a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — to be revised"@en ; skos:notation "90.92" ;
+    skos:definition "In force, but review has decided a new edition is needed."@en .
+ke:Status_Draft a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Under development"@en ; skos:notation "00–50" ;
+    skos:definition "A draft edition not yet published."@en .
+ke:Status_Withdrawn a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Withdrawn"@en ; skos:notation "95.99" ;
+    skos:definition "No longer in force; use its replacement."@en .
+
+#---------------------------------------------------------------------------
+# Ontology-Based Representation
+#---------------------------------------------------------------------------
+ke:OntologyBasedRepresentation a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Ontology-Based Representation"@en ;
+    skos:narrower ke:IntegrationAndSharingOfKnowledge , ke:IntelligentReasoning .
+
+ke:IntegrationAndSharingOfKnowledge a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Integration and Sharing of Knowledge"@en ; skos:broader ke:OntologyBasedRepresentation .
+
+ke:IntelligentReasoning a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Intelligent Reasoning"@en ; skos:broader ke:OntologyBasedRepresentation ;
+    skos:narrower ke:ConceptClassification , ke:SemanticDescription , ke:LogicReasoning .
+
+ke:ConceptClassification a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Concept Classification"@en ; skos:broader ke:IntelligentReasoning .
+ke:SemanticDescription a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Semantic Description"@en ; skos:broader ke:IntelligentReasoning .
+ke:LogicReasoning a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Logic Reasoning"@en ; skos:broader ke:IntelligentReasoning .
+
+#---------------------------------------------------------------------------
+# Domain Modeling (levels)
+#---------------------------------------------------------------------------
+ke:DomainModeling a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Domain Modeling"@en ;
+    skos:narrower ke:Domain , ke:PrimaryClass , ke:SecondaryClass , ke:Instances .
+
+ke:Domain a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Domain"@en ; skos:example "Telecom service interoperability (the TSIO ontology)"@en .
+ke:PrimaryClass a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Primary Class"@en ; skos:altLabel "Primary Concept"@en ;
+    skos:example "tsio:Service, tsio:Network, tsio:Device, tsio:Subscription, tsio:Customer, tsio:ServiceProvider" .
+ke:SecondaryClass a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Secondary Class"@en ; skos:altLabel "Secondary Concept"@en ;
+    skos:example "tsio:VoiceService, tsio:Network4G, tsio:MobilePhone, tsio:PrepaidSubscription" .
+ke:Instances a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Instances"@en ; skos:altLabel "Individuals"@en ;
+    skos:example "See tsio-examples.ttl"@en .
+
+#---------------------------------------------------------------------------
+# ISO Standards for Knowledge Engineering
+#---------------------------------------------------------------------------
+ke:ISOStandardsForKE a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "ISO Standards for Knowledge Engineering"@en ;
+    skos:narrower ke:ISO25964 , ke:ISO5964 , ke:ISO13250 , ke:ISO19763 , ke:ISO704 ,
+                  ke:ISO1087 , ke:ISO21127 , ke:ISO80000_1 , ke:ISO30300 , ke:ISO21838 .
+
+### ISO 25964 — Thesauri ---------------------------------------------------
+ke:ISO25964 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 25964" ;
+    skos:prefLabel "ISO 25964 — Thesauri and interoperability with other vocabularies"@en ;
+    dcterms:title "Information and documentation — Thesauri and interoperability with other vocabularies"@en ;
+    ke:committee "ISO/TC 46/SC 9" ;
+    ke:contentType "Guidance + data model" ;
+    dcterms:replaces ke:ISO5964 ;
+    dcterms:description "Two-part series that is the current international reference for building thesauri and for mapping them to other controlled vocabularies. It superseded the older monolingual (ISO 2788) and multilingual (ISO 5964) thesaurus guidelines."@en ;
+    ke:relevanceToTSIO "Governs how a controlled vocabulary of telecom terms (service names, network generations, device types) would be built alongside TSIO and mapped to it."@en ;
+    dcterms:hasPart ke:ISO25964_1 , ke:ISO25964_2 ;
+    skos:narrower ke:ISO25964_1 , ke:ISO25964_2 .
+
+ke:ISO25964_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO25964 ;
+    skos:notation "ISO 25964-1" ;
+    skos:prefLabel "Part 1: Thesauri for Information Retrieval"@en ;
+    ke:designation "ISO 25964-1:2011" ; ke:edition 1 ; dcterms:issued "2011"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ;
+    ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance + data model" ;
+    dcterms:isPartOf ke:ISO25964 ; dcterms:replaces ke:ISO5964 ;
+    dcterms:description "Guidance for designing, building and maintaining monolingual and multilingual thesauri for retrieval, plus a data model and exchange format for thesaurus data. Its data model is the basis for the SKOS-XL / ISO-THES mapping."@en ;
+    ke:relevanceToTSIO "Use for term-level work (preferred/alternate labels, scope notes) on TSIO class labels and any telecom thesaurus."@en ;
+    skos:changeNote "A second edition (ISO/FDIS 25964-1) reached FDIS ballot in August 2026 and will replace the 2011 edition."@en ;
+    ke:isoPage <https://www.iso.org/standard/53657.html> , <https://www.iso.org/standard/86713.html> .
+
+ke:ISO25964_2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO25964 ;
+    skos:notation "ISO 25964-2" ;
+    skos:prefLabel "Part 2: Interoperability with Other Vocabularies"@en ;
+    ke:designation "ISO 25964-2:2013" ; ke:edition 1 ; dcterms:issued "2013"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ;
+    ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance (mapping)" ;
+    dcterms:isPartOf ke:ISO25964 ; dcterms:replaces ke:ISO5964 ;
+    dcterms:description "Compares thesauri with classification schemes, taxonomies, subject headings, ontologies, name authorities and synonym rings, and gives guidance on creating and maintaining mappings (equivalence, hierarchical, associative) between them."@en ;
+    ke:relevanceToTSIO "Directly applicable to mapping TSIO classes to external telecom vocabularies such as TM Forum SID or 3GPP terms."@en ;
+    skos:changeNote "Marked 'to be revised' after its 2023 review; a new edition is at the approved-work-item stage."@en ;
+    ke:isoPage <https://www.iso.org/standard/53658.html> .
+
+### ISO 5964 — withdrawn ---------------------------------------------------
+ke:ISO5964 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 5964" ;
+    skos:prefLabel "ISO 5964 — Multilingual Thesauri (withdrawn)"@en ;
+    dcterms:title "Documentation — Guidelines for the establishment and development of multilingual thesauri"@en ;
+    ke:designation "ISO 5964:1985" ; dcterms:issued "1985"^^xsd:gYear ;
+    ke:status ke:Status_Withdrawn ;
+    ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance" ;
+    dcterms:isReplacedBy ke:ISO25964_1 , ke:ISO25964_2 ;
+    dcterms:description "Historic guideline for thesauri covering more than one language; kept here only for lineage."@en ;
+    ke:relevanceToTSIO "None directly — cite ISO 25964 instead."@en ;
+    skos:historyNote "Withdrawn 2013-03-04."@en ;
+    skos:changeNote "Mind map said 'replaced by ISO 25964-1'; it was replaced by both parts of ISO 25964."@en ;
+    ke:isoPage <https://www.iso.org/standard/12159.html> .
+
+### ISO/IEC 13250 — Topic Maps ---------------------------------------------
+ke:ISO13250 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO/IEC 13250" ;
+    skos:prefLabel "ISO/IEC 13250 — Topic Maps"@en ;
+    dcterms:title "Information technology — Topic Maps"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 34" ; ke:contentType "Data model + syntaxes" ;
+    dcterms:description "Knowledge-representation standard built from topics (subjects), associations between them, and occurrences linking topics to information resources, with rules for merging maps that describe the same subject. Largely superseded in practice by RDF/OWL."@en ;
+    ke:relevanceToTSIO "Low; TSIO uses RDF/OWL. Useful only if integrating legacy topic-map knowledge bases."@en ;
+    skos:changeNote "The single-document ISO/IEC 13250:2003 was withdrawn in 2021. The standard now exists as a multipart series; Part 2 (data model) is the core."@en ;
+    dcterms:hasPart ke:ISO13250_2 ; skos:narrower ke:ISO13250_2 ;
+    ke:isoPage <https://www.iso.org/standard/38068.html> .
+
+ke:ISO13250_2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO13250 ;
+    skos:notation "ISO/IEC 13250-2" ;
+    skos:prefLabel "Part 2: Data model"@en ;
+    ke:designation "ISO/IEC 13250-2:2006" ; ke:edition 1 ; dcterms:issued "2006"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/IEC JTC 1/SC 34" ; ke:contentType "Data model" ;
+    dcterms:isPartOf ke:ISO13250 ;
+    dcterms:description "Defines the abstract structure and meaning of topic maps, the merging rules, and a set of core subject identifiers."@en ;
+    ke:relevanceToTSIO "Reference only."@en ;
+    skos:historyNote "Confirmed at systematic review in 2022."@en ;
+    ke:isoPage <https://www.iso.org/standard/40017.html> .
+
+### ISO/IEC 19763 — MFI ----------------------------------------------------
+ke:ISO19763 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO/IEC 19763" ;
+    skos:prefLabel "ISO/IEC 19763 — Metamodel Framework for Interoperability (MFI)"@en ;
+    dcterms:title "Information technology — Metamodel framework for interoperability (MFI)"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodels (UML + formal text)" ;
+    dcterms:description "A family of metamodels for registering models — ontologies, processes, services, information models, roles and goals — so that they can be discovered, compared and mapped. It defines what to record about a model, not a physical registry."@en ;
+    ke:relevanceToTSIO "Part 3 defines how an ontology such as TSIO would be registered; the core model supports mapping TSIO to other registered telecom models."@en ;
+    skos:related ke:MFI ;
+    dcterms:hasPart ke:ISO19763_1 , ke:ISO19763_3 ; skos:narrower ke:ISO19763_1 , ke:ISO19763_3 .
+
+ke:ISO19763_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO19763 ;
+    skos:notation "ISO/IEC 19763-1" ;
+    skos:prefLabel "Part 1: Framework"@en ;
+    ke:designation "ISO/IEC 19763-1:2023" ; ke:edition 3 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Framework overview" ;
+    dcterms:isPartOf ke:ISO19763 ;
+    dcterms:description "Overview of the whole series: purpose, concepts, architecture and requirements for developing the other parts."@en ;
+    ke:relevanceToTSIO "Entry point for positioning TSIO within an MFI-based model registry."@en ;
+    ke:isoPage <https://www.iso.org/standard/84749.html> .
+
+ke:ISO19763_3 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO19763 ;
+    skos:notation "ISO/IEC 19763-3" ;
+    skos:prefLabel "Part 3: Metamodel for ontology registration"@en ;
+    ke:designation "ISO/IEC 19763-3:2020" ; dcterms:issued "2020"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodel" ;
+    dcterms:isPartOf ke:ISO19763 ;
+    dcterms:description "Metamodel for recording the essential administrative and semantic information about an ontology so it can be registered and reused. Amended in 2024."@en ;
+    ke:relevanceToTSIO "The most directly relevant part: the metadata TSIO would need to be registered in an MFI registry."@en ;
+    skos:changeNote "Added: the mind map named the series only; this is the part that covers ontologies."@en ;
+    ke:isoPage <https://www.iso.org/standard/76581.html> .
+
+### ISO 704 ---------------------------------------------------------------
+ke:ISO704 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 704" ;
+    skos:prefLabel "ISO 704 — Terminology Work: Principles and Methods"@en ;
+    dcterms:title "Terminology work — Principles and methods"@en ;
+    ke:designation "ISO 704:2022" ; ke:edition 4 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ;
+    ke:committee "ISO/TC 37/SC 1" ; ke:contentType "Guidance (methods)" ;
+    dcterms:description "Sets out how objects, concepts, definitions and designations relate, and gives principles for forming terms and writing intensional definitions (genus plus distinguishing characteristics)."@en ;
+    ke:relevanceToTSIO "Governs how TSIO's skos:definition texts are written — e.g. 'A subscription in which…' follows the genus-differentia pattern."@en ;
+    rdfs:seeAlso tsio:Service ;
+    ke:isoPage <https://www.iso.org/standard/79077.html> .
+
+### ISO 1087 --------------------------------------------------------------
+ke:ISO1087 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 1087" ;
+    skos:prefLabel "ISO 1087 — Terminology Work and Terminology Science: Vocabulary"@en ;
+    skos:altLabel "ISO 1087-1"@en ;
+    dcterms:title "Terminology work and terminology science — Vocabulary"@en ;
+    ke:designation "ISO 1087:2019" ; ke:edition 2 ; dcterms:issued "2019"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 37/SC 1" ; ke:contentType "Vocabulary" ;
+    dcterms:replaces ke:ISO1087_1_2000 ;
+    dcterms:description "Defines the basic terms of terminology work itself — concept, characteristic, definition, designation, concept system and so on."@en ;
+    ke:relevanceToTSIO "Supplies the shared vocabulary for discussing TSIO's modeling choices with terminologists."@en ;
+    skos:changeNote "Mind map listed 'ISO 1087-1'. That part (2000) was withdrawn; the 2019 edition consolidates it as a single-part ISO 1087. Confirmed at review in 2025."@en ;
+    ke:isoPage <https://www.iso.org/standard/62330.html> .
+
+ke:ISO1087_1_2000 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ;
+    skos:notation "ISO 1087-1" ;
+    skos:prefLabel "ISO 1087-1:2000 (withdrawn)"@en ;
+    ke:designation "ISO 1087-1:2000" ; dcterms:issued "2000"^^xsd:gYear ;
+    ke:status ke:Status_Withdrawn ;
+    dcterms:isReplacedBy ke:ISO1087 .
+
+### ISO 21127 -------------------------------------------------------------
+ke:ISO21127 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 21127" ;
+    skos:prefLabel "ISO 21127 — Reference Ontology for Cultural Heritage"@en ;
+    skos:altLabel "CIDOC CRM"@en ;
+    dcterms:title "Information and documentation — A reference ontology for the interchange of cultural heritage information"@en ;
+    ke:designation "ISO 21127:2023" ; ke:edition 3 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 46/SC 4" ; ke:contentType "Reference (domain) ontology" ;
+    dcterms:description "The ISO form of the CIDOC Conceptual Reference Model: an event-centric ontology for integrating heterogeneous documentation about the past, including the evidence supporting it."@en ;
+    ke:relevanceToTSIO "Not telecom-specific; a worked example of an ISO-standardized domain ontology and of event-centric modeling, comparable to modeling Service as a process."@en ;
+    ke:isoPage <https://www.iso.org/standard/85100.html> .
+
+### ISO 80000-1 -----------------------------------------------------------
+ke:ISO80000_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 80000-1" ;
+    skos:prefLabel "ISO 80000-1 — Quantities and Units: General"@en ;
+    dcterms:title "Quantities and units — Part 1: General"@en ;
+    ke:designation "ISO 80000-1:2022" ; ke:edition 2 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 12" ; ke:contentType "Vocabulary + rules" ;
+    dcterms:description "General part of the International System of Quantities: defines quantity, unit, dimension and coherent unit systems, and the rules for writing quantity and unit symbols."@en ;
+    ke:relevanceToTSIO "Applies wherever TSIO records measurements — e.g. tsio:peakDownlinkMbps should become a value with an explicit unit (Mbit/s) rather than a unit baked into the property name."@en ;
+    rdfs:seeAlso tsio:peakDownlinkMbps ;
+    ke:isoPage <https://www.iso.org/standard/76921.html> .
+
+### ISO 30300 -------------------------------------------------------------
+ke:ISO30300 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO 30300" ;
+    skos:prefLabel "ISO 30300 — Records Management: Core Concepts and Vocabulary"@en ;
+    dcterms:title "Information and documentation — Records management — Core concepts and vocabulary"@en ;
+    ke:designation "ISO 30300:2020" ; ke:edition 2 ; dcterms:issued "2020"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ;
+    ke:committee "ISO/TC 46/SC 11" ; ke:contentType "Vocabulary" ;
+    dcterms:description "Terms and definitions for the core concepts of records management — records, metadata for records, records systems, appraisal, disposition."@en ;
+    ke:relevanceToTSIO "Relevant to subscription and billing records: retention and provenance of tsio:Subscription data."@en ;
+    rdfs:seeAlso tsio:Subscription ;
+    skos:changeNote "Mind map titled this 'Management Systems for Records'. Since 2020 it is a records-management vocabulary; the management-system requirements are in ISO 30301."@en ;
+    ke:isoPage <https://www.iso.org/standard/74291.html> .
+
+### ISO/IEC 21838 — Top-level ontologies ----------------------------------
+ke:ISO21838 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:notation "ISO/IEC 21838" ;
+    skos:prefLabel "ISO/IEC 21838 — Top-Level Ontologies (TLO)"@en ;
+    dcterms:title "Information technology — Top-level ontologies (TLO)"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Requirements + top-level ontologies" ;
+    dcterms:description "Part 1 states what a domain-neutral top-level ontology must provide to act as a hub for interoperability; Parts 2–4 standardize three ontologies that meet those requirements (BFO, DOLCE, TUpper)."@en ;
+    ke:relevanceToTSIO "TSIO's upper layer is Part 2 (BFO); every core TSIO class is a subclass of a BFO category."@en ;
+    skos:related ke:UpperOntologies ;
+    dcterms:hasPart ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO21838_3 , ke:ISO21838_4 ;
+    skos:narrower ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO21838_3 , ke:ISO21838_4 .
+
+ke:ISO21838_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-1" ; skos:prefLabel "Part 1: Requirements"@en ;
+    ke:designation "ISO/IEC 21838-1:2021" ; ke:edition 1 ; dcterms:issued "2021"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Requirements" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Requirements a top-level ontology must meet, how it relates to domain ontologies, and the role of terminology in its definitions and axioms."@en ;
+    ke:relevanceToTSIO "The conformance yardstick for choosing BFO as TSIO's upper layer."@en ;
+    ke:isoPage <https://www.iso.org/standard/71954.html> .
+
+ke:ISO21838_2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-2" ; skos:prefLabel "Part 2: Basic Formal Ontology (BFO)"@en ;
+    ke:designation "ISO/IEC 21838-2:2021" ; ke:edition 1 ; dcterms:issued "2021"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Standardizes BFO-2020: its terms, relations, and axiomatizations in OWL 2 and Common Logic, plus what it means for a domain ontology to conform."@en ;
+    ke:relevanceToTSIO "Used: Service ⊑ process, Network ⊑ object aggregate, Device ⊑ object, Subscription ⊑ generically dependent continuant, Party ⊑ material entity."@en ;
+    rdfs:seeAlso tsio:Service , tsio:Network , tsio:Device , tsio:Subscription , tsio:Party ;
+    ke:isoPage <https://www.iso.org/standard/74572.html> .
+
+ke:ISO21838_3 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-3" ; skos:prefLabel "Part 3: DOLCE"@en ;
+    ke:designation "ISO/IEC 21838-3:2023" ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Standardizes the Descriptive Ontology for Linguistic and Cognitive Engineering, a top-level ontology oriented to categories as reflected in language and human cognition."@en ;
+    ke:relevanceToTSIO "Alternative upper layer; not used."@en ;
+    skos:changeNote "Added: the mind map named the series only."@en .
+
+ke:ISO21838_4 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-4" ; skos:prefLabel "Part 4: TUpper"@en ;
+    ke:designation "ISO/IEC 21838-4:2023" ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Standardizes TUpper, a modular top-level ontology."@en ;
+    ke:relevanceToTSIO "Alternative upper layer; not used."@en ;
+    skos:changeNote "Added: the mind map named the series only."@en .
+
+#---------------------------------------------------------------------------
+# ISO 19763 (MFI) — objectives and telecom applications
+#---------------------------------------------------------------------------
+ke:MFI a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "ISO 19763 (MFI)"@en ;
+    skos:related ke:ISO19763 ;
+    skos:narrower ke:MFIObjectives , ke:MFITelecomApplications .
+
+ke:MFIObjectives a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFI ;
+    skos:prefLabel "MFI Objectives"@en ;
+    skos:narrower ke:StandardizeMetamodelStructure , ke:EnsureInteroperability .
+ke:StandardizeMetamodelStructure a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIObjectives ;
+    skos:prefLabel "Standardize Structure of Metamodels"@en .
+ke:EnsureInteroperability a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIObjectives ;
+    skos:prefLabel "Ensure Interoperability"@en .
+
+ke:MFITelecomApplications a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFI ;
+    skos:prefLabel "MFI Applications for Telecom"@en ;
+    skos:narrower ke:ServiceInteroperabilityApp , ke:CustomerDataExchange ,
+                  ke:EquipmentInfrastructureModeling , ke:BillingUsagePatterns .
+ke:ServiceInteroperabilityApp a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFITelecomApplications ;
+    skos:prefLabel "Service Interoperability"@en ; rdfs:seeAlso tsio:interoperableWith .
+ke:CustomerDataExchange a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFITelecomApplications ;
+    skos:prefLabel "Customer Data Exchange"@en ; rdfs:seeAlso tsio:Customer .
+ke:EquipmentInfrastructureModeling a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFITelecomApplications ;
+    skos:prefLabel "Equipment and Infrastructure Modeling"@en ; rdfs:seeAlso tsio:Device , tsio:Network .
+ke:BillingUsagePatterns a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFITelecomApplications ;
+    skos:prefLabel "Billing and Usage Patterns"@en ; rdfs:seeAlso tsio:Subscription , tsio:usesService .
+
+#---------------------------------------------------------------------------
+# Service Interoperability Ontology for Telecom — pointer to the OWL module
+#---------------------------------------------------------------------------
+ke:ServiceInteroperabilityOntology a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Service Interoperability Ontology for Telecom"@en ;
+    skos:scopeNote "Formalized as the OWL ontology tsio.ttl (concepts, relationships, attributes) with individuals in tsio-examples.ttl."@en ;
+    rdfs:seeAlso <https://enablingvalue.com/ontology/tsio> .
+
+#---------------------------------------------------------------------------
+# Upper / Top-Level Ontologies (ISO/IEC 21838)
+#---------------------------------------------------------------------------
+ke:UpperOntologies a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Upper/Top-Level Ontologies (ISO/IEC 21838)"@en ;
+    skos:scopeNote "TSIO aligns its core classes to BFO (ISO/IEC 21838-2)."@en ;
+    skos:related ke:ISO21838 ;
+    skos:narrower ke:UpperOntologyBenefits , ke:UpperOntologyTelecomImplementation .
+
+ke:UpperOntologyBenefits a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologies ;
+    skos:prefLabel "Importance and Applications"@en ;
+    skos:narrower ke:Standardization , ke:Interoperability , ke:SemanticIntegration ,
+                  ke:EnhancedQuerying , ke:Consistency , ke:Extensibility .
+ke:Standardization    a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Standardization"@en .
+ke:Interoperability   a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Interoperability"@en .
+ke:SemanticIntegration a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Semantic Integration"@en .
+ke:EnhancedQuerying   a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Enhanced Querying"@en .
+ke:Consistency        a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Consistency"@en .
+ke:Extensibility      a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Extensibility"@en .
+
+ke:UpperOntologyTelecomImplementation a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologies ;
+    skos:prefLabel "Example Implementation in Telecom"@en ;
+    skos:scopeNote "Ordered as implementation steps."@en ;
+    skos:narrower ke:Step1_IdentifyCoreConcepts , ke:Step2_MapDomainConcepts , ke:Step3_EstablishRelationships ,
+                  ke:Step4_IntegrateMultipleKOS , ke:Step5_EnhanceDataRetrieval ,
+                  ke:Step6_SemanticIntegration , ke:Step7_SupportEvolvingKnowledge .
+ke:Step1_IdentifyCoreConcepts a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "1" ; skos:prefLabel "Identification of Core Concepts"@en .
+ke:Step2_MapDomainConcepts a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "2" ; skos:prefLabel "Mapping Domain-Specific Concepts"@en .
+ke:Step3_EstablishRelationships a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "3" ; skos:prefLabel "Establishing Relationships"@en .
+ke:Step4_IntegrateMultipleKOS a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "4" ; skos:prefLabel "Integrating Multiple KOS"@en .
+ke:Step5_EnhanceDataRetrieval a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "5" ; skos:prefLabel "Enhancing Data Retrieval"@en .
+ke:Step6_SemanticIntegration a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "6" ; skos:prefLabel "Semantic Integration and Interoperability"@en .
+ke:Step7_SupportEvolvingKnowledge a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyTelecomImplementation ;
+    skos:notation "7" ; skos:prefLabel "Supporting Evolving Knowledge"@en .
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+"use strict";
+/* ============ Turtle parser (covers the syntax used in these files) ============ */
+const RDF='http://www.w3.org/1999/02/22-rdf-syntax-ns#', RDFS='http://www.w3.org/2000/01/rdf-schema#',
+      OWL='http://www.w3.org/2002/07/owl#', SKOS='http://www.w3.org/2004/02/skos/core#',
+      DCT='http://purl.org/dc/terms/', XSD='http://www.w3.org/2001/XMLSchema#',
+      TSIO='https://enablingvalue.com/ontology/tsio#', KE='https://enablingvalue.com/ontology/ke-scheme#',
+      EX='https://enablingvalue.com/ontology/tsio/examples#', OBO='http://purl.obolibrary.org/obo/';
+const TYPE=RDF+'type';
+function tokenize(s){
+  const re=/(\s+|#[^\n]*)|(<[^>\s]*>)|("(?:[^"\\]|\\.)*")|(@[a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|(\^\^)|([+-]?\d+(?:\.\d+)?)|([A-Za-z][\w\-]*?:[\w\-]*|:[\w\-]*)|(\ba\b)|([\[\]\(\);,.])/y;
+  const kinds=[null,'ws','iri','str','lang','dt','num','pn','a','p']; const out=[];
+  while(re.lastIndex<s.length){const m=re.exec(s); if(!m) throw new Error('syntax error near: '+s.slice(re.lastIndex,re.lastIndex+40));
+    let k=0; for(let i=1;i<m.length;i++) if(m[i]!==undefined){k=i;break}
+    if(kinds[k]!=='ws') out.push([kinds[k],m[0]]);}
+  return out;
+}
+function parseTurtle(src,tag){
+  const t=tokenize(src); let i=0; const pfx={}; const triples=[]; let bn=0;
+  const peek=()=>t[i]||[null,null], nxt=()=>t[i++];
+  const exp=v=>{const x=nxt(); if(!x||x[1]!==v) throw new Error(`${tag}: expected ${v}, got ${x&&x[1]}`)};
+  const newbn=()=>`_:${tag}${++bn}`;
+  const res=(k,v)=>{ if(k==='iri') return v.slice(1,-1); if(k==='a') return TYPE;
+    if(k==='pn'){const j=v.indexOf(':'),p=v.slice(0,j); if(!(p in pfx)) throw new Error(`${tag}: undeclared prefix ${p}`); return pfx[p]+v.slice(j+1)}
+    throw new Error(`${tag}: unexpected ${v}`)};
+  function obj(){const [k,v]=peek();
+    if(v==='[') return bnode(); if(v==='(') return coll();
+    if(k==='str'){nxt(); let lit={lit:JSON.parse(v)};
+      if(peek()[0]==='lang') lit.lang=nxt()[1].slice(1);
+      else if(peek()[0]==='dt'){nxt(); const [k2,v2]=nxt(); lit.dt=res(k2,v2)}
+      return lit}
+    if(k==='num'){nxt(); return {lit:v,dt:XSD+(v.includes('.')?'decimal':'integer')}}
+    nxt(); return res(k,v)}
+  function polist(s){ for(;;){ const [k,v]=nxt(); const p=res(k,v);
+      for(;;){triples.push([s,p,obj()]); if(peek()[1]===','){nxt();continue} break}
+      if(peek()[1]===';'){nxt(); if(['.',']'].includes(peek()[1])) return; continue} return }}
+  function bnode(){exp('['); const b=newbn(); if(peek()[1]!==']') polist(b); exp(']'); return b}
+  function coll(){exp('('); const items=[]; while(peek()[1]!==')') items.push(obj()); nxt();
+    if(!items.length) return RDF+'nil'; const head=newbn(); let cur=head;
+    items.forEach((it,j)=>{triples.push([cur,RDF+'first',it]); const n=j<items.length-1?newbn():RDF+'nil'; triples.push([cur,RDF+'rest',n]); cur=n}); return head}
+  while(i<t.length){ const [k,v]=peek();
+    if(k==='lang'&&v==='@prefix'){nxt(); const pn=nxt()[1], iri=nxt()[1]; exp('.'); pfx[pn.slice(0,-1)]=iri.slice(1,-1); continue}
+    const s = v==='[' ? bnode() : (nxt(), res(k,v));
+    if(peek()[1]==='.'&&s.startsWith('_:')){nxt();continue}
+    polist(s); exp('.');}
+  return triples;
+}
+
+/* ============ Triple store ============ */
+const FILES=[['tsio.ttl','ttl-tsio','a'],['tsio-examples.ttl','ttl-examples','b'],['tsio-ke-scheme.ttl','ttl-scheme','c']];
+const T=[], SRC={}; let parseErr=null;
+try{ FILES.forEach(([f,id,tag])=>parseTurtle(document.getElementById(id).textContent,tag).forEach(tr=>{T.push(tr); if(!(tr[0] in SRC)) SRC[tr[0]]=f})) }catch(e){parseErr=e}
+const bySub=new Map(), byObj=new Map();
+T.forEach(tr=>{ if(!bySub.has(tr[0])) bySub.set(tr[0],[]); bySub.get(tr[0]).push(tr);
+  if(typeof tr[2]==='string'){ if(!byObj.has(tr[2])) byObj.set(tr[2],[]); byObj.get(tr[2]).push(tr)} });
+const objs=(s,p)=>(bySub.get(s)||[]).filter(t=>t[1]===p).map(t=>t[2]);
+const one=(s,p)=>objs(s,p)[0];
+const subsOf=(p,o)=>(byObj.get(o)||[]).filter(t=>t[1]===p).map(t=>t[0]);
+const isA=(s,c)=>objs(s,TYPE).includes(c);
+const list=h=>{const out=[]; while(h&&h!==RDF+'nil'){out.push(one(h,RDF+'first')); h=one(h,RDF+'rest')} return out};
+const local=x=>x.split(/[#/]/).pop();
+const pickLang=arr=>{const en=arr.find(o=>o&&o.lang==='en'); return (en||arr.find(o=>o&&o.lit!==undefined)||{}).lit};
+const lit=(s,p)=>pickLang(objs(s,p));
+function label(x){ if(typeof x!=='string') return x.lit; return lit(x,RDFS+'label')||lit(x,SKOS+'prefLabel')||local(x)}
+const NS=[['tsio',TSIO],['ke',KE],['ex',EX],['obo',OBO],['owl',OWL],['rdfs',RDFS],['skos',SKOS],['dcterms',DCT],['rdf',RDF],['xsd',XSD]];
+const curie=x=>{for(const [p,ns] of NS) if(x.startsWith(ns)) return p+':'+x.slice(ns.length); return x};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const classes=subsOf(TYPE,OWL+'Class').filter(c=>!c.startsWith('_:'));
+const tsioClasses=classes.filter(c=>c.startsWith(TSIO)), bfo=classes.filter(c=>c.startsWith(OBO));
+const oprops=subsOf(TYPE,OWL+'ObjectProperty').filter(p=>p.startsWith(TSIO));
+const dprops=subsOf(TYPE,OWL+'DatatypeProperty').filter(p=>p.startsWith(TSIO));
+const inds=subsOf(TYPE,OWL+'NamedIndividual');
+const standards=[...subsOf(TYPE,KE+'Standard'),...subsOf(TYPE,KE+'StandardSeries')];
+const keConcepts=subsOf(TYPE,SKOS+'Concept').filter(c=>objs(c,SKOS+'inScheme').includes(KE+'Scheme')&&!standards.includes(c));
+function supers(c,seen=new Set()){objs(c,RDFS+'subClassOf').forEach(p=>{if(typeof p==='string'&&!p.startsWith('_:')&&!seen.has(p)){seen.add(p);supers(p,seen)}});return seen}
+const CATROOT={[OBO+'BFO_0000015']:'process',[OBO+'BFO_0000030']:'object',[OBO+'BFO_0000027']:'aggregate',[OBO+'BFO_0000031']:'gdc',[OBO+'BFO_0000040']:'material'};
+const CATNAME={process:'Process',object:'Object',aggregate:'Object aggregate',gdc:'Generically dependent continuant',material:'Material entity',bfo:'BFO upper category'};
+function catOf(c){ if(!c||c.startsWith(OBO)) return 'bfo'; for(const x of [c,...supers(c)]) if(CATROOT[x]) return CATROOT[x]; return 'bfo'}
+const STATUS={[KE+'Status_Current']:['current','Current'],[KE+'Status_UnderReview']:['review','Under review'],[KE+'Status_ToBeRevised']:['revise','To be revised'],[KE+'Status_Draft']:['draft','Draft'],[KE+'Status_Withdrawn']:['withdrawn','Withdrawn'],series:['series','Series']};
+const stKey=s=>{const st=one(s,KE+'status'); return st&&STATUS[st]?STATUS[st][0]:'series'};
+const flatDR=x=>{if(!x) return []; const u=one(x,OWL+'unionOf'); return u?list(u):[x]};
+
+/* ============ Graph model ============ */
+const LAYERS=[
+  {id:'class',name:'Domain classes',desc:'TSIO OWL classes',color:'var(--c-aggregate)',on:true},
+  {id:'bfo',name:'BFO upper layer',desc:'ISO/IEC 21838-2 categories',color:'var(--c-bfo)',on:true},
+  {id:'ind',name:'Example instances',desc:'Individuals from tsio-examples.ttl',color:'var(--c-object)',on:true},
+  {id:'std',name:'ISO standards',desc:'Standards and series',color:'var(--s-current)',on:true},
+  {id:'ke',name:'KE concept scheme',desc:'Mind-map concepts (SKOS)',color:'var(--c-ke)',on:false},
+];
+const ETYPES=[
+  {id:'sub',name:'Subclass of',style:'dash',color:'var(--muted)',on:true},
+  {id:'prop',name:'Object property (domain → range)',style:'solid',color:'var(--ink)',on:true},
+  {id:'type',name:'Instance of',style:'dot',color:'var(--c-object)',on:true},
+  {id:'assert',name:'Property assertion',style:'solid',color:'var(--c-object)',on:true},
+  {id:'part',name:'Part of series',style:'solid',color:'var(--s-series)',on:true},
+  {id:'replaces',name:'Replaces',style:'dash',color:'var(--s-withdrawn)',on:true},
+  {id:'seeAlso',name:'Applies to (see also)',style:'dot',color:'var(--c-ke)',on:true},
+  {id:'broader',name:'Broader concept',style:'solid',color:'var(--c-ke)',on:true},
+  {id:'related',name:'Related concept',style:'dash',color:'var(--c-ke)',on:true},
+];
+const N=new Map(); const E=[];
+const addN=(id,o)=>{ if(!N.has(id)) N.set(id,{id,text:label(id),...o}); return N.get(id)};
+tsioClasses.forEach(c=>addN(c,{layer:'class',cat:catOf(c),kind:'Class'}));
+bfo.forEach(c=>addN(c,{layer:'bfo',cat:'bfo',kind:'BFO class'}));
+inds.forEach(i=>{const t=objs(i,TYPE).find(x=>tsioClasses.includes(x)); addN(i,{layer:'ind',cat:catOf(t),kind:'Individual',text:label(i).replace(' — ',' · ')})});
+standards.forEach(s=>{const part=one(s,DCT+'isPartOf'); const nt=lit(s,SKOS+'notation');
+  addN(s,{layer:'std',cat:'std',status:stKey(s),kind:isA(s,KE+'StandardSeries')?'Standard series':'Standard',
+    text: part? nt : (nt||label(s))})});
+keConcepts.forEach(c=>addN(c,{layer:'ke',cat:'ke',kind:'Concept'}));
+addN(KE+'Scheme',{layer:'ke',cat:'ke',kind:'Concept scheme'});
+const addE=(s,t,type,text,extra={})=>{ if(N.has(s)&&N.has(t)) E.push({id:`${type}|${s}|${t}|${text||''}`,source:s,target:t,type,text,...extra})};
+[...tsioClasses,...bfo].forEach(c=>objs(c,RDFS+'subClassOf').forEach(p=>{if(typeof p==='string'&&!p.startsWith('_:'))addE(c,p,'sub')}));
+const pairCount=new Map();
+oprops.forEach(p=>{ const D=flatDR(one(p,RDFS+'domain')), R=flatDR(one(p,RDFS+'range')); const sym=isA(p,OWL+'SymmetricProperty');
+  if(D.length===1&&R.length===1){ const k=[D[0],R[0]].sort().join('|'); const n=pairCount.get(k)||0; pairCount.set(k,n+1); addE(D[0],R[0],'prop',local(p),{prop:p,curve:n?.2*n:0}) }
+  else if(sym) D.forEach(d=>addE(d,d,'prop',local(p),{prop:p,sym:true})) });
+inds.forEach(i=>objs(i,TYPE).filter(t=>tsioClasses.includes(t)).forEach(t=>addE(i,t,'type')));
+const seenA=new Set();
+inds.forEach(i=>(bySub.get(i)||[]).forEach(([s,p,o])=>{ if(!oprops.includes(p)||!inds.includes(o)) return;
+  const sym=isA(p,OWL+'SymmetricProperty'); const k=sym?[s,o].sort().join('|')+p:s+'|'+o+p; if(seenA.has(k)) return; seenA.add(k);
+  addE(s,o,'assert',local(p),{prop:p,sym})}));
+standards.forEach(s=>{ objs(s,DCT+'isPartOf').forEach(p=>addE(s,p,'part'));
+  objs(s,DCT+'replaces').forEach(o=>addE(s,o,'replaces','replaces'));
+  objs(s,DCT+'isReplacedBy').forEach(o=>{ if(!objs(o,DCT+'replaces').includes(s)) addE(o,s,'replaces','replaces')}); });
+[...standards,...keConcepts].forEach(s=>{
+  objs(s,RDFS+'seeAlso').forEach(o=>{ if(N.has(o)) addE(s,o,'seeAlso');
+    else if(oprops.includes(o)||dprops.includes(o)) flatDR(one(o,RDFS+'domain')).forEach(d=>addE(s,d,'seeAlso','via '+local(o))) });
+  objs(s,SKOS+'broader').forEach(b=>{ if(!objs(s,DCT+'isPartOf').includes(b)) addE(s,b,'broader') });
+  objs(s,SKOS+'related').forEach(r=>{ if(s<r||!objs(r,SKOS+'related').includes(s)) addE(s,r,'related') }); });
+objs(KE+'Scheme',SKOS+'hasTopConcept').forEach(c=>addE(c,KE+'Scheme','broader','top concept'));
+// the scheme concept that points at the TSIO ontology IRI is linked to TSIO's root classes (those directly under a BFO category)
+keConcepts.filter(c=>objs(c,RDFS+'seeAlso').includes('https://enablingvalue.com/ontology/tsio'))
+  .forEach(c=>tsioClasses.filter(k=>objs(k,RDFS+'subClassOf').some(p=>typeof p==='string'&&p.startsWith(OBO))).forEach(k=>addE(c,k,'seeAlso','formalized as')));
+const ED=new Map(); E.forEach(e=>{ if(!ED.has(e.id)) ED.set(e.id,e)}); E.length=0; ED.forEach(e=>E.push(e));
+
+/* ============ State ============ */
+const DEF={layers:Object.fromEntries(LAYERS.map(l=>[l.id,l.on])),etypes:Object.fromEntries(ETYPES.map(e=>[e.id,e.on])),
+  cats:new Set(['process','object','aggregate','gdc','material','bfo']),status:new Set(Object.values(STATUS).map(s=>s[0])),
+  style:'pill',labels:true,elabels:true,group:true,dist:120,rep:600,focus:false,hops:1};
+let S=structuredClone({...DEF,cats:[...DEF.cats],status:[...DEF.status]}); S.cats=new Set(S.cats); S.status=new Set(S.status);
+let selected=null, hovered=null, path=null, forced=new Set(), frozen=false;
+
+/* ============ Visibility ============ */
+function baseVisible(n){ if(forced.has(n.id)) return true;
+  if(!S.layers[n.layer]) return false;
+  if((n.layer==='class'||n.layer==='ind'||n.layer==='bfo')&&!S.cats.has(n.cat)) return false;
+  if(n.layer==='std'&&!S.status.has(n.status)) return false; return true}
+function neighbourhood(start,hops,nodeOk,edgeOk){
+  const adj=new Map(); E.forEach(e=>{ if(!edgeOk(e)) return; const a=id(e.source),b=id(e.target);
+    if(!nodeOk(a)||!nodeOk(b)) return; (adj.get(a)||adj.set(a,[]).get(a)).push(b); (adj.get(b)||adj.set(b,[]).get(b)).push(a)});
+  const seen=new Set([start]); let front=[start];
+  for(let h=0;h<hops;h++){const nx=[]; front.forEach(x=>(adj.get(x)||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);nx.push(y)}})); front=nx}
+  return seen}
+const id=x=>typeof x==='string'?x:x.id;
+function compute(){
+  let vis=new Set([...N.values()].filter(baseVisible).map(n=>n.id));
+  const eOk=e=>S.etypes[e.type];
+  if(S.focus&&selected&&N.has(selected)){ vis.add(selected); vis=neighbourhood(selected,S.hops,x=>vis.has(x),eOk) }
+  const nodes=[...vis].map(x=>N.get(x));
+  const edges=E.filter(e=>eOk(e)&&vis.has(id(e.source))&&vis.has(id(e.target)));
+  return {nodes,edges};
+}
+
+/* ============ Rendering ============ */
+const svg=d3.select('#svg'), canvas=document.getElementById('canvas');
+const root=svg.append('g'); const gE=root.append('g'), gN=root.append('g');
+const zoom=d3.zoom().scaleExtent([.15,4]).on('zoom',e=>root.attr('transform',e.transform));
+svg.call(zoom).on('dblclick.zoom',null);
+const defs=svg.append('defs');
+ETYPES.forEach(t=>defs.append('marker').attr('id','m-'+t.id).attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',6.5).attr('markerHeight',6.5).attr('orient','auto-start-reverse').append('path').attr('d','M0,0L10,5L0,10z').style('fill',t.color));
+defs.append('marker').attr('id','m-path').attr('viewBox','0 0 10 10').attr('refX',9).attr('refY',5).attr('markerWidth',6.5).attr('markerHeight',6.5).attr('orient','auto-start-reverse').append('path').attr('d','M0,0L10,5L0,10z').style('fill','var(--path)');
+const ET=Object.fromEntries(ETYPES.map(t=>[t.id,t]));
+const dash={dash:'5 3',dot:'1.5 3',solid:null};
+const nodeColor=n=>n.layer==='std'?`var(--s-${n.status})`:`var(--c-${n.cat})`;
+const W=()=>canvas.clientWidth, H=()=>canvas.clientHeight;
+const CENTERS={bfo:[.5,.1],class:[.47,.4],ind:[.8,.6],std:[.2,.62],ke:[.42,.9]};
+const sim=d3.forceSimulation().alphaDecay(.035)
+  .force('link',d3.forceLink().id(d=>d.id))
+  .force('charge',d3.forceManyBody())
+  .force('collide',d3.forceCollide())
+  .force('x',d3.forceX()).force('y',d3.forceY());
+let degree=new Map(), cur={nodes:[],edges:[]};
+function sizeNode(n){
+  if(S.style==='pill'){ const small=n.layer==='ke'||n.layer==='std'&&n.kind==='Standard'&&one(n.id,DCT+'isPartOf');
+    n.w=Math.max(34,n.text.length*(small?6.1:6.6)+20); n.h=small?22:26; n.r=n.w/2 }
+  else { n.r=5+Math.sqrt(degree.get(n.id)||0)*3; n.w=n.h=n.r*2 } }
+function forces(){
+  sim.force('link').distance(e=>({sub:.55,type:.6,part:.5,broader:.55}[e.type]||1)*S.dist).strength(e=>({sub:.8,part:.8,type:.5,broader:.6}[e.type]||.25));
+  sim.force('charge').strength(-S.rep);
+  sim.force('collide').radius(d=>S.style==='pill'?Math.max(d.w/2,14)+5:d.r+(S.labels?12:4)).strength(.85);
+  const g=S.group&&!S.focus;
+  sim.force('x').x(d=>g?W()*CENTERS[d.layer][0]:W()/2).strength(g?.09:.03);
+  sim.force('y').y(d=>g?H()*CENTERS[d.layer][1]:H()/2).strength(g?.11:.04);
+}
+let eSel,nSel;
+function render(reheat=true){
+  cur=compute(); degree=new Map(); cur.edges.forEach(e=>{[id(e.source),id(e.target)].forEach(x=>degree.set(x,(degree.get(x)||0)+1))});
+  cur.nodes.forEach(n=>{ sizeNode(n); if(n.x===undefined){ const c=CENTERS[n.layer]; n.x=W()*c[0]+(Math.random()-.5)*120; n.y=H()*c[1]+(Math.random()-.5)*80 } });
+  eSel=gE.selectAll('g.edge').data(cur.edges,d=>d.id).join(en=>{const g=en.append('g').attr('class','edge'); g.append('path'); g.append('text').attr('class','el').attr('text-anchor','middle'); return g});
+  eSel.select('path').style('stroke',d=>ET[d.type].color).style('stroke-width',d=>d.type==='prop'?1.5:1.2).style('opacity',d=>d.type==='prop'?.8:.65)
+    .style('stroke-dasharray',d=>dash[ET[d.type].style]).attr('marker-end',d=>`url(#m-${d.type})`).attr('marker-start',d=>d.sym&&d.source!==d.target?`url(#m-${d.type})`:null);
+  eSel.select('text').text(d=>S.elabels&&d.text?d.text:'');
+  nSel=gN.selectAll('g.node').data(cur.nodes,d=>d.id).join(en=>{
+    const g=en.append('g').attr('class','node').attr('tabindex',0).attr('role','button');
+    g.append('rect').attr('class','shape'); g.append('circle').attr('class','shape'); g.append('text').attr('class','nl');
+    g.on('mouseenter',(e,d)=>{hovered=d.id; showTip(d.id,e); highlight()})
+     .on('mousemove',e=>moveTip(e))
+     .on('mouseleave',()=>{hovered=null; hideTip(); highlight()})
+     .on('focus',(e,d)=>{hovered=d.id; const r=e.target.getBoundingClientRect(); showTip(d.id,{clientX:r.right,clientY:r.top}); highlight()})
+     .on('blur',()=>{hovered=null; hideTip(); highlight()})
+     .on('click',(e,d)=>{e.stopPropagation(); select(d.id)})
+     .on('dblclick',(e,d)=>{e.stopPropagation(); selected=d.id; S.focus=true; syncControls(); render(); select(d.id)})
+     .on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault(); select(d.id)}})
+     .call(d3.drag().on('start',(e,d)=>{if(!e.active&&!frozen)sim.alphaTarget(.2).restart(); d.fx=d.x; d.fy=d.y; hideTip()})
+       .on('drag',(e,d)=>{d.fx=e.x; d.fy=e.y; if(frozen){d.x=e.x; d.y=e.y; tick()}})
+       .on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0); if(!frozen){d.fx=null; d.fy=null}}));
+    return g});
+  nSel.attr('aria-label',d=>`${d.text}, ${d.kind}`);
+  const pill=S.style==='pill';
+  nSel.select('rect').attr('display',pill?null:'none').attr('x',d=>-d.w/2).attr('y',d=>-d.h/2).attr('width',d=>d.w).attr('height',d=>d.h)
+    .attr('rx',d=>d.layer==='ind'?d.h/2:d.layer==='ke'?d.h/2:d.layer==='bfo'?2:5)
+    .style('fill',d=>`color-mix(in srgb, ${nodeColor(d)} ${d.layer==='bfo'?'10%':'17%'}, var(--surface))`).style('stroke',nodeColor)
+    .style('stroke-dasharray',d=>d.status==='withdrawn'?'4 2':d.kind==='Standard series'?'1 0':null)
+    .style('stroke-width',d=>d.kind==='Standard series'?2.4:null);
+  nSel.select('circle').attr('display',pill?'none':null).attr('r',d=>d.r).style('fill',d=>`color-mix(in srgb, ${nodeColor(d)} 55%, var(--surface))`).style('stroke',nodeColor);
+  nSel.select('text').text(d=>d.text).attr('class',d=>'nl'+(d.layer==='ke'||(d.layer==='std'&&one(d.id,DCT+'isPartOf'))?' small':''))
+    .attr('text-anchor',pill?'middle':'start').attr('x',d=>pill?0:d.r+4).attr('dy','.35em')
+    .attr('display',d=>(pill||S.labels)?null:'none');
+  sim.nodes(cur.nodes); sim.force('link').links(cur.edges); forces();
+  if(reheat&&!frozen) sim.alpha(.7).restart(); else tick();
+  highlight(); updateStat(); populatePickers();
+}
+function edgeEnd(from,to){ // point on boundary of `to` looking from `from`
+  const dx=to.x-from.x, dy=to.y-from.y; const len=Math.hypot(dx,dy)||1;
+  if(S.style==='dot'){ const k=(to.r+3)/len; return [to.x-dx*k,to.y-dy*k] }
+  const sx=(to.w/2+3)/Math.abs(dx||1e-9), sy=(to.h/2+3)/Math.abs(dy||1e-9); const s=Math.min(sx,sy,1); return [to.x-dx*s,to.y-dy*s]}
+function tick(){
+  if(!eSel) return;
+  eSel.select('path').attr('d',d=>{ const s=d.source,t=d.target;
+    if(s===t){ const x=s.x+(S.style==='pill'?s.w/2-8:0), y=s.y-(S.style==='pill'?s.h/2:s.r); return `M${x-6},${y} C${x-4},${y-50} ${x+54},${y-22} ${x+(S.style==='pill'?10:s.r)},${s.y-2}` }
+    const [x1,y1]=edgeEnd(t,s), [x2,y2]=edgeEnd(s,t); const cv=d.curve||0;
+    return `M${x1},${y1} Q${(x1+x2)/2-(y2-y1)*cv},${(y1+y2)/2+(x2-x1)*cv} ${x2},${y2}`});
+  eSel.select('text').attr('x',d=>d.source===d.target?d.source.x+(S.style==='pill'?d.source.w/2:0)+30:(d.source.x+d.target.x)/2-(d.target.y-d.source.y)*(d.curve||0)*.5)
+    .attr('y',d=>d.source===d.target?d.source.y-44:(d.source.y+d.target.y)/2+(d.target.x-d.source.x)*(d.curve||0)*.5-3);
+  nSel.attr('transform',d=>`translate(${d.x},${d.y})`);
+}
+sim.on('tick',tick);
+
+/* highlight: path > hover > selection */
+function highlight(){
+  if(!nSel) return;
+  const onPath=path?new Set(path.nodes):null, pathE=path?new Set(path.edges):null;
+  const focusId=hovered||selected;
+  let nb=null;
+  if(!onPath&&focusId&&cur.nodes.some(n=>n.id===focusId)){ nb=new Set([focusId]); cur.edges.forEach(e=>{if(e.source.id===focusId)nb.add(e.target.id); if(e.target.id===focusId)nb.add(e.source.id)}) }
+  nSel.classed('sel',d=>d.id===selected).classed('hov',d=>d.id===hovered)
+      .classed('onpath',d=>!!onPath&&onPath.has(d.id))
+      .classed('dim',d=>onPath?!onPath.has(d.id):nb?!nb.has(d.id):false);
+  eSel.classed('onpath',d=>!!pathE&&pathE.has(d.id))
+      .classed('hot',d=>!onPath&&!!focusId&&(d.source.id===focusId||d.target.id===focusId))
+      .classed('dim',d=>pathE?!pathE.has(d.id):nb?!(d.source.id===focusId||d.target.id===focusId):false);
+  eSel.select('path').attr('marker-end',d=>pathE&&pathE.has(d.id)?'url(#m-path)':`url(#m-${d.type})`);
+  eSel.select('text').text(d=>(S.elabels||(focusId&&(d.source.id===focusId||d.target.id===focusId)))&&d.text?d.text:'');
+  if(S.style==='dot'&&!S.labels) nSel.select('text').attr('display',d=>d.id===focusId||(nb&&nb.has(d.id))||(onPath&&onPath.has(d.id))?null:'none');
+}
+
+/* ============ Attribute extraction (hover card + details) ============ */
+const vtxt=o=>typeof o==='string'?(N.has(o)||classes.includes(o)?label(o):curie(o)):o.lit+(o.dt&&!/(string|gYear|integer)$/.test(o.dt)?` (${local(o.dt)})`:'');
+function statusPill(s){const k=typeof s==='string'?s:stKey(s); const e=Object.values(STATUS).find(v=>v[0]===k); return `<span class="pill" style="background:var(--s-${k})">${e?e[1]:k}</span>`}
+function catPill(c){return `<span class="pill" style="background:var(--c-${c})">${CATNAME[c]}</span>`}
+function summary(x){
+  const n=N.get(x); const out={kind:n?n.kind:'Resource',pills:'',title:label(x),def:'',rows:[],notes:[]};
+  const def=lit(x,SKOS+'definition')||lit(x,DCT+'description')||lit(x,SKOS+'scopeNote')||lit(x,RDFS+'comment');
+  out.def=def||'';
+  if(!n) return out;
+  if(n.layer==='class'){
+    out.pills=catPill(n.cat);
+    out.rows.push(['Subclass of',objs(x,RDFS+'subClassOf').filter(p=>typeof p==='string'&&!p.startsWith('_:')).map(label).join(', ')]);
+    const restr=objs(x,RDFS+'subClassOf').filter(p=>typeof p==='string'&&p.startsWith('_:')).map(r=>`${local(one(r,OWL+'onProperty'))} some ${label(one(r,OWL+'someValuesFrom'))}`);
+    if(restr.length) out.rows.push(['Must have',restr.join('; ')]);
+    const outP=oprops.filter(p=>flatDR(one(p,RDFS+'domain')).includes(x)).map(p=>`${local(p)} → ${flatDR(one(p,RDFS+'range')).map(label).join(' | ')}`);
+    const inP=oprops.filter(p=>flatDR(one(p,RDFS+'range')).includes(x)&&!flatDR(one(p,RDFS+'domain')).includes(x)).map(p=>`${flatDR(one(p,RDFS+'domain')).map(label).join(' | ')} → ${local(p)}`);
+    const attrs=dprops.filter(p=>one(p,RDFS+'domain')===x).map(p=>`${local(p)} (${local(one(p,RDFS+'range')||'')})`);
+    if(outP.length) out.rows.push(['Relationships',outP.join('; ')]);
+    if(inP.length) out.rows.push(['Referenced by',inP.join('; ')]);
+    if(attrs.length) out.rows.push(['Attributes',attrs.join(', ')]);
+    const inh=dprops.filter(p=>supers(x).has(one(p,RDFS+'domain'))).map(p=>`${local(p)} (from ${label(one(p,RDFS+'domain'))})`);
+    if(inh.length) out.rows.push(['Inherited attributes',inh.join(', ')]);
+    const dj=[...objs(x,OWL+'disjointWith'),...subsOf(OWL+'disjointWith',x)]; if(dj.length) out.rows.push(['Disjoint with',dj.map(label).join(', ')]);
+    const alt=objs(x,SKOS+'altLabel').map(o=>o.lit); if(alt.length) out.rows.push(['Also called',alt.join(', ')]);
+    const ni=inds.filter(i=>objs(i,TYPE).includes(x)).length; if(ni) out.rows.push(['Instances',String(ni)]);
+    objs(x,SKOS+'editorialNote').forEach(o=>out.notes.push(['Design note',o.lit]));
+  } else if(n.layer==='bfo'){
+    out.pills=catPill('bfo'); out.def=out.def||'Upper-level category from Basic Formal Ontology (ISO/IEC 21838-2), used to anchor TSIO classes.';
+    const p=objs(x,RDFS+'subClassOf').filter(y=>typeof y==='string'); if(p.length) out.rows.push(['Subclass of',p.map(label).join(', ')]);
+    const kids=subsOf(RDFS+'subClassOf',x).filter(c=>tsioClasses.includes(c)); if(kids.length) out.rows.push(['TSIO classes under it',kids.map(label).join(', ')]);
+    out.rows.push(['IRI',curie(x)]);
+  } else if(n.layer==='ind'){
+    out.pills=catPill(n.cat);
+    out.rows.push(['Instance of',objs(x,TYPE).filter(t=>tsioClasses.includes(t)).map(label).join(', ')]);
+    (bySub.get(x)||[]).forEach(([,p,o])=>{ if(dprops.includes(p)) out.rows.push([label(p),vtxt(o)]) });
+    const rel={}; (bySub.get(x)||[]).forEach(([,p,o])=>{ if(oprops.includes(p)) (rel[local(p)]=rel[local(p)]||[]).push(label(o))});
+    Object.entries(rel).forEach(([k,v])=>out.rows.push([k,v.join(', ')]));
+    const c=lit(x,RDFS+'comment'); if(c){out.notes.push(['Note',c]); if(out.def===c) out.def=''}
+    if(!out.def) out.def=`Fictional example ${objs(x,TYPE).filter(t=>tsioClasses.includes(t)).map(t=>label(t).toLowerCase()).join(' and ')} from tsio-examples.ttl.`;
+  } else if(n.layer==='std'){
+    out.pills=statusPill(n.status); out.title=(one(x,DCT+'isPartOf')?lit(x,SKOS+'notation')+' · ':'')+label(x);
+    [['Designation',KE+'designation'],['Official title',DCT+'title'],['Edition',KE+'edition'],['Issued',DCT+'issued'],['Committee',KE+'committee'],['Content type',KE+'contentType']]
+      .forEach(([k,p])=>{const v=one(x,p); if(v) out.rows.push([k,vtxt(v)])});
+    const parts=objs(x,DCT+'hasPart'); if(parts.length) out.rows.push(['Parts',parts.map(p=>lit(p,SKOS+'notation')||label(p)).join(', ')]);
+    const rep=objs(x,DCT+'replaces'); if(rep.length) out.rows.push(['Replaces',rep.map(p=>lit(p,SKOS+'notation')||label(p)).join(', ')]);
+    const by=objs(x,DCT+'isReplacedBy'); if(by.length) out.rows.push(['Replaced by',by.map(p=>lit(p,SKOS+'notation')||label(p)).join(', ')]);
+    objs(x,KE+'relevanceToTSIO').forEach(o=>out.notes.push(['Use in TSIO',o.lit]));
+    objs(x,SKOS+'changeNote').forEach(o=>out.notes.push(['Correction',o.lit]));
+    objs(x,SKOS+'historyNote').forEach(o=>out.notes.push(['History',o.lit]));
+  } else if(n.layer==='ke'){
+    out.pills=`<span class="pill" style="background:var(--c-ke)">SKOS concept</span>`;
+    const nt=lit(x,SKOS+'notation'); if(nt) out.rows.push(['Step',nt]);
+    const b=objs(x,SKOS+'broader'); if(b.length) out.rows.push(['Broader',b.map(label).join(', ')]);
+    const k=objs(x,SKOS+'narrower'); if(k.length) out.rows.push(['Narrower',k.length+' concept'+(k.length>1?'s':'')]);
+    const alt=objs(x,SKOS+'altLabel').map(o=>o.lit); if(alt.length) out.rows.push(['Also called',alt.join(', ')]);
+    objs(x,SKOS+'example').forEach(o=>out.rows.push(['Example',o.lit]));
+    const sa=objs(x,RDFS+'seeAlso').filter(o=>o.startsWith(TSIO)); if(sa.length) out.rows.push(['Applies to',sa.map(curie).join(', ')]);
+    if(!out.def) out.def='Concept from the knowledge-engineering mind map.';
+  }
+  return out;
+}
+
+/* ============ Tooltip ============ */
+const tip=document.getElementById('tip');
+function showTip(x,e){
+  const s=summary(x); const deg=degree.get(x)||0; const all=E.filter(ed=>id(ed.source)===x||id(ed.target)===x).length;
+  tip.innerHTML=`<div class="k">${esc(s.kind)} ${s.pills}</div><h3>${esc(s.title)}</h3>
+    ${s.def?`<p>${esc(s.def)}</p>`:''}
+    ${s.rows.length?`<dl>${s.rows.filter(r=>r[1]).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`:''}
+    ${s.notes.slice(0,2).map(([k,v])=>`<p class="note"><b>${esc(k)}.</b> ${esc(v)}</p>`).join('')}
+    <div class="foot">${deg} visible link${deg===1?'':'s'}${all>deg?` · ${all-deg} hidden`:''} · click to pin, double-click to focus</div>`;
+  tip.hidden=false; moveTip(e)}
+function moveTip(e){ const pad=14, r=tip.getBoundingClientRect(); let x=e.clientX+pad, y=e.clientY+pad;
+  if(x+r.width>innerWidth-8) x=e.clientX-r.width-pad; if(y+r.height>innerHeight-8) y=Math.max(8,innerHeight-r.height-8);
+  tip.style.left=Math.max(8,x)+'px'; tip.style.top=y+'px'}
+function hideTip(){tip.hidden=true}
+
+/* ============ Details panel ============ */
+const det=document.getElementById('details');
+const PL={[TYPE]:'type',[RDFS+'subClassOf']:'subclass of',[RDFS+'domain']:'domain',[RDFS+'range']:'range',[OWL+'inverseOf']:'inverse of',[OWL+'disjointWith']:'disjoint with',[SKOS+'broader']:'broader',[SKOS+'narrower']:'narrower',[SKOS+'related']:'related',[SKOS+'notation']:'notation',[SKOS+'altLabel']:'also called',[SKOS+'example']:'example',[RDFS+'seeAlso']:'see also',[RDFS+'comment']:'comment',[DCT+'replaces']:'replaces',[DCT+'isReplacedBy']:'replaced by',[DCT+'hasPart']:'has part',[DCT+'isPartOf']:'part of',[DCT+'issued']:'issued',[DCT+'title']:'official title'};
+const SKIP=new Set([RDFS+'label',SKOS+'prefLabel',SKOS+'definition',DCT+'description',SKOS+'editorialNote',SKOS+'changeNote',SKOS+'historyNote',SKOS+'scopeNote',KE+'relevanceToTSIO',SKOS+'inScheme',SKOS+'topConceptOf']);
+function vhtml(o){
+  if(typeof o!=='string'){const dt=o.dt&&o.dt!==XSD+'string'?`<small>${esc(local(o.dt))}</small>`:''; return `<span class="lit">${esc(o.lit)}${dt}</span>`}
+  if(o.startsWith('_:')){const u=one(o,OWL+'unionOf'); if(u) return list(u).map(vhtml).join(' ∪ ');
+    const p=one(o,OWL+'onProperty'); if(p) return `${vhtml(p)} <i>some</i> ${vhtml(one(o,OWL+'someValuesFrom'))}`; return '(anonymous)'}
+  if(STATUS[o]) return statusPill(STATUS[o][0]);
+  if(N.has(o)) return `<button class="ref" data-go="${esc(o)}">${esc(N.get(o).kind==='Standard'&&one(o,DCT+'isPartOf')?N.get(o).text:label(o))}</button>`;
+  if(/^https?:\/\/www\.iso\.org/.test(o)) return `<a href="${esc(o)}" target="_blank" rel="noopener">${esc(o.replace(/^https?:\/\/www\./,''))}</a>`;
+  return `<span class="mono">${esc(bySub.has(o)?label(o):curie(o))}</span>`}
+function select(x,{center}={}){
+  selected=x; path=null; document.getElementById('p-res').textContent='Trace how two nodes connect across the model, instances, standards and concept scheme.';
+  if(S.focus) render(); else highlight();
+  if(!x){ det.innerHTML=`<p class="empty">Hover any node to see its attributes. Click to pin it here with every statement about it, then use the buttons to explore outward.</p>`; return }
+  const s=summary(x);
+  const rows=new Map(); (bySub.get(x)||[]).forEach(([,p,o])=>{ if(SKIP.has(p)) return; if(p===TYPE&&[OWL+'NamedIndividual',OWL+'Class',SKOS+'Concept',OWL+'ObjectProperty'].includes(o)) return; (rows.get(p)||rows.set(p,[]).get(p)).push(o)});
+  const inc=new Map(); (byObj.get(x)||[]).forEach(([sb,p])=>{ if(sb.startsWith('_:')||[SKOS+'inScheme',SKOS+'hasTopConcept',SKOS+'broader',DCT+'isPartOf'].includes(p)) return; (inc.get(p)||inc.set(p,[]).get(p)).push(sb)});
+  const allLinks=E.filter(e=>id(e.source)===x||id(e.target)===x).length, vis=degree.get(x)||0;
+  const notes=[...s.notes,...objs(x,SKOS+'scopeNote').filter(o=>o.lit!==s.def).map(o=>['Scope',o.lit])];
+  det.innerHTML=`<div class="kind">${esc(s.kind)} ${s.pills}</div>
+    <h2>${esc(s.title)}</h2>
+    <div class="iri">${esc(curie(x))}${SRC[x]?' · '+esc(SRC[x]):''}</div>
+    ${s.def?`<p class="def">${esc(s.def)}</p>`:''}
+    ${notes.map(([k,v])=>`<p class="note"><b>${esc(k)}.</b> ${esc(v)}</p>`).join('')}
+    <div class="btns">
+      <button class="btn primary" id="d-focus">${S.focus?'Showing neighbourhood':'Focus neighbourhood'}</button>
+      ${allLinks>vis?`<button class="btn" id="d-expand">Show ${allLinks-vis} hidden link${allLinks-vis>1?'s':''}</button>`:''}
+      <button class="btn" id="d-center">Centre</button>
+      <button class="btn" id="d-from">Path from</button><button class="btn" id="d-to">Path to</button>
+    </div>
+    ${s.rows.length?`<div class="shd">Attributes</div><dl class="props">${s.rows.filter(r=>r[1]).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`:''}
+    ${rows.size?`<div class="shd">All statements</div><dl class="props">${[...rows].map(([p,os])=>`<dt>${esc(PL[p]||label(p))}</dt><dd>${os.map(vhtml).join(', ')}</dd>`).join('')}</dl>`:''}
+    ${inc.size?`<div class="shd">Referenced by</div><dl class="props">${[...inc].map(([p,ss])=>`<dt>${esc(PL[p]||label(p))} ←</dt><dd>${ss.map(vhtml).join(', ')}</dd>`).join('')}</dl>`:''}`;
+  det.querySelector('#d-focus').onclick=()=>{S.focus=true; syncControls(); render()};
+  const ex=det.querySelector('#d-expand'); if(ex) ex.onclick=()=>expand(x);
+  det.querySelector('#d-center').onclick=()=>centerOn(x);
+  det.querySelector('#d-from').onclick=()=>{document.getElementById('p-from').value=keyOf(x); openPath()};
+  det.querySelector('#d-to').onclick=()=>{document.getElementById('p-to').value=keyOf(x); openPath()};
+  if(center) centerOn(x);
+}
+det.addEventListener('click',e=>{const b=e.target.closest('[data-go]'); if(b) goTo(b.dataset.go)});
+function goTo(x){ const n=N.get(x); if(!n) return; if(!cur.nodes.includes(n)){ forced.add(x); if(S.focus) selected=x; render() } select(x,{center:true}) }
+function expand(x){ E.forEach(e=>{const a=id(e.source),b=id(e.target); if(a===x)forced.add(b); if(b===x)forced.add(a)}); forced.add(x);
+  E.forEach(e=>{if((id(e.source)===x||id(e.target)===x)&&!S.etypes[e.type]) S.etypes[e.type]=true}); syncControls(); render(); select(x) }
+function centerOn(x){ const n=N.get(x); if(!n||n.x===undefined) return; const t=d3.zoomTransform(svg.node()); const k=Math.max(t.k,1);
+  svg.transition().duration(450).call(zoom.transform,d3.zoomIdentity.translate(W()/2-n.x*k,H()/2-n.y*k).scale(k)) }
+function fit(){ if(!cur.nodes.length) return; const xs=cur.nodes.map(n=>n.x), ys=cur.nodes.map(n=>n.y);
+  const x0=Math.min(...xs)-80,x1=Math.max(...xs)+80,y0=Math.min(...ys)-40,y1=Math.max(...ys)+40;
+  const k=Math.min(2,.95*Math.min(W()/(x1-x0),H()/(y1-y0)));
+  svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(W()/2-k*(x0+x1)/2,H()/2-k*(y0+y1)/2).scale(k)) }
+
+/* ============ Path finder ============ */
+const keyOf=x=>`${N.get(x).text} — ${N.get(x).kind}`;
+const byKey=new Map();
+function populatePickers(){ if(byKey.size) return;
+  [...N.values()].forEach(n=>byKey.set(keyOf(n.id),n.id));
+  document.getElementById('ents').innerHTML=[...byKey.keys()].sort((a,b)=>a.localeCompare(b)).map(k=>`<option value="${esc(k)}"></option>`).join('') }
+function resolve(v){ if(!v) return null; if(byKey.has(v)) return byKey.get(v); const l=v.toLowerCase();
+  const hit=[...byKey.entries()].find(([k])=>k.toLowerCase().startsWith(l))||[...byKey.entries()].find(([k])=>k.toLowerCase().includes(l)); return hit&&hit[1]}
+function openPath(){ const d=[...document.querySelectorAll('.controls details')].find(x=>x.querySelector('#p-go')); d.open=true;
+  if(document.getElementById('p-from').value&&document.getElementById('p-to').value) findPath() }
+function findPath(){
+  const a=resolve(document.getElementById('p-from').value), b=resolve(document.getElementById('p-to').value), out=document.getElementById('p-res');
+  if(!a||!b){out.textContent='Pick two nodes from the suggestions.';return}
+  // search the whole graph (all relationship types), then reveal what the path needs
+  const adj=new Map(); E.forEach(e=>{const s=id(e.source),t=id(e.target); (adj.get(s)||adj.set(s,[]).get(s)).push([t,e]); (adj.get(t)||adj.set(t,[]).get(t)).push([s,e])});
+  const prev=new Map([[a,null]]); const q=[a];
+  while(q.length){const x=q.shift(); if(x===b) break; (adj.get(x)||[]).forEach(([y,e])=>{if(!prev.has(y)){prev.set(y,[x,e]);q.push(y)}})}
+  if(!prev.has(b)){out.innerHTML=`No connection between <b>${esc(N.get(a).text)}</b> and <b>${esc(N.get(b).text)}</b>.`; path=null; highlight(); return}
+  const nodes=[b], edges=[]; let c=b; while(prev.get(c)){const [p,e]=prev.get(c); edges.push(e); nodes.push(p); c=p} nodes.reverse(); edges.reverse();
+  nodes.forEach(n=>forced.add(n)); edges.forEach(e=>S.etypes[e.type]=true); S.focus=false; syncControls();
+  path={nodes,edges:edges.map(e=>e.id)}; render(); path={nodes,edges:edges.map(e=>e.id)}; highlight();
+  out.innerHTML=`<b>${edges.length} step${edges.length>1?'s':''}:</b> `+nodes.map((n,i)=>esc(N.get(n).text)+(i<edges.length?` <span class="mono">—${esc(edges[i].text||ET[edges[i].type].name.toLowerCase())}→</span> `:'')).join('');
+  setTimeout(fit,700);
+}
+
+/* ============ Controls ============ */
+function countIn(layer){return [...N.values()].filter(n=>n.layer===layer).length}
+document.getElementById('layers').innerHTML=LAYERS.map(l=>`<label class="row" title="${esc(l.desc)}"><input type="checkbox" data-layer="${l.id}"><span class="sw" style="border-color:${l.color};background:color-mix(in srgb,${l.color} 22%,var(--surface))"></span>${esc(l.name)}<span class="ct">${countIn(l.id)}</span></label>`).join('');
+document.getElementById('edges').innerHTML=ETYPES.map(t=>`<label class="row"><input type="checkbox" data-et="${t.id}"><span class="ls" style="border-top-color:${t.color};border-top-style:${t.style==='solid'?'solid':t.style==='dash'?'dashed':'dotted'}"></span>${esc(t.name)}<span class="ct">${E.filter(e=>e.type===t.id).length}</span></label>`).join('');
+document.getElementById('f-cat').innerHTML=['process','object','aggregate','gdc','material','bfo'].map(c=>`<button class="chip" data-cat="${c}"><span class="dot" style="background:var(--c-${c})"></span>${c==='gdc'?'Generically dependent':CATNAME[c]}</button>`).join('');
+document.getElementById('f-status').innerHTML=Object.values(STATUS).map(([k,l])=>`<button class="chip" data-st="${k}"><span class="dot" style="background:var(--s-${k})"></span>${l}</button>`).join('');
+function syncControls(){
+  document.querySelectorAll('[data-layer]').forEach(i=>i.checked=S.layers[i.dataset.layer]);
+  document.querySelectorAll('[data-et]').forEach(i=>i.checked=S.etypes[i.dataset.et]);
+  document.querySelectorAll('[data-cat]').forEach(b=>b.setAttribute('aria-pressed',S.cats.has(b.dataset.cat)));
+  document.querySelectorAll('[data-st]').forEach(b=>b.setAttribute('aria-pressed',S.status.has(b.dataset.st)));
+  document.querySelectorAll('[data-style]').forEach(b=>b.setAttribute('aria-pressed',S.style===b.dataset.style));
+  document.getElementById('focus').checked=S.focus; document.getElementById('hops').value=S.hops; document.getElementById('hops-v').textContent=`${S.hops} hop${S.hops>1?'s':''}`;
+  document.getElementById('lbl').checked=S.labels; document.getElementById('elbl').checked=S.elabels; document.getElementById('group').checked=S.group;
+  document.getElementById('dist').value=S.dist; document.getElementById('dist-v').textContent=S.dist+' px';
+  document.getElementById('rep').value=S.rep; document.getElementById('rep-v').textContent=S.rep;
+  document.getElementById('freeze').setAttribute('aria-pressed',frozen); document.getElementById('freeze').textContent=frozen?'Unfreeze':'Freeze';
+}
+function updateStat(){ document.getElementById('stat').textContent=`${cur.nodes.length} of ${N.size} nodes · ${cur.edges.length} of ${E.length} links`+(S.focus&&selected?` · neighbourhood of ${N.get(selected).text}`:'') }
+const on=(sel,ev,fn)=>document.querySelectorAll(sel).forEach(el=>el.addEventListener(ev,fn));
+on('[data-layer]','change',e=>{S.layers[e.target.dataset.layer]=e.target.checked; if(!e.target.checked) [...forced].forEach(x=>{if(N.get(x).layer===e.target.dataset.layer)forced.delete(x)}); render()});
+on('[data-et]','change',e=>{S.etypes[e.target.dataset.et]=e.target.checked; render()});
+on('[data-cat]','click',e=>{const c=e.currentTarget.dataset.cat; S.cats.has(c)?S.cats.delete(c):S.cats.add(c); syncControls(); render()});
+on('[data-st]','click',e=>{const c=e.currentTarget.dataset.st; S.status.has(c)?S.status.delete(c):S.status.add(c); syncControls(); render()});
+on('[data-style]','click',e=>{S.style=e.currentTarget.dataset.style; syncControls(); render()});
+document.getElementById('focus').onchange=e=>{S.focus=e.target.checked; if(S.focus&&!selected){document.getElementById('stat').textContent='Select a node first, then its neighbourhood is shown.'} render()};
+document.getElementById('hops').oninput=e=>{S.hops=+e.target.value; syncControls(); if(S.focus) render()};
+document.getElementById('lbl').onchange=e=>{S.labels=e.target.checked; render(false)};
+document.getElementById('elbl').onchange=e=>{S.elabels=e.target.checked; highlight()};
+document.getElementById('group').onchange=e=>{S.group=e.target.checked; forces(); if(!frozen) sim.alpha(.8).restart()};
+document.getElementById('dist').oninput=e=>{S.dist=+e.target.value; syncControls(); forces(); if(!frozen) sim.alpha(.5).restart()};
+document.getElementById('rep').oninput=e=>{S.rep=+e.target.value; syncControls(); forces(); if(!frozen) sim.alpha(.5).restart()};
+document.getElementById('fit').onclick=fit;
+document.getElementById('reheat').onclick=()=>{frozen=false; cur.nodes.forEach(n=>{n.fx=null;n.fy=null}); syncControls(); sim.alpha(1).restart()};
+document.getElementById('freeze').onclick=()=>{frozen=!frozen; if(frozen){sim.stop(); cur.nodes.forEach(n=>{n.fx=n.x;n.fy=n.y})} else {cur.nodes.forEach(n=>{n.fx=null;n.fy=null}); sim.alpha(.3).restart()} syncControls()};
+document.getElementById('reset').onclick=()=>{S={...structuredClone({...DEF,cats:[...DEF.cats],status:[...DEF.status]})}; S.cats=new Set(S.cats); S.status=new Set(S.status);
+  forced.clear(); path=null; frozen=false; N.forEach(n=>{delete n.x;delete n.y;n.fx=n.fy=null}); syncControls(); select(null); render(); setTimeout(fit,1400)};
+document.getElementById('expand').onclick=()=>{ if(selected) expand(selected); else document.getElementById('stat').textContent='Select a node first.'};
+document.getElementById('clear').onclick=()=>{ S.focus=false; syncControls(); select(null); render() };
+document.getElementById('q').addEventListener('change',e=>{const x=resolve(e.target.value); if(x) goTo(x)});
+document.getElementById('p-go').onclick=findPath;
+document.getElementById('p-clear').onclick=()=>{path=null; document.getElementById('p-from').value=''; document.getElementById('p-to').value=''; document.getElementById('p-res').textContent='Trace how two nodes connect across the model, instances, standards and concept scheme.'; highlight()};
+svg.on('click',()=>{ if(path){return} select(null)});
+// theme
+const setTheme=t=>{ if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+  ['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).setAttribute('aria-pressed',k===t)); try{localStorage.setItem('tsio-theme',t)}catch(e){} };
+['auto','light','dark'].forEach(k=>document.getElementById('th-'+k).onclick=()=>setTheme(k));
+try{ const t=localStorage.getItem('tsio-theme'); if(t) setTheme(t) }catch(e){}
+let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(()=>{forces(); if(!frozen) sim.alpha(.3).restart()},200)});
+
+/* ============ Boot ============ */
+if(parseErr){ document.getElementById('stat').textContent='Could not read the ontology files: '+parseErr.message }
+else{
+  document.getElementById('ftr').textContent=`${T.length} triples · ${N.size} nodes · ${E.length} links`;
+  syncControls(); render(); select(TSIO+'Subscription');
+  setTimeout(fit,1600);
+}
+</script>
+</body>
+</html>

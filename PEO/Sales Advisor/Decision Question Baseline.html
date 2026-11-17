@@ -1,0 +1,685 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Decision Question Baseline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Same system as the PEO Sales Advisor console: schematic grid, Big Shoulders + IBM Plex, deontic colors, Keel/North Star accents. */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --sunk:#F3F6F9; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --obligation:#4A3AA7; --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --keel:#1F6E8C; --star:#B07A12; --p-admin:#7A4BC4; --p-hr:#1F7FA8;
+  --ok-soft:#DDF3EA; --no-soft:#FBE3E3; --hold-soft:#FAEED6;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --sunk:#1B2632; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --keel:#5FB3D2; --star:#E2B44E; --p-admin:#B08CF0; --p-hr:#5EBBE0; --ok-soft:#123326; --no-soft:#3A1C1C; --hold-soft:#36290F; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --sunk:#1B2632; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --keel:#5FB3D2; --star:#E2B44E; --p-admin:#B08CF0; --p-hr:#5EBBE0; --ok-soft:#123326; --no-soft:#3A1C1C; --hold-soft:#36290F; color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;margin:0;padding-inline:16px;padding-block:0;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:24px 56px}
+header.top{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+h1{font-size:clamp(32px,4.4vw,48px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:82ch}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap;align-self:flex-start}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:8px 12px;border-radius:6px;cursor:pointer}
+.tabs button .n{font-family:var(--font-mono);font-size:10.5px;margin-right:5px;opacity:.7}
+.tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.view{display:flex;flex-direction:column;gap:16px}
+.hook{font-size:14.5px;color:var(--muted);max-width:94ch}
+.hook b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:21px;margin-bottom:6px}
+.sec-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+.hint{font-size:12.5px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
+.stat .v{font:700 26px var(--font-display);font-variant-numeric:tabular-nums;line-height:1}
+.stat .l{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;background:var(--surface)}
+.pill.ok{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.pill.no{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.pill.hold{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}
+.pill.ver{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.pill.keel{color:var(--keel);border-color:color-mix(in srgb,var(--keel) 45%,var(--line))}
+.pill.star{color:var(--star);border-color:color-mix(in srgb,var(--star) 45%,var(--line))}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:7px 14px;font:600 13px var(--font-body);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"][data-p="admin"]{background:var(--p-admin);color:var(--surface)}
+.seg button[aria-pressed="true"][data-p="hr"]{background:var(--p-hr);color:var(--surface)}
+.seg button[aria-pressed="true"]:not([data-p]){background:var(--ink);color:var(--surface)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 12px;font:600 12.5px var(--font-body);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 10px;font:500 11.5px var(--font-mono);color:var(--muted);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+/* step cards */
+.step{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:10px;min-width:0}
+.step-head{padding:14px 16px 10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.step-head h3{font-size:21px;flex:1 1 320px}
+.decision{margin:0 16px 10px;padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--star) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--star) 35%,var(--line));font-size:14px}
+.decision .eyebrow{color:var(--star)}
+.tw{overflow-x:auto;border-top:1px solid var(--line-soft)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;font:500 10.5px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--sunk);white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:8px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.id{font:500 11.5px var(--font-mono);white-space:nowrap;color:var(--muted)}
+td.q{min-width:300px;color:var(--ink)}
+.tier{font:700 11px var(--font-mono);padding:1px 7px;border-radius:4px}
+.tier.H{background:var(--no-soft);color:var(--prohibition)} .tier.M{background:var(--hold-soft);color:var(--warning)} .tier.L{background:var(--sunk);color:var(--muted)}
+details.lineage{border-top:1px dashed var(--line);padding:10px 16px 14px}
+details.lineage summary{cursor:pointer;font:600 12.5px var(--font-body);color:var(--keel)}
+.lin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:900px){.lin{grid-template-columns:minmax(0,1fr)}}
+.lin div{border:1px solid var(--line-soft);border-radius:6px;padding:8px 10px;font-size:12.5px;background:var(--sunk);min-width:0}
+.lin b{display:block;font:500 10.5px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--keel);margin-bottom:2px}
+
+/* QbD */
+.layers{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:980px){.layers{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.layers{grid-template-columns:minmax(0,1fr)}}
+.layer{border:1px solid var(--line);border-top:3px solid var(--keel);border-radius:8px;padding:10px;background:var(--surface);font-size:12.5px;min-width:0}
+.layer h4{font-size:17px}
+.layer.resp{border-top-color:var(--star)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+pre.rec{font:12px/1.5 var(--font-mono);background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;margin:0;color:var(--ink-soft)}
+select{font:inherit;font-size:13.5px;padding:6px 10px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);max-width:100%}
+.matrix{display:grid;grid-template-columns:90px repeat(3,minmax(0,1fr));gap:4px;font-size:12px}
+.matrix .h{font:500 10.5px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:end;padding:4px}
+.matrix .c{border-radius:6px;padding:8px;min-height:74px;border:1px solid var(--line-soft);position:relative}
+.matrix .c b{font:700 20px var(--font-display);display:block}
+.matrix .c.s1{background:var(--ok-soft)} .matrix .c.s2{background:var(--hold-soft)} .matrix .c.s3{background:var(--no-soft)}
+.matrix .c.hot{outline:2px solid var(--ink)}
+.hitlist{display:flex;flex-direction:column;gap:4px;font-size:12.5px;max-height:300px;overflow:auto}
+.hitlist div{display:grid;grid-template-columns:118px minmax(0,1fr) 22px;gap:8px;padding:4px 0;border-bottom:1px solid var(--line-soft)}
+
+/* breakers */
+.sm{overflow-x:auto}
+.sm svg{display:block;min-width:820px;width:100%;height:auto}
+.sm text{font-family:var(--font-mono)}
+.agtbl td{font-size:12.5px}
+.sig{display:inline-block;font:500 10.5px var(--font-mono);padding:1px 5px;border:1px solid var(--line);border-radius:4px;margin:0 3px 3px 0;white-space:nowrap}
+.sig.hard{border-color:var(--prohibition);color:var(--prohibition)}
+.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.sim{grid-template-columns:minmax(0,1fr)}}
+.state{font:800 34px var(--font-display);letter-spacing:.02em}
+.state.closed{color:var(--permission)} .state.half{color:var(--warning)} .state.open{color:var(--prohibition)}
+.gauge{height:10px;border-radius:5px;background:var(--sunk);position:relative;margin:8px 0 4px;overflow:hidden}
+.gauge i{position:absolute;top:0;bottom:0;left:0}
+.rng{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.rng input[type=range]{width:100%;accent-color:var(--warning)}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.chain span.n{border:1px solid var(--line);border-radius:6px;padding:5px 8px;background:var(--surface)}
+.chain span.n i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--permission);margin-right:6px}
+.chain span.a{color:var(--muted)}
+footer{color:var(--muted);font-size:12px;margin-top:22px;max-width:100ch}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">PEO Sales Advisor · Keel &amp; North Star · quality by design</div>
+    <h1>Decision Question Baseline</h1>
+    <p class="dek">The questions each persona must answer to make the decisions in their sales journey, baselined across data, content, knowledge, mappings, transformations and advisor responses, so every upstream change can be traced to the decisions it puts at risk. Each agent that evaluates options carries an AI circuit breaker measured by MTBH.</p>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button role="tab" data-v="questions" aria-selected="true"><span class="n">01</span>Decision questions</button>
+    <button role="tab" data-v="qbd" aria-selected="false"><span class="n">02</span>Quality by design</button>
+    <button role="tab" data-v="breakers" aria-selected="false"><span class="n">03</span>Circuit breakers</button>
+  </nav>
+</header>
+
+<!-- QUESTIONS -->
+<section class="view" id="v-questions">
+  <div class="stats" id="qStats"></div>
+  <div class="card">
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Persona"><button data-p="admin" aria-pressed="true">Client Admin</button><button data-p="hr" aria-pressed="false">HR Specialist</button></div>
+      <div class="chips" id="tierChips" role="group" aria-label="Filter by risk tier"></div>
+      <button class="btn" id="copyCsv" type="button">Copy all 48 as CSV</button>
+    </div>
+    <p class="hint" style="margin-top:10px">Each job step has one decision and four questions that must be answered well to make it. Tier H questions change the decision or create legal or financial exposure if answered wrongly; they get stricter grounding and breaker thresholds. Golden answers are authored by subject-matter experts and frozen as the baseline at gate G1.</p>
+    <div id="copyFallback" hidden style="margin-top:10px"><p class="hint">The clipboard was blocked. Select the text below and copy it.</p><textarea readonly style="width:100%;height:140px;font:11px var(--font-mono);background:var(--sunk);color:var(--ink);border:1px solid var(--line)"></textarea></div>
+  </div>
+  <div id="steps" class="view"></div>
+</section>
+
+<!-- QbD -->
+<section class="view" id="v-qbd" hidden>
+  <p class="hook">Quality by design treats each decision question as the unit of control. Its <b>baseline record</b> pins everything the answer depends on in six layers and the answer itself. When any pinned item changes, the question is re-run and the new answer is compared with the baseline. The difference is classified, scored against the question’s tier, and routed.</p>
+  <div class="layers" id="layers"></div>
+  <div class="grid2">
+    <div class="card"><h3>Baseline record</h3><p class="hint" style="margin-bottom:10px">One per question, captured when the golden answer is approved. Example for the first Client Admin cost question.</p><pre class="rec" id="rec"></pre></div>
+    <div class="card"><h3>How a change is classified</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px;margin-top:6px">
+        <div><span class="pill ok">Benign</span> The answer is equivalent: same claims, only wording or citation versions moved. Re-baseline automatically.</div>
+        <div><span class="pill hold">Material</span> A claim changed and the change is explained by a Released upstream change (new rates, new rule). The answer is right but different: an SME confirms and re-baselines.</div>
+        <div><span class="pill no">Breaking</span> A claim changed with no upstream change that explains it, a golden claim is missing, a contradiction appears, or grounding falls below the floor. This is a regression or a hallucination: the brief is withdrawn and the agents in its lineage are tested by their breakers.</div>
+      </div>
+      <div class="sec-label">Risk = question tier × change severity</div>
+      <div class="matrix" id="matrix"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Change simulator</h3>
+    <p class="hint">Pick an upstream change. The impact analyzer finds every decision question whose lineage includes it; choose the severity the re-run produced to see the risk routing.</p>
+    <div class="toolbar" style="margin:10px 0 12px">
+      <select id="evSel" aria-label="Change event"></select>
+      <div class="seg" role="group" aria-label="Severity" id="sevSeg"><button data-s="1" aria-pressed="false">Benign</button><button data-s="2" aria-pressed="true">Material</button><button data-s="3" aria-pressed="false">Breaking</button></div>
+    </div>
+    <div class="grid2">
+      <div><div class="sec-label" style="margin-top:0">Decision questions affected</div><div class="hitlist" id="hits"></div></div>
+      <div><div class="sec-label" style="margin-top:0">Routing</div><div id="routing" style="font-size:13.5px;display:flex;flex-direction:column;gap:8px"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Critical quality attributes</h3>
+    <p class="hint" style="margin-bottom:10px">The design space for each layer: what is measured, the acceptance criterion, what the baseline captures, and the signal that triggers a re-run.</p>
+    <div class="tw" style="border:1px solid var(--line);border-radius:8px"><table id="cqa"></table></div>
+  </div>
+</section>
+
+<!-- BREAKERS -->
+<section class="view" id="v-breakers" hidden>
+  <p class="hook">Every agent makes decisions: what to classify, map, keep, drop, rank or recommend. Its <b>AI circuit breaker</b> watches the integrity of those decisions with nine signals and measures <b>MTBH</b>, the mean number of outputs between integrity faults (unsupported claims, contradictions, rule violations, baseline regressions). Breakers fail closed: when one opens, the agent stops and a deterministic fallback takes over until a named owner resets it.</p>
+  <div class="card sm"><h3>Breaker states</h3><div id="smSvg"></div></div>
+  <div class="grid2">
+    <div class="card"><h3>Integrity signals</h3><div class="tw" style="border:1px solid var(--line);border-radius:8px"><table id="sigTbl"></table></div><p class="hint" style="margin-top:8px">Red signals are hard trips for the agents that carry them: one occurrence opens the breaker.</p></div>
+    <div class="card"><h3>MTBH floors by tier</h3><div class="tw" style="border:1px solid var(--line);border-radius:8px"><table id="tierTbl"></table></div>
+      <div class="sec-label">Option-evaluating path for a persona decision</div>
+      <div class="chain" id="chain"></div>
+      <p class="hint" style="margin-top:8px">A recommendation reaches a persona only if every breaker on this path is closed. The 48 decision questions run as probes through the path after every change and nightly; their answers feed IS-7.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Breaker simulator</h3>
+    <div class="sim">
+      <div class="rng">
+        <label for="agSel" class="hint">Agent</label><select id="agSel"></select>
+        <label for="fr" class="hint" style="margin-top:8px">Integrity faults per 10,000 outputs (rolling 30 days)</label>
+        <input type="range" id="fr" min="0" max="250" step="1" value="3">
+        <label style="display:flex;gap:6px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="hard"> A hard-trip signal fired</label>
+        <label style="display:flex;gap:6px;align-items:center;font-size:13px"><input type="checkbox" id="probe"> Golden-question probes failed after the last change</label>
+      </div>
+      <div id="simOut"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Breaker profile for each of the 38 agents</h3>
+    <div class="toolbar" style="margin:6px 0 10px"><div class="chips" id="famChips"></div></div>
+    <div class="tw" style="border:1px solid var(--line);border-radius:8px"><table class="agtbl" id="agTbl"></table></div>
+  </div>
+</section>
+
+<footer>Builds on the PEO Sales Advisor design (agents, EXT and GOV rules) and the buyer persona job study (desired-outcome IDs). Thresholds, tiers and question wording are proposals for SME and steward review; product facts, rule IDs and mapping IDs are illustrative. Prepared by Jeffrey Wallk, The Value Enablement Group, LLC.</footer>
+</div>
+<script>
+// ===== Decision question baseline =====
+// Question types: FACT factual · ELIG eligibility · COMP comparative · SCEN scenario · RISK risk/exposure · PROC procedural · ALLOC responsibility allocation
+// Tier: H decision-critical (wrong answer changes the decision or creates legal/financial exposure) · M material · L informational
+// Step lineage layers: data, content, knowledge, mappings, transforms, response
+const LAYERS = [
+ ['data','Data','Systems of record the answer reads: CRM, census, quote service, carrier and payroll data'],
+ ['content','Content','Governed documents and feed items in the RDF content graph, pinned by version'],
+ ['knowledge','Knowledge','Ontology classes, SKOS concepts and SSOT rules the answer depends on'],
+ ['mappings','Mappings','Released correspondences from source fields and claims to ontology concepts (GOV-006)'],
+ ['transforms','Transformations','Extraction, validation and calculation rules applied on the way (EXT rules, PAY/TAL rules)'],
+ ['response','Response','The assembled answer: claims, citations, options and the checks it must pass'],
+];
+
+const DQ = {
+ admin:{ name:'Client Admin', persona:'Marisol Reyes', steps:[
+  { id:'CA-J1.1', stage:'Discover', step:'Understand what a PEO takes off my plate',
+    decision:'Is a PEO worth evaluating for us? (Continue to qualification · Not now)',
+    outcomes:['DO-CA-J1-1-1','DO-CA-J1-1-2','DO-CA-J1-1-3'],
+    lineage:{ data:'CRM opportunity (size, industry, states)', content:'Service catalog v7; customer stories (size band); co-employment explainer v3',
+      knowledge:'isp-sal:Service, isp-core:EmployerResponsibility, hr:CoEmployment', mappings:'Service catalog → isp-sal:Service (MAP-SVC-02)',
+      transforms:'EXT-002 classification floor; EXT-007 claim extraction; EXT-013 brief composition', response:'≤ 6 statements, every statement cited, task-to-owner list' },
+    qs:[
+      ['Which HR, payroll, benefits and compliance tasks would the PEO take over, and which stay with us?','ALLOC','Task list with owner (PEO · client · shared) and source','M'],
+      ['How do companies of our size and industry typically change cost and admin time after moving to a PEO?','COMP','Ranges with sample size and citation','M'],
+      ['Under co-employment, who is the employer of record for payroll taxes, benefits and workers’ comp?','FACT','Per obligation: owner + rule citation','H'],
+      ['What do we need to provide to get an indicative price?','PROC','Checklist of inputs and formats','L'] ]},
+  { id:'CA-J1.2', stage:'Qualify', step:'Confirm we fit (size, industry, states)',
+    decision:'Do we fit, and should we proceed to a quote? (Proceed · Proceed with exclusions · Stop)',
+    outcomes:['DO-CA-J1-2-1','DO-CA-J1-2-2','DO-CA-J1-2-3'],
+    lineage:{ data:'CRM firmographics; worksite list; NAICS code', content:'Eligibility rules list (SharePoint, currently unmapped); state licensing register',
+      knowledge:'isp-sal:EligibilityRule, isp-core:Jurisdiction, NAICS concept scheme', mappings:'Industry exclusions list → isp-sal:EligibilityRule (MAP-ELG-01, to build)',
+      transforms:'GOV-007 jurisdiction resolution; EXT-011 query scope', response:'Eligible yes/no per rule, exclusions named, per-state licensing table' },
+    qs:[
+      ['Are we eligible given our headcount, industry and states?','ELIG','Yes/no per eligibility rule, with rule IDs','H'],
+      ['Are any of our worksites, roles or employee classes excluded or restricted?','ELIG','List of exclusions with rule and remedy','H'],
+      ['Which of our states require PEO registration or licensing, and is the PEO licensed there?','FACT','Per-state table: requirement, licence status, as-of date','H'],
+      ['What happens to our current benefit plans and broker relationship if we proceed?','FACT','Plain statement with conditions and dates','M'] ]},
+  { id:'CA-J1.3', stage:'Evaluate', step:'Compare total cost against our current stack',
+    decision:'Request a binding quote · Run a growth scenario · Pause and share with owners',
+    outcomes:['DO-CA-J1-3-1','DO-CA-J1-3-2','DO-CA-J1-3-3'],
+    lineage:{ data:'Census (PII, tenant-scoped); quote service; current payroll and broker invoices', content:'Plan comparison v14 (slide 19 excluded); workers’ comp class-code guide; competitor offer (facts only)',
+      knowledge:'isp-sal:QuoteLine, hr:ConceptLargeGroupPoolTier, BEN-001 ACA ALE rule', mappings:'Quote fields → isp-sal:QuoteLine; carrier rates → pool tier (MAP-QTE-03, MAP-RTE-01)',
+      transforms:'TAL-014, PAY-026 census validation; cost model; EXT-004 third-party use; EXT-005 expiry', response:'Line-by-line comparison, estimate vs binding flags, assumptions listed, grounding ≥ 0.90' },
+    qs:[
+      ['What is our all-in cost today versus the PEO bundle, line by line (admin fee, workers’ comp, SUTA, benefits)?','COMP','Table of cost lines, current vs PEO, each cited','H'],
+      ['How does cost change if we grow to 150 employees, and which thresholds do we cross?','SCEN','Cost at each headcount + thresholds crossed (rule IDs)','H'],
+      ['Which cost lines are estimates and which are binding, and what could change them before signing?','RISK','Per line: status, assumption, expiry date','M'],
+      ['How does the PEO compare with the competitor offer we received?','COMP','Facts-only comparison with source links (EXT-004)','M'] ]},
+  { id:'CA-J1.4', stage:'Propose', step:'See the co-employment split before signing',
+    decision:'Send the MSA to counsel · Ask for a responsibility walkthrough · Hold',
+    outcomes:['DO-CA-J1-4-1','DO-CA-J1-4-2','DO-CA-J1-4-3'],
+    lineage:{ data:'Opportunity states and worksites; contract system (MSA template v9)', content:'Responsibility allocation matrix; state addenda; SLA schedule',
+      knowledge:'isp-core:EmployerResponsibility, isp-core:Agreement, compliance-map requirements', mappings:'MSA clauses → isp-core:Requirement (MAP-MSA-01)',
+      transforms:'EXT-006 entitlements; EXT-012 precision extraction', response:'Allocation table per state; every row matches a contract clause' },
+    qs:[
+      ['For each of our states, which employer responsibilities does the PEO carry, which do we keep, and which are shared?','ALLOC','Per state and requirement: owner + clause reference','H'],
+      ['Which liabilities transfer (tax filings, workers’ comp claims, EPLI), and from what date?','RISK','Liability, new owner, effective date, clause','H'],
+      ['What are the contract term, termination conditions and exit costs?','FACT','Term, notice period, fees, clause references','H'],
+      ['What service levels does the PEO commit to?','FACT','SLA list with measures and remedies','M'] ]},
+  { id:'CA-J1.5', stage:'Decide', step:'Get sign-off from owners and finance',
+    decision:'Sign · Negotiate terms · Decline',
+    outcomes:['DO-CA-J1-5-1','DO-CA-J1-5-2','DO-CA-J1-5-3'],
+    lineage:{ data:'Binding quote; decision records (isp-dec); HR Specialist risk brief', content:'Owner decision package template; client-shareable brief',
+      knowledge:'isp-dec:Decision, isp-vg:DesiredOutcome, MET-014 metric cards', mappings:'Risk brief items → isp-dec:RiskItem (MAP-RSK-01)',
+      transforms:'Cost roll-up; EXT-013 composition; EXT-014 outcome binding', response:'First-year cost with range, risk line linked, pending items labelled' },
+    qs:[
+      ['What is our total first-year cost and the saving or added cost versus today, with a confidence range?','COMP','Totals with range and assumptions','H'],
+      ['Which risks does the PEO remove for us, and what are they worth in penalties or claims avoided?','RISK','Risk items with value and source (HR Specialist brief)','H'],
+      ['What would we have to give up or change if we sign (vendors, plans, policies)?','FACT','List of changes with dates','M'],
+      ['Is anything in the package still pending review or expiring before the signature date?','RISK','Pending and expiring items with owners','M'] ]},
+  { id:'CA-J1.6', stage:'Onboard', step:'Move payroll without a missed paycheck',
+    decision:'Confirm the cut-over date · Delay one payroll cycle',
+    outcomes:['DO-CA-J1-6-1','DO-CA-J1-6-2','DO-CA-J1-6-3'],
+    lineage:{ data:'Payroll calendar; YTD wages; benefit effective dates; SUTA accounts', content:'Cut-over playbook; transition-quarter tax guidance',
+      knowledge:'isp-core:PayrollRun, isp-core:TaxFiling (941/940, SUTA)', mappings:'Prior payroll register → isp-core:PayrollRun (MAP-PAY-04)',
+      transforms:'YTD wage carry-over calc; PAY-026; parallel-run reconciliation', response:'Recommended date with reasons; fallback plan named' },
+    qs:[
+      ['Which payroll date is the safest cut-over, given quarter-end filings and benefit effective dates?','SCEN','Date options ranked with reasons','H'],
+      ['What data must we deliver, by when, and in what format?','PROC','Checklist with deadlines and formats','M'],
+      ['How are year-to-date wages and tax filings handled in the transition quarter?','FACT','Per filing: who files, which period, citation','H'],
+      ['What is the fallback if the first PEO payroll fails?','RISK','Fallback steps, owner, time to pay','H'] ]},
+ ]},
+ hr:{ name:'HR Specialist', persona:'Jordan Ellis', steps:[
+  { id:'HR-J1.1', stage:'Discover', step:'Find where we carry compliance risk today',
+    decision:'Which risk areas do we prioritize in the evaluation?',
+    outcomes:['DO-HR-J1-1-1','DO-HR-J1-1-2','DO-HR-J1-1-3'],
+    lineage:{ data:'Worksites and headcount by state; current HR policies', content:'Compliance map standards (47) and requirements (26); topic taxonomy (30 topics)',
+      knowledge:'peo-es:Standard, peo-es:Requirement, peo-topics', mappings:'Worksite → jurisdiction chain (MAP-JUR-01)',
+      transforms:'Applicability check (headcount thresholds); EXT-008 rule binding', response:'Risk items by topic, each with rule citation and verification status' },
+    qs:[
+      ['Where do we carry compliance risk today, by topic and state?','RISK','Risk items by topic and jurisdiction with citations','H'],
+      ['Which of those obligations would the PEO take on, share or leave with us?','ALLOC','Per obligation: owner after the move','H'],
+      ['Which rule changes in our states take effect in the next 12 months?','FACT','Changes with effective dates and status','M'],
+      ['What penalties or exposure apply to each risk item?','RISK','Penalty ranges with citations','M'] ]},
+  { id:'HR-J1.2', stage:'Qualify', step:'Check coverage for every state we hire in',
+    decision:'Order a gap assessment · Subscribe to state updates · Hand off to the Client Admin',
+    outcomes:['DO-HR-J1-2-1','DO-HR-J1-2-2','DO-HR-J1-2-3'],
+    lineage:{ data:'Employee work locations incl. remote; GOV-007 identity registry', content:'Regulatory feed items (e.g. Colorado change, Candidate); state checklists',
+      knowledge:'isp-core:Jurisdiction, TAL-005 and state rules', mappings:'Remote employee address → jurisdiction (MAP-JUR-02, gap)',
+      transforms:'GOV-007 resolution; EXT-008 binding; applicability thresholds', response:'Jurisdiction per employee group; coverage verdict per state; gaps named' },
+    qs:[
+      ['Which states and localities do our employees work in, including remote staff, and which jurisdiction governs each?','FACT','Employee group → jurisdiction table','H'],
+      ['Does the PEO cover every one of those jurisdictions today?','ELIG','Covered yes/no per jurisdiction with source','H'],
+      ['Which state rules change our obligations at our headcount?','FACT','Rules with thresholds and citations','H'],
+      ['Which coverage gaps would remain our responsibility?','RISK','Gaps with owner and remedy','M'] ]},
+  { id:'HR-J1.3', stage:'Evaluate', step:'Compare benefit plans employees will see',
+    decision:'Which plan line-up do we propose to employees?',
+    outcomes:['DO-HR-J1-3-1','DO-HR-J1-3-2','DO-HR-J1-3-3'],
+    lineage:{ data:'Current plan elections; census; carrier networks', content:'Plan comparison v14 (2 claims Candidate); carrier summaries of benefits',
+      knowledge:'isp-sal:BenefitPlan, hr:ConceptLargeGroupPoolTier', mappings:'Carrier plan fields → isp-sal:BenefitPlan (MAP-BEN-02)',
+      transforms:'Per-paycheck contribution calc; network match; EXT-005 validity', response:'Plan-by-plan comparison; per-employee cost change; Candidate items labelled' },
+    qs:[
+      ['How do the PEO plans compare with ours on premiums, deductibles and employee contributions?','COMP','Plan-by-plan table with citations','H'],
+      ['How does each employee’s per-paycheck cost change?','SCEN','Per employee or tier: before, after, difference','H'],
+      ['Are employees’ current doctors and facilities in network?','FACT','Share in network, list of disruptions','M'],
+      ['Which elections are limited by waiting periods or carrier rules?','FACT','Limits with rule and dates','M'] ]},
+  { id:'HR-J1.4', stage:'Propose', step:'Map our handbook to PEO policy',
+    decision:'Adopt PEO policy or keep a local addendum, policy by policy',
+    outcomes:['DO-HR-J1-4-1','DO-HR-J1-4-2','DO-HR-J1-4-3'],
+    lineage:{ data:'Prospect handbook (often scanned PDF)', content:'PEO policy library; state addenda',
+      knowledge:'isp-core:Policy, peo-topics', mappings:'Handbook sections → isp-core:Policy (OCR + MAP-POL-01)',
+      transforms:'OCR; EXT-002 confidence floor; conflict detection rules', response:'Mapped, unmapped and conflicting policies, each with source page' },
+    qs:[
+      ['Which of our handbook policies map to PEO policies, and which have no match?','FACT','Mapping table with confidence','M'],
+      ['Where do our policies conflict with PEO policy or state law?','RISK','Conflicts with both texts cited','H'],
+      ['Which local policies can we keep as addenda?','ELIG','Allowed addenda with conditions','M'],
+      ['Which employee notices and acknowledgements do the changes require?','PROC','Notices with deadlines and jurisdictions','M'] ]},
+  { id:'HR-J1.5', stage:'Decide', step:'Show leadership the risk we remove',
+    decision:'Attach the risk brief and recommend · Recommend with conditions · Recommend against',
+    outcomes:['DO-HR-J1-5-1','DO-HR-J1-5-2','DO-HR-J1-5-3'],
+    lineage:{ data:'Gap assessment results; decision records', content:'Risk brief template; compliance map',
+      knowledge:'isp-dec:RiskItem, peo-es:Requirement', mappings:'Gap findings → isp-dec:RiskItem (MAP-RSK-01)',
+      transforms:'Penalty quantification; EXT-013; EXT-014', response:'Risk removed and added, quantified, open items labelled' },
+    qs:[
+      ['What risk does the move remove, in penalties avoided or exposure reduced?','RISK','Quantified risk items with citations','H'],
+      ['What new risks or dependencies does it introduce?','RISK','New risks with owner and mitigation','H'],
+      ['Which risk items are still unassessed or waiting for a rule owner?','RISK','Open items with owner and due date','M'],
+      ['How does the recommendation change if we grow or enter a new state?','SCEN','Changes by scenario','M'] ]},
+  { id:'HR-J1.6', stage:'Onboard', step:'Re-enroll employees with no coverage gap',
+    decision:'Confirm the enrollment calendar · Extend enrollment · Verify carrier lead times',
+    outcomes:['DO-HR-J1-6-1','DO-HR-J1-6-2','DO-HR-J1-6-3'],
+    lineage:{ data:'Enrollment system; carrier EDI 834 calendar; leave and PTO balances', content:'Enrollment playbook; carrier lead-time table (not yet in graph)',
+      knowledge:'isp-core:EnrollmentWindow, isp-core:Coverage', mappings:'Carrier calendars → isp-core:EnrollmentWindow (MAP-EDI-01, to build)',
+      transforms:'834 schedule calc; balance conversion; leave rule checks', response:'Window that guarantees continuity; employees needing special handling' },
+    qs:[
+      ['Which enrollment window guarantees no coverage gap, given carrier file lead times?','SCEN','Window dates with carrier deadlines','H'],
+      ['How are leave and PTO balances, I-9s and personnel files carried over?','PROC','Per record type: method, owner, date','H'],
+      ['Which employees need special handling (on leave, COBRA, hired during the transition)?','RISK','Employee groups with actions','H'],
+      ['What goes to employees, in which languages, and when?','PROC','Communication calendar','M'] ]},
+ ]}
+};
+
+// ===== QbD: critical quality attributes per layer =====
+// fuller definition kept as rows: [layer, attribute, definition, acceptance criterion, baseline captures, change signal]
+const CQAS = [
+ ['data','Freshness','Age of the source extract at answer time','CRM ≤ 24 h · census ≤ 7 days · quotes ≤ 30 days','Extract timestamps','Change Monitor event or SLA breach'],
+ ['data','Completeness','Required fields present for the question','≥ 99% of required fields','Field fill rates','Fill rate drops > 2 points'],
+ ['data','Validity','Records pass validation rules (TAL-014, PAY-026)','100% of records used in the answer','Rule pass counts','Any failure in used records'],
+ ['content','Version integrity','Each content object used is a Released version','Version hash matches the baseline or a Released successor','Object URIs + version hashes','SharePoint delta, crawl diff, feed item'],
+ ['content','Validity window','Content is inside its valid-from / valid-until dates','No expired object served (EXT-005)','Validity dates','Expiry date reached'],
+ ['content','Access label','Every part carries an access label for the persona','100% labelled; no restricted part assembled (EXT-006)','Labels per part','Label change or new part'],
+ ['knowledge','Ontology conformance','Graph passes SHACL shapes for the classes the question uses','0 violations','Ontology version + shape report','KGCL change or new ontology release'],
+ ['knowledge','Rule currency','SSOT rules used are Released and current','No Candidate rule used unlabelled','Rule IDs + versions','Rule lifecycle change (GOV-003)'],
+ ['mappings','Mapping status','Mappings used are Released','100% Released','Mapping IDs + versions','Mapping Drift Sentinel flag'],
+ ['mappings','Mapping precision','Correspondences correct on the mapping test set','≥ 0.95 precision (EXT-009)','Test-set score','Schema change in a source'],
+ ['transforms','Deterministic replay','Same inputs and versions give the same output','Replay hash equal to baseline','Replay hash per step','Code, model or rule release'],
+ ['transforms','Calculation accuracy','Cost, contribution and date calculations match reference cases','100% of reference cases','Reference case results','Rate table or formula change'],
+ ['response','Grounding','Share of statements traced to a source span','≥ 0.90 for tier H · ≥ 0.80 otherwise (GOV-014)','Grounding score','Any upstream change in the lineage'],
+ ['response','Answer equivalence','Answer matches the SME golden answer in substance','All golden claims present; no contradicting claim','Claim set fingerprint','Any upstream change in the lineage'],
+ ['response','Option integrity','Every option allowed by the rules is presented with its effect and outcome','100% of allowed options; ranking stable on replay','Option set + ranking','Rule or scenario change'],
+ ['response','Citation precision','Citations point to the span that supports the claim','≥ 0.95','Citation check score','Content version change'],
+];
+
+// change events for the simulator: [id, label, layer, matcher(step lineage text regex)]
+const EVENTS = [
+ ['ev1','Plan comparison deck v14 → v15 published','content',/Plan comparison/],
+ ['ev2','Census validation rule PAY-026 v2.1 released','transforms',/PAY-026/],
+ ['ev3','Remote-employee jurisdiction mapping MAP-JUR-02 built','mappings',/MAP-JUR/],
+ ['ev4','Ontology release adds isp-core:EmployerResponsibility subclasses','knowledge',/EmployerResponsibility/],
+ ['ev5','Colorado regulatory item moves from Candidate to Released','content',/Colorado|state rules|TAL-005/],
+ ['ev6','Carrier rate tables refreshed for 2027','data',/carrier|Carrier/],
+ ['ev7','Precision Extractor model updated','transforms',/EXT-012/],
+ ['ev8','EXT-013 brief composition rule 2.0 released','transforms',/EXT-013/],
+];
+
+// ===== AI circuit breaker =====
+const SIGNALS = [
+ ['IS-1','Grounding','Every claim or label traces to a source span or record','GOV-014'],
+ ['IS-2','Option completeness','Every option the rules allow was evaluated; none dropped silently','EXT-011, GOV-015'],
+ ['IS-3','Replay consistency','Same inputs and versions give the same output and ranking','EXT-016'],
+ ['IS-4','Rule conformance','Output passes SSOT rules and SHACL shapes','GOV-003, EXT-010'],
+ ['IS-5','Entitlement & privacy','No restricted or personal data reaches a persona or another tenant','EXT-006, EXT-003'],
+ ['IS-6','Calibration','Stated confidence matches observed accuracy on the golden set','EXT-002'],
+ ['IS-7','Baseline drift','Answers to the golden decision questions stay equivalent to baseline','QbD baseline'],
+ ['IS-8','Contradiction','Output contradicts no Released knowledge and no other agent’s output','GOV-018'],
+ ['IS-9','Freshness','No expired or Candidate item used without its label','EXT-005'],
+];
+const TIERS = {
+ T1:{ name:'Tier 1 · persona-facing or access-controlling', floor:2000, open:500 },
+ T2:{ name:'Tier 2 · shapes the knowledge graph or measures', floor:500, open:100 },
+ T3:{ name:'Tier 3 · monitoring and analytics', floor:200, open:50 },
+};
+const FAM = { ing:'Ingestion & identity', fab:'AI fabric enrichment', map:'Mapping & publishing', srch:'Faceted search & assembly', val:'Value-gap monitoring', chg:'Change & impact', cau:'Causal analysis' };
+// [family, agent, decision it makes, options it evaluates, tier, signals, hard-trip signals, fallback when open]
+const AGENTS = [
+ ['ing','SharePoint Delta Agent','Which items changed and need reprocessing','New · modified · moved · deleted · unchanged','T2',['IS-3','IS-7','IS-9'],[],'Nightly full enumeration replaces deltas'],
+ ['ing','Web Crawl Agent','Fetch, skip or store a page and its changed blocks','Fetch · skip (robots or licence) · store diff','T2',['IS-4','IS-3'],['IS-4'],'Freeze last good snapshot; mark stale'],
+ ['ing','Feed Listener Agent','Accept, normalize or reject a feed item','Accept · normalize · reject · hold','T2',['IS-4','IS-9'],[],'Queue items for a steward'],
+ ['ing','Identity Resolver','Match to an existing URI or mint a new one','Match · mint · hold for steward','T1',['IS-3','IS-6','IS-8'],[],'Mint provisional URIs; hold all merges'],
+ ['ing','Format Extractor','How to segment text, tables and notes','Segmentations and table structures','T2',['IS-1','IS-3'],[],'Raw text flagged “unstructured”'],
+ ['fab','Content-Type Classifier','Which content type an item is','Content types above the confidence floor','T2',['IS-6','IS-7'],[],'Leave unclassified for steward review'],
+ ['fab','Persona & Job-Step Tagger','Which personas and job steps an item serves','Persona × job-step candidates','T1',['IS-2','IS-6','IS-7'],[],'Tags stay Candidate; item not served'],
+ ['fab','Claim Extractor','Which atomic claims a passage makes','Candidate claims with spans','T1',['IS-1','IS-3','IS-8'],[],'Serve cited passages, no claims'],
+ ['fab','Jurisdiction & Validity Miner','Which jurisdictions and dates apply','Jurisdictions from the registry; date candidates','T1',['IS-1','IS-4','IS-9'],[],'Item excluded from jurisdiction questions'],
+ ['fab','PII & Sensitivity Detector','Whether an item holds PII and its label','Labels · block · allow','T1',['IS-5','IS-6'],['IS-5'],'Block the whole item (fail closed)'],
+ ['fab','Entitlement Enforcer','Allow, redact or deny each part for a persona','Allow · redact · deny','T1',['IS-5','IS-3'],['IS-5'],'Deny every non-public part (fail closed)'],
+ ['map','Concept Mapping Agent','Which concept a claim or field maps to','Exact · close · broad · related matches','T2',['IS-2','IS-4','IS-6','IS-7'],[],'Mapping held as Candidate'],
+ ['map','Rule Binding Agent','Which SSOT rule a regulatory claim binds to','Candidate rules','T1',['IS-2','IS-4','IS-8'],[],'Claim not served (EXT-008)'],
+ ['map','SHACL Publisher','Publish or reject candidate triples','Publish · reject · hold','T2',['IS-4','IS-3'],['IS-4'],'Stop publishing; keep last Released graph'],
+ ['map','Mapping Drift Sentinel','Whether a mapping is degraded or broken','OK · degraded · broken','T3',['IS-7','IS-6'],[],'Daily full mapping regression run'],
+ ['srch','Intent & RCB Agent','Which job step and context a question belongs to','Intents, job steps, WHO…WHY values','T1',['IS-2','IS-6','IS-7'],[],'Ask the persona to confirm the job step'],
+ ['srch','Federated Query Planner','How to scope and plan the query','Query plans within the context bundle','T1',['IS-4','IS-3','IS-5'],['IS-5'],'Pre-approved query templates per job step'],
+ ['srch','Facet Navigator','How to rank facets','Facet orderings','T2',['IS-3','IS-7'],[],'Static facet order'],
+ ['srch','Mapping Resolver','Which mappings and source fields to read','Released mapping paths','T1',['IS-4','IS-3'],['IS-4'],'Use mappings pinned in the baseline'],
+ ['srch','Precision Extractor','Which claims answer the job step','Keep · drop per claim','T1',['IS-1','IS-2','IS-7','IS-8'],[],'Return top cited passages, no synthesis'],
+ ['srch','Brief Assembler','Which statements and decision options to present, and in what order','Decision options allowed by the rules, with effects and outcomes','T1',['IS-1','IS-2','IS-3','IS-5','IS-7','IS-9'],['IS-5'],'Cited claim list and BPA hand-off; no recommendation'],
+ ['srch','Machine Package Agent','What goes into the JSON-LD package','Claims and fields for the receiving system','T1',['IS-4','IS-1'],['IS-4'],'No package; manual hand-off'],
+ ['srch','Grounding Guard (MTBH)','Pass, hold or block a draft brief','Pass · hold for review · block','T1',['IS-6','IS-7'],[],'Hold every brief for human review (fail closed)'],
+ ['val','Outcome Binder','Which desired outcome and metric card a decision binds to','Candidate outcomes and cards','T2',['IS-2','IS-4'],[],'Record decision unbound and flagged'],
+ ['val','Job-Step Telemetry Agent','How to attribute events to job steps','Job-step attributions','T3',['IS-3','IS-9'],[],'Mark metrics stale'],
+ ['val','Value-Gap Monitor','Gap, no gap, or not enough data','Gap · met · insufficient data','T2',['IS-4','IS-6','IS-7'],[],'Show raw metrics, no verdict'],
+ ['val','Decision Impact Tracker','Which downstream effects a decision caused','Candidate effect attributions','T2',['IS-6','IS-8'],[],'Associations only, labelled non-causal'],
+ ['chg','Content Change Monitor','Whether a delta is a material change','Material · cosmetic · none','T2',['IS-3','IS-7'],[],'Periodic full diff'],
+ ['chg','Semantic Change Monitor','Which concepts and rules a KGCL change touches','Changed concepts and rules','T2',['IS-4','IS-3'],[],'Freeze the serving ontology version'],
+ ['chg','RDF Structure Monitor','Whether a shape or graph change is breaking','Breaking · compatible · none','T2',['IS-4','IS-3'],['IS-4'],'Block publishing'],
+ ['chg','Impact Analyzer','Which questions, briefs and decisions a change affects','Candidate impact sets','T1',['IS-2','IS-3'],[],'Widen impact to the whole job step'],
+ ['chg','Incremental Refresh Service','Which stages to re-run','Stage subsets','T2',['IS-3','IS-4'],[],'Full rebuild'],
+ ['chg','Cache Invalidation Agent','Withdraw, flag or keep a served brief','Withdraw · flag · keep','T1',['IS-2','IS-9'],[],'Withdraw every brief in the impact set (fail closed)'],
+ ['cau','Causal Graph Builder','Which causal edges to assert','Candidate edges with assumptions','T3',['IS-6','IS-8'],[],'Correlational view, labelled'],
+ ['cau','Effect Estimator','Size and interval of an effect','Estimators and intervals','T2',['IS-3','IS-6'],[],'Direction only, no effect size'],
+ ['cau','Risk & Opportunity Ranker','How to rank risks and opportunities','Rankings by effect × exposure','T2',['IS-2','IS-3'],[],'Unranked list'],
+ ['cau','Counterfactual Explainer','Which what-if to explain','What-if narratives','T2',['IS-1','IS-8'],[],'Table only, no narrative'],
+ ['cau','Action Proposer','Which action to propose to a human owner','Actions including “do nothing”','T1',['IS-1','IS-2','IS-4'],[],'Findings sent without a proposal'],
+];
+(function(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TYPE = { FACT:'Factual', ELIG:'Eligibility', COMP:'Comparative', SCEN:'Scenario', RISK:'Risk / exposure', PROC:'Procedural', ALLOC:'Allocation' };
+const qid = (step, i) => 'DQ-' + step.id.replace('-J1.','-') + '-' + String(i+1).padStart(2,'0');
+const ALLQ = [];
+Object.entries(DQ).forEach(([p,P])=>P.steps.forEach(s=>s.qs.forEach((q,i)=>ALLQ.push({p, P, s, q, i, id:qid(s,i), tier:q[3]}))));
+
+// ---------------- Questions ----------------
+let pers = 'admin', tierF = 'all';
+function renderStats(){
+  const c = t => ALLQ.filter(x=>x.tier===t).length;
+  $('qStats').innerHTML = [
+    ['2','Personas'],['12','Job steps in the sales journey'],['12','Decisions, one per step'],['48','Decision questions in the baseline'],
+    [c('H'),'Tier H: decision-critical'],[c('M')+' · '+c('L'),'Tier M · Tier L'],
+  ].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+}
+function renderTierChips(){
+  $('tierChips').innerHTML = [['all','All tiers'],['H','Tier H'],['M','Tier M'],['L','Tier L']].map(([k,l])=>`<button type="button" class="chip" data-t="${k}" aria-pressed="${tierF===k}">${l}</button>`).join('');
+  $('tierChips').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ tierF=b.dataset.t; renderTierChips(); renderSteps(); }));
+}
+function renderSteps(){
+  const P = DQ[pers], pc = pers==='admin' ? 'var(--p-admin)' : 'var(--p-hr)';
+  $('steps').innerHTML = P.steps.map(s=>{
+    const rows = s.qs.map((q,i)=>({q,i})).filter(x=>tierF==='all'||x.q[3]===tierF);
+    if(!rows.length) return '';
+    return `<article class="step" style="--pc:${pc}">
+      <div class="step-head"><span class="pill ver">${s.stage}</span><span class="pill">${s.id}</span><h3>${esc(s.step)}</h3>
+        <span class="hint">Serves ${s.outcomes.map(o=>`<span class="mono">${o}</span>`).join(', ')}</span></div>
+      <div class="decision"><div class="eyebrow">Decision</div>${esc(s.decision)}</div>
+      <div class="tw"><table>
+        <thead><tr><th>Question ID</th><th>Decision question</th><th>Type</th><th>Expected answer shape</th><th>Tier</th><th>Golden answer</th></tr></thead>
+        <tbody>${rows.map(({q,i})=>`<tr><td class="id">${qid(s,i)}</td><td class="q">${esc(q[0])}</td><td>${TYPE[q[1]]}</td><td>${esc(q[2])}</td><td><span class="tier ${q[3]}">${q[3]}</span></td><td><span class="pill hold">to author</span></td></tr>`).join('')}</tbody>
+      </table></div>
+      <details class="lineage"><summary>Baseline lineage for this step: what the answers depend on in six layers</summary>
+        <div class="lin">${LAYERS.map(([k,l])=>`<div><b>${l}</b>${esc(s.lineage[k])}</div>`).join('')}</div>
+      </details>
+    </article>`;
+  }).join('') || '<div class="card hint">No questions in this tier for this persona.</div>';
+}
+document.querySelectorAll('.seg [data-p]').forEach(b=>b.addEventListener('click',()=>{
+  pers = b.dataset.p; document.querySelectorAll('.seg [data-p]').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); renderSteps();
+}));
+function csv(){
+  const head = ['persona','step_id','pipeline_stage','job_step','decision','question_id','decision_question','question_type','expected_answer_shape','risk_tier','desired_outcomes','lineage_data','lineage_content','lineage_knowledge','lineage_mappings','lineage_transformations','lineage_response','golden_answer_status'];
+  const q = v => { const s = String(v); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  return [head.join(','), ...ALLQ.map(x=>[x.P.name, x.s.id, x.s.stage, x.s.step, x.s.decision, x.id, x.q[0], TYPE[x.q[1]], x.q[2], x.q[3], x.s.outcomes.join(' '),
+    x.s.lineage.data, x.s.lineage.content, x.s.lineage.knowledge, x.s.lineage.mappings, x.s.lineage.transforms, x.s.lineage.response, 'to author'].map(q).join(','))].join('\n');
+}
+$('copyCsv').addEventListener('click',()=>{
+  const text = csv(), b = $('copyCsv');
+  const fb = ()=>{ $('copyFallback').hidden = false; const t = $('copyFallback').querySelector('textarea'); t.value = text; t.focus(); t.select(); };
+  try{ navigator.clipboard.writeText(text).then(()=>{ b.textContent = 'Copied 48 rows'; setTimeout(()=>b.textContent='Copy all 48 as CSV',1800); }, fb); }catch(e){ fb(); }
+});
+
+// ---------------- QbD ----------------
+$('layers').innerHTML = LAYERS.map(([k,l,d])=>`<div class="layer ${k==='response'?'resp':''}"><h4>${l}</h4><p class="hint" style="margin-top:4px">${esc(d)}</p><div class="hint" style="margin-top:6px"><b class="mono" style="color:var(--ink)">${CQAS.filter(c=>c[0]===k).length}</b> quality attributes</div></div>`).join('');
+$('rec').textContent =
+`baseline:DQ-CA-3-01
+  question      "What is our all-in cost today versus the PEO
+                 bundle, line by line?"
+  tier          H     decision  CA-J1.3 (quote · scenario · pause)
+  golden        claims[7] approved by SME · 2026-12-14
+  data          census@sha:9f2c… (7 d SLA) · quote-svc v4.2
+  content       plan-comparison v14@sha:41aa… · wc-class-guide v6
+                competitor-offer@crawl 2026-12-01 (expires +30 d)
+  knowledge     isp-sal 1.4.0 · BEN-001 v2 · SHACL report: 0 violations
+  mappings      MAP-QTE-03 v3 (Released) · MAP-RTE-01 v2 (Released)
+  transforms    TAL-014 v1.2 · PAY-026 v2.0 · cost-model@replay:77be…
+  response      grounding 0.93 · citation precision 0.97
+                options[3] ranked: quote > scenario > pause
+                answer fingerprint claims@sha:c01d…
+  breakers      Intent&RCB, Planner, Resolver, Extractor,
+                Assembler, Guard: CLOSED at capture`;
+const SEV = ['Benign','Material','Breaking'], TIERW = { L:1, M:2, H:3 };
+const ACT = {
+  L:['Log; re-baseline automatically','Log; SME confirms in the next sprint','Review within 5 days; re-run lineage probes'],
+  M:['Log; re-baseline automatically','SME review within 5 days; serve with an “updated” label','Withdraw the brief; breakers in its lineage go half-open'],
+  H:['Re-baseline with SME sign-off','Hold the new answer until an SME confirms; keep serving the baseline with a notice','Withdraw the brief; breakers in its lineage open; incident to the owner'],
+};
+let sev = 2, ev = EVENTS[0][0];
+function renderMatrix(counts){
+  let h = `<div class="h"></div>${SEV.map(s=>`<div class="h">${s}</div>`).join('')}`;
+  ['H','M','L'].forEach(t=>{
+    h += `<div class="h">Tier ${t}</div>`;
+    [1,2,3].forEach(s=>{
+      const score = TIERW[t]*s, cls = score<=2?'s1':score<=4?'s2':'s3';
+      const n = counts && s===sev ? counts[t] : null;
+      h += `<div class="c ${cls} ${n?'hot':''}"><b>${score}</b>${esc(ACT[t][s-1])}${n?`<div class="mono" style="margin-top:4px;font-weight:600">${n} affected</div>`:''}</div>`;
+    });
+  });
+  $('matrix').innerHTML = h;
+}
+const LAYER_AGENTS = {
+  data:['Identity Resolver','Federated Query Planner'],
+  content:['SharePoint Delta Agent','Claim Extractor','Precision Extractor','Brief Assembler'],
+  knowledge:['Rule Binding Agent','SHACL Publisher','Concept Mapping Agent'],
+  mappings:['Concept Mapping Agent','Mapping Resolver','Mapping Drift Sentinel'],
+  transforms:['Precision Extractor','Machine Package Agent','Brief Assembler'],
+};
+function renderSim(){
+  const e = EVENTS.find(x=>x[0]===ev);
+  const hits = ALLQ.filter(x=>Object.values(x.s.lineage).some(v=>e[3].test(v)));
+  const counts = { H:0, M:0, L:0 }; hits.forEach(x=>counts[x.tier]++);
+  $('hits').innerHTML = hits.length ? hits.map(x=>`<div><span class="mono">${x.id}</span><span>${esc(x.q[0])}</span><span class="tier ${x.tier}">${x.tier}</span></div>`).join('') : '<p class="hint">No decision question depends on this change.</p>';
+  const steps = [...new Set(hits.map(x=>x.s.id))];
+  $('routing').innerHTML = `<div><b>${hits.length}</b> questions in <b>${steps.length}</b> job steps (${steps.join(', ')||'none'}) are re-run against their baseline.</div>`
+    + ['H','M','L'].filter(t=>counts[t]).map(t=>`<div><span class="tier ${t}">${t}</span> ${counts[t]} × score ${TIERW[t]*sev}: ${esc(ACT[t][sev-1])}</div>`).join('')
+    + (sev===3 ? `<div>Breakers tested with the failing probes: ${LAYER_AGENTS[e[2]].map(a=>`<span class="pill no">${esc(a)}</span>`).join(' ')}</div>` : '')
+    + `<div class="hint">Layer changed: ${LAYERS.find(l=>l[0]===e[2])[1]}. The impact set is computed from the pinned lineage, not from guesses, so a question with no dependency on the change is never re-run.</div>`;
+  renderMatrix(counts);
+}
+$('evSel').innerHTML = EVENTS.map(e=>`<option value="${e[0]}">${esc(e[1])}</option>`).join('');
+$('evSel').addEventListener('change', e=>{ ev = e.target.value; renderSim(); });
+$('sevSeg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ sev = +b.dataset.s; $('sevSeg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); renderSim(); }));
+$('cqa').innerHTML = `<thead><tr><th>Layer</th><th>Attribute</th><th>Definition</th><th>Acceptance criterion</th><th>Baseline captures</th><th>Re-run trigger</th></tr></thead><tbody>`
+  + CQAS.map(r=>`<tr><td class="mono" style="font-size:11.5px;color:var(--keel)">${LAYERS.find(l=>l[0]===r[0])[1]}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td></tr>`).join('') + '</tbody>';
+
+// ---------------- Breakers ----------------
+(function(){
+  const W = 1000, H = 270;
+  const box = (x,y,w,h,col,title,sub) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" style="fill:color-mix(in srgb, ${col} 12%, var(--surface));stroke:${col};stroke-width:2"/>
+    <text x="${x+w/2}" y="${y+26}" text-anchor="middle" font-size="15" font-weight="700" fill="${col}">${title}</text>
+    ${sub.map((t,i)=>`<text x="${x+w/2}" y="${y+46+i*15}" text-anchor="middle" font-size="11" fill="var(--ink-soft)">${t}</text>`).join('')}`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Breaker state machine: closed, half-open, open"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>`;
+  s += box(20,80,210,100,'var(--permission)','CLOSED',['Runs with its designed','autonomy (Act or Advise)','MTBH ≥ floor, probes pass']);
+  s += box(395,80,210,100,'var(--warning)','HALF-OPEN',['Advise only; human approves','each output; tier H at 100%','labelled “under review”']);
+  s += box(770,80,210,100,'var(--prohibition)','OPEN',['Agent halted; fallback runs','lineage briefs withdrawn','incident to named owner']);
+  const ar = (d,l1,l2,lx,ly) => `<path d="${d}" fill="none" stroke="var(--muted)" stroke-width="1.4" marker-end="url(#ar)"/><text x="${lx}" y="${ly}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${l1}</text>${l2?`<text x="${lx}" y="${ly+13}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${l2}</text>`:''}`;
+  s += ar('M230 112 H393','MTBH < floor or','probe regression',312,96-13);
+  s += ar('M605 112 H768','MTBH < open threshold','or 3 faults in a row',687,96-13);
+  s += ar('M393 150 H232','50 clean probe runs','+ 7 days ≥ floor',312,168);
+  s += ar('M768 150 H607','root cause fixed','+ owner reset',687,168);
+  s += ar('M125 180 V236 H875 V182','Hard trip: entitlement or privacy breach, invalid publish (opens immediately)','',500,252);
+  $('smSvg').innerHTML = s + '</svg>';
+})();
+const HARDSET = new Set(); AGENTS.forEach(a=>a[6].forEach(h=>HARDSET.add(h)));
+$('sigTbl').innerHTML = `<thead><tr><th>ID</th><th>Signal</th><th>What it checks</th><th>Rule</th></tr></thead><tbody>`
+  + SIGNALS.map(([id,n,d,r])=>`<tr><td><span class="sig ${HARDSET.has(id)?'hard':''}">${id}</span></td><td><b>${esc(n)}</b></td><td>${esc(d)}</td><td class="mono" style="font-size:11.5px">${esc(r)}</td></tr>`).join('') + '</tbody>';
+$('tierTbl').innerHTML = `<thead><tr><th>Tier</th><th class="num" style="text-align:right">Half-open below</th><th class="num" style="text-align:right">Open below</th><th class="num" style="text-align:right">Agents</th></tr></thead><tbody>`
+  + Object.entries(TIERS).map(([k,t])=>`<tr><td>${esc(t.name)}</td><td class="mono" style="text-align:right">${t.floor.toLocaleString()} outputs</td><td class="mono" style="text-align:right">${t.open.toLocaleString()} outputs</td><td class="mono" style="text-align:right">${AGENTS.filter(a=>a[4]===k).length}</td></tr>`).join('') + '</tbody>';
+$('chain').innerHTML = ['Intent & RCB Agent','Federated Query Planner','Mapping Resolver','Precision Extractor','Brief Assembler','Grounding Guard (MTBH)','Entitlement Enforcer'].map(n=>`<span class="n"><i></i>${esc(n)}</span>`).join('<span class="a">→</span>') + '<span class="a">→</span><span class="n" style="border-color:var(--star)">Persona decision</span>';
+
+let fam = 'all';
+function renderFam(){
+  $('famChips').innerHTML = [['all','All families']].concat(Object.entries(FAM)).map(([k,l])=>`<button type="button" class="chip" data-f="${k}" aria-pressed="${fam===k}">${esc(l)}</button>`).join('');
+  $('famChips').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ fam=b.dataset.f; renderFam(); renderAgents(); }));
+}
+function renderAgents(){
+  $('agTbl').innerHTML = `<thead><tr><th>Agent</th><th>Decision it makes · options it evaluates</th><th>Tier</th><th>Integrity signals</th><th>MTBH half-open · open</th><th>Fallback when open</th></tr></thead><tbody>`
+    + AGENTS.filter(a=>fam==='all'||a[0]===fam).map(a=>{
+      const t = TIERS[a[4]];
+      return `<tr><td><b>${esc(a[1])}</b><div class="hint">${esc(FAM[a[0]])}</div></td><td>${esc(a[2])}<div class="hint">${esc(a[3])}</div></td><td class="mono">${a[4]}</td>
+        <td>${a[5].map(sg=>`<span class="sig ${a[6].includes(sg)?'hard':''}" title="${esc(SIGNALS.find(x=>x[0]===sg)[1])}">${sg}</span>`).join('')}</td>
+        <td class="mono" style="white-space:nowrap;font-size:12px">&lt; ${t.floor.toLocaleString()} · &lt; ${t.open.toLocaleString()}</td><td>${esc(a[7])}</td></tr>`;
+    }).join('') + '</tbody>';
+}
+$('agSel').innerHTML = AGENTS.map((a,i)=>`<option value="${i}" ${a[1]==='Brief Assembler'?'selected':''}>${esc(a[1])} · ${a[4]}</option>`).join('');
+function renderBreaker(){
+  const a = AGENTS[+$('agSel').value], t = TIERS[a[4]], f = +$('fr').value, hard = $('hard').checked, probe = $('probe').checked;
+  const mtbh = f ? Math.round(10000/f) : Infinity;
+  let st = 'closed', why = 'MTBH is at or above the floor and probes pass.';
+  if(mtbh < t.floor){ st = 'half'; why = `MTBH ${mtbh.toLocaleString()} is below the tier floor of ${t.floor.toLocaleString()} outputs.`; }
+  if(probe && st==='closed'){ st = 'half'; why = 'Golden-question probes regressed after the last change (IS-7).'; }
+  if(mtbh < t.open){ st = 'open'; why = `MTBH ${mtbh.toLocaleString()} is below the open threshold of ${t.open.toLocaleString()} outputs.`; }
+  if(hard){
+    if(a[6].length){ st = 'open'; why = `Hard-trip signal ${a[6].join(' / ')} fired: one occurrence opens the breaker.`; }
+    else if(st==='closed'){ st = 'half'; why = 'This agent has no hard-trip signal, so the fault counts toward MTBH and the breaker goes half-open for review.'; }
+  }
+  const label = { closed:'CLOSED', half:'HALF-OPEN', open:'OPEN' }[st];
+  const act = { closed:`Runs as designed. ${a[1]} decides “${a[2].toLowerCase()}” on its own within its rules.`,
+    half:'Advise only: every output needs human approval, tier H outputs are sampled at 100%, and outputs carry an “under review” label. Returns to closed after 50 clean probe runs and 7 days at or above the floor.',
+    open:`Halted. Fallback: ${a[7]}. Briefs and decisions in its lineage are withdrawn or flagged, and the owner is paged. Only the owner can reset it to half-open after the root cause is fixed.` }[st];
+  const pct = mtbh===Infinity ? 100 : Math.min(100, Math.round(100*Math.log10(mtbh+1)/Math.log10(t.floor*5+1)));
+  const col = st==='closed'?'var(--permission)':st==='half'?'var(--warning)':'var(--prohibition)';
+  $('simOut').innerHTML = `<div class="eyebrow">${esc(a[1])} · ${esc(t.name)}</div><div class="state ${st}">${label}</div>
+    <div class="gauge"><i style="width:${pct}%;background:${col}"></i></div>
+    <div class="mono hint">MTBH ${mtbh===Infinity?'∞ (no faults)':mtbh.toLocaleString()+' outputs between faults'} · floor ${t.floor.toLocaleString()} · open ${t.open.toLocaleString()}</div>
+    <p style="margin-top:10px;font-size:13.5px"><b>Why:</b> ${esc(why)}</p><p style="margin-top:6px;font-size:13.5px"><b>What happens:</b> ${esc(act)}</p>
+    <p class="hint" style="margin-top:8px">Watches ${a[5].map(sg=>`${sg} ${SIGNALS.find(x=>x[0]===sg)[1]}`).join(' · ')}</p>`;
+}
+['agSel','fr','hard','probe'].forEach(id=>$(id).addEventListener('input', renderBreaker));
+$('hard').addEventListener('change', renderBreaker); $('probe').addEventListener('change', renderBreaker);
+
+// ---------------- Tabs ----------------
+const VIEWS = ['questions','qbd','breakers'];
+function show(v){
+  VIEWS.forEach(k=>$('v-'+k).hidden = k!==v);
+  document.querySelectorAll('.tabs [role=tab]').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.v===v)));
+  try{ history.replaceState(null,'','#'+v); }catch(e){}
+  try{ localStorage.setItem('dq-tab', v); }catch(e){}
+}
+document.querySelectorAll('.tabs [role=tab]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.v)));
+
+renderStats(); renderTierChips(); renderSteps(); renderSim(); renderFam(); renderAgents(); renderBreaker();
+let start = 'questions';
+try{ const s = localStorage.getItem('dq-tab'); if(VIEWS.includes(s)) start = s; }catch(e){}
+const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) start = h;
+show(start);
+})();
+</script>
+
+</body></html>

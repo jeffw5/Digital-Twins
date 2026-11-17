@@ -1,0 +1,615 @@
+<title>PEO Competitive Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: working console. Header, three tabs (graph + trace panel / landscape matrix / circuit breaker), shared source list. */
+:root{
+  --bg:#F3F5F9; --surface:#FFFFFF; --sunk:#E9EDF3; --ink:#131A25; --muted:#5A6576; --line:#D9DFE8;
+  --accent:#2748C9; --accent-soft:#E3E8FB;
+  --self:#0D7A84; --self-soft:#DCF1F2;
+  --threat:#CF4128; --threat-soft:#FBE5DF;
+  --open:#13825B; --open-soft:#DAF1E7;
+  --hold:#A86F12; --hold-soft:#FAEFD8;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E131B; --surface:#151C27; --sunk:#1B2431; --ink:#E5EAF1; --muted:#97A2B2; --line:#283244;
+  --accent:#8199FF; --accent-soft:#1D2646; --self:#3BBAC4; --self-soft:#102A2E;
+  --threat:#FF7B5D; --threat-soft:#3A1D17; --open:#3DC68F; --open-soft:#12301F; --hold:#E6AA4E; --hold-soft:#33260F;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E131B; --surface:#151C27; --sunk:#1B2431; --ink:#E5EAF1; --muted:#97A2B2; --line:#283244;
+  --accent:#8199FF; --accent-soft:#1D2646; --self:#3BBAC4; --self-soft:#102A2E;
+  --threat:#FF7B5D; --threat-soft:#3A1D17; --open:#3DC68F; --open-soft:#12301F; --hold:#E6AA4E; --hold-soft:#33260F;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:24px 48px}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px;margin-bottom:18px}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.05;margin:4px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.lede{margin:0;max-width:62ch;color:var(--muted)}
+.tabs{display:flex;gap:4px;background:var(--sunk);padding:4px;border-radius:999px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--f-body);padding:8px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hook{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:80ch}
+.hook b{color:var(--ink)}
+/* graph tab */
+.graph-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+@media (max-width:920px){.graph-grid{grid-template-columns:minmax(0,1fr)}}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:relative}
+.canvas svg{display:block;width:100%;height:auto;touch-action:none;user-select:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:16px;height:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 18px;min-width:0}
+.panel h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:2px 0 4px;line-height:1.15}
+.crumbs{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.crumbs button{border:0;background:none;padding:0;color:var(--accent);font:inherit;cursor:pointer}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:12px 0 4px;font-size:13.5px}
+.facts dt{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.facts dd{margin:0;min-width:0}
+.sec-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.tlist{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0}
+.tlist li{border:1px solid var(--line);border-left:4px solid var(--threat);border-radius:8px;padding:8px 10px;font-size:13.5px;background:var(--surface)}
+.tlist li.open{border-left-color:var(--open)}
+.tlist .t-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tlist .t-head strong{font-weight:600}
+.chip{display:inline-block;font:500 11px var(--f-mono);letter-spacing:.03em;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip.high{background:var(--threat-soft);color:var(--threat)} .chip.med{background:var(--hold-soft);color:var(--hold)} .chip.low{background:var(--sunk);color:var(--muted)}
+.chip.open{background:var(--open-soft);color:var(--open)} .chip.held{background:var(--hold-soft);color:var(--hold)}
+.src{font-family:var(--f-mono);font-size:11px;color:var(--accent);text-decoration:none;margin-left:2px}
+.src:hover{text-decoration:underline}
+.tlist p{margin:4px 0 0;color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.bar{display:grid;grid-template-columns:minmax(0,150px) 1fr 24px;gap:8px;align-items:center}
+.bar .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--threat);border-radius:4px}
+.bar .n{font-family:var(--f-mono);font-size:12px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+.rollup{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.rollup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px 28px}
+.rollup h3,.cb h3{font-family:var(--f-display);font-size:17px;margin:0 0 8px}
+/* svg classes */
+.e-struct{stroke:var(--line);stroke-width:1.2}
+.e-threat{fill:none;stroke:var(--threat);stroke-opacity:.18;stroke-width:1.4}
+.e-open{fill:none;stroke:var(--open);stroke-opacity:.22;stroke-width:1.4;stroke-dasharray:4 3}
+.e-threat.on{stroke-opacity:.95}.e-open.on{stroke-opacity:1}
+.e-threat.off,.e-open.off{stroke-opacity:.05}
+.n-market{fill:var(--ink)} .n-comp{fill:var(--accent)} .n-self{fill:var(--self)}
+.n-off{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.n-feat{fill:var(--surface);stroke:var(--accent);stroke-width:1.5}
+.n-asset{fill:var(--self-soft);stroke:var(--self);stroke-width:1.6}
+.node{cursor:pointer;transition:opacity .2s}
+.node.dim{opacity:.22}
+.node.hit .n-asset{fill:var(--threat-soft);stroke:var(--threat)}
+.node.openhit .n-asset{fill:var(--open-soft);stroke:var(--open)}
+.node.sel .ring{stroke:var(--ink);stroke-width:2;fill:none}
+.lab{font:500 11px var(--f-body);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
+.lab.big{font:700 13px var(--f-display)}
+.lab.inv{fill:#fff;stroke:none;font:700 11px var(--f-body)}
+/* matrix */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--sunk)}
+tbody tr:last-child td{border-bottom:0}
+td.co{font-weight:600;white-space:nowrap}
+tr.self td.co{color:var(--self)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:13px}
+.up{color:var(--open)} .down{color:var(--threat)}
+/* circuit breaker */
+.cb-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:920px){.cb-grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.seg{display:inline-flex;gap:4px;background:var(--sunk);padding:4px;border-radius:8px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--f-body);padding:6px 12px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.brief-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.draft-tag{font:500 11px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--hold);background:var(--hold-soft);padding:3px 8px;border-radius:4px}
+.brief{font-size:15.5px;line-height:1.75;max-width:68ch;margin:0}
+.cl{border-radius:3px;padding:1px 2px;transition:background .25s, box-shadow .25s;cursor:default}
+.cl .tag{font:500 10px var(--f-mono);vertical-align:super;margin-left:2px}
+.cl.pending{background:transparent}
+.cl.checking{background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset}
+.cl.pass{box-shadow:0 -2px 0 var(--open) inset}
+.cl.pass .tag{color:var(--open)}
+.cl.stale{background:var(--hold-soft);box-shadow:0 -2px 0 var(--hold) inset}.cl.stale .tag{color:var(--hold)}
+.cl.hold{background:var(--hold-soft);box-shadow:0 -2px 0 var(--hold) inset}.cl.hold .tag{color:var(--hold)}
+.cl.fail{background:var(--threat-soft);text-decoration:line-through;text-decoration-color:var(--threat);box-shadow:0 -2px 0 var(--threat) inset}.cl.fail .tag{color:var(--threat)}
+.runbtn{border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 13px var(--f-body);padding:8px 14px;border-radius:8px;cursor:pointer}
+.runbtn:disabled{opacity:.6;cursor:progress}
+.meter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.meter div{background:var(--sunk);border-radius:8px;padding:10px 12px}
+.meter .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.meter .v{font-family:var(--f-display);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.state{display:flex;align-items:center;gap:12px;border-radius:8px;padding:12px 14px;font-weight:600}
+.state.tripped{background:var(--threat-soft);color:var(--threat)}
+.state.closed{background:var(--open-soft);color:var(--open)}
+.state.idle{background:var(--sunk);color:var(--muted)}
+.state small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.breaker{width:44px;height:28px;flex:none}
+.slider{display:flex;flex-direction:column;gap:4px;margin-top:14px;font-size:13px}
+.slider label{display:flex;justify-content:space-between;color:var(--muted)}
+.slider input{width:100%;accent-color:var(--accent)}
+.ledger{width:100%;min-width:720px}
+.ledger td:first-child{width:34%}
+.status{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.status.pass{background:var(--open-soft);color:var(--open)} .status.stale,.status.hold{background:var(--hold-soft);color:var(--hold)} .status.fail{background:var(--threat-soft);color:var(--threat)}
+.bc{display:flex;flex-direction:column;gap:8px;list-style:none;padding:0;margin:0}
+.bc li{display:flex;gap:10px;font-size:14px;align-items:flex-start}
+.bc li .status{margin-top:3px}
+.removed{margin-top:10px;font-size:13px;color:var(--muted)}
+/* sources */
+.sources{margin-top:28px}
+.sources h2{font-family:var(--f-display);font-size:18px;margin:0 0 4px}
+.sources ol{columns:2 360px;column-gap:32px;padding-left:22px;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.sources li{break-inside:avoid;margin-bottom:5px}
+.sources a{color:var(--ink)}
+.tier{font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Competitive intelligence demo · public sources through Sept 30, 2026</div>
+      <h1>PEO Competitive Graph</h1>
+      <p class="lede">Competitive knowledge as a connected, queryable graph instead of a static battlecard. Each competitor is a holon inside the market holon, so facts roll up from feature to product line to market without being rewritten.</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" id="tab-graph" aria-selected="true" aria-controls="view-graph">Threat graph</button>
+      <button role="tab" id="tab-matrix" aria-selected="false" aria-controls="view-matrix">Landscape matrix</button>
+      <button role="tab" id="tab-cb" aria-selected="false" aria-controls="view-cb">AI Circuit Breaker</button>
+    </nav>
+  </header>
+
+  <!-- GRAPH -->
+  <section id="view-graph" role="tabpanel" aria-labelledby="tab-graph">
+    <p class="hook"><b>Click a competitor</b> to trace which Insperity capabilities, segments and positioning claims it pressures. <b>Click an Insperity node</b> to see who is pressing on it. Drag nodes to rearrange.</p>
+    <div class="graph-grid">
+      <div class="canvas">
+        <svg id="g" viewBox="0 0 1000 640" role="img" aria-label="Force-directed graph of PEO competitors and Insperity capabilities, segments and claims"></svg>
+        <div class="legend">
+          <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" class="n-comp"/></svg>Competitor holon</span>
+          <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" class="n-off"/></svg>Product line</span>
+          <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5" class="n-feat"/></svg>Feature</span>
+          <span><svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="3" class="n-asset"/></svg>Insperity capability</span>
+          <span><svg viewBox="0 0 16 16"><path d="M8 1 15 8 8 15 1 8Z" class="n-asset"/></svg>Segment</span>
+          <span><svg viewBox="0 0 16 16"><path d="M2 4h12v8H2z" class="n-asset" rx="2"/></svg>Positioning claim</span>
+          <span><svg viewBox="0 0 16 16"><path d="M1 8h14" stroke="var(--threat)" stroke-width="2"/></svg>Threat</span>
+          <span><svg viewBox="0 0 16 16"><path d="M1 8h14" stroke="var(--open)" stroke-width="2" stroke-dasharray="3 2"/></svg>Opening</span>
+        </div>
+      </div>
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+    <div class="rollup">
+      <div class="rollup-grid">
+        <div>
+          <h3>Rolled up to the market: where Insperity is exposed</h3>
+          <div class="bars" id="exposure"></div>
+        </div>
+        <div>
+          <h3>Rolled up to the market: who is pressing hardest</h3>
+          <div class="bars" id="pressure"></div>
+          <p class="hint">Scores sum threat severity (high 3, medium 2, low 1) from every feature and product line up through its competitor. Add one new fact at the feature level and both views update.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATRIX -->
+  <section id="view-matrix" role="tabpanel" aria-labelledby="tab-matrix" hidden>
+    <p class="hook">The same facts behind the graph, flattened into the familiar landscape matrix. Numbers in brackets link to the source list below. Third-party pricing is indicative only.</p>
+    <div class="tablewrap"><table id="matrix"></table></div>
+  </section>
+
+  <!-- CIRCUIT BREAKER -->
+  <section id="view-cb" role="tabpanel" aria-labelledby="tab-cb" hidden>
+    <p class="hook">An AI-drafted competitor brief is checked claim by claim before anything reaches a battlecard. Each claim is matched to a source, its freshness and the authority of that source. <b>MTBH</b> (mean time between hallucinations) is shown here as claims checked per failed claim. When failures pass the threshold, the breaker trips and the draft is held.</p>
+    <div class="cb-grid">
+      <div class="card">
+        <div class="brief-head">
+          <div class="seg" role="group" aria-label="Choose a brief" id="briefSel"></div>
+          <span class="draft-tag" id="draftTag">AI draft · not cleared</span>
+        </div>
+        <p class="brief" id="brief"></p>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap">
+          <button class="runbtn" id="run">Run the check again</button>
+          <span class="hint" style="margin:0">Hover or focus a highlighted claim for the finding.</span>
+        </div>
+      </div>
+      <div class="card cb">
+        <h3>Circuit Breaker</h3>
+        <div class="state idle" id="state"></div>
+        <div class="meter">
+          <div><div class="k">MTBH</div><div class="v" id="mtbh">–</div><div class="k" style="text-transform:none;letter-spacing:0">claims per failure</div></div>
+          <div><div class="k">Failure rate</div><div class="v" id="frate">–</div><div class="k" style="text-transform:none;letter-spacing:0" id="counts">&nbsp;</div></div>
+        </div>
+        <div class="slider">
+          <label for="thr"><span>Trip when failure rate exceeds</span><span class="num" id="thrv">15%</span></label>
+          <input type="range" id="thr" min="0" max="60" step="5" value="15">
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3 style="font-family:var(--f-display);font-size:17px;margin:0 0 10px">Claim ledger</h3>
+      <div class="tablewrap" style="border:0"><table class="ledger" id="ledger"></table></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3 style="font-family:var(--f-display);font-size:17px;margin:0 0 10px">What reaches the battlecard</h3>
+      <ul class="bc" id="bc"></ul>
+      <p class="removed" id="removed"></p>
+    </div>
+  </section>
+
+  <section class="sources">
+    <h2>Sources</h2>
+    <div class="hint" style="margin:0">Public filings, earnings calls, press and third-party reviews, retrieved Sept 30, 2026. Tier shows source authority used by the Circuit Breaker.</div>
+    <ol id="srcList"></ol>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- sources ---------- */
+const SRC = {
+ s1:{t:"Insperity Q2 2026 8-K summary",u:"https://www.stocktitan.net/sec-filings/NSP/8-k-insperity-inc-reports-material-event-e6bd8601661c.html",d:"Jul 29, 2026",tier:"Filing",a:3},
+ s2:{t:"Insperity Q2 2026 earnings call transcript (Investing.com)",u:"https://www.investing.com/news/transcripts/earnings-call-transcript-insperity-posts-mixed-q2-2026-results-as-shares-rise-93CH-4821947",d:"Jul 2026",tier:"Transcript",a:2},
+ s3:{t:"Insperity Q1 2026 earnings call summary (Yahoo Finance)",u:"https://finance.yahoo.com/markets/stocks/articles/insperity-inc-q1-2026-earnings-123000439.html",d:"May 2026",tier:"Press",a:2},
+ s4:{t:"Insperity review 2026 (Employsome)",u:"https://employsome.com/review/insperity/",d:"Aug 2026",tier:"Review",a:1},
+ s5:{t:"ADP Q4 and fiscal 2026 earnings release",u:"https://s205.q4cdn.com/887941133/files/doc_financials/2026/q4/ADP-4Q26-Earnings-Release.pdf",d:"Jul 29, 2026",tier:"Filing",a:3},
+ s6:{t:"ADP TotalSource named best PEO for benefits administration (ADP media center)",u:"https://mediacenter.adp.com/best-peo-for-benefits-administration-adp-totalsource",d:"May 18, 2026",tier:"Company",a:2},
+ s7:{t:"ADP TotalSource review 2026 (PEO Clarify)",u:"https://peoclarify.com/blog/adp-totalsource-review",d:"Jul 2026",tier:"Review",a:1},
+ s8:{t:"TriNet Q2 2026 8-K summary",u:"https://www.stocktitan.net/sec-filings/TNET/8-k-trinet-group-inc-reports-material-event-fe4c9ffe4931.html",d:"Jul 30, 2026",tier:"Filing",a:3},
+ s9:{t:"TriNet Q2 earnings call highlights (Yahoo Finance)",u:"https://finance.yahoo.com/markets/stocks/articles/trinet-group-q2-earnings-call-030340912.html",d:"Aug 2026",tier:"Press",a:2},
+ s10:{t:"TriNet Q2 2026 earnings call highlights (GuruFocus)",u:"https://www.gurufocus.com/news/8992323/trinet-group-inc-tnet-q2-2026-earnings-call-highlights-ai-drives-efficiency-as-sales-momentum-returns",d:"Jul 2026",tier:"Press",a:2},
+ s11:{t:"Paychex Q1 fiscal 2027 results (SEC 8-K)",u:"https://www.sec.gov/Archives/edgar/data/0000723531/000072353126000004/payx-ex99_1.htm",d:"Sep 23, 2026",tier:"Filing",a:3},
+ s12:{t:"Paychex fiscal 2026 Form 10-K",u:"https://www.sec.gov/Archives/edgar/data/0000723531/000119312526307785/payx-20260531.htm",d:"Jul 2026",tier:"Filing",a:3},
+ s13:{t:"Paychex fourth quarter and full-year 2026 results (Nasdaq)",u:"https://www.nasdaq.com/press-release/paychex-reports-fourth-quarter-and-full-year-2026-results-2026-06-24",d:"Jun 24, 2026",tier:"Company",a:2},
+ s14:{t:"Justworks compensation and pricing updates (PGP Benefits broker notice)",u:"https://www.pgpbenefits.com/important-justworks-compensation-pricing-updates/",d:"May 11, 2026",tier:"Broker",a:2},
+ s15:{t:"Justworks pricing 2026 (Ignition Benefits)",u:"https://www.ignitionbenefits.com/blog/justworks-pricing",d:"Sep 2026",tier:"Review",a:1},
+ s16:{t:"Justworks review and pricing (Business.com)",u:"https://www.business.com/reviews/justworks/",d:"Aug 2026",tier:"Review",a:1},
+ s17:{t:"Justworks pricing 2026 (Which Payroll)",u:"https://whichpayroll.com/pricing/justworks",d:"Apr 2026",tier:"Review",a:1},
+ s18:{t:"Rippling (company), Wikipedia",u:"https://en.wikipedia.org/wiki/Rippling_(company)",d:"2026",tier:"Reference",a:1},
+ s19:{t:"Rippling raises $450m at $16.8bn valuation (Verdict via Yahoo Finance)",u:"https://finance.yahoo.com/news/rippling-raises-450m-16-8bn-161120814.html",d:"May 2025",tier:"Press",a:2},
+ s20:{t:"Rippling IPO page (TechStackIPO)",u:"https://techstackipo.com/ipo/rippling",d:"Jun 2026",tier:"Tracker",a:0},
+ s21:{t:"Rippling PEO comparison (PEO Consulting Partners)",u:"https://peoconsultingpartners.com/peo-compare/rippling",d:"2026",tier:"Review",a:1},
+ s22:{t:"Rippling pricing 2026 (Ignition Benefits)",u:"https://www.ignitionbenefits.com/blog/rippling-pricing",d:"Sep 2026",tier:"Review",a:1},
+ s23:{t:"Rippling PEO review 2026 (PEO Clarify)",u:"https://peoclarify.com/blog/rippling-review",d:"Jul 2026",tier:"Review",a:1},
+ s24:{t:"Rippling valuation, revenue and IPO outlook (MEXC blog)",u:"https://blog.mexc.com/finance/rippling-ipo-2026-valuation-competitors-how-to-invest/",d:"Jun 2026",tier:"Tracker",a:0},
+ s25:{t:"Insperity expands Workday-based HRScale (HR Tech Edge)",u:"https://hrtechedge.com/hr/insperity-expands-workday-based-hrscale-for-midsize-firms/",d:"Sep 2026",tier:"Press",a:2},
+ s26:{t:"ADP TotalSource review 2026 (hr.software)",u:"https://www.hr.software/reviews/adp-totalsource",d:"Jun 2026",tier:"Review",a:1}
+};
+const order = Object.keys(SRC);
+const srcNum = id => order.indexOf(id)+1;
+const cite = ids => ids.map(id=>`<a class="src" href="#src-${id}" title="${esc(SRC[id].t)}">[${srcNum(id)}]</a>`).join("");
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+document.getElementById("srcList").innerHTML = order.map(id=>{const s=SRC[id];return `<li id="src-${id}"><a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a>, ${s.d}<span class="tier">${s.tier}</span></li>`}).join("");
+
+/* ---------- graph data ---------- */
+const N = [
+ {id:"mkt",label:"US PEO market",type:"market"},
+ {id:"adp",label:"ADP",type:"competitor",parent:"mkt"},
+ {id:"adp_ts",label:"TotalSource",type:"offering",parent:"adp"},
+ {id:"adp_mla",label:"MyLife Advisors",type:"feature",parent:"adp_ts"},
+ {id:"trinet",label:"TriNet",type:"competitor",parent:"mkt"},
+ {id:"tn_peo",label:"TriNet PEO",type:"offering",parent:"trinet"},
+ {id:"tn_ai",label:"TriNet Assistant",type:"feature",parent:"tn_peo"},
+ {id:"tn_coc",label:"Cocoon leave",type:"feature",parent:"tn_peo"},
+ {id:"paychex",label:"Paychex",type:"competitor",parent:"mkt"},
+ {id:"px_peo",label:"Paychex PEO",type:"offering",parent:"paychex"},
+ {id:"px_paycor",label:"Paycor HCM",type:"offering",parent:"paychex"},
+ {id:"px_wise",label:"WISE Hire (AI)",type:"feature",parent:"px_paycor"},
+ {id:"justworks",label:"Justworks",type:"competitor",parent:"mkt"},
+ {id:"jw_peo",label:"PEO Basic / Plus",type:"offering",parent:"justworks"},
+ {id:"jw_eor",label:"Justworks EOR",type:"offering",parent:"justworks"},
+ {id:"rippling",label:"Rippling",type:"competitor",parent:"mkt"},
+ {id:"rp_plat",label:"Unified HR/IT/Spend",type:"offering",parent:"rippling"},
+ {id:"rp_peo",label:"PEO module",type:"feature",parent:"rp_plat"},
+ {id:"rp_dc",label:"Data Cloud",type:"feature",parent:"rp_plat"},
+ {id:"nsp",label:"Insperity",type:"self",parent:"mkt"},
+ {id:"c_svc",label:"High-touch HR service",type:"capability",parent:"nsp"},
+ {id:"c_ben",label:"Benefits (UHC plan)",type:"capability",parent:"nsp"},
+ {id:"c_scale",label:"HRScale on Workday",type:"capability",parent:"nsp"},
+ {id:"c_ai",label:"Client AI agents (planned)",type:"capability",parent:"nsp"},
+ {id:"c_cred",label:"CPEO + ESAC",type:"capability",parent:"nsp"},
+ {id:"s_small",label:"Small biz 5–49",type:"segment",parent:"nsp"},
+ {id:"s_grow",label:"Growing SMB 50–149",type:"segment",parent:"nsp"},
+ {id:"s_mid",label:"Mid-market 150–5,000",type:"segment",parent:"nsp"},
+ {id:"p_dept",label:"“Your full HR department”",type:"claim",parent:"nsp"},
+ {id:"p_ben",label:"“Fortune 500 benefits”",type:"claim",parent:"nsp"},
+ {id:"p_tech",label:"“Workday tech + HR experts”",type:"claim",parent:"nsp"},
+ {id:"p_trust",label:"“~40-year track record”",type:"claim",parent:"nsp"}
+];
+const byId = Object.fromEntries(N.map(n=>[n.id,n]));
+const INFO = {
+ mkt:{facts:[["Scope","US professional employer organizations"],["Players shown","5 competitors + Insperity"],["As of","Sept 30, 2026"]],note:"The market holon. Every competitor, product line and feature below it rolls up here."},
+ adp:{facts:[["Scale","~775,000 avg WSEs, Q4 FY26"+cite(["s5"])],["Momentum",'<span class="up">+2% WSEs</span>; guiding ~2% for FY27'+cite(["s5"])],["Pricing","Custom quotes; advisors cite ~$130–$200 PEPM under 50 employees"+cite(["s7"])],["Watch","PEO margin down 100 bps in Q4 on workers’ comp and selling costs"+cite(["s5"])]]},
+ trinet:{facts:[["Scale","~298,000 avg WSEs, Q2 2026"+cite(["s8"])],["Momentum",'<span class="down">−11% WSEs YoY</span>, but attrition improved 36%'+cite(["s8","s9"])],["Pricing","Repricing largely complete; raised FY26 EPS guidance"+cite(["s9"])],["Watch","Rebuilding sales force (Ascend) and broker channel"+cite(["s10"])]]},
+ paychex:{facts:[["Scale","2.6M HR outsourcing WSEs (ASO + PEO), FY26"+cite(["s12"])],["Momentum",'<span class="up">PEO & Insurance revenue +12%</span> in Q1 FY27'+cite(["s11"])],["Pricing","Custom quotes; not published"],["Watch","Paycor integration moves it upmarket; WISE Hire agentic recruiting"+cite(["s11","s13"])]]},
+ justworks:{facts:[["Scale","Private; no WSE disclosure"],["Pricing","Published: PEO Basic $79, PEO Plus $124 PEPM for new business since Jun 1, 2026"+cite(["s14","s15"])],["Channel","Broker pay moved to a percentage of admin revenue"+cite(["s14"])],["Watch","EOR at $599 per employee per month"+cite(["s16"])]]},
+ rippling:{facts:[["Scale","Private; ~$1B annualized revenue reported"+cite(["s24"])],["Valuation","$16.8B at its May 2025 Series G"+cite(["s19"])],["Pricing","PEO is a custom-quoted add-on to the core platform"+cite(["s22"])],["Watch","Launched Rippling Data Cloud in June 2026"+cite(["s18"])]]},
+ nsp:{facts:[["Scale","305,764 avg paid WSEs, Q2 2026"+cite(["s1"])],["Momentum",'<span class="down">−1% WSEs YoY</span> during margin recovery'+cite(["s1"])],["Pricing","Quote-only; third-party estimates $150–$300 PEPM"+cite(["s4"])],["Bet","HRScale: ~8,000 WSEs sold entering Q3, 5,000+ live"+cite(["s2"])]]}
+};
+/* threat and opening edges: from = feature/offering/competitor, to = Insperity node */
+const T = [
+ {f:"rp_plat",t:"c_scale",k:"threat",s:3,h:"Software-first alternative to HRScale",x:"Rippling sells one platform across HR, IT and spend, with PEO as an add-on. It competes on software depth, where HRScale leans on Workday plus service.",src:["s22","s18"]},
+ {f:"rp_dc",t:"p_tech",k:"threat",s:3,h:"Contests the ‘modern tech’ story",x:"Data Cloud (June 2026) and Rippling AI give it a data-and-automation pitch aimed at the same buyers HRScale courts.",src:["s18"]},
+ {f:"rp_peo",t:"s_grow",k:"threat",s:2,h:"Same growth-stage buyer",x:"Advisors put Rippling PEO’s sweet spot at roughly 25–300 employees.",src:["s21"]},
+ {f:"rp_peo",t:"c_cred",k:"open",s:1,h:"Possible credential gap",x:"One advisor says Rippling is not on the IRS CPEO list or ESAC-accredited. Held in the Circuit Breaker until checked against the IRS list.",src:["s21"],held:true},
+ {f:"adp_ts",t:"p_ben",k:"threat",s:3,h:"Benefits claim is contested",x:"Named best PEO for benefits administration by Business.com in May 2026, backed by pooled buying power across ~775,000 WSEs.",src:["s6","s5"]},
+ {f:"adp_ts",t:"s_grow",k:"threat",s:3,h:"Growing while Insperity shrinks",x:"ADP adds about 2% WSEs a year while Insperity is down about 1%. Advisors cite 50–500 employees as its sweet spot.",src:["s5","s7","s1"]},
+ {f:"adp_ts",t:"c_cred",k:"threat",s:2,h:"Credentials don’t differentiate",x:"TotalSource is also CPEO-certified and ESAC-accredited.",src:["s6"]},
+ {f:"adp_mla",t:"c_svc",k:"threat",s:1,h:"Employee-level service desk",x:"MyLife Advisors gives worksite employees direct phone help on pay and benefits.",src:["s26"]},
+ {f:"tn_ai",t:"c_ai",k:"threat",s:3,h:"AI service already live",x:"TriNet Assistant launched in spring 2026 and handles about half of customer-initiated chats. Insperity’s client-facing AI agents are still planned.",src:["s9","s3"]},
+ {f:"tn_peo",t:"s_grow",k:"threat",s:2,h:"Back on offense for fall selling",x:"Repricing is done, attrition fell 36%, and TriNet is adding sales reps and broker partners.",src:["s9","s10"]},
+ {f:"tn_coc",t:"c_svc",k:"threat",s:1,h:"Adds leave management",x:"The Cocoon leave-of-absence integration extends TriNet’s outsourced service scope.",src:["s9"]},
+ {f:"px_paycor",t:"s_mid",k:"threat",s:3,h:"Upmarket push into mid-market",x:"The Paycor acquisition gives Paychex a second HCM platform for larger clients, the same space HRScale targets.",src:["s12","s13"]},
+ {f:"px_peo",t:"s_grow",k:"threat",s:2,h:"PEO growing double digits",x:"PEO & Insurance Solutions revenue rose 12% in Q1 FY27 on more PEO worksite employees.",src:["s11"]},
+ {f:"px_wise",t:"c_ai",k:"threat",s:2,h:"Agentic AI in market",x:"Launched WISE Hire agentic recruiting and the WISE Workforce Intelligence Engine.",src:["s11","s13"]},
+ {f:"jw_peo",t:"s_small",k:"threat",s:3,h:"Price transparency for small firms",x:"Published per-employee PEO pricing is easy to compare against quote-only providers.",src:["s15","s16"]},
+ {f:"jw_peo",t:"s_small",k:"open",s:1,h:"Price gap narrowed",x:"PEO Plus rose from $109 to $124 PEPM for new business on June 1, 2026.",src:["s14"]},
+ {f:"jw_peo",t:"p_dept",k:"threat",s:1,h:"Lighter-touch alternative",x:"Self-serve model with dedicated HR consulting sold as an add-on.",src:["s16"]}
+];
+const compOf = id => { let n=byId[id]; while(n && n.type!=="competitor" && n.type!=="self" && n.type!=="market") n=byId[n.parent]; return n?n.id:null };
+T.forEach(e=>e.c=compOf(e.f));
+const sevName = s=>s===3?"high":s===2?"med":"low";
+const sevText = s=>s===3?"High":s===2?"Medium":"Low";
+
+/* ---------- layout (force-directed) ---------- */
+const W=1000,H=640;
+const R = {market:28,competitor:22,self:24,offering:12,feature:8,capability:11,segment:12,claim:11};
+let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+const comps=N.filter(n=>n.type==="competitor");
+comps.forEach((c,i)=>{const a=-Math.PI/2+i*(2*Math.PI/comps.length)*0.9-0.2;c.x=330+230*Math.cos(a);c.y=320+230*Math.sin(a)});
+N.forEach(n=>{
+  if(n.type==="market"){n.x=420;n.y=320}
+  else if(n.type==="self"){n.x=760;n.y=320}
+  else if(n.x==null){const p=byId[n.parent];n.x=p.x+(rnd()-.5)*80;n.y=p.y+(rnd()-.5)*80}
+  n.vx=0;n.vy=0;n.r=R[n.type];
+  n.home = (n.parent==="nsp"||n.type==="self") ? 780 : (n.type==="market"?470:300);
+});
+const L = N.filter(n=>n.parent).map(n=>({a:byId[n.parent],b:n,len: n.type==="competitor"?210 : n.parent==="mkt"?240 : n.parent==="nsp"?120 : 62,str:n.parent==="nsp"?.5:.8}));
+const TL = T.map(e=>({a:byId[e.f],b:byId[e.t],len:360,str:.012}));
+let alpha=1;
+function tick(){
+  for(let i=0;i<N.length;i++){const a=N[i];for(let j=i+1;j<N.length;j++){const b=N[j];
+    let dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy||1;
+    const k=-(a.r+b.r)*42*alpha/d2; a.vx+=dx*k;a.vy+=dy*k;b.vx-=dx*k;b.vy-=dy*k;
+    const d=Math.sqrt(d2),min=a.r+b.r+14; if(d<min){const p=(min-d)/d*.5;a.vx-=dx*p*.5;a.vy-=dy*p*.5;b.vx+=dx*p*.5;b.vy+=dy*p*.5}}}
+  for(const l of L.concat(TL)){const dx=l.b.x-l.a.x,dy=l.b.y-l.a.y,d=Math.sqrt(dx*dx+dy*dy)||1,f=(d-l.len)/d*alpha*l.str*.5;
+    l.b.vx-=dx*f;l.b.vy-=dy*f;l.a.vx+=dx*f;l.a.vy+=dy*f}
+  for(const n of N){n.vx+=(n.home-n.x)*.012*alpha;n.vy+=(H/2-n.y)*.01*alpha}
+  for(const n of N){ if(n.fixed){n.vx=n.vy=0;continue}
+    n.vx*=.55;n.vy*=.55;n.x+=n.vx;n.y+=n.vy;
+    n.x=Math.max(n.r+40,Math.min(W-n.r-40,n.x));n.y=Math.max(n.r+14,Math.min(H-n.r-24,n.y))}
+  alpha*=.985;
+}
+for(let i=0;i<420;i++) tick();
+
+/* ---------- render ---------- */
+const svg=document.getElementById("g"), NS="http://www.w3.org/2000/svg";
+const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const gS=mk("g",{}),gT=mk("g",{}),gN=mk("g",{});svg.append(gS,gT,gN);
+L.forEach(l=>{l.el=mk("line",{class:"e-struct"});gS.append(l.el)});
+T.forEach(e=>{e.el=mk("path",{class:e.k==="open"?"e-open":"e-threat","stroke-width":1+e.s*.7});gT.append(e.el)});
+function shape(n){
+  const r=n.r;
+  if(n.type==="market") return mk("circle",{r,class:"n-market"});
+  if(n.type==="competitor") return mk("circle",{r,class:"n-comp"});
+  if(n.type==="self") return mk("circle",{r,class:"n-self"});
+  if(n.type==="offering") return mk("circle",{r,class:"n-off"});
+  if(n.type==="feature") return mk("circle",{r,class:"n-feat"});
+  if(n.type==="capability") return mk("rect",{x:-r,y:-r,width:2*r,height:2*r,rx:3,class:"n-asset"});
+  if(n.type==="segment") return mk("path",{d:`M0 ${-r-2} ${r+2} 0 0 ${r+2} ${-r-2} 0Z`,class:"n-asset"});
+  return mk("rect",{x:-r-3,y:-r+3,width:2*r+6,height:2*r-6,rx:2,class:"n-asset"});
+}
+N.forEach(n=>{
+  const g=mk("g",{class:"node",tabindex:0,role:"button","aria-label":n.label});
+  g.append(mk("circle",{r:n.r+5,class:"ring",fill:"none"}),shape(n));
+  const big=["market","competitor","self"].includes(n.type);
+  const lab=mk("text",{class:"lab"+(big?" big":""),"text-anchor":"middle",y:big?n.r+17:n.r+14});
+  lab.textContent=n.label; g.append(lab);
+  if(big){const ini=mk("text",{class:"lab inv","text-anchor":"middle",y:4});ini.textContent=n.type==="market"?"MKT":n.label.slice(0,2).toUpperCase();g.append(ini)}
+  n.el=g; gN.append(g);
+  g.addEventListener("click",()=>{if(!g._dragged)select(n.id)});
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(n.id)}});
+  g.addEventListener("pointerdown",ev=>startDrag(ev,n));
+});
+function draw(){
+  L.forEach(l=>{l.el.setAttribute("x1",l.a.x);l.el.setAttribute("y1",l.a.y);l.el.setAttribute("x2",l.b.x);l.el.setAttribute("y2",l.b.y)});
+  T.forEach((e,i)=>{const a=byId[e.f],b=byId[e.t],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,bend=(e.k==="open"?-.18:.14)+(i%3)*.03;
+    e.el.setAttribute("d",`M${a.x},${a.y} Q${mx-dy*bend},${my+dx*bend} ${b.x},${b.y}`)});
+  N.forEach(n=>n.el.setAttribute("transform",`translate(${n.x.toFixed(1)},${n.y.toFixed(1)})`));
+}
+draw();
+/* drag */
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let raf=null;
+function loop(){tick();draw();if(alpha>.02)raf=requestAnimationFrame(loop);else raf=null}
+function toSvg(ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
+function startDrag(ev,n){
+  const g=n.el; g._dragged=false; const start=toSvg(ev); let moved=false;
+  g.setPointerCapture(ev.pointerId);
+  const mv=e=>{const p=toSvg(e);if(!moved&&Math.hypot(p.x-start.x,p.y-start.y)<4)return;moved=true;g._dragged=true;
+    n.fixed=true;n.x=p.x;n.y=p.y;
+    if(reduce){draw()}else{alpha=Math.max(alpha,.25);if(!raf)raf=requestAnimationFrame(loop)}};
+  const up=()=>{g.removeEventListener("pointermove",mv);g.removeEventListener("pointerup",up);g.removeEventListener("pointercancel",up);setTimeout(()=>{g._dragged=false},0)};
+  g.addEventListener("pointermove",mv);g.addEventListener("pointerup",up);g.addEventListener("pointercancel",up);
+}
+
+/* ---------- selection + panel ---------- */
+const panel=document.getElementById("panel");
+function path(id){const out=[];let n=byId[id];while(n){out.unshift(n);n=byId[n.parent]}return out}
+function crumbs(id){return `<div class="crumbs">${path(id).map((n,i,a)=>i<a.length-1?`<button data-go="${n.id}">${esc(n.label)}</button><span>›</span>`:`<span>${esc(n.label)}</span>`).join("")}</div>`}
+function edgeItem(e,fromView){
+  const other = fromView==="comp" ? byId[e.t] : byId[e.c];
+  const via = byId[e.f];
+  const chip = e.k==="open" ? `<span class="chip open">Opening</span>` : `<span class="chip ${sevName(e.s)}">${sevText(e.s)}</span>`;
+  const held = e.held?` <span class="chip held">Held</span>`:"";
+  const roll = path(e.f).slice(1).map(n=>n.label).join(" › ");
+  return `<li class="${e.k==="open"?"open":""}"><div class="t-head"><strong>${esc(e.h)}</strong><span>${chip}${held}</span></div>
+    <p>${fromView==="comp"?"Hits":"From"} <b style="color:var(--ink)">${esc(other.label)}</b>${fromView==="asset"?` via ${esc(via.label)}`:""}. ${esc(e.x)}${cite(e.src)}</p>
+    ${fromView==="comp"?`<p class="crumbs" style="margin-top:4px">Rolls up: ${esc(roll)} › US PEO market</p>`:""}</li>`;
+}
+function factsHtml(id){const f=INFO[id];if(!f)return"";return `<dl class="facts">${f.facts.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`+(f.note?`<p class="hint">${f.note}</p>`:"")}
+function select(id){
+  const n=byId[id];
+  let comp=null,asset=null,focusNode=id;
+  if(["competitor","offering","feature"].includes(n.type)) comp=compOf(id);
+  if(["capability","segment","claim"].includes(n.type)) asset=id;
+  let active=[];
+  if(comp) active=T.filter(e=>e.c===comp);
+  else if(asset) active=T.filter(e=>e.t===asset);
+  else if(n.type==="self") active=T.slice();
+  // highlight
+  const keep=new Set([id]);
+  if(comp){N.forEach(x=>{if(compOf(x.id)===comp)keep.add(x.id)});active.forEach(e=>keep.add(e.t))}
+  if(asset){keep.add("nsp");active.forEach(e=>{keep.add(e.c);path(e.f).forEach(p=>keep.add(p.id))})}
+  const all = n.type==="market"||n.type==="self";
+  N.forEach(x=>{x.el.classList.toggle("dim",!all&&!keep.has(x.id));x.el.classList.toggle("sel",x.id===id);
+    const hits=active.filter(e=>e.t===x.id);
+    x.el.classList.toggle("hit",!all&&hits.some(e=>e.k==="threat"));
+    x.el.classList.toggle("openhit",!all&&hits.length>0&&hits.every(e=>e.k==="open"))});
+  T.forEach(e=>{const on=active.includes(e);e.el.classList.toggle("on",on&&!all);e.el.classList.toggle("off",!on&&!all)});
+  // panel
+  let h="";
+  if(comp){
+    const c=byId[comp];
+    const threats=active.filter(e=>e.k==="threat").sort((a,b)=>b.s-a.s), opens=active.filter(e=>e.k==="open");
+    const score=threats.reduce((s,e)=>s+e.s,0);
+    h=`${crumbs(id)}<h2>${esc(n.type==="competitor"?c.label:n.label)}</h2>
+      ${n.type!=="competitor"?`<div class="hint" style="margin-top:0">A ${n.type==="feature"?"feature":"product line"} inside the ${esc(c.label)} holon. Showing the whole competitor’s trace.</div>`:""}
+      ${factsHtml(comp)}
+      <div class="sec-label">Threat trace · ${threats.length} threats · score ${score}</div>
+      <ul class="tlist">${threats.map(e=>edgeItem(e,"comp")).join("")}</ul>
+      ${opens.length?`<div class="sec-label">Openings for Insperity</div><ul class="tlist">${opens.map(e=>edgeItem(e,"comp")).join("")}</ul>`:""}`;
+  } else if(asset){
+    const threats=active.filter(e=>e.k==="threat").sort((a,b)=>b.s-a.s), opens=active.filter(e=>e.k==="open");
+    const kind={capability:"Capability",segment:"Target segment",claim:"Positioning claim"}[n.type];
+    h=`${crumbs(id)}<h2>${esc(n.label)}</h2><div class="hint" style="margin-top:0">${kind} in the Insperity holon · exposure score ${threats.reduce((s,e)=>s+e.s,0)}</div>
+      <div class="sec-label">Pressure from</div>${threats.length?`<ul class="tlist">${threats.map(e=>edgeItem(e,"asset")).join("")}</ul>`:`<p class="hint">No competitor pressure recorded yet.</p>`}
+      ${opens.length?`<div class="sec-label">Openings</div><ul class="tlist">${opens.map(e=>edgeItem(e,"asset")).join("")}</ul>`:""}`;
+  } else if(n.type==="self"){
+    h=`${crumbs(id)}<h2>Insperity</h2>${factsHtml("nsp")}<div class="sec-label">Most exposed</div><div class="bars">${exposureBars(5)}</div><p class="hint">Click any teal node to see who is pressing on it.</p>`;
+  } else {
+    h=`${crumbs(id)}<h2>US PEO market</h2>${factsHtml("mkt")}<div class="sec-label">Competitive pressure by holon</div><div class="bars">${pressureBars()}</div><p class="hint">Click a competitor to drill in.</p>`;
+  }
+  panel.innerHTML=h;
+  panel.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.go)));
+}
+/* roll-ups */
+function exposureBars(limit){
+  const rows=N.filter(n=>n.parent==="nsp").map(n=>({n,v:T.filter(e=>e.t===n.id&&e.k==="threat").reduce((s,e)=>s+e.s,0)})).sort((a,b)=>b.v-a.v).slice(0,limit||99);
+  const max=Math.max(...rows.map(r=>r.v),1);
+  return rows.map(r=>`<div class="bar"><span class="lbl" title="${esc(r.n.label)}">${esc(r.n.label)}</span><span class="track"><span class="fill" style="width:${r.v/max*100}%;display:block"></span></span><span class="n">${r.v}</span></div>`).join("");
+}
+function pressureBars(){
+  const rows=comps.map(c=>({c,v:T.filter(e=>e.c===c.id&&e.k==="threat").reduce((s,e)=>s+e.s,0)})).sort((a,b)=>b.v-a.v);
+  const max=Math.max(...rows.map(r=>r.v),1);
+  return rows.map(r=>`<div class="bar"><span class="lbl">${esc(r.c.label)}</span><span class="track"><span class="fill" style="width:${r.v/max*100}%;display:block;background:var(--accent)"></span></span><span class="n">${r.v}</span></div>`).join("");
+}
+document.getElementById("exposure").innerHTML=exposureBars();
+document.getElementById("pressure").innerHTML=pressureBars();
+select("rippling");
+
+/* ---------- matrix ---------- */
+const M=[
+ ["Insperity",true,"305,764 avg paid WSEs (Q2 2026)"+cite(["s1"]),'<span class="down">−1% YoY</span>; FY26 guide 305–307k'+cite(["s2"]),"5–5,000 employees; mid-market push via HRScale (150–5,000)"+cite(["s4","s25"]),"Quote-only; third-party est. $150–$300 PEPM; margin-recovery repricing"+cite(["s4","s3"]),"HRScale on Workday: ~8,000 WSEs sold, 5,000+ live"+cite(["s2"]),"Internal AI in payroll/HR; client AI agents and conversational reporting planned"+cite(["s3"])],
+ ["ADP TotalSource",false,"~775,000 avg WSEs (Q4 FY26)"+cite(["s5"]),'<span class="up">+2%</span>; FY27 guide ~2%'+cite(["s5"]),"Sweet spot 50–500 employees; multi-state employers"+cite(["s7"]),"Custom; ~$130–$200 PEPM under 50 employees (advisor est.)"+cite(["s7"]),"Business.com ‘best for benefits administration’ (May 2026); PEO margin −100 bps"+cite(["s6","s5"]),"MyLife Advisors for employee support; AI in ADP platform"+cite(["s26"])],
+ ["TriNet",false,"~298,000 avg WSEs (Q2 2026)"+cite(["s8"]),'<span class="down">−11% YoY</span>, flat sequentially; attrition −36%'+cite(["s8","s9"]),"SMBs, with industry-specific offerings; broker-led growth"+cite(["s9"]),"Repricing done; health-fee pricing attrition down 58%"+cite(["s10"]),"Raised FY26 adj. EPS guide to $4.50–$5.10; Ascend sales program"+cite(["s9","s10"]),"TriNet Assistant handles ~50% of customer chats; Cocoon leave mgmt"+cite(["s9"])],
+ ["Paychex PEO",false,"2.6M HR outsourcing WSEs, ASO + PEO combined (FY26)"+cite(["s12"]),'<span class="up">PEO & Insurance rev +12%</span> (Q1 FY27)'+cite(["s11"]),"Small business via Flex; upmarket via Paycor"+cite(["s12"]),"Custom; not published","Paycor integration complete; FY26 revenue $6.5B"+cite(["s13"]),"WISE Hire agentic recruiting; WISE Workforce Intelligence Engine"+cite(["s11","s13"])],
+ ["Justworks",false,"Private; not disclosed","Private","Small US teams; payroll, PEO and EOR on one platform"+cite(["s16"]),"Published: Basic $79; Plus $124 for new business from Jun 1, 2026 (was $109)"+cite(["s14","s15"]),"Broker pay moved to % of admin revenue (Jun 2026)"+cite(["s14"]),"—"],
+ ["Rippling",false,"Private; ~$1B annualized revenue reported"+cite(["s24"]),"$16.8B valuation at May 2025 Series G"+cite(["s19"]),"Roughly 25–300 employees for PEO; tech-forward, distributed teams"+cite(["s21"]),"PEO custom-quoted, layered on core platform fee"+cite(["s22","s23"]),"Rippling Data Cloud (Jun 2026)"+cite(["s18"]),"Rippling AI across HR, IT and spend"+cite(["s18"])]
+];
+document.getElementById("matrix").innerHTML=`<thead><tr><th>Company</th><th>Scale</th><th>Momentum</th><th>Where it sells</th><th>Pricing signal</th><th>Recent move</th><th>AI move</th></tr></thead><tbody>${M.map(r=>`<tr class="${r[1]?"self":""}"><td class="co">${r[0]}</td>${r.slice(2).map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+
+/* ---------- circuit breaker ---------- */
+const ST={pass:"Verified",stale:"Stale → corrected",hold:"Held: conflict",fail:"Failed"};
+const B={
+ rippling:{label:"Rippling",claims:[
+  {txt:"Rippling is now valued at $25 billion and is heading for an IPO in 2026.",st:"fail",chk:"Authority + conflict",f:"Only an IPO-tracker site shows $25B. The latest priced round is $16.8B (May 2025), and no IPO date has been announced.",src:["s20","s19"],fix:null},
+  {txt:"It reportedly reached about $1 billion in annualized revenue this year.",st:"pass",chk:"Source match",f:"Reported by secondary sources; Rippling is private and unaudited, so keep the word “reported”.",src:["s24"]},
+  {txt:"In June 2026 it launched Rippling Data Cloud.",st:"pass",chk:"Source match",f:"Matches the reference entry for June 2026.",src:["s18"]},
+  {txt:"Rippling PEO is sold at a flat $35 per employee per month.",st:"fail",chk:"Contradiction",f:"Pricing sources agree the PEO module is custom-quoted. $35 is one advisor’s estimate of the core platform fee, not the PEO price.",src:["s22","s23"]},
+  {txt:"Rippling holds IRS CPEO certification.",st:"hold",chk:"Conflict",f:"One advisor says Rippling is not on the IRS CPEO list. Needs a check against the IRS public CPEO list before use.",src:["s21"]},
+  {txt:"Its bundled model lets it undercut legacy PEOs by 40% on benefits costs.",st:"fail",chk:"Unsourced",f:"No source found for a 40% benefits-cost advantage. Likely generated.",src:[]}
+ ]},
+ justworks:{label:"Justworks",claims:[
+  {txt:"Justworks publishes its PEO pricing openly on its website.",st:"pass",chk:"Source match",f:"Confirmed by several pricing reviews.",src:["s16","s15"]},
+  {txt:"PEO Plus costs $109 per employee per month.",st:"stale",chk:"Freshness",f:"Correct until May 31, 2026. For new business since June 1, 2026, PEO Plus is $124 PEPM.",src:["s14","s15"],fix:"PEO Plus costs $124 PEPM for new business (up from $109 on June 1, 2026)."},
+  {txt:"PEO Basic starts at $59 per employee per month.",st:"hold",chk:"Conflict",f:"Sources disagree: an April review lists $59, newer ones list $79. Confirm with the current pricing page.",src:["s17","s16"]},
+  {txt:"In June 2026 it moved brokers to percentage-based compensation.",st:"pass",chk:"Source match",f:"Stated in a broker notice dated May 11, 2026.",src:["s14"]},
+  {txt:"Its employer-of-record service runs $599 per employee per month.",st:"pass",chk:"Source match",f:"Matches current pricing reviews.",src:["s16"]},
+  {txt:"Justworks has been losing mid-market clients to Insperity HRScale.",st:"fail",chk:"Unsourced",f:"No source supports this, and Justworks mainly serves small teams, not HRScale’s 150–5,000 range.",src:[]}
+ ]},
+ trinet:{label:"TriNet",claims:[
+  {txt:"TriNet’s worksite employees fell about 11% year over year to roughly 298,000 in Q2 2026.",st:"pass",chk:"Source match",f:"Matches the Q2 8-K.",src:["s8"]},
+  {txt:"Customer attrition improved 36%.",st:"pass",chk:"Source match",f:"Stated on the Q2 call.",src:["s9"]},
+  {txt:"The TriNet Assistant now handles half of customer-initiated chats.",st:"pass",chk:"Source match",f:"Stated by the CEO on the Q2 call.",src:["s9"]},
+  {txt:"TriNet cut its health fees by 58% to win back clients.",st:"fail",chk:"Misread source",f:"The 58% figure is the drop in attrition caused by health-fee pricing, not a fee cut.",src:["s10"]},
+  {txt:"It raised full-year adjusted EPS guidance to $4.50–$5.10.",st:"pass",chk:"Source match",f:"Matches the Q2 release coverage.",src:["s9"]},
+  {txt:"TriNet is on track to overtake ADP as the largest US PEO.",st:"fail",chk:"Contradiction",f:"ADP averaged ~775,000 WSEs versus TriNet’s ~298,000, and TriNet is shrinking.",src:["s5","s8"]}
+ ]}
+};
+let cur="rippling",thr=15,running=false;
+const selEl=document.getElementById("briefSel");
+selEl.innerHTML=Object.keys(B).map(k=>`<button data-b="${k}" aria-pressed="${k===cur}">${B[k].label} brief</button>`).join("");
+selEl.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||running)return;cur=b.dataset.b;selEl.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderBrief(true)});
+const thrEl=document.getElementById("thr");
+thrEl.addEventListener("input",()=>{thr=+thrEl.value;document.getElementById("thrv").textContent=thr+"%";if(!running)renderResult()});
+document.getElementById("run").addEventListener("click",()=>renderBrief(true));
+const tagTxt={pass:"✓",stale:"↻",hold:"?",fail:"✕"};
+function renderBrief(animate){
+  const cl=B[cur].claims;
+  document.getElementById("brief").innerHTML=cl.map((c,i)=>`<span class="cl pending" id="cl${i}" tabindex="0" title="">${esc(c.txt)}</span>`).join(" ");
+  if(!animate||reduce){cl.forEach((c,i)=>mark(i));renderResult();return}
+  running=true;document.getElementById("run").disabled=true;
+  setIdle();
+  let i=0;const step=()=>{if(i>0)mark(i-1);if(i<cl.length){document.getElementById("cl"+i).className="cl checking";i++;setTimeout(step,520)}else{running=false;document.getElementById("run").disabled=false;renderResult()}};
+  step();
+}
+function mark(i){const c=B[cur].claims[i],el=document.getElementById("cl"+i);el.className="cl "+c.st;el.title=ST[c.st]+": "+c.f;
+  el.setAttribute("aria-label",c.txt+" "+ST[c.st]+". "+c.f);
+  el.insertAdjacentHTML("beforeend",`<span class="tag" aria-hidden="true">${tagTxt[c.st]}</span>`)}
+function setIdle(){const s=document.getElementById("state");s.className="state idle";s.innerHTML=`${breakerSvg("idle")}<div>Checking claims…<small>Matching each claim to a dated source</small></div>`;
+  ["mtbh","frate"].forEach(id=>document.getElementById(id).textContent="–");document.getElementById("counts").innerHTML="&nbsp;";
+  document.getElementById("ledger").innerHTML="";document.getElementById("bc").innerHTML="";document.getElementById("removed").textContent="";document.getElementById("draftTag").textContent="AI draft · checking"}
+function breakerSvg(s){const up=s==="tripped";return `<svg class="breaker" viewBox="0 0 44 28" aria-hidden="true"><rect x="1" y="1" width="42" height="26" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="14" r="3" fill="currentColor"/><circle cx="34" cy="14" r="3" fill="currentColor"/><line x1="10" y1="14" x2="${up?30:34}" y2="${up?5:14}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`}
+function renderResult(){
+  const cl=B[cur].claims,n=cl.length,fails=cl.filter(c=>c.st==="fail").length,holds=cl.filter(c=>c.st==="hold").length,stales=cl.filter(c=>c.st==="stale").length,pass=cl.filter(c=>c.st==="pass").length;
+  const rate=Math.round(fails/n*100),tripped=rate>thr;
+  document.getElementById("mtbh").textContent=fails?(n/fails).toFixed(1):"∞";
+  document.getElementById("frate").textContent=rate+"%";
+  document.getElementById("counts").textContent=`${pass} verified · ${stales} corrected · ${holds} held · ${fails} failed`;
+  const s=document.getElementById("state");
+  s.className="state "+(tripped?"tripped":"closed");
+  s.innerHTML=tripped?`${breakerSvg("tripped")}<div>Breaker tripped: draft held from battlecard<small>${rate}% of claims failed, above the ${thr}% threshold. Only cleared claims are released below.</small></div>`
+    :`${breakerSvg("closed")}<div>Breaker closed: draft cleared with edits<small>${rate}% failure rate is within the ${thr}% threshold. Failed claims are still removed.</small></div>`;
+  document.getElementById("draftTag").textContent=tripped?"AI draft · held":"AI draft · cleared with edits";
+  document.getElementById("ledger").innerHTML=`<thead><tr><th>Claim</th><th>Check</th><th>Result</th><th>Finding</th><th>Sources</th></tr></thead><tbody>${cl.map(c=>`<tr><td>${esc(c.txt)}</td><td>${c.chk}</td><td><span class="status ${c.st}">${ST[c.st]}</span></td><td>${esc(c.f)}</td><td>${c.src.length?c.src.map(id=>`${cite([id])} <span class="tier">${SRC[id].tier}</span>`).join("<br>"):'<span class="status fail">None</span>'}</td></tr>`).join("")}</tbody>`;
+  const out=cl.filter(c=>c.st!=="fail");
+  document.getElementById("bc").innerHTML=out.map(c=>`<li><span class="status ${c.st}">${c.st==="pass"?"Use":c.st==="stale"?"Updated":"Verify first"}</span><span>${esc(c.fix||c.txt)}${cite(c.src)}</span></li>`).join("");
+  document.getElementById("removed").textContent=fails?`${fails} claim${fails>1?"s":""} removed before reaching the battlecard: ${cl.filter(c=>c.st==="fail").map(c=>"“"+c.txt+"”").join("  ")}`:"";
+}
+renderBrief(false);
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+function show(id){tabs.forEach(t=>{const on=t.id===id;t.setAttribute("aria-selected",on);document.getElementById(t.getAttribute("aria-controls")).hidden=!on});
+  try{localStorage.setItem("peo-tab",id)}catch(e){}}
+tabs.forEach(t=>t.addEventListener("click",()=>{show(t.id);if(t.id==="tab-cb"&&!running)renderBrief(true)}));
+const hashMap={graph:"tab-graph",matrix:"tab-matrix",breaker:"tab-cb"};
+let start=hashMap[(location.hash||"").slice(1)];
+if(!start){try{start=localStorage.getItem("peo-tab")}catch(e){}}
+if(start&&document.getElementById(start))show(start);
+})();
+</script>

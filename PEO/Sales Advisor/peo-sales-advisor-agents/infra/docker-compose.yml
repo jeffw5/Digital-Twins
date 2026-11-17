@@ -1,0 +1,31 @@
+services:
+  keel-gateway:
+    build: ../keel-gateway
+    ports: ["8080:8080"]
+    environment:
+      KEEL_HOST: 0.0.0.0
+      KEEL_PORT: "8080"
+      KEEL_REGISTRY: /app/registry/agent-registry.json
+      KEEL_AUTH: entra
+      KEEL_ENTRA_TENANT_ID: ${KEEL_ENTRA_TENANT_ID}
+      KEEL_ENTRA_AUDIENCE: ${KEEL_ENTRA_AUDIENCE}
+      KEEL_AUDIT_KEY: ${KEEL_AUDIT_KEY}
+      KEEL_AGENTS_HOST_URL: http://keel-agents:8090
+      KEEL_EVENT_SINK_URL: http://keel-agents:8090/events
+      KEEL_SERVICE_TOKEN: ${KEEL_SERVICE_TOKEN}
+      KEEL_ADMIN_TOKEN: ${KEEL_ADMIN_TOKEN}
+    volumes: ["../registry:/app/registry:ro"]
+  keel-agents:
+    build: ../agents
+    ports: ["8090:8090"]
+    environment:
+      KEEL_AGENTS_HOST: 0.0.0.0
+      KEEL_AGENTS_PORT: "8090"
+      KEEL_REGISTRY: /app/registry/agent-registry.json
+      KEEL_GATEWAY_URL: http://keel-gateway:8080
+      KEEL_GATEWAY_TOKEN: ${KEEL_SERVICE_TOKEN}
+      KEEL_HOST_TOKEN: ${KEEL_SERVICE_TOKEN}
+      FOUNDRY_PROJECT_ENDPOINT: ${FOUNDRY_PROJECT_ENDPOINT}
+      FOUNDRY_MODEL: ${FOUNDRY_MODEL}
+      FOUNDRY_REASONING_MODEL: ${FOUNDRY_REASONING_MODEL}
+    volumes: ["../registry:/app/registry:ro"]

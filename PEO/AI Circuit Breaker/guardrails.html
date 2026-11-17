@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guardrails & audit · Sales Advisor Circuit Breaker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="cb.css"></head>
+<body>
+<div id="topbar" data-page="guardrails" data-controls="1"></div>
+<main class="gut"><div class="wrap">
+<header><div class="eyebrow">Deterministic rules · drift · provenance</div><h1>Guardrails & audit</h1><p class="lede">The rules checked before any score, the drift accumulated on each agent by dimension, and the full provenance record of trips, drops and human dispositions.</p></header>
+<div class="two">
+  <section class="card sec" aria-labelledby="h-g">
+    <div class="sec-h"><div><h2 id="h-g">Guardrails</h2><p>Impossible or prohibited states. A breach halts the protected decision under every persona.</p></div></div>
+    <div class="glist" id="glist"></div>
+  </section>
+  <section class="card sec" aria-labelledby="h-dr">
+    <div class="sec-h"><div><h2 id="h-dr">Drift register</h2><p>Accumulated context drift (0–1) and structural or behavioral additions per agent. Darker cells are further from the reference standard.</p></div></div>
+    <div class="scroll"><table class="dm" id="drift"></table></div>
+  </section>
+</div>
+<section class="card sec" aria-labelledby="h-log">
+  <div class="sec-h"><div><h2 id="h-log">Provenance log</h2><p>PROV-O style record, newest first.</p></div></div>
+  <div class="log" id="log" data-limit="200"></div>
+</section>
+</div></main>
+<script src="cb-engine.js"></script><script src="cb-ui.js"></script>
+</body></html>

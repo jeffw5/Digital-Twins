@@ -1,0 +1,71 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.8/schema.json",
+    "version": "v1.8",
+    "name": "PEO Sales Advisor${{APP_NAME_SUFFIX}}",
+    "description": "Answers Client Admin and HR Specialist decision questions with cited briefs from the governed PEO Sales Advisor, the options the rules allow and the decision each step leads to.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "title": "Client Admin · Discover",
+            "text": "Under co-employment, who is the employer of record for payroll taxes, benefits and workers’ comp?"
+        },
+        {
+            "title": "Client Admin · Qualify",
+            "text": "Are we eligible given our headcount, industry and states?"
+        },
+        {
+            "title": "Client Admin · Evaluate",
+            "text": "What is our all-in cost today versus the PEO bundle, line by line (admin fee, workers’ comp, SUTA, benefits)?"
+        },
+        {
+            "title": "Client Admin · Propose",
+            "text": "For each of our states, which employer responsibilities does the PEO carry, which do we keep, and which are shared?"
+        },
+        {
+            "title": "Client Admin · Decide",
+            "text": "What is our total first-year cost and the saving or added cost versus today, with a confidence range?"
+        },
+        {
+            "title": "Client Admin · Onboard",
+            "text": "Which payroll date is the safest cut-over, given quarter-end filings and benefit effective dates?"
+        },
+        {
+            "title": "HR Specialist · Discover",
+            "text": "Where do we carry compliance risk today, by topic and state?"
+        },
+        {
+            "title": "HR Specialist · Qualify",
+            "text": "Which states and localities do our employees work in, including remote staff, and which jurisdiction governs each?"
+        },
+        {
+            "title": "HR Specialist · Evaluate",
+            "text": "How do the PEO plans compare with ours on premiums, deductibles and employee contributions?"
+        },
+        {
+            "title": "HR Specialist · Propose",
+            "text": "Where do our policies conflict with PEO policy or state law?"
+        },
+        {
+            "title": "HR Specialist · Decide",
+            "text": "What risk does the move remove, in penalties avoided or exposure reduced?"
+        },
+        {
+            "title": "HR Specialist · Onboard",
+            "text": "Which enrollment window guarantees no coverage gap, given carrier file lead times?"
+        }
+    ],
+    "actions": [
+        {
+            "id": "keelGateway",
+            "file": "ai-plugin.json"
+        }
+    ],
+    "behavior_overrides": {
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "AI-assembled from governed sources. Check citations; a BPA can review any answer. Not legal, tax or insurance advice."
+    }
+}

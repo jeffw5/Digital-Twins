@@ -1,0 +1,6284 @@
+{
+ "meta": {
+  "name": "PEO Sales Advisor agents",
+  "version": "1.0.0",
+  "generated": "2026-10-06",
+  "gateway": "Keel Gateway (MCP)",
+  "eventNamespace": "com.insperity.keel."
+ },
+ "signals": [
+  {
+   "id": "IS-1",
+   "name": "Grounding",
+   "test": "Every claim or label traces to a source span or record",
+   "source": "GOV-014"
+  },
+  {
+   "id": "IS-2",
+   "name": "Option completeness",
+   "test": "Every option the rules allow was evaluated; none dropped silently",
+   "source": "EXT-011, GOV-015"
+  },
+  {
+   "id": "IS-3",
+   "name": "Replay consistency",
+   "test": "Same inputs and versions give the same output and ranking",
+   "source": "EXT-016"
+  },
+  {
+   "id": "IS-4",
+   "name": "Rule conformance",
+   "test": "Output passes SSOT rules and SHACL shapes",
+   "source": "GOV-003, EXT-010"
+  },
+  {
+   "id": "IS-5",
+   "name": "Entitlement & privacy",
+   "test": "No restricted or personal data reaches a persona or another tenant",
+   "source": "EXT-006, EXT-003"
+  },
+  {
+   "id": "IS-6",
+   "name": "Calibration",
+   "test": "Stated confidence matches observed accuracy on the golden set",
+   "source": "EXT-002"
+  },
+  {
+   "id": "IS-7",
+   "name": "Baseline drift",
+   "test": "Answers to the golden decision questions stay equivalent to baseline",
+   "source": "QbD baseline"
+  },
+  {
+   "id": "IS-8",
+   "name": "Contradiction",
+   "test": "Output contradicts no Released knowledge and no other agent’s output",
+   "source": "GOV-018"
+  },
+  {
+   "id": "IS-9",
+   "name": "Freshness",
+   "test": "No expired or Candidate item used without its label",
+   "source": "EXT-005"
+  }
+ ],
+ "tiers": {
+  "T1": {
+   "name": "Tier 1 · persona-facing or access-controlling",
+   "floor": 2000,
+   "open": 500
+  },
+  "T2": {
+   "name": "Tier 2 · shapes the knowledge graph or measures",
+   "floor": 500,
+   "open": 100
+  },
+  "T3": {
+   "name": "Tier 3 · monitoring and analytics",
+   "floor": 200,
+   "open": 50
+  }
+ },
+ "services": [
+  {
+   "id": "MS-01",
+   "name": "Policy Decision Service (PDP)",
+   "slug": "policy_decision_service",
+   "purpose": "Answers “is this permitted?” for every agent and service",
+   "rules": [
+    "GOD-001",
+    "GOD-002",
+    "GOD-003",
+    "GOD-004",
+    "GOD-005",
+    "GOD-009",
+    "GOD-010",
+    "GOV-009",
+    "GOV-012",
+    "DEC-001",
+    "DEC-012",
+    "SAL-005"
+   ],
+   "constraints": [
+    "CON-018",
+    "CON-019",
+    "CON-028",
+    "CON-029",
+    "CON-032",
+    "CON-051"
+   ],
+   "calcs": [
+    "CALC-042",
+    "CALC-043"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_01_URL",
+   "operations": [
+    {
+     "name": "pdp_evaluate",
+     "description": "Ask the policy decision service whether an action is permitted, with the deciding rule versions and explanation.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "action",
+       "type": "string",
+       "description": "Action being requested, e.g. read, serve_to_persona, publish, send",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "resource_uri",
+       "type": "string",
+       "description": "URI of the resource or record",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "context",
+       "type": "object",
+       "description": "Context bundle values: who, persona, tenant, jurisdiction, purpose",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "pdp_explain",
+     "description": "Explain a past policy decision: which rules and versions decided it and why.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "decision_id",
+       "type": "string",
+       "description": "Policy decision ID returned by pdp_evaluate",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-02",
+   "name": "Policy Enforcement Gateway (PEPs)",
+   "slug": "policy_enforcement_gateway",
+   "purpose": "Applies PDP answers at every API and UI boundary",
+   "rules": [
+    "GOV-012",
+    "GOD-001",
+    "GOD-009",
+    "EXT-006",
+    "TEC-007",
+    "TEC-013",
+    "SAL-001"
+   ],
+   "constraints": [
+    "CON-018",
+    "CON-019",
+    "CON-028",
+    "CON-036"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_02_URL",
+   "operations": [
+    {
+     "name": "pep_check_response",
+     "description": "Check a draft response against the viewer's entitlements and return allow, redact or deny per part.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "persona",
+       "type": "string",
+       "description": "Persona role reading the response",
+       "required": true,
+       "enum": [
+        "client_admin",
+        "hr_specialist",
+        "bpa",
+        "steward"
+       ]
+      },
+      {
+       "name": "parts",
+       "type": "array",
+       "description": "Response parts, each {id, label, tenant}",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-03",
+   "name": "SSOT Register & Rule Compiler",
+   "slug": "ssot_register_and_rule_compiler",
+   "purpose": "Holds rules and compiles them to Rego, JSON Schema and dbt",
+   "rules": [
+    "GOV-001",
+    "GOV-003",
+    "GOV-017",
+    "GOV-019",
+    "GOV-020",
+    "GOD-002",
+    "GOD-006",
+    "GOD-007",
+    "CTL-013",
+    "EVT-014"
+   ],
+   "constraints": [
+    "CON-015",
+    "CON-016",
+    "CON-017"
+   ],
+   "calcs": [
+    "CALC-041"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_03_URL",
+   "operations": [
+    {
+     "name": "ssot_get_rule",
+     "description": "Get a Released SSOT rule, constraint or calculation by ID, optionally as of a date.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "id",
+       "type": "string",
+       "description": "Rule, constraint or calc ID, e.g. PAY-002, CON-019, CALC-003",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "as_of",
+       "type": "string",
+       "description": "ISO date; defaults to today",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "ssot_search_rules",
+     "description": "Search Released SSOT rules by text, domain or jurisdiction.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "query",
+       "type": "string",
+       "description": "Search text",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "domain",
+       "type": "string",
+       "description": "Register domain filter",
+       "required": false,
+       "enum": null
+      },
+      {
+       "name": "jurisdiction",
+       "type": "string",
+       "description": "Jurisdiction filter, e.g. US-CA",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "ssot_propose_change",
+     "description": "Open a Draft change request on a rule, constraint or calc in the SSOT Editor. Never releases anything.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "target_id",
+       "type": "string",
+       "description": "ID of the rule, constraint or calc",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "kgcl",
+       "type": "string",
+       "description": "KGCL change statements",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "reason",
+       "type": "string",
+       "description": "Why the change is needed",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-04",
+   "name": "Identity & URI Registry",
+   "slug": "identity_and_uri_registry",
+   "purpose": "Canonical identity for content, prospects and jurisdictions",
+   "rules": [
+    "GOV-007",
+    "EXT-001",
+    "GOD-010"
+   ],
+   "constraints": [
+    "CON-001"
+   ],
+   "calcs": [
+    "CALC-036"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_04_URL",
+   "operations": [
+    {
+     "name": "identity_resolve",
+     "description": "Resolve a source ID, URL or name to its canonical URI.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "key",
+       "type": "string",
+       "description": "Source ID, URL or name",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "description": "Entity kind",
+       "required": true,
+       "enum": [
+        "content",
+        "prospect",
+        "jurisdiction",
+        "concept"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "identity_mint",
+     "description": "Mint a provisional canonical URI for a new entity, with provenance.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "kind",
+       "type": "string",
+       "description": "Entity kind",
+       "required": true,
+       "enum": [
+        "content",
+        "prospect",
+        "jurisdiction",
+        "concept"
+       ]
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "description": "Human-readable label",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "source",
+       "type": "string",
+       "description": "Source system and ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-05",
+   "name": "Virtual Graph / Federated Query Service",
+   "slug": "virtual_graph_federated_query_service",
+   "purpose": "Queries CRM, quoting and the content graph in place",
+   "rules": [
+    "EXT-011",
+    "GOV-024",
+    "TEC-001"
+   ],
+   "constraints": [
+    "CON-018",
+    "CON-011"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_05_URL",
+   "operations": [
+    {
+     "name": "graph_query",
+     "description": "Run a pre-approved federated query template within a context bundle (CRM, quoting, content graph, SSOT).",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "context_bundle_id",
+       "type": "string",
+       "description": "RCB ID from the Intent & RCB Agent",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "template_id",
+       "type": "string",
+       "description": "Approved query template ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "params",
+       "type": "object",
+       "description": "Template parameters",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "graph_facets",
+     "description": "Return ranked facets (stage, job step, jurisdiction, product) for a query result.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "context_bundle_id",
+       "type": "string",
+       "description": "RCB ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "result_id",
+       "type": "string",
+       "description": "Query result ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-06",
+   "name": "Content Graph Store & SHACL Validation",
+   "slug": "content_graph_store_and_shacl_validation",
+   "purpose": "Stores RDF and validates every write",
+   "rules": [
+    "EXT-010",
+    "GOV-017",
+    "GOV-018"
+   ],
+   "constraints": [
+    "CON-001",
+    "CON-002",
+    "CON-003",
+    "CON-005",
+    "CON-006",
+    "CON-007",
+    "CON-012",
+    "CON-013",
+    "CON-014"
+   ],
+   "calcs": [
+    "CALC-032"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_06_URL",
+   "operations": [
+    {
+     "name": "content_get",
+     "description": "Get a governed content item or claim by URI, with version, labels, validity and source spans.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "uri",
+       "type": "string",
+       "description": "Canonical URI",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "content_validate",
+     "description": "Validate candidate JSON-LD triples against the isp-cnt SHACL shapes without writing.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "jsonld",
+       "type": "object",
+       "description": "Candidate triples as JSON-LD",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "content_publish",
+     "description": "Publish validated triples to the content graph with a KGCL record. Rejected if any shape fails.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "jsonld",
+       "type": "object",
+       "description": "Validated triples as JSON-LD",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "kgcl",
+       "type": "string",
+       "description": "KGCL record for the change",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-07",
+   "name": "Event Broker & Schema Registry",
+   "slug": "event_broker_and_schema_registry",
+   "purpose": "Carries every event and enforces its contract",
+   "rules": [
+    "EVT-001",
+    "EVT-002",
+    "EVT-004",
+    "EVT-007",
+    "EVT-009",
+    "EVT-010",
+    "EVT-011"
+   ],
+   "constraints": [
+    "CON-018",
+    "CON-021",
+    "CON-038",
+    "CON-039",
+    "CON-040",
+    "CON-043"
+   ],
+   "calcs": [
+    "CALC-044"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_07_URL",
+   "operations": [
+    {
+     "name": "events_publish",
+     "description": "Publish a CloudEvent on the broker after schema validation.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "type",
+       "type": "string",
+       "description": "CloudEvents type, e.g. com.insperity.advisor.brief.released",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "subject",
+       "type": "string",
+       "description": "Event subject URI",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "description": "Event payload",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "events_schema",
+     "description": "Get the registered schema for an event type.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "type",
+       "type": "string",
+       "description": "CloudEvents type",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-08",
+   "name": "Scheduler & Deadline Service",
+   "slug": "scheduler_and_deadline_service",
+   "purpose": "Turns deadline rules into timed events",
+   "rules": [
+    "EVT-008",
+    "EVT-013",
+    "PAY-021",
+    "BEN-004",
+    "BEN-019"
+   ],
+   "constraints": [
+    "CON-042"
+   ],
+   "calcs": [
+    "CALC-045"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_08_URL",
+   "operations": [
+    {
+     "name": "schedule_deadline",
+     "description": "Schedule a deadline event from a deadline rule.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "rule_id",
+       "type": "string",
+       "description": "Deadline rule ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "subject",
+       "type": "string",
+       "description": "Subject URI",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "due",
+       "type": "string",
+       "description": "ISO due date-time",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "deadlines_list",
+     "description": "List open deadlines for a subject.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "subject",
+       "type": "string",
+       "description": "Subject URI",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-09",
+   "name": "Saga Orchestrator",
+   "slug": "saga_orchestrator",
+   "purpose": "Runs multi-step processes with compensation",
+   "rules": [
+    "EVT-003",
+    "EVT-005",
+    "EVT-006"
+   ],
+   "constraints": [
+    "CON-041"
+   ],
+   "calcs": [
+    "CALC-044"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_09_URL",
+   "operations": [
+    {
+     "name": "saga_start",
+     "description": "Start a multi-step saga with compensation.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "saga_type",
+       "type": "string",
+       "description": "Saga type, e.g. incremental_refresh",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "input",
+       "type": "object",
+       "description": "Saga input",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "saga_status",
+     "description": "Get the status of a saga.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "saga_id",
+       "type": "string",
+       "description": "Saga ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-10",
+   "name": "Decision Record Service",
+   "slug": "decision_record_service",
+   "purpose": "Stores immutable isp-dec decisions",
+   "rules": [
+    "DEC-006",
+    "DEC-008",
+    "EXT-014",
+    "MET-014",
+    "GOV-022"
+   ],
+   "constraints": [
+    "CON-025"
+   ],
+   "calcs": [
+    "CALC-021"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_10_URL",
+   "operations": [
+    {
+     "name": "decision_record",
+     "description": "Record an immutable decision with options considered, choice, rationale and decider.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "brief_id",
+       "type": "string",
+       "description": "Brief the decision was made from",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "option_id",
+       "type": "string",
+       "description": "Chosen option ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "rationale",
+       "type": "string",
+       "description": "Why this option",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "decided_by",
+       "type": "string",
+       "description": "Person who decided (Entra object ID)",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "decision_get",
+     "description": "Get a recorded decision with its bound outcomes.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "decision_id",
+       "type": "string",
+       "description": "Decision ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-11",
+   "name": "Simplex Action Gate",
+   "slug": "simplex_action_gate",
+   "purpose": "Intercepts binding and irreversible actions",
+   "rules": [
+    "GOV-013",
+    "GOV-015",
+    "GOV-016",
+    "DEC-004",
+    "DEC-007",
+    "PAY-028"
+   ],
+   "constraints": [
+    "CON-028"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_11_URL",
+   "operations": [
+    {
+     "name": "simplex_request_approval",
+     "description": "Ask a human to approve a binding or irreversible action. Returns a pending approval ID; nothing executes until approved.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "action",
+       "type": "string",
+       "description": "Action to approve",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "payload",
+       "type": "object",
+       "description": "Exact payload that would execute",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "rationale",
+       "type": "string",
+       "description": "Why the action is proposed",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "simplex_status",
+     "description": "Get the status of an approval request.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "approval_id",
+       "type": "string",
+       "description": "Approval ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-12",
+   "name": "Circuit Breaker & MTBH Service",
+   "slug": "circuit_breaker_and_mtbh_service",
+   "purpose": "Computes MTBH and breaker states for all agents",
+   "rules": [
+    "AIG-002",
+    "AIG-003",
+    "AIG-008",
+    "AIG-009",
+    "GOV-014",
+    "CTL-011"
+   ],
+   "constraints": [
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-027",
+    "CALC-028",
+    "CALC-029"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_12_URL",
+   "operations": [
+    {
+     "name": "breaker_state",
+     "description": "Get an agent's circuit-breaker state (CLOSED, HALF-OPEN, OPEN) and MTBH.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "agent_id",
+       "type": "string",
+       "description": "Agent ID, e.g. AG-21",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-13",
+   "name": "Probe Runner",
+   "slug": "probe_runner",
+   "purpose": "Runs the 48 decision questions nightly and on change",
+   "rules": [
+    "AIG-004",
+    "AIG-010",
+    "QBD-001",
+    "CTL-014"
+   ],
+   "constraints": [
+    "CON-048",
+    "CON-050"
+   ],
+   "calcs": [
+    "CALC-025",
+    "CALC-026"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_13_URL",
+   "operations": [
+    {
+     "name": "probes_results",
+     "description": "Get the latest decision-question probe results for a job step or agent.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "scope",
+       "type": "string",
+       "description": "Job step ID (e.g. CA-J1.2) or agent ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-14",
+   "name": "QbD Baseline Service",
+   "slug": "qbd_baseline_service",
+   "purpose": "Holds baselines, classifies changes and routes risk",
+   "rules": [
+    "QBD-001",
+    "QBD-002",
+    "QBD-003",
+    "QBD-004",
+    "QBD-005",
+    "GOD-008"
+   ],
+   "constraints": [
+    "CON-050"
+   ],
+   "calcs": [
+    "CALC-024",
+    "CALC-030"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_14_URL",
+   "operations": [
+    {
+     "name": "qbd_get_baseline",
+     "description": "Get the frozen QbD baseline for a decision question.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "question_id",
+       "type": "string",
+       "description": "Decision question ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "qbd_classify_change",
+     "description": "Classify a new answer against its baseline as benign, material or breaking, with the risk score.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "question_id",
+       "type": "string",
+       "description": "Decision question ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "answer_fingerprint",
+       "type": "string",
+       "description": "Fingerprint of the new answer",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "upstream_change_id",
+       "type": "string",
+       "description": "KGCL or content change that explains it",
+       "required": false,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-15",
+   "name": "Metrics Service (semantic layer)",
+   "slug": "metrics_service",
+   "purpose": "Computes and publishes analytics calcs",
+   "rules": [
+    "MET-001",
+    "MET-002",
+    "MET-003",
+    "MET-004",
+    "MET-005",
+    "MET-006",
+    "MET-007",
+    "MET-008",
+    "MET-009",
+    "MET-010",
+    "MET-011",
+    "MET-012",
+    "MET-013",
+    "EXT-015",
+    "QBD-004"
+   ],
+   "constraints": [
+    "CON-022"
+   ],
+   "calcs": [
+    "CALC-001",
+    "CALC-002",
+    "CALC-003",
+    "CALC-005",
+    "CALC-006",
+    "CALC-007",
+    "CALC-008",
+    "CALC-009",
+    "CALC-010",
+    "CALC-011",
+    "CALC-012",
+    "CALC-013",
+    "CALC-016",
+    "CALC-017",
+    "CALC-018",
+    "CALC-019",
+    "CALC-020",
+    "CALC-031",
+    "CALC-033",
+    "CALC-034",
+    "CALC-035",
+    "CALC-036",
+    "CALC-037",
+    "CALC-048",
+    "CALC-049",
+    "CALC-050"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_15_URL",
+   "operations": [
+    {
+     "name": "metrics_query",
+     "description": "Query a published calc at a grain. Cells under k = 5 are suppressed.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "calc_id",
+       "type": "string",
+       "description": "Calc ID, e.g. CALC-001",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "grain",
+       "type": "string",
+       "description": "Grain, e.g. persona x job step x week",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "filters",
+       "type": "object",
+       "description": "Filters",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "metrics_definition",
+     "description": "Get a calc definition: formula, inputs, grain, exclusions, unit and version.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "calc_id",
+       "type": "string",
+       "description": "Calc ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-16",
+   "name": "Audit Log & Evidence Store",
+   "slug": "audit_log_and_evidence_store",
+   "purpose": "Immutable logs, decision trails and control evidence",
+   "rules": [
+    "GOV-022",
+    "TEC-008",
+    "CTL-003",
+    "CTL-007",
+    "EVT-011"
+   ],
+   "constraints": [
+    "CON-024"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_16_URL",
+   "operations": [
+    {
+     "name": "evidence_get",
+     "description": "Get control evidence for a control and period.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "control_id",
+       "type": "string",
+       "description": "Control ID, e.g. A.5.15",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "period",
+       "type": "string",
+       "description": "Period, e.g. 2026-Q4",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-17",
+   "name": "Control Test Runner",
+   "slug": "control_test_runner",
+   "purpose": "Continuous control monitoring",
+   "rules": [
+    "CTL-001",
+    "CTL-002",
+    "CTL-004",
+    "CTL-009",
+    "CTL-012",
+    "TEC-016",
+    "TEC-017",
+    "TEC-018"
+   ],
+   "constraints": [
+    "CON-049"
+   ],
+   "calcs": [
+    "CALC-039",
+    "CALC-040"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_17_URL",
+   "operations": [
+    {
+     "name": "controls_status",
+     "description": "Get the latest automated test status for a control.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "control_id",
+       "type": "string",
+       "description": "Control ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-18",
+   "name": "Census Intake & Validation Service",
+   "slug": "census_intake_and_validation_service",
+   "purpose": "Receives and validates prospect census",
+   "rules": [
+    "SAL-009",
+    "CTL-015",
+    "PAY-026",
+    "PAY-027",
+    "EXT-003"
+   ],
+   "constraints": [
+    "CON-020",
+    "CON-024"
+   ],
+   "calcs": [
+    "CALC-004"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_18_URL",
+   "operations": [
+    {
+     "name": "census_validate",
+     "description": "Validate an uploaded prospect census against the census schema and rules; returns errors and warnings, stores nothing.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "census_file_id",
+       "type": "string",
+       "description": "Uploaded census file ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "census_status",
+     "description": "Get the status of a census intake.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "intake_id",
+       "type": "string",
+       "description": "Census intake ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-19",
+   "name": "Quoting Service Adapter",
+   "slug": "quoting_service_adapter",
+   "purpose": "Bridges the advisor and the quoting system",
+   "rules": [
+    "SAL-001",
+    "SAL-005",
+    "DEC-001",
+    "BEN-001",
+    "CMP-010",
+    "PAY-012"
+   ],
+   "constraints": [
+    "CON-029",
+    "CON-032",
+    "CON-036"
+   ],
+   "calcs": [
+    "CALC-003",
+    "CALC-005"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_19_URL",
+   "operations": [
+    {
+     "name": "quote_request",
+     "description": "Request an indicative (non-binding) quote for a prospect from a validated census.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "prospect_uri",
+       "type": "string",
+       "description": "Prospect URI",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "census_intake_id",
+       "type": "string",
+       "description": "Validated census intake ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "products",
+       "type": "array",
+       "description": "Products to price, e.g. [workforce_optimization, benefits]",
+       "required": true,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "quote_get",
+     "description": "Get a quote with its cost lines, assumptions and sources.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "quote_id",
+       "type": "string",
+       "description": "Quote ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-20",
+   "name": "Outreach & Consent Service",
+   "slug": "outreach_and_consent_service",
+   "purpose": "Email, text and call consent and opt-outs",
+   "rules": [
+    "SAL-004",
+    "TEC-010"
+   ],
+   "constraints": [],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_20_URL",
+   "operations": [
+    {
+     "name": "consent_check",
+     "description": "Check outreach consent for a contact and channel.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "contact_uri",
+       "type": "string",
+       "description": "Contact URI",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "channel",
+       "type": "string",
+       "description": "Channel",
+       "required": true,
+       "enum": [
+        "email",
+        "sms",
+        "call"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-21",
+   "name": "Proposal, Contract & E-Signature Service",
+   "slug": "proposal_contract_and_e_signature_service",
+   "purpose": "Proposals, client service agreements and signatures",
+   "rules": [
+    "SAL-006",
+    "SAL-007",
+    "SAL-008",
+    "DEC-004",
+    "PEO-006",
+    "PEO-007"
+   ],
+   "constraints": [
+    "CON-028",
+    "CON-037"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_21_URL",
+   "operations": [
+    {
+     "name": "proposal_draft",
+     "description": "Draft a proposal from a quote and brief for a licensed producer to review. Does not send anything.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "prospect_uri",
+       "type": "string",
+       "description": "Prospect URI",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "quote_id",
+       "type": "string",
+       "description": "Quote ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "brief_id",
+       "type": "string",
+       "description": "Brief ID",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "contract_send_for_signature",
+     "description": "Send a client service agreement for e-signature. Binding: always routed through the Simplex gate.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": true,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "proposal_id",
+       "type": "string",
+       "description": "Proposal ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "approval_id",
+       "type": "string",
+       "description": "Simplex approval ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-22",
+   "name": "Retention & Deletion Job",
+   "slug": "retention_and_deletion_job",
+   "purpose": "Deletes or de-identifies expired data",
+   "rules": [
+    "SAL-010",
+    "TEC-019",
+    "EVT-011"
+   ],
+   "constraints": [
+    "CON-023"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_22_URL",
+   "operations": [
+    {
+     "name": "retention_preview",
+     "description": "Preview which records a retention run would delete or de-identify.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "dataset",
+       "type": "string",
+       "description": "Dataset name",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-23",
+   "name": "Agent Runtime & Registry",
+   "slug": "agent_runtime_and_registry",
+   "purpose": "Starts agents, enforces tools and breaker states",
+   "rules": [
+    "AIG-001",
+    "AIG-005",
+    "AIG-006",
+    "AIG-007",
+    "AIG-011",
+    "CTL-006",
+    "CTL-010",
+    "CTL-014"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-047",
+    "CON-048",
+    "CON-049"
+   ],
+   "calcs": [],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_23_URL",
+   "operations": [
+    {
+     "name": "agent_status",
+     "description": "Get an agent's registration, version, autonomy mode and breaker state.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "agent_id",
+       "type": "string",
+       "description": "Agent ID",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "MS-24",
+   "name": "Analytics Publishing (BI and dashboards)",
+   "slug": "analytics_publishing",
+   "purpose": "Serves published calcs downstream",
+   "rules": [
+    "MET-005",
+    "MET-012",
+    "MET-013",
+    "MET-014"
+   ],
+   "constraints": [
+    "CON-022"
+   ],
+   "calcs": [
+    "CALC-046",
+    "CALC-047"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_24_URL",
+   "operations": [
+    {
+     "name": "analytics_catalog",
+     "description": "List published metrics with names, versions and owners.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": []
+    }
+   ]
+  },
+  {
+   "id": "MS-25",
+   "name": "Advisor Persona Experience (UI)",
+   "slug": "advisor_persona_experience",
+   "purpose": "Where Client Admins, HR Specialists and BPAs read briefs and decide",
+   "rules": [
+    "SAL-011",
+    "DEC-008",
+    "DEC-010",
+    "DEC-011",
+    "EXT-006"
+   ],
+   "constraints": [
+    "CON-019",
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-023"
+   ],
+   "owner": "Platform Engineering",
+   "baseUrlEnv": "KEEL_MS_25_URL",
+   "operations": [
+    {
+     "name": "advisor_ask",
+     "description": "Ask the Sales Advisor a persona question. Runs intent, query, extraction, assembly, entitlement and grounding, and returns a cited brief or a held result.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": true,
+     "params": [
+      {
+       "name": "persona",
+       "type": "string",
+       "description": "Persona the brief is for",
+       "required": true,
+       "enum": [
+        "client_admin",
+        "hr_specialist"
+       ]
+      },
+      {
+       "name": "question",
+       "type": "string",
+       "description": "The question in the persona's words",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "job_step",
+       "type": "string",
+       "description": "Job step ID if known, e.g. CA-J1.3",
+       "required": false,
+       "enum": null
+      },
+      {
+       "name": "prospect_uri",
+       "type": "string",
+       "description": "Prospect URI if the question is about a specific prospect",
+       "required": false,
+       "enum": null
+      }
+     ]
+    },
+    {
+     "name": "advisor_job_steps",
+     "description": "List a persona's jobs, job steps, desired outcomes and the decision each step leads to.",
+     "readOnly": true,
+     "destructive": false,
+     "idempotent": true,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "persona",
+       "type": "string",
+       "description": "Persona",
+       "required": true,
+       "enum": [
+        "client_admin",
+        "hr_specialist"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "advisor_record_decision",
+     "description": "Record the decision a person made from a brief, binding it to desired outcomes. Requires the person's explicit confirmation.",
+     "readOnly": false,
+     "destructive": false,
+     "idempotent": false,
+     "simplexGate": false,
+     "personaOutput": false,
+     "params": [
+      {
+       "name": "brief_id",
+       "type": "string",
+       "description": "Brief ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "option_id",
+       "type": "string",
+       "description": "Chosen option ID",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "rationale",
+       "type": "string",
+       "description": "Why",
+       "required": true,
+       "enum": null
+      },
+      {
+       "name": "confirmed_by_person",
+       "type": "boolean",
+       "description": "True only after the person confirmed the decision in chat",
+       "required": true,
+       "enum": null
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "agents": [
+  {
+   "id": "FD-01",
+   "name": "PEO Sales Advisor",
+   "slug": "peo_sales_advisor",
+   "family": "front",
+   "familyName": "Front door",
+   "component": "C6 · Persona experience in Microsoft 365 Copilot",
+   "decision": "Answer a persona's decision question with a cited brief and the options the rules allow",
+   "options": "Brief · held result with BPA hand-off · clarifying question",
+   "reads": "Persona question, job step, prospect",
+   "writes": "Cited brief, recorded decision (with confirmation)",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-2",
+    "IS-5",
+    "IS-7",
+    "IS-9"
+   ],
+   "hardTrip": [
+    "IS-5"
+   ],
+   "fallback": "Return cited passages only and hand off to the BPA",
+   "rules": [
+    "EXT-006",
+    "EXT-012",
+    "EXT-013",
+    "DEC-002",
+    "DEC-003",
+    "DEC-005",
+    "DEC-010",
+    "DEC-011",
+    "SAL-001",
+    "SAL-002",
+    "SAL-003",
+    "SAL-004",
+    "SAL-005",
+    "SAL-006",
+    "SAL-011",
+    "GOV-015"
+   ],
+   "constraints": [
+    "CON-019",
+    "CON-026",
+    "CON-027",
+    "CON-028",
+    "CON-030",
+    "CON-031",
+    "CON-036",
+    "CON-044",
+    "CON-045",
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-001",
+    "CALC-003",
+    "CALC-023"
+   ],
+   "services": [
+    "MS-25",
+    "MS-03",
+    "MS-15",
+    "MS-18",
+    "MS-19",
+    "MS-20",
+    "MS-21",
+    "MS-10"
+   ],
+   "tools": [
+    "advisor_ask",
+    "advisor_job_steps",
+    "ssot_get_rule",
+    "metrics_definition",
+    "census_validate",
+    "quote_request",
+    "quote_get",
+    "consent_check",
+    "proposal_draft",
+    "advisor_record_decision"
+   ],
+   "triggers": [],
+   "emits": [
+    "com.insperity.keel.advisor.question.asked",
+    "com.insperity.keel.decision.recorded"
+   ],
+   "surface": "declarative",
+   "personas": [
+    "client_admin",
+    "hr_specialist"
+   ],
+   "starters": [
+    {
+     "title": "Client Admin · Discover",
+     "text": "Under co-employment, who is the employer of record for payroll taxes, benefits and workers’ comp?"
+    },
+    {
+     "title": "Client Admin · Qualify",
+     "text": "Are we eligible given our headcount, industry and states?"
+    },
+    {
+     "title": "Client Admin · Evaluate",
+     "text": "What is our all-in cost today versus the PEO bundle, line by line (admin fee, workers’ comp, SUTA, benefits)?"
+    },
+    {
+     "title": "Client Admin · Propose",
+     "text": "For each of our states, which employer responsibilities does the PEO carry, which do we keep, and which are shared?"
+    },
+    {
+     "title": "Client Admin · Decide",
+     "text": "What is our total first-year cost and the saving or added cost versus today, with a confidence range?"
+    },
+    {
+     "title": "Client Admin · Onboard",
+     "text": "Which payroll date is the safest cut-over, given quarter-end filings and benefit effective dates?"
+    },
+    {
+     "title": "HR Specialist · Discover",
+     "text": "Where do we carry compliance risk today, by topic and state?"
+    },
+    {
+     "title": "HR Specialist · Qualify",
+     "text": "Which states and localities do our employees work in, including remote staff, and which jurisdiction governs each?"
+    },
+    {
+     "title": "HR Specialist · Evaluate",
+     "text": "How do the PEO plans compare with ours on premiums, deductibles and employee contributions?"
+    },
+    {
+     "title": "HR Specialist · Propose",
+     "text": "Where do our policies conflict with PEO policy or state law?"
+    },
+    {
+     "title": "HR Specialist · Decide",
+     "text": "What risk does the move remove, in penalties avoided or exposure reduced?"
+    },
+    {
+     "title": "HR Specialist · Onboard",
+     "text": "Which enrollment window guarantees no coverage gap, given carrier file lead times?"
+    }
+   ],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-01",
+   "name": "SharePoint Delta Agent",
+   "slug": "sharepoint_delta_agent",
+   "family": "ing",
+   "familyName": "Ingestion & identity",
+   "component": "C3 · Ingestion & identity",
+   "decision": "Which items changed and need reprocessing",
+   "options": "New · modified · moved · deleted · unchanged",
+   "reads": "Graph change notifications, delta tokens",
+   "writes": "Changed items + version history",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-3",
+    "IS-7",
+    "IS-9"
+   ],
+   "hardTrip": [],
+   "fallback": "Nightly full enumeration replaces deltas",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-001",
+    "GOV-007",
+    "EVT-012",
+    "EVT-005"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-001",
+    "CON-002"
+   ],
+   "calcs": [
+    "CALC-035"
+   ],
+   "services": [
+    "MS-04",
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "identity_resolve",
+    "identity_mint",
+    "content_get"
+   ],
+   "triggers": [
+    "com.microsoft.graph.driveitem.changed",
+    "com.insperity.keel.schedule.nightly"
+   ],
+   "emits": [
+    "com.insperity.keel.content.item.changed"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Content Operations Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-02",
+   "name": "Web Crawl Agent",
+   "slug": "web_crawl_agent",
+   "family": "ing",
+   "familyName": "Ingestion & identity",
+   "component": "C3 · Ingestion & identity",
+   "decision": "Fetch, skip or store a page and its changed blocks",
+   "options": "Fetch · skip (robots or licence) · store diff",
+   "reads": "Allow-listed URLs, robots.txt",
+   "writes": "Page snapshots and block diffs",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-3"
+   ],
+   "hardTrip": [
+    "IS-4"
+   ],
+   "fallback": "Freeze last good snapshot; mark stale",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-004",
+    "EXT-005",
+    "CTL-005",
+    "CTL-008"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-008",
+    "CON-009"
+   ],
+   "calcs": [
+    "CALC-035"
+   ],
+   "services": [
+    "MS-04",
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "identity_resolve",
+    "content_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.schedule.crawl"
+   ],
+   "emits": [
+    "com.insperity.keel.content.item.changed"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Content Operations Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-03",
+   "name": "Feed Listener Agent",
+   "slug": "feed_listener_agent",
+   "family": "ing",
+   "familyName": "Ingestion & identity",
+   "component": "C3 · Ingestion & identity",
+   "decision": "Accept, normalize or reject a feed item",
+   "options": "Accept · normalize · reject · hold",
+   "reads": "Regulatory and firmographic feeds",
+   "writes": "Normalized feed items",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-9"
+   ],
+   "hardTrip": [],
+   "fallback": "Queue items for a steward",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-005",
+    "EXT-008",
+    "CTL-005",
+    "CTL-008"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-009",
+    "CON-038"
+   ],
+   "calcs": [
+    "CALC-035"
+   ],
+   "services": [
+    "MS-04",
+    "MS-03",
+    "MS-07"
+   ],
+   "tools": [
+    "identity_resolve",
+    "ssot_search_rules"
+   ],
+   "triggers": [
+    "com.insperity.keel.feed.item.received"
+   ],
+   "emits": [
+    "com.insperity.keel.content.item.changed"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Content Operations Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-04",
+   "name": "Identity Resolver",
+   "slug": "identity_resolver",
+   "family": "ing",
+   "familyName": "Ingestion & identity",
+   "component": "C3 · Ingestion & identity",
+   "decision": "Match to an existing URI or mint a new one",
+   "options": "Match · mint · hold for steward",
+   "reads": "Item IDs, URLs, company names",
+   "writes": "Canonical URIs, prov links",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-3",
+    "IS-6",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Mint provisional URIs; hold all merges",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-001",
+    "GOV-007",
+    "GOD-010"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-001",
+    "CON-002"
+   ],
+   "calcs": [
+    "CALC-036"
+   ],
+   "services": [
+    "MS-04",
+    "MS-07"
+   ],
+   "tools": [
+    "identity_resolve",
+    "identity_mint"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.item.changed"
+   ],
+   "emits": [
+    "com.insperity.keel.identity.resolved"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Content Operations Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-05",
+   "name": "Format Extractor",
+   "slug": "format_extractor",
+   "family": "ing",
+   "familyName": "Ingestion & identity",
+   "component": "C3 · Ingestion & identity",
+   "decision": "How to segment text, tables and notes",
+   "options": "Segmentations and table structures",
+   "reads": "PPTX, DOCX, PDF, HTML, spreadsheets",
+   "writes": "Text, tables, slide notes with spans",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-1",
+    "IS-3"
+   ],
+   "hardTrip": [],
+   "fallback": "Raw text flagged “unstructured”",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-004",
+    "EXT-007",
+    "CTL-008"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-003",
+    "CON-008"
+   ],
+   "calcs": [
+    "CALC-036"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "content_validate"
+   ],
+   "triggers": [
+    "com.insperity.keel.identity.resolved"
+   ],
+   "emits": [
+    "com.insperity.keel.content.extracted"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Content Operations Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-06",
+   "name": "Content-Type Classifier",
+   "slug": "content_type_classifier",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Which content type an item is",
+   "options": "Content types above the confidence floor",
+   "reads": "Extracted text + layout",
+   "writes": "Content type with confidence",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Leave unclassified for steward review",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-002",
+    "CTL-008"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-004"
+   ],
+   "calcs": [
+    "CALC-033"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.extracted"
+   ],
+   "emits": [
+    "com.insperity.keel.content.classified"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-07",
+   "name": "Persona & Job-Step Tagger",
+   "slug": "persona_and_job_step_tagger",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Which personas and job steps an item serves",
+   "options": "Persona × job-step candidates",
+   "reads": "Content + isp-sal job map",
+   "writes": "servesPersona, supportsJobStep",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-2",
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Tags stay Candidate; item not served",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-002"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-004"
+   ],
+   "calcs": [
+    "CALC-033"
+   ],
+   "services": [
+    "MS-06",
+    "MS-25",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "advisor_job_steps"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.classified"
+   ],
+   "emits": [
+    "com.insperity.keel.content.tagged"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-08",
+   "name": "Claim Extractor",
+   "slug": "claim_extractor",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Which atomic claims a passage makes",
+   "options": "Candidate claims with spans",
+   "reads": "Tables and passages",
+   "writes": "Atomic claims with source span",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-3",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Serve cited passages, no claims",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-007",
+    "EXT-008"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-003",
+    "CON-012"
+   ],
+   "calcs": [
+    "CALC-037"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "content_validate"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.tagged"
+   ],
+   "emits": [
+    "com.insperity.keel.claims.extracted"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-09",
+   "name": "Jurisdiction & Validity Miner",
+   "slug": "jurisdiction_and_validity_miner",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Which jurisdictions and dates apply",
+   "options": "Jurisdictions from the registry; date candidates",
+   "reads": "Content + registry",
+   "writes": "Jurisdictions, valid-from, valid-until",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-4",
+    "IS-9"
+   ],
+   "hardTrip": [],
+   "fallback": "Item excluded from jurisdiction questions",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-005",
+    "GOD-010",
+    "GOV-007"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-005"
+   ],
+   "calcs": [
+    "CALC-035"
+   ],
+   "services": [
+    "MS-06",
+    "MS-04",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "identity_resolve"
+   ],
+   "triggers": [
+    "com.insperity.keel.claims.extracted"
+   ],
+   "emits": [
+    "com.insperity.keel.claims.scoped"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-10",
+   "name": "PII & Sensitivity Detector",
+   "slug": "pii_and_sensitivity_detector",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Whether an item holds PII and its label",
+   "options": "Labels · block · allow",
+   "reads": "All extracted text",
+   "writes": "PII findings, label recommendation",
+   "autonomy": "Act (block only)",
+   "tier": "T1",
+   "signals": [
+    "IS-5",
+    "IS-6"
+   ],
+   "hardTrip": [
+    "IS-5"
+   ],
+   "fallback": "Block the whole item (fail closed)",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-003",
+    "TEC-005",
+    "TEC-006",
+    "AIG-003"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-006",
+    "CON-007",
+    "CON-024"
+   ],
+   "calcs": [
+    "CALC-038"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.extracted"
+   ],
+   "emits": [
+    "com.insperity.keel.content.labelled"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-11",
+   "name": "Entitlement Enforcer",
+   "slug": "entitlement_enforcer",
+   "family": "fab",
+   "familyName": "AI fabric enrichment",
+   "component": "C4 · AI fabric enrichment",
+   "decision": "Allow, redact or deny each part for a persona",
+   "options": "Allow · redact · deny",
+   "reads": "Labels + persona roles",
+   "writes": "Allow / redact / deny per part",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-5",
+    "IS-3"
+   ],
+   "hardTrip": [
+    "IS-5"
+   ],
+   "fallback": "Deny every non-public part (fail closed)",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-006",
+    "TEC-001",
+    "TEC-021",
+    "AIG-003"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-018",
+    "CON-019"
+   ],
+   "calcs": [
+    "CALC-038"
+   ],
+   "services": [
+    "MS-02",
+    "MS-01",
+    "MS-07"
+   ],
+   "tools": [
+    "pep_check_response",
+    "pdp_evaluate"
+   ],
+   "triggers": [
+    "com.insperity.keel.brief.drafted"
+   ],
+   "emits": [
+    "com.insperity.keel.brief.entitled"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Knowledge Engineering Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-12",
+   "name": "Concept Mapping Agent",
+   "slug": "concept_mapping_agent",
+   "family": "map",
+   "familyName": "Mapping & publishing",
+   "component": "C5 · Mapping & publishing",
+   "decision": "Which concept a claim or field maps to",
+   "options": "Exact · close · broad · related matches",
+   "reads": "Claims, facets, hr: and isp- concepts",
+   "writes": "Typed correspondences with scores",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-2",
+    "IS-4",
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Mapping held as Candidate",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-009",
+    "GOV-006"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-010"
+   ],
+   "calcs": [
+    "CALC-034"
+   ],
+   "services": [
+    "MS-06",
+    "MS-03",
+    "MS-05",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "ssot_search_rules",
+    "graph_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.claims.scoped"
+   ],
+   "emits": [
+    "com.insperity.keel.mapping.proposed"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "Which candidate mappings are waiting for steward review?",
+    "Why was this claim mapped to hr:CoEmployment?",
+    "Show mappings that drifted since the last release"
+   ],
+   "owner": "Ontology Steward",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-13",
+   "name": "Rule Binding Agent",
+   "slug": "rule_binding_agent",
+   "family": "map",
+   "familyName": "Mapping & publishing",
+   "component": "C5 · Mapping & publishing",
+   "decision": "Which SSOT rule a regulatory claim binds to",
+   "options": "Candidate rules",
+   "reads": "Regulatory and benefits claims",
+   "writes": "boundToRule links to SSOT rules",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-2",
+    "IS-4",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Claim not served (EXT-008)",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-008",
+    "GOV-008",
+    "GOV-009"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-012"
+   ],
+   "calcs": [
+    "CALC-037"
+   ],
+   "services": [
+    "MS-03",
+    "MS-07"
+   ],
+   "tools": [
+    "ssot_search_rules",
+    "ssot_get_rule"
+   ],
+   "triggers": [
+    "com.insperity.keel.claims.scoped"
+   ],
+   "emits": [
+    "com.insperity.keel.claims.bound"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Ontology Steward",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-14",
+   "name": "SHACL Publisher",
+   "slug": "shacl_publisher",
+   "family": "map",
+   "familyName": "Mapping & publishing",
+   "component": "C5 · Mapping & publishing",
+   "decision": "Publish or reject candidate triples",
+   "options": "Publish · reject · hold",
+   "reads": "Candidate triples",
+   "writes": "Validated RDF, KGCL record",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-3"
+   ],
+   "hardTrip": [
+    "IS-4"
+   ],
+   "fallback": "Stop publishing; keep last Released graph",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-010",
+    "GOV-017",
+    "GOV-018",
+    "EVT-012",
+    "AIG-003"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-001",
+    "CON-002",
+    "CON-003",
+    "CON-005",
+    "CON-006",
+    "CON-007",
+    "CON-013"
+   ],
+   "calcs": [
+    "CALC-032"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_validate",
+    "content_publish"
+   ],
+   "triggers": [
+    "com.insperity.keel.claims.bound",
+    "com.insperity.keel.mapping.approved"
+   ],
+   "emits": [
+    "com.insperity.keel.content.published"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Ontology Steward",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-15",
+   "name": "Mapping Drift Sentinel",
+   "slug": "mapping_drift_sentinel",
+   "family": "map",
+   "familyName": "Mapping & publishing",
+   "component": "C5 · Mapping & publishing",
+   "decision": "Whether a mapping is degraded or broken",
+   "options": "OK · degraded · broken",
+   "reads": "Source schemas, mapping graph",
+   "writes": "Broken or degraded mappings",
+   "autonomy": "Act (flag)",
+   "tier": "T3",
+   "signals": [
+    "IS-7",
+    "IS-6"
+   ],
+   "hardTrip": [],
+   "fallback": "Daily full mapping regression run",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "GOV-006",
+    "EXT-009",
+    "EVT-012"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-011"
+   ],
+   "calcs": [
+    "CALC-034"
+   ],
+   "services": [
+    "MS-05",
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "graph_query",
+    "content_validate"
+   ],
+   "triggers": [
+    "com.insperity.keel.schema.changed",
+    "com.insperity.keel.schedule.daily"
+   ],
+   "emits": [
+    "com.insperity.keel.mapping.drift.detected"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Ontology Steward",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-16",
+   "name": "Intent & RCB Agent",
+   "slug": "intent_and_rcb_agent",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "Which job step and context a question belongs to",
+   "options": "Intents, job steps, WHO…WHY values",
+   "reads": "Persona question + session",
+   "writes": "5D context bundle (WHO…WHY)",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-2",
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Ask the persona to confirm the job step",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "GOV-011",
+    "EXT-011",
+    "GOD-010"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-018"
+   ],
+   "calcs": [
+    "CALC-001"
+   ],
+   "services": [
+    "MS-25",
+    "MS-04",
+    "MS-07"
+   ],
+   "tools": [
+    "advisor_job_steps",
+    "identity_resolve"
+   ],
+   "triggers": [
+    "com.insperity.keel.advisor.question.asked"
+   ],
+   "emits": [
+    "com.insperity.keel.rcb.created"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-17",
+   "name": "Federated Query Planner",
+   "slug": "federated_query_planner",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "How to scope and plan the query",
+   "options": "Query plans within the context bundle",
+   "reads": "Context bundle",
+   "writes": "SPARQL across content, CRM, SSOT",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-4",
+    "IS-3",
+    "IS-5"
+   ],
+   "hardTrip": [
+    "IS-5"
+   ],
+   "fallback": "Pre-approved query templates per job step",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-011",
+    "GOV-024",
+    "TEC-001",
+    "GOD-001"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-011",
+    "CON-018"
+   ],
+   "calcs": [],
+   "services": [
+    "MS-05",
+    "MS-07"
+   ],
+   "tools": [
+    "graph_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.rcb.created"
+   ],
+   "emits": [
+    "com.insperity.keel.query.planned"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-18",
+   "name": "Facet Navigator",
+   "slug": "facet_navigator",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "How to rank facets",
+   "options": "Facet orderings",
+   "reads": "Query results",
+   "writes": "Ranked facets: stage, job, jurisdiction, product",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-3",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Static facet order",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-011"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-018"
+   ],
+   "calcs": [],
+   "services": [
+    "MS-05",
+    "MS-07"
+   ],
+   "tools": [
+    "graph_facets"
+   ],
+   "triggers": [
+    "com.insperity.keel.query.planned"
+   ],
+   "emits": [
+    "com.insperity.keel.facets.ranked"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-19",
+   "name": "Mapping Resolver",
+   "slug": "mapping_resolver",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "Which mappings and source fields to read",
+   "options": "Released mapping paths",
+   "reads": "Facets + mapping graph",
+   "writes": "Source fields and RDF nodes to read",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-4",
+    "IS-3"
+   ],
+   "hardTrip": [
+    "IS-4"
+   ],
+   "fallback": "Use mappings pinned in the baseline",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "GOV-006",
+    "EXT-009"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-010",
+    "CON-011"
+   ],
+   "calcs": [
+    "CALC-034"
+   ],
+   "services": [
+    "MS-05",
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "graph_query",
+    "content_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.facets.ranked"
+   ],
+   "emits": [
+    "com.insperity.keel.paths.resolved"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-20",
+   "name": "Precision Extractor",
+   "slug": "precision_extractor",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "Which claims answer the job step",
+   "options": "Keep · drop per claim",
+   "reads": "RDF nodes, claims, spans",
+   "writes": "Only the claims that answer the job step",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-2",
+    "IS-7",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Return top cited passages, no synthesis",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-007",
+    "EXT-008",
+    "EXT-012"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-003",
+    "CON-005",
+    "CON-012"
+   ],
+   "calcs": [
+    "CALC-023"
+   ],
+   "services": [
+    "MS-06",
+    "MS-03",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "ssot_get_rule"
+   ],
+   "triggers": [
+    "com.insperity.keel.paths.resolved"
+   ],
+   "emits": [
+    "com.insperity.keel.claims.selected"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-21",
+   "name": "Brief Assembler",
+   "slug": "brief_assembler",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "Which statements and decision options to present, and in what order",
+   "options": "Decision options allowed by the rules, with effects and outcomes",
+   "reads": "Extracted claims + persona template",
+   "writes": "Brief with citations and access labels",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-2",
+    "IS-3",
+    "IS-5",
+    "IS-7",
+    "IS-9"
+   ],
+   "hardTrip": [
+    "IS-5"
+   ],
+   "fallback": "Cited claim list and BPA hand-off; no recommendation",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-006",
+    "EXT-012",
+    "EXT-013",
+    "DEC-002",
+    "DEC-003",
+    "DEC-005",
+    "DEC-010",
+    "DEC-011",
+    "SAL-001",
+    "SAL-002",
+    "SAL-003",
+    "SAL-006",
+    "SAL-007"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-008",
+    "CON-019",
+    "CON-026",
+    "CON-027",
+    "CON-031",
+    "CON-033",
+    "CON-034",
+    "CON-035",
+    "CON-036",
+    "CON-037"
+   ],
+   "calcs": [
+    "CALC-023",
+    "CALC-026"
+   ],
+   "services": [
+    "MS-06",
+    "MS-03",
+    "MS-15",
+    "MS-01",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "ssot_get_rule",
+    "metrics_definition",
+    "pdp_explain"
+   ],
+   "triggers": [
+    "com.insperity.keel.claims.selected"
+   ],
+   "emits": [
+    "com.insperity.keel.brief.drafted"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-22",
+   "name": "Machine Package Agent",
+   "slug": "machine_package_agent",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "What goes into the JSON-LD package",
+   "options": "Claims and fields for the receiving system",
+   "reads": "Extracted claims",
+   "writes": "JSON-LD package for CRM, quoting, other agents",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-4",
+    "IS-1"
+   ],
+   "hardTrip": [
+    "IS-4"
+   ],
+   "fallback": "No package; manual hand-off",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-013",
+    "GOV-021",
+    "EVT-010"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-021",
+    "CON-038"
+   ],
+   "calcs": [],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "events_publish"
+   ],
+   "triggers": [
+    "com.insperity.keel.brief.released"
+   ],
+   "emits": [
+    "com.insperity.keel.package.created"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-23",
+   "name": "Grounding Guard (MTBH)",
+   "slug": "grounding_guard",
+   "family": "srch",
+   "familyName": "Faceted search & assembly",
+   "component": "C6 · Faceted search & assembly",
+   "decision": "Pass, hold or block a draft brief",
+   "options": "Pass · hold for review · block",
+   "reads": "Draft brief",
+   "writes": "Grounding score; trip below 0.80",
+   "autonomy": "Act (block)",
+   "tier": "T1",
+   "signals": [
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Hold every brief for human review (fail closed)",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-012",
+    "GOV-014",
+    "DEC-009"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-030"
+   ],
+   "calcs": [
+    "CALC-023",
+    "CALC-024",
+    "CALC-029"
+   ],
+   "services": [
+    "MS-06",
+    "MS-14",
+    "MS-12",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "qbd_get_baseline"
+   ],
+   "triggers": [
+    "com.insperity.keel.brief.entitled"
+   ],
+   "emits": [
+    "com.insperity.keel.brief.released",
+    "com.insperity.keel.brief.held"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Sales Advisor Product Owner",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-24",
+   "name": "Outcome Binder",
+   "slug": "outcome_binder",
+   "family": "val",
+   "familyName": "Value-gap monitoring",
+   "component": "C7 · Value-gap monitoring",
+   "decision": "Which desired outcome and metric card a decision binds to",
+   "options": "Candidate outcomes and cards",
+   "reads": "Decision records",
+   "writes": "Desired outcome + metric card links",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-2",
+    "IS-4"
+   ],
+   "hardTrip": [],
+   "fallback": "Record decision unbound and flagged",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-014",
+    "MET-014",
+    "DEC-006"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-025"
+   ],
+   "calcs": [
+    "CALC-021"
+   ],
+   "services": [
+    "MS-10",
+    "MS-15",
+    "MS-07"
+   ],
+   "tools": [
+    "decision_get",
+    "metrics_definition"
+   ],
+   "triggers": [
+    "com.insperity.keel.decision.recorded"
+   ],
+   "emits": [
+    "com.insperity.keel.decision.bound"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Value Realization Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-25",
+   "name": "Job-Step Telemetry Agent",
+   "slug": "job_step_telemetry_agent",
+   "family": "val",
+   "familyName": "Value-gap monitoring",
+   "component": "C7 · Value-gap monitoring",
+   "decision": "How to attribute events to job steps",
+   "options": "Job-step attributions",
+   "reads": "Advisor sessions, CRM events",
+   "writes": "Time, reuse, satisfaction per job step",
+   "autonomy": "Act",
+   "tier": "T3",
+   "signals": [
+    "IS-3",
+    "IS-9"
+   ],
+   "hardTrip": [],
+   "fallback": "Mark metrics stale",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015",
+    "MET-013"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-022"
+   ],
+   "calcs": [
+    "CALC-001",
+    "CALC-002",
+    "CALC-006",
+    "CALC-010"
+   ],
+   "services": [
+    "MS-15",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.advisor.session.ended",
+    "com.insperity.keel.schedule.hourly"
+   ],
+   "emits": [
+    "com.insperity.keel.telemetry.recorded"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Value Realization Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-26",
+   "name": "Value-Gap Monitor",
+   "slug": "value_gap_monitor",
+   "family": "val",
+   "familyName": "Value-gap monitoring",
+   "component": "C7 · Value-gap monitoring",
+   "decision": "Gap, no gap, or not enough data",
+   "options": "Gap · met · insufficient data",
+   "reads": "Telemetry vs targets",
+   "writes": "Gaps per persona job step",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-6",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Show raw metrics, no verdict",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-022"
+   ],
+   "calcs": [
+    "CALC-014",
+    "CALC-015",
+    "CALC-016",
+    "CALC-017"
+   ],
+   "services": [
+    "MS-15",
+    "MS-25",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query",
+    "metrics_definition",
+    "advisor_job_steps"
+   ],
+   "triggers": [
+    "com.insperity.keel.schedule.daily"
+   ],
+   "emits": [
+    "com.insperity.keel.valuegap.detected"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "Which Client Admin job steps are furthest from their targets this month?",
+    "Is time to a binding quote improving for HR Specialists?",
+    "Which desired outcomes still have no baseline?"
+   ],
+   "owner": "Value Realization Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-27",
+   "name": "Decision Impact Tracker",
+   "slug": "decision_impact_tracker",
+   "family": "val",
+   "familyName": "Value-gap monitoring",
+   "component": "C7 · Value-gap monitoring",
+   "decision": "Which downstream effects a decision caused",
+   "options": "Candidate effect attributions",
+   "reads": "Decisions + downstream events",
+   "writes": "Effect on later decisions and stage moves",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-6",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Associations only, labelled non-causal",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-014",
+    "EXT-015",
+    "DEC-006"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-025"
+   ],
+   "calcs": [
+    "CALC-021"
+   ],
+   "services": [
+    "MS-10",
+    "MS-15",
+    "MS-07"
+   ],
+   "tools": [
+    "decision_get",
+    "metrics_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.decision.bound",
+    "com.insperity.keel.crm.stage.changed"
+   ],
+   "emits": [
+    "com.insperity.keel.impact.estimated"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "What happened after prospects chose to run a growth scenario?",
+    "Which recorded decisions moved deals to the next stage?",
+    "Show decisions with no bound outcome"
+   ],
+   "owner": "Value Realization Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-28",
+   "name": "Content Change Monitor",
+   "slug": "content_change_monitor",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Whether a delta is a material change",
+   "options": "Material · cosmetic · none",
+   "reads": "CMS, web, feed deltas",
+   "writes": "Change events (CloudEvents)",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-3",
+    "IS-7"
+   ],
+   "hardTrip": [],
+   "fallback": "Periodic full diff",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-016",
+    "EVT-012"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-038"
+   ],
+   "calcs": [
+    "CALC-035"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.item.changed"
+   ],
+   "emits": [
+    "com.insperity.keel.change.detected"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Semantic Governance Council",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-29",
+   "name": "Semantic Change Monitor",
+   "slug": "semantic_change_monitor",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Which concepts and rules a KGCL change touches",
+   "options": "Changed concepts and rules",
+   "reads": "Ontology and SSOT KGCL stream",
+   "writes": "Changed concepts and rule versions",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-3"
+   ],
+   "hardTrip": [],
+   "fallback": "Freeze the serving ontology version",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "GOV-003",
+    "GOV-018",
+    "EVT-012"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-014",
+    "CON-015",
+    "CON-016"
+   ],
+   "calcs": [],
+   "services": [
+    "MS-03",
+    "MS-07"
+   ],
+   "tools": [
+    "ssot_get_rule",
+    "ssot_search_rules"
+   ],
+   "triggers": [
+    "com.insperity.keel.ssot.rule.released"
+   ],
+   "emits": [
+    "com.insperity.keel.change.detected"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Semantic Governance Council",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-30",
+   "name": "RDF Structure Monitor",
+   "slug": "rdf_structure_monitor",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Whether a shape or graph change is breaking",
+   "options": "Breaking · compatible · none",
+   "reads": "Shape and graph diffs",
+   "writes": "Changed shapes, orphaned nodes",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-4",
+    "IS-3"
+   ],
+   "hardTrip": [
+    "IS-4"
+   ],
+   "fallback": "Block publishing",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-010",
+    "EVT-012"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-013",
+    "CON-014"
+   ],
+   "calcs": [
+    "CALC-032"
+   ],
+   "services": [
+    "MS-06",
+    "MS-05",
+    "MS-07"
+   ],
+   "tools": [
+    "content_validate",
+    "graph_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.content.published"
+   ],
+   "emits": [
+    "com.insperity.keel.change.detected"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Semantic Governance Council",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-31",
+   "name": "Impact Analyzer",
+   "slug": "impact_analyzer",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Which questions, briefs and decisions a change affects",
+   "options": "Candidate impact sets",
+   "reads": "Change event + dependency graph",
+   "writes": "Affected assemblies, jobs, decisions",
+   "autonomy": "Advise",
+   "tier": "T1",
+   "signals": [
+    "IS-2",
+    "IS-3"
+   ],
+   "hardTrip": [],
+   "fallback": "Widen impact to the whole job step",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-016",
+    "GOD-008",
+    "QBD-002"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-050"
+   ],
+   "calcs": [
+    "CALC-030"
+   ],
+   "services": [
+    "MS-14",
+    "MS-13",
+    "MS-05",
+    "MS-07"
+   ],
+   "tools": [
+    "qbd_get_baseline",
+    "qbd_classify_change",
+    "probes_results",
+    "graph_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.change.detected"
+   ],
+   "emits": [
+    "com.insperity.keel.impact.assessed"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "What would change if the California overtime rule changed?",
+    "Which briefs and decision questions does the last ontology release affect?",
+    "List breaking changes awaiting re-baseline"
+   ],
+   "owner": "Semantic Governance Council",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-32",
+   "name": "Incremental Refresh Service",
+   "slug": "incremental_refresh_service",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Which stages to re-run",
+   "options": "Stage subsets",
+   "reads": "Impact set",
+   "writes": "Re-run only affected stages",
+   "autonomy": "Act",
+   "tier": "T2",
+   "signals": [
+    "IS-3",
+    "IS-4"
+   ],
+   "hardTrip": [],
+   "fallback": "Full rebuild",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-016",
+    "GOV-023",
+    "EVT-003"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-041"
+   ],
+   "calcs": [
+    "CALC-031"
+   ],
+   "services": [
+    "MS-09",
+    "MS-07"
+   ],
+   "tools": [
+    "saga_start",
+    "saga_status"
+   ],
+   "triggers": [
+    "com.insperity.keel.impact.assessed"
+   ],
+   "emits": [
+    "com.insperity.keel.refresh.started"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Semantic Governance Council",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-33",
+   "name": "Cache Invalidation Agent",
+   "slug": "cache_invalidation_agent",
+   "family": "chg",
+   "familyName": "Change & impact",
+   "component": "C8 · Change & impact",
+   "decision": "Withdraw, flag or keep a served brief",
+   "options": "Withdraw · flag · keep",
+   "reads": "Impact set",
+   "writes": "Stale briefs withdrawn or flagged",
+   "autonomy": "Act",
+   "tier": "T1",
+   "signals": [
+    "IS-2",
+    "IS-9"
+   ],
+   "hardTrip": [],
+   "fallback": "Withdraw every brief in the impact set (fail closed)",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-005",
+    "EXT-016"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-005"
+   ],
+   "calcs": [
+    "CALC-031"
+   ],
+   "services": [
+    "MS-06",
+    "MS-07"
+   ],
+   "tools": [
+    "content_get",
+    "events_publish"
+   ],
+   "triggers": [
+    "com.insperity.keel.impact.assessed"
+   ],
+   "emits": [
+    "com.insperity.keel.brief.withdrawn"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Semantic Governance Council",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-34",
+   "name": "Causal Graph Builder",
+   "slug": "causal_graph_builder",
+   "family": "cau",
+   "familyName": "Causal analysis",
+   "component": "C8 · Causal analysis",
+   "decision": "Which causal edges to assert",
+   "options": "Candidate edges with assumptions",
+   "reads": "Changes, gaps, decisions, outcomes",
+   "writes": "Causal DAG with assumptions",
+   "autonomy": "Advise",
+   "tier": "T3",
+   "signals": [
+    "IS-6",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Correlational view, labelled",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-022"
+   ],
+   "services": [
+    "MS-15",
+    "MS-10",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query",
+    "decision_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.schedule.weekly"
+   ],
+   "emits": [
+    "com.insperity.keel.causal.graph.updated"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Analytics Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-35",
+   "name": "Effect Estimator",
+   "slug": "effect_estimator",
+   "family": "cau",
+   "familyName": "Causal analysis",
+   "component": "C8 · Causal analysis",
+   "decision": "Size and interval of an effect",
+   "options": "Estimators and intervals",
+   "reads": "DAG + observed outcomes",
+   "writes": "Effect size with interval",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-3",
+    "IS-6"
+   ],
+   "hardTrip": [],
+   "fallback": "Direction only, no effect size",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-022"
+   ],
+   "calcs": [
+    "CALC-022"
+   ],
+   "services": [
+    "MS-15",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query"
+   ],
+   "triggers": [
+    "com.insperity.keel.causal.graph.updated"
+   ],
+   "emits": [
+    "com.insperity.keel.effect.estimated"
+   ],
+   "surface": "foundry",
+   "personas": [],
+   "starters": [],
+   "owner": "Analytics Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-36",
+   "name": "Risk & Opportunity Ranker",
+   "slug": "risk_and_opportunity_ranker",
+   "family": "cau",
+   "familyName": "Causal analysis",
+   "component": "C8 · Causal analysis",
+   "decision": "How to rank risks and opportunities",
+   "options": "Rankings by effect × exposure",
+   "reads": "Effects × exposure",
+   "writes": "Ranked risks and opportunities",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-2",
+    "IS-3"
+   ],
+   "hardTrip": [],
+   "fallback": "Unranked list",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015",
+    "QBD-003"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-020",
+    "CALC-030"
+   ],
+   "services": [
+    "MS-15",
+    "MS-14",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query",
+    "qbd_get_baseline"
+   ],
+   "triggers": [
+    "com.insperity.keel.effect.estimated"
+   ],
+   "emits": [
+    "com.insperity.keel.ranking.updated"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "What are the top three risks to the Sales Advisor's outcomes right now?",
+    "Which opportunities have the biggest effect on time to a binding quote?",
+    "Why is this risk ranked first?"
+   ],
+   "owner": "Analytics Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-37",
+   "name": "Counterfactual Explainer",
+   "slug": "counterfactual_explainer",
+   "family": "cau",
+   "familyName": "Causal analysis",
+   "component": "C8 · Causal analysis",
+   "decision": "Which what-if to explain",
+   "options": "What-if narratives",
+   "reads": "Ranked findings",
+   "writes": "Plain-language what-if for owners",
+   "autonomy": "Advise",
+   "tier": "T2",
+   "signals": [
+    "IS-1",
+    "IS-8"
+   ],
+   "hardTrip": [],
+   "fallback": "Table only, no narrative",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "EXT-015",
+    "GOD-004"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046"
+   ],
+   "calcs": [
+    "CALC-022"
+   ],
+   "services": [
+    "MS-15",
+    "MS-10",
+    "MS-07"
+   ],
+   "tools": [
+    "metrics_query",
+    "decision_get"
+   ],
+   "triggers": [
+    "com.insperity.keel.ranking.updated"
+   ],
+   "emits": [
+    "com.insperity.keel.counterfactual.explained"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "What if eligibility rules were mapped before quoting?",
+    "Explain the top-ranked risk in plain language",
+    "What would time to a binding quote be without census errors?"
+   ],
+   "owner": "Analytics Lead",
+   "model": "standard",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  },
+  {
+   "id": "AG-38",
+   "name": "Action Proposer",
+   "slug": "action_proposer",
+   "family": "cau",
+   "familyName": "Causal analysis",
+   "component": "C8 · Causal analysis",
+   "decision": "Which action to propose to a human owner",
+   "options": "Actions including “do nothing”",
+   "reads": "Findings + owners",
+   "writes": "Draft KGCL or backlog item for a human",
+   "autonomy": "Advise (human gate)",
+   "tier": "T1",
+   "signals": [
+    "IS-1",
+    "IS-2",
+    "IS-4"
+   ],
+   "hardTrip": [],
+   "fallback": "Findings sent without a proposal",
+   "rules": [
+    "AIG-001",
+    "AIG-002",
+    "AIG-007",
+    "AIG-008",
+    "CTL-007",
+    "EVT-001",
+    "GOV-015",
+    "DEC-002",
+    "DEC-004",
+    "AIG-006"
+   ],
+   "constraints": [
+    "CON-044",
+    "CON-045",
+    "CON-046",
+    "CON-026",
+    "CON-028"
+   ],
+   "calcs": [],
+   "services": [
+    "MS-03",
+    "MS-11",
+    "MS-07"
+   ],
+   "tools": [
+    "ssot_propose_change",
+    "simplex_request_approval",
+    "simplex_status"
+   ],
+   "triggers": [
+    "com.insperity.keel.ranking.updated"
+   ],
+   "emits": [
+    "com.insperity.keel.action.proposed"
+   ],
+   "surface": "both",
+   "personas": [
+    "bpa",
+    "steward"
+   ],
+   "starters": [
+    "What actions are proposed for this week's top risks?",
+    "Draft a change request for the late-exclusion finding",
+    "What is waiting for my approval?"
+   ],
+   "owner": "Analytics Lead",
+   "model": "reasoning",
+   "notes": "",
+   "version": "1.0.0",
+   "status": "Proposed"
+  }
+ ],
+ "ssotIndex": {
+  "AIG-001": {
+   "name": "Agent Registry",
+   "logic": "Register purpose, owner, tier, autonomy (Advise/Act), tools, rules, data classes and breaker profile; unregistered agents cannot run",
+   "type": "Structural Invariant"
+  },
+  "AIG-002": {
+   "name": "Per-Agent MTBH Circuit Breaker",
+   "logic": "Track integrity faults; half-open when MTBH < floor (tier 1: 2,000; tier 2: 500; tier 3: 200 outputs) or probes regress; open below 500/100/50 or 3 faults in a row",
+   "type": "Threshold"
+  },
+  "AIG-003": {
+   "name": "Hard-Trip Signals",
+   "logic": "Open the breaker immediately and run the fail-closed fallback; reset only by the named owner after root cause",
+   "type": "Prohibition"
+  },
+  "AIG-004": {
+   "name": "Decision-Question Probes",
+   "logic": "Run the 48 decision questions through the decision path; regression against baseline sets integrity signal IS-7",
+   "type": "Obligation"
+  },
+  "AIG-005": {
+   "name": "AI System Impact Assessment",
+   "logic": "Assess impacts on prospects, clients, employees and the PEO; record mitigations; reviewed by governance council",
+   "type": "Obligation"
+  },
+  "AIG-006": {
+   "name": "Autonomy Promotion Criteria",
+   "logic": "Requires 30 consecutive days at or above the MTBH floor, zero hard trips and owner and council approval",
+   "type": "Threshold"
+  },
+  "AIG-007": {
+   "name": "Tool Allow-List and Least Privilege",
+   "logic": "Only registered tools with least-privilege scopes; tool calls outside the allow-list are blocked and counted as integrity faults",
+   "type": "Structural Invariant"
+  },
+  "AIG-008": {
+   "name": "Integrity Fault Definition (MTBH)",
+   "logic": "Count as a fault: unsupported claim, contradiction with Released knowledge, rule violation, or baseline regression; MTBH = outputs ÷ faults over a rolling 30 days",
+   "type": "Business Logic"
+  },
+  "AIG-009": {
+   "name": "Named Owner and Kill Switch",
+   "logic": "Each agent has a named owner with authority to open the breaker manually at any time",
+   "type": "Obligation"
+  },
+  "AIG-010": {
+   "name": "Bias Testing of Recommendations",
+   "logic": "Test that recommendations and eligibility answers do not differ by prospect attributes that proxy for protected classes (e.g. ZIP, ownership)",
+   "type": "Obligation"
+  },
+  "AIG-011": {
+   "name": "Model and Agent Cards",
+   "logic": "Publish a card: purpose, data, evaluation results, limits, breaker profile and owner",
+   "type": "Obligation"
+  },
+  "BEN-001": {
+   "name": "Applicable Large Employer (ALE) Determination",
+   "logic": "Determine ALE status from full-time + FTE headcount across the controlled group",
+   "type": "Business Logic"
+  },
+  "BEN-004": {
+   "name": "Annual IRS Form 1094-C/1095-C Generation",
+   "logic": "Generate and file 1094-C/1095-C forms by IRS deadline for all ALE clients",
+   "type": "Reporting Deadline"
+  },
+  "BEN-019": {
+   "name": "Carrier EDI 834 Enrollment Feed Integration",
+   "logic": "Transmit standardized 834 EDI enrollment transaction to carrier",
+   "type": "Business Logic"
+  },
+  "CALC-001": {
+   "name": "Time to useful answer",
+   "logic": "median(t_first_useful_answer − t_question) per session; useful = persona marks “answered” or BPA accepts the brief",
+   "type": "Duration",
+   "unit": "minutes"
+  },
+  "CALC-002": {
+   "name": "Steps to confirm eligibility",
+   "logic": "median(count of advisor turns from first Qualify question to eligibility verdict)",
+   "type": "Count",
+   "unit": "steps"
+  },
+  "CALC-003": {
+   "name": "Sales cycle time to binding quote",
+   "logic": "median(t_quote.binding − t_first_cost_question) per opportunity",
+   "type": "Duration",
+   "unit": "days"
+  },
+  "CALC-004": {
+   "name": "Census first-pass validation rate",
+   "logic": "uploads passing census validation on first attempt ÷ uploads",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-005": {
+   "name": "Re-quote rate after signature",
+   "logic": "deals re-quoted within 90 days of signature ÷ signed deals",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-006": {
+   "name": "Follow-up-free proposal sessions",
+   "logic": "Propose sessions with no clarification question within 7 days ÷ Propose sessions",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-007": {
+   "name": "First-draft owner approval rate",
+   "logic": "decision packages approved without change ÷ packages shared with owners",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-008": {
+   "name": "Cut-over errors per 100 employees",
+   "logic": "payroll corrections in the first PEO payroll ÷ employees paid × 100",
+   "type": "Rate",
+   "unit": "per 100"
+  },
+  "CALC-009": {
+   "name": "Hiring states assessed",
+   "logic": "jurisdictions with a completed assessment ÷ jurisdictions resolved for the prospect (GOV-007)",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-010": {
+   "name": "Time to compare plans",
+   "logic": "median(active time on plan comparison briefs per session)",
+   "type": "Duration",
+   "unit": "minutes"
+  },
+  "CALC-011": {
+   "name": "Handbook policies unmapped",
+   "logic": "policies without a Released mapping ÷ handbook policies",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-012": {
+   "name": "Decisions with a risk brief",
+   "logic": "Decide-stage decisions linked to a risk brief ÷ Decide-stage decisions",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-013": {
+   "name": "Coverage gap per 1,000",
+   "logic": "employees with ≥ 1 day without coverage after go-live ÷ enrolled employees × 1,000",
+   "type": "Rate",
+   "unit": "per 1,000"
+  },
+  "CALC-014": {
+   "name": "Outcome gap ratio",
+   "logic": "minimize: max(0, (delivered − target) ÷ target); maximize: max(0, (target − delivered) ÷ target); target 0 ⇒ 1 if delivered > 0; capped at 1",
+   "type": "Ratio",
+   "unit": "ratio"
+  },
+  "CALC-015": {
+   "name": "Outcome gap status",
+   "logic": "met if gap = 0; gap if gap > 0 and n ≥ 30; otherwise insufficient data",
+   "type": "Classification",
+   "unit": "category"
+  },
+  "CALC-016": {
+   "name": "Opportunity score",
+   "logic": "importance + max(importance − satisfaction, 0), with importance and satisfaction on 0–10 (survey % rating 4–5 × 10)",
+   "type": "Score",
+   "unit": "score 0–20"
+  },
+  "CALC-017": {
+   "name": "Value at stake per job step",
+   "logic": "driver weight × outcomes (3) × (1 + gap ratio) × (1 + tier-H questions ÷ 4)",
+   "type": "Score",
+   "unit": "points"
+  },
+  "CALC-018": {
+   "name": "Component impact score",
+   "logic": "max(1, 5 × Σ(dependency strength × value at stake) ÷ Σ(3 × value at stake))",
+   "type": "Score",
+   "unit": "1–5"
+  },
+  "CALC-019": {
+   "name": "Component likelihood score",
+   "logic": "mean(novelty, complexity, readiness gap, dependency depth, schedule pressure)",
+   "type": "Score",
+   "unit": "1–5"
+  },
+  "CALC-020": {
+   "name": "Component risk score",
+   "logic": "likelihood × impact; ≥ 15 high, 8–14.9 medium, < 8 low",
+   "type": "Score",
+   "unit": "1–25"
+  },
+  "CALC-021": {
+   "name": "Decision outcome attainment",
+   "logic": "decisions whose bound outcome met target at checkpoint ÷ decisions past checkpoint",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-022": {
+   "name": "Causal effect estimate",
+   "logic": "effect of a change or decision on an outcome, by the method declared in the finding (e.g. difference-in-differences) with a 90% interval and stated DAG",
+   "type": "Causal estimate",
+   "unit": "effect + interval"
+  },
+  "CALC-023": {
+   "name": "Brief grounding score",
+   "logic": "statements with ≥ 1 valid supporting claim span ÷ statements in the brief",
+   "type": "Ratio",
+   "unit": "ratio"
+  },
+  "CALC-024": {
+   "name": "Citation precision",
+   "logic": "citations whose span supports the statement ÷ citations checked (sample of 5% of briefs, all tier-H)",
+   "type": "Ratio",
+   "unit": "ratio"
+  },
+  "CALC-025": {
+   "name": "Answer equivalence rate",
+   "logic": "probe runs with all golden claims present and no contradiction ÷ probe runs",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-026": {
+   "name": "Option integrity",
+   "logic": "|options shown ∩ permitted| ÷ |permitted|; ranking stability = Kendall τ between replay rankings",
+   "type": "Ratio",
+   "unit": "ratio; τ"
+  },
+  "CALC-027": {
+   "name": "MTBH (mean time between hallucinations)",
+   "logic": "outputs ÷ integrity faults over a rolling 30 days; ∞ when no faults",
+   "type": "Reliability measure",
+   "unit": "outputs per fault"
+  },
+  "CALC-028": {
+   "name": "Breaker state",
+   "logic": "OPEN if hard trip or MTBH < open threshold or 3 consecutive faults; HALF-OPEN if MTBH < floor or probe regression; else CLOSED",
+   "type": "Classification",
+   "unit": "state"
+  },
+  "CALC-029": {
+   "name": "Breaker trip rate",
+   "logic": "briefs held or blocked by a breaker ÷ briefs produced",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-030": {
+   "name": "Change risk score",
+   "logic": "question tier weight (H 3, M 2, L 1) × change severity (benign 1, material 2, breaking 3)",
+   "type": "Score",
+   "unit": "1–9"
+  },
+  "CALC-031": {
+   "name": "Brief withdrawal latency",
+   "logic": "p95(t_brief_withdrawn − t_change_event) for briefs in an impact set",
+   "type": "Duration",
+   "unit": "minutes"
+  },
+  "CALC-032": {
+   "name": "SHACL conformance rate",
+   "logic": "conforming write batches ÷ write batches",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-033": {
+   "name": "Classification precision",
+   "logic": "correct labels ÷ labels assigned on a steward-labelled sample of ≥ 400 items",
+   "type": "Ratio",
+   "unit": "ratio"
+  },
+  "CALC-034": {
+   "name": "Mapping precision",
+   "logic": "correct correspondences ÷ correspondences sampled",
+   "type": "Ratio",
+   "unit": "ratio"
+  },
+  "CALC-035": {
+   "name": "Content freshness",
+   "logic": "age = now − source lastModified; share of served objects past validUntil (must be 0)",
+   "type": "Duration",
+   "unit": "hours; %"
+  },
+  "CALC-036": {
+   "name": "Required-field completeness",
+   "logic": "required fields present ÷ required fields, per source",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-037": {
+   "name": "Regulatory claim binding rate",
+   "logic": "regulatory claims bound to a Released rule ÷ regulatory claims",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-038": {
+   "name": "PII leak count",
+   "logic": "assembled parts with PII and no consent record (target 0)",
+   "type": "Count",
+   "unit": "count"
+  },
+  "CALC-039": {
+   "name": "Control pass rate",
+   "logic": "control tests passed ÷ control tests run",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-040": {
+   "name": "Finding age and overdue count",
+   "logic": "days open per finding; findings past due date",
+   "type": "Duration",
+   "unit": "days; count"
+  },
+  "CALC-041": {
+   "name": "Rule currency",
+   "logic": "Released rules reviewed within 12 months or since last source change ÷ Released rules",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-042": {
+   "name": "Policy decision latency",
+   "logic": "p95 policy decision latency; timeouts that failed closed",
+   "type": "Duration",
+   "unit": "ms; count"
+  },
+  "CALC-043": {
+   "name": "Waiver exposure",
+   "logic": "active waivers × days remaining; expired waivers still referenced (target 0)",
+   "type": "Duration",
+   "unit": "waiver-days; count"
+  },
+  "CALC-044": {
+   "name": "Event dead-letter rate",
+   "logic": "dead-lettered events ÷ events; oldest dead letter age",
+   "type": "Duration",
+   "unit": "%; hours"
+  },
+  "CALC-045": {
+   "name": "Deadline lead-time compliance",
+   "logic": "deadline events emitted at ≥ lead time ÷ deadline events",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-046": {
+   "name": "Buffer consumption",
+   "logic": "max(0, actual predecessor finish − planned predecessor finish) ÷ buffer length",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-047": {
+   "name": "Lifecycle phase score",
+   "logic": "Σ assessed maturity ÷ Σ target maturity for the phase (0–3 scale)",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-048": {
+   "name": "Client retention",
+   "logic": "1 − Σ lost clients ÷ Σ clients at period start (ratio of sums); loss dated at last payroll processed",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-049": {
+   "name": "Worksite employee growth",
+   "logic": "(average monthly paid WSE this period − prior period) ÷ prior period",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CALC-050": {
+   "name": "Service satisfaction",
+   "logic": "top-two-box responses (4 or 5) ÷ responses, weighted by responses on roll-up",
+   "type": "Ratio",
+   "unit": "%"
+  },
+  "CMP-010": {
+   "name": "Workers' Comp Class Codes / NCCI Mapping",
+   "logic": "Map client job roles to NCCI class codes to set premium risk baseline",
+   "type": "Business Logic"
+  },
+  "CON-001": {
+   "name": "Unique canonical identity",
+   "logic": "Exactly one canonical URI and one contentHash per object; the same hash from two sources resolves to one object",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block publish"
+  },
+  "CON-002": {
+   "name": "Version lineage",
+   "logic": "A new version has prov:wasRevisionOf pointing to the prior version",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block publish"
+  },
+  "CON-003": {
+   "name": "Claim has a source span",
+   "logic": "Exactly one hasSourceSpan and a confidence in [0, 1]",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Discard claim"
+  },
+  "CON-004": {
+   "name": "Classification confidence floor",
+   "logic": "confidence ≥ 0.80 → Released; 0.60–0.79 → Candidate; < 0.60 → no assignment",
+   "type": "Policy constraint (Rego)",
+   "onv": "Hold as Candidate"
+  },
+  "CON-005": {
+   "name": "Validity window",
+   "logic": "validUntil present (or a supersession policy); served only when request time ≤ validUntil",
+   "type": "Structural + policy constraint",
+   "onv": "Block from assembly"
+  },
+  "CON-006": {
+   "name": "Access label required",
+   "logic": "Exactly one sensitivity label from the sensitivity vocabulary",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block publish"
+  },
+  "CON-007": {
+   "name": "No PII without consent",
+   "logic": "piiDetected = true ⇒ consentRecord present, otherwise quarantined",
+   "type": "Policy constraint (Rego)",
+   "onv": "Quarantine and notify owner"
+  },
+  "CON-008": {
+   "name": "Third-party text limit",
+   "logic": "Store facts and summaries only, with sourceURL; no verbatim passage longer than 25 words reaches a persona",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block assembly"
+  },
+  "CON-009": {
+   "name": "Crawl allow-list and robots",
+   "logic": "URL in allow-list AND robots/licence permits AND supplier assessed",
+   "type": "Policy constraint (Rego)",
+   "onv": "Skip fetch"
+  },
+  "CON-010": {
+   "name": "Mapping strength for assembly",
+   "logic": "Relation ∈ {exactMatch, closeMatch} AND score ≥ 0.85; broader matches only for search",
+   "type": "Structural + policy constraint",
+   "onv": "Exclude from assembly"
+  },
+  "CON-011": {
+   "name": "Released mappings only",
+   "logic": "mapping.status = Released",
+   "type": "Policy constraint (Rego)",
+   "onv": "Fall back to baseline-pinned mapping"
+  },
+  "CON-012": {
+   "name": "Regulatory claims are bound",
+   "logic": "boundToRule → an SSOT rule with status Released",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Hold as Candidate; route to rule owner"
+  },
+  "CON-013": {
+   "name": "KGCL stamp on every write",
+   "logic": "WHO, WHAT, WHEN, WHERE and WHY present on each change record",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block publish"
+  },
+  "CON-014": {
+   "name": "Ontology import closure",
+   "logic": "Imports isp-core via owl:imports; no orphan classes; no unresolved terms",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block release"
+  },
+  "CON-015": {
+   "name": "Dual representation of Released rules",
+   "logic": "Released ⇒ LKIF norm AND SHACL shape AND compiled-target hash present",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block promotion"
+  },
+  "CON-016": {
+   "name": "Rule lifecycle transitions",
+   "logic": "Draft → Candidate → Released → Retired only; author ≠ approver ≠ deployer",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block transition"
+  },
+  "CON-017": {
+   "name": "No overlapping effective dates",
+   "logic": "validFrom ≤ validTo; no two Released versions of a rule overlap for the same jurisdiction",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Block release"
+  },
+  "CON-018": {
+   "name": "Tenant isolation",
+   "logic": "request.tenant present AND every result and event ∈ request.tenant",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block (hard trip)"
+  },
+  "CON-019": {
+   "name": "Persona entitlement",
+   "logic": "part.label ∈ entitlements(persona, tenant); internal pricing, margin and win-loss never for prospect personas",
+   "type": "Policy constraint (Rego)",
+   "onv": "Redact or deny (hard trip)"
+  },
+  "CON-020": {
+   "name": "Census field allow-list",
+   "logic": "Fields ⊆ {age or DOB, ZIP, wage, class code, coverage tier, hours}; no SSN or health detail before signature",
+   "type": "Schema constraint (JSON Schema)",
+   "onv": "Reject upload"
+  },
+  "CON-021": {
+   "name": "No personal data in events",
+   "logic": "Schema contains only URIs and claim-check tokens for PII or PHI classes",
+   "type": "Schema constraint (JSON Schema)",
+   "onv": "Reject event"
+  },
+  "CON-022": {
+   "name": "Small-cut suppression",
+   "logic": "n ≥ 5 per published cell, else suppressed",
+   "type": "Data test (dbt)",
+   "onv": "Suppress cell"
+  },
+  "CON-023": {
+   "name": "Prospect data retention",
+   "logic": "age since last activity ≤ 24 months, unless legal hold",
+   "type": "Data test (dbt)",
+   "onv": "Delete or de-identify"
+  },
+  "CON-024": {
+   "name": "No census data in logs",
+   "logic": "No direct identifiers or census fields in any log line",
+   "type": "Runtime guard",
+   "onv": "Block and alert"
+  },
+  "CON-025": {
+   "name": "Complete decision record",
+   "logic": "context bundle, ≥ 1 option shown, chosen option, actor, rule versions, brief hash and ≥ 1 bound outcome on a Released metric card",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Reject record"
+  },
+  "CON-026": {
+   "name": "Option completeness",
+   "logic": "optionsShown ⊇ permittedOptions(rules) ∪ {do nothing}",
+   "type": "Policy constraint (Rego)",
+   "onv": "Hold brief"
+  },
+  "CON-027": {
+   "name": "Option evidence",
+   "logic": "effect, downstream events, risk and bound outcome present, each cited",
+   "type": "Schema constraint (JSON Schema)",
+   "onv": "Label option incomplete"
+  },
+  "CON-028": {
+   "name": "Human confirmation for binding actions",
+   "logic": "approvedBy is a human with decision rights AND Simplex check passed",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block action"
+  },
+  "CON-029": {
+   "name": "Decision rights and limits",
+   "logic": "actor.role ∈ rights(decisionType) AND value ≤ limit(role)",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block decision"
+  },
+  "CON-030": {
+   "name": "Grounding floor",
+   "logic": "grounding ≥ 0.80; ≥ 0.90 when it answers a tier-H decision question",
+   "type": "Policy constraint (Rego)",
+   "onv": "Hold for BPA; breaker trips"
+  },
+  "CON-031": {
+   "name": "Brief composition",
+   "logic": "≤ 6 statements; ≥ 1 governed internal source; Candidate items labelled “pending review”",
+   "type": "Schema constraint (JSON Schema)",
+   "onv": "Reject brief"
+  },
+  "CON-032": {
+   "name": "Eligibility inputs",
+   "logic": "features ⊆ approved rule inputs; no protected attributes or close proxies",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block evaluation"
+  },
+  "CON-033": {
+   "name": "Ranking neutrality",
+   "logic": "ranking features ∩ {margin, commission, internal win-loss} = ∅",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block ranking"
+  },
+  "CON-034": {
+   "name": "Savings claims substantiated",
+   "logic": "quoteRef AND assumptions present; stated as a range",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Remove statement"
+  },
+  "CON-035": {
+   "name": "Competitor claims sourced and current",
+   "logic": "sourceURL present AND retrieved ≤ 30 days ago",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Remove statement"
+  },
+  "CON-036": {
+   "name": "Licensed producer for benefits quotes",
+   "logic": "licensedProducer present for the prospect’s state",
+   "type": "Policy constraint (Rego)",
+   "onv": "Hold output"
+  },
+  "CON-037": {
+   "name": "PEO licence disclosed",
+   "logic": "licenceNumber present AND status = Active",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block proposal"
+  },
+  "CON-038": {
+   "name": "CloudEvents envelope",
+   "logic": "id, source, type, subject, time, tenant, correlationId and traceparent present",
+   "type": "Schema constraint (JSON Schema)",
+   "onv": "Reject event"
+  },
+  "CON-039": {
+   "name": "Registered event type",
+   "logic": "type and schema version exist in the event type registry",
+   "type": "Policy constraint (Rego)",
+   "onv": "Reject event"
+  },
+  "CON-040": {
+   "name": "Event authorization",
+   "logic": "producer and consumer authorized for type and tenant",
+   "type": "Policy constraint (Rego)",
+   "onv": "Reject"
+  },
+  "CON-041": {
+   "name": "Idempotency",
+   "logic": "(consumer, event id) processed at most once",
+   "type": "Structural constraint (key)",
+   "onv": "Drop duplicate"
+  },
+  "CON-042": {
+   "name": "Deadline lead time",
+   "logic": "emitted at ≥ the lead time before the statutory or carrier deadline",
+   "type": "Data test (dbt)",
+   "onv": "Escalate"
+  },
+  "CON-043": {
+   "name": "Retry ceiling",
+   "logic": "attempts ≤ 5, then dead-letter",
+   "type": "Runtime guard",
+   "onv": "Dead-letter"
+  },
+  "CON-044": {
+   "name": "Registered agents only",
+   "logic": "agent ∈ registry with owner, tier and breaker profile",
+   "type": "Policy constraint (Rego)",
+   "onv": "Refuse to start"
+  },
+  "CON-045": {
+   "name": "Tool allow-list",
+   "logic": "tool ∈ agent.allowedTools with scope ⊆ granted scope",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block call; count fault"
+  },
+  "CON-046": {
+   "name": "Breaker state gate",
+   "logic": "CLOSED ⇒ designed autonomy; HALF-OPEN ⇒ advise only with human approval; OPEN ⇒ fallback only",
+   "type": "Policy constraint (Rego)",
+   "onv": "Route to fallback"
+  },
+  "CON-047": {
+   "name": "Autonomy promotion preconditions",
+   "logic": "30 consecutive days with MTBH ≥ floor AND 0 hard trips AND owner and council approval",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block promotion"
+  },
+  "CON-048": {
+   "name": "Model and prompt change gate",
+   "logic": "change record present AND probes pass in STG",
+   "type": "Runtime guard",
+   "onv": "Block deployment"
+  },
+  "CON-049": {
+   "name": "No training on tenant data",
+   "logic": "training = false AND retention ≤ contractual limit",
+   "type": "Policy constraint (Rego)",
+   "onv": "Block provider use"
+  },
+  "CON-050": {
+   "name": "Complete baseline record",
+   "logic": "versions pinned in all six layers AND golden claim fingerprint AND scores present",
+   "type": "Structural constraint (SHACL)",
+   "onv": "Reject baseline"
+  },
+  "CON-051": {
+   "name": "Waiver bounds",
+   "logic": "expiry ≤ 90 days from approval AND target rule type ≠ statutory Prohibition",
+   "type": "Policy constraint (Rego)",
+   "onv": "Reject waiver"
+  },
+  "CTL-001": {
+   "name": "Obligation-to-Control Mapping",
+   "logic": "Map it to ≥ 1 control objective (ISO/IEC 27001 Annex A, SOC 2 TSC or NIST 800-53) with owner, test procedure and frequency",
+   "type": "Structural Invariant"
+  },
+  "CTL-002": {
+   "name": "Automated Control Tests and Findings",
+   "logic": "Automated tests emit evidence events; a failing test raises a finding within 24 h with owner and due date",
+   "type": "Obligation"
+  },
+  "CTL-003": {
+   "name": "Control Evidence Retention",
+   "logic": "Store evidence immutably (GOV-022) for 7 years with the control, period and test result",
+   "type": "Obligation"
+  },
+  "CTL-004": {
+   "name": "Statement of Applicability for the Advisor",
+   "logic": "Maintain a Statement of Applicability listing each Annex A control as applicable or excluded, with justification and implementation status",
+   "type": "Obligation"
+  },
+  "CTL-005": {
+   "name": "Third-Party Source and Model Provider Due Diligence",
+   "logic": "Assess security, privacy, licence and data-use terms before use; re-assess annually; record in the supplier register",
+   "type": "Obligation"
+  },
+  "CTL-006": {
+   "name": "Secure Agent Development Lifecycle",
+   "logic": "Threat-model (incl. prompt injection and data leakage), code review, SAST/DAST and an AI red-team test before PRD",
+   "type": "Obligation"
+  },
+  "CTL-007": {
+   "name": "Agent Action Logging",
+   "logic": "Log actor, agent, tool, context bundle, rule versions, inputs by reference and output hash; logs tamper-evident (GOV-022)",
+   "type": "Obligation"
+  },
+  "CTL-008": {
+   "name": "Untrusted Content Boundary",
+   "logic": "Treat retrieved content as data only; it can never change agent instructions, tools or entitlements; strip active content before extraction",
+   "type": "Prohibition"
+  },
+  "CTL-009": {
+   "name": "Record of Processing for Prospect Data",
+   "logic": "Maintain a record of processing: purposes, categories, retention, recipients, transfers; privacy impact assessment before G2",
+   "type": "Obligation"
+  },
+  "CTL-010": {
+   "name": "No Model Training on Tenant Data",
+   "logic": "Tenant and prospect data are never used to train or fine-tune third-party models; provider retention set to zero or contractually limited",
+   "type": "Prohibition"
+  },
+  "CTL-011": {
+   "name": "AI and Data Incident Handling",
+   "logic": "Open an incident within 1 h; assess notification duties under applicable state breach laws within 72 h; preserve evidence",
+   "type": "Obligation"
+  },
+  "CTL-012": {
+   "name": "Advisor Role Recertification",
+   "logic": "Owners recertify every BPA, steward and admin role on the advisor quarterly; unconfirmed access removed within 5 business days",
+   "type": "Business Logic"
+  },
+  "CTL-013": {
+   "name": "Segregation of Duties for Rules and Agents",
+   "logic": "Author, approver and deployer must be different people; emergency changes reviewed within 2 business days",
+   "type": "Structural Invariant"
+  },
+  "CTL-014": {
+   "name": "Model and Prompt Change Control",
+   "logic": "Raise a change record, re-run the decision-question probes and breaker tests in STG, and promote only on pass",
+   "type": "Obligation"
+  },
+  "CTL-015": {
+   "name": "Census Data Encryption and Masking",
+   "logic": "Encrypt at rest and in transit (TEC-009); mask direct identifiers in every view except quoting; no census data in logs or events",
+   "type": "Structural Invariant"
+  },
+  "DEC-001": {
+   "name": "Decision Rights Matrix",
+   "logic": "Each decision type names who may decide (persona, BPA, pricing desk, system) and value limits; attempts outside rights are blocked",
+   "type": "Structural Invariant"
+  },
+  "DEC-002": {
+   "name": "Option Completeness",
+   "logic": "Present every option the rules allow, including “do nothing”; an option may be removed only by a cited rule",
+   "type": "Obligation"
+  },
+  "DEC-003": {
+   "name": "Option Evidence Sufficiency",
+   "logic": "Each option states its effect, downstream events, risks and the outcome it binds, each cited; options missing any element are labelled incomplete",
+   "type": "Threshold"
+  },
+  "DEC-004": {
+   "name": "No Automated Binding Commitments",
+   "logic": "The advisor may recommend only; a human with decision rights confirms through the Simplex gate",
+   "type": "Prohibition"
+  },
+  "DEC-005": {
+   "name": "Recommendation Neutrality and Disclosure",
+   "logic": "Ranking criteria are disclosed; internal margin and commission may not influence ranking (EXT-006); any conflict of interest disclosed",
+   "type": "Obligation"
+  },
+  "DEC-006": {
+   "name": "Immutable Decision Record",
+   "logic": "Store context bundle, options shown, option chosen, actor, rule versions, brief hash, bound outcome and time as an immutable isp-dec record",
+   "type": "Structural Invariant"
+  },
+  "DEC-007": {
+   "name": "Reversibility Classification",
+   "logic": "Classify as reversible, costly to reverse, or irreversible; costly and irreversible decisions require human confirmation and a UCA check",
+   "type": "Business Logic"
+  },
+  "DEC-008": {
+   "name": "Override With Reason",
+   "logic": "Override allowed with a reason code; overrides feed value-gap analysis and the agent’s breaker statistics",
+   "type": "Permission"
+  },
+  "DEC-009": {
+   "name": "Tier-H Decision Confirmation",
+   "logic": "Grounding ≥ 0.90 and no open breaker on the decision path; otherwise the brief is held for BPA confirmation",
+   "type": "Threshold"
+  },
+  "DEC-010": {
+   "name": "AI Disclosure to Personas",
+   "logic": "Label briefs as AI-assembled, show sources, and offer a human (BPA) at every decision",
+   "type": "Obligation"
+  },
+  "DEC-011": {
+   "name": "Adverse Outcome Explanation",
+   "logic": "Give the reason, the rule cited and what would change the outcome",
+   "type": "Obligation"
+  },
+  "DEC-012": {
+   "name": "Eligibility Decided by Rules Only",
+   "logic": "Use SSOT eligibility and underwriting rules only; no model inference from employee characteristics; protected characteristics never used except as a statute requires",
+   "type": "Prohibition"
+  },
+  "EVT-001": {
+   "name": "CloudEvents Envelope",
+   "logic": "Use CloudEvents 1.0 (id, source, type, subject, time) plus extensions: tenant, persona, decisionId, ruleVersion, correlationId, traceparent",
+   "type": "Structural Invariant"
+  },
+  "EVT-002": {
+   "name": "Event Type Registry",
+   "logic": "Register type, JSON Schema, owner, producers, consumers and data classification in the SSOT; unregistered types are rejected by the broker",
+   "type": "Structural Invariant"
+  },
+  "EVT-003": {
+   "name": "Idempotent Consumers",
+   "logic": "Deduplicate by event id; side effects are idempotent so redelivery never repeats an action",
+   "type": "Structural Invariant"
+  },
+  "EVT-004": {
+   "name": "Ordering and Causation",
+   "logic": "Preserve order per subject; every event carries causationId and correlationId so a decision’s full chain can be traced",
+   "type": "Structural Invariant"
+  },
+  "EVT-005": {
+   "name": "Transactional Outbox",
+   "logic": "Write the state change and the event in one transaction (outbox); publish from the outbox",
+   "type": "Structural Invariant"
+  },
+  "EVT-006": {
+   "name": "Saga With Compensation",
+   "logic": "Each step declares its compensating action and timeout; a failed step triggers compensation of completed steps",
+   "type": "Business Logic"
+  },
+  "EVT-007": {
+   "name": "Retry and Dead-Letter",
+   "logic": "Retry with exponential backoff up to 5 times, then dead-letter; dead letters triaged within 1 business day",
+   "type": "Threshold"
+  },
+  "EVT-008": {
+   "name": "Deadline Events From SSOT Rules",
+   "logic": "Emit scheduled events with lead time (e.g. carrier 834 cut-off minus 10 business days) so decisions and tasks are raised before the deadline",
+   "type": "Business Logic"
+  },
+  "EVT-009": {
+   "name": "Event Authorization",
+   "logic": "Authorize per event type and tenant (ABAC); cross-tenant subscriptions are prohibited",
+   "type": "Structural Invariant"
+  },
+  "EVT-010": {
+   "name": "References, Not Payloads",
+   "logic": "Events carry URIs and claim-check tokens, never PII or PHI payloads",
+   "type": "Prohibition"
+  },
+  "EVT-011": {
+   "name": "Event Retention and Replay",
+   "logic": "Retain 13 months for replay; replayed events are tagged and never re-trigger external side effects",
+   "type": "Obligation"
+  },
+  "EVT-012": {
+   "name": "Knowledge-Layer Change Events",
+   "logic": "Emit a typed change event naming the changed resource and version; Impact Analyzer subscribes (EXT-016)",
+   "type": "Obligation"
+  },
+  "EVT-013": {
+   "name": "SLA Timers and Escalation",
+   "logic": "Start a timer; on breach emit an escalation event to the next owner",
+   "type": "Threshold"
+  },
+  "EVT-014": {
+   "name": "Rule Triggers as Event Patterns",
+   "logic": "Express the trigger as a registered event pattern so the rule is evaluated when the event occurs, not by polling",
+   "type": "Structural Invariant"
+  },
+  "EXT-001": {
+   "name": "Canonical Content Identity",
+   "logic": "URI = source system + native item ID + content hash; a new version links with prov:wasRevisionOf; duplicates across sources collapse to one isp-cnt:ContentObject",
+   "type": "Structural Invariant"
+  },
+  "EXT-002": {
+   "name": "Classification Confidence Floor",
+   "logic": "Accept at confidence ≥ 0.80; 0.60–0.79 held as Candidate for steward review; below 0.60 left unclassified",
+   "type": "Threshold"
+  },
+  "EXT-003": {
+   "name": "PII and Consent Gate",
+   "logic": "Do not publish or assemble content containing PII unless a consent record is attached; quarantine the item and notify its owner",
+   "type": "Prohibition"
+  },
+  "EXT-004": {
+   "name": "Third-Party Content Use",
+   "logic": "Store facts and short summaries with a source link; never reproduce third-party text verbatim to a persona; honor robots.txt and license terms",
+   "type": "Prohibition"
+  },
+  "EXT-005": {
+   "name": "Freshness and Expiry by Content Type",
+   "logic": "validUntil from the source, else by type: competitor offers 30 days, rate sheets plan year, regulatory items until superseded; expired content leaves assemblies",
+   "type": "Threshold"
+  },
+  "EXT-006": {
+   "name": "Persona Entitlements",
+   "logic": "Allow only parts labelled for that persona and tenant; internal pricing, margin and win-loss content is never assembled for prospect personas",
+   "type": "Structural Invariant"
+  },
+  "EXT-007": {
+   "name": "Claim Span Traceability",
+   "logic": "Every claim records its source span (slide, page, cell or block) and confidence; claims without a span are discarded",
+   "type": "Obligation"
+  },
+  "EXT-008": {
+   "name": "Regulatory Claims Bind to SSOT Rules",
+   "logic": "Bind the claim to an SSOT rule URI before assembly; unbound regulatory claims are held as Candidate and routed to the rule owner",
+   "type": "Obligation"
+  },
+  "EXT-009": {
+   "name": "Mapping Correspondence Minimum",
+   "logic": "exactMatch, or closeMatch ≥ 0.85, for assembly; broader matches may guide search only",
+   "type": "Threshold"
+  },
+  "EXT-010": {
+   "name": "RDF Shape Conformance",
+   "logic": "Validate against isp-cnt SHACL shapes; violations block publish; every write stamped with KGCL WHO/WHAT/WHEN/WHERE/WHY",
+   "type": "Structural Invariant"
+  },
+  "EXT-011": {
+   "name": "Federated Query Scope",
+   "logic": "Scope every query by the context bundle (persona, tenant, jurisdiction, stage); queries run in place through the virtual graph",
+   "type": "Business Logic"
+  },
+  "EXT-012": {
+   "name": "Grounding Threshold for Briefs",
+   "logic": "Every statement cites a claim; grounding ≥ 0.80 (≥ 0.90 for tier-H decision questions) or the breaker trips and the question routes to a BPA",
+   "type": "Threshold"
+  },
+  "EXT-013": {
+   "name": "Brief Composition",
+   "logic": "Use the persona template; at most 6 statements; at least one governed internal source; Candidate items labelled “pending review”",
+   "type": "Business Logic"
+  },
+  "EXT-014": {
+   "name": "Decisions Bind Desired Outcomes",
+   "logic": "Bind at least one desired outcome to a Released metric card with target and checkpoint; irreversible actions pass the Simplex gate",
+   "type": "Structural Invariant"
+  },
+  "EXT-015": {
+   "name": "Value-Gap and Causal Method",
+   "logic": "Compare desired vs delivered per job step over a 90-day window; causal estimates state the DAG, assumptions and interval; findings advisory until a human accepts them",
+   "type": "Business Logic"
+  },
+  "EXT-016": {
+   "name": "Incremental Refresh Scope",
+   "logic": "Refresh only nodes in the impact set; withdraw affected briefs within 1 hour; full rebuild only on a MAJOR ontology version",
+   "type": "Business Logic"
+  },
+  "GOD-001": {
+   "name": "Policy Decision Request Contract",
+   "logic": "A Policy Decision Point returns permit/deny, obligations, rule IDs and versions, and an explanation; Policy Enforcement Points (GOV-012) act only on that answer",
+   "type": "Structural Invariant"
+  },
+  "GOD-002": {
+   "name": "Rule Version Pinning",
+   "logic": "Evaluate only against Released rule versions; record rule IDs and versions in the decision response and in any decision record",
+   "type": "Structural Invariant"
+  },
+  "GOD-003": {
+   "name": "Bitemporal Effective Dating",
+   "logic": "Use the rule version effective on the event date (valid time), recorded against the version known at decision time (transaction time)",
+   "type": "Business Logic"
+  },
+  "GOD-004": {
+   "name": "Explanation Obligation",
+   "logic": "Return a plain-language reason and the citation (rule ID, statute or standard) for every permit, deny or obligation",
+   "type": "Obligation"
+  },
+  "GOD-005": {
+   "name": "Time-Boxed Policy Waivers",
+   "logic": "A waiver names scope, reason, approver, compensating control and expiry ≤ 90 days; it expires automatically and every use is logged",
+   "type": "Permission"
+  },
+  "GOD-006": {
+   "name": "Compiled Policy Test Gate",
+   "logic": "Promotion to PRD requires 100% scenario tests passing, including the decision-question probes affected by the rule",
+   "type": "Structural Invariant"
+  },
+  "GOD-007": {
+   "name": "Rule Ownership and Review Cadence",
+   "logic": "Every rule has a named owner; reviewed within 12 months or within 10 business days of a change to its source",
+   "type": "Obligation"
+  },
+  "GOD-008": {
+   "name": "Pre-Release Impact Check",
+   "logic": "Impact Analyzer lists affected decision questions, briefs and decisions before approval; tier-H impacts need SME sign-off",
+   "type": "Obligation"
+  },
+  "GOD-009": {
+   "name": "Policy Decision Latency and Fail-Closed",
+   "logic": "p95 latency ≤ 50 ms; on timeout or error, Prohibitions and access rules fail closed (deny) and the event is logged",
+   "type": "Threshold"
+  },
+  "GOD-010": {
+   "name": "Jurisdiction Resolution for Requests",
+   "logic": "Resolve jurisdictions through GOV-007; if a work location is ambiguous (e.g. remote), apply the most-stringent candidate jurisdiction and flag for confirmation",
+   "type": "Business Logic"
+  },
+  "GOV-001": {
+   "name": "Definition-Time vs Run-Time Separation",
+   "logic": "Author canonical truth once in RDF/OWL/LKIF/SHACL (Definition-Time); compile and execute against OPA/Rego, dbt/SQL, and agentic guardrails (Run-Time)",
+   "type": "Structural Invariant"
+  },
+  "GOV-003": {
+   "name": "DEV/STG/PRD Ontology Lifecycle Gate",
+   "logic": "Require promotion gate approval at each of DEV, STG, and PRD stages before production activation",
+   "type": "Structural Invariant"
+  },
+  "GOV-006": {
+   "name": "Persistent Mapping Graph - Correspondence & Anti-Drift Lineage",
+   "logic": "Maintain 6 correspondence types between canonical concepts and physical implementations, monitored by anti-drift lineage agents",
+   "type": "Structural Invariant"
+  },
+  "GOV-007": {
+   "name": "Identity & URI Resolution Registry",
+   "logic": "Resolve cross-silo identifiers into canonical Enterprise Entity IDs enforcing the ISO 8000 Uniqueness invariant",
+   "type": "Structural Invariant"
+  },
+  "GOV-008": {
+   "name": "Rule Harmonization Engine - Cross-Jurisdiction Conflict Detection",
+   "logic": "Run SPARQL scan across rule graph: SELECT jurisdiction, MAX(threshold) AS effective threshold; flag overlaps before publication",
+   "type": "Business Logic"
+  },
+  "GOV-009": {
+   "name": "Most-Stringent-Rule / Highest-Employee-Protection Precedence Principle",
+   "logic": "Enforce the rule offering the greatest employee protection / highest applicable standard as the effective rule",
+   "type": "Structural Invariant"
+  },
+  "GOV-011": {
+   "name": "Requirement Context Bundle (RCB) - 5D Request Decomposition",
+   "logic": "Decompose request into WHO (persona/tenant/target), WHAT (entity/action), WHEN (period/tax year), WHERE (jurisdiction/domain), WHY (intent/mandate) before execution",
+   "type": "Business Logic"
+  },
+  "GOV-012": {
+   "name": "Policy Enforcement Points (PEPs)",
+   "logic": "Evaluate transaction against domain-specific PEPs (e.g., Tax & Payroll PEP, Security PEP) before allowing execution",
+   "type": "Structural Invariant"
+  },
+  "GOV-013": {
+   "name": "STPA/STAMP Unsafe Control Action (UCA) Verification",
+   "logic": "Verify no Unsafe Control Action occurs (e.g., negative wage deduction, duplicate disbursement) before directive compilation",
+   "type": "Structural Invariant"
+  },
+  "GOV-014": {
+   "name": "Circuit Breaker & MTBH Monitoring",
+   "logic": "Track Mean Time Between Hallucinations (MTBH); trip circuit breaker and isolate fault domain when threshold is breached",
+   "type": "Structural Invariant"
+  },
+  "GOV-015": {
+   "name": "Simplex Action Gate - Irreversible/Destructive Action Interception",
+   "logic": "Halt autonomous execution and require human-in-the-loop authorization before release",
+   "type": "Structural Invariant"
+  },
+  "GOV-016": {
+   "name": "Simplex Action Gate Threshold - Batch Tax Remittance Example",
+   "logic": "Suspend automated fund disbursement and generate alert for human-in-the-loop authorization",
+   "type": "Threshold"
+  },
+  "GOV-017": {
+   "name": "LKIF Deontic Norm + SHACL Shape Dual Representation",
+   "logic": "Represent the rule as a paired LKIF Deontic statement (permission/obligation/prohibition) plus a SHACL structural invariant shape",
+   "type": "Structural Invariant"
+  },
+  "GOV-018": {
+   "name": "Provenance & Change Management - ORSD + KGCL Metadata",
+   "logic": "Bind the change to an ORSD and stamp it with KGCL metadata capturing WHO, WHAT, WHEN, WHERE, WHY",
+   "type": "Structural Invariant"
+  },
+  "GOV-019": {
+   "name": "6-Stage SHACL-to-Policy Compilation Pipeline",
+   "logic": "Execute: 1) Shape Parser, 2) Constraint Extractor, 3) Harmonization Check, 4) Target Mapper, 5) Policy Generator, 6) KGCL Version & Publish",
+   "type": "Business Logic"
+  },
+  "GOV-020": {
+   "name": "Dual Runtime Target Compilation",
+   "logic": "Route batch/data-pipeline enforcement to dbt/SQL (Engine A) and real-time API/gateway enforcement to OPA/Rego (Engine B)",
+   "type": "Business Logic"
+  },
+  "GOV-021": {
+   "name": "AI Agent Guardrails - Compiled JSON Schema Constraints",
+   "logic": "Inject compiled JSON Schema constraints (Step 5 Compiled AI Directive) at the gateway to prevent hallucinated answers",
+   "type": "Structural Invariant"
+  },
+  "GOV-022": {
+   "name": "Complete Audit Traceability via Immutable URI",
+   "logic": "Attach an immutable URI on every rejected/calculated record linking back to the specific statutory LKIF/SHACL definition that governed it",
+   "type": "Structural Invariant"
+  },
+  "GOV-023": {
+   "name": "Single Source of Truth (SSOT) Propagation",
+   "logic": "Update the single canonical OWL/SHACL triple once; compilation pipeline (GOV-019) automatically propagates the change to all downstream database engines and microservices",
+   "type": "Structural Invariant"
+  },
+  "GOV-024": {
+   "name": "Zero Graph Latency Runtime Principle",
+   "logic": "Execute compiled policy (OPA/Rego, dbt/SQL) directly, without invoking live graph reasoning, to achieve sub-millisecond/microsecond evaluation on client records",
+   "type": "Structural Invariant"
+  },
+  "MET-001": {
+   "name": "Client Loss Dated at Last Payroll Processed",
+   "logic": "A client counts as lost on the date of its last processed payroll; notices not yet effective are reported as Pending Terminations",
+   "type": "Business Logic"
+  },
+  "MET-002": {
+   "name": "Transfers Between Client Holons Are Not Losses",
+   "logic": "Record as a Consolidation Transfer when the successor Enterprise Entity ID is an active client; exclude from losses",
+   "type": "Business Logic"
+  },
+  "MET-003": {
+   "name": "First-90-Day Exits Classified as Onboarding Fallout",
+   "logic": "Exclude from retention losses; report under the Onboarding Fallout metric",
+   "type": "Business Logic"
+  },
+  "MET-004": {
+   "name": "HR360 to HRScale Migrations Are Product Moves",
+   "logic": "Keep the client active and record a product-move event instead of a loss",
+   "type": "Business Logic"
+  },
+  "MET-005": {
+   "name": "Retention Roll-Up Uses Ratio of Sums",
+   "logic": "Sum losses and starting clients at each level, then divide; a SHACL shape rejects any aggregate that averages child percentages",
+   "type": "Structural Invariant"
+  },
+  "MET-006": {
+   "name": "Paid Worksite Employee Definition",
+   "logic": "A worksite employee counts as paid in a month when at least one payroll was processed for them",
+   "type": "Business Logic"
+  },
+  "MET-007": {
+   "name": "Period WSE Value Is the Average of Monthly Counts",
+   "logic": "Period value = mean of the monthly paid-WSE counts; never a point-in-time snapshot",
+   "type": "Business Logic"
+  },
+  "MET-008": {
+   "name": "COBRA-Only Participants and 1099 Contractors Excluded from WSE Counts",
+   "logic": "Only co-employed worksite employees count; COBRA-only participants and workers classified as contractors are excluded",
+   "type": "Structural Invariant"
+  },
+  "MET-009": {
+   "name": "Survey Response Window: 7 Days From Case Close",
+   "logic": "Count a response only if it arrives within 7 days of the case close date",
+   "type": "Business Logic"
+  },
+  "MET-010": {
+   "name": "One Response per Case, Latest Wins",
+   "logic": "Keep only the latest valid response per case",
+   "type": "Structural Invariant"
+  },
+  "MET-011": {
+   "name": "Satisfied Means Top-Two Box (4 or 5)",
+   "logic": "Rating >= 4 counts as satisfied",
+   "type": "Threshold"
+  },
+  "MET-012": {
+   "name": "Satisfaction Roll-Up Weighted by Responses",
+   "logic": "Sum satisfied and valid responses at each level, then divide; averaging child scores is rejected",
+   "type": "Structural Invariant"
+  },
+  "MET-013": {
+   "name": "Small-Cut Suppression (k >= 5)",
+   "logic": "Suppress the value, including cuts produced by filtering or differencing",
+   "type": "Threshold"
+  },
+  "MET-014": {
+   "name": "Decisions Must Bind Outcomes to Released Metric Cards",
+   "logic": "At least one outcome with a target and checkpoint date must reference a Released Metric Definition Card; otherwise the decision is flagged unmeasurable",
+   "type": "Structural Invariant"
+  },
+  "PAY-012": {
+   "name": "SUTA Experience Rating Transfer / Allocation",
+   "logic": "Allocate SUTA tax liability and experience rating per worksite jurisdiction",
+   "type": "Obligation"
+  },
+  "PAY-021": {
+   "name": "Federal Form 941 Quarterly Filing",
+   "logic": "File Form 941 and remit federal payroll taxes within IRS deadline",
+   "type": "Reporting Deadline"
+  },
+  "PAY-026": {
+   "name": "State/Local Minimum Wage Baseline",
+   "logic": "Effective minimum wage = MAX(federal, state, local) applicable to worksite",
+   "type": "Threshold"
+  },
+  "PAY-027": {
+   "name": "SUTA/FUTA Annual Wage Base Ceiling",
+   "logic": "Apply versioned annual SUTA/FUTA wage base ceiling per tax year via temporal SWRL rules",
+   "type": "Threshold"
+  },
+  "PAY-028": {
+   "name": "Simplex Action Gate - High-Value Batch Tax Remittance",
+   "logic": "Suspend automated fund disbursement; require human-in-the-loop authorization before release",
+   "type": "Structural Invariant"
+  },
+  "PEO-006": {
+   "name": "Client Allocation Matrix - Statutory Responsibility & Liability Division",
+   "logic": "Formalize division of statutory responsibilities and liability limits between PEO and client within the MSA",
+   "type": "Structural Invariant"
+  },
+  "PEO-007": {
+   "name": "State PEO Licensing Board Registration Compliance",
+   "logic": "Maintain active state PEO license/registration in each required state",
+   "type": "Obligation"
+  },
+  "QBD-001": {
+   "name": "Decision-Question Baseline Record",
+   "logic": "Freeze a baseline record: data, content, knowledge, mapping and transformation versions; answer fingerprint; scores; breaker states",
+   "type": "Structural Invariant"
+  },
+  "QBD-002": {
+   "name": "Change Severity Classification",
+   "logic": "Benign = equivalent answer; Material = claim changed and explained by a Released upstream change; Breaking = changed without cause, missing golden claim, contradiction or grounding below floor",
+   "type": "Business Logic"
+  },
+  "QBD-003": {
+   "name": "Risk Score and Routing",
+   "logic": "Score = tier (H3, M2, L1) × severity (1–3); 1–2 log and re-baseline; 3–4 SME review; 6–9 withdraw brief and open or half-open lineage breakers",
+   "type": "Threshold"
+  },
+  "QBD-004": {
+   "name": "Critical Quality Attribute Criteria",
+   "logic": "Data freshness, completeness, validity; content version, validity window, labels; ontology conformance and rule currency; mapping status and precision ≥ 0.95; replay hash; grounding, equivalence, option integrity and citation precision ≥ 0.95",
+   "type": "Threshold"
+  },
+  "QBD-005": {
+   "name": "Re-baseline Approval",
+   "logic": "SME approves the new answer; the old baseline is retained as history (never overwritten)",
+   "type": "Obligation"
+  },
+  "SAL-001": {
+   "name": "Licensed Producer for Benefits Quotes",
+   "logic": "Deliver through, or with sign-off by, an agent licensed in the prospect’s state; the advisor states it is not providing insurance advice",
+   "type": "Obligation"
+  },
+  "SAL-002": {
+   "name": "Savings Claim Substantiation",
+   "logic": "Cite the quote data and assumptions; show ranges, not guarantees; no claim without substantiation on file",
+   "type": "Obligation"
+  },
+  "SAL-003": {
+   "name": "Comparative Claims About Competitors",
+   "logic": "Facts only, sourced and dated; no unverifiable superiority claims; expired comparisons withdrawn (EXT-005)",
+   "type": "Prohibition"
+  },
+  "SAL-004": {
+   "name": "Outreach Consent and Opt-Out",
+   "logic": "Record consent; honour opt-outs across every agent within 10 business days (email) or immediately (calls and texts)",
+   "type": "Obligation"
+  },
+  "SAL-005": {
+   "name": "Indicative vs Binding Quote Authority",
+   "logic": "Indicative quotes are labelled with validity date; binding quotes require pricing approval within the authority matrix (DEC-001)",
+   "type": "Business Logic"
+  },
+  "SAL-006": {
+   "name": "PEO License Disclosure in Proposals",
+   "logic": "Include the PEO’s registration or licence number and status for that state; block the proposal if registration has lapsed",
+   "type": "Obligation"
+  },
+  "SAL-007": {
+   "name": "Statutory Allocation Disclosure",
+   "logic": "Include the statutory allocation of employer responsibilities for each of the prospect’s states; allocation brief must match contract clauses",
+   "type": "Obligation"
+  },
+  "SAL-008": {
+   "name": "Electronic Signature Consent",
+   "logic": "Obtain and record consent to electronic records before signature",
+   "type": "Obligation"
+  },
+  "SAL-009": {
+   "name": "Census Data Minimum for Quoting",
+   "logic": "Accept only fields needed to quote (age band or DOB, ZIP, wage, class code, coverage tier); no SSN or health detail before signature",
+   "type": "Threshold"
+  },
+  "SAL-010": {
+   "name": "Prospect Data Retention",
+   "logic": "Delete or de-identify prospect personal data 24 months after last activity; keep decision records de-identified",
+   "type": "Obligation"
+  },
+  "SAL-011": {
+   "name": "Accessible Persona Experience",
+   "logic": "Meet WCAG 2.2 AA; tested before each release",
+   "type": "Obligation"
+  },
+  "TEC-001": {
+   "name": "Multi-Tenant Data Isolation Model",
+   "logic": "Enforce logical/physical isolation boundaries between client tenants at all data layers",
+   "type": "Structural Invariant"
+  },
+  "TEC-005": {
+   "name": "Data Classification Rules (PII / PHI / Financial)",
+   "logic": "Classify data element as PII, PHI, or financial and apply corresponding handling controls",
+   "type": "Structural Invariant"
+  },
+  "TEC-006": {
+   "name": "State Data Privacy Statute Compliance (CCPA/CPRA and equivalents)",
+   "logic": "Honor statutory consumer rights (access, deletion, opt-out) per applicable state privacy law",
+   "type": "Obligation"
+  },
+  "TEC-007": {
+   "name": "Role-Based Access Control (RBAC) Governance Baseline",
+   "logic": "Grant access strictly per assigned role and attribute policy baseline",
+   "type": "Structural Invariant"
+  },
+  "TEC-008": {
+   "name": "Immutable Audit Log Structure",
+   "logic": "Write immutable, URI-traceable audit log entry for every governed transaction",
+   "type": "Structural Invariant"
+  },
+  "TEC-010": {
+   "name": "Consent Tracking Module",
+   "logic": "Record and enforce consent state for downstream data use",
+   "type": "Business Logic"
+  },
+  "TEC-013": {
+   "name": "SSO/MFA Secure Endpoint Enforcement",
+   "logic": "Require SSO with MFA before granting session access",
+   "type": "Structural Invariant"
+  },
+  "TEC-016": {
+   "name": "Continuous SOC 1/SOC 2 Type II Attestation Cycle",
+   "logic": "Maintain continuous evidence collection supporting rolling Type II attestation periods",
+   "type": "Reporting Deadline"
+  },
+  "TEC-017": {
+   "name": "Vulnerability & Penetration Testing Cadence",
+   "logic": "Execute vulnerability scans and penetration tests; remediate findings per SLA",
+   "type": "Reporting Deadline"
+  },
+  "TEC-018": {
+   "name": "Periodic Access Review",
+   "logic": "Review and recertify user access entitlements; revoke stale/excess access",
+   "type": "Business Logic"
+  },
+  "TEC-019": {
+   "name": "Data Retention & Destruction Schedule",
+   "logic": "Execute automated retention/destruction per schedule tied to data classification",
+   "type": "Obligation"
+  },
+  "TEC-021": {
+   "name": "Compiled Runtime Access Policy - HIPAA PHI Read Rule",
+   "logic": "Default deny; allow only if user.role == BenefitsAdministrator AND user.tenant_id == resource.client_id AND session.mfa_authenticated == true",
+   "type": "Structural Invariant"
+  }
+ },
+ "evals": [
+  {
+   "id": "CA-J1.1-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.1",
+   "question": "Which HR, payroll, benefits and compliance tasks would the PEO take over, and which stay with us?",
+   "type": "ALLOC",
+   "expected": "Task list with owner (PEO · client · shared) and source",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.1-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.1",
+   "question": "How do companies of our size and industry typically change cost and admin time after moving to a PEO?",
+   "type": "COMP",
+   "expected": "Ranges with sample size and citation",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.1-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.1",
+   "question": "Under co-employment, who is the employer of record for payroll taxes, benefits and workers’ comp?",
+   "type": "FACT",
+   "expected": "Per obligation: owner + rule citation",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.1-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.1",
+   "question": "What do we need to provide to get an indicative price?",
+   "type": "PROC",
+   "expected": "Checklist of inputs and formats",
+   "tier": "L"
+  },
+  {
+   "id": "CA-J1.2-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.2",
+   "question": "Are we eligible given our headcount, industry and states?",
+   "type": "ELIG",
+   "expected": "Yes/no per eligibility rule, with rule IDs",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.2-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.2",
+   "question": "Are any of our worksites, roles or employee classes excluded or restricted?",
+   "type": "ELIG",
+   "expected": "List of exclusions with rule and remedy",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.2-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.2",
+   "question": "Which of our states require PEO registration or licensing, and is the PEO licensed there?",
+   "type": "FACT",
+   "expected": "Per-state table: requirement, licence status, as-of date",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.2-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.2",
+   "question": "What happens to our current benefit plans and broker relationship if we proceed?",
+   "type": "FACT",
+   "expected": "Plain statement with conditions and dates",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.3-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.3",
+   "question": "What is our all-in cost today versus the PEO bundle, line by line (admin fee, workers’ comp, SUTA, benefits)?",
+   "type": "COMP",
+   "expected": "Table of cost lines, current vs PEO, each cited",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.3-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.3",
+   "question": "How does cost change if we grow to 150 employees, and which thresholds do we cross?",
+   "type": "SCEN",
+   "expected": "Cost at each headcount + thresholds crossed (rule IDs)",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.3-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.3",
+   "question": "Which cost lines are estimates and which are binding, and what could change them before signing?",
+   "type": "RISK",
+   "expected": "Per line: status, assumption, expiry date",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.3-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.3",
+   "question": "How does the PEO compare with the competitor offer we received?",
+   "type": "COMP",
+   "expected": "Facts-only comparison with source links (EXT-004)",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.4-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.4",
+   "question": "For each of our states, which employer responsibilities does the PEO carry, which do we keep, and which are shared?",
+   "type": "ALLOC",
+   "expected": "Per state and requirement: owner + clause reference",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.4-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.4",
+   "question": "Which liabilities transfer (tax filings, workers’ comp claims, EPLI), and from what date?",
+   "type": "RISK",
+   "expected": "Liability, new owner, effective date, clause",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.4-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.4",
+   "question": "What are the contract term, termination conditions and exit costs?",
+   "type": "FACT",
+   "expected": "Term, notice period, fees, clause references",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.4-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.4",
+   "question": "What service levels does the PEO commit to?",
+   "type": "FACT",
+   "expected": "SLA list with measures and remedies",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.5-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.5",
+   "question": "What is our total first-year cost and the saving or added cost versus today, with a confidence range?",
+   "type": "COMP",
+   "expected": "Totals with range and assumptions",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.5-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.5",
+   "question": "Which risks does the PEO remove for us, and what are they worth in penalties or claims avoided?",
+   "type": "RISK",
+   "expected": "Risk items with value and source (HR Specialist brief)",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.5-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.5",
+   "question": "What would we have to give up or change if we sign (vendors, plans, policies)?",
+   "type": "FACT",
+   "expected": "List of changes with dates",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.5-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.5",
+   "question": "Is anything in the package still pending review or expiring before the signature date?",
+   "type": "RISK",
+   "expected": "Pending and expiring items with owners",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.6-Q1",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.6",
+   "question": "Which payroll date is the safest cut-over, given quarter-end filings and benefit effective dates?",
+   "type": "SCEN",
+   "expected": "Date options ranked with reasons",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.6-Q2",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.6",
+   "question": "What data must we deliver, by when, and in what format?",
+   "type": "PROC",
+   "expected": "Checklist with deadlines and formats",
+   "tier": "M"
+  },
+  {
+   "id": "CA-J1.6-Q3",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.6",
+   "question": "How are year-to-date wages and tax filings handled in the transition quarter?",
+   "type": "FACT",
+   "expected": "Per filing: who files, which period, citation",
+   "tier": "H"
+  },
+  {
+   "id": "CA-J1.6-Q4",
+   "persona": "client_admin",
+   "jobStep": "CA-J1.6",
+   "question": "What is the fallback if the first PEO payroll fails?",
+   "type": "RISK",
+   "expected": "Fallback steps, owner, time to pay",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.1-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.1",
+   "question": "Where do we carry compliance risk today, by topic and state?",
+   "type": "RISK",
+   "expected": "Risk items by topic and jurisdiction with citations",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.1-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.1",
+   "question": "Which of those obligations would the PEO take on, share or leave with us?",
+   "type": "ALLOC",
+   "expected": "Per obligation: owner after the move",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.1-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.1",
+   "question": "Which rule changes in our states take effect in the next 12 months?",
+   "type": "FACT",
+   "expected": "Changes with effective dates and status",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.1-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.1",
+   "question": "What penalties or exposure apply to each risk item?",
+   "type": "RISK",
+   "expected": "Penalty ranges with citations",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.2-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.2",
+   "question": "Which states and localities do our employees work in, including remote staff, and which jurisdiction governs each?",
+   "type": "FACT",
+   "expected": "Employee group → jurisdiction table",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.2-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.2",
+   "question": "Does the PEO cover every one of those jurisdictions today?",
+   "type": "ELIG",
+   "expected": "Covered yes/no per jurisdiction with source",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.2-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.2",
+   "question": "Which state rules change our obligations at our headcount?",
+   "type": "FACT",
+   "expected": "Rules with thresholds and citations",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.2-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.2",
+   "question": "Which coverage gaps would remain our responsibility?",
+   "type": "RISK",
+   "expected": "Gaps with owner and remedy",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.3-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.3",
+   "question": "How do the PEO plans compare with ours on premiums, deductibles and employee contributions?",
+   "type": "COMP",
+   "expected": "Plan-by-plan table with citations",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.3-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.3",
+   "question": "How does each employee’s per-paycheck cost change?",
+   "type": "SCEN",
+   "expected": "Per employee or tier: before, after, difference",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.3-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.3",
+   "question": "Are employees’ current doctors and facilities in network?",
+   "type": "FACT",
+   "expected": "Share in network, list of disruptions",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.3-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.3",
+   "question": "Which elections are limited by waiting periods or carrier rules?",
+   "type": "FACT",
+   "expected": "Limits with rule and dates",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.4-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.4",
+   "question": "Which of our handbook policies map to PEO policies, and which have no match?",
+   "type": "FACT",
+   "expected": "Mapping table with confidence",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.4-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.4",
+   "question": "Where do our policies conflict with PEO policy or state law?",
+   "type": "RISK",
+   "expected": "Conflicts with both texts cited",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.4-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.4",
+   "question": "Which local policies can we keep as addenda?",
+   "type": "ELIG",
+   "expected": "Allowed addenda with conditions",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.4-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.4",
+   "question": "Which employee notices and acknowledgements do the changes require?",
+   "type": "PROC",
+   "expected": "Notices with deadlines and jurisdictions",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.5-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.5",
+   "question": "What risk does the move remove, in penalties avoided or exposure reduced?",
+   "type": "RISK",
+   "expected": "Quantified risk items with citations",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.5-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.5",
+   "question": "What new risks or dependencies does it introduce?",
+   "type": "RISK",
+   "expected": "New risks with owner and mitigation",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.5-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.5",
+   "question": "Which risk items are still unassessed or waiting for a rule owner?",
+   "type": "RISK",
+   "expected": "Open items with owner and due date",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.5-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.5",
+   "question": "How does the recommendation change if we grow or enter a new state?",
+   "type": "SCEN",
+   "expected": "Changes by scenario",
+   "tier": "M"
+  },
+  {
+   "id": "HR-J1.6-Q1",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.6",
+   "question": "Which enrollment window guarantees no coverage gap, given carrier file lead times?",
+   "type": "SCEN",
+   "expected": "Window dates with carrier deadlines",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.6-Q2",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.6",
+   "question": "How are leave and PTO balances, I-9s and personnel files carried over?",
+   "type": "PROC",
+   "expected": "Per record type: method, owner, date",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.6-Q3",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.6",
+   "question": "Which employees need special handling (on leave, COBRA, hired during the transition)?",
+   "type": "RISK",
+   "expected": "Employee groups with actions",
+   "tier": "H"
+  },
+  {
+   "id": "HR-J1.6-Q4",
+   "persona": "hr_specialist",
+   "jobStep": "HR-J1.6",
+   "question": "What goes to employees, in which languages, and when?",
+   "type": "PROC",
+   "expected": "Communication calendar",
+   "tier": "M"
+  }
+ ]
+}

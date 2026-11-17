@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEO Job Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="common.css">
+<style>
+table.mx th,table.mx td{padding:6px 8px;border-bottom:1px solid var(--rule-2);font-size:12.5px}
+table.mx th{font:500 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;text-align:center;white-space:nowrap;background:var(--panel)}
+table.mx th:first-child{text-align:left}
+table.mx td.c{text-align:center}
+table.mx tr.grp td{background:var(--bg);font:600 12px var(--f-display);letter-spacing:.02em;color:var(--ink-2);padding-top:10px}
+table.mx tr.row{cursor:pointer}
+table.mx tr.row:hover td,table.mx tr.row.on td{background:var(--accent-soft)}
+.explorer{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.joblist{max-height:820px;overflow:auto;padding:6px;position:sticky;top:64px}
+.joblist button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto 1fr auto;gap:8px;width:100%;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;align-items:baseline}
+.joblist button:hover{background:var(--bg)}
+.joblist button:focus-visible{outline:2px solid var(--accent)}
+.joblist button[aria-current="true"]{background:var(--accent-soft)}
+.joblist .grp{font:600 11px var(--f-mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;padding:10px 10px 4px}
+.jobdetail{padding:18px;display:grid;gap:14px;min-width:0}
+.jobstmt{font-family:var(--f-display);font-size:26px;font-weight:600;line-height:1.15}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:1000px){.explorer{grid-template-columns:minmax(0,1fr)}.joblist{max-height:300px;position:static}}
+</style></head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">PEO Outcome Benchmark · what clients are trying to get done</div>
+  <h1>Job explorer</h1>
+  <p class="lede">22 core functional jobs across the eight business-model domains, plus four consumption-chain jobs for buying, moving onto, getting help from and renewing an HR partner. Each job is laid out on the universal eight-step job map.</p>
+</div></header>
+<div class="bar" role="region" aria-label="Filters"><div class="wrap">
+  <label class="f" for="f-p">Persona <select id="f-p"><option value="">All personas</option></select></label>
+  <label class="f" for="f-d">Domain <select id="f-d"><option value="">All 8 domains</option></select></label>
+  <label class="f" for="f-t">Theme <select id="f-t"><option value="">All 11 themes</option></select></label>
+  <label class="f" for="f-s">Step <select id="f-s"><option value="">All steps</option></select></label>
+  <input type="search" id="f-q" placeholder="Search outcomes…" aria-label="Search outcome statements">
+  <button class="btn" id="f-reset">Clear filters</button>
+  <span class="small muted mono" id="f-count"></span>
+</div></div>
+<main><div class="wrap">
+<section aria-labelledby="h-e">
+  <div class="sec-head"><div><h2 id="h-e">Job map</h2><p>Pick a job. Outcomes sit at the step where the executor judges success; outcomes outside the current filters are faded.</p></div></div>
+  <div class="explorer">
+    <div class="card joblist" id="joblist" role="list" aria-label="Jobs"></div>
+    <div class="card jobdetail" id="jobdetail" aria-live="polite"></div>
+  </div>
+</section>
+<section aria-labelledby="h-m">
+  <div class="sec-head"><div><h2 id="h-m">Persona × job matrix</h2><p>Who executes each job and who takes part. Click a job to open it above.</p></div>
+  <div class="legend"><span><i class="ex" style="background:var(--ink-2)"></i>Executes (rates its outcomes)</span><span><i class="pa" style="border-color:var(--ink-3)"></i>Takes part</span></div></div>
+  <div class="card scroll"><table class="mx" id="mx"></table></div>
+</section>
+</div></main>
+<script src="data.js"></script><script src="common.js"></script>
+<script>
+H.nav('jobs.html');
+const D=H.D, esc=H.esc, P=H.P, J=H.J, S=H.S, DM=H.DM;
+const st={p:'',d:'',t:'',s:'',q:'',job:J[H.hashGet()]?H.hashGet():'J01'};
+function outPass(o){const j=J[o.job];
+  if(st.p&&!j.ex.includes(st.p)) return false; if(st.d&&!j.dom.includes(st.d)) return false;
+  if(st.t&&o.theme!==st.t) return false; if(st.s&&o.step!==st.s) return false;
+  if(st.q&&!o.t.toLowerCase().includes(st.q.toLowerCase())) return false; return true;}
+function jobPass(j){ if(st.p&&!j.ex.includes(st.p)&&!j.part.includes(st.p)) return false; if(st.d&&!j.dom.includes(st.d)) return false;
+  if(st.t||st.s||st.q) return D.outcomes.some(o=>o.job===j.id&&outPass(o)); return true; }
+const fp=document.getElementById('f-p'),fd=document.getElementById('f-d'),ft=document.getElementById('f-t'),fs=document.getElementById('f-s'),fq=document.getElementById('f-q');
+D.personas.forEach(p=>fp.add(new Option(p.name,p.id)));
+[...D.domains].sort((a,b)=>a.n-b.n).forEach(d=>fd.add(new Option(`D${d.n} · ${d.label}`,d.id)));
+D.themes.forEach(t=>ft.add(new Option(t.name+(t.added?' (added)':''),t.name)));
+D.steps.forEach((s,i)=>fs.add(new Option(`${i+1} · ${s.name}`,s.id)));
+fp.onchange=()=>{st.p=fp.value;render();}; fd.onchange=()=>{st.d=fd.value;render();}; ft.onchange=()=>{st.t=ft.value;render();}; fs.onchange=()=>{st.s=fs.value;render();}; fq.oninput=()=>{st.q=fq.value.trim();render();};
+document.getElementById('f-reset').onclick=()=>{st.p=st.d=st.t=st.s=st.q='';fp.value=fd.value=ft.value=fs.value='';fq.value='';render();};
+function openJob(id,scroll){st.job=id;explorer();matrix(); if(scroll) document.getElementById('h-e').scrollIntoView({behavior:'smooth',block:'start'});}
+function explorer(){
+  const list=D.jobs.filter(jobPass);
+  if(list.length&&!list.find(j=>j.id===st.job)) st.job=list[0].id;
+  const L=document.getElementById('joblist');
+  L.innerHTML=list.length?H.groupJobs(list).map(([g,js])=>`<div class="grp">${esc(g.split(' · ')[0])}</div>`+js.map(j=>{const n=D.outcomes.filter(o=>o.job===j.id&&outPass(o)).length;
+    return `<button role="listitem" data-job="${j.id}" aria-current="${st.job===j.id}"><span class="jid">${j.id}</span><span>${esc(j.stmt)}</span><span class="mono small muted">${n}</span></button>`;}).join('')).join(''):'<p class="empty" style="padding:10px">No jobs match these filters.</p>';
+  L.querySelectorAll('button').forEach(b=>b.onclick=()=>openJob(b.dataset.job));
+  const el=document.getElementById('jobdetail');
+  if(!list.length){el.innerHTML='<p class="muted">Clear a filter to see jobs.</p>';return;}
+  const j=J[st.job], outs=D.outcomes.filter(o=>o.job===j.id);
+  const themes=[...new Set(outs.map(o=>o.theme))];
+  el.innerHTML=`
+    <div class="eyebrow">${j.id} · ${j.kind==='core'?'Core functional job':'Consumption-chain job'} · ${outs.length} desired outcomes</div>
+    <div class="jobstmt">${esc(j.stmt)}</div>
+    <div class="meta"><span class="lbl">Executed by</span>${j.ex.map(p=>`<a class="chip" href="personas.html#${p}"><span class="dot" style="background:${H.PCOL[p]}"></span>${esc(P[p].name)}</a>`).join('')}
+      ${j.part.length?`<span class="lbl" style="margin-left:8px">With</span>${j.part.map(p=>`<a class="chip" href="personas.html#${p}"><span class="dot" style="background:transparent;border:2px solid ${H.PCOL[p]}"></span>${esc(P[p].short)}</a>`).join('')}`:''}</div>
+    <div class="meta"><span class="lbl">Domains</span>${j.dom.map(d=>`<span class="chip">D${DM[d].n} · ${esc(DM[d].label)}</span>`).join('')}</div>
+    <div class="meta"><span class="lbl">Themes</span>${themes.map(t=>`<a class="chip" href="themes.html#${H.slug(t)}">${esc(t)}</a>`).join('')}</div>
+    <div><div class="meta" style="margin-bottom:4px"><span class="lbl">Services that address it</span></div><div class="svc">${j.svc.map(s=>`<span title="hr:${s}">${esc(S[s].label)}</span>`).join('')}</div></div>
+    <div class="jobmap">${D.steps.map((s,i)=>{const os=outs.filter(o=>o.step===s.id);
+      return `<div class="step"><div class="sh"><b>${i+1} · ${s.name}</b><span>${esc(s.desc)}</span></div><div style="display:grid;gap:6px;align-content:start">${
+        os.length?os.map(o=>`<div class="oc" style="${outPass(o)?'':'opacity:.35'}"><span class="oid">${o.id}</span>${esc(o.t)}<div class="tags"><span class="chip">${esc(o.theme)}</span><span class="chip">${esc(o.m)}</span></div></div>`).join(''):'<div class="empty">No outcome at this step</div>'}</div></div>`;}).join('')}</div>
+    <div class="links"><a class="btn solid" href="study.html#${j.id}">See this job in the Job Study</a></div>`;
+  H.hashSet(st.job);
+}
+function matrix(){
+  const t=document.getElementById('mx'), list=D.jobs.filter(jobPass);
+  let h=`<thead><tr><th>Job</th>${D.personas.map(p=>`<th title="${esc(p.name)}"><span class="dot" style="background:${H.PCOL[p.id]};margin-right:4px"></span>${esc(p.short)}</th>`).join('')}<th>Outcomes</th></tr></thead><tbody>`;
+  H.groupJobs(list).forEach(([g,js])=>{h+=`<tr class="grp"><td colspan="${D.personas.length+2}">${esc(g)}</td></tr>`;
+    js.forEach(j=>{h+=`<tr class="row ${st.job===j.id?'on':''}" data-job="${j.id}" tabindex="0"><td><span class="jid">${j.id}</span>${esc(j.stmt)}</td>${D.personas.map(p=>`<td class="c">${j.ex.includes(p.id)?`<i class="ex" style="background:${H.PCOL[p.id]}" title="${esc(p.short)} executes"></i>`:j.part.includes(p.id)?`<i class="pa" style="border-color:${H.PCOL[p.id]}" title="${esc(p.short)} takes part"></i>`:''}</td>`).join('')}<td class="c mono">${j.out.length}</td></tr>`;});});
+  if(!list.length) h+=`<tr><td colspan="${D.personas.length+2}" class="muted">No jobs match these filters.</td></tr>`;
+  t.innerHTML=h+'</tbody>';
+  t.querySelectorAll('tr.row').forEach(r=>{const a=()=>openJob(r.dataset.job,true); r.onclick=a; r.onkeydown=e=>{if(e.key==='Enter')a();};});
+}
+function render(){const n=D.outcomes.filter(outPass).length; document.getElementById('f-count').textContent=n<D.outcomes.length?`${n} of ${D.outcomes.length} outcomes`:''; explorer(); matrix();}
+render();
+window.addEventListener('hashchange',()=>{const h=H.hashGet(); if(J[h]&&h!==st.job) openJob(h);});
+</script>
+</body></html>

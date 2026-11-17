@@ -1,0 +1,131 @@
+###############################################################################
+#  PEO compliance topic taxonomy (SKOS) — the vocabulary/taxonomy layer
+#  Used by pes:coversTopic. Labels follow ISO 704 term-formation guidance;
+#  where ISO 30400:2022 (HRM vocabulary) has a matching term, the concept
+#  notes it with skos:note.
+###############################################################################
+@prefix topic:   <https://enablingvalue.com/ontology/peo-es/topics#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+topic:Scheme a skos:ConceptScheme ;
+    skos:prefLabel "PEO Compliance Topics"@en ;
+    dcterms:description "Taxonomy of employment-compliance subject areas used to classify standards and requirements."@en ;
+    dcterms:created "2026-09-30"^^xsd:date ;
+    skos:hasTopConcept topic:WagesAndHours , topic:Leave , topic:EqualOpportunity , topic:Benefits ,
+                       topic:PayrollTax , topic:WorkplaceSafety , topic:WorkforceEligibility ,
+                       topic:LaborRelations , topic:WorkforceChanges , topic:PEORegulation , topic:PrivacyAndAI ,
+                       topic:LocalAuthority .
+
+### Wages and hours
+topic:WagesAndHours a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Wages and hours"@en ;
+    skos:definition "Rules on how much, how and when workers are paid for time worked."@en ;
+    skos:narrower topic:MinimumWage , topic:Overtime , topic:PayTransparency , topic:WagePayment , topic:Scheduling .
+topic:MinimumWage a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:WagesAndHours ;
+    skos:prefLabel "Minimum wage"@en ; skos:altLabel "Wage floor"@en ;
+    skos:definition "The lowest hourly pay an employer may lawfully pay, including tipped-wage rules."@en .
+topic:Overtime a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:WagesAndHours ;
+    skos:prefLabel "Overtime and exemptions"@en ;
+    skos:definition "Premium pay for hours beyond a threshold and the salary and duties tests that exempt some roles."@en .
+topic:PayTransparency a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:WagesAndHours ;
+    skos:prefLabel "Pay transparency and equity"@en ; skos:altLabel "Pay range disclosure"@en ;
+    skos:definition "Duties to disclose pay ranges and to pay equally for substantially similar work."@en .
+topic:WagePayment a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:WagesAndHours ;
+    skos:prefLabel "Wage payment and final pay"@en ;
+    skos:definition "Paydays, pay statements, deductions and final paychecks."@en .
+topic:Scheduling a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:WagesAndHours ;
+    skos:prefLabel "Predictive scheduling"@en ; skos:altLabel "Fair workweek"@en ;
+    skos:definition "Advance notice of work schedules and premiums for late changes."@en .
+
+### Leave
+topic:Leave a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Leave"@en ;
+    skos:definition "Time away from work that employers must allow, paid or unpaid."@en ;
+    skos:note "ISO 30400:2022 defines related workforce terms; leave types here follow US statutory usage."@en ;
+    skos:narrower topic:PaidSickLeave , topic:FamilyMedicalLeave , topic:PrenatalLeave , topic:MilitaryLeave .
+topic:PaidSickLeave a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Leave ;
+    skos:prefLabel "Paid sick and any-purpose leave"@en ; skos:altLabel "Earned sick time"@en , "Paid time off"@en ;
+    skos:definition "Accrued paid time off usable for illness, safety reasons or, under some laws, any reason."@en .
+topic:FamilyMedicalLeave a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Leave ;
+    skos:prefLabel "Family and medical leave"@en ;
+    skos:definition "Job-protected leave for a serious health condition, a new child, or caring for family."@en .
+topic:PrenatalLeave a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Leave ;
+    skos:prefLabel "Prenatal leave"@en ;
+    skos:definition "Paid time for pregnancy-related medical care."@en .
+topic:MilitaryLeave a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Leave ;
+    skos:prefLabel "Military leave and reemployment"@en .
+
+### Equal employment opportunity
+topic:EqualOpportunity a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Equal employment opportunity"@en ; skos:altLabel "EEO"@en ;
+    skos:definition "Freedom from discrimination, harassment and retaliation, and duties to accommodate."@en ;
+    skos:narrower topic:AntiDiscrimination , topic:Accommodation .
+topic:AntiDiscrimination a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:EqualOpportunity ;
+    skos:prefLabel "Anti-discrimination"@en ;
+    skos:definition "Bans on adverse treatment because of a protected characteristic."@en .
+topic:Accommodation a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:EqualOpportunity ;
+    skos:prefLabel "Reasonable accommodation"@en ;
+    skos:definition "Adjustments for disability, pregnancy or religion unless they cause undue hardship."@en .
+
+### Benefits
+topic:Benefits a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Benefits"@en ;
+    skos:definition "Employer-sponsored health, retirement and welfare plans."@en ;
+    skos:narrower topic:HealthCoverage , topic:RetirementPlans , topic:ContinuationCoverage .
+topic:HealthCoverage a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Benefits ;
+    skos:prefLabel "Health coverage mandate"@en .
+topic:RetirementPlans a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Benefits ;
+    skos:prefLabel "Retirement and welfare plans"@en .
+topic:ContinuationCoverage a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:Benefits ;
+    skos:prefLabel "Continuation coverage"@en ; skos:altLabel "COBRA"@en .
+
+### Payroll tax
+topic:PayrollTax a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Payroll tax and reporting"@en ;
+    skos:definition "Withholding, paying and reporting employment taxes, including unemployment insurance."@en .
+
+### Safety
+topic:WorkplaceSafety a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Workplace safety and health"@en .
+
+### Eligibility
+topic:WorkforceEligibility a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Employment eligibility verification"@en ; skos:altLabel "Form I-9"@en .
+
+### Labor relations
+topic:LaborRelations a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Labor relations"@en ;
+    skos:definition "Workers' rights to organize and act together."@en .
+
+### Workforce changes
+topic:WorkforceChanges a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Layoffs and plant closings"@en .
+
+### PEO regulation
+topic:PEORegulation a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "PEO regulation"@en ;
+    skos:definition "Rules specific to professional employer organizations: licensing, certification and co-employment."@en ;
+    skos:narrower topic:PEOLicensing , topic:PEOTaxCertification .
+topic:PEOLicensing a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:PEORegulation ;
+    skos:prefLabel "State PEO licensing"@en .
+topic:PEOTaxCertification a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:PEORegulation ;
+    skos:prefLabel "Federal CPEO certification"@en ;
+    skos:related topic:PayrollTax .
+
+### Privacy and AI
+topic:PrivacyAndAI a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Worker privacy and AI"@en ;
+    skos:narrower topic:BiometricPrivacy , topic:AIInEmployment .
+topic:BiometricPrivacy a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:PrivacyAndAI ;
+    skos:prefLabel "Biometric privacy"@en .
+topic:AIInEmployment a skos:Concept ; skos:inScheme topic:Scheme ; skos:broader topic:PrivacyAndAI ;
+    skos:prefLabel "AI in employment decisions"@en ; skos:altLabel "Automated employment decision tools"@en ;
+    skos:definition "Notice, audit and anti-discrimination duties when software influences hiring, promotion or discharge."@en ;
+    skos:related topic:AntiDiscrimination .
+
+### Local authority
+topic:LocalAuthority a skos:Concept ; skos:inScheme topic:Scheme ; skos:topConceptOf topic:Scheme ;
+    skos:prefLabel "Preemption and local authority"@en ;
+    skos:definition "Which level of government may regulate employment, and which rule wins when levels conflict."@en .

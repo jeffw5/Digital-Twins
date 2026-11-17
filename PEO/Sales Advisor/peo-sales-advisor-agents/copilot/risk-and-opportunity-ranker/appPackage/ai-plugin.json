@@ -1,0 +1,125 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.4/schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Keel Gateway",
+  "description_for_human": "Governed Sales Advisor tools: every call checked against the SSOT.",
+  "contact_email": "sales-advisor@example.com",
+  "namespace": "keelag36",
+  "functions": [
+    {
+      "name": "metrics_query",
+      "description": "Query a published calc at a grain. Cells under k = 5 are suppressed."
+    },
+    {
+      "name": "qbd_get_baseline",
+      "description": "Get the frozen QbD baseline for a decision question."
+    },
+    {
+      "name": "run_risk_and_opportunity_ranker",
+      "description": "Ask the hosted Risk & Opportunity Ranker (AG-36) to do its job: How to rank risks and opportunities. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide."
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{MCP_DA_AUTH_ID}}"
+      },
+      "spec": {
+        "url": "${{KEEL_GATEWAY_MCP_URL}}/agents/AG-36",
+        "mcp_tool_description": {
+          "tools": [
+            {
+              "name": "metrics_query",
+              "title": "Metrics query",
+              "description": "Query a published calc at a grain. Cells under k = 5 are suppressed.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "calc_id": {
+                    "type": "string",
+                    "description": "Calc ID, e.g. CALC-001"
+                  },
+                  "grain": {
+                    "type": "string",
+                    "description": "Grain, e.g. persona x job step x week"
+                  },
+                  "filters": {
+                    "type": "object",
+                    "description": "Filters"
+                  }
+                },
+                "required": [
+                  "calc_id",
+                  "grain"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "qbd_get_baseline",
+              "title": "Qbd get baseline",
+              "description": "Get the frozen QbD baseline for a decision question.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "question_id": {
+                    "type": "string",
+                    "description": "Decision question ID"
+                  }
+                },
+                "required": [
+                  "question_id"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false
+              }
+            },
+            {
+              "name": "run_risk_and_opportunity_ranker",
+              "title": "Run Risk & Opportunity Ranker",
+              "description": "Ask the hosted Risk & Opportunity Ranker (AG-36) to do its job: How to rank risks and opportunities. It runs under its circuit breaker and returns its decision, options considered, citations and whether a person must decide.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "type": "string",
+                    "description": "What you want the agent to do, in plain words"
+                  },
+                  "context": {
+                    "type": "object",
+                    "description": "Optional context: persona, job step, prospect URI, period"
+                  }
+                },
+                "required": [
+                  "request"
+                ]
+              },
+              "annotations": {
+                "readOnlyHint": true,
+                "destructiveHint": false,
+                "idempotentHint": false,
+                "openWorldHint": false
+              }
+            }
+          ]
+        }
+      },
+      "run_for_functions": [
+        "metrics_query",
+        "qbd_get_baseline",
+        "run_risk_and_opportunity_ranker"
+      ]
+    }
+  ]
+}

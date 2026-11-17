@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>My Seven Seas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: employee home. Left: compass navigator; center: the selected sea's workspace with working flows;
+   right: companion dock (Assistant, Mentor, Coach). Same design system as Halyard Future State. */
+:root{
+  --ink:#16202B; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --surface-2:#F5F8FB; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-soft:#DCE9F9; --accent-ink:#FFFFFF;
+  --ok:#1A9A6C; --ok-soft:#D9F3E8; --crit:#D63C3B; --crit-soft:#FBE1E0; --warn:#B57700; --warn-soft:#F8ECD0;
+  --sky:#16202B; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#C9A227; --keel:#1C2A3A; --keel-ink:#EAF0F6;
+  --s1:#1F7FA8; --s2:#C0620F; --s3:#6A4FC4; --s4:#B0457A; --s5:#2E8B57; --s6:#2A78D6; --s7:#C2413B;
+  --c-asst:#2A78D6; --c-ment:#6A4FC4; --c-coach:#2E8B57;
+  --planet:#2E8B57; --people:#B0457A; --profit:#3B5B92;
+  --f-display:'Big Shoulders Display','Arial Narrow',sans-serif; --f-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif; --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --shadow:0 10px 30px rgba(22,32,43,.12);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ink:#EAF0F6; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --surface-2:#1B2531; --line:#2A3644; --line-soft:#1A2430;
+  --accent:#5B9CE6; --accent-soft:#16304D; --accent-ink:#0B1116;
+  --ok:#2FC98D; --ok-soft:#123326; --crit:#E97675; --crit-soft:#3A1A1A; --warn:#E3A93B; --warn-soft:#3A2D12;
+  --sky:#070B10; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#E3BE47; --keel:#0A1119; --keel-ink:#EAF0F6;
+  --s1:#5EBBE0; --s2:#F0A15A; --s3:#A893F0; --s4:#E486B4; --s5:#6CCB94; --s6:#7FB2F0; --s7:#F08A84;
+  --c-asst:#7FB2F0; --c-ment:#A893F0; --c-coach:#6CCB94; --planet:#6CCB94; --people:#E486B4; --profit:#8DA9DE;
+  --shadow:0 12px 34px rgba(0,0,0,.5); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --surface-2:#1B2531; --line:#2A3644; --line-soft:#1A2430;
+  --accent:#5B9CE6; --accent-soft:#16304D; --accent-ink:#0B1116;
+  --ok:#2FC98D; --ok-soft:#123326; --crit:#E97675; --crit-soft:#3A1A1A; --warn:#E3A93B; --warn-soft:#3A2D12;
+  --sky:#070B10; --sky-ink:#EAF0F6; --sky-mute:#93A3B4; --star:#E3BE47; --keel:#0A1119; --keel-ink:#EAF0F6;
+  --s1:#5EBBE0; --s2:#F0A15A; --s3:#A893F0; --s4:#E486B4; --s5:#6CCB94; --s6:#7FB2F0; --s7:#F08A84;
+  --c-asst:#7FB2F0; --c-ment:#A893F0; --c-coach:#6CCB94; --planet:#6CCB94; --people:#E486B4; --profit:#8DA9DE;
+  --shadow:0 12px 34px rgba(0,0,0,.5); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+button,select,input,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;margin:0;letter-spacing:.01em;line-height:1.05;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .note{font-size:12.5px;color:var(--muted)} .mono{font-family:var(--f-mono)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--sky);color:var(--sky-ink)}
+.top-in{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:10px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.brand{display:flex;gap:10px;align-items:center}
+.brand b{font-family:var(--f-display);font-size:24px;font-weight:800;letter-spacing:.02em;display:block;line-height:1}
+.brand span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sky-mute)}
+.top .sp{flex:1}
+.who{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--sky-mute)}
+.who select{background:var(--sky);color:var(--sky-ink);border:1px solid #3B5370;border-radius:6px;padding:6px 8px}
+.theme-btn{display:inline-grid;place-items:center;width:34px;height:34px;border:1px solid #3B5370;background:transparent;color:var(--sky-ink);border-radius:50%;padding:0;cursor:pointer}
+.theme-btn svg{width:17px;height:17px}
+
+.hero{background:var(--sky);color:var(--sky-ink);border-bottom:1px solid var(--line)}
+.hero-in{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:6px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 28px;align-items:end}
+.hero h1{font-size:clamp(30px,4vw,46px);font-weight:800}
+.hero .bearing{margin-top:8px;color:var(--sky-mute);max-width:70ch;font-size:15px}
+.hero .bearing b{color:var(--sky-ink);font-weight:600}
+.crew{display:flex;gap:10px;flex-wrap:wrap}
+.mate{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #3B5370;border-radius:10px;padding:9px 12px;min-width:200px;background:rgba(255,255,255,.03)}
+.mate:hover{border-color:var(--sky-ink)} .mate:focus-visible{outline:2px solid var(--star)}
+.mate[aria-pressed="true"]{border-color:var(--star);background:rgba(201,162,39,.12)}
+.mate b{font-family:var(--f-display);font-size:19px;display:block;line-height:1.1}
+.mate span{font-size:12px;color:var(--sky-mute)}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:18px;color:#fff}
+.av.asst{background:var(--c-asst)} .av.ment{background:var(--c-ment)} .av.coach{background:var(--c-coach)}
+.av.sm{width:26px;height:26px;font-size:13px}
+
+.layout{max-width:1500px;margin:0 auto;padding-inline:20px;padding-block:18px 60px;display:grid;grid-template-columns:300px minmax(0,1fr) 400px;gap:18px;align-items:start}
+.nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);display:grid;gap:10px}
+.rose{width:100%;height:auto;display:block}
+.rw{cursor:pointer} .rw:focus{outline:none}
+.rw path{fill-opacity:.22;stroke:var(--paper);stroke-width:3;transition:fill-opacity .15s}
+.rw:hover path{fill-opacity:.42} .rw.on path{fill-opacity:.75} .rw:focus-visible path{stroke:var(--ink)}
+.rl{font-family:var(--f-display);font-size:14px;font-weight:700;fill:var(--ink);pointer-events:none}
+.rb{fill:var(--crit)} .rbt{font-family:var(--f-mono);font-size:11px;fill:#fff;font-weight:600;pointer-events:none}
+.hub{cursor:pointer} .hub circle{fill:var(--surface);stroke:var(--line);stroke-width:1.5} .hub.on circle{stroke:var(--accent);stroke-width:3}
+.hubt{font-family:var(--f-display);font-size:17px;font-weight:700;fill:var(--ink);pointer-events:none}
+.sealist{display:grid;gap:3px}
+.sl{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:9px;align-items:center;padding:7px 10px;border-radius:7px;font-weight:500;font-size:14px}
+.sl:hover{background:var(--surface)} .sl[aria-current="true"]{background:var(--surface);box-shadow:inset 3px 0 0 var(--accent)}
+.sl:focus-visible{outline:2px solid var(--accent)}
+.sl .ct{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.sl .ct.due{color:var(--crit);font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+
+.work{min-width:0;display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:12px;min-width:0}
+.card h2{font-size:28px}
+.card h3{font-size:21px}
+.card-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:start}
+.seahead{display:flex;gap:12px;align-items:center}
+.seahead .bar{width:6px;align-self:stretch;border-radius:3px}
+.tasks{display:grid;gap:6px}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--surface)}
+.task.done{opacity:.55} .task.done b{text-decoration:line-through}
+.task b{font-weight:600;font-size:14px;display:block}
+.task .src{font-size:12px;color:var(--muted)}
+.chk{all:unset;cursor:pointer;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
+.chk:hover{border-color:var(--accent)} .chk.on{background:var(--ok);border-color:var(--ok)}
+.chk.on::after{content:"";width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.chk:focus-visible{outline:2px solid var(--accent)}
+.due{font-family:var(--f-mono);font-size:11px;padding:2px 7px;border-radius:4px;white-space:nowrap;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.due.late{background:var(--crit-soft);color:var(--crit);border-color:transparent} .due.soon{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.acts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.act{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:3px;border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:var(--surface-2)}
+.act:hover{border-color:var(--accent);background:var(--surface)} .act:focus-visible{outline:2px solid var(--accent)}
+.act b{font-size:14px;font-weight:600}
+.act span{font-size:12px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:8px 14px;cursor:pointer;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.btn:hover{border-color:var(--ink)} .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)} .btn.primary:hover{filter:brightness(1.07)}
+.btn.sm{padding:5px 10px;font-size:13px} .btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:12px;font-weight:600;color:var(--muted)}
+input[type=text],input[type=number],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:8px 10px;min-width:0;width:100%}
+textarea{resize:vertical;line-height:1.5}
+.decision{border:1px solid var(--accent);background:var(--accent-soft);border-radius:9px;padding:11px 13px;display:grid;gap:5px}
+.decision b{font-size:15px}
+.decision.warn{border-color:var(--warn);background:var(--warn-soft)} .decision.crit{border-color:var(--crit);background:var(--crit-soft)} .decision.ok{border-color:var(--ok);background:var(--ok-soft)}
+.pill{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:10.5px;padding:2px 7px;border-radius:4px;white-space:nowrap;letter-spacing:.03em}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.crit{background:var(--crit-soft);color:var(--crit)} .pill.n{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.list{display:grid;gap:6px}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.li b{font-size:14px;font-weight:600} .li .s{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.step{font-family:var(--f-mono);font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.step.on{background:var(--ink);color:var(--paper);border-color:var(--ink)} .step.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ring{display:flex;gap:12px;align-items:center}
+.ring svg{flex:none}
+.bar-h{height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;border:1px solid var(--line-soft)}
+.bar-h span{display:block;height:100%;background:var(--accent)}
+.skill{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:10px;align-items:center;font-size:13.5px}
+.tiers{display:grid;gap:10px}
+.tier{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:start;border-top:1px solid var(--line);padding-top:10px}
+.tier b{font-family:var(--f-display);font-size:18px;display:flex;gap:7px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--surface)}
+.chip:hover{border-color:var(--accent)} .chip:focus-visible{outline:2px solid var(--accent)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.static{cursor:default}
+.pulse{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px}
+
+/* companion dock */
+.dock{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);height:calc(100vh - 90px);display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.dtabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.dtab{all:unset;cursor:pointer;display:grid;justify-items:center;gap:3px;padding:10px 4px;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent}
+.dtab:hover{color:var(--ink)} .dtab[aria-selected="true"]{color:var(--ink)}
+.dtab.asst[aria-selected="true"]{border-color:var(--c-asst)} .dtab.ment[aria-selected="true"]{border-color:var(--c-ment)} .dtab.coach[aria-selected="true"]{border-color:var(--c-coach)}
+.dtab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.dlog{overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.role{font-size:12.5px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.msg{display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;align-items:start}
+.bub{background:var(--surface-2);border:1px solid var(--line);border-radius:4px 12px 12px 12px;padding:9px 12px;font-size:14px;white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
+.me{align-self:flex-end;max-width:85%;background:var(--ink);color:var(--paper);border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:14px;overflow-wrap:anywhere}
+.bacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cb{margin-top:6px}
+.dfoot{border-top:1px solid var(--line);padding:10px;display:grid;gap:8px}
+.quick{display:flex;flex-wrap:wrap;gap:5px}
+.dfoot form{display:flex;gap:6px}
+.dfoot input{flex:1}
+.think{color:var(--muted);font-style:italic}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:9px;z-index:60;font-size:14px;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
+.fab{display:none}
+@media (max-width:1240px){.layout{grid-template-columns:260px minmax(0,1fr)} .dock{position:fixed;right:12px;bottom:12px;top:auto;width:min(400px,calc(100vw - 24px));height:min(620px,calc(100vh - 100px));z-index:50;transform:translateY(calc(100% + 30px));transition:transform .2s}
+  .dock.open{transform:none} .fab{display:inline-flex;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;box-shadow:var(--shadow)}}
+@media (max-width:820px){.layout{grid-template-columns:minmax(0,1fr)} .nav{position:static} .rose{max-width:340px;margin:0 auto} .hero-in{grid-template-columns:minmax(0,1fr)} .cols2{grid-template-columns:minmax(0,1fr)} .mate{min-width:0;flex:1 1 150px} .skill{grid-template-columns:minmax(0,1fr) 90px auto} .tier{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="32" height="32" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="var(--sky-ink)" stroke-width="1.4"/><path d="M17 4 L20.5 17 L17 30 L13.5 17 Z" fill="var(--star)"/><path d="M17 4 L20.5 17 L13.5 17 Z" fill="var(--sky-ink)"/></svg><div><b>Halyard</b><span>My Seven Seas</span></div></div>
+  <div class="sp"></div>
+  <div class="who"><label for="persona">Sample employee</label><select id="persona"></select></div>
+  <button class="theme-btn" id="themebtn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7Z" fill="currentColor"/></svg></button>
+</div></header>
+<section class="hero"><div class="hero-in" id="hero"></div></section>
+<div class="layout">
+  <nav class="nav" id="nav" aria-label="The Seven Seas"></nav>
+  <main class="work" id="work"></main>
+  <aside class="dock" id="dock" aria-label="Your companions"></aside>
+</div>
+<button class="btn primary fab" id="fab" type="button">Ask your crew</button>
+
+<script>
+"use strict";
+/* ===================== DATA (sample) ===================== */
+const D0=new Date(); D0.setHours(0,0,0,0);
+const day=n=>new Date(D0.getTime()+n*864e5);
+const fmtD=d=>d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const SEAS=[
+ {id:"career",name:"Career",line:"Grow skills and move forward",c:"var(--s1)",mate:"ment"},
+ {id:"compliance",name:"Compliance",line:"Know and meet what applies to you",c:"var(--s2)",mate:"asst"},
+ {id:"collaboration",name:"Collaboration",line:"Find people and get help",c:"var(--s3)",mate:"asst"},
+ {id:"creativity",name:"Creativity",line:"Bring ideas and see them used",c:"var(--s4)",mate:"ment"},
+ {id:"culture",name:"Culture",line:"Live the Compass together",c:"var(--s5)",mate:"coach"},
+ {id:"current",name:"Current needs",line:"Get today's tasks done",c:"var(--s6)",mate:"asst"},
+ {id:"concerns",name:"Concerns",line:"Raise it and reach a person",c:"var(--s7)",mate:"coach"}];
+const SEA=Object.fromEntries(SEAS.map(s=>[s.id,s]));
+const MATES={
+ asst:{name:"Assistant",sub:"First mate · gets today done",init:"A",role:"I handle today's tasks: expenses, time off, benefits, training and requests. I prepare everything in Workday or I2 University, and you confirm before anything is sent."},
+ ment:{name:"Mentor",sub:"Navigator · charts your course",init:"M",role:"I help you grow: your target role, the skills that matter, a learning path in I2 University, and ideas worth sharing. I suggest; you choose."},
+ coach:{name:"Coach",sub:"Keeps you true to the Compass",init:"C",role:"I help you live Planet over People over Profit: recognition, reflection and a values assessment you own. What you reflect on stays private unless you choose to share it. I never score you."}};
+const PRINCIPLES=[
+ {id:"community",name:"Contributing to Communities",tier:"planet"},{id:"integrity",name:"Integrity",tier:"people"},{id:"respect",name:"Respect",tier:"people"},{id:"commitment",name:"Commitment",tier:"people"},{id:"accountability",name:"Accountability",tier:"people"},{id:"perseverance",name:"Perseverance",tier:"people"},
+ {id:"goals",name:"Achieving Goals",tier:"profit"},{id:"innovation",name:"Innovation",tier:"profit"},{id:"change",name:"Embracing Change",tier:"profit"}];
+const PR=Object.fromEntries(PRINCIPLES.map(p=>[p.id,p]));
+const TIERS={planet:{n:"Planet",r:1,c:"var(--planet)",l:"We count the environmental cost of how we work."},people:{n:"People",r:2,c:"var(--people)",l:"We tell the truth, keep each other safe and act with kindness."},profit:{n:"Profit",r:3,c:"var(--profit)",l:"We earn it honestly and reinvest it in people and places."}};
+const COURSES={
+ ethics:{t:"Code of conduct and ethics",h:1,req:true},privacy:{t:"Data privacy essentials",h:0.5,req:true},harassIL:{t:"Illinois harassment prevention (annual)",h:1,req:true},harassCA:{t:"California harassment prevention (1 hour)",h:1,req:true},harassSup:{t:"Supervisor harassment prevention (2 hours)",h:2,req:true},
+ bencert:{t:"Benefits certification, level 1",h:6},edi:{t:"Carrier EDI 834 fundamentals",h:2},clientcomm:{t:"Client conversations that build trust",h:1.5},coach:{t:"Coaching for performance",h:3},finance:{t:"Financial acumen for managers",h:2.5},change:{t:"Leading change",h:2},
+ mstax:{t:"Multi-state payroll tax",h:3},wdpay:{t:"Workday payroll configuration",h:4},sql:{t:"SQL for payroll analytics",h:3},planet:{t:"Planet first: our footprint",h:0.75}};
+const DIRECTORY=[
+ {n:"Benefits service center",k:"Benefits elections, life events, insurance cards",c:"benefits@halyard.example · ext. 4100",t:"benefits insurance medical dental vision life event enrollment"},
+ {n:"Payroll",k:"Paychecks, tax withholding, W-2, off-cycle pay",c:"payroll@halyard.example · ext. 4200",t:"pay paycheck w-2 w2 tax withholding direct deposit"},
+ {n:"Travel and expense team",k:"Expense policy, receipts, corporate card",c:"expenses@halyard.example · ext. 4300",t:"expense receipt reimbursement travel card mileage"},
+ {n:"I2 University",k:"Courses, certifications, learning paths",c:"i2u@halyard.example",t:"course training learning certification class"},
+ {n:"IT service desk",k:"Workday access, laptop, passwords",c:"servicedesk@halyard.example · ext. 4500",t:"laptop password access workday login computer"},
+ {n:"Employee Relations",k:"Workplace concerns, speak-up cases, accommodations",c:"Speak-up line: 1-800-555-0142 (any time, anonymous option)",t:"concern harassment speak up retaliation accommodation"},
+ {n:"Sustainability office",k:"E-waste returns, commuting, Compass Report",c:"planet@halyard.example",t:"e-waste recycle sustainability carbon planet"},
+ {n:"Culture and Values office",k:"Recognition, volunteering, values circles",c:"culture@halyard.example",t:"values recognition volunteer culture"}];
+const RECEIPTS=[
+ {id:"r1",label:"Flight IAH to ORD, client visit",cat:0,amt:412,merch:"United Airlines"},
+ {id:"r2",label:"Hotel, 2 nights",cat:1,amt:318,merch:"Hyatt Regency"},
+ {id:"r3",label:"Team lunch",cat:2,amt:64,merch:"Local Kitchen"},
+ {id:"r4",label:"Home internet, September",cat:3,amt:50,merch:"Comcast"},
+ {id:"r5",label:"Conference registration",cat:4,amt:650,merch:"SHRM Annual"}];
+const EXP_CATS=["Flight","Lodging","Meals","Home office internet","Other"];
+const SEED={
+ maya:{name:"Maya Brooks",first:"Maya",role:"Benefits Specialist",dept:"Benefits Operations",loc:"Houston, TX",st:"TX",mgr:"Dana Ortiz",isMgr:false,tenure:"Started 18 days ago",remote:false,
+  pto:13.9,target:"Senior Benefits Specialist",
+  skills:[["Benefits plan design",2,4,"bencert"],["Carrier EDI 834",1,3,"edi"],["Client conversations",3,4,"clientcomm"]],
+  goals:[{t:"Finish Benefits certification, level 1",p:20},{t:"Shadow two client renewals",p:50}],
+  recog:[{from:"Dana Ortiz",p:"commitment",m:"Stayed late to fix a client's enrollment file before the carrier deadline.",d:-3},{from:"Sam Patel",p:"respect",m:"Patient and clear with a stressed employee on the phone.",d:-9}],
+  tasks:[
+   {id:"t1",sea:"current",t:"Make your benefit elections",src:"Workday",due:12,flow:"benefits"},
+   {id:"t2",sea:"compliance",t:"Code of conduct and ethics",src:"I2 University",due:10,flow:"course",arg:"ethics"},
+   {id:"t3",sea:"compliance",t:"Data privacy essentials",src:"I2 University",due:20,flow:"course",arg:"privacy"},
+   {id:"t4",sea:"compliance",t:"Acknowledge the employee handbook",src:"Living Handbook",due:5,flow:"ack"},
+   {id:"t5",sea:"career",t:"First meeting with your mentor, Rae Johnson",src:"Mentoring program",due:7},
+   {id:"t6",sea:"current",t:"Set up direct deposit",src:"Workday",due:-1},
+   {id:"t7",sea:"culture",t:"Join a values circle (optional)",src:"Culture office",due:14,opt:true}]},
+ marcus:{name:"Marcus Lee",first:"Marcus",role:"Client Success Manager",dept:"Client Success · team of 6",loc:"Chicago, IL",st:"IL",mgr:"Rae Johnson",isMgr:true,tenure:"4 years",remote:false,
+  pto:86.5,target:"Director, Client Success",
+  skills:[["Coaching for performance",3,4,"coach"],["Financial acumen",2,4,"finance"],["Leading change",2,4,"change"]],
+  goals:[{t:"Raise client retention in my book to 94%",p:60},{t:"Develop two team members toward senior roles",p:35}],
+  recog:[{from:"Jordan Kim",p:"accountability",m:"Owned the miss on the Lakeshore renewal and fixed it with the client the same day.",d:-5}],
+  tasks:[
+   {id:"t1",sea:"current",t:"Approve 3 timecards",src:"Workday",due:0},
+   {id:"t2",sea:"current",t:"Review Jordan Kim's expense report ($318)",src:"Workday",due:1},
+   {id:"t3",sea:"compliance",t:"Illinois harassment prevention (annual)",src:"I2 University",due:14,flow:"course",arg:"harassIL"},
+   {id:"t4",sea:"career",t:"Q4 goal check-ins with your team",src:"Workday",due:9},
+   {id:"t5",sea:"current",t:"Open enrollment opens November 2",src:"Benefits",due:30,flow:"benefits"},
+   {id:"t6",sea:"creativity",t:"Idea challenge: fewer client escalations",src:"Idea program",due:6,flow:"idea"}]},
+ priya:{name:"Priya Nair",first:"Priya",role:"Payroll Analyst",dept:"Payroll Operations · remote",loc:"Sacramento, CA",st:"CA",mgr:"Sam Patel",isMgr:false,tenure:"2 years",remote:true,
+  pto:52.0,target:"Payroll Systems Lead",
+  skills:[["Multi-state payroll tax",3,4,"mstax"],["Workday payroll configuration",1,4,"wdpay"],["SQL for analytics",2,3,"sql"]],
+  goals:[{t:"Automate the off-cycle payment checklist",p:40}],
+  recog:[{from:"Sam Patel",p:"innovation",m:"Built the tax-notice tracker the whole team now uses.",d:-2},{from:"Leah Green",p:"community",m:"Organized the e-waste drive for remote employees.",d:-20}],
+  tasks:[
+   {id:"t1",sea:"compliance",t:"California harassment prevention, renewal (1 hour)",src:"I2 University",due:25,flow:"course",arg:"harassCA"},
+   {id:"t2",sea:"compliance",t:"Acknowledge Remote Work policy v3.2 (effective Nov 1)",src:"Living Handbook",due:27,flow:"ack"},
+   {id:"t3",sea:"current",t:"Submit September home internet reimbursement",src:"Workday",due:3,flow:"expense",arg:"r4"},
+   {id:"t4",sea:"creativity",t:"Idea challenge: faster off-cycle payments",src:"Idea program",due:6,flow:"idea"},
+   {id:"t5",sea:"career",t:"Pick a learning path for Payroll Systems Lead",src:"I2 University",due:15,flow:"career"}]}
+};
+const POLICY={
+ expense:"Receipts are required for expenses of $75 or more. Exceptions need manager approval with a reason. Expenses over $500 need manager and Finance approval. Submit within 30 days.",
+ internet:"Approved remote employees are reimbursed up to $50 a month for required internet and phone.",
+ pto:"Full-time employees accrue 4.62 hours of PTO each biweekly pay period (120 hours a year); accrual pauses at 200 hours. Request at least 10 business days ahead for 3 or more days.",
+ sick:{CA:"California: at least 40 hours or 5 days of paid sick leave a year.",IL:"Illinois: 1 hour of paid leave per 40 worked, at least 40 hours a year, for any reason.",TX:"Texas: PTO covers sick time; there is no separate state requirement."},
+ benefits:"Elect within 30 days of hire. Change elections at open enrollment (November 2 to 20) or within 30 days of a qualifying life event.",
+ speak:"You can report to any manager, to Employee Relations, or through the speak-up line, by name or anonymously. Every report is acknowledged within 2 business days. Retaliation is prohibited.",
+ k401:"The 401(k) match is 100% of the first 4% of pay, vested immediately."};
+
+/* ===================== STATE ===================== */
+const store={get(k,d){try{const v=localStorage.getItem("h7s-"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("h7s-"+k,JSON.stringify(v))}catch(e){}}};
+const S={pid:store.get("pid","maya"),sea:"today",mate:"asst",flow:null,f:{},chats:{asst:[],ment:[],coach:[]},pulsed:{},greeted:{}};
+let P=null; /* persona working state */
+function loadP(){const seed=JSON.parse(JSON.stringify(SEED[S.pid])); const saved=store.get("p-"+S.pid,null);
+  P=Object.assign(seed,{done:[],expenses:[],requests:[],ideas:[],kudos:[],reflections:[],completed:[],plan:null,share:[]},saved||{});}
+function saveP(){const {done,expenses,requests,ideas,kudos,reflections,completed,plan,goals,share}=P; store.set("p-"+S.pid,{done,expenses,requests,ideas,kudos,reflections,completed,plan,goals,share});}
+let SAMPLE=null;
+
+/* ===================== HELPERS ===================== */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+const open=()=>P.tasks.filter(t=>!P.done.includes(t.id));
+const openIn=sea=>open().filter(t=>t.sea===sea);
+const dueTxt=n=>n<0?`Overdue ${-n} day${n===-1?"":"s"}`:n===0?"Today":n===1?"Tomorrow":`In ${n} days · ${fmtD(day(n))}`;
+const dueCls=n=>n<0?"late":n<=3?"soon":"";
+const weekdays=(a,b)=>{let n=0; for(let d=new Date(a);d<=b;d=new Date(d.getTime()+864e5)){const w=d.getDay(); if(w&&w<6)n++;} return n;};
+function toast(m){const t=document.createElement("div"); t.className="toast"; t.setAttribute("role","status"); t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),3000);}
+const greet=()=>{const h=new Date().getHours(); return h<12?"Good morning":h<17?"Good afternoon":"Good evening";};
+
+/* ===================== DECISION MODELS (from the Halyard agents) ===================== */
+function expDecide(x){ // EXP agent
+  const amtBand=x.amt<75?0:x.amt<=500?1:2;
+  if(!x.rc&&amtBand>0)return {r:1,cls:"warn",out:"Add the receipt before I draft this. Receipts are required for $75 or more.",gate:"Nothing drafted yet",ok:false};
+  if(x.exc)return {r:2,cls:"warn",out:"I'll draft it with your exception reason. The Circuit Breaker checks the reason, then it goes to your manager.",gate:"Manager approves",ok:true};
+  if(amtBand===2)return {r:3,cls:"warn",out:"I'll draft it and route it to your manager and Finance.",gate:"Two approvals",ok:true};
+  if(x.cat===0)return {r:4,cls:"ok",out:`I'll draft it. Planet first: this flight is about ${Math.round(x.amt*0.9)} kg of CO₂e (rough estimate). For the next check-in, a video call might do.`,gate:"You confirm submit",ok:true};
+  if(x.cat===3&&x.amt>50)return {r:5,cls:"warn",out:"Internet reimbursement is capped at $50 a month. I'll draft $50; the rest stays with you.",gate:"You confirm submit",ok:true,cap:50};
+  return {r:5,cls:"ok",out:"I'll draft the report in Workday for you to review.",gate:"You confirm submit",ok:true};
+}
+function benDecide(ev,days,oe){ // BEN agent
+  if(oe)return {cls:"ok",out:"Open enrollment is open. Compare plans in the decision guide, then make your elections in Workday.",gate:"You elect"};
+  if(ev===0&&S.pid==="maya")return {cls:"warn",out:"You're within your first 30 days, so you can elect now. After day 30, changes wait for open enrollment or a life event.",gate:"You elect"};
+  if(ev===0)return {cls:"n",out:"No change is possible right now. Changes wait for open enrollment (November 2 to 20) unless you have a qualifying life event.",gate:"None"};
+  if(days<=30)return {cls:"ok",out:`That's a qualifying life event within 30 days. I'll start it in Workday with a checklist of documents.${ev===4?" I'll also check which state rules now apply to you.":""}`,gate:"Benefits verifies"};
+  return {cls:"warn",out:"It's been more than 30 days, so the window has passed. I can send an exception request to the Benefits service center.",gate:"Benefits decides"};
+}
+function ideaScore(x){return Math.round(.35*[100,60,20][x.o]+.25*[100,60,20][x.r]+.20*[100,60,20][x.t]+.20*[100,60,30][x.b]);}
+function ideaDecide(x){const sc=ideaScore(x);
+  if(x.v===1)return {sc,cls:"warn",out:"This one conflicts with the Compass (Planet or People first). I'll send it back with the reasoning so you can rework it.",route:"Returned with Compass notes"};
+  if(sc>=70)return {sc,cls:"ok",out:"Strong idea. I'll fast-track it to the owning service; you're invited to help build it.",route:"Fast-tracked to the service owner"};
+  if(sc>=45)return {sc,cls:"n",out:"Promising. It goes to community review and a small test.",route:"Incubating: community review"};
+  return {sc,cls:"n",out:"Thank you. It goes to the archive with specific feedback, and you can resubmit any time.",route:"Archived with feedback"};
+}
+function concernDecide(tp,dg){ // OMB agent
+  if(dg)return {cls:"crit",out:"If anyone is in immediate danger, call 911 now. Then call the Safety line at 1-800-555-0199. I've alerted the Safety team.",gate:"A person responds now"};
+  if(tp===2||tp===4)return {cls:"warn",out:"I'll open a speak-up case with Employee Relations. You'll get an acknowledgment within 2 business days. I don't investigate or decide anything; a person does. Retaliation is prohibited.",gate:"Employee Relations"};
+  if(tp===3)return {cls:"warn",out:"I'll open a safety report. You may stop any task you believe is unsafe, without penalty.",gate:"Safety team"};
+  if(tp===1)return {cls:"n",out:"I'll route this to the policy's owner and tell you what happens next.",gate:"Policy owner"};
+  return {cls:"n",out:"I'll answer from the handbook with sources, or connect you with the right team.",gate:"None"};
+}
+function careerPlan(goal,time){ // CAR agent
+  const gaps=P.skills.map(s=>({s:s[0],gap:s[2]-s[1],c:s[3]})).sort((a,b)=>b.gap-a.gap);
+  const req=open().filter(t=>t.flow==="course").map(t=>t.arg);
+  let picks=gaps.slice(0,time===0?2:3).map(g=>g.c);
+  if(time===0&&req.length)picks=[...req.slice(0,1),...picks.slice(0,2)];
+  const note=goal===2?"A leadership path, plus a coaching match. Coaching notes stay with you.":goal===1?"A two-quarter path with a mentor, and open roles that fit.":"Courses ranked by your largest skills gaps and the time you have.";
+  return {picks:[...new Set(picks)],note,weeks:Math.ceil(picks.reduce((a,c)=>a+COURSES[c].h,0)/(time===0?1.5:3))};
+}
+
+/* ===================== RENDER: hero, nav ===================== */
+function renderHero(){
+  const o=open(), late=o.filter(t=>t.due<0), soon=o.filter(t=>t.due>=0&&t.due<=7).sort((a,b)=>a.due-b.due);
+  const top=[...late,...soon].slice(0,2).map(t=>`<b>${esc(t.t)}</b> (${esc(dueTxt(t.due).split(" ·")[0].toLowerCase())})`);
+  $("hero").innerHTML=`<div><span class="eyebrow" style="color:var(--sky-mute)">${esc(P.role)} · ${esc(P.loc)} · ${esc(P.tenure)}</span><h1>${greet()}, ${esc(P.first)}.</h1>
+   <p class="bearing">Today's bearing: ${top.length?top.join(" and ")+".":"nothing urgent. A good day to chart your course."} ${o.length} open item${o.length===1?"":"s"} across the Seven Seas.</p></div>
+   <div class="crew">${Object.entries(MATES).map(([k,m])=>`<button class="mate" data-mate="${k}" aria-pressed="${S.mate===k}"><span class="av ${k}">${m.init}</span><span><b>${m.name}</b><span>${esc(m.sub)}</span></span></button>`).join("")}</div>`;
+}
+function roseSVG(){
+  const cx=150,cy=150,R=138,r0=44,n=7,st=-90-180/n;const P_=(r,a)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];const f=a=>a.map(v=>v.toFixed(1)).join(" ");
+  const g=SEAS.map((s,i)=>{const a0=st+i*360/n,a1=a0+360/n,am=(a0+a1)/2;const [lx,ly]=P_(88,am);const [bx,by]=P_(R-10,am+16);const cnt=openIn(s.id).length;const late=openIn(s.id).some(t=>t.due<=3);
+    const words=s.name.split(" ");
+    return `<g class="rw${S.sea===s.id?" on":""}" tabindex="0" role="button" data-sea="${s.id}" aria-label="${esc(s.name)}, ${cnt} open"><path d="M ${f(P_(r0,a0))} L ${f(P_(R,a0))} A ${R} ${R} 0 0 1 ${f(P_(R,a1))} L ${f(P_(r0,a1))} A ${r0} ${r0} 0 0 0 ${f(P_(r0,a0))} Z" style="fill:${s.c}"/>${words.map((w,j)=>`<text x="${lx.toFixed(1)}" y="${(ly+4+(j-(words.length-1)/2)*14).toFixed(1)}" text-anchor="middle" class="rl">${esc(w)}</text>`).join("")}${cnt?`<circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="10" class="rb" style="${late?"":"fill:var(--muted)"}"/><text x="${bx.toFixed(1)}" y="${(by+4).toFixed(1)}" text-anchor="middle" class="rbt">${cnt}</text>`:""}</g>`}).join("");
+  return `<svg viewBox="0 0 300 300" class="rose" role="group" aria-label="The Seven Seas">${g}<g class="hub${S.sea==="today"?" on":""}" tabindex="0" role="button" data-sea="today" aria-label="Today"><circle cx="${cx}" cy="${cy}" r="${r0-3}"/><path d="M${cx} ${cy-30} L${cx+5} ${cy-8} L${cx-5} ${cy-8} Z" fill="var(--star)"/><text x="${cx}" y="${cy+12}" text-anchor="middle" class="hubt">Today</text></g></svg>`;
+}
+function renderNav(){
+  $("nav").innerHTML=roseSVG()+`<div class="sealist"><button class="sl" data-sea="today" aria-current="${S.sea==="today"}"><span class="dot" style="background:var(--star)"></span>Today<span class="ct${open().some(t=>t.due<=3)?" due":""}">${open().length}</span></button>${SEAS.map(s=>{const o=openIn(s.id);return `<button class="sl" data-sea="${s.id}" aria-current="${S.sea===s.id}"><span class="dot" style="background:${s.c}"></span>${esc(s.name)}<span class="ct${o.some(t=>t.due<=3)?" due":""}">${o.length||""}</span></button>`}).join("")}</div>
+   <p class="note" style="padding:0 6px">Sample employee and data. Workday and I2 University actions are simulated. Reflections stay in this browser.</p>`;
+}
+
+/* ===================== WORKSPACES ===================== */
+const ACTIONS={
+ current:[["expense","Submit an expense","Snap a receipt; I check policy"],["pto","Request time off","See your balance first"],["benefits","Benefits and insurance","Elections and life events"],["pay","Pay and balances","Paystub, PTO, 401(k)"]],
+ compliance:[["training","My required training","By role and state"],["ack","Acknowledge a policy","Read the summary first"],["askpolicy","Ask about a policy","Answers with sources"]],
+ career:[["career","Chart my course","A learning path for my target role"],["goals","Update my goals","Quick progress check-in"],["courses","Browse I2 University","Courses for my skills gaps"]],
+ creativity:[["idea","Share an idea","Scored and routed to an owner"],["myideas","My ideas","Where each one is"]],
+ culture:[["kudos","Recognize someone","Tie it to a principle"],["compass","My personal compass","Values, reflections, evidence"],["reflect","Reflect for two minutes","Private by default"]],
+ collaboration:[["find","Who handles what","Find the right team fast"],["people","Ask my manager","Draft a message"]],
+ concerns:[["concern","Raise a concern","A person handles it"],["askq","Ask a question","Answers from the handbook"]]};
+function taskRow(t){const d=P.done.includes(t.id);
+  return `<div class="task${d?" done":""}"><button class="chk${d?" on":""}" data-done="${t.id}" aria-label="${d?"Mark not done":"Mark done"}: ${esc(t.t)}"></button><div style="min-width:0"><b>${esc(t.t)}</b><span class="src">${esc(t.src)} · ${esc(SEA[t.sea].name)}${t.opt?" · optional":""}</span></div><div class="row">${d?'<span class="pill ok">Done</span>':`<span class="due ${dueCls(t.due)}">${esc(dueTxt(t.due))}</span>${t.flow?`<button class="btn sm" data-flow="${t.flow}" data-arg="${esc(t.arg||"")}" data-task="${t.id}">Start</button>`:""}`}</div></div>`;}
+function viewToday(){
+  const o=open().sort((a,b)=>a.due-b.due); const recent=[...P.expenses.map(e=>({k:"Expense",t:`${e.merch} · $${e.amt}`,s:e.status})),...P.requests.map(r=>({k:r.kind,t:r.t,s:r.status})),...P.ideas.map(i=>({k:"Idea",t:i.title,s:i.route}))].slice(-6).reverse();
+  return `<div class="card"><div class="card-head"><div><span class="eyebrow">Today · ${fmtD(D0)}</span><h2>Your bearing</h2></div><span class="pill n">${o.length} open</span></div>
+   <div class="tasks">${o.slice(0,6).map(taskRow).join("")||'<p class="muted">All clear. Nothing is waiting on you.</p>'}</div>${o.length>6?`<p class="note">${o.length-6} more in the seas on the left.</p>`:""}</div>
+   <div class="card"><span class="eyebrow">Common jobs</span><div class="acts">${[["expense","Submit an expense"],["pto","Request time off"],["training","My required training"],["career","Chart my course"],["idea","Share an idea"],["kudos","Recognize someone"],["find","Who handles what"],["concern","Raise a concern"]].map(([f,l])=>`<button class="act" data-flow="${f}"><b>${l}</b></button>`).join("")}</div></div>
+   ${recent.length?`<div class="card"><span class="eyebrow">Recent activity</span><div class="list">${recent.map(r=>`<div class="li"><b>${esc(r.t)}</b><span class="pill n">${esc(r.k)}</span><span class="s">${esc(r.s)}</span></div>`).join("")}</div></div>`:""}`;
+}
+function viewSea(id){
+  const s=SEA[id], o=P.tasks.filter(t=>t.sea===id).sort((a,b)=>(P.done.includes(a.id)-P.done.includes(b.id))||a.due-b.due); const m=MATES[s.mate];
+  let extra="";
+  if(id==="compliance"){const req=P.tasks.filter(t=>t.flow==="course"); const dn=req.filter(t=>P.done.includes(t.id)).length; extra=`<div class="ring">${ringSVG(req.length?dn/req.length:1)}<div><b>${dn} of ${req.length} required courses complete</b><p class="note">Assigned by role (${P.isMgr?"manager":"employee"}) and state (${esc(P.st)}).</p></div></div>`;}
+  if(id==="current")extra=`<div class="cols2"><div class="li"><b>PTO balance</b><span class="mono">${P.pto.toFixed(1)} h</span><span class="s">${esc(POLICY.sick[P.st]||"")}</span></div><div class="li"><b>Next payday</b><span class="mono">${fmtD(day(((5-D0.getDay())+7)%7||7))}</span><span class="s">Direct deposit, every other Friday</span></div></div>`;
+  if(id==="culture")extra=`<div class="list">${P.recog.map(r=>`<div class="li"><b>${esc(r.from)} recognized your ${esc(PR[r.p].name)}</b><span class="pill n" style="color:${TIERS[PR[r.p].tier].c}">${TIERS[PR[r.p].tier].n}</span><span class="s">${esc(r.m)}</span></div>`).join("")}</div>`;
+  if(id==="creativity"&&P.ideas.length)extra=`<div class="list">${P.ideas.map(i=>`<div class="li"><b>${esc(i.title)}</b><span class="pill n">Score ${i.sc}</span><span class="s">${esc(i.route)}</span></div>`).join("")}</div>`;
+  return `<div class="card"><div class="card-head"><div class="seahead"><span class="bar" style="background:${s.c}"></span><div><span class="eyebrow">${esc(s.line)}</span><h2>${esc(s.name)}</h2></div></div><button class="btn sm" data-mate="${s.mate}"><span class="av ${s.mate} sm">${m.init}</span>Ask your ${m.name.toLowerCase()}</button></div>
+   ${extra}
+   <div class="acts">${(ACTIONS[id]||[]).map(([f,l,d])=>`<button class="act" data-flow="${f}"><b>${esc(l)}</b><span>${esc(d)}</span></button>`).join("")}</div>
+   ${o.length?`<div><span class="eyebrow">In this sea</span><div class="tasks" style="margin-top:8px">${o.map(taskRow).join("")}</div></div>`:`<p class="muted">Nothing open in ${esc(s.name)}.</p>`}</div>`;
+}
+function ringSVG(p){const r=22,c=2*Math.PI*r;return `<svg width="56" height="56" viewBox="0 0 56 56" role="img" aria-label="${Math.round(p*100)}% complete"><circle cx="28" cy="28" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="28" cy="28" r="${r}" fill="none" stroke="var(--ok)" stroke-width="6" stroke-dasharray="${(c*p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 28 28)" stroke-linecap="round"/><text x="28" y="32" text-anchor="middle" font-family="var(--f-mono)" font-size="11" fill="var(--ink)">${Math.round(p*100)}%</text></svg>`;}
+
+/* ===================== FLOWS ===================== */
+const FLOW_SEA={expense:"current",pto:"current",benefits:"current",pay:"current",training:"compliance",course:"compliance",ack:"compliance",askpolicy:"compliance",career:"career",goals:"career",courses:"career",idea:"creativity",myideas:"creativity",kudos:"culture",compass:"culture",reflect:"culture",find:"collaboration",people:"collaboration",concern:"concerns",askq:"concerns"};
+function startFlow(name,arg,task){
+  if(name==="askpolicy"||name==="askq"){openMate("asst"); prefill(name==="askq"?"What should I do if ":"Explain the policy on "); return;}
+  if(name==="people"){openMate("asst"); prefill(`Draft a short message to ${P.mgr} about `); return;}
+  S.flow=name; S.f={arg,task,step:0}; if(name==="expense"&&arg){const r=RECEIPTS.find(x=>x.id===arg); if(r)Object.assign(S.f,{cat:r.cat,amt:r.amt,merch:r.merch,rc:true});}
+  if(FLOW_SEA[name])S.sea=FLOW_SEA[name]; render(); setTimeout(()=>$("flow")?.scrollIntoView({block:"start",behavior:"smooth"}),30);
+}
+function closeFlow(){S.flow=null; S.f={}; render();}
+function finish(kind,msg){toast(msg); if(S.f.task&&!P.done.includes(S.f.task))P.done.push(S.f.task); saveP(); S.f.finished=kind; render();}
+function pulseHTML(kind){ if(S.pulsed[kind])return `<p class="note">Thanks for the feedback.</p>`; return `<div class="pulse"><span>How was that?</span>${["Easy","Okay","Hard"].map(v=>`<button class="chip" data-pulse="${kind}|${v}">${v}</button>`).join("")}<span class="note">Anonymous, reported for groups of 5 or more.</span></div>`;}
+function flowCard(title,eyebrow,body,mate){const m=MATES[mate||"asst"];return `<div class="card" id="flow" style="border-color:var(--accent)"><div class="card-head"><div><span class="eyebrow">${esc(eyebrow)}</span><h3>${esc(title)}</h3></div><div class="row"><span class="av ${mate||"asst"} sm" title="${m.name}">${m.init}</span><button class="btn sm" data-close-flow>Close</button></div></div>${body}</div>`;}
+function viewFlow(){
+  const f=S.f, n=S.flow;
+  if(n==="expense"){
+    if(f.finished)return flowCard("Expense drafted","Current needs · Assistant",`<div class="decision ok"><b>Draft created in Workday (simulated)</b><span>${esc(f.merch||"Expense")} · $${f.final} · ${esc(EXP_CATS[f.cat])}. Status: ${esc(P.expenses[P.expenses.length-1].status)}.</span></div>${pulseHTML("expense")}<div class="row"><button class="btn" data-flow="expense">Another expense</button><button class="btn" data-close-flow>Done</button></div>`);
+    const d=f.amt!=null?expDecide({cat:+(f.cat||0),amt:+f.amt,rc:!!f.rc,exc:!!f.exc}):null;
+    return flowCard("Submit an expense","Current needs · Assistant",`<div class="steps"><span class="step on">1 Receipt</span><span class="step${d?" on":""}">2 Policy check</span><span class="step">3 Draft in Workday</span></div>
+     <div><span class="eyebrow">Pick a sample receipt, or add your own</span><div class="chips" style="margin-top:6px">${RECEIPTS.map(r=>`<button class="chip" data-rcpt="${r.id}" aria-pressed="${f.merch===r.merch}">${esc(r.label)} · $${r.amt}</button>`).join("")}</div>
+      <div class="row" style="margin-top:8px"><label class="btn sm" for="rcfile">Upload a receipt image</label><input type="file" id="rcfile" accept="image/*,application/pdf" hidden><span class="note" id="rcname">${f.file?esc(f.file):"Images stay in this browser."}</span></div></div>
+     <div class="fields"><div class="field"><label for="x-merch">Merchant</label><input type="text" id="x-merch" value="${esc(f.merch||"")}"></div><div class="field"><label for="x-amt">Amount (USD)</label><input type="number" id="x-amt" min="0" step="0.01" value="${f.amt??""}"></div>
+      <div class="field"><label for="x-cat">Category</label><select id="x-cat">${EXP_CATS.map((c,i)=>`<option value="${i}"${+f.cat===i?" selected":""}>${c}</option>`).join("")}</select></div>
+      <div class="field"><label for="x-rc">Receipt</label><select id="x-rc"><option value="1"${f.rc?" selected":""}>Attached</option><option value="0"${!f.rc?" selected":""}>Missing</option></select></div></div>
+     <div class="field"><label for="x-exc">Exception reason (only if outside policy)</label><input type="text" id="x-exc" value="${esc(f.exc||"")}" placeholder="Leave blank if within policy"></div>
+     <div class="row"><button class="btn" data-exp="check">Check policy</button></div>
+     ${d?`<div class="decision ${d.cls}"><span class="eyebrow">Expense decision model · rule ${d.r}</span><b>${esc(d.out)}</b><span class="note">Human gate: ${esc(d.gate)} · Policy: ${esc(POLICY.expense)}</span></div>${d.ok?`<div class="row"><button class="btn primary" data-exp="draft">Create draft in Workday</button><span class="note">Nothing is submitted until you confirm in Workday.</span></div>`:""}`:""}`);
+  }
+  if(n==="pto"){
+    if(f.finished){const r=P.requests[P.requests.length-1];return flowCard("Time off requested","Current needs · Assistant",`<div class="decision ok"><b>Sent to ${esc(P.mgr)} in Workday (simulated)</b><span>${esc(r.t)}. Status: ${esc(r.status)}.</span></div>${pulseHTML("pto")}<div class="row"><button class="btn" data-close-flow>Done</button></div>`);}
+    const s=f.start?new Date(f.start+"T00:00"):null,e=f.end?new Date(f.end+"T00:00"):null; let info="";
+    if(s&&e&&e>=s){const days=weekdays(s,e),hrs=days*8,lead=Math.round((s-D0)/864e5),ok=hrs<=P.pto;
+      info=`<div class="decision ${ok?(days>=3&&lead<14?"warn":"ok"):"crit"}"><b>${days} workday${days===1?"":"s"} · ${hrs} hours · balance ${P.pto.toFixed(1)} h</b><span>${ok?(days>=3&&lead<14?"That's 3 or more days with less than 10 business days' notice. I'll flag it for your manager.":"You have enough PTO. Ready to send."):"That's more than your balance. Shorten the request or talk with your manager about unpaid time."}</span><span class="note">${esc(POLICY.pto)}</span></div>${ok?`<button class="btn primary" data-pto="send">Send request</button>`:""}`;}
+    return flowCard("Request time off","Current needs · Assistant",`<div class="fields"><div class="field"><label for="p-start">First day</label><input type="date" id="p-start" value="${esc(f.start||"")}"></div><div class="field"><label for="p-end">Last day</label><input type="date" id="p-end" value="${esc(f.end||"")}"></div><div class="field"><label for="p-type">Type</label><select id="p-type"><option>Vacation (PTO)</option><option>Sick (${esc(P.st)} rules)</option><option>Personal</option></select></div></div>${info}<p class="note">${esc(POLICY.sick[P.st]||"")}</p>`);
+  }
+  if(n==="benefits"){
+    const ev=+(f.ev||0),days=+(f.days||5),oe=!!f.oe; const d=benDecide(ev,days,oe);
+    if(f.finished)return flowCard("Benefit event started","Current needs · Assistant",`<div class="decision ok"><b>Started in Workday (simulated)</b><span>${esc(P.requests[P.requests.length-1].t)}</span></div><div><span class="eyebrow">Your checklist</span><ul>${(ev===2?["Birth certificate or adoption papers","Dependent's Social Security number (within 90 days)","Choose coverage tier"]:ev===1?["Marriage certificate","Spouse's date of birth","Choose coverage tier"]:ev===3?["Letter showing the date other coverage ended","Choose plan"]:["Compare plans in the decision guide","Choose medical, dental and vision","Name beneficiaries"]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>${pulseHTML("benefits")}<button class="btn" data-close-flow>Done</button>`);
+    return flowCard("Benefits and insurance","Current needs · Assistant",`<div class="fields"><div class="field"><label for="b-ev">What's happening?</label><select id="b-ev">${["Nothing new: I want to elect or review","Marriage","Birth or adoption","Lost other coverage","Moved to a new state"].map((o,i)=>`<option value="${i}"${ev===i?" selected":""}>${o}</option>`).join("")}</select></div>
+     <div class="field"><label for="b-days">Days since it happened</label><input type="number" id="b-days" min="0" value="${days}"></div><div class="field"><label for="b-oe">Open enrollment</label><select id="b-oe"><option value="0"${!oe?" selected":""}>Closed (opens Nov 2)</option><option value="1"${oe?" selected":""}>Open</option></select></div></div>
+     <div class="decision ${d.cls==="n"?"":d.cls}"><span class="eyebrow">Benefits decision model</span><b>${esc(d.out)}</b><span class="note">Human gate: ${esc(d.gate)} · ${esc(POLICY.benefits)}</span></div>
+     <div class="row">${d.gate!=="None"?`<button class="btn primary" data-ben="go">${d.gate==="Benefits decides"?"Send exception request":"Start in Workday"}</button>`:""}<span class="note">401(k): ${esc(POLICY.k401)}</span></div>`);
+  }
+  if(n==="pay")return flowCard("Pay and balances","Current needs · Assistant",`<div class="cols2"><div class="li"><b>PTO</b><span class="mono">${P.pto.toFixed(1)} h</span><span class="s">Accrues 4.62 h each pay period; pauses at 200 h.</span></div><div class="li"><b>401(k)</b><span class="mono">4% match</span><span class="s">${esc(POLICY.k401)}</span></div><div class="li"><b>Last paystub</b><span class="pill n">Workday</span><span class="s">Open in Workday (simulated) to see gross pay, taxes and deductions.</span></div><div class="li"><b>W-2</b><span class="pill n">January 31</span><span class="s">Available in Workday by January 31 each year.</span></div></div><button class="btn" data-close-flow>Done</button>`);
+  if(n==="training"||n==="course"){
+    const req=P.tasks.filter(t=>t.flow==="course");
+    if(n==="course"&&f.arg){const c=COURSES[f.arg]; const prog=f.prog||0;
+      if(f.finished)return flowCard(c.t,"Compliance · I2 University",`<div class="decision ok"><b>Complete. Certificate recorded in I2 University (simulated).</b></div>${pulseHTML("course")}<button class="btn" data-flow="training">Back to my training</button>`);
+      return flowCard(c.t,"Compliance · I2 University",`<p>${c.h} hour${c.h===1?"":"s"} · required for ${P.isMgr?"managers":"employees"} in ${esc(P.loc)}.</p><div class="bar-h"><span style="width:${prog}%"></span></div><div class="row"><button class="btn" data-course="step">${prog?"Continue":"Start"} module ${Math.min(4,prog/25+1)} of 4</button>${prog>=75?`<button class="btn primary" data-course="done">Finish and record</button>`:""}<span class="note">Simulated course player.</span></div>`);}
+    return flowCard("My required training","Compliance · Assistant",`<div class="tasks">${req.map(taskRow).join("")}</div><p class="note">Assigned by role and state; the planner adds time to your calendar 30 days before each due date.</p>`);
+  }
+  if(n==="ack"){const t=P.tasks.find(x=>x.id===f.task)||P.tasks.find(x=>x.flow==="ack"); const remote=t&&/Remote/.test(t.t);
+    if(f.finished)return flowCard("Acknowledged","Compliance",`<div class="decision ok"><b>Recorded on ${fmtD(D0)}.</b><span>This acknowledgment does not change at-will status.</span></div><button class="btn" data-close-flow>Done</button>`);
+    return flowCard(t?t.t:"Acknowledge a policy","Compliance · Living Handbook",`<div class="li"><b>${remote?"Remote Work and Equipment v3.2":"Employee handbook"}</b><span class="pill n">${remote?"Effective Nov 1":"Version 2026.10"}</span><span class="s">${remote?"Remote and hybrid roles are approved in writing. Internet and phone are reimbursed up to $50 a month. Return equipment within 10 business days of separation.":"Your handbook is assembled for your role and state. It covers pay, time off, benefits, conduct, safety and your right to raise concerns. Nothing in it creates an employment contract."}</span></div><div class="row"><button class="btn primary" data-ack="yes">I acknowledge</button><button class="btn" data-mate-ask="Summarize ${remote?"the Remote Work policy v3.2":"what's in my handbook"} in plain words">Ask the Assistant first</button></div>`);}
+  if(n==="career"){
+    const goal=+(f.goal??0),time=+(f.time??0); const plan=careerPlan(goal,time);
+    if(f.finished)return flowCard("Your course is charted","Career · Mentor",`<div class="decision ok"><b>Learning path saved; enrollments sent to I2 University (simulated).</b><span>${plan.picks.length} courses over about ${plan.weeks} weeks. I'll check in every two weeks.</span></div>${pulseHTML("career")}<button class="btn" data-close-flow>Done</button>`,"ment");
+    return flowCard("Chart my course","Career · Mentor",`<div class="li"><b>Toward ${esc(P.target)}</b><span class="pill n">from ${esc(P.role)}</span><span class="s">Your largest gaps are ranked first.</span></div>
+     <div class="list">${P.skills.map(s=>`<div class="skill"><span>${esc(s[0])}</span><div class="bar-h" title="${s[1]} of ${s[2]}"><span style="width:${s[1]/s[2]*100}%"></span></div><span class="mono note">${s[1]}/${s[2]}</span></div>`).join("")}</div>
+     <div class="fields"><div class="field"><label for="c-goal">Goal</label><select id="c-goal">${["Grow in my role","Move to my target role","Lead people"].map((o,i)=>`<option value="${i}"${goal===i?" selected":""}>${o}</option>`).join("")}</select></div><div class="field"><label for="c-time">Time I can give</label><select id="c-time"><option value="0"${time===0?" selected":""}>2 hours a week or less</option><option value="1"${time===1?" selected":""}>More than 2 hours a week</option></select></div></div>
+     <div class="decision"><span class="eyebrow">Career decision model</span><b>${esc(plan.note)}</b><ol style="margin:4px 0 0;padding-left:20px">${plan.picks.map(c=>`<li>${esc(COURSES[c].t)} · ${COURSES[c].h} h${COURSES[c].req?" · required":""}</li>`).join("")}</ol><span class="note">About ${plan.weeks} weeks at your pace.</span></div>
+     <div class="row"><button class="btn primary" data-career="save">Save my path</button><button class="btn" data-mate-ask="How do I get from ${esc(P.role)} to ${esc(P.target)}?">Talk it through with the Mentor</button></div>`,"ment");
+  }
+  if(n==="goals")return flowCard("Update my goals","Career · Mentor",`<div class="list">${P.goals.map((g,i)=>`<div class="field"><label for="g-${i}">${esc(g.t)} · <span id="gv-${i}">${g.p}%</span></label><input type="range" id="g-${i}" min="0" max="100" step="5" value="${g.p}" data-goal="${i}"></div>`).join("")}</div><div class="row"><button class="btn primary" data-goals="save">Save check-in</button><span class="note">Shared with ${esc(P.mgr)} in Workday at your next check-in (simulated).</span></div>`,"ment");
+  if(n==="courses")return flowCard("I2 University for you","Career · Mentor",`<div class="list">${P.skills.map(s=>`<div class="li"><b>${esc(COURSES[s[3]].t)}</b><span class="pill n">${COURSES[s[3]].h} h</span><span class="s">Builds: ${esc(s[0])}</span></div>`).join("")}<div class="li"><b>${esc(COURSES.planet.t)}</b><span class="pill n">45 min</span><span class="s">Recommended for everyone (Planet first)</span></div></div><button class="btn" data-flow="career">Build a path from these</button>`,"ment");
+  if(n==="idea"){
+    const x={o:+(f.o??0),r:+(f.r??1),t:+(f.t??1),b:+(f.b??0),v:+(f.v??0)}; const d=ideaDecide(x);
+    if(f.finished)return flowCard("Idea submitted","Creativity · Mentor",`<div class="decision ${d.cls==="n"?"":d.cls}"><b>${esc(d.route)}</b><span>You'll hear back with what happened, whatever the outcome.</span></div>${pulseHTML("idea")}<button class="btn" data-close-flow>Done</button>`,"ment");
+    const sel=(id,l,opts,v)=>`<div class="field"><label for="${id}">${l}</label><select id="${id}">${opts.map((o,i)=>`<option value="${i}"${v===i?" selected":""}>${o}</option>`).join("")}</select></div>`;
+    return flowCard("Share an idea","Creativity · Mentor",`<div class="field"><label for="i-title">Your idea in one line</label><input type="text" id="i-title" value="${esc(f.title||"")}" placeholder="Pre-fill off-cycle payment requests from the case notes"></div>
+     <div class="fields">${sel("i-o","Outcome if it works (35%)",["High","Medium","Low"],x.o)}${sel("i-r","Risk (25%)",["Low","Medium","High"],x.r)}${sel("i-t","Time to value (20%)",["Weeks","A quarter","A year or more"],x.t)}${sel("i-b","Build or buy (20%)",["Reuses what exists","Buy","Build new"],x.b)}${sel("i-v","Compass check",["Good for planet and people","Could harm planet or people"],x.v)}</div>
+     <div class="decision ${d.cls==="n"?"":d.cls}"><span class="eyebrow">Ideas decision model · weighted score ${d.sc}</span><b>${esc(d.out)}</b></div><div class="row"><button class="btn primary" data-idea="send">Submit idea</button></div>`,"ment");
+  }
+  if(n==="myideas")return flowCard("My ideas","Creativity",P.ideas.length?`<div class="list">${P.ideas.map(i=>`<div class="li"><b>${esc(i.title)}</b><span class="pill n">Score ${i.sc}</span><span class="s">${esc(i.route)} · ${esc(i.date)}</span></div>`).join("")}</div>`:`<p class="muted">No ideas yet.</p><button class="btn" data-flow="idea">Share your first idea</button>`,"ment");
+  if(n==="kudos"){
+    if(f.finished)return flowCard("Recognition sent","Culture · Coach",`<div class="decision ok"><b>${esc(f.to)} will see it, with the principle you named.</b><span>Recognition is evidence of values in action. It's never used to rank people.</span></div>${pulseHTML("kudos")}<button class="btn" data-close-flow>Done</button>`,"coach");
+    return flowCard("Recognize someone","Culture · Coach",`<div class="fields"><div class="field"><label for="k-to">Who</label><select id="k-to">${["Dana Ortiz","Sam Patel","Jordan Kim","Rae Johnson","Leah Green","Ana Ruiz"].filter(x=>x!==P.name&&x!==P.mgr||x===P.mgr).map(x=>`<option${f.to===x?" selected":""}>${x}</option>`).join("")}</select></div>
+     <div class="field"><label for="k-p">Principle they showed</label><select id="k-p">${PRINCIPLES.map(p=>`<option value="${p.id}"${f.p===p.id?" selected":""}>${p.name} (${TIERS[p.tier].n})</option>`).join("")}</select></div></div>
+     <div class="field"><label for="k-m">What they did</label><textarea id="k-m" rows="3" placeholder="Specific is kind: what happened and why it mattered">${esc(f.m||"")}</textarea></div><div class="row"><button class="btn primary" data-kudos="send">Send recognition</button></div>`,"coach");
+  }
+  if(n==="reflect"){
+    const prompts=["Where did you put people before a deadline this week, and how did it go?","What's one thing you did this week that the planet would thank you for?","When did you feel most honest at work this week?","What would you do differently if you had the week again?"];
+    const pi=+(f.pi||0);
+    if(f.finished)return flowCard("Reflection saved","Culture · Coach",`<div class="decision ok"><b>Saved privately in this browser.</b><span>Only you can see it. You can add it to an evidence pack later, if you choose.</span></div>${pulseHTML("reflect")}<button class="btn" data-flow="compass">Open my personal compass</button>`,"coach");
+    return flowCard("Two-minute reflection","Culture · Coach",`<div class="chips">${prompts.map((p,i)=>`<button class="chip" data-prompt="${i}" aria-pressed="${pi===i}">Prompt ${i+1}</button>`).join("")}</div><p class="lead"><b>${esc(prompts[pi])}</b></p>
+     <div class="field"><label for="r-p">Principle it connects to</label><select id="r-p">${PRINCIPLES.map(p=>`<option value="${p.id}">${p.name} (${TIERS[p.tier].n})</option>`).join("")}</select></div>
+     <div class="field"><label for="r-t">Your reflection</label><textarea id="r-t" rows="4"></textarea></div><div class="row"><button class="btn primary" data-reflect="save" data-q="${esc(prompts[pi])}">Save privately</button><span class="note">Private by default. Never scored.</span></div>`,"coach");
+  }
+  if(n==="compass"){
+    const ev=[...P.recog.map((r,i)=>({id:"rc"+i,k:"Recognition",p:r.p,t:`${r.from}: ${r.m}`})),...P.reflections.map((r,i)=>({id:"rf"+i,k:"Reflection",p:r.p,t:r.text})),...P.kudos.map((k,i)=>({id:"kd"+i,k:"You recognized",p:k.p,t:`${k.to}: ${k.m}`}))];
+    const by=t=>PRINCIPLES.filter(p=>p.tier===t);
+    return flowCard("My personal compass","Culture · Coach",`<p class="note">Private to you. Evidence of values comes from recognition and your own reflections, never from monitoring. No score is calculated.</p>
+     <div class="tiers">${Object.entries(TIERS).map(([k,t])=>`<div class="tier"><div><b><span class="dot" style="background:${t.c}"></span>${t.r} ${t.n}</b><span class="note">${esc(t.l)}</span></div><div class="chips">${by(k).map(p=>{const c=ev.filter(e=>e.p===p.id).length;return `<span class="chip static" title="${c} moments">${esc(p.name)}${c?` · ${c}`:""}</span>`}).join("")}</div></div>`).join("")}</div>
+     <div><span class="eyebrow">Values moments</span><div class="list" style="margin-top:6px">${ev.length?ev.map(e=>`<label class="li" style="cursor:pointer"><b>${esc(e.k)} · ${esc(PR[e.p].name)}</b><input type="checkbox" data-share="${e.id}"${P.share.includes(e.id)?" checked":""} aria-label="Include in evidence pack"><span class="s">${esc(e.t)}</span></label>`).join(""):'<p class="muted">No moments yet. Start with a reflection.</p>'}</div></div>
+     <div class="decision"><span class="eyebrow">Evidence pack for your next performance dialogue</span><b>${P.share.length} item${P.share.length===1?"":"s"} selected</b><span>You choose what goes in. ${esc(P.mgr)} sees it only when you share it, and you talk it through together.</span></div>
+     <div class="row"><button class="btn" data-flow="reflect">Reflect now</button><button class="btn primary" data-sharepack ${P.share.length?"":"disabled"}>Share pack with ${esc(P.mgr)}</button></div>`,"coach");
+  }
+  if(n==="find"){const q=(f.q||"").toLowerCase(); const hits=DIRECTORY.filter(d=>!q||(d.n+" "+d.k+" "+d.t).toLowerCase().includes(q)||q.split(/\s+/).some(w=>w.length>2&&d.t.includes(w)));
+    return flowCard("Who handles what","Collaboration · Assistant",`<div class="field"><label for="d-q">What do you need?</label><input type="text" id="d-q" value="${esc(f.q||"")}" placeholder="W-2, laptop, receipts, e-waste"></div><div class="list">${hits.map(d=>`<div class="li"><b>${esc(d.n)}</b><span class="pill n">Team</span><span class="s">${esc(d.k)} · ${esc(d.c)}</span></div>`).join("")||'<p class="muted">No match. Ask the Assistant.</p>'}</div>`);}
+  if(n==="concern"){
+    const tp=+(f.tp??0),dg=+(f.dg??0),an=+(f.an??0); const d=concernDecide(tp,dg);
+    if(f.finished)return flowCard("Concern received","Concerns",`<div class="decision ${d.cls}"><b>${esc(d.out)}</b><span>Reference ${esc(f.ref)}${an?" · Anonymous: your name is not attached.":""}</span></div><p class="note">${esc(POLICY.speak)}</p><button class="btn" data-close-flow>Done</button>`,"coach");
+    return flowCard("Raise a concern","Concerns · a person handles it",`<p>${esc(POLICY.speak)}</p><div class="fields"><div class="field"><label for="o-tp">What is it about?</label><select id="o-tp">${["A question","A policy concern","Harassment or discrimination","Safety","Retaliation"].map((o,i)=>`<option value="${i}"${tp===i?" selected":""}>${o}</option>`).join("")}</select></div>
+     <div class="field"><label for="o-dg">Is anyone in immediate danger?</label><select id="o-dg"><option value="0"${!dg?" selected":""}>No</option><option value="1"${dg?" selected":""}>Yes</option></select></div><div class="field"><label for="o-an">Report as</label><select id="o-an"><option value="0"${!an?" selected":""}>Me (named)</option><option value="1"${an?" selected":""}>Anonymous</option></select></div></div>
+     <div class="field"><label for="o-t">What happened (optional)</label><textarea id="o-t" rows="3"></textarea></div>
+     <div class="decision ${d.cls}"><span class="eyebrow">Concerns routing · a person decides</span><b>${esc(d.out)}</b><span class="note">Human gate: ${esc(d.gate)}</span></div><div class="row"><button class="btn primary" data-concern="send">Send to ${esc(d.gate==="None"?"the Assistant":d.gate)}</button><span class="note">Speak-up line: 1-800-555-0142</span></div>`,"coach");
+  }
+  return "";
+}
+
+/* ===================== COMPANIONS ===================== */
+const INTENTS=[
+ {re:/harass|discriminat|retaliat|unsafe|danger|threat|bull(y|ied)|abuse|uncomfortable|hostile|feels wrong|not right|something.*wrong/i,mate:"coach",reply:()=>`I'm glad you said something. This needs a person, not me. ${POLICY.speak}`,acts:[["concern","Raise a concern"],["find","Find Employee Relations"]],urgent:true},
+ {re:/due|this week|to-?do|what('s| is) (next|open)|today/i,mate:"asst",reply:()=>{const o=open().sort((a,b)=>a.due-b.due).slice(0,3);return o.length?"Here's what's next: "+o.map(t=>`${t.t} (${dueTxt(t.due).split(" \u00b7")[0].toLowerCase()})`).join("; ")+".":"Nothing is due. A good week to chart your course."},acts:[]},
+ {re:/expense|receipt|reimburs|mileage|internet bill/i,mate:"asst",reply:()=>`I can draft that in Workday. Pick or upload the receipt and I'll check it against policy first. ${POLICY.expense}`,acts:[["expense","Submit an expense"]]},
+ {re:/\bpto\b|time off|vacation|\boff\b|sick|leave/i,mate:"asst",reply:()=>`You have ${P.pto.toFixed(1)} hours of PTO. ${POLICY.sick[P.st]||""} Tell me the dates and I'll check them.`,acts:[["pto","Request time off"]]},
+ {re:/benefit|insurance|medical|dental|vision|married|marriage|baby|adopt|enroll|coverage/i,mate:"asst",reply:()=>POLICY.benefits,acts:[["benefits","Benefits and insurance"]]},
+ {re:/w-?2|paystub|paycheck|pay\b|payday|401|retire/i,mate:"asst",reply:()=>`Your paystub and W-2 are in Workday; the W-2 is ready by January 31. ${POLICY.k401}`,acts:[["pay","Pay and balances"],["find","Contact Payroll"]]},
+ {re:/training|course|compliance|certif|harassment prevention/i,mate:"asst",reply:()=>{const r=open().filter(t=>t.flow==="course");return r.length?`You have ${r.length} required course${r.length>1?"s":""} open. The next is "${r.sort((a,b)=>a.due-b.due)[0].t}", ${dueTxt(r[0].due).toLowerCase()}.`:"Your required training is complete. Nice work."},acts:[["training","My required training"]]},
+ {re:/acknowledg|handbook|policy/i,mate:"asst",reply:()=>"I can summarize any policy for your role and state, with the source. If something needs your acknowledgment, I'll show it first.",acts:[["ack","Acknowledge a policy"]]},
+ {re:/career|promot|grow|skill|path|next role|mentor|target|learn/i,mate:"ment",reply:()=>{const g=[...P.skills].sort((a,b)=>(b[2]-b[1])-(a[2]-a[1]))[0];return `You're aiming for ${P.target}. Your biggest gap is ${g[0]} (${g[1]} of ${g[2]}). "${COURSES[g[3]].t}" is the best first step. Want me to chart a path around your time?`},acts:[["career","Chart my course"],["courses","Browse courses"]]},
+ {re:/goal|check-?in|objective/i,mate:"ment",reply:()=>`You have ${P.goals.length} goal${P.goals.length>1?"s":""}. ${P.goals.map(g=>`${g.t}: ${g.p}%`).join("; ")}.`,acts:[["goals","Update my goals"]]},
+ {re:/idea|improve|suggest|innovat|better way/i,mate:"ment",reply:()=>"Ideas are scored on outcome, risk, time to value and reuse, and every idea passes the Compass check. You always hear back.",acts:[["idea","Share an idea"]]},
+ {re:/recogni|kudos|thank|appreciat/i,mate:"coach",reply:()=>"Specific recognition is the best kind. Name the principle they showed and what it made possible.",acts:[["kudos","Recognize someone"]]},
+ {re:/value|compass|reflect|integrity|respect|planet|purpose|assessment|review/i,mate:"coach",reply:()=>`Your compass this month: ${P.recog.length} recognition${P.recog.length===1?"":"s"} received and ${P.reflections.length} reflection${P.reflections.length===1?"":"s"}. I don't score you; I help you notice. What matters to you right now?`,acts:[["compass","My personal compass"],["reflect","Reflect for two minutes"]]},
+ {re:/who (handles|do i)|contact|laptop|password|access|e-?waste|recycl/i,mate:"asst",reply:()=>"Here's who handles what.",acts:[["find","Who handles what"]]}
+];
+function route(text){const i=INTENTS.find(x=>x.re.test(text)); return i||null;}
+function openMate(k){S.mate=k; greetMate(k); renderHero(); renderDock(); $("dock").classList.add("open"); setTimeout(()=>$("chatin")?.focus(),20);}
+function prefill(t){const i=$("chatin"); if(i){i.value=t; i.focus();}}
+function greetMate(k){ if(S.greeted[S.pid+k])return; S.greeted[S.pid+k]=1; const c=S.chats[k];
+  if(k==="asst"){const o=open().sort((a,b)=>a.due-b.due); c.push({who:"bot",text:o.length?`${o.length} things are open. First up: ${o[0].t} (${dueTxt(o[0].due).toLowerCase()}).`:"Nothing is waiting on you today.",acts:o[0]&&o[0].flow?[[o[0].flow,"Start it",o[0].arg,o[0].id]]:[]});}
+  if(k==="ment"){const g=[...P.skills].sort((a,b)=>(b[2]-b[1])-(a[2]-a[1]))[0]; c.push({who:"bot",text:`You're charting toward ${P.target}. The skill that would move you most is ${g[0]}. I can build a path that fits your week.`,acts:[["career","Chart my course"]]});}
+  if(k==="coach"){const r=P.recog[0]; c.push({who:"bot",text:r?`${r.from} recognized your ${PR[r.p].name} this week: "${r.m}" That's ${TIERS[PR[r.p].tier].n} in action. Want to reflect on it?`:"How are you living the Compass this week?",acts:[["reflect","Reflect for two minutes"],["compass","My personal compass"]]});}
+}
+const MATE_RULES={
+ asst:"You are the Assistant (first mate) in Halyard's employee home. You get today's tasks done: expenses, time off, benefits, training, requests. You prepare drafts; the employee always confirms. Never claim anything was submitted.",
+ ment:"You are the Mentor (navigator) in Halyard's employee home. You help the employee grow toward their target role with courses from I2 University listed below, goals and ideas. Suggest; never decide for them. Recommend only courses in the list.",
+ coach:"You are the Coach in Halyard's employee home. You help the employee live the Compass (Planet over People over Profit) and the principles listed. Encourage reflection and specific recognition. Never score, rank or judge the employee's values, never suggest monitoring anyone, and send any concern about harassment, safety or retaliation to a person immediately."};
+function contextFor(){return `Employee: ${P.name}, ${P.role}, ${P.dept}, ${P.loc}, ${P.tenure}. Manager: ${P.mgr}. Target role: ${P.target}.
+Open tasks: ${open().map(t=>`${t.t} (${dueTxt(t.due)})`).join("; ")||"none"}.
+PTO balance: ${P.pto.toFixed(1)} hours. Skills (have/need): ${P.skills.map(s=>`${s[0]} ${s[1]}/${s[2]}`).join("; ")}.
+Courses: ${Object.values(COURSES).map(c=>c.t).join("; ")}.
+Principles: ${PRINCIPLES.map(p=>p.name+" ("+TIERS[p.tier].n+")").join(", ")}. Recognition received: ${P.recog.map(r=>PR[r.p].name+" from "+r.from).join("; ")||"none"}.
+Policies: ${POLICY.expense} ${POLICY.pto} ${POLICY.sick[P.st]||""} ${POLICY.benefits} ${POLICY.speak} ${POLICY.k401} ${POLICY.internet}`;}
+const ACTION_TAGS={expense:"Submit an expense",pto:"Request time off",benefits:"Benefits and insurance",training:"My required training",career:"Chart my course",goals:"Update my goals",idea:"Share an idea",kudos:"Recognize someone",reflect:"Reflect for two minutes",compass:"My personal compass",concern:"Raise a concern",find:"Who handles what"};
+function breaker(text){
+  if(/keystroke|monitor (their|his|her|employees)|social media|score (your|their) values|values score|rank (you|employees)/i.test(text))return {s:"open",l:"Circuit Breaker tripped: prohibited practice. Answer withheld."};
+  if(/\bguarantee|legal advice|you will (be|get) (approved|paid)|submitted it for you|I('ve| have) submitted/i.test(text))return {s:"half",l:"Circuit Breaker half-open: promise or action claim. Check with a person."};
+  return {s:"closed",l:"Circuit Breaker closed: grounded in your data and policies."};
+}
+async function send(text){
+  text=text.trim(); if(!text)return; const k=S.mate, c=S.chats[k]; c.push({who:"me",text});
+  const hit=route(text);
+  if(hit&&(hit.urgent||!SAMPLE)){ if(hit.mate!==k&&!hit.urgent){c.push({who:"bot",text:`${MATES[hit.mate].name} is best for this, but here's what I can tell you: ${hit.reply()}`,acts:hit.acts});} else c.push({who:"bot",text:hit.reply(),acts:hit.acts}); renderDock(); return; }
+  if(!SAMPLE){c.push({who:"bot",text:"I can help with expenses, time off, benefits, pay, training, your career path, ideas, recognition, reflection and concerns. Try one of the suggestions below.",acts:[]}); renderDock(); return;}
+  const m={who:"bot",text:"",acts:hit?hit.acts:[],think:true}; c.push(m); renderDock();
+  const hist=c.filter(x=>!x.think&&x.text).slice(-6,-1).map(x=>({role:x.who==="me"?"user":"assistant",content:x.text}));
+  const rules=`${MATE_RULES[k]}\nUse only the facts below. Reply in under 90 words, warm and plain, second person, no markdown headings. You may add up to two action tags on their own line, chosen from: ${Object.keys(ACTION_TAGS).map(t=>"[["+t+"]]").join(" ")}.\n\n${contextFor()}`;
+  let turns=[{role:"user",content:rules},...hist]; while(turns.length>1&&turns[1].role==="assistant")turns.splice(1,1); turns.push({role:"user",content:text});
+  try{const {text:out}=await SAMPLE(turns,{cache:false,modelTier:"quick",onText:({text:t})=>{m.think=false; m.text=t.replace(/\[\[\w+\]\]/g,"").trim(); renderLog();}});
+    const tags=[...new Set((out.match(/\[\[(\w+)\]\]/g)||[]).map(t=>t.slice(2,-2)).filter(t=>ACTION_TAGS[t]))];
+    m.text=out.replace(/\[\[\w+\]\]/g,"").trim(); m.acts=[...(hit?hit.acts:[]),...tags.filter(t=>!(hit&&hit.acts.some(a=>a[0]===t))).map(t=>[t,ACTION_TAGS[t]])].slice(0,3);
+    const b=breaker(m.text); m.cb=b; if(b.s==="open")m.text="I can't answer that one. Here's someone who can help.";
+  }catch(e){m.think=false; m.text=hit?hit.reply():"I couldn't reach my AI helper just now. Here's what I can do directly."; if(!m.acts.length)m.acts=[["find","Who handles what"]];}
+  m.think=false; renderDock();
+}
+
+/* ===================== RENDER ===================== */
+function renderLog(){const l=$("dlog"); if(!l)return; const k=S.mate;
+  l.innerHTML=`<p class="role">${esc(MATES[k].role)}</p>`+S.chats[k].map(x=>x.who==="me"?`<div class="me">${esc(x.text)}</div>`:`<div class="msg"><span class="av ${k} sm">${MATES[k].init}</span><div class="bub">${x.think?'<span class="think">Thinking…</span>':esc(x.text)}${x.acts&&x.acts.length?`<div class="bacts">${x.acts.map(a=>`<button class="btn sm" data-flow="${a[0]}" data-arg="${esc(a[2]||"")}" data-task="${esc(a[3]||"")}">${esc(a[1])}</button>`).join("")}</div>`:""}${x.cb?`<div class="cb"><span class="pill ${x.cb.s==="closed"?"ok":x.cb.s==="half"?"warn":"crit"}">${esc(x.cb.l)}</span></div>`:""}</div></div>`).join("");
+  l.scrollTop=l.scrollHeight;}
+const QUICK={asst:["What's due this week?","I have a receipt","Can I take Friday off?","Who handles my W-2?"],ment:["How do I reach my target role?","What should I learn next?","I have an idea","Update my goals"],coach:["Help me reflect on my week","I want to recognize someone","How am I living the Compass?","Something at work feels wrong"]};
+function renderDock(){
+  const k=S.mate;
+  $("dock").innerHTML=`<div class="dtabs" role="tablist">${Object.entries(MATES).map(([id,m])=>`<button class="dtab ${id}" role="tab" aria-selected="${k===id}" data-mate="${id}"><span class="av ${id} sm">${m.init}</span>${m.name}</button>`).join("")}</div>
+   <div class="dlog" id="dlog" aria-live="polite"></div>
+   <div class="dfoot"><div class="quick">${QUICK[k].map(q=>`<button class="chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div><form id="chatform"><input type="text" id="chatin" placeholder="Ask your ${MATES[k].name.toLowerCase()}" aria-label="Message your ${MATES[k].name}"><button class="btn primary" type="submit">Send</button></form>
+   <span class="note">${SAMPLE?"AI replies use your Claude account and pass the Circuit Breaker.":"Guided replies. AI replies appear when this page runs inside Claude."}</span></div>`;
+  $("chatform").onsubmit=e=>{e.preventDefault(); const v=$("chatin").value; $("chatin").value=""; send(v);};
+  renderLog();
+}
+function renderWork(){$("work").innerHTML=(S.flow?viewFlow():"")+(S.sea==="today"?viewToday():viewSea(S.sea)); bindFlow();}
+function render(){renderHero(); renderNav(); renderWork();}
+function bindFlow(){
+  const v=id=>$(id)?.value;
+  if(S.flow==="expense"){const sync=()=>{Object.assign(S.f,{merch:v("x-merch"),amt:v("x-amt")===""?null:+v("x-amt"),cat:+v("x-cat"),rc:v("x-rc")==="1",exc:v("x-exc")});};["x-merch","x-amt","x-cat","x-rc","x-exc"].forEach(id=>{const el=$(id); if(el)el.onchange=sync;}); S.f.sync=sync;
+    const fi=$("rcfile"); if(fi)fi.onchange=()=>{const file=fi.files&&fi.files[0]; if(file){S.f.file=file.name; S.f.rc=true; sync(); S.f.rc=true; renderWork();}};}
+  if(S.flow==="pto"){["p-start","p-end"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.start=v("p-start"); S.f.end=v("p-end"); S.f.type=v("p-type"); renderWork();};});}
+  if(S.flow==="benefits"){["b-ev","b-days","b-oe"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.ev=+v("b-ev"); S.f.days=+v("b-days"); S.f.oe=v("b-oe")==="1"; renderWork();};});}
+  if(S.flow==="career"){["c-goal","c-time"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.goal=+v("c-goal"); S.f.time=+v("c-time"); renderWork();};});}
+  if(S.flow==="idea"){["i-o","i-r","i-t","i-b","i-v"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.title=v("i-title"); ["o","r","t","b","v"].forEach(k=>S.f[k]=+v("i-"+k)); renderWork();};});}
+  if(S.flow==="concern"){["o-tp","o-dg","o-an"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.tp=+v("o-tp"); S.f.dg=+v("o-dg"); S.f.an=+v("o-an"); renderWork();};});}
+  if(S.flow==="find"){const el=$("d-q"); if(el)el.oninput=()=>{S.f.q=el.value; const pos=el.selectionStart; renderWork(); const n=$("d-q"); n.focus(); n.setSelectionRange(pos,pos);};}
+  if(S.flow==="goals")document.querySelectorAll("[data-goal]").forEach(r=>r.oninput=()=>{$("gv-"+r.dataset.goal).textContent=r.value+"%";});
+  if(S.flow==="kudos"){["k-to","k-p"].forEach(id=>{const el=$(id); if(el)el.onchange=()=>{S.f.to=v("k-to"); S.f.p=v("k-p"); S.f.m=v("k-m");};});}
+}
+
+/* ===================== EVENTS ===================== */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-sea],[data-share]"); if(!t)return; const d=t.dataset;
+  if(d.sea){S.sea=d.sea; if(S.flow&&FLOW_SEA[S.flow]!==d.sea)S.flow=null; render(); return;}
+  if(d.mate){openMate(d.mate); return;}
+  if(d.flow){startFlow(d.flow,d.arg||"",d.task||""); return;}
+  if(t.hasAttribute("data-close-flow")){closeFlow(); return;}
+  if(d.done){const i=P.done.indexOf(d.done); i>=0?P.done.splice(i,1):P.done.push(d.done); saveP(); render(); return;}
+  if(d.q){send(d.q); return;}
+  if(d.mateAsk){openMate(S.flow==="career"?"ment":"asst"); send(d.mateAsk); return;}
+  if(d.pulse){const [k,v]=d.pulse.split("|"); S.pulsed[k]=v; toast("Thanks. Feedback recorded anonymously."); renderWork(); return;}
+  if(d.rcpt){const r=RECEIPTS.find(x=>x.id===d.rcpt); Object.assign(S.f,{cat:r.cat,amt:r.amt,merch:r.merch,rc:true,exc:""}); renderWork(); return;}
+  if(d.exp==="check"){S.f.sync&&S.f.sync(); renderWork(); return;}
+  if(d.exp==="draft"){S.f.sync&&S.f.sync(); const x=expDecide({cat:S.f.cat,amt:S.f.amt,rc:S.f.rc,exc:!!S.f.exc}); const amt=x.cap?Math.min(x.cap,S.f.amt):S.f.amt; S.f.final=amt;
+    P.expenses.push({merch:S.f.merch||"Expense",amt,cat:S.f.cat,status:x.gate==="You confirm submit"?"Draft ready: confirm in Workday":"Waiting for "+x.gate.toLowerCase()}); finish("expense","Draft created in Workday (simulated)"); return;}
+  if(d.pto==="send"){const s=new Date(S.f.start+"T00:00"),en=new Date(S.f.end+"T00:00"),hrs=weekdays(s,en)*8; P.requests.push({kind:"Time off",t:`${$("p-type")?.value||"PTO"}: ${fmtD(s)} to ${fmtD(en)} (${hrs} h)`,status:`Waiting for ${P.mgr}`}); finish("pto","Request sent to "+P.mgr+" (simulated)"); return;}
+  if(d.ben==="go"){const ev=+(S.f.ev||0); P.requests.push({kind:"Benefits",t:["Benefit elections","Life event: marriage","Life event: birth or adoption","Life event: loss of coverage","Life event: move"][ev],status:"Started in Workday"}); finish("benefits","Started in Workday (simulated)"); return;}
+  if(d.course==="step"){S.f.prog=Math.min(100,(S.f.prog||0)+25); renderWork(); return;}
+  if(d.course==="done"){P.completed.push(S.f.arg); const tk=P.tasks.find(x=>x.arg===S.f.arg); if(tk)S.f.task=tk.id; finish("course","Course recorded in I2 University (simulated)"); return;}
+  if(d.ack==="yes"){if(!S.f.task){const tk=P.tasks.find(x=>x.flow==="ack"&&!P.done.includes(x.id)); if(tk)S.f.task=tk.id;} finish("ack","Acknowledgment recorded"); return;}
+  if(d.career==="save"){P.plan={goal:+(S.f.goal||0),time:+(S.f.time||0),at:fmtD(D0)}; if(!S.f.task){const tk=P.tasks.find(x=>x.flow==="career"); if(tk)S.f.task=tk.id;} finish("career","Learning path saved"); return;}
+  if(d.goals==="save"){document.querySelectorAll("[data-goal]").forEach(r=>P.goals[+r.dataset.goal].p=+r.value); saveP(); toast("Check-in saved"); closeFlow(); return;}
+  if(d.idea==="send"){const title=$("i-title")?.value.trim(); if(!title){toast("Add your idea in one line first."); $("i-title")?.focus(); return;} S.f.title=title; ["o","r","t","b","v"].forEach(k=>S.f[k]=+$("i-"+k).value); const x=ideaDecide(S.f); P.ideas.push({title,sc:x.sc,route:x.route,date:fmtD(D0)}); finish("idea","Idea submitted"); return;}
+  if(d.kudos==="send"){const m=$("k-m")?.value.trim(); if(!m){toast("Say what they did, in a sentence."); $("k-m")?.focus(); return;} S.f.to=$("k-to").value; S.f.p=$("k-p").value; P.kudos.push({to:S.f.to,p:S.f.p,m}); finish("kudos","Recognition sent"); return;}
+  if(d.prompt){S.f.pi=+d.prompt; renderWork(); return;}
+  if(d.reflect==="save"){const tx=$("r-t")?.value.trim(); if(!tx){toast("Write a sentence or two first."); $("r-t")?.focus(); return;} P.reflections.push({q:d.q,text:tx,p:$("r-p").value,date:fmtD(D0)}); finish("reflect","Saved privately"); return;}
+  if(t.hasAttribute("data-sharepack")){P.requests.push({kind:"Evidence pack",t:`${P.share.length} values moments shared with ${P.mgr}`,status:"Shared for your next dialogue"}); saveP(); toast(`Shared with ${P.mgr} (simulated)`); render(); return;}
+  if(d.concern==="send"){S.f.tp=+$("o-tp").value; S.f.dg=+$("o-dg").value; S.f.an=+$("o-an").value; S.f.ref="SU-"+Math.floor(1e4+Math.random()*9e4); P.requests.push({kind:"Concern",t:"Concern "+S.f.ref,status:concernDecide(S.f.tp,S.f.dg).gate}); finish("concern","Received. A person will follow up."); return;}
+});
+document.addEventListener("change",e=>{const t=e.target; if(t.dataset&&t.dataset.share){const id=t.dataset.share,i=P.share.indexOf(id); t.checked?(i<0&&P.share.push(id)):(i>=0&&P.share.splice(i,1)); saveP(); renderWork();}});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("g[data-sea]")){e.preventDefault(); S.sea=e.target.dataset.sea; S.flow=null; render(); document.querySelector(`g[data-sea="${S.sea}"]`)?.focus();}});
+
+/* theme */
+function isDark(){const t=document.documentElement.getAttribute("data-theme"); return t?t==="dark":!!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);}
+function syncTheme(){const b=$("themebtn"),d=isDark(),p=b.querySelector("path"),l=d?"Switch to light mode":"Switch to dark mode"; b.setAttribute("aria-label",l); b.title=l;
+  p.setAttribute("d",d?"M8 4.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM8 0v2.5M8 13.5V16M0 8h2.5M13.5 8H16M2.3 2.3l1.8 1.8M11.9 11.9l1.8 1.8M2.3 13.7l1.8-1.8M11.9 4.1l1.8-1.8":"M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7Z"); p.setAttribute("stroke",d?"currentColor":"none"); p.setAttribute("stroke-width","1.5");}
+
+/* boot */
+function boot(){
+  const sel=$("persona"); sel.innerHTML=Object.entries(SEED).map(([k,p])=>`<option value="${k}"${S.pid===k?" selected":""}>${p.name} · ${p.role}</option>`).join("");
+  sel.onchange=()=>{S.pid=sel.value; store.set("pid",S.pid); S.flow=null; S.sea="today"; S.chats={asst:[],ment:[],coach:[]}; S.greeted={}; loadP(); greetMate(S.mate); render(); renderDock();};
+  const th=store.get("theme",null); if(th)document.documentElement.setAttribute("data-theme",th);
+  $("themebtn").onclick=()=>{const n=isDark()?"light":"dark"; document.documentElement.setAttribute("data-theme",n); store.set("theme",n); syncTheme();};
+  try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",syncTheme)}catch(e){}
+  $("fab").onclick=()=>{$("dock").classList.toggle("open");};
+  syncTheme(); loadP(); greetMate("asst"); render(); renderDock();
+  try{window.claude?.use?.("sample").then(s=>{if(s){SAMPLE=s; renderDock();}}).catch(()=>{});}catch(e){}
+}
+if(typeof document!=="undefined"&&$("work"))boot();
+</script>
+
+</body>
+</html>

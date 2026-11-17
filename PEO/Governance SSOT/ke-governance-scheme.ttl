@@ -1,0 +1,706 @@
+###############################################################################
+#  Knowledge Engineering & Semantic Governance scheme (SKOS) — v0.3.0
+#  For knowledge engineering teams at an HR services provider (PEO).
+#
+#  Covers: the knowledge artifact types (vocabulary → taxonomy → thesaurus →
+#  ontology → knowledge graph), a 10-stage semantic governance lifecycle,
+#  persistent vs virtual graph deployment, and the ISO standards (plus W3C
+#  companion specifications) that guide each stage.
+#
+#  Finding (checked 2026-09-30): no single ISO standard covers the full
+#  lifecycle. ISO/IEC 5392:2024 (KE reference architecture) is the closest
+#  umbrella; the stages are guided by terminology (TC 37), thesaurus (TC 46),
+#  top-level ontology and metadata-registry (JTC 1/SC 32), database language
+#  (SC 32 WG3: GQL, SQL/PGQ), AI and data quality (SC 42), privacy (SC 27)
+#  and HR / knowledge management (TC 260) standards.
+#
+#  Replaces the telecom-specific concepts of v0.2.0.
+###############################################################################
+@prefix ke:      <https://enablingvalue.com/ontology/ke-scheme#> .
+@prefix pes:     <https://enablingvalue.com/ontology/peo-es#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+ke:Scheme a skos:ConceptScheme ;
+    skos:prefLabel "Knowledge Engineering and Semantic Governance"@en ;
+    dcterms:source "MindMap (KE).svg" ;
+    owl:versionInfo "0.3.0" ;
+    dcterms:modified "2026-09-30"^^xsd:date ;
+    skos:hasTopConcept ke:OntologyBasedRepresentation , ke:KnowledgeArtifactTypes , ke:GovernanceLifecycle ,
+                       ke:GraphDeploymentModels , ke:DomainModeling , ke:ISOStandardsForKE , ke:CompanionSpecs ,
+                       ke:MFI , ke:EmploymentStandardsOntology , ke:UpperOntologies .
+
+#################################################################
+#  Metadata vocabulary for standards and lifecycle links
+#################################################################
+ke:Standard a owl:Class ; rdfs:label "Standard"@en ;
+    skos:definition "A single published or draft standards document with its own designation and edition."@en .
+ke:StandardSeries a owl:Class ; rdfs:label "Standard Series"@en ;
+    skos:definition "A multipart standard whose parts are published as separate documents under a shared number."@en .
+ke:Specification a owl:Class ; rdfs:label "Companion specification"@en ;
+    skos:definition "A non-ISO technical specification (e.g. a W3C Recommendation) that implements a lifecycle stage."@en .
+
+ke:designation     a owl:DatatypeProperty ; rdfs:label "designation"@en .
+ke:edition         a owl:DatatypeProperty ; rdfs:label "edition"@en ; rdfs:range xsd:integer .
+ke:committee       a owl:DatatypeProperty ; rdfs:label "committee"@en .
+ke:contentType     a owl:DatatypeProperty ; rdfs:label "content type"@en .
+ke:relevance       a owl:DatatypeProperty ; rdfs:label "use at a PEO"@en ;
+    skos:definition "How the standard applies to knowledge engineering for HR services / employment compliance."@en .
+ke:newSince2022    a owl:DatatypeProperty ; rdfs:label "new since 2022"@en ; rdfs:range xsd:boolean ;
+    skos:definition "True if this edition was published, or is in development, in 2022 or later."@en .
+ke:status          a owl:ObjectProperty ; rdfs:label "status"@en ; rdfs:range ke:LifecycleStatus .
+ke:isoPage         a owl:ObjectProperty ; rdfs:label "iso.org page"@en .
+ke:guidedBy        a owl:ObjectProperty ; rdfs:label "guided by"@en ;
+    skos:definition "A standard or specification that gives requirements or guidance for this stage, artifact or deployment model."@en .
+ke:projectExample  a owl:DatatypeProperty ; rdfs:label "in this project"@en ;
+    skos:definition "Where this concept shows up in the PEO Employment Standards Ontology files."@en .
+dcterms:title a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:issued a owl:AnnotationProperty .
+dcterms:replaces a owl:ObjectProperty .
+dcterms:isReplacedBy a owl:ObjectProperty ; owl:inverseOf dcterms:replaces .
+dcterms:hasPart a owl:ObjectProperty .
+dcterms:isPartOf a owl:ObjectProperty ; owl:inverseOf dcterms:hasPart .
+
+ke:LifecycleStatus a owl:Class ; rdfs:label "Lifecycle Status"@en .
+ke:StatusScheme a skos:ConceptScheme ; skos:prefLabel "Standard lifecycle status"@en .
+ke:Status_Current a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — current"@en ; skos:notation "60.60 / 90.93" .
+ke:Status_UnderReview a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — under systematic review"@en ; skos:notation "90.20" .
+ke:Status_ToBeRevised a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Published — to be revised"@en ; skos:notation "90.92" .
+ke:Status_Draft a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Under development"@en ; skos:notation "00–50" .
+ke:Status_Withdrawn a ke:LifecycleStatus , skos:Concept ; skos:inScheme ke:StatusScheme ;
+    skos:prefLabel "Withdrawn"@en ; skos:notation "95.99" .
+
+#################################################################
+#  Ontology-Based Representation (from the mind map)
+#################################################################
+ke:OntologyBasedRepresentation a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Ontology-Based Representation"@en ;
+    skos:narrower ke:IntegrationAndSharingOfKnowledge , ke:IntelligentReasoning .
+ke:IntegrationAndSharingOfKnowledge a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Integration and Sharing of Knowledge"@en ; skos:broader ke:OntologyBasedRepresentation .
+ke:IntelligentReasoning a skos:Concept ; skos:inScheme ke:Scheme ;
+    skos:prefLabel "Intelligent Reasoning"@en ; skos:broader ke:OntologyBasedRepresentation ;
+    skos:narrower ke:ConceptClassification , ke:SemanticDescription , ke:LogicReasoning .
+ke:ConceptClassification a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:IntelligentReasoning ;
+    skos:prefLabel "Concept Classification"@en ;
+    ke:projectExample "A reasoner classifies each law as pes:FederalStandard, pes:StateStandard or pes:LocalStandard from where it applies."@en .
+ke:SemanticDescription a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:IntelligentReasoning ;
+    skos:prefLabel "Semantic Description"@en .
+ke:LogicReasoning a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:IntelligentReasoning ;
+    skos:prefLabel "Logic Reasoning"@en ;
+    ke:projectExample "Property chains infer pes:subjectTo: a Chicago worksite is subject to Chicago, Cook County, Illinois and federal standards."@en .
+
+#################################################################
+#  Knowledge artifact types
+#################################################################
+ke:KnowledgeArtifactTypes a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Knowledge Artifact Types"@en ;
+    skos:scopeNote "Ordered by increasing semantic commitment. Each builds on the one before; governance applies to all of them."@en ;
+    skos:narrower ke:Art_Vocabulary , ke:Art_Taxonomy , ke:Art_Thesaurus , ke:Art_Ontology , ke:Art_KnowledgeGraph , ke:Art_Shapes .
+ke:Art_Vocabulary a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "1" ;
+    skos:prefLabel "Controlled vocabulary / term base"@en ;
+    skos:definition "Agreed terms with definitions, preferred and alternative labels."@en ;
+    ke:guidedBy ke:ISO704 , ke:ISO1087 , ke:ISO12620_1 , ke:ISO30042 , ke:ISO26162_1 , ke:ISO30400 ;
+    ke:projectExample "Labels, altLabels and definitions throughout; HR terms cross-checked with ISO 30400."@en .
+ke:Art_Taxonomy a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "2" ;
+    skos:prefLabel "Taxonomy"@en ;
+    skos:definition "Terms arranged in broader/narrower hierarchies for classification and navigation."@en ;
+    ke:guidedBy ke:ISO25964_1 , ke:W3C_SKOS ;
+    ke:projectExample "peo-topics.ttl — compliance topic taxonomy."@en .
+ke:Art_Thesaurus a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "3" ;
+    skos:prefLabel "Thesaurus and mappings"@en ;
+    skos:definition "A taxonomy plus associative relations, scope notes, and mappings to other vocabularies."@en ;
+    ke:guidedBy ke:ISO25964_1 , ke:ISO25964_2 , ke:W3C_SKOS ;
+    ke:projectExample "skos:related links (AI in employment ↔ anti-discrimination); mappings to ISO 30400 terms are the next step."@en .
+ke:Art_Ontology a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "4" ;
+    skos:prefLabel "Ontology"@en ;
+    skos:definition "Classes, properties and logical axioms, aligned to a top-level ontology, that a reasoner can use."@en ;
+    ke:guidedBy ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO5392 , ke:W3C_OWL2 ;
+    ke:projectExample "peo-es.ttl — OWL 2 DL, aligned to BFO."@en .
+ke:Art_KnowledgeGraph a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "5" ;
+    skos:prefLabel "Knowledge graph (instance data)"@en ;
+    skos:definition "Facts about real things, typed by the ontology and classified by the taxonomy, stored or virtualized as a graph."@en ;
+    ke:guidedBy ke:ISO39075 , ke:ISO9075_16 , ke:W3C_SPARQL , ke:W3C_R2RML , ke:ISO5259 ;
+    ke:projectExample "peo-standards.ttl (reference data) and peo-examples.ttl (client data)."@en .
+ke:Art_Shapes a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:KnowledgeArtifactTypes ; skos:notation "6" ;
+    skos:prefLabel "Constraint shapes"@en ;
+    skos:definition "Closed-world data quality rules checked before each release."@en ;
+    ke:guidedBy ke:W3C_SHACL , ke:ISO5259 ;
+    ke:projectExample "peo-shapes.ttl."@en .
+
+#################################################################
+#  Semantic governance lifecycle (10 stages)
+#################################################################
+ke:GovernanceLifecycle a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Semantic Governance Lifecycle"@en ;
+    skos:definition "The stages a vocabulary, taxonomy, ontology or knowledge graph passes through from scoping to retirement, with the standards that guide each."@en ;
+    skos:scopeNote "No single ISO standard covers this whole lifecycle (checked 2026-09-30). ISO/IEC 5392:2024 gives the overall KE reference architecture; the stage-level guidance comes from the standards linked to each stage."@en ;
+    skos:narrower ke:Stage01_Scope , ke:Stage02_Acquire , ke:Stage03_Terminology , ke:Stage04_Organize , ke:Stage05_Formalize ,
+                  ke:Stage06_Validate , ke:Stage07_Register , ke:Stage08_Deploy , ke:Stage09_Operate , ke:Stage10_Change .
+ke:Stage01_Scope a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "1" ;
+    skos:prefLabel "Scope and competency questions"@en ;
+    skos:definition "Agree what the knowledge must answer, for whom, and who owns it."@en ;
+    ke:guidedBy ke:ISO5392 , ke:ISO30401 , ke:ISO42001 ;
+    ke:projectExample "Which standards apply to a client worksite given its location and headcount? Who carries each requirement under the client service agreement?"@en .
+ke:Stage02_Acquire a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "2" ;
+    skos:prefLabel "Acquire knowledge and provenance"@en ;
+    skos:definition "Collect authoritative sources and expert input, recording where each fact came from."@en ;
+    ke:guidedBy ke:ISO5392 , ke:ISO30401 , ke:W3C_PROV ;
+    ke:projectExample "Statutes, agency pages and counsel review; pes:verifiedAgainst records the source URL."@en .
+ke:Stage03_Terminology a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "3" ;
+    skos:prefLabel "Define terms"@en ;
+    skos:definition "Choose preferred terms, write intensional definitions, and record term metadata."@en ;
+    ke:guidedBy ke:ISO704 , ke:ISO1087 , ke:ISO12620_1 , ke:ISO30042 , ke:ISO26162_1 , ke:ISO30400 .
+ke:Stage04_Organize a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "4" ;
+    skos:prefLabel "Organize concepts"@en ;
+    skos:definition "Build hierarchies and associative relations, and map to external vocabularies."@en ;
+    ke:guidedBy ke:ISO25964_1 , ke:ISO25964_2 , ke:W3C_SKOS .
+ke:Stage05_Formalize a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "5" ;
+    skos:prefLabel "Formalize the ontology"@en ;
+    skos:definition "Express classes, relations and axioms and align them to a top-level ontology."@en ;
+    ke:guidedBy ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO21838_5 , ke:ISO5392 , ke:W3C_OWL2 .
+ke:Stage06_Validate a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "6" ;
+    skos:prefLabel "Validate"@en ;
+    skos:definition "Check logical consistency with a reasoner, data quality with shapes, and content with subject-matter and legal reviewers."@en ;
+    ke:guidedBy ke:ISO5259 , ke:W3C_SHACL ;
+    ke:projectExample "peo-shapes.ttl blocks releases on violations and lists unverified records as warnings."@en .
+ke:Stage07_Register a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "7" ;
+    skos:prefLabel "Register and publish"@en ;
+    skos:definition "Record each artifact, version and registration status in a metadata registry so others can find and trust it."@en ;
+    ke:guidedBy ke:ISO11179_3 , ke:ISO11179_32 , ke:ISO11179_35 , ke:ISO19763_1 , ke:ISO19763_3 .
+ke:Stage08_Deploy a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "8" ;
+    skos:prefLabel "Deploy as persistent or virtual graphs"@en ;
+    skos:definition "Load the graph into a store, or expose existing databases as a graph without copying them."@en ;
+    ke:guidedBy ke:ISO39075 , ke:ISO9075_16 , ke:W3C_SPARQL , ke:W3C_R2RML ;
+    skos:related ke:GraphDeploymentModels .
+ke:Stage09_Operate a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "9" ;
+    skos:prefLabel "Operate, protect and measure"@en ;
+    skos:definition "Control access to worker data, assess AI uses of the graph, monitor quality, and report."@en ;
+    ke:guidedBy ke:ISO27701 , ke:ISO42001 , ke:ISO42005 , ke:ISO5259 , ke:ISO30414 ;
+    ke:projectExample "An HR assistant that answers leave questions from the graph needs an AI impact assessment and PII controls."@en .
+ke:Stage10_Change a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GovernanceLifecycle ; skos:notation "10" ;
+    skos:prefLabel "Change, version and retire"@en ;
+    skos:definition "Track legal changes, issue new versions, deprecate rather than delete, and retain history."@en ;
+    ke:guidedBy ke:ISO30300 , ke:ISO11179_3 , ke:ISO30401 ;
+    ke:projectExample "The 2024 FLSA overtime rule is kept with status Rescinded; each wage rate is a dated record, not an overwrite."@en .
+
+#################################################################
+#  Graph deployment models
+#################################################################
+ke:GraphDeploymentModels a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Graph Deployment Models"@en ;
+    skos:narrower ke:PersistentGraph , ke:VirtualGraph , ke:HybridGraph .
+ke:PersistentGraph a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GraphDeploymentModels ;
+    skos:prefLabel "Persistent (materialized) graph"@en ;
+    skos:definition "Graph data copied into and stored by a graph database."@en ;
+    skos:narrower ke:RDFStore , ke:PropertyGraphStore .
+ke:RDFStore a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:PersistentGraph ;
+    skos:prefLabel "RDF triple store"@en ;
+    skos:definition "Stores RDF triples, supports OWL reasoning and SPARQL queries."@en ;
+    ke:guidedBy ke:W3C_SPARQL , ke:W3C_OWL2 , ke:W3C_SHACL .
+ke:PropertyGraphStore a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:PersistentGraph ;
+    skos:prefLabel "Labeled property graph database"@en ;
+    skos:definition "Stores nodes and edges with labels and key–value properties, queried with GQL."@en ;
+    ke:guidedBy ke:ISO39075 .
+ke:VirtualGraph a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GraphDeploymentModels ;
+    skos:prefLabel "Virtual graph"@en ;
+    skos:definition "A graph view over data that stays in its source systems (payroll, HRIS, benefits), translated at query time."@en ;
+    skos:narrower ke:OBDA , ke:SQLPGQView .
+ke:OBDA a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:VirtualGraph ;
+    skos:prefLabel "Ontology-based data access (R2RML)"@en ;
+    skos:definition "Mappings from relational tables to ontology terms let SPARQL queries run over SQL databases."@en ;
+    ke:guidedBy ke:W3C_R2RML , ke:W3C_SPARQL .
+ke:SQLPGQView a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:VirtualGraph ;
+    skos:prefLabel "SQL/PGQ property graph view"@en ;
+    skos:definition "A property graph defined over existing SQL tables with CREATE PROPERTY GRAPH and queried with GRAPH_TABLE."@en ;
+    ke:guidedBy ke:ISO9075_16 ;
+    skos:example "CREATE PROPERTY GRAPH peo_compliance VERTEX TABLES (worksite KEY (site_id) LABEL Worksite, jurisdiction KEY (jur_id) LABEL Jurisdiction) EDGE TABLES (site_location KEY (site_id) SOURCE KEY (site_id) REFERENCES worksite (site_id) DESTINATION KEY (jur_id) REFERENCES jurisdiction (jur_id) LABEL locatedIn)" .
+ke:HybridGraph a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:GraphDeploymentModels ;
+    skos:prefLabel "Hybrid"@en ;
+    skos:definition "Persist the slow-changing reference graph; virtualize the fast-changing operational data."@en ;
+    ke:projectExample "Persist peo-es, peo-topics and peo-standards (laws change a few times a year); expose client, worksite and headcount data from the HRIS as a virtual graph so it is never stale or duplicated."@en .
+
+#################################################################
+#  Domain modeling levels (from the mind map)
+#################################################################
+ke:DomainModeling a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Domain Modeling"@en ;
+    skos:narrower ke:Domain , ke:PrimaryClass , ke:SecondaryClass , ke:Instances .
+ke:Domain a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Domain"@en ; skos:example "Employment-standards compliance for PEO co-employment"@en .
+ke:PrimaryClass a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Primary Class"@en ;
+    skos:example "pes:EmploymentStandard, pes:Requirement, pes:Jurisdiction, pes:Employer, pes:ClientServiceAgreement" .
+ke:SecondaryClass a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Secondary Class"@en ;
+    skos:example "pes:Ordinance, pes:MunicipalJurisdiction, pes:ProfessionalEmployerOrganization, pes:ResponsibilityAllocation" .
+ke:Instances a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:DomainModeling ;
+    skos:prefLabel "Instances"@en ; skos:example "See peo-standards.ttl and peo-examples.ttl"@en .
+
+#################################################################
+#  ISO standards — grouped by role
+#################################################################
+ke:ISOStandardsForKE a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "ISO Standards for Knowledge Engineering"@en ;
+    skos:narrower ke:Grp_Architecture , ke:Grp_Terminology , ke:Grp_Thesauri , ke:Grp_Ontology , ke:Grp_Registries ,
+                  ke:Grp_GraphData , ke:Grp_Quality , ke:Grp_HR , ke:Grp_Other .
+ke:Grp_Architecture a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "KE architecture and knowledge management"@en ; skos:narrower ke:ISO5392 , ke:ISO30401 , ke:ISO30401_ed2 .
+ke:Grp_Terminology a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Terminology (vocabularies)"@en ; skos:narrower ke:ISO704 , ke:ISO1087 , ke:ISO12620_1 , ke:ISO30042 , ke:ISO26162_1 .
+ke:Grp_Thesauri a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Thesauri and taxonomies"@en ; skos:narrower ke:ISO25964 , ke:ISO5964 .
+ke:Grp_Ontology a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Top-level ontologies"@en ; skos:narrower ke:ISO21838 .
+ke:Grp_Registries a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Metadata and model registries"@en ; skos:narrower ke:ISO11179 , ke:ISO19763 .
+ke:Grp_GraphData a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Graph data (persistent and virtual)"@en ; skos:narrower ke:ISO39075 , ke:ISO9075_16 , ke:ISO9075_16_ed2 , ke:ISO13250 .
+ke:Grp_Quality a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Data quality, AI and privacy governance"@en ; skos:narrower ke:ISO5259 , ke:ISO42001 , ke:ISO42005 , ke:ISO27701 .
+ke:Grp_HR a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "HR domain and records"@en ; skos:narrower ke:ISO30400 , ke:ISO30414 , ke:ISO30300 .
+ke:Grp_Other a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:ISOStandardsForKE ;
+    skos:prefLabel "Other standards from the mind map"@en ; skos:narrower ke:ISO21127 , ke:ISO80000_1 .
+
+### KE architecture ---------------------------------------------------------
+ke:ISO5392 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Architecture ;
+    skos:notation "ISO/IEC 5392" ;
+    skos:prefLabel "ISO/IEC 5392 — Reference architecture of knowledge engineering"@en ;
+    dcterms:title "Information technology — Artificial intelligence — Reference architecture of knowledge engineering"@en ;
+    ke:designation "ISO/IEC 5392:2024" ; ke:edition 1 ; dcterms:issued "2024"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/IEC JTC 1/SC 42" ; ke:contentType "Reference architecture + terminology" ;
+    dcterms:description "Defines a reference architecture for knowledge engineering in AI: the roles, activities, layers and components involved and how they connect, with standard KE terminology. Published March 2024."@en ;
+    ke:relevance "The closest thing to an umbrella standard for a KE team: use it to define team roles and the activities in each lifecycle stage."@en ;
+    ke:isoPage <https://www.iso.org/standard/81228.html> .
+
+ke:ISO30401 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Architecture ;
+    skos:notation "ISO 30401" ;
+    skos:prefLabel "ISO 30401 — Knowledge management systems: Requirements"@en ;
+    ke:designation "ISO 30401:2018" ; ke:edition 1 ; dcterms:issued "2018"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ;
+    ke:committee "ISO/TC 260" ; ke:contentType "Management system requirements" ;
+    dcterms:description "Requirements for establishing, running and improving a knowledge management system; amended in 2022 and 2024."@en ;
+    ke:relevance "Frames the KE team's governance as a certifiable management system (policy, roles, review, improvement)."@en ;
+    dcterms:isReplacedBy ke:ISO30401_ed2 .
+ke:ISO30401_ed2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Architecture ;
+    skos:notation "ISO/DIS 30401" ;
+    skos:prefLabel "ISO/DIS 30401 — Knowledge management systems (edition 2)"@en ;
+    ke:designation "ISO/DIS 30401" ; ke:edition 2 ;
+    ke:status ke:Status_Draft ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/TC 260" ; ke:contentType "Management system requirements" ;
+    dcterms:description "Second edition; enquiry vote closed 2026-09-18. Will replace ISO 30401:2018 and its two amendments."@en ;
+    ke:relevance "Watch item: plan to align the KE team's management system to edition 2."@en ;
+    dcterms:replaces ke:ISO30401 ;
+    ke:isoPage <https://www.iso.org/standard/89436.html> .
+
+### Terminology -------------------------------------------------------------
+ke:ISO704 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Terminology ;
+    skos:notation "ISO 704" ;
+    skos:prefLabel "ISO 704 — Terminology work: Principles and methods"@en ;
+    ke:designation "ISO 704:2022" ; ke:edition 4 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/TC 37/SC 1" ; ke:contentType "Guidance (methods)" ;
+    dcterms:description "How objects, concepts, definitions and designations relate; principles for forming terms and writing intensional definitions."@en ;
+    ke:relevance "Governs how definitions are written, e.g. 'A client employer is an employer that directs day-to-day work and contracts with a PEO…'."@en ;
+    ke:isoPage <https://www.iso.org/standard/79077.html> .
+ke:ISO1087 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Terminology ;
+    skos:notation "ISO 1087" ;
+    skos:prefLabel "ISO 1087 — Terminology work and terminology science: Vocabulary"@en ;
+    ke:designation "ISO 1087:2019" ; ke:edition 2 ; dcterms:issued "2019"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 37/SC 1" ; ke:contentType "Vocabulary" ;
+    dcterms:description "Basic terms of terminology work: concept, characteristic, definition, designation, concept system. Replaced ISO 1087-1:2000."@en ;
+    ke:relevance "Shared vocabulary for the KE team and legal/HR reviewers."@en ;
+    ke:isoPage <https://www.iso.org/standard/62330.html> .
+ke:ISO12620_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Terminology ;
+    skos:notation "ISO 12620-1" ;
+    skos:prefLabel "ISO 12620-1 — Data category specifications"@en ;
+    dcterms:title "Management of terminology resources — Data categories — Part 1: Specifications"@en ;
+    ke:designation "ISO 12620-1:2022" ; ke:edition 1 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/TC 37/SC 3" ; ke:contentType "Requirements (term metadata)" ;
+    dcterms:description "How to specify, document, harmonize and maintain the data categories (fields) of terminology resources in a data category repository. Marked for revision in 2025."@en ;
+    ke:relevance "Defines the fields of the PEO term base (term, definition, source, usage status, jurisdiction note)."@en ;
+    ke:isoPage <https://www.iso.org/standard/79078.html> .
+ke:ISO30042 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Terminology ;
+    skos:notation "ISO 30042" ;
+    skos:prefLabel "ISO 30042 — TermBase eXchange (TBX)"@en ;
+    ke:designation "ISO 30042:2019" ; dcterms:issued "2019"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 37/SC 3" ; ke:contentType "Exchange format" ;
+    dcterms:description "XML format for exchanging terminology between tools."@en ;
+    ke:relevance "Moves the term base between terminology tools, translation vendors (Spanish-language notices) and the graph."@en .
+ke:ISO26162_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Terminology ;
+    skos:notation "ISO 26162-1" ;
+    skos:prefLabel "ISO 26162-1 — Terminology databases: Design"@en ;
+    ke:designation "ISO 26162-1:2019" ; dcterms:issued "2019"^^xsd:gYear ;
+    ke:status ke:Status_Current ;
+    ke:committee "ISO/TC 37/SC 3" ; ke:contentType "Guidance (database design)" ;
+    dcterms:description "Principles for designing terminology databases."@en ;
+    ke:relevance "Design reference if the term base is kept outside the graph."@en .
+
+### Thesauri ----------------------------------------------------------------
+ke:ISO25964 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Thesauri ;
+    skos:notation "ISO 25964" ;
+    skos:prefLabel "ISO 25964 — Thesauri and interoperability with other vocabularies"@en ;
+    ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance + data model" ;
+    dcterms:description "The international reference for building thesauri and mapping them to other vocabularies."@en ;
+    ke:relevance "Governs peo-topics.ttl and its mappings to ISO 30400 and to vendor HRIS code lists."@en ;
+    dcterms:replaces ke:ISO5964 ;
+    dcterms:hasPart ke:ISO25964_1 , ke:ISO25964_2 , ke:ISO25964_1_ed2 ; skos:narrower ke:ISO25964_1 , ke:ISO25964_2 , ke:ISO25964_1_ed2 .
+ke:ISO25964_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO25964 ;
+    skos:notation "ISO 25964-1" ; skos:prefLabel "Part 1: Thesauri for information retrieval"@en ;
+    ke:designation "ISO 25964-1:2011" ; ke:edition 1 ; dcterms:issued "2011"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ; ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance + data model" ;
+    dcterms:isPartOf ke:ISO25964 ; dcterms:replaces ke:ISO5964 ; dcterms:isReplacedBy ke:ISO25964_1_ed2 ;
+    dcterms:description "Constructing and maintaining monolingual and multilingual thesauri, with an exchange data model."@en ;
+    ke:relevance "Rules for broader/narrower/related relations and scope notes in the topic taxonomy."@en ;
+    ke:isoPage <https://www.iso.org/standard/53657.html> .
+ke:ISO25964_1_ed2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO25964 ;
+    skos:notation "ISO/FDIS 25964-1" ; skos:prefLabel "Part 1, edition 2 (draft)"@en ;
+    ke:designation "ISO/FDIS 25964-1" ; ke:edition 2 ;
+    ke:status ke:Status_Draft ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance + data model" ;
+    dcterms:isPartOf ke:ISO25964 ; dcterms:replaces ke:ISO25964_1 ;
+    dcterms:description "Second edition at FDIS ballot since August 2026."@en ;
+    ke:relevance "Watch item: review the updated data model before the next taxonomy release."@en ;
+    ke:isoPage <https://www.iso.org/standard/86713.html> .
+ke:ISO25964_2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO25964 ;
+    skos:notation "ISO 25964-2" ; skos:prefLabel "Part 2: Interoperability with other vocabularies"@en ;
+    ke:designation "ISO 25964-2:2013" ; ke:edition 1 ; dcterms:issued "2013"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ; ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance (mapping)" ;
+    dcterms:isPartOf ke:ISO25964 ; dcterms:replaces ke:ISO5964 ;
+    dcterms:description "Compares thesauri with taxonomies, ontologies, classification schemes and other vocabularies, and gives guidance on mapping between them."@en ;
+    ke:relevance "Guides crosswalks from the topic taxonomy to ISO 30400 terms, O*NET/SOC occupations and payroll earning codes."@en ;
+    ke:isoPage <https://www.iso.org/standard/53658.html> .
+ke:ISO5964 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Thesauri ;
+    skos:notation "ISO 5964" ; skos:prefLabel "ISO 5964 — Multilingual thesauri (withdrawn)"@en ;
+    ke:designation "ISO 5964:1985" ; dcterms:issued "1985"^^xsd:gYear ;
+    ke:status ke:Status_Withdrawn ; ke:committee "ISO/TC 46/SC 9" ; ke:contentType "Guidance" ;
+    dcterms:isReplacedBy ke:ISO25964_1 , ke:ISO25964_2 ;
+    dcterms:description "Historic multilingual thesaurus guideline, withdrawn 2013-03-04."@en ;
+    ke:relevance "None — cite ISO 25964."@en ;
+    ke:isoPage <https://www.iso.org/standard/12159.html> .
+
+### Top-level ontologies ------------------------------------------------------
+ke:ISO21838 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Ontology ;
+    skos:notation "ISO/IEC 21838" ;
+    skos:prefLabel "ISO/IEC 21838 — Top-level ontologies (TLO)"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Requirements + top-level ontologies" ;
+    dcterms:description "Part 1 sets requirements for top-level ontologies; later parts standardize BFO, DOLCE, TUpper and (in draft) UFO."@en ;
+    ke:relevance "The PEO ontology's upper layer is Part 2 (BFO)."@en ;
+    skos:related ke:UpperOntologies ;
+    dcterms:hasPart ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO21838_3 , ke:ISO21838_4 , ke:ISO21838_5 ;
+    skos:narrower ke:ISO21838_1 , ke:ISO21838_2 , ke:ISO21838_3 , ke:ISO21838_4 , ke:ISO21838_5 .
+ke:ISO21838_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-1" ; skos:prefLabel "Part 1: Requirements"@en ;
+    ke:designation "ISO/IEC 21838-1:2021" ; ke:edition 1 ; dcterms:issued "2021"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Requirements" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "What a top-level ontology must provide to act as a hub for domain ontologies."@en ;
+    ke:relevance "Yardstick for choosing BFO."@en ;
+    ke:isoPage <https://www.iso.org/standard/71954.html> .
+ke:ISO21838_2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-2" ; skos:prefLabel "Part 2: Basic Formal Ontology (BFO)"@en ;
+    ke:designation "ISO/IEC 21838-2:2021" ; ke:edition 1 ; dcterms:issued "2021"^^xsd:gYear ;
+    ke:status ke:Status_UnderReview ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "BFO-2020 terms, relations and axiomatizations in OWL 2 and Common Logic."@en ;
+    ke:relevance "Used: laws, requirements, agreements ⊑ generically dependent continuant; jurisdictions, worksites ⊑ site; organizations ⊑ material entity; workers ⊑ object."@en ;
+    rdfs:seeAlso pes:EmploymentStandard , pes:Jurisdiction , pes:Organization ;
+    ke:isoPage <https://www.iso.org/standard/74572.html> .
+ke:ISO21838_3 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-3" ; skos:prefLabel "Part 3: DOLCE"@en ;
+    ke:designation "ISO/IEC 21838-3:2023" ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Descriptive Ontology for Linguistic and Cognitive Engineering."@en ;
+    ke:relevance "Alternative upper layer; not used."@en .
+ke:ISO21838_4 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC 21838-4" ; skos:prefLabel "Part 4: TUpper"@en ;
+    ke:designation "ISO/IEC 21838-4:2023" ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "TUpper, a modular top-level ontology."@en ;
+    ke:relevance "Alternative upper layer; not used."@en .
+ke:ISO21838_5 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO21838 ;
+    skos:notation "ISO/IEC DIS 21838-5" ; skos:prefLabel "Part 5: Unified Foundational Ontology (UFO) — draft"@en ;
+    ke:designation "ISO/IEC DIS 21838-5" ; ke:edition 1 ;
+    ke:status ke:Status_Draft ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Top-level ontology" ;
+    dcterms:isPartOf ke:ISO21838 ;
+    dcterms:description "Standardizes the Unified Foundational Ontology; DIS vote closed 2026-09-01."@en ;
+    ke:relevance "UFO has strong support for roles, relators and social commitments — a good fit for co-employment and contracts. Worth evaluating against BFO for the agreement model."@en ;
+    ke:isoPage <https://www.iso.org/standard/89915.html> .
+
+### Registries ----------------------------------------------------------------
+ke:ISO11179 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Registries ;
+    skos:notation "ISO/IEC 11179" ;
+    skos:prefLabel "ISO/IEC 11179 — Metadata registries (MDR)"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodels" ;
+    dcterms:description "Metamodels for registering data elements, concept systems and models, with registration status, stewardship and versioning. The fourth edition (2023) restructured the series."@en ;
+    ke:relevance "Backbone of semantic governance: who owns each term, class and code list, its registration status, and its versions."@en ;
+    dcterms:hasPart ke:ISO11179_3 , ke:ISO11179_32 , ke:ISO11179_35 ; skos:narrower ke:ISO11179_3 , ke:ISO11179_32 , ke:ISO11179_35 .
+ke:ISO11179_3 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO11179 ;
+    skos:notation "ISO/IEC 11179-3" ; skos:prefLabel "Part 3: Metamodel for registry common facilities"@en ;
+    ke:designation "ISO/IEC 11179-3:2023" ; ke:edition 4 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodel" ;
+    dcterms:isPartOf ke:ISO11179 ;
+    dcterms:description "Core registry model: identification, designation, definition, registration, classification and mapping between registered items. Amendment 1 (2026) enhances item mapping."@en ;
+    ke:relevance "Registration status and stewardship attributes for every published artifact."@en ;
+    ke:isoPage <https://www.iso.org/standard/78915.html> .
+ke:ISO11179_32 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO11179 ;
+    skos:notation "ISO/IEC 11179-32" ; skos:prefLabel "Part 32: Metamodel for concept system registration"@en ;
+    ke:designation "ISO/IEC 11179-32:2023" ; ke:edition 1 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodel" ;
+    dcterms:isPartOf ke:ISO11179 ;
+    dcterms:description "Registers concept systems — taxonomies, thesauri, ontologies — with their concepts, relations and assertions."@en ;
+    ke:relevance "Register peo-topics and peo-es as concept systems in the enterprise metadata registry."@en ;
+    ke:isoPage <https://www.iso.org/standard/78926.html> .
+ke:ISO11179_35 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO11179 ;
+    skos:notation "ISO/IEC 11179-35" ; skos:prefLabel "Part 35: Metamodel for model registration"@en ;
+    ke:designation "ISO/IEC 11179-35:2023" ; ke:edition 1 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodel" ;
+    dcterms:isPartOf ke:ISO11179 ;
+    dcterms:description "Registers data, process and service models and mappings between them."@en ;
+    ke:relevance "Register the HRIS/payroll schemas and their R2RML or SQL/PGQ mappings to the ontology."@en ;
+    ke:isoPage <https://www.iso.org/standard/81727.html> .
+ke:ISO19763 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Registries ;
+    skos:notation "ISO/IEC 19763" ;
+    skos:prefLabel "ISO/IEC 19763 — Metamodel framework for interoperability (MFI)"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodels" ;
+    dcterms:description "Metamodels for registering ontologies, processes, services, roles and goals so that models can be found, compared and mapped."@en ;
+    ke:relevance "Part 3 is the ontology-registration metamodel; 11179-32 is the alternative for SKOS-style concept systems."@en ;
+    skos:related ke:MFI ;
+    dcterms:hasPart ke:ISO19763_1 , ke:ISO19763_3 ; skos:narrower ke:ISO19763_1 , ke:ISO19763_3 .
+ke:ISO19763_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO19763 ;
+    skos:notation "ISO/IEC 19763-1" ; skos:prefLabel "Part 1: Framework"@en ;
+    ke:designation "ISO/IEC 19763-1:2023" ; ke:edition 3 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Framework" ;
+    dcterms:isPartOf ke:ISO19763 ;
+    dcterms:description "Overview of the MFI series."@en ;
+    ke:relevance "Entry point for an MFI-based model registry."@en ;
+    ke:isoPage <https://www.iso.org/standard/84749.html> .
+ke:ISO19763_3 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO19763 ;
+    skos:notation "ISO/IEC 19763-3" ; skos:prefLabel "Part 3: Metamodel for ontology registration"@en ;
+    ke:designation "ISO/IEC 19763-3:2020" ; dcterms:issued "2020"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:committee "ISO/IEC JTC 1/SC 32" ; ke:contentType "Metamodel" ;
+    dcterms:isPartOf ke:ISO19763 ;
+    dcterms:description "Administrative and semantic metadata for registering an ontology. Amended in 2024."@en ;
+    ke:relevance "Metadata needed to register peo-es.ttl."@en ;
+    ke:isoPage <https://www.iso.org/standard/76581.html> .
+
+### Graph data ----------------------------------------------------------------
+ke:ISO39075 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_GraphData ;
+    skos:notation "ISO/IEC 39075" ;
+    skos:prefLabel "ISO/IEC 39075 — Database language GQL"@en ;
+    ke:designation "ISO/IEC 39075:2024" ; ke:edition 1 ; dcterms:issued "2024"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/IEC JTC 1/SC 32/WG 3" ; ke:contentType "Database language" ;
+    dcterms:description "The first ISO database language since SQL: defines, queries and updates labeled property graphs. Published April 2024; a technical corrigendum was scheduled for December 2025."@en ;
+    ke:relevance "Standard query language if the persistent graph is a property-graph database rather than an RDF store."@en .
+ke:ISO9075_16 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_GraphData ;
+    skos:notation "ISO/IEC 9075-16" ;
+    skos:prefLabel "ISO/IEC 9075-16 — SQL/PGQ (property graph queries)"@en ;
+    ke:designation "ISO/IEC 9075-16:2023" ; ke:edition 1 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/IEC JTC 1/SC 32/WG 3" ; ke:contentType "Database language" ;
+    dcterms:description "Lets SQL tables be declared as a property graph (nodes and edges with labels and properties) and queried with graph patterns — a standard virtual graph over relational data. Corrigendum 1 in 2026."@en ;
+    ke:relevance "Expose payroll/HRIS tables as a virtual compliance graph without copying worker data."@en ;
+    dcterms:isReplacedBy ke:ISO9075_16_ed2 ;
+    ke:isoPage <https://www.iso.org/standard/79473.html> .
+ke:ISO9075_16_ed2 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_GraphData ;
+    skos:notation "ISO/IEC CD 9075-16" ; skos:prefLabel "SQL/PGQ edition 2 — draft"@en ;
+    ke:designation "ISO/IEC CD 9075-16" ; ke:edition 2 ;
+    ke:status ke:Status_Draft ; ke:newSince2022 "true"^^xsd:boolean ;
+    ke:committee "ISO/IEC JTC 1/SC 32/WG 3" ; ke:contentType "Database language" ;
+    dcterms:description "Second edition; committee-draft comments closed 2026-01-30."@en ;
+    ke:relevance "Watch item for the virtual-graph layer."@en ;
+    dcterms:replaces ke:ISO9075_16 ;
+    ke:isoPage <https://www.iso.org/standard/87342.html> .
+ke:ISO13250 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_GraphData ;
+    skos:notation "ISO/IEC 13250" ; skos:prefLabel "ISO/IEC 13250 — Topic Maps"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 34" ; ke:contentType "Data model + syntaxes" ;
+    dcterms:description "Topics, associations and occurrences with merging rules; Part 2 (data model, 2006) is current. Largely superseded in practice by RDF and property graphs."@en ;
+    ke:relevance "Low; only for migrating legacy topic-map knowledge bases."@en .
+
+### Quality, AI and privacy ---------------------------------------------------
+ke:ISO5259 a skos:Concept , ke:StandardSeries ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Quality ;
+    skos:notation "ISO/IEC 5259" ;
+    skos:prefLabel "ISO/IEC 5259 — Data quality for analytics and machine learning"@en ;
+    ke:committee "ISO/IEC JTC 1/SC 42" ; ke:contentType "Framework + measures + process" ;
+    ke:newSince2022 "true"^^xsd:boolean ;
+    dcterms:description "Five-part series: overview and terminology, quality measures, quality management requirements, a quality process framework, and a governance framework (parts 1–4 published 2024; part 5 2025)."@en ;
+    ke:relevance "Quality measures (completeness, accuracy, currency) for the reference graph when it feeds analytics or an AI assistant."@en ;
+    dcterms:hasPart ke:ISO5259_1 ; skos:narrower ke:ISO5259_1 .
+ke:ISO5259_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:ISO5259 ;
+    skos:notation "ISO/IEC 5259-1" ; skos:prefLabel "Part 1: Overview, terminology and examples"@en ;
+    ke:designation "ISO/IEC 5259-1:2024" ; ke:edition 1 ; dcterms:issued "2024"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 42" ; ke:contentType "Framework" ;
+    dcterms:isPartOf ke:ISO5259 ;
+    dcterms:description "Framework for assessing and improving data quality across the data lifecycle."@en ;
+    ke:relevance "Entry point to the series."@en ;
+    ke:isoPage <https://www.iso.org/standard/81088.html> .
+ke:ISO42001 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Quality ;
+    skos:notation "ISO/IEC 42001" ; skos:prefLabel "ISO/IEC 42001 — AI management system"@en ;
+    ke:designation "ISO/IEC 42001:2023" ; ke:edition 1 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 42" ; ke:contentType "Management system requirements" ;
+    dcterms:description "Requirements for an organization's AI management system."@en ;
+    ke:relevance "Governs AI services built on the graph (HR assistant, compliance Q&A) and fits with the knowledge management system under ISO 30401."@en .
+ke:ISO42005 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Quality ;
+    skos:notation "ISO/IEC 42005" ; skos:prefLabel "ISO/IEC 42005 — AI system impact assessment"@en ;
+    ke:designation "ISO/IEC 42005:2025" ; ke:edition 1 ; dcterms:issued "2025"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 42" ; ke:contentType "Guidance" ;
+    dcterms:description "Guidance for assessing how an AI system may affect individuals, groups and society across its lifecycle."@en ;
+    ke:relevance "Directly relevant where the graph drives AI in hiring or HR decisions (Illinois HB 3773, NYC Local Law 144)."@en ;
+    rdfs:seeAlso pes:Requirement ;
+    ke:isoPage <https://www.iso.org/standard/42005> .
+ke:ISO27701 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Quality ;
+    skos:notation "ISO/IEC 27701" ; skos:prefLabel "ISO/IEC 27701 — Privacy information management systems"@en ;
+    ke:designation "ISO/IEC 27701:2025" ; ke:edition 2 ; dcterms:issued "2025"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/IEC JTC 1/SC 27" ; ke:contentType "Management system requirements" ;
+    dcterms:description "Requirements and guidance for a privacy information management system; the 2025 edition is standalone rather than an extension of ISO/IEC 27001."@en ;
+    ke:relevance "Worker PII in the instance graph (and biometric data under BIPA) must sit inside a privacy management system."@en ;
+    ke:isoPage <https://www.iso.org/standard/27701> .
+
+### HR domain and records -----------------------------------------------------
+ke:ISO30400 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_HR ;
+    skos:notation "ISO 30400" ; skos:prefLabel "ISO 30400 — Human resource management: Vocabulary"@en ;
+    ke:designation "ISO 30400:2022" ; ke:edition 2 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/TC 260" ; ke:contentType "Vocabulary" ;
+    dcterms:description "Terms used in the ISO human resource management standards."@en ;
+    ke:relevance "Authoritative source vocabulary for HR terms; map peo-topics and class labels to it."@en ;
+    ke:isoPage <https://www.iso.org/standard/78044.html> .
+ke:ISO30414 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_HR ;
+    skos:notation "ISO 30414" ; skos:prefLabel "ISO 30414 — Human capital reporting and disclosure"@en ;
+    ke:designation "ISO 30414:2025" ; ke:edition 2 ; dcterms:issued "2025"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/TC 260" ; ke:contentType "Requirements (reporting)" ;
+    dcterms:description "Requirements for internal and external human capital reporting in eleven areas, including compliance, workforce costs, health and safety, and turnover."@en ;
+    ke:relevance "Defines client-facing HR metrics a PEO can compute from the graph, including compliance metrics."@en ;
+    ke:isoPage <https://www.iso.org/standard/30414> .
+ke:ISO30300 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_HR ;
+    skos:notation "ISO 30300" ; skos:prefLabel "ISO 30300 — Records management: Core concepts and vocabulary"@en ;
+    ke:designation "ISO 30300:2020" ; ke:edition 2 ; dcterms:issued "2020"^^xsd:gYear ;
+    ke:status ke:Status_ToBeRevised ; ke:committee "ISO/TC 46/SC 11" ; ke:contentType "Vocabulary" ;
+    dcterms:description "Core records-management terms: records, metadata for records, appraisal, disposition."@en ;
+    ke:relevance "Retention and disposition of payroll, I-9 and leave records; versioned history of the graph itself."@en ;
+    ke:isoPage <https://www.iso.org/standard/74291.html> .
+
+### Other (from the original mind map) ----------------------------------------
+ke:ISO21127 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Other ;
+    skos:notation "ISO 21127" ; skos:prefLabel "ISO 21127 — Reference ontology for cultural heritage (CIDOC CRM)"@en ;
+    ke:designation "ISO 21127:2023" ; ke:edition 3 ; dcterms:issued "2023"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/TC 46/SC 4" ; ke:contentType "Reference ontology" ;
+    dcterms:description "Event-centric reference ontology for cultural heritage documentation."@en ;
+    ke:relevance "Not HR-specific; a worked example of an ISO-standardized domain ontology."@en ;
+    ke:isoPage <https://www.iso.org/standard/85100.html> .
+ke:ISO80000_1 a skos:Concept , ke:Standard ; skos:inScheme ke:Scheme ; skos:broader ke:Grp_Other ;
+    skos:notation "ISO 80000-1" ; skos:prefLabel "ISO 80000-1 — Quantities and units: General"@en ;
+    ke:designation "ISO 80000-1:2022" ; ke:edition 2 ; dcterms:issued "2022"^^xsd:gYear ;
+    ke:status ke:Status_Current ; ke:newSince2022 "true"^^xsd:boolean ; ke:committee "ISO/TC 12" ; ke:contentType "Vocabulary + rules" ;
+    dcterms:description "Quantities, units and how to write them."@en ;
+    ke:relevance "Applied: every pes:WageRate records its unit explicitly (USD/h, USD/wk)."@en ;
+    rdfs:seeAlso pes:WageRate ;
+    ke:isoPage <https://www.iso.org/standard/76921.html> .
+
+#################################################################
+#  W3C companion specifications (not ISO)
+#################################################################
+ke:CompanionSpecs a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "W3C companion specifications"@en ;
+    skos:scopeNote "Not ISO standards, but the working languages that implement several lifecycle stages."@en ;
+    skos:narrower ke:W3C_SKOS , ke:W3C_OWL2 , ke:W3C_SHACL , ke:W3C_SPARQL , ke:W3C_R2RML , ke:W3C_PROV .
+ke:W3C_SKOS a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "SKOS"@en ; ke:designation "W3C Recommendation (2009)" ;
+    dcterms:description "Simple Knowledge Organization System: RDF vocabulary for taxonomies and thesauri."@en .
+ke:W3C_OWL2 a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "OWL 2"@en ; ke:designation "W3C Recommendation (2012, 2nd ed.)" ;
+    dcterms:description "Web Ontology Language for ontologies with formal semantics."@en .
+ke:W3C_SHACL a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "SHACL"@en ; ke:designation "W3C Recommendation (2017)" ;
+    dcterms:description "Shapes Constraint Language for validating RDF graphs."@en .
+ke:W3C_SPARQL a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "SPARQL 1.1"@en ; ke:designation "W3C Recommendation (2013)" ;
+    dcterms:description "Query and update language for RDF graphs."@en .
+ke:W3C_R2RML a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "R2RML"@en ; ke:designation "W3C Recommendation (2012)" ;
+    dcterms:description "Mapping language from relational databases to RDF, the basis of virtual RDF graphs."@en .
+ke:W3C_PROV a skos:Concept , ke:Specification ; skos:inScheme ke:Scheme ; skos:broader ke:CompanionSpecs ;
+    skos:prefLabel "PROV-O"@en ; ke:designation "W3C Recommendation (2013)" ;
+    dcterms:description "Provenance ontology: who produced a fact, from what, and when."@en .
+
+#################################################################
+#  ISO 19763 (MFI) — objectives and HR-services applications
+#################################################################
+ke:MFI a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "ISO 19763 (MFI)"@en ; skos:related ke:ISO19763 ;
+    skos:narrower ke:MFIObjectives , ke:MFIHRApplications .
+ke:MFIObjectives a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFI ;
+    skos:prefLabel "MFI Objectives"@en ; skos:narrower ke:StandardizeMetamodelStructure , ke:EnsureInteroperability .
+ke:StandardizeMetamodelStructure a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIObjectives ;
+    skos:prefLabel "Standardize Structure of Metamodels"@en .
+ke:EnsureInteroperability a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIObjectives ;
+    skos:prefLabel "Ensure Interoperability"@en .
+ke:MFIHRApplications a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFI ;
+    skos:prefLabel "MFI Applications for HR Services"@en ;
+    skos:narrower ke:App_RulesSSOT , ke:App_ClientDataExchange , ke:App_PayrollBenefitsModels , ke:App_ComplianceReporting .
+ke:App_RulesSSOT a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIHRApplications ;
+    skos:prefLabel "Single source of truth for compliance rules"@en ; rdfs:seeAlso pes:Requirement , pes:EmploymentStandard .
+ke:App_ClientDataExchange a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIHRApplications ;
+    skos:prefLabel "Client and worksite data exchange"@en ; rdfs:seeAlso pes:Worksite , pes:ClientEmployer .
+ke:App_PayrollBenefitsModels a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIHRApplications ;
+    skos:prefLabel "Payroll and benefits model registration"@en ; rdfs:seeAlso pes:WageRate .
+ke:App_ComplianceReporting a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:MFIHRApplications ;
+    skos:prefLabel "Co-employment responsibility reporting"@en ; rdfs:seeAlso pes:ResponsibilityAllocation .
+
+#################################################################
+#  Pointer to the domain ontology
+#################################################################
+ke:EmploymentStandardsOntology a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Employment Standards Ontology for PEOs"@en ;
+    skos:scopeNote "Formalized as peo-es.ttl with reference data in peo-standards.ttl, topics in peo-topics.ttl, examples in peo-examples.ttl and quality gates in peo-shapes.ttl. Replaces the Service Interoperability Ontology for Telecom."@en ;
+    rdfs:seeAlso <https://enablingvalue.com/ontology/peo-es> .
+
+#################################################################
+#  Upper / top-level ontologies (from the mind map)
+#################################################################
+ke:UpperOntologies a skos:Concept ; skos:inScheme ke:Scheme ; skos:topConceptOf ke:Scheme ;
+    skos:prefLabel "Upper/Top-Level Ontologies (ISO/IEC 21838)"@en ;
+    skos:scopeNote "The PEO ontology aligns its core classes to BFO (ISO/IEC 21838-2)."@en ;
+    skos:related ke:ISO21838 ;
+    skos:narrower ke:UpperOntologyBenefits , ke:UpperOntologyHRImplementation .
+ke:UpperOntologyBenefits a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologies ;
+    skos:prefLabel "Importance and Applications"@en ;
+    skos:narrower ke:Standardization , ke:Interoperability , ke:SemanticIntegration , ke:EnhancedQuerying , ke:Consistency , ke:Extensibility .
+ke:Standardization     a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Standardization"@en .
+ke:Interoperability    a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Interoperability"@en .
+ke:SemanticIntegration a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Semantic Integration"@en .
+ke:EnhancedQuerying    a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Enhanced Querying"@en .
+ke:Consistency         a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Consistency"@en .
+ke:Extensibility       a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyBenefits ; skos:prefLabel "Extensibility"@en .
+ke:UpperOntologyHRImplementation a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologies ;
+    skos:prefLabel "Example Implementation in HR Services"@en ;
+    skos:scopeNote "Ordered steps, as applied to the PEO ontology."@en ;
+    skos:narrower ke:Step1 , ke:Step2 , ke:Step3 , ke:Step4 , ke:Step5 , ke:Step6 , ke:Step7 .
+ke:Step1 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "1" ;
+    skos:prefLabel "Identification of Core Concepts"@en ; ke:projectExample "Standard, requirement, jurisdiction, employer, worksite, agreement."@en .
+ke:Step2 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "2" ;
+    skos:prefLabel "Mapping Domain-Specific Concepts"@en ; ke:projectExample "Each core class placed under a BFO category."@en .
+ke:Step3 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "3" ;
+    skos:prefLabel "Establishing Relationships"@en ; ke:projectExample "appliesIn, withinJurisdiction, establishedBy, allocatedTo, preemptedBy."@en .
+ke:Step4 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "4" ;
+    skos:prefLabel "Integrating Multiple KOS"@en ; ke:projectExample "OWL ontology + SKOS topic taxonomy joined by pes:coversTopic."@en .
+ke:Step5 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "5" ;
+    skos:prefLabel "Enhancing Data Retrieval"@en ; ke:projectExample "Query: all in-force standards that apply to a worksite at the client's headcount."@en .
+ke:Step6 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "6" ;
+    skos:prefLabel "Semantic Integration and Interoperability"@en ; ke:projectExample "Virtual graph over HRIS worksite and headcount tables."@en .
+ke:Step7 a skos:Concept ; skos:inScheme ke:Scheme ; skos:broader ke:UpperOntologyHRImplementation ; skos:notation "7" ;
+    skos:prefLabel "Supporting Evolving Knowledge"@en ; ke:projectExample "Dated wage-rate records; legal status values; lastVerified governance attribute."@en .

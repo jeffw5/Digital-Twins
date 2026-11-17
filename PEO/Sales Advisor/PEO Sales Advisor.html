@@ -1,0 +1,854 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PEO Sales Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: Accelerator Console system (schematic grid paper, Big Shoulders + IBM Plex, deontic colors).
+   Eight tabbed views over one Keel (governed semantics) and North Star (persona decisions + measured outcomes). */
+:root{
+  --ink:#16202B; --ink-soft:#2A3846; --muted:#56697C; --paper:#EEF2F6; --surface:#FFFFFF; --line:#C9D5E0; --line-soft:#DCE4EC;
+  --accent:#2A78D6; --accent-ink:#ffffff;
+  --obligation:#4A3AA7; --permission:#1BAF7A; --prohibition:#E34948; --warning:#C98500;
+  --keel:#1F6E8C; --star:#B07A12;
+  --p-admin:#7A4BC4; --p-hr:#1F7FA8;
+  --font-display:'Big Shoulders','Arial Narrow',sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --keel:#5FB3D2; --star:#E2B44E; --p-admin:#B08CF0; --p-hr:#5EBBE0; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --ink:#EAF0F6; --ink-soft:#C9D5E0; --muted:#93A3B4; --paper:#0E141B; --surface:#161F29; --line:#2A3644; --line-soft:#212C38;
+  --accent:#5B9CE6; --accent-ink:#0B1116; --obligation:#9085E9; --permission:#2FC98D; --prohibition:#E97675; --warning:#E3A93B;
+  --keel:#5FB3D2; --star:#E2B44E; --p-admin:#B08CF0; --p-hr:#5EBBE0; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:24px 56px}
+header.top{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+h1{font-size:clamp(32px,4.4vw,48px);line-height:1;margin:6px 0 8px}
+.dek{color:var(--muted);max-width:78ch}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:9px;flex-wrap:wrap;align-self:flex-start}
+.tabs button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--font-body);padding:8px 12px;border-radius:6px;cursor:pointer}
+.tabs button .n{font-family:var(--font-mono);font-size:10.5px;margin-right:5px;opacity:.7}
+.tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.hook{font-size:14.5px;color:var(--muted);margin:0 0 16px;max-width:92ch}
+.hook b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.card h3{font-size:20px;margin-bottom:8px}
+.sec-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.hint{font-size:12.5px;color:var(--muted)}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;background:var(--surface)}
+.pill.ok{color:var(--permission);border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.pill.no{color:var(--prohibition);border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.pill.hold{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 45%,var(--line))}
+.pill.ver{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.pill.ob{color:var(--obligation);border-color:color-mix(in srgb,var(--obligation) 45%,var(--line))}
+.pill.keel{color:var(--keel);border-color:color-mix(in srgb,var(--keel) 45%,var(--line))}
+.pill.star{color:var(--star);border-color:color-mix(in srgb,var(--star) 45%,var(--line))}
+.pill.admin{color:var(--p-admin);border-color:color-mix(in srgb,var(--p-admin) 45%,var(--line))}
+.pill.hr{color:var(--p-hr);border-color:color-mix(in srgb,var(--p-hr) 45%,var(--line))}
+.good{color:var(--permission)}.bad{color:var(--prohibition)}.warn{color:var(--warning)}
+.seg{display:inline-flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:8px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13px var(--font-body);padding:7px 11px;border-radius:5px;cursor:pointer;text-align:left}
+.seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;font:600 13.5px var(--font-body);cursor:pointer}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.code-view{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:12px;white-space:pre;overflow-x:auto;color:var(--ink-soft);line-height:1.5;margin:0}
+.code-view .cm{color:var(--muted)}.code-view .ai{color:var(--star)}.code-view .red{color:var(--prohibition)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.r,th.r{text-align:right}
+.tbl-wrap{overflow-x:auto}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13.5px;margin-top:10px}
+.banner.no{border:1px solid color-mix(in srgb,var(--prohibition) 45%,var(--line));background:color-mix(in srgb,var(--prohibition) 9%,transparent)}
+.banner.hold{border:1px solid color-mix(in srgb,var(--warning) 45%,var(--line));background:color-mix(in srgb,var(--warning) 9%,transparent)}
+.banner.ok{border:1px solid color-mix(in srgb,var(--permission) 45%,var(--line));background:color-mix(in srgb,var(--permission) 8%,transparent)}
+.banner.info{border:1px dashed var(--line)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted);font-size:12px}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media (max-width:900px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat .v{font-family:var(--font-mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.3}
+.data-note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:28px;max-width:96ch}
+
+/* OVERVIEW architecture */
+.arch-wrap{overflow-x:auto}
+svg.arch{display:block;min-width:900px;width:100%;height:auto}
+svg.arch text{font-family:var(--font-mono)}
+.persona-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+@media (max-width:820px){.persona-grid{grid-template-columns:minmax(0,1fr)}}
+.persona{border-top:4px solid var(--p-admin)}
+.persona.hr{border-top-color:var(--p-hr)}
+.jobmap{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:10px}
+@media (max-width:700px){.jobmap{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.jobmap div{border:1px solid var(--line-soft);border-radius:6px;padding:6px 7px;font-size:11.5px;line-height:1.35}
+.jobmap b{display:block;font-family:var(--font-mono);font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* PIPELINE */
+.src-pick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media (max-width:900px){.src-pick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.src-pick{grid-template-columns:minmax(0,1fr)}}
+.src-pick button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px;min-width:0}
+.src-pick button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.src-pick .s{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.src-pick .t{font-weight:600;font-size:13.5px;line-height:1.3;overflow-wrap:anywhere}
+.steps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:4px 0 14px}
+@media (max-width:900px){.steps{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:480px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.step{border:1px solid var(--line);border-radius:7px;padding:7px 8px;font-size:11.5px;background:var(--surface);transition:border-color .2s,background .2s}
+.step .n{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+.step .s{font-weight:600;line-height:1.25}
+.step .st{font-family:var(--font-mono);font-size:10.5px;margin-top:3px;color:var(--muted)}
+.step.pass{border-color:var(--permission)}.step.pass .st{color:var(--permission)}
+.step.warnst{border-color:var(--warning);background:color-mix(in srgb,var(--warning) 8%,transparent)}.step.warnst .st{color:var(--warning)}
+.step.fail{border-color:var(--prohibition);background:color-mix(in srgb,var(--prohibition) 8%,transparent)}.step.fail .st{color:var(--prohibition)}
+.step.run{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.step.skip{opacity:.45}
+.panes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.panes{grid-template-columns:minmax(0,1fr)}}
+.pane{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--surface);min-width:0}
+.pane.wide{grid-column:1/-1}
+.pane h4{font-family:var(--font-mono);font-weight:500;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.facet{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:4px 10px;padding:5px 0;border-top:1px solid var(--line-soft);font-size:12.5px;align-items:baseline}
+.facet:first-of-type{border-top:0}
+.facet .k{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+@media (max-width:560px){.facet{grid-template-columns:minmax(0,1fr)}}
+
+/* AGENTS */
+.fam-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+@media (max-width:900px){.fam-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fam-grid button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 11px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px}
+.fam-grid button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.fam-grid .c{font-family:var(--font-mono);font-size:20px;font-weight:600}
+.fam-grid .l{font-size:12.5px;font-weight:600;line-height:1.25}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;margin:6px 0 14px}
+.chain span.h{border:1px solid var(--line);border-radius:6px;padding:4px 9px;background:var(--surface)}
+.chain .arr{color:var(--muted);font-family:var(--font-mono)}
+
+/* ADVISOR */
+.adv-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1000px){.adv-grid{grid-template-columns:minmax(0,1fr)}}
+.scn{display:flex;flex-direction:column;gap:8px}
+.scn button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:5px}
+.scn button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.scn .q{font-weight:600;font-size:13.5px;line-height:1.35}
+.stagebar{display:flex;gap:0;margin:8px 0 14px;flex-wrap:wrap}
+.stagebar span{flex:1 1 90px;font-size:11.5px;text-align:center;padding:6px 4px;border:1px solid var(--line);margin-left:-1px;background:var(--surface);color:var(--muted)}
+.stagebar span:first-child{border-radius:6px 0 0 6px;margin-left:0}
+.stagebar span:last-child{border-radius:0 6px 6px 0}
+.stagebar span.on{background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--ink);border-color:var(--accent);font-weight:600;position:relative;z-index:1}
+.stagebar span.done{color:var(--ink-soft)}
+.brief{border:2px solid var(--ink);border-radius:10px;padding:16px;background:var(--surface)}
+.brief h4{font-family:var(--font-display);font-size:22px;margin-bottom:6px}
+.brief ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.cite{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:4px;padding:0 4px;margin-left:4px;white-space:nowrap}
+.src-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 10px;font-size:12.5px;padding:6px 0;border-top:1px solid var(--line-soft);align-items:start}
+.src-row:first-of-type{border-top:0}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:760px){.opts{grid-template-columns:minmax(0,1fr)}}
+.opts button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px}
+.opts button[aria-pressed="true"]{border-color:var(--star);box-shadow:0 0 0 1px var(--star)}
+.opts .t{font-weight:600;font-size:13.5px}
+.events{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.ev{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px;padding:6px 0;position:relative}
+.ev .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--star);background:var(--surface);margin-top:4px;margin-left:4px}
+.ev.down .dot{border-color:var(--obligation)}
+.ev .ty{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);display:block}
+
+/* RULES */
+details.rule{border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+details.rule + details.rule{margin-top:6px}
+details.rule summary{list-style:none;cursor:pointer;padding:10px 12px;display:grid;grid-template-columns:76px minmax(0,1fr) auto auto;gap:10px;align-items:center}
+details.rule summary::-webkit-details-marker{display:none}
+details.rule .rid{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+details.rule .rn{font-size:13.5px;font-weight:500}
+@media (max-width:620px){details.rule summary{grid-template-columns:minmax(0,1fr) auto}details.rule .rid{grid-column:1/-1}}
+.rule-body{padding:4px 12px 12px;border-top:1px solid var(--line-soft)}
+.ci{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.lc{display:flex;gap:0;margin:10px 0 4px;flex-wrap:wrap}
+.lc span{flex:1 1 70px;text-align:center;font-family:var(--font-mono);font-size:10.5px;padding:5px 2px;border-bottom:3px solid var(--line);color:var(--muted)}
+.lc span.done{border-color:var(--permission);color:var(--ink-soft)}
+.lc span.cur{border-color:var(--accent);color:var(--ink);font-weight:600}
+
+/* VALUE */
+.vg-row{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr) 64px;gap:12px;align-items:center;padding:8px 6px;border-top:1px solid var(--line-soft);font-size:13px;cursor:pointer;border-radius:6px}
+.vg-row:first-of-type{border-top:0}
+.vg-row:hover{background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.vg-row[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+@media (max-width:640px){.vg-row{grid-template-columns:minmax(0,1fr) 56px}.vg-row .track{grid-column:1/-1;order:3}}
+.track{position:relative;height:22px;background:var(--line-soft);border-radius:4px}
+.track .dl{position:absolute;top:4px;bottom:4px;left:0;border-radius:3px;background:var(--accent)}
+.track .tg{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.track .gap{position:absolute;top:4px;bottom:4px;border-radius:0 3px 3px 0;background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--prohibition) 45%,transparent) 0 4px,transparent 4px 8px)}
+.gapv{font-family:var(--font-mono);font-size:12.5px;text-align:right}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* CHANGE */
+.chg-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1000px){.chg-grid{grid-template-columns:minmax(0,1fr)}}
+.chg{display:flex;flex-direction:column;gap:8px}
+.chg button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px}
+.chg button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.chg .cid{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.chg .ct{font-weight:600;font-size:14px;line-height:1.3}
+.causal-wrap{overflow-x:auto}
+svg.causal{display:block;min-width:760px;width:100%;height:auto}
+svg.causal text{font-family:var(--font-mono)}
+.ro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+@media (max-width:640px){.ro{grid-template-columns:minmax(0,1fr)}}
+.ro div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px}
+.ro .risk{border-color:color-mix(in srgb,var(--prohibition) 45%,var(--line))}
+.ro .opp{border-color:color-mix(in srgb,var(--permission) 45%,var(--line))}
+.ro b{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.ro .risk b{color:var(--prohibition)}.ro .opp b{color:var(--permission)}
+
+/* ROADMAP */
+.tl-wrap{overflow-x:auto}
+svg.tl{display:block;min-width:900px;width:100%;height:auto}
+svg.tl text{font-family:var(--font-mono)}
+.phases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+@media (max-width:900px){.phases{grid-template-columns:minmax(0,1fr)}}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.phase .ph{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.phase .ph h3{font-size:21px;margin:0}
+.phase .body{padding:12px 16px;display:flex;flex-direction:column;gap:10px;font-size:13.5px}
+.lane{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px}
+.lane ul{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:3px}
+@media (max-width:480px){.lane{grid-template-columns:minmax(0,1fr)}}
+.phase .gate{border-top:1px dashed var(--line);padding:10px 16px;font-size:12.5px;color:var(--muted);margin-top:auto}
+.phase .gate b{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Keel &amp; North Star · sales enablement on the HR Compliance SSOT and semantic layer</div>
+      <h1>PEO Sales Advisor</h1>
+      <p class="dek">A governed advisor that pulls content from SharePoint, public websites and third-party feeds, turns it into RDF on the Keel, and assembles it into briefs for the Client Admin and HR Specialist as they move through the sales pipeline. Every brief cites its sources, every decision is recorded with the outcome it commits to, and every upstream change is traced to the jobs and decisions it affects.</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views" id="tabs"></nav>
+  </header>
+
+  <!-- 1 OVERVIEW -->
+  <section id="v-over" role="tabpanel" aria-labelledby="t-over">
+    <p class="hook">The <b>Keel</b> holds what must stay true: ontologies, the SSOT extraction rules, the RDF content graph and the mapping graph. The <b>North Star</b> is what personas act on: assembled briefs, recorded decisions, orchestrated events and the measured outcomes that show whether the advisor helped. Seven agent families run between them.</p>
+    <div class="stats" id="ovStats"></div>
+    <div class="card"><div class="arch-wrap" id="arch"></div>
+      <p class="hint" style="margin-top:8px">Solid arrows carry content and queries. Dashed arrows carry change signals and measurements back to the Keel, where they become KGCL change requests or causal findings.</p></div>
+    <div class="persona-grid" id="personas"></div>
+  </section>
+
+  <!-- 2 PIPELINES -->
+  <section id="v-pipe" role="tabpanel" aria-labelledby="t-pipe" hidden>
+    <p class="hook">Each source item passes the same seven stages. <b>Identify</b> gives it a canonical URI, <b>Classify</b> and <b>Enrich</b> use the AI fabric to mine metadata the CMS never held (personas, job steps, claims, jurisdictions, validity dates), <b>Control</b> applies access and privacy rules from the SSOT, and <b>Publish</b> writes RDF only after SHACL validation. Pick a source item and run it.</p>
+    <div class="src-pick" id="srcPick" role="group" aria-label="Source items"></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+        <div><div class="eyebrow" id="srcSys"></div><h3 id="srcTitle" style="margin:2px 0 0"></h3></div>
+        <button class="btn" id="runPipe" type="button">Run pipeline</button>
+      </div>
+      <div class="steps" id="pipeSteps"></div>
+      <div class="panes" id="pipeOut"></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>Connectors and change capture by source</h3><div class="tbl-wrap"><table id="connTable"></table></div></div>
+  </section>
+
+  <!-- 3 AGENTS -->
+  <section id="v-agents" role="tabpanel" aria-labelledby="t-agents" hidden>
+    <p class="hook">Agents are grouped by family. Each one reads only what its rules allow, writes only to its declared target, and carries an agent identity with an autonomy level. Faceted search runs as a chain: <b>federated graph query → mappings → RDF content → precision extraction → assembly</b>.</p>
+    <div class="chain" aria-label="Faceted search chain"><span class="h">Federated graph query</span><span class="arr">→</span><span class="h">Mappings (GOV-006)</span><span class="arr">→</span><span class="h">RDF content structures</span><span class="arr">→</span><span class="h">Precision extraction</span><span class="arr">→</span><span class="h">Assembly for human or machine</span></div>
+    <div class="fam-grid" id="famGrid" role="group" aria-label="Agent families"></div>
+    <div class="card" style="padding:0"><div class="tbl-wrap"><table id="agentTable"></table></div></div>
+  </section>
+
+  <!-- 4 ADVISOR -->
+  <section id="v-adv" role="tabpanel" aria-labelledby="t-adv" hidden>
+    <p class="hook">The advisor at work. Pick a persona question: watch the faceted search chain run, read the assembled brief with its citations and access labels, then choose a decision. The decision is recorded against a desired outcome and emits orchestrated events, and the advisor shows which later decisions it changes.</p>
+    <div class="adv-grid">
+      <div>
+        <div class="seg" role="group" aria-label="Persona" id="persSel" style="margin-bottom:10px"></div>
+        <div class="scn" id="scn" role="group" aria-label="Questions"></div>
+      </div>
+      <div class="card" id="advOut" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 5 RULES -->
+  <section id="v-rules" role="tabpanel" aria-labelledby="t-rules" hidden>
+    <p class="hook">Extraction, control and assembly rules live in the SSOT register as <b>EXT-</b> rules, in the same 14-field schema as the policy rules. Each is authored once as an LKIF norm plus SHACL shape, compiled by GOV-019, and promoted through DEV/STG/PRD (GOV-003) before any agent may load it. Agents pin a rule version; a new version reaches them only after it passes every check.</p>
+    <div class="stats" id="ruleStats"></div>
+    <div class="seg" role="group" aria-label="Rule stage" id="ruleFilter" style="margin-bottom:12px"></div>
+    <div id="ruleList"></div>
+  </section>
+
+  <!-- 6 VALUE -->
+  <section id="v-value" role="tabpanel" aria-labelledby="t-value" hidden>
+    <p class="hook">Value-gap monitors compare the outcome each persona wants at a job step with what the advisor actually delivered. Desired outcomes are written as measurable statements ("minimize the time it takes to…") and bound to Metric Definition Cards, the same way MET-014 binds decisions. Click a job step to see the cause and the fix.</p>
+    <div class="seg" role="group" aria-label="Persona" id="vgPers" style="margin-bottom:12px"></div>
+    <div class="grid2">
+      <div class="card"><h3>Desired vs delivered, last 90 days</h3><div id="vgRows"></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Delivered</span><span><i style="background:var(--ink);width:3px"></i>Target</span><span><i style="background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--prohibition) 45%,transparent) 0 4px,transparent 4px 8px)"></i>Gap</span></div>
+        <p class="hint" style="margin-top:6px">Each row is scaled to its own target, so bars compare across different units.</p></div>
+      <div class="card" id="vgDetail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 7 CHANGE -->
+  <section id="v-change" role="tabpanel" aria-labelledby="t-change" hidden>
+    <p class="hook">Change monitors watch the semantic layer, the mappings, the RDF structures and the source repositories. When something changes, the impact agent finds every assembly, persona job and in-flight decision that depends on it, the refresh service updates only those parts, and the causal agent estimates the risk or opportunity it creates.</p>
+    <div class="chg-grid">
+      <div class="chg" id="chgList" role="group" aria-label="Change events"></div>
+      <div class="card" id="chgOut" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 8 ROADMAP -->
+  <section id="v-road" role="tabpanel" aria-labelledby="t-road" hidden>
+    <p class="hook">Four gated phases over 15 months on the Keel and North Star architecture. Keel work comes first in each phase: domain knowledge and ontologies, then RDF structures for content, then mappings. North Star work follows on what the Keel has released. No phase opens until its gate passes.</p>
+    <div class="card"><div class="tl-wrap" id="timeline"></div></div>
+    <div class="phases" id="phases"></div>
+    <div class="card" style="margin-top:16px"><h3>Ontologies and RDF structures to publish</h3><div class="tbl-wrap"><table id="ontoTable"></table></div></div>
+  </section>
+
+  <p class="data-note">Illustrative design prepared by Jeffrey Wallk, The Value Enablement Group, LLC; not an Insperity-endorsed document. GOV, TEC, PAY, BEN and TAL rule IDs, hr: concepts and isp- namespaces come from the HR Compliance SSOT, HR Services ontology and Solution Architecture files. EXT- rules, isp-sal, isp-cnt and isp-dec namespaces, agents, sources, scenarios, metrics and causal estimates are proposed extensions with synthetic values.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ================= TABS ================= */
+const VIEWS=[["over","Architecture","v-over"],["pipe","Pipelines","v-pipe"],["agents","Agents","v-agents"],["adv","Advisor","v-adv"],["rules","SSOT rules","v-rules"],["value","Value gaps","v-value"],["change","Change & causal","v-change"],["road","Roadmap","v-road"]];
+$("tabs").innerHTML=VIEWS.map(([k,l,p],i)=>`<button role="tab" id="t-${k}" aria-controls="${p}" aria-selected="${i===0}"><span class="n">${String(i+1).padStart(2,"0")}</span>${l}</button>`).join("");
+function show(k){VIEWS.forEach(([kk,,p])=>{$("t-"+kk).setAttribute("aria-selected",kk===k);$(p).hidden=kk!==k});try{localStorage.setItem("sa-tab",k)}catch(e){}}
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("[role=tab]");if(b)show(b.id.slice(2))});
+
+/* ================= PIPELINE STAGES & PERSONAS ================= */
+const STAGES=["Discover","Qualify","Evaluate","Propose","Decide","Onboard"];
+const PERS={
+ admin:{name:"Client Admin",cls:"admin",who:"Owner, controller or office manager at a prospect with 5–150 employees. Owns cost, payroll cut-over and the contract.",
+  jobs:["Understand what a PEO takes off my plate","Confirm we fit (size, industry, states)","Compare total cost against our current stack","See the co-employment split before signing","Get sign-off from owners and finance","Move payroll without a missed paycheck"]},
+ hr:{name:"HR Specialist",cls:"hr",who:"HR generalist or HR lead at the same prospect. Owns compliance, benefits and policy, and has to live with the change.",
+  jobs:["Find where we carry compliance risk today","Check coverage for every state we hire in","Compare benefit plans employees will see","Map our handbook to PEO policy","Show leadership the risk we remove","Re-enroll employees with no coverage gap"]}
+};
+
+/* ================= OVERVIEW ================= */
+$("ovStats").innerHTML=[["3","source families"],["7","pipeline stages"],["7","agent families · 38 agents"],["16","EXT rules in the SSOT"],["2","personas · 12 job steps"],["15 mo","4 gated phases"]].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+(function arch(){
+ const W=1180,H=430;
+ const box=(x,y,w,h,t,s,c,dash)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="var(--surface)" stroke="${c||"var(--line)"}" stroke-width="${c?1.6:1.2}" ${dash?'stroke-dasharray="5 4"':""}/><text x="${x+w/2}" y="${y+h/2-(s?4:-4)}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${t}</text>${s?`<text x="${x+w/2}" y="${y+h/2+11}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${s}</text>`:""}`;
+ const ar=(x1,y1,x2,y2,d,c)=>`<path d="M${x1},${y1} C${(x1+x2)/2},${y1} ${(x1+x2)/2},${y2} ${x2},${y2}" fill="none" stroke="${c||"var(--muted)"}" stroke-width="1.3" ${d?'stroke-dasharray="4 4"':""} marker-end="url(#ah)"/>`;
+ let s=`<svg class="arch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Sources feed ingestion pipelines into the Keel, which serves the agent fabric and the North Star persona surfaces; monitors feed changes and measurements back."><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--muted)"/></marker></defs>`;
+ const col=(x,t)=>`<text x="${x}" y="22" font-size="10.5" fill="var(--muted)" letter-spacing="1.4">${t}</text>`;
+ s+=col(20,"SOURCES")+col(200,"INGESTION PIPELINES")+col(430,"KEEL · GOVERNED SEMANTICS")+col(690,"AGENT FABRIC")+col(930,"NORTH STAR · PERSONAS");
+ s+=box(20,40,150,52,"SharePoint","sales libraries · M365")+box(20,104,150,52,"Websites","Insperity.com · competitors")+box(20,168,150,52,"3rd-party feeds","regulatory · firmographic")+box(20,232,150,52,"CRM & systems","pipeline · quotes · ATS");
+ s+=box(200,40,190,244,"","");
+ ["Ingest","Identify","Classify","Control","Enrich (AI fabric)","Combine & map","Publish RDF"].forEach((t,i)=>{s+=`<text x="220" y="${68+i*32}" font-size="11" fill="var(--ink)">${i+1} · ${t}</text>`});
+ s+=`<rect x="420" y="34" width="240" height="380" rx="10" fill="none" stroke="var(--keel)" stroke-width="2"/>`;
+ s+=box(432,46,216,44,"Ontologies","isp-core · isp-sal · isp-cnt · isp-dec","var(--keel)")+box(432,100,216,44,"SSOT register","142 policy + 14 MET + 16 EXT rules","var(--keel)")+box(432,154,216,44,"RDF content graph","content objects · chunks · claims","var(--keel)")+box(432,208,216,44,"Mapping graph (GOV-006)","in-house + external ↔ concepts","var(--keel)")+box(432,262,216,44,"Identity registry (GOV-007)","prospects · clients · sources","var(--keel)")+box(432,316,216,44,"KGCL provenance (GOV-018)","every change, versioned","var(--keel)")+`<text x="540" y="398" text-anchor="middle" font-size="10" fill="var(--keel)">compiled projections: dbt · OPA/Rego · JSON Schema</text>`;
+ s+=box(690,40,210,40,"Faceted search","federated query → assembly")+box(690,88,210,40,"Assembly & briefing","persona-ready packages")+box(690,136,210,40,"RDSG gateway · PEPs · MTBH","GOV-011/012/014")+box(690,196,210,40,"Change monitors","CMS · web · feeds · semantics",null,1)+box(690,244,210,40,"Impact & refresh","incremental updates",null,1)+box(690,292,210,40,"Value-gap monitors","desired vs delivered",null,1)+box(690,340,210,40,"Causal analysis","risk · opportunity",null,1);
+ s+=box(930,40,230,52,"Client Admin","cost · fit · contract · cut-over","var(--p-admin)")+box(930,104,230,52,"HR Specialist","compliance · benefits · policy","var(--p-hr)")+box(930,180,230,52,"Decisions","isp-dec · bound outcomes (MET-014)","var(--star)")+box(930,244,230,52,"Orchestrated events","CloudEvents · CRM · onboarding","var(--star)")+box(930,308,230,52,"Measured outcomes","value gaps · causal findings","var(--star)");
+ s+=`<rect x="920" y="34" width="250" height="338" rx="10" fill="none" stroke="var(--star)" stroke-width="2" stroke-dasharray="2 0"/>`;
+ [66,130,194,258].forEach(y=>s+=ar(170,y,200,y>162?162:y));
+ s+=ar(390,162,432,176)+ar(648,176,690,60)+ar(648,230,690,108)+ar(900,60,930,66)+ar(900,108,930,130)+ar(1045,156,1045,180)+ar(1045,232,1045,244);
+ s+=ar(1045,296,1045,308);
+ s+=ar(930,334,900,312,1)+ar(690,216,648,330,1)+ar(690,360,648,124,1)+ar(690,264,648,176,1);
+ s+=`</svg>`;
+ $("arch").innerHTML=s;
+})();
+$("personas").innerHTML=Object.entries(PERS).map(([k,p])=>`<div class="card persona ${k==="hr"?"hr":""}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><h3 style="margin:0">${p.name}</h3><span class="pill ${p.cls}">isp-sal:${p.name.replace(" ","")}</span></div><p class="hint" style="margin-top:4px">${p.who}</p><div class="sec-label">Job steps across the sales pipeline</div><div class="jobmap">${STAGES.map((s,i)=>`<div><b>${s}</b>${esc(p.jobs[i])}</div>`).join("")}</div></div>`).join("");
+
+/* ================= PIPELINES ================= */
+const PSTEPS=["Ingest","Identify","Classify","Control","Enrich","Combine & map","Publish RDF"];
+const SRC=[
+ {id:"sp1",sys:"SharePoint · Sales Enablement library",title:"2027 Small-Group Benefits Plan Comparison.pptx",
+  out:[
+   ["Ingest","Graph API delta query picks up version 14 (modified Sep 29, 2026). 22 slides, 4 tables extracted; slide notes kept separately.","pass"],
+   ["Identify","Canonical URI from SharePoint item ID + content hash. Version 13 superseded, linked with prov:wasRevisionOf.","pass"],
+   ["Classify","Content type <b>Plan comparison</b> (0.94). Personas: HR Specialist (0.91), Client Admin (0.72). Pipeline stage: Evaluate.","pass"],
+   ["Control","Sensitivity label <b>Internal – Client-shareable</b>. Slide 19 holds internal margin assumptions: excluded from persona assemblies (EXT-006).","warnst"],
+   ["Enrich","AI fabric mines 31 claims (premium ranges, deductibles, network names), 6 jurisdictions, valid-from Jan 1, 2027, valid-until Dec 31, 2027. Each claim keeps its slide and cell span (EXT-007).","pass"],
+   ["Combine & map","Plans map to hr:PEOMasterHealthPlanService and hr:ConceptLargeGroupPoolTier (exactMatch). Affordability claims bound to BEN-003.","pass"],
+   ["Publish RDF","SHACL: 0 violations, 1 warning (2 claims below 0.80 confidence held as Candidate). 412 triples written; KGCL record CR-2026-1187.","pass"]],
+  facets:[["Content type","Plan comparison","0.94"],["Personas","HR Specialist · Client Admin","0.91 / 0.72"],["Job step","Compare benefit plans employees will see","0.88"],["Pipeline stage","Evaluate","0.90"],["Jurisdictions","TX · CA · NY · IL · FL · CO","rule"],["Valid","2027-01-01 → 2027-12-31","rule"],["Access","Internal – Client-shareable (slide 19 excluded)","EXT-006"]],
+  rdf:`<span class="cm"># isp-cnt content object · published by EXT-001 … EXT-009</span>
+cnt:obj/sp-7f3a91 a isp-cnt:ContentObject , isp-cnt:PlanComparison ;
+  dcterms:title "2027 Small-Group Benefits Plan Comparison" ;
+  isp-cnt:sourceSystem src:SharePoint ; isp-cnt:sourceItemId "01HX…9QZ" ;
+  prov:wasRevisionOf cnt:obj/sp-7f3a91/v13 ;
+  isp-cnt:sensitivity isp-cnt:ClientShareable ;
+  <span class="ai">isp-sal:servesPersona isp-sal:HRSpecialist , isp-sal:ClientAdmin ;</span>
+  <span class="ai">isp-sal:supportsJobStep isp-sal:job/hr-evaluate-compare-plans ;</span>
+  <span class="ai">isp-cnt:validFrom "2027-01-01"^^xsd:date ; isp-cnt:validUntil "2027-12-31"^^xsd:date ;</span>
+  isp-cnt:about hr:PEOMasterHealthPlanService .
+cnt:claim/sp-7f3a91-c08 a isp-cnt:Claim ;
+  <span class="ai">rdf:value "Gold PPO employee-only premium: $112–$148/month" ;</span>
+  isp-cnt:span "slide 7, table 1, row 3" ; isp-cnt:confidence 0.93 ;
+  isp-cnt:boundToRule ssot:BEN-003 .
+cnt:part/sp-7f3a91-s19 isp-cnt:accessDenied isp-sal:ClientAdmin , isp-sal:HRSpecialist ;
+  <span class="red">isp-cnt:excludedBy ssot:EXT-006 .</span>`},
+ {id:"web1",sys:"Website · competitor public pricing page",title:"Competitor PEO: “Plans & pricing” (public web page)",
+  out:[
+   ["Ingest","Crawler respects robots.txt and fetches once a week. Page changed since last crawl (diff on 3 blocks).","pass"],
+   ["Identify","URI from canonical URL + crawl date. Prior crawl kept as history; only the diff is reprocessed.","pass"],
+   ["Classify","Content type <b>Competitor offer</b> (0.89). Persona: Client Admin (0.84). Stage: Evaluate.","pass"],
+   ["Control","Third-party copyrighted text: stored as facts and short summaries only, never reproduced verbatim to personas (EXT-004). Source link kept.","warnst"],
+   ["Enrich","AI fabric extracts 5 facts: per-employee fee range, minimum headcount, states served, two bundled services. Pricing marked “as published, may change”.","pass"],
+   ["Combine & map","Mapped to isp-sal:CompetitorOffer, linked to our comparable bundle; competitor entity resolved in the CI graph.","pass"],
+   ["Publish RDF","SHACL pass. 58 triples. Freshness rule sets a 30-day expiry (EXT-005).","pass"]],
+  facets:[["Content type","Competitor offer","0.89"],["Persona","Client Admin","0.84"],["Job step","Compare total cost against our current stack","0.81"],["Stage","Evaluate","0.86"],["Usage","Facts and summary only; link to source","EXT-004"],["Expires","30 days after crawl","EXT-005"]],
+  rdf:`cnt:obj/web-c21e04 a isp-cnt:ContentObject , isp-sal:CompetitorOffer ;
+  isp-cnt:sourceSystem src:PublicWeb ; schema:url &lt;https://competitor.example/pricing&gt; ;
+  isp-cnt:retrievedOn "2026-10-04"^^xsd:date ;
+  <span class="red">isp-cnt:usagePolicy isp-cnt:FactsAndSummaryOnly ;  # EXT-004</span>
+  isp-cnt:validUntil "2026-11-03"^^xsd:date ;               # EXT-005
+  <span class="ai">isp-sal:servesPersona isp-sal:ClientAdmin ;</span>
+  <span class="ai">isp-sal:supportsJobStep isp-sal:job/admin-evaluate-total-cost .</span>
+cnt:fact/web-c21e04-f02 a isp-cnt:Fact ;
+  <span class="ai">rdf:value "Published fee range per employee per month" ; isp-cnt:asPublished true ;</span>
+  isp-cnt:confidence 0.86 .`},
+ {id:"feed1",sys:"Third-party feed · state regulatory updates",title:"Colorado: pay transparency rule amendment notice",
+  out:[
+   ["Ingest","Feed webhook delivers notice; full text fetched from the state source of record.","pass"],
+   ["Identify","URI from feed item ID; resolved to jurisdiction US-CO through the identity registry.","pass"],
+   ["Classify","Content type <b>Regulatory change</b> (0.97). Persona: HR Specialist (0.93). Stages: Qualify, Evaluate.","pass"],
+   ["Control","Public record, no restrictions. Must bind to an SSOT rule before any persona sees it (EXT-008).","pass"],
+   ["Enrich","AI fabric extracts the effective date, the obligation changed and the employer size threshold.","pass"],
+   ["Combine & map","Bound to TAL-005 (State Salary Range Disclosure). Rule harmonization (GOV-008) flags a possible conflict with a local ordinance.","warnst"],
+   ["Publish RDF","Published as Candidate. A KGCL change request goes to the Compliance owner of TAL-005; assemblies show it as “pending review”.","warnst"]],
+  facets:[["Content type","Regulatory change","0.97"],["Persona","HR Specialist","0.93"],["Job step","Check coverage for every state we hire in","0.89"],["Jurisdiction","US-CO","registry"],["Bound rule","TAL-005","EXT-008"],["State","Candidate · awaiting rule owner","GOV-003"]],
+  rdf:`cnt:obj/feed-co-0931 a isp-cnt:ContentObject , isp-cnt:RegulatoryChange ;
+  isp-cnt:sourceSystem src:RegFeed ; isp-core:jurisdiction jur:US-CO ;
+  <span class="ai">isp-cnt:effectiveDate "2027-01-01"^^xsd:date ;</span>
+  isp-cnt:boundToRule ssot:TAL-005 ;                       # EXT-008
+  <span class="ai">isp-sal:servesPersona isp-sal:HRSpecialist ;</span>
+  isp-cnt:lifecycle isp-cnt:Candidate ;
+  prov:wasGeneratedBy kgcl:CR-2026-1192 .`},
+ {id:"sp2",sys:"SharePoint · Case studies library",title:"Customer story draft: regional dental group (contains employee names)",
+  out:[
+   ["Ingest","Picked up from the drafts folder by the delta query.","pass"],
+   ["Identify","URI assigned; marked draft (no publication approval on file).","pass"],
+   ["Classify","Content type <b>Customer story</b> (0.92). Personas: Client Admin, HR Specialist. Stage: Discover.","pass"],
+   ["Control","PII detected: 3 employee names, 1 salary figure. Client consent to publish not on file. Blocked from assembly (EXT-003, TEC-005, TEC-006).","fail"],
+   ["Enrich","Not run.","skip"],["Combine & map","Not run.","skip"],["Publish RDF","Not run. Owner notified to redact and attach client consent.","skip"]],
+  facets:[["Content type","Customer story (draft)","0.92"],["PII","3 names · 1 salary figure","EXT-003"],["Consent","Missing","EXT-003"],["Outcome","Quarantined · owner notified","TEC-005"]],
+  rdf:`<span class="cm"># nothing written to the content graph</span>
+<span class="red">quarantine:sp-91ac02 isp-cnt:blockedBy ssot:EXT-003 , ssot:TEC-005 ;
+  isp-cnt:reason "PII without publication consent" ;
+  isp-cnt:notified "library owner" .</span>`}
+];
+let curSrc="sp1",ptok=0;
+$("srcPick").innerHTML=SRC.map(s=>`<button data-s="${s.id}" aria-pressed="${s.id===curSrc}"><span class="s">${esc(s.sys.split(" · ")[0])}</span><span class="t">${esc(s.title)}</span></button>`).join("");
+$("srcPick").addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(!b)return;curSrc=b.dataset.s;$("srcPick").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));runPipe()});
+$("runPipe").addEventListener("click",runPipe);
+function runPipe(){
+ const s=SRC.find(x=>x.id===curSrc),t=++ptok;
+ $("srcSys").textContent=s.sys;$("srcTitle").textContent=s.title;
+ $("pipeSteps").innerHTML=PSTEPS.map((p,i)=>`<div class="step" id="ps${i}"><div class="n">Stage ${i+1}</div><div class="s">${p}</div><div class="st">waiting</div></div>`).join("");
+ $("pipeOut").innerHTML="";
+ let i=0;const d=reduce?0:280;
+ const lbl={pass:"✓ done",warnst:"! controlled",fail:"✕ blocked",skip:"not run"};
+ const step=()=>{if(t!==ptok)return;
+  if(i>0){const r=s.out[i-1],el=$("ps"+(i-1));el.className="step "+r[2];el.querySelector(".st").textContent=lbl[r[2]]}
+  if(i<PSTEPS.length){const r=s.out[i];if(r[2]==="skip"){i++;return step()}$("ps"+i).className="step run";$("ps"+i).querySelector(".st").textContent="running…";i++;d?setTimeout(step,d):step()}
+  else finish(s)};
+ step();
+}
+function finish(s){
+ $("pipeOut").innerHTML=`<div class="pane"><h4>Stage log</h4>${s.out.map((r,i)=>`<div class="facet"><span class="k">${i+1} · ${r[0]}</span><span>${r[1]}</span><span class="pill ${r[2]==="pass"?"ok":r[2]==="fail"?"no":r[2]==="skip"?"":"hold"}">${{pass:"done",warnst:"controlled",fail:"blocked",skip:"skipped"}[r[2]]}</span></div>`).join("")}</div>
+ <div class="pane"><h4>Facets mined by the AI fabric</h4>${s.facets.map(f=>`<div class="facet"><span class="k">${esc(f[0])}</span><span>${esc(f[1])}</span><span class="num hint">${esc(f[2])}</span></div>`).join("")}<p class="hint" style="margin-top:8px">Scores are model confidence; “rule” means the value came from a deterministic SSOT rule, not the model.</p></div>
+ <div class="pane wide"><h4>RDF written to the content graph · amber = mined by the AI fabric</h4><pre class="code-view">${s.rdf}</pre></div>`;
+}
+runPipe();
+$("connTable").innerHTML=`<thead><tr><th>Source</th><th>Connector</th><th>Change capture</th><th>Identity</th><th>Default control</th></tr></thead><tbody>
+<tr><td>SharePoint (sales, enablement, case studies)</td><td>Microsoft Graph API · sensitivity labels via Purview</td><td>Change notifications + delta queries; reprocess changed items only</td><td>Item ID + content hash</td><td>Inherit SharePoint permissions and Purview label; EXT-006 entitlements on top</td></tr>
+<tr><td>Insperity public site</td><td>Sitemap crawler</td><td>Weekly crawl, block-level diff</td><td>Canonical URL</td><td>Public · full reuse</td></tr>
+<tr><td>Competitor and analyst web pages</td><td>Allow-listed crawler, robots.txt honored</td><td>Weekly crawl, block-level diff</td><td>URL + crawl date</td><td>Facts and short summaries only (EXT-004); 30-day expiry (EXT-005)</td></tr>
+<tr><td>Regulatory feeds</td><td>Vendor webhook + state source of record</td><td>Event-driven</td><td>Feed item ID → jurisdiction</td><td>Must bind to an SSOT rule (EXT-008)</td></tr>
+<tr><td>Firmographic and intent feeds</td><td>Licensed API</td><td>Nightly batch</td><td>Resolved to prospect ID (GOV-007)</td><td>License terms recorded per field; no resale</td></tr>
+<tr><td>CRM, quoting, ATS</td><td>Read through the virtual graph (no copy)</td><td>CDC on opportunity and quote tables</td><td>Enterprise Entity ID</td><td>TEC-001 tenant isolation; TEC-011 minimization</td></tr></tbody>`;
+
+/* ================= AGENTS ================= */
+const FAM={
+ ing:["Ingestion & identity","Pull content from each source and give it one identity"],
+ fab:["AI fabric enrichment","Mine metadata the CMS never held"],
+ map:["Mapping & publishing","Map content to the ontologies and publish RDF"],
+ srch:["Faceted search & assembly","Answer persona questions precisely, safely, relevantly"],
+ val:["Value-gap monitoring","Compare desired with delivered outcomes"],
+ chg:["Change & impact","Watch upstream knowledge and content; refresh incrementally"],
+ cau:["Causal analysis","Turn changes and gaps into risk and opportunity"]
+};
+const AG=[
+ ["ing","SharePoint Delta Agent","Graph change notifications, delta tokens","Changed items + version history","EXT-001","Act"],
+ ["ing","Web Crawl Agent","Allow-listed URLs, robots.txt","Page snapshots and block diffs","EXT-004, EXT-005","Act"],
+ ["ing","Feed Listener Agent","Regulatory and firmographic feeds","Normalized feed items","EXT-008","Act"],
+ ["ing","Identity Resolver","Item IDs, URLs, company names","Canonical URIs, prov links","EXT-001, GOV-007","Act"],
+ ["ing","Format Extractor","PPTX, DOCX, PDF, HTML, spreadsheets","Text, tables, slide notes with spans","EXT-007","Act"],
+ ["fab","Content-Type Classifier","Extracted text + layout","Content type with confidence","EXT-002","Advise"],
+ ["fab","Persona & Job-Step Tagger","Content + isp-sal job map","servesPersona, supportsJobStep","EXT-002","Advise"],
+ ["fab","Claim Extractor","Tables and passages","Atomic claims with source span","EXT-007","Advise"],
+ ["fab","Jurisdiction & Validity Miner","Content + registry","Jurisdictions, valid-from, valid-until","EXT-005","Advise"],
+ ["fab","PII & Sensitivity Detector","All extracted text","PII findings, label recommendation","EXT-003, TEC-005","Act (block only)"],
+ ["fab","Entitlement Enforcer","Labels + persona roles","Allow / redact / deny per part","EXT-006, TEC-001","Act"],
+ ["map","Concept Mapping Agent","Claims, facets, hr: and isp- concepts","Typed correspondences with scores","EXT-009, GOV-006","Advise"],
+ ["map","Rule Binding Agent","Regulatory and benefits claims","boundToRule links to SSOT rules","EXT-008","Advise"],
+ ["map","SHACL Publisher","Candidate triples","Validated RDF, KGCL record","EXT-010, GOV-018","Act"],
+ ["map","Mapping Drift Sentinel","Source schemas, mapping graph","Broken or degraded mappings","GOV-006","Act (flag)"],
+ ["srch","Intent & RCB Agent","Persona question + session","5D context bundle (WHO…WHY)","GOV-011","Act"],
+ ["srch","Federated Query Planner","Context bundle","SPARQL across content, CRM, SSOT","EXT-011","Act"],
+ ["srch","Facet Navigator","Query results","Ranked facets: stage, job, jurisdiction, product","EXT-011","Act"],
+ ["srch","Mapping Resolver","Facets + mapping graph","Source fields and RDF nodes to read","GOV-006","Act"],
+ ["srch","Precision Extractor","RDF nodes, claims, spans","Only the claims that answer the job step","EXT-007, EXT-012","Act"],
+ ["srch","Brief Assembler","Extracted claims + persona template","Brief with citations and access labels","EXT-012, EXT-013","Advise"],
+ ["srch","Machine Package Agent","Extracted claims","JSON-LD package for CRM, quoting, other agents","EXT-013, GOV-021","Act"],
+ ["srch","Grounding Guard (MTBH)","Draft brief","Grounding score; trip below 0.80","EXT-012, GOV-014","Act (block)"],
+ ["val","Outcome Binder","Decision records","Desired outcome + metric card links","EXT-014, MET-014","Act"],
+ ["val","Job-Step Telemetry Agent","Advisor sessions, CRM events","Time, reuse, satisfaction per job step","EXT-015","Act"],
+ ["val","Value-Gap Monitor","Telemetry vs targets","Gaps per persona job step","EXT-015","Advise"],
+ ["val","Decision Impact Tracker","Decisions + downstream events","Effect on later decisions and stage moves","EXT-014","Advise"],
+ ["chg","Content Change Monitor","CMS, web, feed deltas","Change events (CloudEvents)","EXT-016","Act"],
+ ["chg","Semantic Change Monitor","Ontology and SSOT KGCL stream","Changed concepts and rule versions","GOV-018","Act"],
+ ["chg","RDF Structure Monitor","Shape and graph diffs","Changed shapes, orphaned nodes","EXT-010","Act"],
+ ["chg","Impact Analyzer","Change event + dependency graph","Affected assemblies, jobs, decisions","EXT-016","Advise"],
+ ["chg","Incremental Refresh Service","Impact set","Re-run only affected stages","EXT-016","Act"],
+ ["chg","Cache Invalidation Agent","Impact set","Stale briefs withdrawn or flagged","EXT-016","Act"],
+ ["cau","Causal Graph Builder","Changes, gaps, decisions, outcomes","Causal DAG with assumptions","EXT-015","Advise"],
+ ["cau","Effect Estimator","DAG + observed outcomes","Effect size with interval","EXT-015","Advise"],
+ ["cau","Risk & Opportunity Ranker","Effects × exposure","Ranked risks and opportunities","EXT-015","Advise"],
+ ["cau","Counterfactual Explainer","Ranked findings","Plain-language what-if for owners","EXT-015","Advise"],
+ ["cau","Action Proposer","Findings + owners","Draft KGCL or backlog item for a human","GOV-015","Advise (human gate)"]
+];
+let curFam="all";
+function famRender(){
+ $("famGrid").innerHTML=`<button data-f="all" aria-pressed="${curFam==="all"}"><span class="c">${AG.length}</span><span class="l">All agents</span></button>`+Object.entries(FAM).map(([k,[l]])=>`<button data-f="${k}" aria-pressed="${curFam===k}"><span class="c">${AG.filter(a=>a[0]===k).length}</span><span class="l">${l}</span></button>`).join("");
+ const rows=AG.filter(a=>curFam==="all"||a[0]===curFam);
+ $("agentTable").innerHTML=`<thead><tr><th>Agent</th><th>Family</th><th>Reads</th><th>Writes</th><th>Rules</th><th>Autonomy</th></tr></thead><tbody>${rows.map(a=>`<tr><td><b>${esc(a[1])}</b></td><td class="hint">${esc(FAM[a[0]][0])}</td><td>${esc(a[2])}</td><td>${esc(a[3])}</td><td class="mono" style="font-size:11.5px">${esc(a[4])}</td><td><span class="pill ${/block|human/.test(a[5])?"hold":a[5].startsWith("Act")?"ok":"ver"}">${esc(a[5])}</span></td></tr>`).join("")}</tbody>`;
+}
+$("famGrid").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(b){curFam=b.dataset.f;famRender()}});
+famRender();
+
+/* ================= ADVISOR ================= */
+const SCN=[
+ {id:"a1",p:"admin",stage:2,q:"What will a PEO cost us compared with our current payroll, benefits broker and workers’ comp?",
+  rcb:[["WHO","Client Admin · prospect Harbor Point Logistics (121 employees)"],["WHAT","Total cost comparison, current stack vs PEO bundle"],["WHEN","Plan year 2027"],["WHERE","TX, LA · Evaluate stage"],["WHY","Job step: compare total cost against our current stack"]],
+  trace:[["Federated graph query","Content graph + CRM opportunity + quote service, scoped to TX/LA and 100–149 employees","3 graphs · 1,204 nodes"],["Mappings","Quote fields → isp-sal:QuoteLine; carrier rates → hr:ConceptLargeGroupPoolTier","9 Released mappings"],["RDF content","Plan comparison v14, workers’ comp class-code guide, 1 competitor offer (facts only)","3 objects · 47 claims"],["Precision extraction","Kept 8 claims that answer cost for this size and state; dropped 39","8 claims · grounding 0.91"],["Assembly","Client Admin brief template v2; internal margin slide excluded (EXT-006)","1 brief · 4 citations"]],
+  brief:{h:"Estimated annual cost: PEO bundle vs current stack",pts:["Current stack, as entered in the quote: payroll service, benefits broker, standalone workers’ comp and HR software, about $1,520 per employee per year.<span class='cite'>CRM quote Q-4471</span>","PEO bundle for 121 employees in TX and LA: about $1,380 per employee per year, including large-group plan pricing.<span class='cite'>Plan comparison v14 · slide 7</span>","Workers’ comp under the master policy uses your class codes; trucking codes carry the most weight in your mix.<span class='cite'>Class-code guide · p.3</span>","A competitor publishes a lower headline fee, but it excludes benefits administration.<span class='cite'>Competitor offer · facts only</span>"],
+   srcs:[["Plan comparison v14","SharePoint","Client-shareable"],["CRM quote Q-4471","CRM via virtual graph","Prospect-scoped"],["Class-code guide","SharePoint","Client-shareable"],["Competitor offer (facts only)","Public web","Summary only · EXT-004"]],grounding:.91},
+  opts:[{t:"Request a binding quote",d:"Move to Propose with current census",ev:[["quote.requested","Quoting service builds binding quote from census","up"],["census.validate","Census checked against TAL-014 and PAY-026","up"],["task.created","BPA follow-up in 2 business days","up"]],down:"Raises the chance the HR Specialist’s plan comparison is done with real rates: next-step plan review starts 6 days sooner on average.",out:"Desired outcome: minimize time from first cost question to binding quote · target ≤ 10 days · card sales-cycle-time v1.0"},
+   {t:"Run a cost scenario with growth to 150",d:"Stay in Evaluate, model next year",ev:[["scenario.run","Cost model reruns at 150 employees","up"],["rule.check","ACA ALE status re-evaluated (BEN-001)","up"]],down:"Surfaces ACA reporting duties above 50 FTE that the HR Specialist must review; adds one job step to their Evaluate stage.",out:"Desired outcome: minimize surprises in cost after signing · target 0 re-quotes · card quote-accuracy v1.0"},
+   {t:"Pause: share brief with owners",d:"Send the brief for internal sign-off",ev:[["brief.shared","Brief shared with 2 owners (client-shareable parts only)","up"],["reminder.scheduled","Follow-up reminder in 7 days","up"]],down:"Historically delays Propose by 9 days but cuts later re-quotes by a third when owners see the comparison early.",out:"Desired outcome: maximize owner confidence before the proposal · target ≥ 80% approve first draft · card proposal-acceptance v1.1"}]},
+ {id:"a2",p:"admin",stage:3,q:"Under co-employment, who is responsible for what once we sign?",
+  rcb:[["WHO","Client Admin · prospect Brazos Valley Dental (42 employees)"],["WHAT","Division of employer responsibilities"],["WHEN","At contract signature"],["WHERE","TX · Propose stage"],["WHY","Job step: see the co-employment split before signing"]],
+  trace:[["Federated graph query","Client Allocation Matrix (PEO-006) + MSA template + TX PEO Act content","2 graphs · 386 nodes"],["Mappings","MSA clauses → isp-sal:ResponsibilityAllocation","14 Released mappings"],["RDF content","MSA template v9, allocation matrix, TX licensing summary","3 objects · 52 claims"],["Precision extraction","Kept 11 allocations relevant to a 42-person TX dental practice","11 claims · grounding 0.94"],["Assembly","Admin brief template v2 with a responsibility table","1 brief · 3 citations"]],
+  brief:{h:"Who carries each employer duty after signature",pts:["Insperity reports and remits federal and state payroll taxes on wages it pays, as a Certified PEO.<span class='cite'>MSA template v9 · §4.2</span>","Payroll, benefits administration and workers’ comp claims are run by Insperity; you approve hours and changes.<span class='cite'>Allocation matrix · rows 3–7</span>","You keep direction of day-to-day work, the workplace and its safety, and Form I-9 Section 2.<span class='cite'>Allocation matrix · rows 9–11</span>"],
+   srcs:[["MSA template v9","SharePoint · Legal","Client-shareable"],["Client Allocation Matrix","SSOT (PEO-006)","Client-shareable"],["TX PEO Act summary","SharePoint · Compliance","Client-shareable"]],grounding:.94},
+  opts:[{t:"Send MSA for legal review",d:"Move toward Decide",ev:[["contract.drafted","MSA generated from template v9","up"],["review.requested","Client counsel review task","up"],["simplex.hold","Signature held for human approval (GOV-015)","up"]],down:"HR Specialist gets the handbook mapping job step unlocked; onboarding planning can start in parallel.",out:"Desired outcome: minimize contract back-and-forth · target ≤ 2 redline rounds · card contract-cycle v1.0"},
+   {t:"Ask for a responsibility walkthrough",d:"Book a session with a BPA",ev:[["meeting.booked","45-minute walkthrough with BPA","up"]],down:"Adds about 5 days but lowers post-signature questions from this client by an estimated 40%.",out:"Desired outcome: maximize clarity of who does what · target ≤ 3 clarification cases in first 90 days · card service-load v1.0"},
+   {t:"Hold",d:"No action this week",ev:[["stage.idle","Opportunity idle flag after 14 days","up"]],down:"Idle Propose opportunities above 14 days close at about half the rate.",out:"Desired outcome: minimize stalled opportunities · card pipeline-velocity v1.0"}]},
+ {id:"h1",p:"hr",stage:1,q:"Which states we hire in create compliance duties we are not covering today?",
+  rcb:[["WHO","HR Specialist · prospect Summit Ridge Engineering (96 employees)"],["WHAT","Compliance coverage gaps by state"],["WHEN","Now and next 12 months"],["WHERE","CO, CA, TX, remote · Qualify stage"],["WHY","Job step: check coverage for every state we hire in"]],
+  trace:[["Federated graph query","SSOT register + regulatory feed content + prospect hiring footprint","3 graphs · 2,140 nodes"],["Mappings","Prospect locations → isp-core:Jurisdiction; feed items → SSOT rules","18 Released, 1 Candidate"],["RDF content","50-state library extracts, CO pay transparency notice (Candidate), CA SB 553 guide","6 objects · 73 claims"],["Precision extraction","Kept 9 obligations that apply at 96 employees in these states","9 claims · grounding 0.87"],["Assembly","HR brief template v3; Candidate item marked pending review","1 brief · 5 citations"]],
+  brief:{h:"Compliance duties in your hiring states",pts:["California: a written Workplace Violence Prevention Plan and annual training apply to your CA office.<span class='cite'>CMP-003 · CMP-005</span>","Colorado and California: salary ranges must appear on job postings; a CO amendment takes effect Jan 1, 2027 and is pending our review.<span class='cite'>TAL-005 · feed notice (pending)</span>","Paid family leave withholding applies in CA and CO.<span class='cite'>CMP-018</span>","At 96 employees you are an ACA Applicable Large Employer and file Forms 1094-C/1095-C.<span class='cite'>BEN-001 · BEN-004</span>"],
+   srcs:[["SSOT register (6 rules)","SSOT","Public facts"],["CO pay transparency notice","Regulatory feed","Candidate · pending rule owner"],["SB 553 guide","SharePoint · Compliance","Client-shareable"]],grounding:.87},
+  opts:[{t:"Order a compliance gap assessment",d:"Move to Evaluate",ev:[["assessment.requested","HR specialist assessment scheduled","up"],["checklist.generated","State checklist from SSOT rules","up"]],down:"Gives the Client Admin a quantified risk figure for the owners’ decision; cost comparison gains a risk line.",out:"Desired outcome: minimize unknown compliance exposure · target 100% of hiring states assessed · card coverage-assessed v1.0"},
+   {t:"Subscribe to state updates",d:"Watch CO and CA changes",ev:[["subscription.created","Regulatory alerts for CO, CA","up"]],down:"Keeps this brief fresh; the CO item updates automatically once its rule owner approves.",out:"Desired outcome: minimize time to learn of a rule change · target ≤ 7 days · card reg-latency v1.0"},
+   {t:"Share brief with Client Admin",d:"Hand off to the buyer",ev:[["brief.shared","Brief shared to Client Admin","up"]],down:"Client Admin sessions that include a risk brief reach Propose 4 days sooner.",out:"Desired outcome: maximize buyer awareness of risk removed · card risk-awareness v1.0"}]},
+ {id:"h2",p:"hr",stage:5,q:"How do we re-enroll employees in new benefits without a gap in coverage?",
+  rcb:[["WHO","HR Specialist · new client Cedar Park Health Partners (640 employees)"],["WHAT","Benefits transition plan and timing"],["WHEN","Go-live Jan 1, 2027"],["WHERE","TX · Onboard stage"],["WHY","Job step: re-enroll employees with no coverage gap"]],
+  trace:[["Federated graph query","Onboarding playbook + carrier EDI timelines + client census","3 graphs · 940 nodes"],["Mappings","Census fields → isp-core:Worker; carrier rules → BEN-019","11 Released mappings"],["RDF content","Implementation playbook v6, open enrollment checklist, COBRA guide","4 objects · 61 claims"],["Precision extraction","Kept 7 dated steps for a Jan 1 go-live","7 claims · grounding 0.93"],["Assembly","HR brief template v3 with a dated plan","1 brief · 4 citations"]],
+  brief:{h:"Benefits transition plan for a January 1 go-live",pts:["Open enrollment runs Nov 10–Nov 24 so carrier files can be sent by Dec 5.<span class='cite'>Playbook v6 · step 12</span>","Carrier 834 enrollment files are sent and confirmed before Dec 15.<span class='cite'>BEN-019 · EDI guide</span>","Employees who leave before go-live get COBRA notices under the old plan.<span class='cite'>BEN-015</span>","SBCs are distributed with enrollment materials.<span class='cite'>BEN-020</span>"],
+   srcs:[["Implementation playbook v6","SharePoint · Implementation","Client-shareable"],["Open enrollment checklist","SharePoint","Client-shareable"],["SSOT rules BEN-015/019/020","SSOT","Public facts"]],grounding:.93},
+  opts:[{t:"Confirm the enrollment calendar",d:"Lock dates and notify employees",ev:[["calendar.locked","Enrollment window published","up"],["notice.queued","Employee notices queued","up"],["edi.scheduled","834 file run scheduled for Dec 5","up"]],down:"Payroll cut-over planning for the Client Admin can use the confirmed deduction dates.",out:"Desired outcome: minimize employees with a coverage gap · target 0 · card coverage-continuity v1.0"},
+   {t:"Extend enrollment by one week",d:"More time for employees",ev:[["calendar.changed","Window moved to Dec 1","up"],["risk.flag","EDI deadline at risk","up"]],down:"Pushes carrier files past Dec 5; the causal agent estimates a 12% chance of a first-week coverage gap.",out:"Desired outcome: maximize enrollment completion · card enrollment-completion v1.0"},
+   {t:"Ask for a carrier timeline check",d:"Verify carrier lead times",ev:[["carrier.inquiry","Carrier lead-time check","up"]],down:"Adds 2 days; removes uncertainty from the payroll deduction schedule.",out:"Desired outcome: minimize carrier rejections · card edi-acceptance v1.0"}]}
+];
+let curPers="admin",curScn="a1",curOpt=null,atok=0;
+$("persSel").innerHTML=Object.entries(PERS).map(([k,p])=>`<button data-p="${k}" aria-pressed="${k===curPers}">${p.name}</button>`).join("");
+$("persSel").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;curPers=b.dataset.p;$("persSel").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));curScn=SCN.find(s=>s.p===curPers).id;scnList();advRun()});
+function scnList(){$("scn").innerHTML=SCN.filter(s=>s.p===curPers).map(s=>`<button data-c="${s.id}" aria-pressed="${s.id===curScn}"><span class="eyebrow">${STAGES[s.stage]} stage</span><span class="q">${esc(s.q)}</span></button>`).join("")}
+$("scn").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;curScn=b.dataset.c;scnList();advRun()});
+function advRun(){
+ const s=SCN.find(x=>x.id===curScn),t=++atok;curOpt=null;
+ const p=PERS[s.p];
+ $("advOut").innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><span class="pill ${p.cls}">${p.name}</span><span class="hint">Job step: ${esc(p.jobs[s.stage])}</span></div>
+  <div class="stagebar" aria-label="Sales pipeline stage">${STAGES.map((x,i)=>`<span class="${i===s.stage?"on":i<s.stage?"done":""}">${x}</span>`).join("")}</div>
+  <h3 style="font-size:22px">“${esc(s.q)}”</h3>
+  <div class="sec-label">Context bundle · GOV-011</div><div class="kv" style="display:grid">${s.rcb.map(r=>`<dt class="mono">${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}</div>
+  <div class="sec-label">Faceted search chain</div><div class="steps" id="advSteps" style="grid-template-columns:repeat(5,minmax(0,1fr))">${s.trace.map((r,i)=>`<div class="step" id="as${i}"><div class="n">Step ${i+1}</div><div class="s">${r[0]}</div><div class="st">waiting</div></div>`).join("")}</div>
+  <div id="advTrace"></div><div id="advBrief"></div>`;
+ let i=0;const d=reduce?0:300;
+ const step=()=>{if(t!==atok)return;
+  if(i>0){const el=$("as"+(i-1));el.className="step pass";el.querySelector(".st").textContent=s.trace[i-1][2]}
+  if(i<s.trace.length){$("as"+i).className="step run";$("as"+i).querySelector(".st").textContent="running…";i++;d?setTimeout(step,d):step()}
+  else advBrief(s)};
+ step();
+}
+function advBrief(s){
+ $("advTrace").innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Step</th><th>What ran</th><th class="r">Result</th></tr></thead><tbody>${s.trace.map(r=>`<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td><td class="r num" style="white-space:nowrap">${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>`;
+ const b=s.brief;
+ $("advBrief").innerHTML=`<div class="sec-label">Assembled brief · grounding ${b.grounding.toFixed(2)} (MTBH threshold 0.80)</div>
+  <div class="brief"><h4>${esc(b.h)}</h4><ul>${b.pts.map(x=>`<li>${x}</li>`).join("")}</ul>
+   <div class="sec-label">Sources and access</div>${b.srcs.map(r=>`<div class="src-row"><span class="mono hint" style="font-size:11px">${esc(r[1])}</span><span>${esc(r[0])}</span><span class="pill ${/pending|Candidate/.test(r[2])?"hold":/Summary/.test(r[2])?"ob":"ok"}">${esc(r[2])}</span></div>`).join("")}</div>
+  <div class="sec-label">Decide your next step · recorded under EXT-014</div><div class="opts" id="opts">${s.opts.map((o,i)=>`<button data-o="${i}" aria-pressed="false"><span class="t">${esc(o.t)}</span><span class="hint">${esc(o.d)}</span></button>`).join("")}</div><div id="decOut"></div>`;
+ $("opts").addEventListener("click",e=>{const bt=e.target.closest("[data-o]");if(!bt)return;$("opts").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===bt));decide(s,+bt.dataset.o)});
+}
+function decide(s,i){
+ const o=s.opts[i],other=s.p==="admin"?"HR Specialist":"Client Admin";
+ $("decOut").innerHTML=`<div class="grid2" style="margin-top:12px">
+  <div class="pane"><h4>Orchestrated events (CloudEvents)</h4><div class="events">${o.ev.map(e=>`<div class="ev"><span class="dot"></span><span><span class="ty">${esc(e[0])}</span>${esc(e[1])}</span><span class="pill ok">emitted</span></div>`).join("")}</div></div>
+  <div class="pane"><h4>Downstream effect on ${other} and later stages</h4><p style="font-size:13.5px">${esc(o.down)}</p><div class="banner info"><div><b>Decision record</b> isp-dec:${s.id}-${i+1} · ${esc(o.out)}</div></div></div></div>`;
+}
+scnList();advRun();
+
+/* ================= RULES ================= */
+const LC=["Draft","Candidate","Released"];
+const EXT=[
+ ["EXT-001","Identify","Canonical Content Identity","Structural Invariant","Any content item enters a pipeline","URI = source system + native item ID + content hash; new version links with prov:wasRevisionOf; duplicates across sources collapse to one isp-cnt:ContentObject","GOV-007, GOV-022","Released","1.2"],
+ ["EXT-002","Classify","Classification Confidence Floor","Threshold","AI fabric assigns content type, persona or job step","Accept at confidence ≥ 0.80; 0.60–0.79 held as Candidate for steward review; below 0.60 left unclassified","GOV-014","Released","1.1"],
+ ["EXT-003","Control","PII and Consent Gate","Prohibition","PII detected in any content item","Do not publish or assemble content with PII unless a consent record is attached; quarantine and notify the owner","TEC-005, TEC-006, TEC-011","Released","2.0"],
+ ["EXT-004","Control","Third-Party Content Use","Prohibition","Content retrieved from a website or licensed feed we do not own","Store facts and short summaries with a source link; never reproduce third-party text verbatim to a persona; honor robots.txt and license terms","GOV-009","Released","1.0"],
+ ["EXT-005","Classify","Freshness and Expiry by Content Type","Threshold","Content published to the graph","Set validUntil from the source or by type: competitor offers 30 days, rate sheets plan year, regulatory items until superseded; expired content leaves assemblies","—","Released","1.3"],
+ ["EXT-006","Control","Persona Entitlements","Structural Invariant","Assembly requests content for a persona","Allow only parts labeled for that persona and tenant; internal pricing, margin and win-loss content is never assembled for prospect personas","TEC-001, TEC-021","Released","1.4"],
+ ["EXT-007","Enrich","Claim Span Traceability","Obligation","AI fabric extracts a claim","Every claim records its source span (slide, page, cell or block) and confidence; claims without a span are discarded","GOV-022","Released","1.0"],
+ ["EXT-008","Map","Regulatory Claims Bind to SSOT Rules","Obligation","Content asserts a legal duty, threshold or deadline","Bind to an SSOT rule URI before assembly; unbound regulatory claims are held as Candidate and routed to the rule owner","GOV-008, GOV-009","Released","1.1"],
+ ["EXT-009","Map","Mapping Correspondence Minimum","Threshold","Mapping agent links content to a concept","Use exactMatch or closeMatch ≥ 0.85 for assembly; broader matches may guide search only","GOV-006","Candidate","1.2-rc1"],
+ ["EXT-010","Publish","RDF Shape Conformance","Structural Invariant","Triples written to the content graph","Validate against isp-cnt SHACL shapes; violations block publish; every write stamped with KGCL WHO/WHAT/WHEN/WHERE/WHY","GOV-017, GOV-018","Released","1.0"],
+ ["EXT-011","Search","Federated Query Scope","Business Logic","A persona question is planned","Scope every query by the context bundle (persona, tenant, jurisdiction, stage); queries run in place through the virtual graph","GOV-011, GOV-024","Released","1.0"],
+ ["EXT-012","Assemble","Grounding Threshold for Briefs","Threshold","Assembler drafts a brief","Each statement must cite a claim; brief grounding ≥ 0.80 or the MTBH breaker trips and the question routes to a BPA","GOV-014, GOV-021","Released","1.2"],
+ ["EXT-013","Assemble","Brief Composition","Business Logic","Brief or machine package assembled","Use the persona template; at most 6 statements; at least one governed internal source; Candidate items labeled “pending review”","—","Candidate","2.0-rc2"],
+ ["EXT-014","Decide","Decisions Bind Desired Outcomes","Structural Invariant","A persona or BPA records a decision","Bind at least one desired outcome to a Released Metric Definition Card with target and checkpoint; irreversible actions pass the Simplex gate","MET-014, GOV-015","Released","1.0"],
+ ["EXT-015","Measure","Value-Gap and Causal Method","Business Logic","Value-gap or causal analysis runs","Compare desired vs delivered per job step over a 90-day window; causal estimates state the DAG, assumptions and interval; findings are advisory until a human accepts them","GOV-002","Draft","0.4"],
+ ["EXT-016","Change","Incremental Refresh Scope","Business Logic","A change event arrives from content, mappings, shapes or ontologies","Refresh only nodes in the impact set; withdraw affected briefs within 1 hour; full rebuild only on a MAJOR ontology version","GOV-023, GOV-003","Candidate","1.0-rc1"]
+];
+const CANON={
+ "EXT-006":`isp-ext:EXT-006 a lkif:Obligation ;
+  rdfs:label "Persona Entitlements" ;
+  isp:derivedFrom ssot:TEC-001 , ssot:TEC-021 .
+isp-ext:EXT-006-Shape a sh:NodeShape ;
+  sh:targetClass isp-cnt:AssemblyInput ;
+  sh:not [ sh:path isp-cnt:sensitivity ;
+           sh:in ( isp-cnt:InternalPricing isp-cnt:Margin isp-cnt:WinLoss ) ] ;
+  sh:property [ sh:path isp-cnt:tenant ; sh:equals isp-rcb:who-tenant ] .`,
+ "EXT-012":`isp-ext:EXT-012-Shape a sh:NodeShape ;
+  sh:targetClass isp-sal:Brief ;
+  sh:property [ sh:path isp-sal:groundingScore ; sh:minInclusive 0.80 ] ;
+  sh:property [ sh:path ( isp-sal:statement isp-sal:citesClaim ) ; sh:minCount 1 ] .`
+};
+const COMP={
+ "EXT-006":`# Engine B · OPA/Rego · compiled by GOV-019 from EXT-006 v1.4
+package sales.assembly
+default allow_part := false
+allow_part {
+  input.part.tenant == input.rcb.who.tenant
+  not deny_label[input.part.sensitivity]
+  input.rcb.who.persona == input.part.audience[_]
+}
+deny_label := {"InternalPricing","Margin","WinLoss"}`,
+ "EXT-012":`# Agent guardrail · JSON Schema · compiled from EXT-012 v1.2
+{ "type":"object",
+  "required":["statements","groundingScore"],
+  "properties":{
+    "groundingScore":{"type":"number","minimum":0.80},
+    "statements":{"type":"array","maxItems":6,
+      "items":{"required":["text","citesClaim"]}}}}`
+};
+let rFilter="all";
+$("ruleStats").innerHTML=[[EXT.length,"EXT rules"],[EXT.filter(r=>r[7]==="Released").length,"released"],[EXT.filter(r=>r[7]==="Candidate").length,"candidate"],[EXT.filter(r=>r[7]==="Draft").length,"draft"],["142","policy rules inherited"],["38","agents pinned to a version"]].map(([v,l])=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+$("ruleFilter").innerHTML=["all","Identify","Classify","Control","Enrich","Map","Publish","Search","Assemble","Decide","Measure","Change"].map(f=>`<button data-f="${f}" aria-pressed="${f===rFilter}">${f==="all"?"All stages":f}</button>`).join("");
+$("ruleFilter").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;rFilter=b.dataset.f;$("ruleFilter").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));rulesRender()});
+function rulesRender(){
+ $("ruleList").innerHTML=EXT.filter(r=>rFilter==="all"||r[1]===rFilter).map(r=>{
+  const li=LC.indexOf(r[7]);const st=r[7]==="Released"?"ok":r[7]==="Candidate"?"hold":"ver";
+  const ci=r[7]==="Released"?[["SHACL lint","ok"],["Scenario tests","ok"],["Diff classifier","ok"],["Harmonization (GOV-009)","ok"]]:r[7]==="Candidate"?[["SHACL lint","ok"],["Scenario tests",r[0]==="EXT-009"?"no":"ok"],["Diff classifier","ok"],["Council review (GOV-002)","hold"]]:[["SHACL lint","hold"],["Scenario tests","hold"]];
+  const canon=CANON[r[0]]||`isp-ext:${r[0]} a lkif:${r[3]==="Prohibition"?"Prohibition":"Obligation"} ;\n  rdfs:label "${r[2]}" ;\n  isp:trigger "${r[4]}" ;\n  isp:logic "${r[5]}" .`;
+  return `<details class="rule"><summary><span class="rid">${r[0]}</span><span class="rn">${esc(r[2])}</span><span class="pill">${esc(r[1])}</span><span class="pill ${st}">${r[7]} v${r[8]}</span></summary>
+   <div class="rule-body"><div class="lc">${LC.map((x,i)=>`<span class="${i<li?"done":i===li?"cur":""}">${x}</span>`).join("")}</div>
+   <dl class="kv" style="margin-top:8px"><dt>Rule type</dt><dd>${esc(r[3])}</dd><dt>Trigger</dt><dd>${esc(r[4])}</dd><dt>Logic / threshold</dt><dd>${esc(r[5])}</dd><dt>Inherits</dt><dd class="mono" style="font-size:12px">${esc(r[6])}</dd><dt>Domain holon</dt><dd>Sales Enablement Holon (isp-sal, proposed)</dd><dt>Source document</dt><dd>Proposed (demo)</dd></dl>
+   <div class="ci">${ci.map(c=>`<span class="pill ${c[1]}">${c[0]}${c[1]==="ok"?" ✓":c[1]==="no"?" ✕":" …"}</span>`).join("")}</div>
+   ${r[0]==="EXT-009"?`<div class="banner no"><div>Scenario test failing: a closeMatch at 0.86 links “PEO fee” to the competitor’s “admin fee”, which excludes benefits. Raising the floor to 0.90 for pricing concepts is under review. Agents stay on v1.1 until this passes.</div></div>`:""}
+   <div class="grid2" style="margin-top:10px"><div><div class="sec-label" style="margin-top:0">Canonical (Definition-Time)</div><pre class="code-view">${esc(canon)}</pre></div><div><div class="sec-label" style="margin-top:0">Compiled (Run-Time)</div><pre class="code-view">${esc(COMP[r[0]]||"# compiled to the agent's runtime target by GOV-019\n# (dbt test, OPA/Rego policy or JSON Schema guardrail)")}</pre></div></div></div></details>`}).join("");
+}
+rulesRender();
+
+/* ================= VALUE GAPS ================= */
+const VG={
+ admin:[
+  ["Discover","Minimize time to understand what a PEO covers","min to useful answer",10,7.5,"lower",""],
+  ["Qualify","Minimize steps to confirm fit","steps",3,4,"lower","Fit rules (size, industry, states) answered in 4 steps because industry exclusions sit in an unmapped SharePoint list."],
+  ["Evaluate","Minimize time from first cost question to binding quote","days",10,16,"lower","Census uploads fail validation 38% of the time; the quote waits on a manual fix. Assemblies are fine; the gap is downstream in quoting."],
+  ["Propose","Maximize clarity of who does what","% sessions with no follow-up question",85,81,"higher","Allocation briefs omit state-specific items for multi-state prospects."],
+  ["Decide","Maximize owner approval of the first draft","% approved first time",80,64,"higher","Briefs shared with owners lack a risk line; the HR Specialist’s compliance brief is not linked into the Admin’s package."],
+  ["Onboard","Minimize payroll cut-over errors","errors per 100 employees",0.5,0.4,"lower",""]],
+ hr:[
+  ["Discover","Minimize time to see where we carry risk","min to useful answer",15,12,"lower",""],
+  ["Qualify","Maximize states assessed","% of hiring states covered",100,88,"higher","Remote employees with no registered worksite are not resolved to a jurisdiction (GOV-007 gap)."],
+  ["Evaluate","Minimize time to compare plans employees will see","min",20,34,"lower","Plan comparison v14 has 2 claims held as Candidate; briefs fall back to the older deck, which forces manual lookups."],
+  ["Propose","Minimize handbook policies left unmapped","% unmapped",5,18,"lower","Prospect handbooks arrive as scanned PDFs; OCR claims fall below the EXT-002 confidence floor."],
+  ["Decide","Maximize leadership awareness of risk removed","% decisions with risk brief attached",90,71,"higher",""],
+  ["Onboard","Minimize employees with a coverage gap","employees with gap per 1,000",0,1.2,"lower","Late carrier 834 confirmations in 2 of 31 onboardings; carrier lead times are not in the content graph."]]
+};
+let vgP="admin",vgSel=2;
+$("vgPers").innerHTML=Object.entries(PERS).map(([k,p])=>`<button data-p="${k}" aria-pressed="${k===vgP}">${p.name}</button>`).join("");
+$("vgPers").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;vgP=b.dataset.p;vgSel=2;$("vgPers").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));vgRender()});
+function gapOf(r){const [, , ,t,d,dir]=r;return dir==="lower"?(d-t)/(t||1):(t-d)/t}
+function vgRender(){
+ const rows=VG[vgP];
+ $("vgRows").innerHTML=rows.map((r,i)=>{
+  const [st,desc,unit,t,d,dir]=r;
+  // scale: target at 60% of track; delivered relative
+  let tgt=60,dl,gp=0,gw=0;
+  if(t===0){dl=Math.min(100,d*20);tgt=0;gp=0;gw=dl}
+  else{dl=Math.min(100,d/t*60);}
+  const bad=dir==="lower"?d>t:d<t;
+  if(t!==0&&bad){gp=Math.min(dl,tgt);gw=Math.abs(dl-tgt)}
+  const g=t===0?(d>0?"+"+d:"0"):((dir==="lower"?d-t:t-d)/t*100);
+  const gl=t===0?(d>0?`${d}`:"met"):(bad?(dir==="lower"?"+":"−")+Math.abs(Math.round(g))+"%":"met");
+  return `<div class="vg-row" data-i="${i}" tabindex="0" role="button" aria-pressed="${i===vgSel}"><span><span class="eyebrow">${st}</span><br>${esc(desc)} <span class="hint">(${esc(unit)})</span></span>
+   <span class="track"><span class="dl" style="width:${dl}%"></span>${gw?`<span class="gap" style="left:${gp}%;width:${gw}%"></span>`:""}${t!==0?`<span class="tg" style="left:${tgt}%"></span>`:""}</span>
+   <span class="gapv ${bad?"bad":"good"}">${gl}</span></div>`}).join("");
+ const r=rows[vgSel];const bad=r[5]==="lower"?r[4]>r[3]:r[4]<r[3];
+ $("vgDetail").innerHTML=`<div class="eyebrow">${PERS[vgP].name} · ${r[0]}</div><h3 style="margin:4px 0 10px;font-size:22px">${esc(r[1])}</h3>
+  <dl class="kv"><dt>Desired</dt><dd class="num">${r[5]==="lower"?"≤":"≥"} ${r[3]} ${esc(r[2])}</dd><dt>Delivered</dt><dd class="num">${r[4]} ${esc(r[2])}</dd><dt>Job step</dt><dd>${esc(PERS[vgP].jobs[STAGES.indexOf(r[0])])}</dd><dt>Metric card</dt><dd class="mono" style="font-size:12px">sal-${vgP}-${r[0].toLowerCase()} v1.0 · Released</dd></dl>
+  ${bad?`<div class="sec-label">Cause found by the value-gap monitor</div><p style="font-size:14px">${esc(r[6])}</p><div class="banner hold"><div>Sent to the causal agent as finding VG-${vgP==="admin"?"A":"H"}${vgSel+1}. A proposed fix goes to the owning team as a backlog item; nothing changes until a person accepts it.</div></div>`:`<div class="banner ok"><div>Target met over the last 90 days. The monitor keeps watching for drift.</div></div>`}`;
+}
+$("vgRows").addEventListener("click",e=>{const r=e.target.closest(".vg-row");if(r){vgSel=+r.dataset.i;vgRender()}});
+$("vgRows").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const r=e.target.closest(".vg-row");if(r){e.preventDefault();vgSel=+r.dataset.i;vgRender()}}});
+vgRender();
+
+/* ================= CHANGE & CAUSAL ================= */
+const CH=[
+ {id:"C1",kind:"Content",title:"Benefits plan comparison updated to v15 in SharePoint",src:"SharePoint delta · 2026-10-05",
+  diff:"Slide 7: Gold PPO employee-only premium range changed from $112–$148 to $118–$154.",
+  impact:[["RDF","3 claims superseded; 412 → 415 triples",""],["Assemblies","27 cached briefs cite the old claim; withdrawn and rebuilt",""],["Persona jobs","HR Specialist · Evaluate · compare plans; Client Admin · Evaluate · total cost",""],["Decisions in flight","11 opportunities with a quote built on v14","w"],["Refresh","Stages 5–7 only for this item; 41 seconds",""]],
+  nodes:[["chg","Plan deck v15"],["mid","3 claims superseded"],["mid","27 briefs rebuilt"],["dec","11 quotes on old rates"],["out","Quote accuracy"],["out","Proposal acceptance"]],
+  edges:[[0,1],[1,2],[1,3],[3,4],[3,5],[2,5]],
+  risk:"11 quotes understate premiums by about 4%. Estimated effect on proposal acceptance −3 to −6 points if not re-quoted (interval from 14 past rate changes).",
+  opp:"Re-quoting before the Propose stage, with the change explained, historically keeps acceptance flat. Action proposed: notify 11 BPAs with the brief diff."},
+ {id:"C2",kind:"Ontology",title:"isp-sal 1.3 splits “Evaluate” into “Evaluate cost” and “Evaluate risk”",src:"KGCL CR-2026-1201 · MINOR",
+  diff:"New classes isp-sal:EvaluateCost and isp-sal:EvaluateRisk, both rdfs:subClassOf isp-sal:Evaluate.",
+  impact:[["Ontology","1 class refined, 2 subclasses added; Ontology Closure Checker passes",""],["RDF","1,930 content objects tagged Evaluate need re-tagging",""],["Agents","Persona & Job-Step Tagger reloads; Facet Navigator gains a facet",""],["Value gaps","Evaluate metric cards split; history re-based",""],["Refresh","Stage 3 (classify) re-runs for 1,930 items overnight; no full rebuild (EXT-016)",""]],
+  nodes:[["chg","isp-sal 1.3"],["mid","1,930 items re-tagged"],["mid","New facet"],["dec","Briefs split cost vs risk"],["out","Time to binding quote"],["out","Risk awareness"]],
+  edges:[[0,1],[0,2],[1,3],[2,3],[3,4],[3,5]],
+  risk:"For two weeks the split metric history is thin; value-gap readings for Evaluate carry wider intervals.",
+  opp:"Separating risk content lets the HR Specialist’s risk brief join the Client Admin’s package. The causal model estimates +6 to +11 points in first-draft approval (finding VG-A5)."},
+ {id:"C3",kind:"Mapping",title:"CRM renames Opportunity.Employee_Count__c to Headcount__c",src:"Mapping Drift Sentinel · MAJOR",
+  diff:"- Opportunity.Employee_Count__c number\n+ Opportunity.Headcount__c number",
+  impact:[["Mappings","isp-core:ClientCompany headcount mapping broken (exactMatch 1.00)","w"],["Rules","Size-based rules BEN-001, CMP-002 cannot evaluate for new opportunities","w"],["Assemblies","Federated queries that filter by size trip the MTBH breaker instead of guessing",""],["Persona jobs","Client Admin · Qualify · confirm fit",""],["Refresh","Concept Search Agent proposes Headcount__c at 0.97; awaiting steward approval",""]],
+  nodes:[["chg","CRM field rename"],["mid","Headcount mapping broken"],["mid","Size rules can’t evaluate"],["dec","Fit answers withheld"],["out","Steps to confirm fit"],["out","Pipeline velocity"]],
+  edges:[[0,1],[1,2],[2,3],[3,4],[3,5]],
+  risk:"Until the mapping is approved, about 40 new opportunities a week get “ask a BPA” instead of a fit answer. Estimated +1 step in Qualify.",
+  opp:"Steward approval is a one-line change; the sentinel caught it before any wrong answer went out. Action proposed: approve the remap."},
+ {id:"C4",kind:"Regulation",title:"Colorado pay transparency amendment released in the SSOT (TAL-005 v2.4)",src:"KGCL CR-2026-1192 · Released",
+  diff:"TAL-005 gains a CO-specific clause effective 2027-01-01.",
+  impact:[["SSOT","TAL-005 promoted to v2.4 through DEV/STG/PRD",""],["RDF","Feed item moves from Candidate to Released; “pending review” label removed",""],["Assemblies","HR compliance briefs mentioning CO rebuilt",""],["Persona jobs","HR Specialist · Qualify · check every state",""],["Decisions","8 prospects with CO hiring get a follow-up event",""]],
+  nodes:[["chg","TAL-005 v2.4"],["mid","Feed item Released"],["mid","CO briefs rebuilt"],["dec","8 follow-up events"],["out","States assessed"],["out","Risk awareness"]],
+  edges:[[0,1],[1,2],[2,3],[3,4],[3,5]],
+  risk:"Prospects that already decided without the CO item may need a revised checklist after signing.",
+  opp:"A timely, specific regulatory update is a reason to re-engage stalled CO opportunities. Estimated +2 to +5 points in Qualify→Evaluate conversion for CO prospects."}
+];
+let curC="C1";
+$("chgList").innerHTML=CH.map(c=>`<button data-c="${c.id}" aria-pressed="${c.id===curC}"><span class="cid">${c.id} · ${c.kind} change</span><span class="ct">${esc(c.title)}</span><span class="hint">${esc(c.src)}</span></button>`).join("");
+$("chgList").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;curC=b.dataset.c;$("chgList").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));chgRender()});
+function causalSvg(c){
+ const W=780,H=230,cols={chg:0,mid:1,dec:2,out:3},X=[20,210,400,590],BW=170,BH=44;
+ const per={};c.nodes.forEach((n,i)=>{(per[n[0]]=per[n[0]]||[]).push(i)});
+ const pos=c.nodes.map((n,i)=>{const list=per[n[0]],k=list.indexOf(i),tot=list.length;return {x:X[cols[n[0]]],y:(H-20)/(tot+1)*(k+1)-BH/2+14}});
+ const col={chg:"var(--accent)",mid:"var(--keel)",dec:"var(--star)",out:"var(--obligation)"};
+ let s=`<svg class="causal" viewBox="0 0 ${W} ${H}" role="img" aria-label="Causal graph from the change to outcomes"><defs><marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--muted)"/></marker></defs>`;
+ ["CHANGE","MECHANISM","DECISIONS","OUTCOMES"].forEach((t,i)=>s+=`<text x="${X[i]}" y="12" font-size="10" fill="var(--muted)" letter-spacing="1.3">${t}</text>`);
+ c.edges.forEach(([a,b])=>{const p=pos[a],q=pos[b];const x1=p.x+BW,y1=p.y+BH/2,x2=q.x,y2=q.y+BH/2;s+=`<path d="M${x1},${y1} C${(x1+x2)/2},${y1} ${(x1+x2)/2},${y2} ${x2-2},${y2}" fill="none" stroke="var(--muted)" stroke-width="1.3" marker-end="url(#ca)"/>`});
+ c.nodes.forEach((n,i)=>{const p=pos[i];s+=`<rect x="${p.x}" y="${p.y}" width="${BW}" height="${BH}" rx="7" fill="var(--surface)" stroke="${col[n[0]]}" stroke-width="1.6"/><text x="${p.x+BW/2}" y="${p.y+BH/2+4}" text-anchor="middle" font-size="11" fill="var(--ink)">${esc(n[1])}</text>`});
+ return s+`</svg>`;
+}
+function chgRender(){
+ const c=CH.find(x=>x.id===curC);
+ $("chgOut").innerHTML=`<div class="eyebrow">${c.kind} change · ${esc(c.src)}</div><h3 style="margin:4px 0 10px;font-size:22px">${esc(c.title)}</h3>
+  <div class="sec-label">Detected difference</div><pre class="code-view">${esc(c.diff)}</pre>
+  <div class="sec-label">Impact set (Impact Analyzer · EXT-016)</div><div class="tbl-wrap"><table><tbody>${c.impact.map(r=>`<tr><td style="width:150px"><b>${r[0]}</b></td><td>${esc(r[1])}</td><td class="r">${r[2]?'<span class="pill hold">attention</span>':'<span class="pill ok">handled</span>'}</td></tr>`).join("")}</tbody></table></div>
+  <div class="sec-label">Causal analysis</div><div class="causal-wrap">${causalSvg(c)}</div>
+  <div class="ro"><div class="risk"><b>Risk</b>${esc(c.risk)}</div><div class="opp"><b>Opportunity</b>${esc(c.opp)}</div></div>
+  <p class="hint" style="margin-top:8px">Estimates come from past events of the same kind and state their interval; they are advisory until an owner accepts them (EXT-015).</p>`;
+}
+chgRender();
+
+/* ================= ROADMAP ================= */
+const PH=[
+ {id:"P0",name:"Keel foundations",m:[1,3],months:"Months 1–3",
+  keel:["Sales domain knowledge: personas, jobs, job steps and desired outcomes, captured with sales leaders and BPAs","Publish isp-sal 1.0 and isp-cnt 1.0 ontologies, aligned to isp-core and BFO","SKOS vocabularies: content types, pipeline stages, sensitivity labels","EXT-001 to EXT-008 authored in the SSOT register and Released"],
+  star:["Persona job maps and desired-outcome statements bound to Metric Definition Cards","Baseline time studies for every job step"],
+  agents:["SharePoint Delta Agent, Identity Resolver, Format Extractor (one library)"],
+  gate:"isp-sal and isp-cnt Released; 12 job steps each with a measurable desired outcome; EXT-001–008 Released with passing scenario tests."},
+ {id:"P1",name:"Content graph & AI fabric",m:[4,7],months:"Months 4–7",
+  keel:["RDF structures for in-house content: SharePoint sales, enablement, case studies, implementation","RDF structures for external content: public web, competitor pages, regulatory and firmographic feeds","AI fabric enrichment: classifier, persona & job-step tagger, claim extractor, PII detector","EXT-009, EXT-010 Released; SHACL shapes for content objects, chunks and claims"],
+  star:["First Client Admin and HR Specialist briefs, read-only, for 2 BPA teams"],
+  agents:["Web Crawl, Feed Listener, Concept Mapping, Rule Binding, SHACL Publisher, Mapping Drift Sentinel"],
+  gate:"≥ 20,000 content objects published with SHACL pass ≥ 98%; 0 PII leaks in red-team test; classification precision ≥ 0.90 on a labeled sample."},
+ {id:"P2",name:"Faceted search & advisor",m:[8,11],months:"Months 8–11",
+  keel:["Mapping agents for intelligent search across content, CRM, quoting and the SSOT","EXT-011 to EXT-014 Released; brief templates per persona versioned in the SSOT","Virtual graph over CRM and quoting (no copies)"],
+  star:["Sales Advisor live for both personas across all 6 pipeline stages","Decisions recorded with bound outcomes; orchestrated events into CRM, quoting and onboarding","Machine packages (JSON-LD) for other agents"],
+  agents:["Intent & RCB, Federated Query Planner, Facet Navigator, Mapping Resolver, Precision Extractor, Brief Assembler, Grounding Guard, Outcome Binder"],
+  gate:"Brief grounding ≥ 0.90 average; MTBH trip rate ≤ 2%; 100% of decisions bound to a Released metric card; P95 answer ≤ 4 s."},
+ {id:"P3",name:"North Star: measure, monitor, learn",m:[12,15],months:"Months 12–15",
+  keel:["Change monitors on ontologies, SSOT, mappings, RDF shapes and repositories","Incremental refresh service (EXT-016) and cache invalidation","EXT-015 Released: value-gap and causal method"],
+  star:["Value-gap dashboard per persona job step","Causal analysis of risk and opportunity from changes, gaps and decisions","Promotion of recurring questions into planned metrics"],
+  agents:["Content, Semantic and RDF Structure Monitors, Impact Analyzer, Refresh Service, Value-Gap Monitor, Decision Impact Tracker, causal family"],
+  gate:"Affected briefs withdrawn ≤ 1 hour after a change; ≥ 80% of job steps meet their desired outcome; each causal finding reviewed by an owner within 10 days."}
+];
+(function tl(){
+ const W=1000,H=200,X0=150,CW=(W-X0-20)/15;
+ let s=`<svg class="tl" viewBox="0 0 ${W} ${H}" role="img" aria-label="15-month roadmap in four gated phases with Keel, agent and North Star lanes">`;
+ for(let m=1;m<=15;m++){const x=X0+(m-1)*CW;s+=`<line x1="${x}" x2="${x}" y1="24" y2="${H-10}" stroke="var(--line-soft)"/><text x="${x+CW/2}" y="16" text-anchor="middle" font-size="10" fill="var(--muted)">M${m}</text>`}
+ PH.forEach((p,i)=>{const x=X0+(p.m[0]-1)*CW,w=(p.m[1]-p.m[0]+1)*CW-4;s+=`<rect x="${x}" y="26" width="${w}" height="24" rx="4" fill="var(--ink)"/><text x="${x+w/2}" y="42" text-anchor="middle" font-size="11" fill="var(--paper)">${p.id} ${p.name}</text>`;
+  const gx=X0+p.m[1]*CW-2;s+=`<line x1="${gx}" x2="${gx}" y1="54" y2="${H-10}" stroke="var(--star)" stroke-dasharray="4 3" stroke-width="1.5"/><path d="M${gx},54 l5,5 l-5,5 l-5,-5z" fill="var(--star)"/><text x="${gx-7}" y="${H-14}" text-anchor="end" font-size="10" fill="var(--star)">G${i}</text>`});
+ [["Keel",80,"var(--keel)"],["Agents",118,"var(--accent)"],["North Star",156,"var(--star)"]].forEach(([l,y,c])=>{s+=`<rect x="${X0}" y="${y-14}" width="${W-X0-20}" height="28" fill="${c}" fill-opacity=".08"/><text x="12" y="${y+4}" font-size="11" fill="${c}" font-weight="600">${l}</text>`});
+ const ms=[[1,80,"Persona & job model"],[3,80,"isp-sal 1.0 · isp-cnt 1.0"],[6,80,"RDF for external sources"],[9,80,"Mapping agents"],[13,80,"Change monitors"],[2,118,"SharePoint delta"],[5,118,"AI fabric enrichment"],[9,118,"Faceted search chain"],[14,118,"Causal family"],[3,156,"Outcome baselines"],[7,156,"Read-only briefs"],[10,156,"Advisor live · decisions"],[15,156,"Value-gap dashboard"]];
+ ms.forEach(([m,y,t])=>{const x=X0+(m-1)*CW+CW/2;s+=`<circle cx="${x}" cy="${y}" r="5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="${m>12?x-8:x+8}" y="${y+4}" font-size="10" fill="var(--ink)" text-anchor="${m>12?"end":"start"}">${t}</text>`});
+ $("timeline").innerHTML=s+`</svg>`;
+})();
+$("phases").innerHTML=PH.map(p=>`<article class="phase"><div class="ph"><h3>${p.id} · ${p.name}</h3><span class="eyebrow">${p.months}</span></div><div class="body">
+ <div class="lane"><span class="pill keel" style="justify-self:start">Keel</span><ul>${p.keel.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+ <div class="lane"><span class="pill ver" style="justify-self:start">Agents</span><ul>${p.agents.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+ <div class="lane"><span class="pill star" style="justify-self:start">North Star</span><ul>${p.star.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+ <div class="gate"><b>Gate:</b> ${esc(p.gate)}</div></article>`).join("");
+$("ontoTable").innerHTML=`<thead><tr><th>Namespace</th><th>Covers</th><th>Key classes</th><th>Aligned to</th><th>Phase</th></tr></thead><tbody>
+<tr><td class="mono">isp-sal</td><td>Sales domain: personas, jobs, pipeline stages, offers</td><td>Persona, Job, JobStep, DesiredOutcome, PipelineStage, CompetitorOffer, QuoteLine, Brief</td><td>isp-core, hr: Client Relationship domain</td><td>P0</td></tr>
+<tr><td class="mono">isp-cnt</td><td>Content in any repository, in-house or external</td><td>ContentObject, Chunk, Claim, Fact, Sensitivity, UsagePolicy, validFrom/validUntil</td><td>DCAT, Dublin Core, PROV-O, schema.org</td><td>P0–P1</td></tr>
+<tr><td class="mono">isp-dec</td><td>Decisions, options and orchestrated events</td><td>Decision, Option, BoundOutcome, OrchestratedEvent</td><td>Decision Modeling & Measurement, CloudEvents</td><td>P2</td></tr>
+<tr><td class="mono">isp-ext</td><td>Extraction, control and assembly rules</td><td>EXT-001 … EXT-016 as LKIF norms + SHACL shapes</td><td>SSOT register schema, GOV-017</td><td>P0–P3</td></tr>
+<tr><td class="mono">isp-vg</td><td>Value gaps and causal findings</td><td>ValueGap, CausalFinding, Assumption, EffectEstimate</td><td>MET cards, PROV-O</td><td>P3</td></tr></tbody>`;
+
+/* start tab */
+const hm={architecture:"over",pipelines:"pipe",agents:"agents",advisor:"adv",rules:"rules",value:"value",change:"change",roadmap:"road"};
+let st=hm[(location.hash||"").slice(1)];
+if(!st){try{st=localStorage.getItem("sa-tab")}catch(e){}}
+if(st&&$("t-"+st))show(st);
+})();
+</script>
+
+</body></html>

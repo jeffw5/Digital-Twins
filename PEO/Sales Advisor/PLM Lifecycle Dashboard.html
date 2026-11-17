@@ -1,0 +1,825 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PLM Lifecycle Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Drawing-sheet idiom: title block masthead, grid paper ground, engineering mono labels. */
+:root{
+  --bg:#eef1f3; --paper:#ffffff; --sunk:#e4e9ed; --ink:#132030; --ink-2:#3a4a5a; --muted:#5c6b7a; --faint:#8b98a5;
+  --line:#cdd5dc; --line-2:#aeb9c3; --grid:rgba(29,79,145,.06);
+  --accent:#1d4f91; --accent-soft:#dfe8f5;
+  --buf:#b86e00; --buf-soft:#f6e7cf; --crit:#b3261e; --crit-soft:#f6dcd9; --good:#2b7a4b; --good-soft:#dbefe2; --warn:#a15c00; --warn-soft:#f7e6cc;
+  --ph1:#5b4fb0; --ph2:#1b6aa0; --ph3:#0d7f78; --ph4:#4f7f1a; --ph5:#a65f00; --ph6:#9b3557;
+  --pf1:#1b6aa0; --pf2:#4f7f1a; --pf3:#9b3557; --pf4:#5b4fb0; --pf5:#a65f00; --pf6:#0d7f78;
+  --ws-gov:#5c6b7a; --ws-ke:#7a4fa8; --ws-de:#246f8f; --ws-dash:#1d4f91;
+  --f-head:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1218; --paper:#121a22; --sunk:#18222c; --ink:#e3e9ef; --ink-2:#c1ccd6; --muted:#93a2b0; --faint:#66768a;
+  --line:#26323e; --line-2:#36444f; --grid:rgba(127,174,245,.05);
+  --accent:#7fb0f0; --accent-soft:#17283f;
+  --buf:#e8a640; --buf-soft:#33260f; --crit:#f08077; --crit-soft:#3a1a18; --good:#6cc590; --good-soft:#15301f; --warn:#e8a640; --warn-soft:#33260f;
+  --ph1:#a99cf0; --ph2:#6fb2e6; --ph3:#4fc4bb; --ph4:#9ccc5c; --ph5:#e8a640; --ph6:#e58aa9;
+  --pf1:#6fb2e6; --pf2:#9ccc5c; --pf3:#e58aa9; --pf4:#a99cf0; --pf5:#e8a640; --pf6:#4fc4bb;
+  --ws-gov:#93a2b0; --ws-ke:#c39cf0; --ws-de:#6cbcdc; --ws-dash:#7fb0f0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1218; --paper:#121a22; --sunk:#18222c; --ink:#e3e9ef; --ink-2:#c1ccd6; --muted:#93a2b0; --faint:#66768a;
+  --line:#26323e; --line-2:#36444f; --grid:rgba(127,174,245,.05);
+  --accent:#7fb0f0; --accent-soft:#17283f;
+  --buf:#e8a640; --buf-soft:#33260f; --crit:#f08077; --crit-soft:#3a1a18; --good:#6cc590; --good-soft:#15301f; --warn:#e8a640; --warn-soft:#33260f;
+  --ph1:#a99cf0; --ph2:#6fb2e6; --ph3:#4fc4bb; --ph4:#9ccc5c; --ph5:#e8a640; --ph6:#e58aa9;
+  --pf1:#6fb2e6; --pf2:#9ccc5c; --pf3:#e58aa9; --pf4:#a99cf0; --pf5:#e8a640; --pf6:#4fc4bb;
+  --ws-gov:#93a2b0; --ws-ke:#c39cf0; --ws-de:#6cbcdc; --ws-dash:#7fb0f0; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 var(--f-body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;padding-inline:16px;padding-block:0}
+.wrap{max-width:1240px;margin:0 auto;padding-block:22px 70px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+h1,h2,h3{font-family:var(--f-head);letter-spacing:.005em;text-wrap:balance;margin:0}
+
+/* Title block */
+.tb{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(4,minmax(0,1fr));border:1.5px solid var(--ink);background:var(--paper)}
+.tb>div{border-left:1px solid var(--line-2);padding:10px 14px;min-width:0}
+.tb>div:first-child{border-left:0}
+.tb .lab{font:500 10px var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.tb .val{font:600 15px var(--f-head);margin-top:2px}
+.tb h1{font-size:30px;line-height:1.05;margin-top:2px}
+.tb p{margin:4px 0 0;color:var(--muted);font-size:13px}
+@media (max-width:860px){.tb{grid-template-columns:repeat(2,minmax(0,1fr))}.tb>div:first-child{grid-column:1/-1}.tb>div{border-left:0;border-top:1px solid var(--line-2)}.tb>div:first-child{border-top:0}.tb>div:nth-child(odd):not(:first-child){border-left:1px solid var(--line-2)}}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-top:18px;border-bottom:1.5px solid var(--ink);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:1px solid var(--line-2);border-bottom:0;background:var(--sunk);padding:8px 16px;font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.view{padding-top:20px;display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--paper);border:1px solid var(--line);padding:16px 18px;min-width:0}
+.panel>h2{font-size:19px;margin-bottom:4px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px;max-width:90ch}
+.lab{font:500 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* KPI strip */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;border:1px solid var(--line);background:var(--paper)}
+.kpi{padding:12px 14px;border-left:1px solid var(--line);min-width:0}
+.kpi:first-child{border-left:0}
+.kpi b{display:block;font:600 24px var(--f-head);font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi span{font-size:12px;color:var(--muted);display:block;line-height:1.35;margin-top:2px}
+.kpi.bad b{color:var(--crit)} .kpi.bufk b{color:var(--buf)}
+@media (max-width:980px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.kpi:nth-child(4){border-left:0}.kpi:nth-child(n+4){border-top:1px solid var(--line)}}
+@media (max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi{border-left:0!important;border-top:1px solid var(--line)}.kpi:nth-child(-n+2){border-top:0}.kpi:nth-child(even){border-left:1px solid var(--line)!important}}
+
+.svgwrap{overflow-x:auto;border:1px solid var(--line);background:var(--paper)}
+.svgwrap svg{display:block}
+svg text{font-family:var(--f-mono)}
+
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.phcard{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.phcard h3{font-size:17px}
+.phcard p{margin:0;font-size:13px;color:var(--ink-2)}
+.phcard .dates{font:500 11.5px var(--f-mono);color:var(--muted)}
+.phcard ul{margin:2px 0 0;padding-left:1.1em;font-size:12.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:2px}
+.pill{display:inline-block;font:600 10px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;border-radius:2px;white-space:nowrap}
+.pill.buf{color:var(--buf);background:var(--buf-soft);border-color:transparent}
+.pill.crit{color:var(--crit);background:var(--crit-soft);border-color:transparent}
+.pill.good{color:var(--good);background:var(--good-soft);border-color:transparent}
+.pill.warn{color:var(--warn);background:var(--warn-soft);border-color:transparent}
+.pill.mute{color:var(--muted);background:var(--sunk);border-color:transparent}
+
+/* Controls */
+.ctrl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line-2);background:var(--paper);padding:4px 10px;font:500 11.5px var(--f-mono);cursor:pointer;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.chip i{width:8px;height:8px;display:inline-block;background:var(--c)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.slider{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2)}
+.slider input{accent-color:var(--buf);width:160px}
+.tog{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.tog input{accent-color:var(--crit)}
+
+.rm-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+@media (max-width:1060px){.rm-layout{grid-template-columns:minmax(0,1fr)}}
+.detail{position:sticky;top:12px;background:var(--paper);border:1px solid var(--line-2);padding:14px 16px;font-size:13px;display:flex;flex-direction:column;gap:8px;min-width:0}
+@media (max-width:1060px){.detail{position:static}}
+.detail h3{font-size:18px}
+.detail dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 10px;margin:0}
+.detail dt{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.detail dd{margin:0}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);cursor:pointer;font:500 12px var(--f-mono);text-decoration:underline;text-underline-offset:2px}
+.gantt .row:hover rect.hov{fill:var(--accent-soft)}
+.gantt .bar{cursor:pointer}
+.gantt .sel{stroke:var(--ink);stroke-width:2}
+
+/* Fever */
+.fever{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:860px){.fever{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.fever{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fv{border:1px solid var(--line);padding:9px 10px;background:var(--paper);min-width:0}
+.fv .t{font:500 11px var(--f-mono);color:var(--muted)}
+.fv .bar{height:8px;background:var(--sunk);margin:6px 0 4px;position:relative}
+.fv .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--good)}
+.fv .bar i.amber{background:var(--buf)} .fv .bar i.red{background:var(--crit)}
+.fv b{font:600 16px var(--f-head);font-variant-numeric:tabular-nums}
+.fv small{display:block;font-size:11.5px;color:var(--muted)}
+
+/* Scorecard */
+.phrow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:980px){.phrow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.phrow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.phs{border:1px solid var(--line);border-top:4px solid var(--c);padding:10px 12px;background:var(--paper);min-width:0}
+.phs b{display:block;font:600 26px var(--f-head);font-variant-numeric:tabular-nums}
+.phs .meter{height:6px;background:var(--sunk);margin:6px 0}
+.phs .meter i{display:block;height:100%;background:var(--c)}
+.phs small{display:block;font-size:11.5px;color:var(--muted);line-height:1.35}
+.tw{overflow-x:auto;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:13px;background:var(--paper)}
+th{text-align:left;font:500 10.5px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--sunk);padding:7px 10px;border-bottom:1px solid var(--line-2);white-space:nowrap}
+td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.grp td{background:var(--sunk);font:600 12px var(--f-head);letter-spacing:.03em;color:var(--ink-2)}
+.cellbtn{min-width:34px;border:1px solid var(--line-2);background:var(--paper);font:600 12px var(--f-mono);padding:1px 6px;cursor:pointer}
+.cellbtn.edited{border-color:var(--accent);background:var(--accent-soft)}
+.sc0{color:var(--crit)} .sc1{color:var(--warn)} .sc2{color:var(--ink-2)} .sc3{color:var(--good)}
+.heat td.h{text-align:center;font:600 12px var(--f-mono)}
+.gng{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px}
+@media (max-width:820px){.gng{grid-template-columns:minmax(0,1fr)}}
+.verdict{font:700 32px var(--f-head);letter-spacing:.02em}
+.verdict.no{color:var(--crit)} .verdict.go{color:var(--good)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px}
+.checks li::before{content:attr(data-m);font:700 13px var(--f-mono)}
+.checks li.ok::before{color:var(--good)} .checks li.no::before{color:var(--crit)}
+
+/* Gates matrix */
+.gm td{min-width:180px;font-size:12.5px}
+.gm td.pf{min-width:150px;font:600 14px var(--f-head);border-left:4px solid var(--c)}
+.gm .gate{display:block;margin-top:5px;font:500 11px var(--f-mono);color:var(--accent)}
+.gm .when{display:block;font:500 11px var(--f-mono);color:var(--muted)}
+.issues{display:flex;flex-direction:column;gap:10px}
+.issue{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--paper);border:1px solid var(--line);padding:12px 14px}
+@media (max-width:640px){.issue{grid-template-columns:minmax(0,1fr)}}
+.issue h3{font-size:15.5px}
+.issue p{margin:3px 0 0;font-size:13px;color:var(--ink-2);max-width:85ch}
+footer{color:var(--muted);font-size:12px;margin-top:26px;border-top:1px solid var(--line-2);padding-top:12px;max-width:100ch}
+</style>
+<style>
+.grid2q{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:860px){.grid2q{grid-template-columns:minmax(0,1fr)}}
+:root{ --c1:#1f6e8c; --c2:#4a3aa7; --c3:#5c6b7a; --c4:#7a4fa8; --c5:#0d7f78; --c6:#b07a12; --c7:#2b7a4b; --c8:#b3261e; }
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --c1:#5fb3d2; --c2:#9085e9; --c3:#93a2b0; --c4:#c39cf0; --c5:#4fc4bb; --c6:#e2b44e; --c7:#6cc590; --c8:#f08077; }}
+:root[data-theme="dark"]{ --c1:#5fb3d2; --c2:#9085e9; --c3:#93a2b0; --c4:#c39cf0; --c5:#4fc4bb; --c6:#e2b44e; --c7:#6cc590; --c8:#f08077; }
+.ccards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1060px){.ccards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.ccards{grid-template-columns:minmax(0,1fr)}}
+.cc{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cc h3{font-size:17px}
+.cc p{margin:0;font-size:12.5px;color:var(--ink-2)}
+.cc .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.weights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.weights{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wt{border:1px solid var(--line);padding:10px 12px;background:var(--paper);min-width:0}
+.wt input{width:100%;accent-color:var(--accent)}
+.wt b{font:600 14px var(--f-head)}
+.wt .v{font:600 18px var(--f-mono);float:right}
+.risk-layout{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.risk-layout{grid-template-columns:minmax(0,1fr)}}
+.rm svg{display:block;width:100%;max-width:420px;height:auto}
+.rm text{font-family:var(--f-mono)}
+.dep td.d{text-align:center;font:600 12px var(--f-mono);min-width:44px}
+.dep td.d.s3{background:color-mix(in srgb,var(--crit) 22%,var(--paper))}
+.dep td.d.s2{background:color-mix(in srgb,var(--buf) 18%,var(--paper))}
+.dep td.d.s1{background:var(--sunk);color:var(--muted)}
+.dep tr.sel td{outline:1px solid var(--ink)}
+.dep th.cmp{white-space:normal;min-width:64px;text-align:center}
+.dep tbody tr{cursor:pointer}
+.imp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px}
+@media (max-width:900px){.imp{grid-template-columns:minmax(0,1fr)}}
+.imp ul{margin:4px 0 0;padding-left:1.1em;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.band{font:700 11px var(--f-mono);padding:2px 7px;border-radius:2px}
+.band.hi{background:var(--crit-soft);color:var(--crit)} .band.md{background:var(--warn-soft);color:var(--warn)} .band.lo{background:var(--good-soft);color:var(--good)}
+.lc td{font-size:12.5px;min-width:150px}
+.lc td.cn{min-width:170px;font:600 13.5px var(--f-head);border-left:4px solid var(--c)}
+.lc .when{display:block;font:500 11px var(--f-mono);color:var(--muted);margin-top:3px}
+.lc .none{color:var(--faint)}
+</style>
+<div class="wrap">
+  <header class="tb">
+    <div><div class="lab">PEO Sales Advisor · Keel &amp; North Star · product lifecycle management</div><h1>PLM Lifecycle Dashboard</h1><p>Build-out of the eight component sets in the Sales Advisor solution design by the end of Q1 2027, phased with buffers, with impact and risk scored against business value and persona desired outcomes.</p></div>
+    <div><div class="lab">Program start</div><div class="val" id="tbStart"></div></div>
+    <div><div class="lab">Planned finish (G3)</div><div class="val" id="tbEnd"></div></div>
+    <div><div class="lab">Buffer held</div><div class="val" id="tbBuf"></div></div>
+    <div><div class="lab">Scope</div><div class="val">8 component sets · 38 agents</div></div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" data-v="overview" aria-selected="true">Overview</button>
+    <button class="tab" role="tab" data-v="roadmap" aria-selected="false">Roadmap</button>
+    <button class="tab" role="tab" data-v="risk" aria-selected="false">Impact &amp; risk</button>
+    <button class="tab" role="tab" data-v="value" aria-selected="false">Value &amp; outcomes</button>
+    <button class="tab" role="tab" data-v="lifecycle" aria-selected="false">Lifecycle gates</button>
+    <button class="tab" role="tab" data-v="readiness" aria-selected="false">Readiness gaps</button>
+  </nav>
+
+  <section class="view" id="v-overview">
+    <div class="kpis" id="kpis"></div>
+    <div class="panel">
+      <h2>Four overlapping phases, each closed by a buffer and a gate</h2>
+      <p class="hint">The phases follow the Sales Advisor design, but overlap: work in a later phase starts as soon as the interface contracts and upstream items it needs exist, not when the previous gate passes. Gates remain the decision points.</p>
+      <div class="svgwrap" id="phaseStrip"></div>
+    </div>
+    <div class="panel grid2q">
+      <div><h2>How the plan fits by end of Q1 2027</h2><ul id="levers" style="margin:8px 0 0;padding-left:1.1em;font-size:13.5px;display:flex;flex-direction:column;gap:6px"></ul></div>
+      <div><h2>Moved to Q2 2027</h2><ul id="deferred" style="margin:8px 0 0;padding-left:1.1em;font-size:13.5px;display:flex;flex-direction:column;gap:6px"></ul></div>
+    </div>
+    <div class="panel">
+      <h2>The eight component sets</h2>
+      <p class="hint">Risk = likelihood × impact (1–25). Impact comes from the business value at stake in the persona job steps that depend on the component; see the Impact &amp; risk tab.</p>
+      <div class="ccards" id="ccards"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-roadmap" hidden>
+    <div class="panel">
+      <h2>Roadmap with dependencies</h2>
+      <p class="hint">Every bar is scheduled from its predecessors. Click a bar for its dependencies, the job-step gaps it closes and its slack. Red outlines mark the critical path. The slip control stresses every task; buffers absorb slip until they run out.</p>
+      <div class="ctrl"><div class="chips" id="wsChips" role="group" aria-label="Filter by component"></div></div>
+      <div class="ctrl">
+        <label class="tog"><input type="checkbox" id="critOnly"> Critical path only</label>
+        <label class="tog"><input type="checkbox" id="showDeps" checked> Dependency lines</label>
+        <div class="slider"><span>Slip on every task</span><input type="range" id="slip" min="0" max="40" step="5" value="0" aria-label="Slip applied to every task, percent"><b class="mono" id="slipVal">0%</b></div>
+      </div>
+      <div class="rm-layout">
+        <div class="svgwrap" id="gantt"></div>
+        <aside class="detail" id="detail" aria-live="polite"></aside>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Buffer consumption</h2>
+      <p class="hint">Green under a third used, amber up to two thirds, red beyond. A red buffer is the signal to replan before its gate.</p>
+      <div class="fever" id="fever" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-risk" hidden>
+    <div class="panel">
+      <h2>Business value weights</h2>
+      <p class="hint">How much each value driver matters to the sponsor (1–5). Impact and risk scores recompute as you change them. Defaults are equal until the sponsor sets them at G0.</p>
+      <div class="weights" id="weights"></div>
+    </div>
+    <div class="panel">
+      <h2>Risk by component</h2>
+      <div class="risk-layout">
+        <div class="rm" id="riskMatrix"></div>
+        <div class="tw"><table id="riskTbl"></table></div>
+      </div>
+      <p class="hint" style="margin-top:10px">Likelihood averages five factors scored 1–5: novelty to the organization, technical complexity, input readiness (data, content and baselines available), dependency depth (how many components must land first) and schedule pressure from compressing the build into Q1 2027. Impact scales the component’s value at stake against the most it could carry.</p>
+    </div>
+    <div class="panel">
+      <h2>Impact assessment</h2>
+      <p class="hint">Pick a component and what goes wrong. The schedule recomputes, buffers absorb what they can, and the affected job steps, desired outcomes, decision questions and value drivers are listed.</p>
+      <div class="ctrl" style="margin-top:8px">
+        <select id="impComp" aria-label="Component"></select>
+        <select id="impScn" aria-label="Scenario"><option value="1">Finishes 1 week late</option><option value="2" selected>Finishes 2 weeks late</option><option value="4">Finishes 4 weeks late</option><option value="q">Passes its gate but under-performs (quality)</option></select>
+      </div>
+      <div class="imp" id="impOut"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-value" hidden>
+    <div class="panel">
+      <h2>Which job steps depend on which components</h2>
+      <p class="hint">3 = critical (the step’s answers fail without it), 2 = supporting, 1 = measures or sustains it. Value at stake per step = driver weight × 3 desired outcomes × (1 + gap at baseline) × (1 + tier-H decision questions ÷ 4). Click a row for the step’s outcomes and what blocks it today.</p>
+      <div class="tw"><table class="dep" id="depTbl"></table></div>
+    </div>
+    <div class="panel" id="stepDetail"></div>
+  </section>
+
+  <section class="view" id="v-lifecycle" hidden>
+    <div class="panel">
+      <h2>Lifecycle gates per component</h2>
+      <p class="hint">Each component passes the six lifecycle phases from the PLM assessment scorecard. Cells show the roadmap work in each phase and when its gate evidence is due; Discover, Define and Design gates for each component close before its build starts. No component has been assessed yet; the first assessment is at G0.</p>
+      <div class="tw"><table class="lc" id="lcTbl"></table></div>
+    </div>
+    <div class="panel gng">
+      <div>
+        <div class="lab">Go / No-Go for release · proposed rule</div>
+        <div class="verdict no">NOT ASSESSED</div>
+        <p class="hint" style="margin-top:6px">The scorecard template says to aggregate debt into the release decision but does not set a threshold. This rule is a proposal for the steering group to confirm at G0.</p>
+      </div>
+      <ul class="checks" id="rule"></ul>
+    </div>
+  </section>
+
+  <section class="view" id="v-readiness" hidden>
+    <div class="panel">
+      <h2>What has to be settled before the scores can steer decisions</h2>
+      <p class="hint">Each gap is tied to the roadmap task that closes it.</p>
+      <div class="issues" id="issues"></div>
+    </div>
+    <div class="panel">
+      <h2>Assumptions behind the plan</h2>
+      <ul style="margin:0;padding-left:1.2em;font-size:13.5px;display:flex;flex-direction:column;gap:6px;max-width:95ch">
+        <li>Scope is only the eight component sets of the Sales Advisor design. Quoting, CRM, payroll and enrollment systems are consumed as they are, through the virtual graph.</li>
+        <li>Durations are in weeks for one dedicated squad per component set working in parallel; ontology stewards, rule owners and SMEs join for the Keel, the SSOT rules and the golden answers.</li>
+        <li>Buffers total <span id="bufTxt"></span>: 1 week for the Keel, 2 for the content graph (covering the year-end holidays), 2 for the advisor launch and a 1-week project buffer before G3.</li>
+        <li>Value at stake uses the 12 core job steps, their baseline gaps from the advisor’s value-gap monitor (synthetic design values) and the tier-H counts from the decision-question baseline. The other desired outcomes enter when their baselines are measured; jobs J2 and J3 move to Q2 2027.</li>
+        <li>Work starts on Monday 19 October 2026 and must finish by 31 March 2027. Dates are planning dates, not commitments.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>Sources: PEO Sales Advisor solution design (components, agents, EXT rules, phases and gates), buyer persona job studies (desired outcomes), decision-question baseline (tier-H questions) and the PLM Assessment Scorecard template (lifecycle phases and practices). Weights, scores, durations and thresholds are proposals with synthetic values. Prepared by Jeffrey Wallk, The Value Enablement Group, LLC.</footer>
+</div>
+<script>
+// ===================== PEO SALES ADVISOR · PLM DATA =====================
+const LIFE = ['Discover','Define','Design','Develop','Deliver','Run'];
+const LIFE_EVIDENCE = [
+ 'DT · JTBD, outcome discovery, persona maps, future-state gaps, impact analysis, prioritization',
+ 'RE · capability, persona and service maps; KPIs/OKRs/SLEs; feature matrix; requirements traceability',
+ 'ODD · North Star value and architecture; design for integration, resiliency, scale; ARB review and remediation',
+ 'DE · KE · SE · data services, vocabularies, ontologies, RDB-to-RDF mappings, CI/CD, V&V, runbooks',
+ 'OPR · business, data, systems, platform and release operations; security; data quality; policy; certification',
+ 'SLM · service matrix, outcome gaps, service changes and their measurement',
+];
+
+// Eight component sets from the PEO Sales Advisor solution design
+const COMPS = [
+ { id:'C1', name:'Semantic foundation (Keel)', col:'--c1', short:'Keel',
+   what:'Sales domain knowledge, isp-sal / isp-cnt / isp-dec / isp-ext / isp-vg ontologies, SKOS vocabularies, RDF structures and SHACL shapes for in-house and external content.',
+   agents:[], nov:4, cx:4, ready:3 , press:4 },
+ { id:'C2', name:'SSOT rules, constraints & logic', col:'--c2', short:'SSOT rules',
+   what:'EXT-001 to EXT-016 authored in the SSOT register as LKIF norms and SHACL shapes, validated by scenario tests, versioned through GOV-003 and compiled to OPA/Rego, JSON Schema and dbt.',
+   agents:[], nov:2, cx:3, ready:2 , press:3 },
+ { id:'C3', name:'Ingestion & identity pipelines', col:'--c3', short:'Ingestion',
+   what:'Change capture from SharePoint, allow-listed websites and third-party feeds; canonical identity (GOV-007) and format extraction.',
+   agents:['SharePoint Delta Agent','Web Crawl Agent','Feed Listener Agent','Identity Resolver','Format Extractor'], nov:2, cx:3, ready:3 , press:3 },
+ { id:'C4', name:'AI fabric enrichment & control', col:'--c4', short:'AI fabric',
+   what:'Classify, tag persona and job step, extract claims, mine jurisdiction and validity, detect PII and enforce entitlements.',
+   agents:['Content-Type Classifier','Persona & Job-Step Tagger','Claim Extractor','Jurisdiction & Validity Miner','PII & Sensitivity Detector','Entitlement Enforcer'], nov:5, cx:4, ready:3 , press:4 },
+ { id:'C5', name:'Mapping & publishing', col:'--c5', short:'Mapping',
+   what:'Concept mapping and rule binding to the ontologies, SHACL-validated RDF publishing with KGCL records, mapping drift detection.',
+   agents:['Concept Mapping Agent','Rule Binding Agent','SHACL Publisher','Mapping Drift Sentinel'], nov:4, cx:4, ready:4 , press:5 },
+ { id:'C6', name:'Faceted search & Sales Advisor', col:'--c6', short:'Advisor',
+   what:'Federated graph query → mappings → RDF content → precision extraction → assembly into persona briefs and machine packages, with decisions, orchestrated events and the MTBH grounding guard.',
+   agents:['Intent & RCB Agent','Federated Query Planner','Facet Navigator','Mapping Resolver','Precision Extractor','Brief Assembler','Machine Package Agent','Grounding Guard (MTBH)'], nov:5, cx:5, ready:3 , press:5 },
+ { id:'C7', name:'Value-gap monitoring & decision baseline', col:'--c7', short:'Value gaps',
+   what:'Desired outcomes bound to metric cards, job-step telemetry, value-gap monitoring, decision impact tracking, and the 48-question decision baseline.',
+   agents:['Outcome Binder','Job-Step Telemetry Agent','Value-Gap Monitor','Decision Impact Tracker'], nov:3, cx:3, ready:4 , press:4 },
+ { id:'C8', name:'Change, impact & causal analysis', col:'--c8', short:'Change & causal',
+   what:'Monitors on content, semantics and RDF structures; impact analysis, incremental refresh and cache invalidation; causal analysis of risk and opportunity; circuit breakers for all agents.',
+   agents:['Content Change Monitor','Semantic Change Monitor','RDF Structure Monitor','Impact Analyzer','Incremental Refresh Service','Cache Invalidation Agent','Causal Graph Builder','Effect Estimator','Risk & Opportunity Ranker','Counterfactual Explainer','Action Proposer'], nov:5, cx:4, ready:4 , press:5 },
+];
+// Component-level dependencies (what must exist before the component can be built)
+const CDEPS = { C1:[], C2:['C1'], C3:['C1','C2'], C4:['C3','C2'], C5:['C1','C2','C4'], C6:['C5','C2'], C7:['C1','C6'], C8:['C5','C6','C7'] };
+
+// Business value drivers
+const DRIVERS = {
+ vel:{ name:'Sales velocity', desc:'Shorter time from first question to signed client' },
+ win:{ name:'Win rate & deal quality', desc:'More first-draft approvals, fewer re-quotes and redlines' },
+ cmp:{ name:'Compliance exposure', desc:'Fewer unassessed jurisdictions, conflicts and penalties' },
+ ret:{ name:'Client retention & onboarding', desc:'Clean cut-over, no coverage gaps, fewer early escalations' },
+};
+
+// Core persona job steps (job J1 of each job study) with value-gap baselines from the advisor design
+// [id, persona, stage, job step, driver, desired outcome, unit, direction, target, baseline, tier-H questions, cause of the gap]
+const STEPS = [
+ ['CA-J1.1','CA','Discover','Understand what a PEO takes off my plate','vel','Minimize time to understand what a PEO covers','min',  'min',10,7.5,1,''],
+ ['CA-J1.2','CA','Qualify','Confirm we fit (size, industry, states)','vel','Minimize steps to confirm eligibility','steps','min',3,4,3,'Industry exclusions sit in an unmapped SharePoint list'],
+ ['CA-J1.3','CA','Evaluate','Compare total cost against our current stack','vel','Minimize time from first cost question to binding quote','days','min',10,16,2,'Census uploads fail validation 38% of the time'],
+ ['CA-J1.4','CA','Propose','See the co-employment split before signing','win','Maximize sessions with no follow-up on who does what','%','max',85,81,3,'Allocation briefs omit state-specific items'],
+ ['CA-J1.5','CA','Decide','Get sign-off from owners and finance','win','Maximize first-draft owner approval','%','max',80,64,2,'Owner package lacks the HR Specialist’s risk line'],
+ ['CA-J1.6','CA','Onboard','Move payroll without a missed paycheck','ret','Minimize cut-over errors per 100 employees','errors','min',0.5,0.4,3,''],
+ ['HR-J1.1','HR','Discover','Find where we carry compliance risk today','cmp','Minimize time to see where we carry risk','min','min',15,12,2,''],
+ ['HR-J1.2','HR','Qualify','Check coverage for every state we hire in','cmp','Maximize hiring states assessed','%','max',100,88,3,'Remote employees not resolved to a jurisdiction (GOV-007)'],
+ ['HR-J1.3','HR','Evaluate','Compare benefit plans employees will see','win','Minimize time to compare plans','min','min',20,34,2,'Two plan-comparison claims held as Candidate'],
+ ['HR-J1.4','HR','Propose','Map our handbook to PEO policy','cmp','Minimize handbook policies left unmapped','%','min',5,18,1,'Scanned handbooks fall below the EXT-002 confidence floor'],
+ ['HR-J1.5','HR','Decide','Show leadership the risk we remove','win','Maximize decisions with a risk brief attached','%','max',90,71,2,'Risk brief not linked into the owner package'],
+ ['HR-J1.6','HR','Onboard','Re-enroll employees with no coverage gap','ret','Minimize employees with a coverage gap per 1,000','per 1,000','min',0,1.2,3,'Carrier lead times are not in the content graph'],
+].map(r=>({id:r[0],p:r[1],stage:r[2],name:r[3],drv:r[4],out:r[5],unit:r[6],dir:r[7],target:r[8],base:r[9],H:r[10],cause:r[11]}));
+
+// Dependency strength of each job step on each component: 3 critical (the step's answers fail without it), 2 supporting, 1 measures or sustains
+const DEP = {
+ C1:{'CA-J1.1':2,'CA-J1.2':2,'CA-J1.3':2,'CA-J1.4':3,'CA-J1.5':2,'CA-J1.6':2,'HR-J1.1':3,'HR-J1.2':3,'HR-J1.3':2,'HR-J1.4':2,'HR-J1.5':2,'HR-J1.6':3},
+ C2:{'CA-J1.1':2,'CA-J1.2':3,'CA-J1.3':3,'CA-J1.4':2,'CA-J1.5':2,'CA-J1.6':2,'HR-J1.1':2,'HR-J1.2':3,'HR-J1.3':3,'HR-J1.4':2,'HR-J1.5':2,'HR-J1.6':2},
+ C3:{'CA-J1.1':2,'CA-J1.2':3,'CA-J1.3':2,'CA-J1.4':2,'CA-J1.5':1,'CA-J1.6':2,'HR-J1.1':2,'HR-J1.2':3,'HR-J1.3':2,'HR-J1.4':2,'HR-J1.5':1,'HR-J1.6':3},
+ C4:{'CA-J1.1':2,'CA-J1.2':2,'CA-J1.3':2,'CA-J1.4':2,'CA-J1.5':2,'CA-J1.6':1,'HR-J1.1':2,'HR-J1.2':2,'HR-J1.3':3,'HR-J1.4':3,'HR-J1.5':2,'HR-J1.6':1},
+ C5:{'CA-J1.1':2,'CA-J1.2':3,'CA-J1.3':3,'CA-J1.4':2,'CA-J1.5':2,'CA-J1.6':2,'HR-J1.1':2,'HR-J1.2':2,'HR-J1.3':3,'HR-J1.4':3,'HR-J1.5':2,'HR-J1.6':2},
+ C6:{'CA-J1.1':3,'CA-J1.2':3,'CA-J1.3':3,'CA-J1.4':3,'CA-J1.5':3,'CA-J1.6':3,'HR-J1.1':3,'HR-J1.2':3,'HR-J1.3':3,'HR-J1.4':3,'HR-J1.5':3,'HR-J1.6':3},
+ C7:{'CA-J1.1':1,'CA-J1.2':1,'CA-J1.3':1,'CA-J1.4':1,'CA-J1.5':2,'CA-J1.6':1,'HR-J1.1':1,'HR-J1.2':1,'HR-J1.3':1,'HR-J1.4':1,'HR-J1.5':2,'HR-J1.6':1},
+ C8:{'CA-J1.1':1,'CA-J1.2':1,'CA-J1.3':2,'CA-J1.4':1,'CA-J1.5':1,'CA-J1.6':1,'HR-J1.1':1,'HR-J1.2':2,'HR-J1.3':1,'HR-J1.4':1,'HR-J1.5':1,'HR-J1.6':1},
+};
+
+// ===================== ROADMAP =====================
+const PPH = [
+ { id:'P0', name:'Keel foundations', goal:'In five weeks: model the 12 core job steps, publish minimum-viable isp-sal and isp-cnt, release EXT-001 to EXT-008, write the metric cards and stand up ingestion on one SharePoint library.' },
+ { id:'P1', name:'Content graph & AI fabric', goal:'RDF for in-house content and three external sources, AI fabric enrichment and fail-closed access control, mappings and SHACL publishing. Read-only briefs for two BPA teams before the holidays.' },
+ { id:'P2', name:'Faceted search & advisor', goal:'Search, extraction and assembly built against interface contracts from week 8, so the advisor goes live for both personas in early March with the circuit breaker on its decision path.' },
+ { id:'P3', name:'Measure, monitor, learn', goal:'Change monitors, incremental refresh, breakers on all 38 agents and the first value-gap and causal readings, running by the end of March. Outcome attainment is reviewed at the end of Q2.' },
+];
+// Compressed plan: one squad per component set, contract-first interfaces, minimum-viable scope.
+// [id, phase, component, lifecycle stage, name, weeks, deps, deliverables, closes gap in job steps]
+const T = [
+ ['C1-01','P0','C1','Discover','Sales domain model for the 12 core job steps with sales leaders and BPAs',2,[],'Job maps, desired outcomes and interface contracts for every component'],
+ ['C2-01','P0','C2','Define','Extend the SSOT register for EXT rules (14-field schema, LKIF + SHACL forms)',1,[],'Rule template; GOV-003 promotion path'],
+ ['C1-02','P0','C1','Design','Publish minimum-viable isp-sal 1.0 and isp-cnt 1.0',3,['C1-01'],'Core classes Released; extensions queued for Q2'],
+ ['C1-03','P0','C1','Develop','SKOS vocabularies: content types, pipeline stages, sensitivity labels',2,['C1-01'],'Three Released concept schemes'],
+ ['C7-01','P0','C7','Define','Metric definition cards for the 36 core-step outcomes',3,['C1-01'],'Metric cards bound to outcomes (MET-014)'],
+ ['C2-02','P0','C2','Develop','Author and release EXT-001 to EXT-008 with scenario tests',3,['C2-01'],'Ingest, classify and control rules Released'],
+ ['C3-01','P0','C3','Develop','SharePoint Delta Agent, Identity Resolver and Format Extractor on one library',3,['C1-01'],'Built against the identity contract; canonical URIs'],
+ ['BF-0','P0','BUF','','Phase buffer',1,['C1-02','C1-03','C2-02','C3-01','C7-01']],
+ ['M-0','P0','GATE','','G0 · Keel released',0,['BF-0'],'Minimum-viable ontologies Released; 12 core job steps with metric cards; EXT-001–008 pass scenario tests'],
+
+ ['C1-04','P1','C1','Develop','RDF structures and SHACL shapes for in-house content',3,['C1-02'],'Content objects, chunks and claims as RDF'],
+ ['C1-05','P1','C1','Develop','RDF structures for three external sources and two feeds',2,['C1-04'],'External content with usage policies'],
+ ['C2-03','P1','C2','Develop','Release EXT-009 and EXT-010 (mapping and publishing rules)',2,['C2-02'],'Mapping confidence and publish gates Released'],
+ ['C3-02','P1','C3','Develop','Web Crawl and Feed Listener agents; regulatory and firmographic feeds',3,['C3-01'],'Allow-listed crawl; normalized feed items'],
+ ['C3-03','P1','C3','Develop','Carrier lead-time and remote-worksite jurisdiction sources',2,['C3-02'],'Closes HR-J1.2 and HR-J1.6 source gaps','HR-J1.2 HR-J1.6'],
+ ['C4-01','P1','C4','Develop','Content-Type Classifier and Persona & Job-Step Tagger (EXT-002 floor)',3,['C1-03','C3-01'],'Typed, persona-tagged content'],
+ ['C4-02','P1','C4','Develop','Claim Extractor and Jurisdiction & Validity Miner',3,['C4-01','C1-04'],'Atomic claims with spans, jurisdictions and validity'],
+ ['C4-03','P1','C4','Develop','PII & Sensitivity Detector and Entitlement Enforcer, with red-team test',3,['C3-01','C2-02'],'Fail-closed access control (EXT-003, EXT-006)'],
+ ['C4-04','P1','C4','Develop','OCR for scanned handbooks above the EXT-002 confidence floor',2,['C4-01'],'Closes the HR-J1.4 gap','HR-J1.4'],
+ ['C5-01','P1','C5','Develop','Concept Mapping and Rule Binding agents (GOV-006, EXT-008, EXT-009)',3,['C2-03','C1-04'],'Typed correspondences; claims bound to SSOT rules'],
+ ['C5-02','P1','C5','Deliver','SHACL Publisher with KGCL records; Mapping Drift Sentinel',2,['C1-04','C2-03'],'Validated RDF publishing; drift flags'],
+ ['C5-03','P1','C5','Develop','Eligibility, quote and rate mappings (MAP-ELG-01, MAP-QTE-03, MAP-RTE-01)',2,['C5-01'],'Closes CA-J1.2 and CA-J1.3 mapping gaps','CA-J1.2 CA-J1.3'],
+ ['C6-01','P1','C6','Deliver','Read-only persona briefs for two BPA teams',2,['C5-02','C4-03','C4-02'],'First briefs in use; feedback loop'],
+ ['BF-1','P1','BUF','','Phase buffer (covers the year-end holidays)',2,['C1-05','C3-03','C4-04','C5-03','C6-01']],
+ ['M-1','P1','GATE','','G1 · Content graph live',0,['BF-1'],'Core content published; SHACL pass ≥ 98%; 0 PII leaks in red team; classification precision ≥ 0.90'],
+
+ ['C2-04','P2','C2','Develop','Release EXT-011 to EXT-014; persona brief templates versioned in the SSOT',2,['C2-03'],'Search, extraction, assembly and outcome rules Released'],
+ ['C6-02','P2','C6','Design','Intent & RCB agent and Federated Query Planner over a virtual graph of CRM and quoting',3,['C1-02','C2-04'],'Context bundles; scoped queries with no data copies'],
+ ['C6-03','P2','C6','Develop','Facet Navigator, Mapping Resolver and Precision Extractor',3,['C6-02','C5-01'],'Only the claims that answer the job step'],
+ ['C6-04','P2','C6','Develop','Brief Assembler and Machine Package Agent; decision options and orchestrated events',3,['C6-03'],'Cited briefs; JSON-LD packages; isp-dec decisions'],
+ ['C6-05','P2','C6','Develop','Grounding Guard and AI circuit breaker service (MTBH metrology, states, fallbacks)',2,['C6-02'],'Breakers on the decision path'],
+ ['C7-02','P2','C7','Define','Decision-question baseline: golden answers for the 48 questions, SME sign-off',3,['C7-01'],'Frozen baseline records for QbD'],
+ ['C7-03','P2','C7','Develop','Outcome Binder: every decision bound to a metric card',2,['C6-02','C7-01'],'Built against the isp-dec decision contract'],
+ ['C6-06','P2','C6','Deliver','Advisor live for both personas across all six pipeline stages',2,['C6-04','C6-05','C7-02','C7-03','M-1'],'Advisor in production; closes CA-J1.4, CA-J1.5, HR-J1.5 assembly gaps','CA-J1.4 CA-J1.5 HR-J1.5'],
+ ['BF-2','P2','BUF','','Phase buffer',2,['C6-06']],
+ ['M-2','P2','GATE','','G2 · Advisor live',0,['BF-2'],'Grounding ≥ 0.90; MTBH trip rate ≤ 2%; 100% of decisions bound; P95 answer ≤ 4 s'],
+
+ ['C2-05','P3','C2','Develop','Release EXT-015 and EXT-016 (value-gap, causal and refresh rules)',2,['C2-04'],'Measurement and refresh rules Released'],
+ ['C7-04','P3','C7','Run','Job-Step Telemetry, Value-Gap Monitor, Decision Impact Tracker; outcome importance survey',3,['C7-03'],'Telemetry from the BPA pilot onward'],
+ ['C8-01','P3','C8','Develop','Content, Semantic and RDF Structure monitors',3,['C5-02','C3-02'],'Change events from every upstream layer'],
+ ['C8-02','P3','C8','Develop','Impact Analyzer, Incremental Refresh and Cache Invalidation',3,['C8-01','C2-05'],'Only affected answers re-run; stale briefs withdrawn'],
+ ['C8-03','P3','C8','Deliver','Circuit breakers extended to all 38 agents; nightly decision-question probes',2,['C8-02','C6-05','C7-02'],'Integrity monitored on every agent'],
+ ['C8-04','P3','C8','Develop','Causal family: graph builder, effect estimator, risk ranker, counterfactual explainer, action proposer',3,['C7-04','C2-05'],'First risk and opportunity findings (preliminary)'],
+ ['C7-05','P3','C7','Run','Value-gap dashboard per persona job step',2,['C7-04'],'Desired versus delivered for the 12 core steps'],
+ ['BF-3','P3','BUF','','Project buffer',1,['C8-03','C8-04','C7-05','M-2']],
+ ['M-3','P3','GATE','','G3 · Learning loop running',0,['BF-3'],'Monitors live; affected briefs withdrawn ≤ 1 h after a change; breakers on all 38 agents; first value-gap readings for all 12 core steps'],
+].map(r=>({id:r[0],ph:r[1],ws:r[2],life:r[3],name:r[4],dur:r[5],deps:r[6],deliv:r[7]||'',closes:r[8]?r[8].split(' '):[]}));
+
+// Levers that make the end-of-Q1 date possible, and what moves to Q2 2027
+const LEVERS = [
+ ['Start on 19 October 2026','Two weeks to approve and staff instead of starting in November.'],
+ ['One squad per component set','Eight squads work in parallel, plus ontology stewards, rule owners and SMEs for golden answers.'],
+ ['Contract-first interfaces','C1-01 publishes the identity, content, claim and decision contracts in week 2, so downstream agents are built against them instead of waiting for the full upstream build.'],
+ ['Minimum-viable scope','The 12 core job steps, one SharePoint library family, three external sources and two feeds. Everything else is queued for Q2.'],
+ ['Advise before Act','Agents that can act on their own start in Advise mode with human approval; autonomy is raised after the circuit breakers prove MTBH.'],
+];
+const DEFERRED = [
+ 'Related jobs J2 and J3 for both personas: 48 of the 84 desired outcomes',
+ 'Remaining SharePoint libraries, websites and feeds beyond the first set',
+ 'Ontology extensions beyond the minimum-viable isp-sal and isp-cnt; isp-vg causal classes beyond the first findings',
+ 'Act-mode autonomy for advisory agents',
+ 'Causal effect sizes with confidence intervals (needs a quarter of telemetry)',
+ 'Outcome attainment target (≥ 80% of job steps meeting their outcome), reviewed at end of Q2 2027',
+];
+(function(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const BY = {}; T.forEach(t=>BY[t.id]=t);
+const SUCC = {}; T.forEach(t=>SUCC[t.id]=[]); T.forEach(t=>t.deps.forEach(d=>SUCC[d].push(t.id)));
+const CBY = {}; COMPS.forEach(c=>CBY[c.id]=c);
+const SBY = {}; STEPS.forEach(s=>SBY[s.id]=s);
+const START = new Date(2026,9,19); // Mon 19 Oct 2026
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const wkDate = w => new Date(START.getTime() + Math.round(w*7)*86400000);
+const fmtD = w => { const d = wkDate(w); return d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear(); };
+const fmtM = w => { const d = wkDate(w); return MON[d.getMonth()]+' '+d.getFullYear(); };
+const r1 = v => Math.round(v*10)/10;
+
+// ---------- scheduling ----------
+function schedule(slipPct, extra){ // extra: {taskId: weeks}
+  const f = 1 + (slipPct||0)/100, out = {}, base = (slipPct||extra) ? PLAN0 : null;
+  T.forEach(t=>{
+    const s = Math.max(0, ...t.deps.map(d=>out[d].e));
+    let dur = (t.ws==='BUF'||t.ws==='GATE') ? t.dur : t.dur*f + ((extra&&extra[t.id])||0);
+    if(t.ws==='BUF' && base){
+      const planned = Math.max(0, ...t.deps.map(d=>base[d].e));
+      const used = Math.max(0, s - planned);
+      out[t.id] = { s, e: s + Math.max(0, t.dur - used), used }; return;
+    }
+    out[t.id] = { s, e: s + dur, used:0 };
+  });
+  return out;
+}
+const PLAN0 = schedule(0);
+const END0 = PLAN0['M-3'].e;
+(function(){
+  const lf = {};
+  [...T].reverse().forEach(t=>{ const su = SUCC[t.id]; lf[t.id] = su.length ? Math.min(...su.map(s=>lf[s] - BY[s].dur)) : END0; });
+  T.forEach(t=>{ t.slack = r1(lf[t.id] - t.dur - PLAN0[t.id].s); t.crit = t.slack <= 0; });
+})();
+const BUFTOTAL = T.filter(t=>t.ws==='BUF').reduce((a,t)=>a+t.dur,0);
+const compSpan = cid => { const ts = T.filter(t=>t.ws===cid); return { s: Math.min(...ts.map(t=>PLAN0[t.id].s)), e: Math.max(...ts.map(t=>PLAN0[t.id].e)), ts }; };
+
+// ---------- value & risk model ----------
+const W = { vel:3, win:3, cmp:3, ret:3 };
+const gapOf = s => { let g = s.dir==='min' ? (s.target===0 ? (s.base>0?1:0) : (s.base-s.target)/s.target) : (s.target-s.base)/s.target; return Math.min(1, Math.max(0, g)); };
+const stepValue = s => W[s.drv] * 3 * (1 + gapOf(s)) * (1 + s.H/4);
+function upstream(cid, acc=new Set()){ CDEPS[cid].forEach(d=>{ if(!acc.has(d)){ acc.add(d); upstream(d, acc); } }); return acc; }
+const depScore = n => n===0?1 : n===1?2 : n<=3?3 : n<=5?4 : 5;
+function scores(){
+  const maxP = STEPS.reduce((a,s)=>a+3*stepValue(s),0);
+  return COMPS.map(c=>{
+    const raw = STEPS.reduce((a,s)=>a + DEP[c.id][s.id]*stepValue(s), 0);
+    const I = Math.max(1, r1(5*raw/maxP));
+    const ds = depScore(upstream(c.id).size);
+    const L = r1((c.nov + c.cx + c.ready + ds + c.press)/5);
+    const R = r1(L*I);
+    const top = STEPS.filter(s=>DEP[c.id][s.id]===3).sort((a,b)=>stepValue(b)-stepValue(a)).slice(0,3);
+    return { c, raw: Math.round(raw), I, L, ds, R, band: R>=15?'hi':R>=8?'md':'lo', top };
+  });
+}
+const bandName = b => ({hi:'High',md:'Medium',lo:'Low'})[b];
+
+// ---------- header & KPIs ----------
+$('tbStart').textContent = fmtD(0);
+$('tbEnd').textContent = fmtD(END0) + ' · wk ' + END0;
+$('tbBuf').textContent = BUFTOTAL + ' wk (' + Math.round(100*BUFTOTAL/END0) + '% of plan)';
+$('bufTxt').textContent = BUFTOTAL + ' weeks, ' + Math.round(100*BUFTOTAL/END0) + '% of the ' + END0 + '-week plan';
+function renderKPIs(){
+  const S = scores().sort((a,b)=>b.R-a.R), hi = S.filter(x=>x.band==='hi').length;
+  const atStake = STEPS.reduce((a,s)=>a+stepValue(s),0);
+  $('kpis').innerHTML = [
+    ['', fmtM(END0), 'Learning loop running (G3)'],
+    ['', Math.round(END0/4.345)+' mo', END0+' weeks across 4 phases'],
+    ['bufk', BUFTOTAL+' wk', 'Buffer held: '+Math.round(100*BUFTOTAL/END0)+'% of the plan'],
+    ['', fmtM(PLAN0['M-2'].s), 'Advisor live for both personas (G2)'],
+    [hi?'bad':'', esc(S[0].c.short)+' · '+S[0].R, 'Highest risk component (score of 25); '+hi+' rated high'],
+    ['', Math.round(atStake), 'Value-at-stake points across the 12 core job steps'],
+  ].map(([c,b,s])=>`<div class="kpi ${c}"><b>${b}</b><span>${s}</span></div>`).join('');
+}
+
+// ---------- overview ----------
+function renderPhaseStrip(){
+  const Wd = 1180, L = 16, R = 30, H = 32 + PPH.length*34 + 34, sc = (Wd-L-R-150)/END0, x = w => L + w*sc;
+  let s = `<svg viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="Four overlapping phases with buffers and gates">
+    <defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--buf-soft)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--buf)" stroke-width="2"/></pattern></defs>`;
+  for(let w=0; w<=END0+1; w++){ const d = wkDate(w), dp = wkDate(w-1);
+    if(w===0 || d.getMonth()!==dp.getMonth()) s += `<line x1="${x(w)}" y1="18" x2="${x(w)}" y2="${H-30}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${x(w)+4}" y="14" font-size="11" fill="var(--muted)">${MON[d.getMonth()]}${d.getMonth()===0||w===0?' '+d.getFullYear():''}</text>`; }
+  const q1 = (new Date(2027,2,31) - START)/(7*86400000);
+  s += `<line x1="${x(q1)}" y1="18" x2="${x(q1)}" y2="${H-30}" stroke="var(--crit)" stroke-width="1.5"/><text x="${x(q1)+4}" y="${H-34}" font-size="10.5" fill="var(--crit)">31 Mar 2027</text>`;
+  PPH.forEach((ph,i)=>{
+    const ts = T.filter(t=>t.ph===ph.id), s0 = Math.min(...ts.map(t=>PLAN0[t.id].s)), e0 = Math.max(...ts.map(t=>PLAN0[t.id].e));
+    const buf = ts.find(t=>t.ws==='BUF'), gate = ts.find(t=>t.ws==='GATE'), bs = PLAN0[buf.id].s, y = 26 + i*34;
+    s += `<rect x="${x(s0)}" y="${y}" width="${x(bs)-x(s0)}" height="24" fill="var(--accent-soft)" stroke="var(--accent)"/><rect x="${x(bs)}" y="${y}" width="${x(e0)-x(bs)}" height="24" fill="url(#hatch)" stroke="var(--buf)"/>`;
+    s += `<path d="M${x(e0)} ${y-2} l7 14 l-7 14 l-7 -14z" fill="var(--ink)"/>`;
+    s += `<text x="${x(s0)+6}" y="${y+16}" font-size="11.5" font-weight="600" fill="var(--ink)">${ph.id} ${esc(ph.name)}</text>`;
+    s += `<text x="${x(e0)+12}" y="${y+16}" font-size="10.5" fill="var(--muted)">${esc(gate.name.split(' · ')[0])} · ${fmtD(e0)}</text>`;
+  });
+  s += `<g font-size="10.5" fill="var(--muted)"><rect x="${L}" y="${H-20}" width="14" height="10" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="${L+20}" y="${H-11}">phase work</text><rect x="${L+110}" y="${H-20}" width="14" height="10" fill="url(#hatch)" stroke="var(--buf)"/><text x="${L+130}" y="${H-11}">buffer</text><path d="M${L+200} ${H-22} l5 7 l-5 7 l-5 -7z" fill="var(--ink)"/><text x="${L+212}" y="${H-11}">gate</text></g>`;
+  $('phaseStrip').innerHTML = s + '</svg>';
+}
+function renderCards(){
+  const S = scores();
+  $('ccards').innerHTML = S.map(x=>{ const sp = compSpan(x.c.id);
+    return `<div class="cc" style="--c:var(${x.c.col})"><div class="lab">${x.c.id} · ${x.c.agents.length ? x.c.agents.length+' agents' : 'stewarded assets'}</div><h3>${esc(x.c.name)}</h3>
+      <p>${esc(x.c.what)}</p>
+      <div class="dates mono" style="font-size:11.5px;color:var(--muted)">${fmtM(sp.s)} → ${fmtM(sp.e)} · ${sp.ts.length} work items</div>
+      <div class="row"><span class="band ${x.band}">Risk ${x.R}</span><span class="pill mute">L ${x.L} × I ${x.I}</span><span class="pill mute">${x.raw} value pts</span></div></div>`; }).join('');
+}
+
+// ---------- roadmap ----------
+const wsKeys = COMPS.map(c=>c.id).concat(['BUF','GATE']);
+const wsName = k => k==='BUF' ? 'Buffers' : k==='GATE' ? 'Gates' : CBY[k].id+' '+CBY[k].short;
+const wsCol = k => k==='BUF' ? '--buf' : k==='GATE' ? '--ink' : CBY[k].col;
+const wsState = new Set(wsKeys);
+let selected = 'C6-06', slip = 0, critOnly = false, showDeps = true;
+function renderWsChips(){
+  $('wsChips').innerHTML = wsKeys.map(k=>`<button type="button" class="chip" data-ws="${k}" style="--c:var(${wsCol(k)})" aria-pressed="${wsState.has(k)}"><i></i>${esc(wsName(k))}</button>`).join('');
+  $('wsChips').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{ const k=b.dataset.ws; wsState.has(k)?wsState.delete(k):wsState.add(k); renderWsChips(); renderGantt(); }));
+}
+function renderGantt(){
+  const P = schedule(slip), endW = Math.max(P['M-3'].e, END0);
+  const LBL = 330, RH = 22, TOP = 34, PX = Math.max(9, Math.floor((($('gantt').clientWidth||900) - LBL - 150)/Math.max(P['M-3'].e, END0)));
+  const vis = T.filter(t=>wsState.has(t.ws) && (!critOnly || t.crit));
+  const rows = []; PPH.forEach(ph=>{ const ts = vis.filter(t=>t.ph===ph.id); if(ts.length){ rows.push({hdr:ph}); ts.forEach(t=>rows.push({t})); } });
+  const Wd = LBL + Math.ceil(endW*PX) + 130, H = TOP + rows.length*RH + 10, x = w => LBL + w*PX, rowY = {};
+  let s = `<svg class="gantt" viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="Gantt chart of the component build-out with dependencies and buffers">
+    <defs><pattern id="hatch2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--buf-soft)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--buf)" stroke-width="2"/></pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--faint)"/></marker>
+    <marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>`;
+  let firstLbl = true;
+  for(let w=0; w<=endW+1; w++){ const d = wkDate(w), dp = wkDate(w-1);
+    if(w===0 || d.getMonth()!==dp.getMonth()){ const ny = d.getMonth()===0, lbl = !(w===0 && d.getDate()>10);
+      s += `<line x1="${x(w)}" y1="${TOP-12}" x2="${x(w)}" y2="${H}" stroke="var(--line)" ${ny?'':'stroke-dasharray="2 3"'}/>`;
+      if(lbl){ s += `<text x="${x(w)+3}" y="${TOP-16}" font-size="10" fill="var(--muted)">${MON[d.getMonth()]}${ny||firstLbl?' '+d.getFullYear():''}</text>`; firstLbl = false; } } }
+  const q1 = (new Date(2027,2,31) - START)/(7*86400000);
+  s += `<line x1="${x(q1)}" y1="${TOP-12}" x2="${x(q1)}" y2="${H}" stroke="var(--crit)" stroke-width="1.5"/><text x="${x(q1)+4}" y="${TOP-2}" font-size="10" fill="var(--crit)">31 Mar 2027</text>`;
+  let y = TOP, lines = '', hi = '';
+  rows.forEach(r=>{
+    if(r.hdr){ s += `<rect x="0" y="${y}" width="${Wd}" height="${RH}" fill="var(--sunk)"/><text x="8" y="${y+15}" font-size="11.5" font-weight="600" fill="var(--ink)">${r.hdr.id} · ${esc(r.hdr.name)}</text>`; }
+    else { const t = r.t, p = P[t.id]; rowY[t.id] = y + RH/2;
+      const nm = t.name.length > 38 ? t.name.slice(0,37)+'…' : t.name;
+      s += `<g class="row" data-id="${t.id}"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${RH}" fill="transparent"/><text x="8" y="${y+15}" font-size="10.5" fill="var(--muted)">${t.id}</text><text x="56" y="${y+15}" font-size="11" fill="var(--ink-2)">${esc(nm)}</text>`;
+      if(t.ws==='GATE'){ const gx = x(p.s); s += `<path class="bar" d="M${gx} ${y+3} l8 8 l-8 8 l-8 -8z" fill="var(--ink)"/><text x="${gx+12}" y="${y+15}" font-size="10.5" fill="var(--ink)">${fmtD(p.s)}</text>`; }
+      else if(t.ws==='BUF'){ const bx = x(p.s), full = t.dur*PX, bw = Math.max(0,p.e-p.s)*PX;
+        s += `<rect x="${bx}" y="${y+5}" width="${full}" height="12" fill="none" stroke="var(--buf)" stroke-dasharray="3 2"/>`;
+        if(p.used>0) s += `<rect x="${bx-Math.min(full,p.used*PX)}" y="${y+5}" width="${Math.min(full,p.used*PX)}" height="12" fill="${p.used>=t.dur?'var(--crit)':'var(--buf)'}" opacity=".35"/>`;
+        s += `<rect class="bar" x="${bx}" y="${y+5}" width="${Math.max(bw,1)}" height="12" fill="url(#hatch2)"/><text x="${bx+full+6}" y="${y+15}" font-size="10" fill="var(--buf)">${r1(Math.max(0,p.e-p.s))} of ${t.dur} wk left</text>`; }
+      else { s += `<rect class="bar ${t.id===selected?'sel':''}" x="${x(p.s)}" y="${y+4}" width="${Math.max(2,(p.e-p.s)*PX)}" height="14" fill="var(${CBY[t.ws].col})" ${t.crit?'stroke="var(--crit)" stroke-width="1.5"':''}/>`;
+        if(t.closes.length) s += `<circle cx="${x(p.e)+6}" cy="${y+11}" r="3.5" fill="var(--good)"/>`; }
+      s += `</g>`; }
+    y += RH;
+  });
+  if(showDeps){ vis.forEach(t=>t.deps.forEach(d=>{ if(rowY[d]===undefined||rowY[t.id]===undefined) return;
+      const x1 = x(P[d].e), y1 = rowY[d], x2 = x(P[t.id].s), y2 = rowY[t.id], mid = Math.max(x1+4, x2-6), path = `M${x1} ${y1} H${mid} V${y2} H${x2-1}`;
+      if(t.id===selected||d===selected) hi += `<path d="${path}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#arrS)"/>`;
+      else lines += `<path d="${path}" fill="none" stroke="var(--faint)" stroke-width=".7" opacity=".55" marker-end="url(#arr)"/>`; }));
+    s = s.replace('<g class="row"', `<g>${lines}</g><g class="row"`); s += hi; }
+  $('gantt').innerHTML = s + '</svg>';
+  $('gantt').querySelectorAll('.row').forEach(g=>g.addEventListener('click',()=>{ selected = g.dataset.id; renderGantt(); renderDetail(); }));
+  renderFever(P);
+}
+function renderDetail(){
+  const t = BY[selected], p = schedule(slip)[t.id], ph = PPH.find(x=>x.id===t.ph);
+  const link = id => `<div><button type="button" class="linkbtn" data-go="${id}">${id}</button> <span style="color:var(--muted)">${esc(BY[id].name)}</span></div>`;
+  const comp = CBY[t.ws];
+  $('detail').innerHTML = `<div class="lab">${t.id}${comp?' · '+esc(comp.name):''}${t.life?' · '+t.life:''}</div><h3>${esc(t.name)}</h3>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${t.crit?'<span class="pill crit">Critical path</span>':`<span class="pill mute">${t.slack} wk slack</span>`}${t.ws==='BUF'?'<span class="pill buf">Buffer</span>':''}</div>
+    <dl><dt>Phase</dt><dd>${ph.id} · ${esc(ph.name)}</dd><dt>Dates</dt><dd class="mono" style="font-size:12px">${fmtD(p.s)} → ${fmtD(p.e)}</dd>
+      <dt>Duration</dt><dd>${t.ws==='GATE'?'Gate':r1(p.e-p.s)+' wk'}</dd>${t.ws==='BUF'?`<dt>Consumed</dt><dd>${r1(p.used)} of ${t.dur} wk</dd>`:''}
+      ${t.deliv?`<dt>${t.ws==='GATE'?'Criteria':'Delivers'}</dt><dd>${esc(t.deliv)}</dd>`:''}
+      ${t.closes.length?`<dt>Closes gaps</dt><dd>${t.closes.map(id=>`${id} · ${esc(SBY[id].name)}`).join('<br>')}</dd>`:''}</dl>
+    <div class="lab">Depends on</div><div style="display:flex;flex-direction:column;gap:3px;font-size:12.5px">${t.deps.length?t.deps.map(link).join(''):'<span style="color:var(--muted)">Program start</span>'}</div>
+    <div class="lab">Unlocks</div><div style="display:flex;flex-direction:column;gap:3px;font-size:12.5px">${SUCC[t.id].length?SUCC[t.id].map(link).join(''):'<span style="color:var(--muted)">End of program</span>'}</div>`;
+  $('detail').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{ selected=b.dataset.go; wsState.add(BY[selected].ws); renderWsChips(); renderGantt(); renderDetail(); }));
+}
+function renderFever(P){
+  $('fever').innerHTML = T.filter(t=>t.ws==='BUF').map(t=>{ const p = P[t.id], pct = Math.min(100, Math.round(100*p.used/t.dur)), cls = pct>=67?'red':pct>=34?'amber':'';
+    const gate = T.find(g=>g.ws==='GATE' && g.deps.includes(t.id)), moved = P[gate.id].s - PLAN0[gate.id].s;
+    return `<div class="fv"><div class="t">${t.id} · ${t.ph}</div><b>${pct}%</b><div class="bar"><i class="${cls}" style="width:${pct}%"></i></div><small>${r1(p.used)} wk of slip into a ${t.dur} wk buffer</small><small>${esc(gate.name.split(' · ')[0])}: ${moved>0.05?`<span style="color:var(--crit)">slips ${r1(moved)} wk</span>`:'holds'} · ${fmtM(P[gate.id].s)}</small></div>`; }).join('');
+}
+$('critOnly').addEventListener('change', e=>{ critOnly = e.target.checked; renderGantt(); });
+$('showDeps').addEventListener('change', e=>{ showDeps = e.target.checked; renderGantt(); });
+$('slip').addEventListener('input', e=>{ slip = +e.target.value; $('slipVal').textContent = slip+'%'; renderGantt(); renderDetail(); });
+
+// ---------- impact & risk ----------
+function renderWeights(){
+  $('weights').innerHTML = Object.entries(DRIVERS).map(([k,d])=>`<div class="wt"><span class="v" id="wv-${k}">${W[k]}</span><b>${esc(d.name)}</b><div class="hint" style="margin:2px 0 6px">${esc(d.desc)}</div><input type="range" min="1" max="5" step="1" value="${W[k]}" data-k="${k}" aria-label="Weight for ${esc(d.name)}"></div>`).join('');
+  $('weights').querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{ W[i.dataset.k] = +i.value; $('wv-'+i.dataset.k).textContent = i.value; renderRisk(); renderKPIs(); renderCards(); renderDep(); renderImpact(); }));
+}
+function renderRisk(){
+  const S = scores();
+  const Sz = 400, M = 40, cell = (Sz-M-10)/5;
+  let s = `<svg viewBox="0 0 ${Sz} ${Sz}" role="img" aria-label="Risk matrix of likelihood against impact for the eight components">`;
+  for(let i=0;i<5;i++) for(let j=0;j<5;j++){ const l = j+1, im = i+1, v = l*im, fill = v>=15?'var(--crit-soft)':v>=8?'var(--warn-soft)':'var(--good-soft)';
+    s += `<rect x="${M+i*cell}" y="${10+(4-j)*cell}" width="${cell-2}" height="${cell-2}" fill="${fill}"/>`; }
+  for(let k=1;k<=5;k++){ s += `<text x="${M+(k-.5)*cell}" y="${Sz-14}" text-anchor="middle" font-size="11" fill="var(--muted)">${k}</text><text x="${M-10}" y="${10+(5-k+.5)*cell+4}" text-anchor="end" font-size="11" fill="var(--muted)">${k}</text>`; }
+  s += `<text x="${M+2.5*cell}" y="${Sz-1}" text-anchor="middle" font-size="11" fill="var(--ink-2)">Impact →</text><text x="12" y="${10+2.5*cell}" text-anchor="middle" font-size="11" fill="var(--ink-2)" transform="rotate(-90 12 ${10+2.5*cell})">Likelihood →</text>`;
+  const placed = {};
+  S.forEach(x=>{ const cx = M + (x.I-.5)*cell, cy = 10 + (5 - x.L + .5)*cell; const key = Math.round(cx/14)+'-'+Math.round(cy/14); const off = (placed[key]=(placed[key]||0)+1)-1;
+    s += `<g><circle cx="${cx+off*14}" cy="${cy-off*6}" r="13" fill="var(${x.c.col})" stroke="var(--paper)" stroke-width="2"/><text x="${cx+off*14}" y="${cy-off*6+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--paper)">${x.c.id}</text></g>`; });
+  $('riskMatrix').innerHTML = s + '</svg>';
+  const sorted = [...S].sort((a,b)=>b.R-a.R);
+  $('riskTbl').innerHTML = `<thead><tr><th>Component</th><th class="num">Novelty</th><th class="num">Complexity</th><th class="num">Readiness gap</th><th class="num">Dependency</th><th class="num">Schedule pressure</th><th class="num">L</th><th class="num">Value pts</th><th class="num">I</th><th class="num">Risk</th><th>Most exposed job steps</th></tr></thead><tbody>`
+    + sorted.map(x=>`<tr><td style="border-left:4px solid var(${x.c.col});min-width:190px"><b>${x.c.id}</b> ${esc(x.c.name)}</td><td class="num">${x.c.nov}</td><td class="num">${x.c.cx}</td><td class="num">${x.c.ready}</td><td class="num">${x.ds}</td><td class="num">${x.c.press}</td><td class="num"><b>${x.L}</b></td><td class="num">${x.raw}</td><td class="num"><b>${x.I}</b></td><td class="num"><span class="band ${x.band}">${x.R}</span></td><td style="font-size:12px;min-width:140px">${x.top.map(s=>s.id).join(', ')||'measures and sustains'}</td></tr>`).join('') + '</tbody>';
+}
+function renderImpact(){
+  const cid = $('impComp').value, scn = $('impScn').value, c = CBY[cid], S = scores(), me = S.find(x=>x.c.id===cid);
+  const steps = STEPS.filter(s=>DEP[cid][s.id]>=2).sort((a,b)=>DEP[cid][b.id]-DEP[cid][a.id] || stepValue(b)-stepValue(a));
+  const crit = steps.filter(s=>DEP[cid][s.id]===3);
+  const hit = scn==='q' ? crit : steps;
+  const valLost = Math.round(hit.reduce((a,s)=>a + stepValue(s)*DEP[cid][s.id]/3, 0));
+  const drvs = {}; hit.forEach(s=>drvs[s.drv]=(drvs[s.drv]||0)+stepValue(s)*DEP[cid][s.id]/3);
+  const dq = hit.length*4, dqH = hit.reduce((a,s)=>a+s.H,0);
+  let sched = '';
+  if(scn!=='q'){
+    const ts = T.filter(t=>t.ws===cid), last = ts.reduce((a,t)=>PLAN0[t.id].e>PLAN0[a.id].e?t:a, ts[0]);
+    const P = schedule(0, {[last.id]: +scn});
+    const gates = T.filter(t=>t.ws==='GATE').map(g=>({g, d: r1(P[g.id].s-PLAN0[g.id].s)}));
+    const delayed = COMPS.filter(k=>k.id!==cid && T.some(t=>t.ws===k.id && P[t.id].s - PLAN0[t.id].s > 0.05));
+    const bufs = T.filter(t=>t.ws==='BUF' && P[t.id].used>0).map(b=>`${b.id} uses ${r1(P[b.id].used)} of ${b.dur} wk`);
+    sched = `<div class="lab">Schedule</div><ul>
+      <li>${esc(last.id)} (${esc(last.name)}) finishes ${scn} weeks late.</li>
+      <li>${bufs.length?esc(bufs.join('; ')):'No buffer is touched: the task has enough slack.'}</li>
+      <li>Gates: ${gates.map(x=>`${esc(x.g.name.split(' · ')[0])} ${x.d>0?`<b style="color:var(--crit)">+${x.d} wk</b>`:'holds'}`).join(' · ')}</li>
+      <li>Downstream components delayed: ${delayed.length?delayed.map(k=>`<span class="pill mute">${k.id} ${esc(k.short)}</span>`).join(' '):'none'}</li></ul>`;
+  } else {
+    sched = `<div class="lab">Schedule</div><ul><li>Dates hold, but the ${crit.length} job steps that depend critically on ${esc(c.short)} get weaker answers until it is fixed.</li><li>Expected signals: grounding falls, MTBH breakers on ${esc(c.agents.slice(0,2).join(' and ')||'its consumers')} go half-open, value gaps widen.</li></ul>`;
+  }
+  $('impOut').innerHTML = `<div>
+      <div class="lab">${esc(c.id)} · ${esc(c.name)}</div>
+      <div style="display:flex;gap:8px;align-items:baseline;margin:4px 0 8px"><span class="band ${me.band}">Risk ${me.R}</span><span class="hint">L ${me.L} × I ${me.I}</span></div>
+      ${sched}
+      <div class="lab" style="margin-top:10px">Business value</div>
+      <ul><li><b>${valLost}</b> of ${Math.round(STEPS.reduce((a,s)=>a+stepValue(s),0))} value-at-stake points exposed</li>
+      ${Object.entries(drvs).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<li>${esc(DRIVERS[k].name)}: ${Math.round(v)} pts</li>`).join('')}</ul>
+    </div>
+    <div>
+      <div class="lab">Persona job steps, desired outcomes and decision questions affected</div>
+      <p class="hint" style="margin:2px 0 6px">${hit.length} job steps · ${hit.length*3} desired outcomes · ${dq} decision questions, ${dqH} of them tier H</p>
+      <div class="tw"><table><thead><tr><th>Step</th><th>Desired outcome</th><th class="num">Dep.</th><th class="num">Gap</th><th class="num">Value</th></tr></thead><tbody>
+      ${hit.map(s=>`<tr><td class="mono" style="font-size:11.5px;white-space:nowrap">${s.id}<br><span style="color:var(--muted)">${s.stage}</span></td><td>${esc(s.out)}<div class="hint">${s.cause?esc(s.cause):'Meets target today'}</div></td><td class="num">${DEP[cid][s.id]}</td><td class="num">${Math.round(100*gapOf(s))}%</td><td class="num">${Math.round(stepValue(s))}</td></tr>`).join('')}
+      </tbody></table></div>
+    </div>`;
+}
+$('impComp').innerHTML = COMPS.map(c=>`<option value="${c.id}" ${c.id==='C5'?'selected':''}>${c.id} · ${esc(c.name)}</option>`).join('');
+$('impComp').addEventListener('change', renderImpact); $('impScn').addEventListener('change', renderImpact);
+
+// ---------- value & outcomes ----------
+let selStep = 'HR-J1.6';
+function renderDep(){
+  $('depTbl').innerHTML = `<thead><tr><th>Job step</th><th>Value driver</th><th class="num">Gap</th><th class="num">Tier H</th><th class="num">Value</th>${COMPS.map(c=>`<th class="cmp" style="border-bottom:3px solid var(${c.col})">${c.id}<br><span style="text-transform:none;letter-spacing:0">${esc(c.short)}</span></th>`).join('')}</tr></thead><tbody>`
+    + STEPS.map(s=>`<tr data-s="${s.id}" class="${s.id===selStep?'sel':''}"><td><span class="mono" style="font-size:11.5px;color:var(--muted)">${s.id} · ${s.stage}</span><br>${esc(s.name)}</td><td style="font-size:12px">${esc(DRIVERS[s.drv].name)}</td><td class="num">${Math.round(100*gapOf(s))}%</td><td class="num">${s.H}</td><td class="num"><b>${Math.round(stepValue(s))}</b></td>${COMPS.map(c=>`<td class="d s${DEP[c.id][s.id]}">${DEP[c.id][s.id]}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  $('depTbl').querySelectorAll('tbody tr').forEach(r=>r.addEventListener('click',()=>{ selStep = r.dataset.s; renderDep(); renderStep(); }));
+}
+function renderStep(){
+  const s = SBY[selStep], code = s.id.replace('-J1.','-');
+  const closers = T.filter(t=>t.closes.includes(s.id));
+  const crit = COMPS.filter(c=>DEP[c.id][s.id]===3);
+  const n = s.id.split('.')[1], pfx = s.p==='CA' ? 'DO-CA-J1-'+n : 'DO-HR-J1-'+n;
+  $('stepDetail').innerHTML = `<div class="lab">${s.id} · ${s.p==='CA'?'Client Admin':'HR Specialist'} · ${s.stage}</div><h2 style="margin:2px 0 8px">${esc(s.name)}</h2>
+    <div class="grid3">
+      <div><div class="lab">Desired outcome (measured)</div><p style="margin:4px 0">${esc(s.out)}</p><p class="mono" style="font-size:12px;margin:0">target ${s.dir==='min'?'≤':'≥'} ${s.target} ${esc(s.unit)} · baseline ${s.base} · gap ${Math.round(100*gapOf(s))}%</p>
+        <p class="hint" style="margin-top:6px">Outcomes ${pfx}-1, -2, -3 in the job study; decision questions DQ-${code}-01 to -04 (${s.H} tier H).</p></div>
+      <div><div class="lab">What blocks it today</div><p style="margin:4px 0">${s.cause?esc(s.cause):'Nothing: the step meets its target at baseline.'}</p>
+        <div class="lab" style="margin-top:8px">Closed by</div><p style="margin:4px 0;font-size:13px">${closers.length?closers.map(t=>`<b>${t.id}</b> ${esc(t.name)} · ${fmtM(PLAN0[t.id].e)}`).join('<br>'):'General build of the components below'}</p></div>
+      <div><div class="lab">Critical components</div><p style="margin:4px 0;font-size:13px">${crit.map(c=>`<span class="pill mute" style="margin:0 4px 4px 0">${c.id} ${esc(c.short)}</span>`).join('')}</p>
+        <p class="hint">Value at stake: <b>${Math.round(stepValue(s))}</b> points (${esc(DRIVERS[s.drv].name)}, weight ${W[s.drv]}).</p></div>
+    </div>`;
+}
+
+// ---------- lifecycle ----------
+function renderLifecycle(){
+  $('lcTbl').innerHTML = `<thead><tr><th>Component</th>${LIFE.map((l,i)=>`<th title="${esc(LIFE_EVIDENCE[i])}">${l}</th>`).join('')}</tr></thead><tbody>`
+    + COMPS.map(c=>{ const ts = T.filter(t=>t.ws===c.id), sp = compSpan(c.id);
+      const firstDev = ts.filter(t=>t.life==='Develop'||t.life==='Deliver').reduce((m,t)=>Math.min(m,PLAN0[t.id].s), Infinity);
+      const due = { Discover: sp.s, Define: sp.s, Design: isFinite(firstDev)?firstDev:sp.s, Develop: null, Deliver: sp.e, Run: null };
+      const lbl = { Discover:'gate before build starts', Define:'gate before build starts', Design:'design freeze before development', Deliver:'release through the OPR checklist' };
+      return `<tr><td class="cn" style="--c:var(${c.col})">${c.id} · ${esc(c.name)}<span class="when">risk ${scores().find(x=>x.c.id===c.id).R}</span></td>`
+       + LIFE.map((l,i)=>{ const lt = ts.filter(t=>t.life===l);
+          const list = lt.map(t=>`<b>${t.id}</b> ${esc(t.name.length>60?t.name.slice(0,58)+'…':t.name)}`).join('<br>');
+          if(l==='Run') return `<td>${lt.length?list+'<br>':''}<span class="when">operates from ${fmtM(Math.max(sp.e, PLAN0['M-1'].s))}</span><span class="when">SLM · value gaps · MTBH breakers</span></td>`;
+          if(l==='Develop'){ const d = lt.length ? Math.max(...lt.map(t=>PLAN0[t.id].e)) : null; return lt.length ? `<td>${list}<span class="when">evidence due ${fmtD(d)}</span></td>` : `<td class="none">no separate build work</td>`; }
+          const d = lt.length ? Math.max(...lt.map(t=>PLAN0[t.id].e)) : due[l];
+          return `<td>${list?list+'<br>':''}<span class="when">${lt.length?'evidence due':lbl[l]+' ·'} ${fmtD(d)}</span></td>`; }).join('') + '</tr>'; }).join('')
+    + `<tr><td class="cn" style="--c:var(--line-2)">Evidence the scorecard asks for</td>${LIFE_EVIDENCE.map(e=>`<td class="hint">${esc(e)}</td>`).join('')}</tr></tbody>`;
+  $('rule').innerHTML = [
+    'Every targeted scorecard item in all six lifecycle phases has been assessed',
+    'Discover and Define each score at least 70% of their target points',
+    'Design and Develop each score at least 80%',
+    'Every operations (OPR) item meets its target before release',
+    'No item with target 3 is scored 0 (open major debt)',
+    'Every agent in the component has a closed MTBH circuit breaker and passes the decision-question probes',
+    'No persona job step that depends critically on the component loses value at stake versus baseline',
+  ].map(t=>`<li class="no" data-m="○"><span>${esc(t)}</span></li>`).join('');
+}
+
+// ---------- readiness ----------
+const ISSUES = [
+ ['High','Only 13 of 84 desired outcomes have a measured baseline','Impact and risk scores rest on the 12 core job steps whose gaps the advisor design measured (synthetic values). C7-01 writes metric cards for the 36 core-step outcomes; the other 48 move to Q2 with jobs J2 and J3.',['C7-01','C7-04']],
+ ['High','Golden answers for the 48 decision questions are not written','The decision-question baseline is what the circuit breakers probe and what quality by design compares against. Without it the G2 grounding and MTBH criteria cannot be tested.',['C7-02']],
+ ['High','The scorecard template has no targets for Knowledge Engineering','All six KE items (vocabulary, semantic extension, taxonomy, ontology, RDB-to-RDF mapping, integration at scale) have no baseline, yet C1 and C5 are knowledge-engineering components. 18 template items have no target in all.',['C1-02','C5-01']],
+ ['High','Seven traceability items in the template are targeted at 0','Future-state planning, impact analysis, prioritization, capability maps, service maps, service gaps and requirements traceability are exactly the links from desired outcomes to components that this dashboard scores. Proposed target: 2 or higher.',['C1-01','C7-01']],
+ ['High','The release Go/No-Go threshold is undefined','The template’s aggregate score reads TBD. The dashboard shows a proposed rule, extended with circuit-breaker and value-at-stake checks, for the steering group to confirm.',['C2-01']],
+ ['High','Compressing to end of Q1 2027 raises delivery risk','The plan fits 22 weeks only with eight parallel squads, contract-first interfaces and minimum-viable scope. Schedule pressure now adds to every component’s likelihood. The 6 weeks of buffer absorb about 10% slip on every task before the advisor launch (G2) moves and about 15% before G3 moves; at 20% G3 still lands before 31 March. Squad staffing is the first decision at G0.',['C1-01','M-0']],
+ ['Medium','The template’s Run phase measures supply-chain operations','For the advisor, Run should measure service levels, value gaps per job step and agent integrity (MTBH), as the Lifecycle gates tab assumes.',['C7-05','C8-03']],
+ ['Medium','Value gaps will have only a few weeks of data at G3','The advisor goes live in early March, so the value-gap dashboard and causal findings at G3 rest on a short window. Outcome attainment is judged at the end of Q2, not at G3.',['C7-04','C8-04']],
+ ['Medium','Value-driver weights and outcome importance are not yet set','Weights default to equal. The sponsor sets them at G0; the outcome importance survey in C7-04 then replaces the tier-H proxy.',['C7-04']],
+ ['Low','The scorecard workbook holds a development sheet with errors and personal metadata','Remove it before the workbook is shared or used as a data source.',['C2-01']],
+];
+function renderIssues(){
+  $('issues').innerHTML = ISSUES.map(([sev,t,d,tasks])=>`<div class="issue"><span class="pill ${sev==='High'?'crit':sev==='Medium'?'warn':'mute'}">${sev}</span><div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>
+    <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start"><span class="lab">Closed by</span>${tasks.map(id=>`<button type="button" class="linkbtn" data-task="${id}">${id} · ${fmtM(PLAN0[id].e)}</button>`).join('')}</div></div>`).join('');
+  $('issues').querySelectorAll('[data-task]').forEach(b=>b.addEventListener('click',()=>{ selected=b.dataset.task; wsState.add(BY[selected].ws); renderWsChips(); show('roadmap'); renderGantt(); renderDetail(); }));
+}
+
+// ---------- tabs ----------
+const VIEWS = ['overview','roadmap','risk','value','lifecycle','readiness'];
+function show(v){
+  VIEWS.forEach(k=>{ $('v-'+k).hidden = k!==v; });
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.v===v)));
+  try{ history.replaceState(null,'','#'+v); }catch(e){}
+  try{ localStorage.setItem('plm2-tab', v); }catch(e){}
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>show(b.dataset.v)));
+
+$('levers').innerHTML = LEVERS.map(([t,d])=>`<li><b>${esc(t)}.</b> ${esc(d)}</li>`).join(''); $('deferred').innerHTML = DEFERRED.map(d=>`<li>${esc(d)}</li>`).join('');
+renderKPIs(); renderPhaseStrip(); renderCards(); renderWsChips(); renderGantt(); renderDetail();
+renderWeights(); renderRisk(); renderImpact(); renderDep(); renderStep(); renderLifecycle(); renderIssues();
+let start = 'overview';
+try{ const s = localStorage.getItem('plm2-tab'); if(VIEWS.includes(s)) start = s; }catch(e){}
+const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) start = h;
+show(start);
+})();
+</script>
+
+</body></html>

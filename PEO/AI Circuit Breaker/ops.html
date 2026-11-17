@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operations · Sales Advisor Circuit Breaker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="cb.css"></head>
+<body>
+<div id="topbar" data-page="ops" data-controls="1"></div>
+<main class="gut"><div class="wrap">
+<header><div class="eyebrow">Live fleet status · six Sales Advisor agents</div><h1>Operations</h1><p class="lede">Health of every agent in the sales flow under the engaged persona, how fidelity is holding across personas, and the operating conditions currently pushing drift.</p></header>
+<div class="kpis" id="kpis"></div>
+<section class="card sec" aria-labelledby="h-pipe">
+  <div class="sec-h"><div><h2 id="h-pipe">Agent holarchy · sales flow</h2><p>An agent is restricted at one FREEZE or two COMPLYs and drops (circuit open) at any HALT, two FREEZEs, or human trust K below 0.50. Squares are its decisions colored by verdict; select one to open it.</p></div></div>
+  <div class="pipe" id="pipe"></div>
+  <div class="chainrow"><span>Chain fidelity φ<sub>total</sub> = Π φ<sub>agent</sub></span><div class="chainbar"><i id="chainfill"></i></div><b class="mono" id="chainv">—</b></div>
+</section>
+<div class="two">
+  <section class="card sec chart" aria-labelledby="h-ch">
+    <div class="sec-h"><div><h2 id="h-ch">Chain fidelity by persona</h2><p>Same agents, same drift, seven lenses. The engaged persona is drawn heavier; dashed lines mark when one of its agents dropped.</p></div></div>
+    <div id="chart"></div><div class="legend" id="chleg"></div>
+  </section>
+  <section class="card sec" aria-labelledby="h-dm">
+    <div class="sec-h"><div><h2 id="h-dm">First drop, by persona</h2><p>Tick at which each agent's circuit first opened for each persona. Recalibrating an agent clears its row.</p></div></div>
+    <div class="scroll"><table class="dm" id="dm"></table></div>
+  </section>
+</div>
+<section class="card sec" aria-labelledby="h-sc">
+  <div class="sec-h"><div><h2 id="h-sc">Operating conditions</h2><p>Each condition moves one or more context dimensions on specific agents every tick it is on. Drift persists until a reviewer recalibrates the agent.</p></div></div>
+  <div class="scen" id="scen"></div>
+</section>
+</div></main>
+<script src="cb-engine.js"></script><script src="cb-ui.js"></script>
+</body></html>
