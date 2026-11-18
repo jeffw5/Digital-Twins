@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Appreciative Inquiry for VOC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout idea: masthead + tab rail; each view is a working tool panel. Amber = human-authored, teal = machine-derived. */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --surface-2:#eef0ec; --surface-3:#e2e5df;
+  --ink:#15201c; --ink-soft:#33403b; --muted:#5d6863; --faint:#8a948f; --line:#dadfd8; --line-strong:#b9c1ba;
+  --human:#b8620f; --human-soft:#fbecd9; --machine:#0c7069; --machine-soft:#d8eeeb;
+  --good:#2c7a33; --good-soft:#e1f1df; --warn:#b02a1e; --warn-soft:#f8e1dd; --amber:#9a6a00; --amber-soft:#fbf0cf;
+  --p7:#5b4fa8; --p3:#1f6fb2;
+  --f-display:"Big Shoulders Display","Arial Narrow",sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --radius:6px; --shadow:0 1px 2px rgba(20,30,25,.06),0 6px 20px -12px rgba(20,30,25,.25);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111715; --surface:#18201d; --surface-2:#1f2925; --surface-3:#2a3530;
+  --ink:#e8eee9; --ink-soft:#c9d3cd; --muted:#9aa7a0; --faint:#748079; --line:#2c3732; --line-strong:#43514a;
+  --human:#f0a14a; --human-soft:#3a2a17; --machine:#4fc4b9; --machine-soft:#173431;
+  --good:#7fcf84; --good-soft:#1c3320; --warn:#f08a7e; --warn-soft:#3d1f1b; --amber:#e8c45a; --amber-soft:#352c12;
+  --p7:#a99cf2; --p3:#7db7ea; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#111715; --surface:#18201d; --surface-2:#1f2925; --surface-3:#2a3530;
+  --ink:#e8eee9; --ink-soft:#c9d3cd; --muted:#9aa7a0; --faint:#748079; --line:#2c3732; --line-strong:#43514a;
+  --human:#f0a14a; --human-soft:#3a2a17; --machine:#4fc4b9; --machine-soft:#173431;
+  --good:#7fcf84; --good-soft:#1c3320; --warn:#f08a7e; --warn-soft:#3d1f1b; --amber:#e8c45a; --amber-soft:#352c12;
+  --p7:#a99cf2; --p3:#7db7ea; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--f-body)}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+h1{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:.01em}
+h2{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1}
+h3{font-size:14px;font-weight:600}
+h4{font-size:13px;font-weight:600}
+p{margin:0}
+.wrap{max-width:1360px;margin:0 auto;padding:0 20px}
+@media (max-width:500px){.wrap{padding:0 16px}}
+.mono{font-family:var(--f-mono)} .small{font-size:12.5px} .muted{color:var(--muted)} .note{font-size:12px;color:var(--muted)}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.masthead{background:var(--surface);border-bottom:1px solid var(--line)}
+.masthead .top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:end;justify-content:space-between;padding:22px 0 14px}
+.masthead .id{display:grid;gap:8px;max-width:760px}
+.lede{color:var(--ink-soft);font-size:14px;max-width:70ch}
+.stat-rail{display:flex;flex-wrap:wrap;gap:8px}
+.stat{min-width:104px;padding:8px 12px;border:1px solid var(--line);border-top:3px solid var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+.stat.human{border-top-color:var(--human)} .stat.machine{border-top-color:var(--machine)}
+.stat .n{font-family:var(--f-display);font-size:28px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:11.5px;color:var(--muted)}
+.tabbar{display:flex;gap:2px;overflow-x:auto}
+.tabbtn{all:unset;cursor:pointer;padding:10px 16px;font-weight:600;font-size:13.5px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabbtn:hover{color:var(--ink)}
+.tabbtn[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--human)}
+.tabbtn:focus-visible{outline:2px solid var(--machine);outline-offset:-2px}
+.tabbtn .k{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);margin-right:6px}
+main{padding:20px 0 60px}
+section[hidden]{display:none}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+.ph{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)}
+.pb{padding:14px;display:grid;gap:12px}
+.section{display:grid;gap:10px;margin-bottom:22px}
+.section-head{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.section-head .def{flex-basis:100%;font-size:13px;color:var(--muted);max-width:90ch}
+.count{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);color:var(--ink);font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn:focus-visible{outline:2px solid var(--machine);outline-offset:1px}
+.btn.primary{background:var(--human);border-color:var(--human);color:#fff}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.teal{background:var(--machine);border-color:var(--machine);color:#fff}
+.btn.sm{padding:3px 9px;font-size:12px}
+.btn.danger{color:var(--warn)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+:root[data-theme="dark"] .btn.primary,:root[data-theme="dark"] .btn.teal{color:#111}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary,:root:not([data-theme="light"]) .btn.teal{color:#111}}
+input[type=text],input[type=date],input[type=number],input[type=search],select,textarea{width:100%;font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 8px}
+textarea{resize:vertical;line-height:1.5}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--machine);outline-offset:0}
+label.f{display:grid;gap:4px;font-size:11.5px;color:var(--muted);font-weight:500;min-width:0}
+label.check{display:flex;gap:8px;align-items:start;font-size:13px;color:var(--ink-soft)}
+.radios{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.radios label{display:flex;gap:6px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.span2{grid-column:span 2} .spanall{grid-column:1/-1}
+@media (max-width:760px){.grid4,.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:460px){.grid4,.grid3{grid-template-columns:minmax(0,1fr)}.span2{grid-column:auto}}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:10.5px;padding:1px 6px;border:1px solid var(--line-strong);border-radius:3px;color:var(--ink-soft);background:var(--surface-2);white-space:nowrap}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:100px;white-space:nowrap}
+.badge.human{background:var(--human-soft);color:var(--human)} .badge.machine{background:var(--machine-soft);color:var(--machine)}
+.badge.good{background:var(--good-soft);color:var(--good)} .badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.amber{background:var(--amber-soft);color:var(--amber)} .badge.plain{background:var(--surface-3);color:var(--muted)}
+.quote{font-size:13px;color:var(--ink-soft);border-left:3px solid var(--line-strong);padding:2px 0 2px 10px;font-style:italic}
+.callout{padding:10px 14px;border-radius:var(--radius);font-size:13px;border:1px solid var(--line)}
+.callout.warn{background:var(--warn-soft);border-color:transparent;color:var(--ink)}
+.callout.info{background:var(--machine-soft);border-color:transparent}
+.empty{color:var(--muted);font-size:13px}
+.scroll{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-weight:600;font-size:11.5px;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+table.t td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t .num{text-align:right;font-variant-numeric:tabular-nums}
+pre.ttl{margin:0;max-height:420px;overflow:auto;font:11.5px/1.5 var(--f-mono);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;color:var(--ink-soft);white-space:pre}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--radius);font-size:13px;z-index:50;max-width:90vw}
+/* capture */
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}}
+.ivlist{position:sticky;top:12px}
+@media (max-width:980px){.ivlist{position:static}}
+.ivitems{padding:4px 6px 8px;display:grid;gap:2px;max-height:70vh;overflow:auto}
+.grp{font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding:10px 8px 4px}
+.ivitem{all:unset;box-sizing:border-box;display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:2px 10px;width:100%;padding:8px 10px;border-radius:4px;cursor:pointer;font-size:12.5px}
+.ivitem:hover{background:var(--surface-2)} .ivitem:focus-visible{outline:2px solid var(--machine)}
+.ivitem[aria-current="true"]{background:var(--human-soft)}
+.ivitem .pd{width:8px;height:8px;border-radius:50%;margin-top:6px}
+.ivitem b{display:block;font-weight:600}
+.ivitem .meta{grid-column:2/-1;font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.editor{display:grid;gap:16px;min-width:0}
+.phase{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px;padding:14px;border-top:1px solid var(--line)}
+.phase:first-of-type{border-top:0}
+@media (max-width:1100px){.phase{grid-template-columns:minmax(0,1fr)}}
+.phase h4{display:flex;gap:8px;align-items:center;font-family:var(--f-display);font-size:20px;font-weight:700}
+.phase h4 .n{font-family:var(--f-mono);font-size:11px;width:22px;height:22px;border-radius:50%;background:var(--human);color:var(--surface);display:grid;place-items:center}
+.phase textarea{min-height:130px}
+.prompts{margin:0;padding-left:18px;display:grid;gap:6px;font-size:12.5px;color:var(--ink-soft)}
+.prompts li::marker{color:var(--human)}
+.codebar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.codebar .lab{font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;color:var(--muted)}
+.coder{border:2px solid var(--human)}
+.coder .ph{background:var(--human-soft)}
+.preview{font-weight:500;background:var(--surface-2);border:1px dashed var(--line-strong);padding:8px 12px;border-radius:var(--radius)}
+.preview .q{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px}
+.codes{display:grid;gap:14px}
+.code{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--ccol,var(--machine));border-radius:var(--radius)}
+.code + .code{margin-top:6px}
+.code .st{font-weight:500}
+.code .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.code .quote{grid-column:1/-1}
+.savebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px}
+.savebar .msg{margin-right:auto;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+/* ingest */
+.rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.rail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.rail{grid-template-columns:minmax(0,1fr)}}
+.lane{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:10px 12px;display:grid;gap:8px;align-content:start}
+.lane .lt{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.lane .lt b{font-family:var(--f-display);font-size:18px;font-weight:700}
+.stg{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:12.5px}
+.stg .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line-strong);background:var(--surface)}
+.stg.done .dot{background:var(--machine);border-color:var(--machine)}
+.stg.flag .dot{background:var(--amber);border-color:var(--amber)}
+.stg.err .dot{background:var(--warn);border-color:var(--warn)}
+.stg.run .dot{border-color:var(--human);animation:pulse 1s infinite}
+@keyframes pulse{50%{background:var(--human-soft)}}
+@media (prefers-reduced-motion:reduce){.stg.run .dot{animation:none;background:var(--human-soft)}}
+.stg .r{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.ilayout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:1050px){.ilayout{grid-template-columns:minmax(0,1fr)}}
+.srcitem{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:3px;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;width:100%}
+.srcitem:hover{background:var(--surface-2)} .srcitem:focus-visible{outline:2px solid var(--machine)}
+.srcitem[aria-current="true"]{border-color:var(--machine);background:var(--machine-soft)}
+.srcitem .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.seg{display:grid;grid-template-columns:62px 92px 74px minmax(0,1fr);gap:10px;padding:6px 10px;border-bottom:1px solid var(--line);font-size:12.5px;align-items:baseline}
+.seg.iv{color:var(--muted)}
+.seg .ts{font-family:var(--f-mono);font-size:10.5px;color:var(--faint)}
+@media (max-width:700px){.seg{grid-template-columns:62px minmax(0,1fr)}.seg .txt{grid-column:1/-1}}
+.segs{max-height:380px;overflow:auto;border:1px solid var(--line);border-radius:var(--radius)}
+mark.pii{background:var(--warn-soft);color:var(--warn);font-family:var(--f-mono);font-size:11px;padding:0 3px;border-radius:3px}
+mark.hit{background:var(--machine-soft);color:inherit;border-radius:2px;padding:0 1px}
+.item{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-left:4px solid var(--ccol,var(--machine));border-radius:var(--radius)}
+.item.rej{opacity:.55}
+.item.acc{background:color-mix(in srgb,var(--good-soft) 45%,var(--surface))}
+.item .hd{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.item .disp{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px;align-items:center}
+@media (max-width:640px){.item .disp{grid-template-columns:minmax(0,1fr)}}
+.conf{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.conf i{display:inline-block;width:60px;height:6px;background:var(--surface-3);border-radius:3px;position:relative;overflow:hidden}
+.conf i b{position:absolute;inset:0 auto 0 0;background:var(--machine)}
+.flags{display:flex;flex-wrap:wrap;gap:6px}
+.log{font:11.5px/1.6 var(--f-mono);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:8px 10px;max-height:240px;overflow:auto}
+.log div{white-space:pre-wrap;overflow-wrap:anywhere}
+.log .ok{color:var(--good)} .log .w{color:var(--amber)} .log .e{color:var(--warn)}
+.vocab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:8px 12px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+/* synthesis */
+.cov{display:grid;gap:8px}
+.covrow{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr) 150px;gap:12px;align-items:center;font-size:13px}
+.covbar{height:14px;background:var(--surface-3);border-radius:0 7px 7px 0;position:relative;display:flex;overflow:hidden}
+.covbar i{display:block;height:100%}
+.covbar .g{background:var(--human)} .covbar .x{background:var(--machine)}
+.covbar .tgt{position:absolute;top:0;bottom:0;width:2px;background:var(--ink)}
+@media (max-width:640px){.covrow{grid-template-columns:minmax(0,1fr) 110px}.covrow .covbar{grid-column:1/-1;grid-row:2}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+/* method */
+.loop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.loop span{padding:4px 10px;border:1px solid var(--line-strong);border-radius:100px;background:var(--surface)}
+.loop span.here{background:var(--human);border-color:var(--human);color:var(--surface)}
+.loop i{color:var(--faint);font-style:normal}
+.paths{display:grid;grid-template-columns:minmax(0,1fr) 170px minmax(0,1fr);gap:14px;align-items:stretch}
+@media (max-width:860px){.paths{grid-template-columns:minmax(0,1fr)}}
+.path{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:var(--radius);padding:12px;display:grid;gap:8px;align-content:start;background:var(--surface)}
+.path ol{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px;color:var(--ink-soft)}
+.contract{display:grid;place-items:center;text-align:center;border:2px dashed var(--line-strong);border-radius:var(--radius);padding:12px;font-size:12.5px;color:var(--ink-soft);gap:6px;background:var(--surface-2)}
+.contract b{font-family:var(--f-display);font-size:18px;color:var(--ink)}
+.guide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.guide{grid-template-columns:minmax(0,1fr)}}
+.guide ol,.guide ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;color:var(--ink-soft)}
+.copyfb textarea{height:160px;font-family:var(--f-mono);font-size:11px}
+</style>
+</head>
+<body>
+<header class="masthead"><div class="wrap">
+  <div class="top">
+    <div class="id">
+      <div class="eyebrow">Voice of the customer · appreciative inquiry (4-D) · jobs to be done · sample data</div>
+      <h1>Appreciative Inquiry for VOC</h1>
+      <p class="lede">Two ways in, one output. Interviewers use the <b>guided capture</b> to run a 4-D conversation and code what they hear. Interviews already conducted elsewhere come through the <b>Semantic Services inbound pipeline</b>, which segments, redacts, classifies, extracts and resolves them against the same model, then hands them to a steward before anything is committed to the graph. Both land as the same interview, excerpt and evidence records.</p>
+    </div>
+    <div class="stat-rail" id="stats"></div>
+  </div>
+  <nav class="tabbar" role="tablist" aria-label="View">
+    <button class="tabbtn" role="tab" id="tab-capture" data-view="capture"><span class="k">1</span>Guided capture</button>
+    <button class="tabbtn" role="tab" id="tab-ingest" data-view="ingest"><span class="k">2</span>Ingest interviews</button>
+    <button class="tabbtn" role="tab" id="tab-synthesis" data-view="synthesis"><span class="k">3</span>Synthesis</button>
+    <button class="tabbtn" role="tab" id="tab-method" data-view="method"><span class="k">4</span>Method &amp; contract</button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section id="v-capture">
+    <div class="layout">
+      <aside class="panel ivlist" aria-label="Interviews">
+        <div class="pb" style="gap:8px">
+          <button class="btn primary" id="new-iv" type="button">+ New guided interview</button>
+          <input type="search" id="iv-q" placeholder="Search interviews" aria-label="Search interviews">
+        </div>
+        <div class="ivitems" id="ivitems"></div>
+      </aside>
+      <div class="editor" id="editor"></div>
+    </div>
+  </section>
+
+  <section id="v-ingest" hidden></section>
+  <section id="v-synthesis" hidden></section>
+  <section id="v-method" hidden></section>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// ===== PURE-START =====
+const BASE = 'https://ke.example.org/c360/';
+const PREFIXES = {
+  rdfs:'http://www.w3.org/2000/01/rdf-schema#', owl:'http://www.w3.org/2002/07/owl#', xsd:'http://www.w3.org/2001/XMLSchema#',
+  skos:'http://www.w3.org/2004/02/skos/core#', dcterms:'http://purl.org/dc/terms/', prov:'http://www.w3.org/ns/prov#',
+  ai: BASE + 'ontology/appreciative-inquiry#', jtbd: BASE + 'ontology/jtbd#', evid: BASE + 'vocab/evidence-status#',
+  phase: BASE + 'vocab/inquiry-phase#', metric: BASE + 'vocab/outcome-metric#', ingest: BASE + 'ontology/semantic-services-inbound#',
+  c360: BASE + 'id/', air: BASE + 'id/interview/'
+};
+const PHASES = [
+  { key:'discover', label:'Discover', n:1, prompt:'when the work goes at its best' },
+  { key:'dream',    label:'Dream',    n:2, prompt:'what it would be like if it always went that way' },
+  { key:'design',   label:'Design',   n:3, prompt:'the steps and support that would make it real' },
+  { key:'destiny',  label:'Destiny',  n:4, prompt:'what must be true, and how they would measure it' }
+];
+const TYPES = {
+  functional:{ label:'Functional job', col:'var(--machine)', help:'What they are trying to get done, without naming a solution.' },
+  emotional: { label:'Emotional job',  col:'var(--human)',   help:'How they want to feel, or avoid feeling.' },
+  social:    { label:'Social job',     col:'var(--human)',   help:'How they want to be seen by others.' },
+  step:      { label:'Job step',       col:'var(--p7)',      help:'One step of a specific job, in their words, placed on a universal step.' },
+  outcome:   { label:'Desired outcome',col:'var(--p3)',      help:'How they judge success at a step: direction + metric + object + clarifier.' }
+};
+const METRICS = {
+  time:{ phrase:'the time required to', metric:'speed' }, likelihood:{ phrase:'the likelihood', metric:'stability' },
+  cost:{ phrase:'the cost of', metric:'cost-and-exposure' }, effort:{ phrase:'the effort required to', metric:'effort' }, number:{ phrase:'the number of', metric:'output' }
+};
+const SIZES = ['5–19 employees','20–49 employees','50–149 employees','150–499 employees','500+ employees'];
+
+// ---- sample model (what the graph already holds) ----
+const MODEL = {
+  personas: [
+    { iri:'c360:Persona-P1', id:'P1', label:'Business Owner', short:'Owner', col:'#b8620f' },
+    { iri:'c360:Persona-P2', id:'P2', label:'Office Manager', short:'Office', col:'#0c7069' },
+    { iri:'c360:Persona-P3', id:'P3', label:'Controller', short:'Finance', col:'#5b4fa8' },
+    { iri:'c360:Persona-P4', id:'P4', label:'Site Supervisor', short:'Supervisor', col:'#1f6fb2' }
+  ],
+  steps: ['Define','Locate','Prepare','Confirm','Execute','Monitor','Modify','Conclude'].map(l => ({ iri:'jtbd:step-' + l.toLowerCase(), label:l })),
+  themes: { 'c360:Theme-Payroll':'Payroll', 'c360:Theme-Benefits':'Benefits', 'c360:Theme-Onboarding':'Onboarding and administration', 'c360:Theme-Compliance':'Compliance', 'c360:Theme-Service':'Service experience' },
+  jobs: {
+    'c360:Job-J1':{ id:'J1', kind:'core', stmt:'Pay employees accurately and on time', personas:['P3','P2','P4'] },
+    'c360:Job-J2':{ id:'J2', kind:'core', stmt:'Get a new hire ready to work from their first day', personas:['P2','P4'] },
+    'c360:Job-J3':{ id:'J3', kind:'core', stmt:'Choose a benefits package employees value at a cost the business can carry', personas:['P1'] },
+    'c360:Job-J4':{ id:'J4', kind:'core', stmt:'Answer an employee question about pay, leave or benefits', personas:['P2','P4'] },
+    'c360:Job-J5':{ id:'J5', kind:'chain', stmt:'Get an issue resolved by the service provider', personas:['P1','P2','P3','P4'] },
+    'c360:Job-J6':{ id:'J6', kind:'core', stmt:'Keep the business compliant with employment rules', personas:['P1','P3'] },
+    'c360:Job-E1':{ id:'E1', kind:'emotional', stmt:'Feel confident nothing is missed at payroll cutoff', personas:['P3','P2','P4'] },
+    'c360:Job-E2':{ id:'E2', kind:'emotional', stmt:'Avoid feeling caught off guard by a rule change', personas:['P1','P3','P2'] },
+    'c360:Job-S1':{ id:'S1', kind:'social', stmt:'Be seen by the owner as a trusted steward of company money and people', personas:['P3','P2'] },
+    'c360:Job-S2':{ id:'S2', kind:'social', stmt:'Be seen by employees as someone who looks after them', personas:['P1','P4'] }
+  },
+  outcomes: {
+    'c360:Outcome-O1':{ id:'O1', job:'c360:Job-J1', step:'jtbd:step-confirm', theme:'c360:Theme-Payroll', metric:'time', stmt:'Minimize the time required to confirm that pay calculations are correct before funds are released' },
+    'c360:Outcome-O2':{ id:'O2', job:'c360:Job-J1', step:'jtbd:step-locate', theme:'c360:Theme-Payroll', metric:'likelihood', stmt:'Minimize the likelihood of a missed timesheet at payroll cutoff' },
+    'c360:Outcome-O3':{ id:'O3', job:'c360:Job-J1', step:'jtbd:step-modify', theme:'c360:Theme-Payroll', metric:'number', stmt:'Minimize the number of payroll corrections after a pay run' },
+    'c360:Outcome-O4':{ id:'O4', job:'c360:Job-J2', step:'jtbd:step-prepare', theme:'c360:Theme-Onboarding', metric:'time', stmt:'Minimize the time required to complete new hire paperwork before the first day' },
+    'c360:Outcome-O5':{ id:'O5', job:'c360:Job-J2', step:'jtbd:step-execute', theme:'c360:Theme-Onboarding', metric:'likelihood', stmt:'Minimize the likelihood that a new hire lacks system access or a badge on the first day' },
+    'c360:Outcome-O6':{ id:'O6', job:'c360:Job-J3', step:'jtbd:step-locate', theme:'c360:Theme-Benefits', metric:'time', stmt:'Minimize the time required to compare the cost of benefit plan options' },
+    'c360:Outcome-O7':{ id:'O7', job:'c360:Job-J3', step:'jtbd:step-execute', theme:'c360:Theme-Benefits', metric:'effort', stmt:'Minimize the effort required to explain benefit plan choices to employees' },
+    'c360:Outcome-O8':{ id:'O8', job:'c360:Job-J5', step:'jtbd:step-execute', theme:'c360:Theme-Service', metric:'time', stmt:'Minimize the time required to reach someone who can resolve the issue' },
+    'c360:Outcome-O9':{ id:'O9', job:'c360:Job-J5', step:'jtbd:step-execute', theme:'c360:Theme-Service', metric:'number', stmt:'Minimize the number of times the issue must be explained again' },
+    'c360:Outcome-O10':{ id:'O10', job:'c360:Job-J6', step:'jtbd:step-monitor', theme:'c360:Theme-Compliance', metric:'likelihood', stmt:'Minimize the likelihood of learning about a rule change after it takes effect' }
+  }
+};
+// Alternate labels live in their own graphs, apart from core and domain vocabularies.
+const ALT_GRAPHS = {
+  provider: { graph:'c360:altlabels/provider', labels:[
+    ['pay run','payroll'],['payroll register','payroll'],['register','payroll'],['time card','timesheet'],['time cards','timesheet'],['hours','timesheet'],
+    ['paid time off','leave'],['open enrollment','benefit plan selection'],['renewal','benefit plan renewal'],['premium','benefit plan cost'],['premiums','benefit plan cost'],
+    ['day one','first day'],['start date','first day'],['login','system access'],['logins','system access'],['badge','system access'],
+    ['phone tree','reach someone'],['on hold','reach someone'],['regulation','rule'],['law','rule'],['minimum wage','rule'],['tax rate','rule'] ] },
+  customer: { graph:'c360:altlabels/customer', labels:[] }
+};
+const ACRONYMS = { PTO:'paid time off', OE:'open enrollment', 'I-9':'employment eligibility verification form', 'W-4':'employee withholding certificate', HR:'human resources', PEO:'professional employer organization', ACH:'automated clearing house payment' };
+// Candidate customer terms the spotter proposes as alternate labels for steward review.
+const TERM_SPOTTER = [
+  { re:/\boff-cycle (fix(es)?|run|check)s?\b/i, term:'off-cycle fix', canon:'payroll correction' },
+  { re:/\bOE\b/, term:'OE', canon:'open enrollment' },
+  { re:/\bjob codes?\b/i, term:'job codes', canon:'labor cost code' },
+  { re:/\bdaily logs?\b/i, term:'daily logs', canon:'site attendance record' },
+  { re:/\bthe trailer\b/i, term:'the trailer', canon:'site office' },
+  { re:/\bper head\b/i, term:'per head', canon:'per employee' },
+  { re:/\bnew-hire forms\b/i, term:'new-hire forms', canon:'new hire paperwork' }
+];
+
+// ---- text utilities ----
+const STOP = new Set('a an the to of and or for in on at by with from that this is are be been it its as into before after than then when what who whom which their them they there our we i my me you your so up out about each every any all no not do does did can could would should will just also only'.split(' '));
+function stem(w){ if (w.length > 5 && w.endsWith('ing')) return w.slice(0,-3); if (w.length > 4 && w.endsWith('ed')) return w.slice(0,-2); if (w.length > 4 && w.endsWith('es') && !w.endsWith('ses')) return w.slice(0,-2); if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0,-1); return w; }
+function canonicalize(s){
+  let t = ' ' + s.toLowerCase() + ' ';
+  const all = [].concat(...Object.values(ALT_GRAPHS).map(g => g.labels)).sort((a,b) => b[0].length - a[0].length);
+  all.forEach(([alt, canon]) => { t = t.split(' ' + alt + ' ').join(' ' + canon + ' '); });
+  return t.trim();
+}
+function tokens(s){ return canonicalize(s.replace(/[^\w\s-]/g,' ')).split(/[^a-z0-9]+/).filter(w => w && !STOP.has(w)).map(stem); }
+function dice(a, b){ const A = new Set(a), B = new Set(b); if (!A.size || !B.size) return 0; let n = 0; A.forEach(x => { if (B.has(x)) n++; }); return 2 * n / (A.size + B.size); }
+const DIRECTION = new Set(['minimize','increase','time','required','likelihood','number','effort','cost']);
+function contentTokens(s){ return tokens(s).filter(t => !DIRECTION.has(t)); }
+const uc = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const lc = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+function hash(s){ let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return ('00000000' + (h >>> 0).toString(16)).slice(-8); }
+
+// ---- inbound: segment ----
+function segment(raw){
+  const lines = raw.replace(/\r/g,'').split('\n'), segs = [];
+  lines.forEach(line => {
+    const l = line.trim(); if (!l) return;
+    let m, ts = '', spk = '', txt = '';
+    if ((m = l.match(/^\[(\d{1,2}:\d{2}(?::\d{2})?)\]\s*([^:]{1,40}):\s*(.*)$/))) { ts = m[1]; spk = m[2].trim(); txt = m[3]; }
+    else if ((m = l.match(/^(Q|A)[:.]\s*(.*)$/))) { spk = m[1]; txt = m[2]; }
+    else if ((m = l.match(/^([A-Z][A-Za-z.' -]{0,38}):\s+(.*)$/))) { spk = m[1].trim(); txt = m[2]; }
+    else if (segs.length) { segs[segs.length - 1].raw += ' ' + l; return; }
+    else { spk = 'Participant'; txt = l; }
+    const role = /^(interviewer|moderator|q)$/i.test(spk) || /interviewer/i.test(spk) ? 'Interviewer' : 'Participant';
+    segs.push({ n: segs.length + 1, ts, speaker: spk, role, raw: txt });
+  });
+  return segs;
+}
+// ---- inbound: redact ----
+const FIRST_NAMES = new Set('Dana Priya Marcus Ray Tom Maria Jose Luis Ana Sarah Mike Michael Jen Jennifer Chris David Lisa Karen John Mary James Linda Robert Patricia Kevin Laura'.split(' '));
+function redact(text, ctx){
+  const hits = [];
+  const sub = (re, kind) => { text = text.replace(re, m => { hits.push(kind); return '⟦' + kind + '⟧'; }); };
+  sub(/[\w.+-]+@[\w-]+\.[\w.]+/g, 'EMAIL');
+  sub(/\(?\b\d{3}\)?[-. ]\d{3}[-. ]\d{4}\b/g, 'PHONE');
+  sub(/\b(?:[A-Z][a-z]+ ){1,3}(?:LLC|Inc\.?|Corp\.?|Co\.)(?=\W|$)/g, 'ORGANIZATION');
+  (ctx.orgs || []).filter(Boolean).forEach(o => sub(new RegExp(o.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), 'ORGANIZATION'));
+  sub(/\b(?:Dr|Mr|Ms|Mrs)\.? [A-Z][a-z]+\b/g, 'PERSON');
+  sub(/\b[A-Z][a-z]+ (?:Street|Avenue|Road|Blvd|Drive)\b/g, 'LOCATION');
+  const names = [...new Set([...(ctx.names || []), ...FIRST_NAMES])].filter(n => /^[A-Z][a-z]+$/.test(n));
+  if (names.length) sub(new RegExp('\\b(?:' + names.join('|') + ')(?: [A-Z][a-z]+)?\\b', 'g'), 'PERSON');
+  return { text, hits };
+}
+// ---- processing: phase classification from the interviewer's question ----
+function phaseOf(q){
+  q = q.toLowerCase();
+  if (/(measure|know it'?s working|how would you know|commit|slip back|commitment)/.test(q)) return 'destiny';
+  if (/(walk me through|steps|where would you most want help|what has to be in place)/.test(q)) return 'design';
+  if (/(imagine|ideal|every time|always went|magic wand|every week)/.test(q)) return 'dream';
+  if (/(tell me about a time|think of a time|went really well|at its best|what made (that|it) possible|how did (you|that) feel|how were you seen)/.test(q)) return 'discover';
+  return '';
+}
+// ---- processing: extraction rule pack (stands in for the LLM extraction service; same output contract) ----
+const CUES = [
+  { id:'C01', re:/(time ?cards?|timesheets?|hours).*(missing|late|chas|in by)|chas\w* .*(time ?cards?|timesheets?)/i, type:'outcome', stmt:'Minimize the likelihood of missing time cards at pay run cutoff', job:'c360:Job-J1', step:'locate', metric:'likelihood', w:.82 },
+  { id:'C02', re:/(compare|check|review|reconcile)\w*.*(payroll|register|prior period|pay calc)/i, type:'outcome', stmt:'Minimize the time required to confirm pay calculations are correct before release', job:'c360:Job-J1', step:'confirm', metric:'time', w:.78 },
+  { id:'C03', re:/(corrections?|off-cycle|check (is|was) short)/i, type:'outcome', stmt:'Minimize the number of payroll corrections after a pay run', job:'c360:Job-J1', step:'modify', metric:'number', w:.8 },
+  { id:'C04', re:/(paperwork|i-9|w-4|offer letter|signatures?|signed).*(before|first day|day one|week out|start)|(before|week).*(paperwork)/i, type:'outcome', stmt:'Minimize the time required to complete new hire paperwork before the first day', job:'c360:Job-J2', step:'prepare', metric:'time', w:.8 },
+  { id:'C05', re:/(login|access|badge|safety training).*(first day|day one|worked)|(first day|day one).*(access|badge)/i, type:'outcome', stmt:'Minimize the likelihood that a new hire lacks system access or a badge on day one', job:'c360:Job-J2', step:'execute', metric:'likelihood', w:.84 },
+  { id:'C06', re:/(compare|side by side)/i, type:'outcome', stmt:'Minimize the time required to compare benefit plan costs side by side', job:'c360:Job-J3', step:'locate', metric:'time', w:.75, needs:/(plan|benefit|cost|premium)/i },
+  { id:'C07', re:/(explain|walk them through|plain words)/i, type:'outcome', stmt:'Minimize the effort required to explain benefit plan choices to employees', job:'c360:Job-J3', step:'execute', metric:'effort', w:.72, needs:/(benefit|plan|choice|enrollment)/i },
+  { id:'C08', re:/(reach someone|on hold|phone tree|get hold of)/i, type:'outcome', stmt:'Minimize the time required to reach someone who can resolve the issue', job:'c360:Job-J5', step:'execute', metric:'time', w:.82 },
+  { id:'C09', re:/(explain it again|tell the story again|start over|different person every time|three times)/i, type:'outcome', stmt:'Minimize the number of times the issue must be explained again', job:'c360:Job-J5', step:'execute', metric:'number', w:.74 },
+  { id:'C10', re:/((rule|law|regulation|minimum wage|tax rate)s?.*(chang|new|before they hit))|(chang\w* to the rules)/i, type:'outcome', stmt:'Minimize the likelihood of learning about a rule change after it takes effect', job:'c360:Job-J6', step:'monitor', metric:'likelihood', w:.76 },
+  { id:'C11', re:/(slept|sleep|breathe|relief|peace of mind)/i, type:'emotional', stmt:'Feel confident nothing is missed at payroll cutoff', w:.7, needs:/(payroll|thursday|friday|cutoff|check)/i },
+  { id:'C12', re:/(caught (me )?off guard|blindsided|found out too late)/i, type:'emotional', stmt:'Avoid feeling caught off guard by a rule change', w:.78 },
+  { id:'C13', re:/(owners?|dr\.|boss|⟦PERSON⟧ said).*(trust|smoothest|counts on|relies)/i, type:'social', stmt:'Be seen by the owners as trusted with company money and people', w:.68 },
+  { id:'C14', re:/(look after|taking care of my people|has their back|cared for)/i, type:'social', stmt:'Be seen by employees as someone who looks after them', w:.76 },
+  { id:'C15', re:/(on their phone|from the job site).*(approve)|approve\w* .*(on their phone|from the job site)/i, type:'outcome', stmt:'Minimize the time required to approve worker hours from the job site', job:'c360:Job-J1', step:'prepare', metric:'time', w:.7 },
+  { id:'C16', re:/(felt welcome|feel welcome|first impression)/i, type:'emotional', stmt:'Feel proud of the first impression a new hire gets', w:.62 },
+  { id:'C17', re:/(same person|one person at the provider|knows (us|our))/i, type:'outcome', stmt:'Minimize the number of different people involved in resolving one issue', job:'c360:Job-J5', step:'execute', metric:'number', w:.66 },
+  { id:'C18', re:/(premium|cost)s?.*(went up|increase|rise)|(surprise premium)/i, type:'outcome', stmt:'Minimize the likelihood of an unexpected benefit cost increase at renewal', job:'c360:Job-J3', step:'monitor', metric:'likelihood', w:.7 },
+  { id:'C19', re:/(dropping coverage|drop coverage)/i, type:'outcome', stmt:'Minimize the number of employees who drop benefit coverage at renewal', job:'c360:Job-J3', step:'conclude', metric:'number', w:.64 }
+];
+const STEP_VERBS = [ [/^(confirm|check|verify|review|compare)/,'confirm'], [/^(pull|collect|gather|find|request)/,'locate'], [/^(set|prepare|fill|start)/,'prepare'],
+  [/^(send|submit|run|release|sign|explain|walk)/,'execute'], [/^(decide|figure|plan|agree)/,'define'], [/^(watch|track|monitor)/,'monitor'], [/^(fix|adjust|redo)/,'modify'], [/^(close|file|wrap)/,'conclude'] ];
+function jobFromText(s, fallback){
+  if (/(offer letter|new-hire|logins?|badge|paperwork|start date|first day|signed|I-9|W-4)/i.test(s)) return 'c360:Job-J2';
+  if (/(time ?card|hours|payroll|their check|register)/i.test(s)) return 'c360:Job-J1';
+  if (/(plan|benefit|budget|renewal|premium)/i.test(s)) return 'c360:Job-J3';
+  return fallback || '';
+}
+function extract(segs, src){
+  const items = [], seen = {};
+  segs.filter(s => s.role === 'Participant').forEach(s => {
+    const sentences = s.text.match(/[^.!?]+[.!?]?/g) || [s.text];
+    sentences.forEach(raw => {
+      const sen = raw.trim(); if (sen.length < 12) return;
+      CUES.forEach(c => {
+        if (!c.re.test(sen) || (c.needs && !c.needs.test(sen))) return;
+        const key = c.type + '|' + c.stmt;
+        if (seen[key]) { seen[key].support.push({ seg:s.n, text:sen, phase:s.phase }); return; }
+        const it = { key, cue:c.id, type:c.type, statement:c.stmt, job:c.job || '', step:c.step ? 'jtbd:step-' + c.step : '', metric:c.metric || '', excerpt:sen, seg:s.n, phase:s.phase, w:c.w, support:[] };
+        seen[key] = it; items.push(it);
+      });
+      if (s.phase === 'design') {
+        const m = sen.match(/^(first|then|next|after that|finally),?\s+(?:I|we)(?:'d| would| will)?\s+(.+?)[.;]?$/i);
+        if (m) {
+          const body = m[2].replace(/\bmy\b/gi,'the').replace(/\bour\b/gi,'the').replace(/\s+/g,' ').trim();
+          const verb = body.split(' ')[0].toLowerCase(); const sv = STEP_VERBS.find(([re]) => re.test(verb));
+          const order = { first:1, then:2, next:3, 'after that':4, finally:5 }[m[1].toLowerCase()] || 1;
+          const st = uc(body);
+          items.push({ key:'step|' + st, cue:'S01', type:'step', statement:st, job: jobFromText(body, src.focusJob), step: sv ? 'jtbd:step-' + sv[1] : '', order, excerpt:sen, seg:s.n, phase:s.phase, w: sv ? .74 : .55, support:[] });
+        }
+      }
+    });
+  });
+  return items;
+}
+// ---- processing: resolve against the model (core + alternate-label graphs) ----
+function resolve(item, model, extraSteps){
+  let pool = [];
+  if (item.type === 'outcome') pool = Object.entries(model.outcomes).map(([iri, o]) => ({ iri, stmt:o.stmt, id:o.id }));
+  else if (item.type === 'step') pool = (extraSteps || []).map(x => ({ iri:x.iri, stmt:x.stmt, id:'step' }));
+  else { const kinds = item.type === 'functional' ? ['core','chain'] : [item.type]; pool = Object.entries(model.jobs).filter(([, j]) => kinds.includes(j.kind)).map(([iri, j]) => ({ iri, stmt:j.stmt, id:j.id })); }
+  const a = contentTokens(item.statement);
+  const ranked = pool.map(p => ({ iri:p.iri, id:p.id, stmt:p.stmt, score: +dice(a, contentTokens(p.stmt)).toFixed(2) })).sort((x, y) => y.score - x.score);
+  const best = ranked[0] || null;
+  let disposition = 'new';
+  if (best && best.score >= 0.6) disposition = 'existing'; else if (best && best.score >= 0.4) disposition = 'review';
+  return { best, ranked: ranked.slice(0, 4), disposition };
+}
+function acronymsIn(s){ return Object.keys(ACRONYMS).filter(a => new RegExp('(^|[^A-Za-z])' + a.replace('-','\\-') + '([^A-Za-z]|$)').test(s)); }
+const SOLUTION_WORDS = /\b(portal|app|software|system|spreadsheet|excel|dashboard|website|platform)\b/i;
+function validate(run, src){
+  const out = [];
+  if (!src.consent) out.push({ level:'error', rule:'GOV-01 Consent', msg:'No consent recorded for this source. It can be staged but not committed.' });
+  if (!src.persona) out.push({ level:'error', rule:'GOV-02 Persona', msg:'Assign the persona this participant represents.' });
+  const residue = run.segs.filter(s => /@|\d{3}[-. ]\d{4}/.test(s.text));
+  if (residue.length) out.push({ level:'error', rule:'PII-01 Residue', msg:`Possible personal data left in segment ${residue.map(s => s.n).join(', ')}.` });
+  run.items.forEach(it => {
+    if (it.decision === 'rejected') return;
+    const st = it.disposition === 'existing' ? '' : it.statement;
+    const acr = st ? acronymsIn(st) : [];
+    if (acr.length) out.push({ level:'warn', rule:'NAM-03 Acronym', msg:`Item ${it.n}: spell out ${acr.join(', ')} in the preferred label.`, item:it.n, fix:'acronym' });
+    if (st && it.type !== 'outcome' && SOLUTION_WORDS.test(st)) out.push({ level:'warn', rule:'JTBD-02 Solution-free', msg:`Item ${it.n}: the statement names a solution.`, item:it.n });
+    if (st && it.type === 'outcome' && !/^(Minimize|Increase) (the time required to|the likelihood|the cost of|the effort required to|the number of)\b/.test(st)) out.push({ level:'warn', rule:'ODI-01 Outcome format', msg:`Item ${it.n}: the outcome does not follow direction + metric + object.`, item:it.n });
+    if ((it.type === 'step' || it.type === 'outcome') && !it.job) out.push({ level:'warn', rule:'JTBD-04 Job link', msg:`Item ${it.n}: link it to a job.`, item:it.n });
+    if ((it.type === 'step' || it.type === 'outcome') && !it.step) out.push({ level:'warn', rule:'JTBD-05 Universal step', msg:`Item ${it.n}: place it on a universal job step.`, item:it.n });
+  });
+  return out;
+}
+function spotTerms(segs){
+  const known = new Set(ALT_GRAPHS.customer.labels.map(l => l[0].toLowerCase()));
+  const found = {};
+  segs.filter(s => s.role === 'Participant').forEach(s => TERM_SPOTTER.forEach(t => { if (t.re.test(s.text) && !known.has(t.term.toLowerCase())) { found[t.term] = found[t.term] || { term:t.term, canon:t.canon, segs:[], status:'proposed' }; found[t.term].segs.push(s.n); } }));
+  return Object.values(found);
+}
+function runPipeline(src, model, extraSteps){
+  const t0 = Date.now(), log = [];
+  const L = (cls, msg) => log.push({ cls, msg });
+  const fp = hash(src.raw);
+  L('', `POST /skl/inbound/v1/sources  ← ${src.channel} · ${src.raw.length} chars`);
+  L('ok', `201 Created  source ${src.id} · sha-fnv ${fp} · lineage ${src.system}`);
+  const segs = segment(src.raw);
+  const names = new Set();
+  segs.forEach(s => { if (s.role === 'Participant' && !/^(A|Participant)$/.test(s.speaker)) s.speaker.split(' ').forEach(p => names.add(p)); });
+  let phase = 'discover', red = 0; const kinds = {};
+  segs.forEach(s => {
+    if (s.role === 'Interviewer') { const p = phaseOf(s.raw); if (p) phase = p; }
+    s.phase = phase;
+    const r = redact(s.raw, { orgs: src.orgs, names: [...names] });
+    s.text = r.text; red += r.hits.length; r.hits.forEach(k => kinds[k] = (kinds[k] || 0) + 1);
+    s.speakerShown = s.role === 'Interviewer' ? 'Interviewer' : 'Participant';
+  });
+  L('', `POST /skl/inbound/v1/sources/${src.id}/normalize`);
+  L('ok', `200 OK  ${segs.length} segments · ${segs.filter(s => s.role === 'Participant').length} participant turns · speakers pseudonymized`);
+  L(red ? 'w' : 'ok', `200 OK  redaction · ${red} replaced (${Object.entries(kinds).map(([k, v]) => k.toLowerCase() + ' ' + v).join(', ') || 'none'})`);
+  const phases = {}; segs.forEach(s => phases[s.phase] = (phases[s.phase] || 0) + 1);
+  L('', `POST /skl/processing/v1/classify  · 4-D phase`);
+  L('ok', `200 OK  ${PHASES.map(p => p.label.toLowerCase() + ' ' + (phases[p.key] || 0)).join(' · ')}`);
+  const items = extract(segs, src);
+  L('', `POST /skl/processing/v1/extract  · rule pack ai-voc-0.3 (LLM extractor contract)`);
+  L('ok', `200 OK  ${items.length} candidate codes`);
+  items.forEach((it, i) => {
+    it.n = i + 1;
+    const r = resolve(it, model, extraSteps);
+    it.ranked = r.ranked; it.best = r.best; it.disposition = r.disposition;
+    it.target = r.disposition === 'existing' || r.disposition === 'review' ? (r.best ? r.best.iri : '') : '';
+    if (it.type === 'outcome' && !it.job && r.best && model.outcomes[r.best.iri]) it.job = model.outcomes[r.best.iri].job;
+    const phaseFit = (it.type === 'outcome' && (it.phase === 'destiny' || it.phase === 'dream')) || (it.type === 'step' && it.phase === 'design') || ((it.type === 'emotional' || it.type === 'social') && it.phase === 'discover') ? .06 : 0;
+    const resBoost = r.disposition === 'existing' ? r.best.score * .12 : 0;
+    it.confidence = Math.min(.98, +(it.w + phaseFit + resBoost + Math.min(it.support.length, 3) * .03).toFixed(2));
+    it.decision = 'pending';
+  });
+  const ev = items.filter(i => i.disposition === 'existing').length, rv = items.filter(i => i.disposition === 'review').length;
+  L('', `POST /skl/processing/v1/resolve  · graphs core, ${ALT_GRAPHS.provider.graph}, ${ALT_GRAPHS.customer.graph}`);
+  L('ok', `200 OK  ${ev} evidence for existing · ${rv} possible matches · ${items.length - ev - rv} new candidates`);
+  const terms = spotTerms(segs);
+  if (terms.length) L('w', `200 OK  vocabulary · ${terms.length} customer terms proposed as alternate labels`);
+  return { srcId: src.id, fp, segs, items, terms, log, ranAt: new Date().toISOString(), ms: Date.now() - t0, committed: false };
+}
+// ---- Turtle ----
+function tl(s, lang){ return '"' + String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n') + '"' + (lang === null ? '' : '@en'); }
+function tIri(s){ if (/^[a-z0-9]+:[^/]/i.test(s) && !/^https?:/.test(s)) return s.replace(/[^A-Za-z0-9_:.\-]/g, '_'); return '<' + s + '>'; }
+function prefixBlock(){ return Object.entries(PREFIXES).map(([k, v]) => `@prefix ${k}: <${v}> .`).join('\n') + '\n'; }
+// ===== PURE-END =====
+</script>
+
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
+const M = MODEL;
+const today = () => new Date().toISOString().slice(0, 10);
+const toast = m => { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 2800); };
+const pById = id => M.personas.find(p => p.id === id);
+const pByIri = iri => M.personas.find(p => p.iri === iri);
+const stepLabel = iri => { const s = M.steps.find(x => x.iri === iri); return s ? s.label : ''; };
+const jobOf = iri => M.jobs[iri];
+const itemStmt = iri => (M.jobs[iri] && M.jobs[iri].stmt) || (M.outcomes[iri] && M.outcomes[iri].stmt) || '';
+const itemId = iri => (M.jobs[iri] && M.jobs[iri].id) || (M.outcomes[iri] && M.outcomes[iri].id) || '';
+
+// ---------------- sample data: one guided interview + three conducted interviews ----------------
+const GUIDED = [{
+  id:'I-261104-g01', channel:'guided', persona:'c360:Persona-P3', date:'2026-11-04', interviewer:'VOC team · J. Wallk', profile:'Controller at a regional logistics company',
+  size:'50–149 employees', industry:'Transportation and logistics', topic:'Payroll weeks that close without surprises', focusJob:'c360:Job-J1', consent:true, published:true,
+  notes:{
+    discover:"Our best close was last March. Every site's hours were in by Wednesday, and I compared the register to the prior period in about twenty minutes instead of half a day. Nothing went out wrong. What made it possible was the supervisors approving hours themselves, so I wasn't chasing timesheets. I felt like I could actually breathe on payroll Friday. The owner stopped asking me if payroll was right; he just trusted it.",
+    dream:"If it always went that way, I would stop doing off-cycle corrections. We average three a month and each one costs an afternoon and an awkward conversation with the employee. My owner would see me as the person keeping the money safe, not the person explaining mistakes.",
+    design:"First I'd confirm every site has submitted hours by Wednesday noon. Then I'd run the register and compare it to last period only where something changed. Next I'd release funds Thursday. After that I'd watch for anyone who says their check is short. When something changes, like a new state tax rate, I want to know before the pay date.",
+    destiny:"I'd measure corrections per month, and under one is good. Time from cutoff to release under four hours. No surprises from rule changes. What would make it slip back is supervisors going back to paper timesheets."
+  },
+  codes:[
+    { n:1, type:'outcome', mode:'existing', target:'c360:Outcome-O2', phase:'discover', excerpt:"Every site's hours were in by Wednesday" },
+    { n:2, type:'outcome', mode:'existing', target:'c360:Outcome-O1', phase:'discover', excerpt:'I compared the register to the prior period in about twenty minutes instead of half a day.' },
+    { n:3, type:'emotional', mode:'existing', target:'c360:Job-E1', phase:'discover', excerpt:'I felt like I could actually breathe on payroll Friday.' },
+    { n:4, type:'social', mode:'existing', target:'c360:Job-S1', phase:'discover', excerpt:'The owner stopped asking me if payroll was right; he just trusted it.' },
+    { n:5, type:'outcome', mode:'existing', target:'c360:Outcome-O3', phase:'dream', excerpt:'I would stop doing off-cycle corrections. We average three a month' },
+    { n:6, type:'step', mode:'new', statement:'Run the register and compare it to last period where something changed', job:'c360:Job-J1', step:'jtbd:step-confirm', order:2, phase:'design', excerpt:"Then I'd run the register and compare it to last period only where something changed." },
+    { n:7, type:'outcome', mode:'new', direction:'Minimize', metric:'time', object:'release funds after the payroll cutoff', clarifier:'', job:'c360:Job-J1', step:'jtbd:step-execute', theme:'c360:Theme-Payroll', phase:'destiny', excerpt:'Time from cutoff to release under four hours.' },
+    { n:8, type:'outcome', mode:'existing', target:'c360:Outcome-O10', phase:'design', excerpt:'When something changes, like a new state tax rate, I want to know before the pay date.' }
+  ]
+}];
+const SOURCES = [
+  { id:'SRC-VOC-031', title:'Office manager · multi-site dental practice', system:'Call recording platform → transcript export', channel:'Recorded call transcript', persona:'c360:Persona-P2', focusJob:'c360:Job-J2', date:'2026-10-28', size:'20–49 employees', industry:'Healthcare services', consent:true, orgs:['Bright Smile Dental'],
+    raw:`Interviewer: Thanks for making time. To start, tell me about a time when getting a new hire ready went really well. What was happening?
+Dana Whitfield: Sure. Last spring we hired a hygienist, Priya, for our Elm Street office. Everything was done before her first day: the I-9, the W-4, the offer letter, all of it. She walked in and her login worked, her badge worked, she was seeing patients by ten.
+Interviewer: What made that possible?
+Dana Whitfield: Honestly, I started the paperwork two weeks before her start date instead of the Friday before. And the provider rep, Marcus, stayed with it the whole way. Same person, so I never had to explain it again.
+Interviewer: How did you feel at the end of it?
+Dana Whitfield: Proud. She told me she felt welcome from the minute she got the offer. And Dr. Okafor said it was the smoothest start we'd had. The owners trust me with this, and that week I earned it.
+Interviewer: Imagine it went that well every time. What would be different?
+Dana Whitfield: I wouldn't be chasing signatures at 7am on someone's first day. I'd stop worrying that a new hire won't have access on day one. And I'd stop getting blindsided when a rule changes, like the new state paid leave law last year. I found out too late.
+Interviewer: Walk me through the steps in that ideal version.
+Dana Whitfield: First I confirm the start date and role with the dentist. Then I send the offer letter and the I-9 and W-4 forms the same day. Next I request the logins and the badge. After that I check everything is signed a week out. Finally I walk them through benefits on their first afternoon.
+Interviewer: Where would you most want help?
+Dana Whitfield: Explaining benefits. Every new hire asks the same questions and I walk them through the plans one by one. That takes me an hour each time.
+Interviewer: How would you know it's working? What would you measure?
+Dana Whitfield: Zero people without access on day one. Paperwork done a week before they start. And when I call for help, I reach someone who knows us in under five minutes, not twenty minutes on hold in a phone tree.
+Interviewer: What would make it slip back?
+Dana Whitfield: If I get a different person every time and have to tell the story again. You can reach me at dana.w@brightsmiledental.com or 847-555-0142 if you need more.` },
+  { id:'SRC-VOC-034', title:'Owner · landscaping company', system:'Field notes (typed during interview)', channel:'Interviewer notes', persona:'c360:Persona-P1', focusJob:'c360:Job-J3', date:'2026-11-02', size:'20–49 employees', industry:'Landscaping services', consent:true, orgs:['Delgado Green'],
+    raw:`Q: Think of a time choosing benefits went really well. What was happening?
+A: Two years ago at renewal. Our broker laid out three plans side by side with the real cost per head, so I could compare them in an afternoon instead of a week. I picked one my crew actually used.
+Q: What made it possible?
+A: Having the numbers early, before open enrollment. And someone explaining the plans in plain words to the guys, in Spanish and English.
+Q: How did you feel, and how were you seen?
+A: Like I was taking care of my people. My crew knows I look after them. That matters more to me than the margin.
+Q: Imagine it always went that way. What would be different?
+A: No surprise premium increase at renewal. Last year premiums went up 18% and I found out three weeks before OE. I want to know about changes to the rules before they hit, not after. The minimum wage change caught me off guard.
+Q: Walk me through the steps in the ideal version.
+A: First I set a budget per head with my accountant. Then I compare the plan options side by side. Next I decide on the plan with my foreman. After that we explain the choices to the crew at the yard. Finally I sign the renewal.
+Q: How would you know it's working? What would you measure?
+A: Fewer guys dropping coverage. Cost rise under 5%. And not having to explain the benefits three times.
+Q: What's the one thing you'd want us to commit to?
+A: Tell me about cost increases at least 90 days ahead. Contact Ray Delgado, Delgado Green Landscaping LLC, (630) 555-0187.` },
+  { id:'SRC-VOC-037', title:'Site supervisor · commercial construction', system:'Meeting platform auto-transcript (.vtt)', channel:'Video meeting transcript', persona:'c360:Persona-P4', focusJob:'c360:Job-J1', date:'2026-11-06', size:'150–499 employees', industry:'Commercial construction', consent:false, orgs:[],
+    raw:`[00:00:41] Interviewer: Tell me about a payroll week that went really well for your crews.
+[00:00:52] Tom Brennan: The week we had every time card in by Thursday noon. Nobody was missing hours, nobody came to me Friday saying their check was short.
+[00:01:20] Interviewer: What made that possible?
+[00:01:28] Tom Brennan: The guys could approve their hours on their phone from the job site. I didn't have to drive to three sites chasing time cards.
+[00:02:05] Interviewer: How did that feel?
+[00:02:10] Tom Brennan: Relief. I slept Thursday night before payroll for once. My crew sees me as the guy who has their back. When their check is right, that's on me in their eyes.
+[00:02:48] Interviewer: Imagine every week went like that.
+[00:02:55] Tom Brennan: No payroll corrections the week after. Right now we do two or three off-cycle fixes a month. And new guys would have their safety training and their badge on day one so they're not sitting in the trailer.
+[00:03:40] Interviewer: Walk me through the steps.
+[00:03:46] Tom Brennan: First I pull the time cards from each site. Then I check the hours against the daily logs. Next I send the approved hours to the office by Thursday noon. After that I watch for anyone who says their check is short.
+[00:04:30] Interviewer: How would you measure it?
+[00:04:36] Tom Brennan: Number of corrections, under one a month. Every time card in by Thursday. And one person at the provider who knows our job codes, so it's the same person every time.` }
+];
+
+// ---------------- state (memory first; browser storage only as a convenience) ----------------
+const LS = 'voc-ai-standalone-v1';
+let S = load();
+function fresh(){ return { interviews: JSON.parse(JSON.stringify(GUIDED)), sources: JSON.parse(JSON.stringify(SOURCES)), runs:{}, decisions:{}, sel:'I-261104-g01', src:'SRC-VOC-031', q:'' }; }
+function load(){ try { const s = JSON.parse(localStorage.getItem(LS) || 'null'); if (s && s.interviews && s.sources) return s; } catch(e){} return fresh(); }
+function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){} }
+let coder = null;
+
+// ---------------- shared helpers over interviews ----------------
+const graphOf = iv => 'c360:graph/interviews/' + iv.id;
+function outcomeStatement(c){
+  if (c.custom && c.statement) return c.statement;
+  const m = METRICS[c.metric] || METRICS.time; let obj = (c.object || '').trim();
+  if (c.metric === 'likelihood' && obj && !/^(that|of)\b/i.test(obj)) obj = 'of ' + obj;
+  return obj ? `${c.direction || 'Minimize'} ${m.phrase} ${obj}${c.clarifier ? ', ' + c.clarifier.trim() : ''}` : '';
+}
+function codeStatement(c){ if (c.mode === 'existing') return itemStmt(c.target) || c.target; return c.type === 'outcome' && !c.statement ? outcomeStatement(c) : (c.statement || (c.type === 'outcome' ? outcomeStatement(c) : '')); }
+const codeIri = (iv, c) => 'air:' + iv.id + '-' + ({ functional:'Job', emotional:'EmotionalJob', social:'SocialJob', step:'Step', outcome:'Outcome' })[c.type] + '-' + c.n;
+const newCandidates = () => { const out = []; S.interviews.filter(iv => iv.published).forEach(iv => iv.codes.filter(c => c.mode === 'new').forEach(c => out.push({ iv, c, iri: codeIri(iv, c), stmt: codeStatement(c) }))); return out; };
+const knownSteps = () => newCandidates().filter(x => x.c.type === 'step').map(x => ({ iri:x.iri, stmt:x.stmt }));
+
+function interviewTTL(iv, run){
+  const T = tIri, L = tl, I = 'air:' + iv.id, out = [];
+  const blk = (subj, types, props) => out.push(`${T(subj)} a ${types.join(', ')} ;\n    ${props.filter(Boolean).join(' ;\n    ')} .\n`);
+  const pl = pByIri(iv.persona); const created = `dcterms:created "${iv.date || today()}"^^xsd:date`;
+  const ex = iv.codes.filter(c => (c.excerpt || '').trim());
+  blk(I, ['owl:NamedIndividual','ai:persona-interview','prov:Activity'], [
+    `rdfs:label ${L('Interview with ' + (pl ? pl.label : 'participant') + ', ' + (iv.date || today()))}`, `ai:hasInterviewIdentifier ${L(iv.id, null)}`,
+    iv.persona ? `ai:interviewsPersona ${T(iv.persona)}` : '', `ai:hasCaptureChannel ${L(iv.channel === 'guided' ? 'Guided appreciative inquiry' : iv.sourceChannel || 'Ingested', null)}`,
+    iv.date ? `ai:hasInterviewDate "${iv.date}"^^xsd:date` : '', iv.interviewer ? `ai:hasInterviewer ${L(iv.interviewer, null)}` : '',
+    iv.profile ? `ai:hasParticipantProfile ${L(iv.profile)}` : '', iv.size ? `ai:hasCompanySizeBand ${L(iv.size, null)}` : '', iv.industry ? `ai:hasIndustry ${L(iv.industry)}` : '',
+    iv.topic ? `ai:hasAffirmativeTopic ${L(iv.topic)}` : '', `ai:isConsentRecorded "${iv.consent ? 'true' : 'false'}"^^xsd:boolean`,
+    iv.sourceId ? `prov:wasDerivedFrom ${T('c360:source/' + iv.sourceId)}` : '', run ? `prov:wasGeneratedBy ${T('c360:ingestion-run/' + iv.sourceId + '-' + run.fp)}` : '',
+    PHASES.some(p => (iv.notes[p.key] || '').trim()) ? 'ai:hasInterviewNote ' + PHASES.filter(p => (iv.notes[p.key] || '').trim()).map(p => T(I + '-' + uc(p.key))).join(', ') : '',
+    ex.length ? 'ai:hasInterviewExcerpt ' + ex.map(c => T(I + '-Excerpt-' + c.n)).join(', ') : '', created]);
+  PHASES.filter(p => (iv.notes[p.key] || '').trim()).forEach(p => blk(I + '-' + uc(p.key), ['owl:NamedIndividual','ai:interview-note'], [`ai:hasInquiryPhase phase:${p.key}`, `ai:hasNoteText ${L(iv.notes[p.key])}`]));
+  ex.forEach(c => blk(I + '-Excerpt-' + c.n, ['owl:NamedIndividual','ai:interview-excerpt'], [`ai:hasExcerptText ${L(c.excerpt)}`, c.phase ? `ai:hasInquiryPhase phase:${c.phase}` : '',
+    `ai:isEvidenceFor ${T(c.mode === 'existing' ? c.target : codeIri(iv, c))}`, c.seg ? `ingest:hasSegmentNumber "${c.seg}"^^xsd:positiveInteger` : '',
+    c.confidence != null ? `ingest:hasExtractionConfidence "${c.confidence}"^^xsd:decimal` : '', c.score != null ? `ingest:hasResolutionScore "${c.score}"^^xsd:decimal` : '',
+    c.cue ? `ingest:extractedByRule ${L(c.cue, null)}` : '', c.steward ? `ingest:reviewedBy ${L(c.steward, null)}` : '']));
+  iv.codes.filter(c => c.mode === 'new').forEach(c => {
+    const iri = codeIri(iv, c), st = codeStatement(c); if (!st) return;
+    const base = [`rdfs:label ${L(st)}`, `skos:prefLabel ${L(st)}`, 'jtbd:hasEvidenceStatus evid:' + (S.decisions[iri] || 'candidate'), created];
+    if (['functional','emotional','social'].includes(c.type)) blk(iri, ['owl:NamedIndividual', c.type === 'functional' ? 'jtbd:core-functional-job' : 'jtbd:' + c.type + '-job'], [...base, `jtbd:hasJobStatement ${L(st)}`, iv.persona ? `jtbd:hasJobExecutor ${T(iv.persona)}` : '']);
+    else if (c.type === 'step') blk(iri, ['owl:NamedIndividual','jtbd:job-map-step'], [...base, `jtbd:hasStepStatement ${L(st)}`, c.job ? `jtbd:isStepOfJob ${T(c.job)}` : '', c.step ? `jtbd:isPlacedAtJobStep ${T(c.step)}` : '', c.order ? `jtbd:hasStepOrder "${c.order}"^^xsd:positiveInteger` : '']);
+    else { const js = c.job && jobOf(c.job) ? jobOf(c.job).stmt : ''; blk(iri, ['owl:NamedIndividual','jtbd:desired-outcome'], [...base, `jtbd:hasOutcomeStatement ${L(st)}`, c.job ? `jtbd:isOutcomeOfJob ${T(c.job)}` : '', c.step ? `jtbd:occursAtJobStep ${T(c.step)}` : '', c.theme ? `jtbd:hasBenchmarkTheme ${T(c.theme)}` : '', `jtbd:hasOutcomeMetricType metric:${(METRICS[c.metric] || METRICS.time).metric}`, js ? `jtbd:hasImportanceQuestion ${L('When you ' + lc(js) + ', how important is it to ' + lc(st) + '?')}` : '', `jtbd:hasSatisfactionQuestion ${L('How satisfied are you with your current ability to ' + lc(st) + '?')}`]); }
+  });
+  return `# Interview ${iv.id}\n# Named graph: ${graphOf(iv)}\n` + prefixBlock() + '\n' + out.join('\n');
+}
+function problems(iv){
+  const out = [];
+  if (!iv.persona) out.push('Choose the persona this participant represents.');
+  if (!iv.date) out.push('Add the interview date.');
+  if (!iv.consent) out.push('Record the participant’s consent before publishing.');
+  iv.codes.forEach(c => { const st = codeStatement(c);
+    if (c.mode === 'existing' && !c.target) out.push(`Code ${c.n}: pick the existing item it is evidence for.`);
+    if (c.mode === 'new' && !st) out.push(`Code ${c.n}: the statement is empty.`);
+    if (c.mode === 'new' && (c.type === 'step' || c.type === 'outcome') && !c.job) out.push(`Code ${c.n}: link it to a job.`);
+    const acr = c.mode === 'new' ? acronymsIn(st) : []; if (acr.length) out.push(`Code ${c.n}: spell out ${acr.join(', ')}.`); });
+  return out;
+}
+function copyText(txt, label){
+  const done = () => toast((label || 'Text') + ' copied');
+  const fb = () => { let f = $('copyfb'); if (!f) { f = document.createElement('div'); f.id = 'copyfb'; f.className = 'panel copyfb'; f.style.padding = '12px'; f.style.marginBottom = '14px'; document.querySelector('main').prepend(f); }
+    f.innerHTML = '<p class="note" style="margin-bottom:6px">Copying is blocked here. Select the text below and copy it. <button class="btn sm" type="button" id="fbx">Close</button></p><textarea readonly></textarea>'; const t = f.querySelector('textarea'); t.value = txt; t.focus(); t.select(); $('fbx').onclick = () => f.remove(); };
+  try { navigator.clipboard.writeText(txt).then(done, fb); } catch(e){ fb(); }
+}
+
+// ---------------- stats ----------------
+function renderStats(){
+  const ivs = S.interviews, pub = ivs.filter(i => i.published);
+  const codes = pub.reduce((a, i) => a + i.codes.length, 0);
+  const ing = pub.filter(i => i.channel === 'ingested').length;
+  const staged = Object.values(S.runs).filter(r => !r.committed).length;
+  $('stats').innerHTML = [['human', pub.length - ing, 'Guided, published'], ['machine', ing, 'Ingested, committed'], ['', staged, 'Staged for review'], ['', codes, 'Coded excerpts']]
+    .map(([c, n, l]) => `<div class="stat ${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+// ================= 1 · GUIDED CAPTURE =================
+function prompts(iv, ph){
+  const job = iv.focusJob && jobOf(iv.focusJob) ? lc(jobOf(iv.focusJob).stmt) : 'get your payroll, benefits and people work done';
+  return ({
+    discover:[`Tell me about a time when you were able to ${job} and it went really well. What was happening?`, 'What made that possible: people, information, timing, help from outside?', 'How did you feel at the end of it, and how did others see you?'],
+    dream:['Imagine it went that well every time. What would be different in your week?', 'What would you no longer have to check, chase or worry about?', 'What would your owners, managers or employees notice?'],
+    design:['Walk me through the steps you would take in that ideal version, from deciding what is needed to wrapping up.', 'Where would you most want help, and what would good help look like?', 'What has to be in place before each step can start?'],
+    destiny:['How would you know it is working? What would you measure, and what would count as good?', 'What would make it slip back to how it is today?', 'What is the one thing you would want us to commit to?']
+  })[ph.key];
+}
+function renderList(){
+  const q = (S.q || '').toLowerCase();
+  const list = S.interviews.filter(iv => !q || [iv.id, iv.profile, iv.topic, (pByIri(iv.persona) || {}).label].join(' ').toLowerCase().includes(q));
+  const groups = { 'Guided · drafts':[], 'Guided · published':[], 'Ingested · committed':[] };
+  list.forEach(iv => groups[iv.channel === 'ingested' ? 'Ingested · committed' : iv.published ? 'Guided · published' : 'Guided · drafts'].push(iv));
+  $('ivitems').innerHTML = Object.entries(groups).filter(([, v]) => v.length).map(([k, v]) => `<div class="grp">${k} · ${v.length}</div>` + v.map(iv => {
+    const p = pByIri(iv.persona);
+    return `<button class="ivitem" type="button" data-id="${esc(iv.id)}" aria-current="${S.sel === iv.id}"><span class="pd" style="background:${p ? p.col : 'var(--faint)'}"></span>
+      <span><b>${esc(p ? p.label : 'No persona yet')}</b>${esc(iv.profile || 'Profile not recorded')}</span><span class="tag">${iv.codes.length} codes</span>
+      <span class="meta">${esc(iv.id)} · ${esc(iv.date || '')}</span></button>`; }).join('')).join('') || '<p class="empty" style="padding:10px">No interviews match.</p>';
+  $('ivitems').querySelectorAll('.ivitem').forEach(b => b.onclick = () => { S.sel = b.dataset.id; coder = null; save(); renderList(); renderEditor(); });
+}
+function newInterview(){
+  const id = 'I-' + today().slice(2).replace(/-/g, '') + '-g' + Math.random().toString(36).slice(2, 5);
+  S.interviews.unshift({ id, channel:'guided', persona:'', date:today(), interviewer:'', profile:'', size:'', industry:'', topic:'', focusJob:'', consent:false, published:false, notes:{ discover:'', dream:'', design:'', destiny:'' }, codes:[] });
+  S.sel = id; coder = null; save(); renderAll();
+}
+const jobSel = (val) => '<option value="">Choose a job…</option>' + Object.entries(M.jobs).filter(([, j]) => j.kind === 'core' || j.kind === 'chain').map(([k, j]) => `<option value="${k}"${k === val ? ' selected' : ''}>${j.id} · ${esc(j.stmt)}</option>`).join('');
+const stepSel = (val) => '<option value="">Choose a universal step…</option>' + M.steps.map((s, i) => `<option value="${s.iri}"${s.iri === val ? ' selected' : ''}>${i + 1} · ${s.label}</option>`).join('');
+const themeSel = (val) => '<option value="">Theme…</option>' + Object.entries(M.themes).map(([k, l]) => `<option value="${k}"${k === val ? ' selected' : ''}>${esc(l)}</option>`).join('');
+function existingSel(c){
+  const o = (v, l) => `<option value="${v}"${v === c.target ? ' selected' : ''}>${esc(l)}</option>`;
+  if (c.type === 'outcome') return '<option value="">Choose the existing outcome…</option>' + Object.entries(M.outcomes).map(([k, x]) => o(k, x.id + ' · ' + x.stmt)).join('');
+  if (c.type === 'step') { const ks = knownSteps(); return '<option value="">Choose an existing job step…</option>' + ks.map(x => o(x.iri, x.stmt)).join(''); }
+  const kinds = c.type === 'functional' ? ['core','chain'] : [c.type];
+  return '<option value="">Choose the existing job…</option>' + Object.entries(M.jobs).filter(([, j]) => kinds.includes(j.kind)).map(([k, j]) => o(k, j.id + ' · ' + j.stmt)).join('');
+}
+function coderHTML(iv, c){
+  const t = TYPES[c.type], isNew = c.mode === 'new'; let f = '';
+  if (!isNew) f = `<label class="f spanall">Existing ${esc(t.label.toLowerCase())}<select data-k="target">${existingSel(c)}</select></label>`;
+  else if (c.type === 'functional') f = `<label class="f spanall">Job statement (verb + object + clarifier, no solution)<input type="text" id="c-statement" data-k="statement" value="${esc(c.statement || '')}" placeholder="e.g., Pay employees accurately and on time"></label>`;
+  else if (c.type === 'emotional' || c.type === 'social') f = `<label class="f spanall">${c.type === 'emotional' ? 'Feel… / Avoid feeling…' : 'Be seen as… / Be perceived as…'}<input type="text" id="c-statement" data-k="statement" value="${esc(c.statement || '')}"></label>`;
+  else if (c.type === 'step') f = `<label class="f span2">Job<select id="c-job" data-k="job">${jobSel(c.job || iv.focusJob)}</select></label><label class="f">Universal step<select id="c-step" data-k="step">${stepSel(c.step)}</select></label><label class="f">Order<input type="number" min="1" id="c-order" data-k="order" value="${esc(c.order || '')}"></label><label class="f spanall">Step in their words<input type="text" id="c-statement" data-k="statement" value="${esc(c.statement || '')}"></label>`;
+  else { const st = outcomeStatement(c), js = c.job && jobOf(c.job) ? jobOf(c.job).stmt : '';
+    f = `<label class="f span2">Job<select id="c-job" data-k="job">${jobSel(c.job || iv.focusJob)}</select></label><label class="f">Universal step<select id="c-step" data-k="step">${stepSel(c.step)}</select></label><label class="f">Theme<select id="c-theme" data-k="theme">${themeSel(c.theme)}</select></label>
+      <label class="f">Direction<select id="c-dir" data-k="direction">${['Minimize','Increase'].map(d => `<option${(c.direction || 'Minimize') === d ? ' selected' : ''}>${d}</option>`).join('')}</select></label>
+      <label class="f">Metric<select id="c-metric" data-k="metric">${Object.keys(METRICS).map(k => `<option value="${k}"${(c.metric || 'time') === k ? ' selected' : ''}>${METRICS[k].phrase.replace('the ', '')}</option>`).join('')}</select></label>
+      <label class="f span2">Object of control<input type="text" id="c-object" data-k="object" value="${esc(c.object || '')}" placeholder="e.g., release funds after the payroll cutoff"></label>
+      <label class="f spanall">Clarifier (optional)<input type="text" id="c-clar" data-k="clarifier" value="${esc(c.clarifier || '')}"></label>
+      <div class="spanall preview" id="c-prev">${esc(st || 'The statement builds here as you fill in the parts.')}${st && js ? `<span class="q">Survey item: When you ${esc(lc(js))}, how important is it to ${esc(lc(st))}?</span>` : ''}</div>`; }
+  return `<div class="panel coder" id="coder"><div class="ph"><h3>${c.saved ? 'Edit code ' + c.n : 'Code an excerpt'} · ${esc(t.label)}</h3><span class="note">${esc(t.help)}</span></div><div class="pb">
+    <div class="radios">${Object.keys(TYPES).map(k => `<label><input type="radio" name="ctype" value="${k}" ${c.type === k ? 'checked' : ''}>${TYPES[k].label}</label>`).join('')}</div>
+    <label class="f">Excerpt (the participant's words)<textarea id="c-excerpt" data-k="excerpt" rows="2">${esc(c.excerpt || '')}</textarea></label>
+    <div class="grid2"><label class="f">Phase<select id="c-phase" data-k="phase">${PHASES.map(p => `<option value="${p.key}"${c.phase === p.key ? ' selected' : ''}>${p.label}</option>`).join('')}</select></label>
+      <div class="radios" style="align-self:end">${[['existing','Evidence for an existing item'],['new','New candidate']].map(([k, l]) => `<label><input type="radio" name="cmode" value="${k}" ${c.mode === k ? 'checked' : ''}>${l}</label>`).join('')}</div></div>
+    <div class="grid4">${f}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="c-save" type="button">${c.saved ? 'Update code' : 'Add code'}</button><button class="btn" id="c-cancel" type="button">Cancel</button></div></div></div>`;
+}
+function wireCoder(iv){
+  const box = $('coder'); if (!box) return; const c = coder.code;
+  const rr = () => { const y = window.scrollY; renderEditor(); window.scrollTo(0, y); };
+  box.querySelectorAll('input[name="ctype"]').forEach(r => r.onchange = () => { c.type = r.value; c.target = ''; rr(); });
+  box.querySelectorAll('input[name="cmode"]').forEach(r => r.onchange = () => { c.mode = r.value; rr(); });
+  box.querySelectorAll('[data-k]').forEach(el => el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
+    c[el.dataset.k] = el.value;
+    if (c.type === 'outcome' && c.mode === 'new') { c.statement = ''; const st = outcomeStatement(c), js = c.job && jobOf(c.job) ? jobOf(c.job).stmt : ''; const pv = $('c-prev'); if (pv) pv.innerHTML = esc(st || 'The statement builds here as you fill in the parts.') + (st && js ? `<span class="q">Survey item: When you ${esc(lc(js))}, how important is it to ${esc(lc(st))}?</span>` : ''); }
+  }));
+  $('c-cancel').onclick = () => { coder = null; renderEditor(); };
+  $('c-save').onclick = () => {
+    if (c.mode === 'existing' && !c.target) { toast('Pick the existing item this excerpt is evidence for.'); return; }
+    if (c.mode === 'new' && !codeStatement(c)) { toast('Write the statement first.'); return; }
+    if (c.mode === 'new' && c.type === 'outcome') c.statement = outcomeStatement(c);
+    if (!c.saved) { c.n = iv.codes.reduce((a, x) => Math.max(a, x.n), 0) + 1; c.saved = true; iv.codes.push(c); }
+    coder = null; iv.dirty = true; save(); renderAll(); toast(`Code ${c.n} saved`);
+  };
+}
+function codesHTML(iv){
+  if (!iv.codes.length) return '<p class="empty">No codes yet. Select a passage in the notes and choose what it evidences.</p>';
+  return Object.keys(TYPES).map(type => { const list = iv.codes.filter(c => c.type === type); if (!list.length) return '';
+    return `<div><h4 style="margin-bottom:6px">${TYPES[type].label}s <span class="count">${list.length}</span></h4>` + list.map(c => {
+      const st = codeStatement(c), step = stepLabel(c.step);
+      return `<div class="code" style="--ccol:${TYPES[type].col}"><div style="display:grid;gap:4px;min-width:0"><span class="st">${esc(st || '(no statement)')}</span>
+        <div class="meta"><span class="tag">#${c.n}</span>${c.mode === 'existing' ? `<span class="badge machine">evidence for ${esc(itemId(c.target) || 'existing')}</span>` : '<span class="badge human">new candidate</span>'}
+        ${c.phase ? `<span class="tag">${uc(c.phase)}</span>` : ''}${c.mode === 'new' && c.job && jobOf(c.job) ? `<span>job ${jobOf(c.job).id}</span>` : ''}${step ? `<span>step ${step}</span>` : ''}
+        ${c.confidence != null ? `<span class="conf">conf ${c.confidence}</span>` : ''}${c.seg ? `<span class="mono" style="font-size:11px">seg ${c.seg}</span>` : ''}</div></div>
+        <div style="display:flex;gap:6px;align-items:start"><button class="btn sm" data-edit="${c.n}" type="button">Edit</button><button class="btn sm danger" data-del="${c.n}" type="button" aria-label="Remove code ${c.n}">✕</button></div>
+        ${c.excerpt ? `<div class="quote">“${esc(c.excerpt)}”</div>` : ''}</div>`; }).join('') + '</div>'; }).join('');
+}
+function renderEditor(){
+  const el = $('editor'), iv = S.interviews.find(x => x.id === S.sel);
+  if (!iv) { el.innerHTML = '<div class="panel"><div class="pb"><h2>Pick or start an interview</h2><p class="muted">Choose one on the left, or start a new guided interview.</p></div></div>'; return; }
+  const ing = iv.channel === 'ingested', probs = problems(iv);
+  const status = ing ? 'Committed by inbound services' : iv.published ? (iv.dirty ? 'Published · changes not yet published' : 'Published') : 'Draft';
+  el.innerHTML = `
+  <div class="panel"><div class="ph"><h2>${esc(iv.id)}</h2><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge ${ing ? 'machine' : 'human'}">${ing ? 'Ingested · ' + esc(iv.sourceChannel || '') : 'Guided capture'}</span><span class="badge ${iv.published ? 'good' : 'amber'}">${esc(status)}</span></div></div>
+    <div class="pb">
+      ${ing ? `<div class="callout info small">This interview arrived through the inbound pipeline from <b>${esc(iv.sourceId)}</b>. Notes below are the redacted participant turns, grouped by the phase the classifier assigned. Codes carry their segment, rule, confidence and steward. Edits here are recorded against the same graph.</div>` : ''}
+      <div class="grid4">
+        <label class="f span2">Persona<select id="f-persona"><option value="">Choose…</option>${M.personas.map(p => `<option value="${p.iri}"${iv.persona === p.iri ? ' selected' : ''}>${p.id} · ${esc(p.label)}</option>`).join('')}</select></label>
+        <label class="f">Date<input type="date" id="f-date" value="${esc(iv.date || '')}"></label>
+        <label class="f">Interviewer<input type="text" id="f-interviewer" value="${esc(iv.interviewer || '')}" placeholder="Name or team"></label>
+        <label class="f span2">Participant profile (no names)<input type="text" id="f-profile" value="${esc(iv.profile || '')}" placeholder="e.g., Controller at a regional logistics company"></label>
+        <label class="f">Company size<select id="f-size"><option value="">—</option>${SIZES.map(s => `<option${iv.size === s ? ' selected' : ''}>${s}</option>`).join('')}</select></label>
+        <label class="f">Industry<input type="text" id="f-industry" value="${esc(iv.industry || '')}"></label>
+        <label class="f span2">Affirmative topic<input type="text" id="f-topic" value="${esc(iv.topic || '')}" placeholder="e.g., Payroll weeks that close without surprises"></label>
+        <label class="f span2">Focus job (tailors the prompts)<select id="f-job"><option value="">Any job</option>${Object.entries(M.jobs).filter(([, j]) => j.kind === 'core' || j.kind === 'chain').map(([k, j]) => `<option value="${k}"${iv.focusJob === k ? ' selected' : ''}>${j.id} · ${esc(j.stmt)}</option>`).join('')}</select></label>
+        <label class="check spanall"><input type="checkbox" id="f-consent" ${iv.consent ? 'checked' : ''}> The participant agreed to be recorded and to have their words used, without attribution, in product research.</label>
+      </div></div></div>
+  <div class="panel"><div class="ph"><h3>Notes by phase</h3><span class="note">Select a passage in the notes, then code it with the buttons under each phase.</span></div>
+    ${PHASES.map(ph => `<div class="phase"><div style="display:grid;gap:6px;min-width:0"><h4><span class="n">${ph.n}</span>${ph.label}</h4>
+      <textarea id="n-${ph.key}" aria-label="${ph.label} notes" placeholder="What they said about ${ph.prompt}…">${esc(iv.notes[ph.key] || '')}</textarea>
+      <div class="codebar"><span class="lab">Code selection as</span>${Object.keys(TYPES).map(k => `<button class="btn sm" type="button" data-code="${k}" data-phase="${ph.key}">${TYPES[k].label}</button>`).join('')}</div></div>
+      <div><div class="eyebrow" style="margin-bottom:6px">${ing ? 'Questions this phase answers' : 'Ask'}</div><ol class="prompts">${prompts(iv, ph).map(q => `<li>${esc(q)}</li>`).join('')}</ol></div></div>`).join('')}
+  </div>
+  ${coder ? coderHTML(iv, coder.code) : ''}
+  <div class="panel"><div class="ph"><h3>Codes</h3><span class="note">${iv.codes.length} coded · ${iv.codes.filter(c => c.mode === 'new').length} new candidates · ${iv.codes.filter(c => c.mode === 'existing').length} evidence for existing items</span></div><div class="pb codes">${codesHTML(iv)}</div></div>
+  ${probs.length ? `<div class="callout warn"><b>Before publishing:</b> ${probs.map(esc).join(' ')}</div>` : ''}
+  <div class="panel"><div class="ph"><h3>Graph output</h3><span class="note mono">${esc(graphOf(iv))}</span></div><div class="pb"><pre class="ttl" id="ttl">${esc(interviewTTL(iv, ing ? S.runs[iv.sourceId] : null))}</pre></div>
+    <div class="savebar"><span class="msg">${ing ? 'Written through the inbound service; the graph is never addressed directly.' : 'Publishing writes this named graph through the semantic services.'}</span>
+      <button class="btn" id="b-copy" type="button">Copy Turtle</button>${ing ? '' : '<button class="btn danger" id="b-del" type="button">Delete</button>'}<button class="btn primary" id="b-pub" type="button">${iv.published ? 'Republish' : 'Publish'}</button></div></div>`;
+  const bind = (id, key, ev) => { const f = $(id); f.addEventListener(ev || 'input', () => { iv[key] = f.type === 'checkbox' ? f.checked : f.value; iv.dirty = true; save(); if (['persona','focusJob','consent'].includes(key)) { renderEditor(); renderList(); } else $('ttl').textContent = interviewTTL(iv, ing ? S.runs[iv.sourceId] : null); }); };
+  bind('f-persona','persona','change'); bind('f-date','date','change'); bind('f-interviewer','interviewer'); bind('f-profile','profile'); bind('f-size','size','change'); bind('f-industry','industry'); bind('f-topic','topic'); bind('f-job','focusJob','change'); bind('f-consent','consent','change');
+  PHASES.forEach(ph => { const t = $('n-' + ph.key); t.addEventListener('input', () => { iv.notes[ph.key] = t.value; iv.dirty = true; save(); }); });
+  el.querySelectorAll('[data-code]').forEach(b => { b.addEventListener('mousedown', e => e.preventDefault()); b.onclick = () => {
+    const t = $('n-' + b.dataset.phase), sel = t.value.slice(t.selectionStart, t.selectionEnd).trim();
+    if (!sel) toast('Tip: select the participant’s words first, so the excerpt is filled in.');
+    coder = { code:{ type:b.dataset.code, phase:b.dataset.phase, excerpt:sel, mode:'new', job:iv.focusJob || '', direction:'Minimize', metric:'time' } };
+    renderEditor(); const f = $('coder'); if (f) f.scrollIntoView({ behavior:'smooth', block:'center' }); }; });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { coder = { code: iv.codes.find(x => x.n === +b.dataset.edit) }; renderEditor(); const f = $('coder'); if (f) f.scrollIntoView({ behavior:'smooth', block:'center' }); });
+  el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { iv.codes = iv.codes.filter(x => x.n !== +b.dataset.del); iv.dirty = true; save(); renderAll(); });
+  $('b-copy').onclick = () => copyText($('ttl').textContent, 'Turtle');
+  if ($('b-del')) $('b-del').onclick = () => { S.interviews = S.interviews.filter(x => x.id !== iv.id); S.sel = S.interviews[0] ? S.interviews[0].id : null; save(); renderAll(); toast('Deleted ' + iv.id); };
+  $('b-pub').onclick = () => { const p = problems(iv); if (p.length) { toast(p[0]); return; } iv.published = true; iv.dirty = false; save(); renderAll(); toast(`Published ${iv.id} · PUT /skl/inbound/v1/interviews/${iv.id} → 204 (simulated)`); };
+  if (coder) wireCoder(iv);
+}
+
+// ================= 2 · INGEST (Semantic Services inbound) =================
+const STAGES = [
+  { lane:'Inbound', items:[['register','Register source & consent'],['acquire','Acquire & fingerprint'],['normalize','Normalize & segment'],['redact','Redact personal data']] },
+  { lane:'Processing', items:[['classify','Classify 4-D phase'],['extract','Extract candidate codes'],['resolve','Resolve to model & alt labels'],['validate','Validate governance rules']] },
+  { lane:'Steward review', items:[['review','Accept, re-point or reject'],['vocab','Approve vocabulary extensions']] },
+  { lane:'Commit', items:[['commit','Write named graphs via service'],['notify','Hand off to synthesis']] }
+];
+let animating = null;
+function stageState(run, src){
+  const st = {};
+  if (!run) { STAGES.forEach(l => l.items.forEach(([k]) => st[k] = { cls:'', r:'' })); st.register = { cls: src.persona ? 'done' : 'flag', r: src.consent ? 'consent ✓' : 'no consent' }; return st; }
+  const val = validate(run, src), errs = val.filter(v => v.level === 'error').length, warns = val.filter(v => v.level === 'warn').length;
+  const red = run.segs.reduce((a, s) => a + (s.text.match(/⟦/g) || []).length, 0);
+  const pend = run.items.filter(i => i.decision === 'pending').length, acc = run.items.filter(i => i.decision === 'accepted').length;
+  const tp = run.terms.filter(t => t.status === 'proposed').length;
+  Object.assign(st, {
+    register:{ cls: src.consent && src.persona ? 'done' : 'err', r: src.consent ? 'consent ✓' : 'no consent' },
+    acquire:{ cls:'done', r: run.fp }, normalize:{ cls:'done', r: run.segs.length + ' segs' }, redact:{ cls:'done', r: red + ' replaced' },
+    classify:{ cls:'done', r:'4 phases' }, extract:{ cls:'done', r: run.items.length + ' codes' },
+    resolve:{ cls:'done', r: run.items.filter(i => i.disposition === 'existing').length + ' matched' },
+    validate:{ cls: errs ? 'err' : warns ? 'flag' : 'done', r: errs + ' err · ' + warns + ' warn' },
+    review:{ cls: pend ? 'flag' : 'done', r: acc + ' accepted · ' + pend + ' open' }, vocab:{ cls: tp ? 'flag' : 'done', r: tp + ' open' },
+    commit:{ cls: run.committed ? 'done' : '', r: run.committed ? 'committed' : 'waiting' }, notify:{ cls: run.committed ? 'done' : '', r: run.committed ? 'in synthesis' : '' }
+  });
+  if (animating && animating.src === src.id) { const all = STAGES.flatMap(l => l.items.map(i => i[0])); all.forEach((k, i) => { if (i > animating.i) st[k] = { cls:'', r:'' }; else if (i === animating.i) st[k] = { cls:'run', r:'running' }; }); }
+  return st;
+}
+function railHTML(run, src){
+  const st = stageState(run, src);
+  return `<div class="rail">${STAGES.map(l => `<div class="lane"><div class="lt"><b>${l.lane}</b><span class="eyebrow">${l.lane === 'Steward review' ? 'Ops UX' : l.lane === 'Commit' ? 'Outbound to graph' : 'Semantic services'}</span></div>
+    ${l.items.map(([k, lab]) => `<div class="stg ${st[k].cls}"><span class="dot" aria-hidden="true"></span><span>${lab}</span><span class="r">${esc(st[k].r)}</span></div>`).join('')}</div>`).join('')}</div>`;
+}
+function srcListHTML(){
+  return S.sources.map(s => { const r = S.runs[s.id], p = pByIri(s.persona);
+    const badge = !r ? '<span class="badge plain">not run</span>' : r.committed ? '<span class="badge good">committed</span>' : '<span class="badge amber">in review</span>';
+    return `<button class="srcitem" type="button" data-src="${s.id}" aria-current="${S.src === s.id}"><span class="row"><span class="mono" style="font-size:11px">${s.id}</span>${badge}</span>
+      <b style="font-weight:600">${esc(s.title)}</b><span class="note">${esc(s.channel)} · ${p ? esc(p.label) : 'persona not set'} · ${esc(s.date)}</span></button>`; }).join('');
+}
+function hl(text){ return esc(text).replace(/⟦(\w+)⟧/g, '<mark class="pii">$1</mark>'); }
+function segsHTML(run, items){
+  const used = {}; (items || []).forEach(i => { (used[i.seg] = used[i.seg] || []).push(i.n); i.support.forEach(s => (used[s.seg] = used[s.seg] || []).push(i.n)); });
+  return run.segs.map(s => `<div class="seg ${s.role === 'Interviewer' ? 'iv' : ''}"><span class="ts">${esc(s.ts || '#' + s.n)}</span><span>${s.speakerShown}</span><span><span class="tag">${s.phase}</span></span>
+    <span class="txt">${hl(s.text)}${used[s.n] ? ` <span class="mono" style="font-size:10.5px;color:var(--machine)">→ items ${[...new Set(used[s.n])].join(', ')}</span>` : ''}</span></div>`).join('');
+}
+function itemHTML(it){
+  const t = TYPES[it.type], tgtOpts = it.ranked.map(r => `<option value="${r.iri}"${r.iri === it.target ? ' selected' : ''}>${esc(r.id)} · ${r.score.toFixed(2)} · ${esc(r.stmt)}</option>`).join('');
+  const dispLabel = { existing:'Evidence for existing', review:'Possible match', new:'New candidate' }[it.disposition];
+  const acr = it.disposition !== 'existing' ? acronymsIn(it.statement) : [];
+  return `<div class="item ${it.decision === 'accepted' ? 'acc' : it.decision === 'rejected' ? 'rej' : ''}" style="--ccol:${t.col}" data-item="${it.n}">
+    <div class="hd"><span class="tag">#${it.n}</span><b style="font-weight:600">${t.label}</b><span class="badge ${it.disposition === 'existing' ? 'machine' : it.disposition === 'review' ? 'amber' : 'human'}">${dispLabel}</span>
+      <span class="tag">${uc(it.phase)}</span><span class="conf" title="Extraction confidence">conf <i><b style="width:${Math.round(it.confidence * 100)}%"></b></i>${it.confidence.toFixed(2)}</span>
+      <span class="mono note">rule ${it.cue} · seg ${it.seg}${it.support.length ? ' +' + it.support.length + ' more' : ''}</span>
+      <span style="margin-left:auto" class="badge ${it.decision === 'accepted' ? 'good' : it.decision === 'rejected' ? 'plain' : 'amber'}">${it.decision}</span></div>
+    <div class="quote">“${hl(it.excerpt)}”</div>
+    <div class="disp"><select data-disp="${it.n}" aria-label="Disposition for item ${it.n}"><option value="existing"${it.disposition === 'existing' ? ' selected' : ''}>Evidence for existing</option><option value="review"${it.disposition === 'review' ? ' selected' : ''}>Possible match (link)</option><option value="new"${it.disposition === 'new' ? ' selected' : ''}>New candidate</option></select>
+      ${it.disposition === 'new' ? `<input type="text" data-stmt="${it.n}" value="${esc(it.statement)}" aria-label="Statement for item ${it.n}">` : `<select data-tgt="${it.n}" aria-label="Target for item ${it.n}">${tgtOpts || '<option value="">No existing item of this type</option>'}</select>`}</div>
+    ${it.disposition === 'new' ? `<div class="note">Extracted as: <i>${esc(it.statement)}</i>${it.best ? ` · nearest existing ${esc(it.best.id)} at ${it.best.score.toFixed(2)}` : ''}${it.job && jobOf(it.job) ? ` · job ${jobOf(it.job).id}` : ''}${it.step ? ` · step ${stepLabel(it.step)}` : ''}</div>` : `<div class="note">Extracted as: <i>${esc(it.statement)}</i> · resolved through ${/time cards?|pay run|day one|premium|on hold|rule/i.test(it.excerpt + it.statement) ? 'core + provider alternate labels' : 'core vocabulary'}</div>`}
+    ${acr.length ? `<div class="flags"><span class="badge warn">NAM-03</span><span class="note">Spell out ${acr.join(', ')}.</span><button class="btn sm" type="button" data-expand="${it.n}">Expand from alternate labels</button></div>` : ''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" type="button" data-acc="${it.n}">Accept</button><button class="btn sm" type="button" data-rej="${it.n}">Reject</button>${it.decision !== 'pending' ? `<button class="btn sm" type="button" data-pend="${it.n}">Reset</button>` : ''}</div></div>`;
+}
+function buildInterview(src, run){
+  const id = 'I-' + src.date.slice(2).replace(/-/g, '') + '-' + src.id.split('-').pop();
+  const notes = { discover:'', dream:'', design:'', destiny:'' };
+  run.segs.filter(s => s.role === 'Participant').forEach(s => { notes[s.phase] = (notes[s.phase] ? notes[s.phase] + '\n\n' : '') + s.text.replace(/⟦(\w+)⟧/g, '[$1]'); });
+  const codes = run.items.filter(i => i.decision === 'accepted').map((it, k) => {
+    const c = { n:k + 1, type:it.type, phase:it.phase, excerpt:it.excerpt.replace(/⟦(\w+)⟧/g, '[$1]'), seg:it.seg, cue:it.cue, confidence:it.confidence, steward:'ops-steward (sample)' };
+    if (it.disposition === 'new' || !it.target) { Object.assign(c, { mode:'new', statement:it.statement, job:it.job, step:it.step, order:it.order, metric:it.metric || 'time', theme: it.job ? ({ 'c360:Job-J1':'c360:Theme-Payroll','c360:Job-J2':'c360:Theme-Onboarding','c360:Job-J3':'c360:Theme-Benefits','c360:Job-J5':'c360:Theme-Service','c360:Job-J6':'c360:Theme-Compliance' })[it.job] : '' }); }
+    else { const r = it.ranked.find(x => x.iri === it.target); Object.assign(c, { mode:'existing', target:it.target, score: r ? r.score : null }); }
+    return c;
+  });
+  return { id, channel:'ingested', sourceId:src.id, sourceChannel:src.channel, persona:src.persona, date:src.date, interviewer:'Inbound services · ' + src.system, profile: src.title.replace(' · ', ' at a ').replace(/^(\w)/, m => m.toUpperCase()),
+    size:src.size, industry:src.industry, topic:'', focusJob:src.focusJob, consent:src.consent, published:true, notes, codes };
+}
+function altTTL(run){
+  const ok = run.terms.filter(t => t.status === 'approved'); if (!ok.length) return '';
+  return `\n# Customer alternate labels, kept in their own graph\n# Named graph: ${ALT_GRAPHS.customer.graph}\n` + ok.map(t => `c360:term-${t.canon.replace(/\W+/g, '-')} skos:altLabel ${tl(t.term)} ;\n    prov:wasDerivedFrom ${tIri('c360:source/' + run.srcId)} .`).join('\n') + '\n';
+}
+function runTTL(src, run){
+  return `\n# Ingestion run provenance\n# Named graph: c360:graph/ingestion-runs\n${tIri('c360:ingestion-run/' + src.id + '-' + run.fp)} a ingest:ingestion-run, prov:Activity ;\n    prov:used ${tIri('c360:source/' + src.id)} ;\n    ingest:hasSourceFingerprint ${tl(run.fp, null)} ;\n    ingest:usedRulePack ${tl('ai-voc-0.3', null)} ;\n    ingest:hasSegmentCount "${run.segs.length}"^^xsd:integer ;\n    ingest:hasAcceptedCount "${run.items.filter(i => i.decision === 'accepted').length}"^^xsd:integer ;\n    ingest:hasRejectedCount "${run.items.filter(i => i.decision === 'rejected').length}"^^xsd:integer ;\n    prov:startedAtTime "${run.ranAt}"^^xsd:dateTime .\n${tIri('c360:source/' + src.id)} a ingest:interview-source ;\n    ingest:hasSourceSystem ${tl(src.system, null)} ;\n    ingest:hasCaptureChannel ${tl(src.channel, null)} ;\n    ai:isConsentRecorded "${src.consent}"^^xsd:boolean .\n`;
+}
+function renderIngest(){
+  const el = $('v-ingest'), src = S.sources.find(s => s.id === S.src) || S.sources[0], run = S.runs[src.id];
+  const val = run ? validate(run, src) : [], errs = val.filter(v => v.level === 'error');
+  const pend = run ? run.items.filter(i => i.decision === 'pending').length : 0, acc = run ? run.items.filter(i => i.decision === 'accepted').length : 0;
+  const preview = run ? interviewTTL(buildInterview(src, run), run) + altTTL(run) + runTTL(src, run) : '';
+  el.innerHTML = `
+  <div class="section"><div class="section-head"><h2>Inbound pipeline</h2><span class="count">${src.id}</span><span class="def">Interviews conducted outside the guided tool (recorded calls, field notes, meeting transcripts) enter through the semantic services. The graph is never exposed: sources go in through the inbound service, the processing services do the work, a steward reviews in this screen, and only the commit service writes the named graphs.</span></div>
+    ${railHTML(run, src)}</div>
+  <div class="ilayout">
+    <aside class="panel" aria-label="Sources"><div class="ph"><h3>Source queue</h3><span class="note">${S.sources.length} sources</span></div>
+      <div class="pb" style="gap:8px">${srcListHTML()}
+        <details><summary class="small" style="cursor:pointer;font-weight:600">Add a transcript</summary><div style="display:grid;gap:8px;margin-top:8px">
+          <label class="f">Title<input type="text" id="ns-title" placeholder="e.g., Controller · manufacturing"></label>
+          <label class="f">Paste transcript (Speaker: text, Q:/A:, or [hh:mm:ss] Speaker: text)<textarea id="ns-raw" rows="6"></textarea></label>
+          <label class="f">…or choose a .txt / .vtt file<input type="file" id="ns-file" accept=".txt,.vtt,.md,text/plain"></label>
+          <button class="btn" id="ns-add" type="button">Register source</button></div></details>
+      </div></aside>
+    <div style="display:grid;gap:16px;min-width:0">
+      <div class="panel"><div class="ph"><h3>1 · Register and acquire</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn teal" id="run" type="button">${run ? 'Re-run pipeline' : 'Run inbound pipeline'}</button></div></div>
+        <div class="pb"><div class="grid4">
+          <label class="f span2">Source system<input type="text" id="s-system" value="${esc(src.system)}"></label>
+          <label class="f">Capture channel<input type="text" id="s-channel" value="${esc(src.channel)}"></label>
+          <label class="f">Interview date<input type="date" id="s-date" value="${esc(src.date)}"></label>
+          <label class="f span2">Persona<select id="s-persona"><option value="">Choose…</option>${M.personas.map(p => `<option value="${p.iri}"${src.persona === p.iri ? ' selected' : ''}>${p.id} · ${esc(p.label)}</option>`).join('')}</select></label>
+          <label class="f span2">Focus job (fallback for steps)<select id="s-job"><option value="">None</option>${Object.entries(M.jobs).filter(([, j]) => j.kind === 'core' || j.kind === 'chain').map(([k, j]) => `<option value="${k}"${src.focusJob === k ? ' selected' : ''}>${j.id} · ${esc(j.stmt)}</option>`).join('')}</select></label>
+          <label class="f span2">Organization names to redact (comma-separated)<input type="text" id="s-orgs" value="${esc((src.orgs || []).join(', '))}"></label>
+          <label class="f">Company size<select id="s-size"><option value="">—</option>${SIZES.map(s => `<option${src.size === s ? ' selected' : ''}>${s}</option>`).join('')}</select></label>
+          <label class="f">Industry<input type="text" id="s-industry" value="${esc(src.industry || '')}"></label>
+          <label class="check spanall"><input type="checkbox" id="s-consent" ${src.consent ? 'checked' : ''}> Consent to record and to use the participant's words, without attribution, is on file for this source.</label>
+        </div>
+        ${run ? `<div class="log" aria-label="Service log">${run.log.map(l => `<div class="${l.cls}">${esc(l.msg)}</div>`).join('')}</div>` : '<p class="empty">Not run yet. Check the metadata, then run the pipeline.</p>'}</div></div>
+      ${run ? `
+      <div class="panel"><div class="ph"><h3>2 · Normalized, redacted and phase-classified segments</h3><span class="note">${run.segs.length} segments · speakers pseudonymized · <mark class="pii">PERSON</mark> marks a redaction</span></div>
+        <div class="pb"><div class="segs">${segsHTML(run, run.items)}</div></div></div>
+      <div class="panel"><div class="ph"><h3>3 · Steward review queue</h3><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="note">${acc} accepted · ${pend} open · ${run.items.length - acc - pend} rejected</span><button class="btn sm" id="acc-hi" type="button">Accept all at 0.75 or above</button></div></div>
+        <div class="pb">${run.items.map(itemHTML).join('') || '<p class="empty">Nothing extracted.</p>'}</div></div>
+      <div class="guide">
+        <div class="panel"><div class="ph"><h3>4 · Governance checks</h3><span class="note">${errs.length} blocking · ${val.length - errs.length} warnings</span></div>
+          <div class="pb">${val.length ? val.map(v => `<div style="display:flex;gap:8px;align-items:baseline"><span class="badge ${v.level === 'error' ? 'warn' : 'amber'}">${esc(v.rule)}</span><span class="small">${esc(v.msg)}</span></div>`).join('') : '<p class="small" style="color:var(--good)">All rules pass.</p>'}</div></div>
+        <div class="panel"><div class="ph"><h3>5 · Vocabulary extensions</h3><span class="note">Customer terms go to ${esc(ALT_GRAPHS.customer.graph)}, never into core</span></div>
+          <div class="pb" style="gap:0">${run.terms.length ? run.terms.map((t, i) => `<div class="vocab"><span><b>${esc(t.term)}</b> <span class="mono note">seg ${t.segs.join(', ')}</span></span><span class="small">alternate label for <i>${esc(t.canon)}</i></span>
+            <span>${t.status === 'proposed' ? `<button class="btn sm" data-term="${i}" data-st="approved" type="button">Approve</button> <button class="btn sm" data-term="${i}" data-st="declined" type="button">Decline</button>` : `<span class="badge ${t.status === 'approved' ? 'good' : 'plain'}">${t.status}</span>`}</span></div>`).join('') : '<p class="empty">No new customer terms spotted.</p>'}</div></div>
+      </div>
+      <div class="panel"><div class="ph"><h3>6 · Commit through the service</h3><span class="note mono">PUT /skl/inbound/v1/interviews · service account svc-voc-ingest</span></div>
+        <div class="pb">${run.committed ? `<div class="callout info small">Committed ${esc(run.committedAt || '')}. The interview is in Guided capture under <b>Ingested · committed</b> and counted in Synthesis.</div>` : errs.length ? `<div class="callout warn"><b>Commit is blocked:</b> ${errs.map(e => esc(e.msg)).join(' ')}</div>` : pend ? `<div class="callout warn">${pend} item${pend === 1 ? '' : 's'} still open. Accept or reject every item before committing.</div>` : ''}
+          <pre class="ttl">${esc(preview)}</pre>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="copy-prev" type="button">Copy Turtle</button><button class="btn primary" id="commit" type="button" ${errs.length || pend || run.committed || !acc ? 'disabled' : ''}>Commit ${acc} accepted code${acc === 1 ? '' : 's'}</button></div></div></div>` : ''}
+    </div></div>`;
+  // wiring
+  el.querySelectorAll('[data-src]').forEach(b => b.onclick = () => { S.src = b.dataset.src; save(); renderIngest(); });
+  const sb = (id, key, ev, fn) => { const f = $(id); f.addEventListener(ev || 'change', () => { src[key] = fn ? fn(f) : f.type === 'checkbox' ? f.checked : f.value; save(); renderIngest(); renderStats(); }); };
+  sb('s-system','system'); sb('s-channel','channel'); sb('s-date','date'); sb('s-persona','persona'); sb('s-job','focusJob'); sb('s-size','size'); sb('s-industry','industry'); sb('s-consent','consent');
+  sb('s-orgs','orgs','change', f => f.value.split(',').map(s => s.trim()).filter(Boolean));
+  $('run').onclick = () => runAnimated(src);
+  $('ns-file').onchange = e => { const f = e.target.files[0]; if (!f) return; f.text().then(t => { $('ns-raw').value = t; if (!$('ns-title').value) $('ns-title').value = f.name.replace(/\.\w+$/, ''); }); };
+  $('ns-add').onclick = () => { const raw = $('ns-raw').value.trim(); if (raw.length < 40) { toast('Paste a transcript first.'); return; }
+    const id = 'SRC-VOC-' + String(100 + S.sources.length).padStart(3, '0');
+    S.sources.push({ id, title: $('ns-title').value.trim() || 'Uploaded transcript', system:'Manual upload', channel:'Uploaded transcript', persona:'', focusJob:'', date:today(), size:'', industry:'', consent:false, orgs:[], raw });
+    S.src = id; save(); renderIngest(); toast('Registered ' + id + '. Set the persona and consent, then run it.'); };
+  if (!run) return;
+  const upd = () => { save(); renderIngest(); renderStats(); };
+  el.querySelectorAll('[data-acc]').forEach(b => b.onclick = () => { run.items.find(i => i.n === +b.dataset.acc).decision = 'accepted'; upd(); });
+  el.querySelectorAll('[data-rej]').forEach(b => b.onclick = () => { run.items.find(i => i.n === +b.dataset.rej).decision = 'rejected'; upd(); });
+  el.querySelectorAll('[data-pend]').forEach(b => b.onclick = () => { run.items.find(i => i.n === +b.dataset.pend).decision = 'pending'; upd(); });
+  el.querySelectorAll('[data-disp]').forEach(s => s.onchange = () => { const it = run.items.find(i => i.n === +s.dataset.disp); it.disposition = s.value; if (s.value !== 'new' && !it.target && it.best) it.target = it.best.iri; upd(); });
+  el.querySelectorAll('[data-tgt]').forEach(s => s.onchange = () => { run.items.find(i => i.n === +s.dataset.tgt).target = s.value; save(); });
+  el.querySelectorAll('[data-stmt]').forEach(s => s.onchange = () => { run.items.find(i => i.n === +s.dataset.stmt).statement = s.value; upd(); });
+  el.querySelectorAll('[data-expand]').forEach(b => b.onclick = () => { const it = run.items.find(i => i.n === +b.dataset.expand); acronymsIn(it.statement).forEach(a => it.statement = it.statement.replace(new RegExp('\\b' + a.replace('-', '\\-') + '\\b'), ACRONYMS[a])); upd(); });
+  el.querySelectorAll('[data-term]').forEach(b => b.onclick = () => { const t = run.terms[+b.dataset.term]; t.status = b.dataset.st; if (t.status === 'approved') ALT_GRAPHS.customer.labels.push([t.term.toLowerCase(), t.canon]); upd(); });
+  $('acc-hi').onclick = () => { let n = 0; run.items.forEach(i => { if (i.decision === 'pending' && i.confidence >= .75) { i.decision = 'accepted'; n++; } }); upd(); toast(`Accepted ${n} item${n === 1 ? '' : 's'}`); };
+  $('copy-prev').onclick = () => copyText(preview, 'Turtle');
+  const cm = $('commit'); if (cm) cm.onclick = () => {
+    const iv = buildInterview(src, run);
+    S.interviews = S.interviews.filter(x => x.id !== iv.id); S.interviews.push(iv);
+    run.committed = true; run.committedAt = new Date().toLocaleString();
+    run.log.push({ cls:'', msg:`PUT /skl/inbound/v1/interviews/${iv.id}  · ${iv.codes.length} codes · graph ${graphOf(iv)}` });
+    if (run.terms.some(t => t.status === 'approved')) run.log.push({ cls:'', msg:`PATCH /skl/vocab/v1/altlabels/customer  · ${run.terms.filter(t => t.status === 'approved').length} alternate labels (separate graph)` });
+    run.log.push({ cls:'ok', msg:'204 No Content  · audit event written · synthesis notified' });
+    save(); renderAll(); toast('Committed ' + iv.id + ' through the inbound service');
+  };
+}
+function runAnimated(src){
+  const all = STAGES.flatMap(l => l.items.map(i => i[0])), stop = all.indexOf('review');
+  S.runs[src.id] = runPipeline(src, M, knownSteps());
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { save(); renderAll(); return; }
+  animating = { src: src.id, i: 0 }; renderIngest();
+  const tick = () => { animating.i++; if (animating.i >= stop) { animating = null; save(); renderAll(); toast('Pipeline finished. Review the queue.'); return; } const y = window.scrollY; renderIngest(); window.scrollTo(0, y); setTimeout(tick, 220); };
+  setTimeout(tick, 220);
+}
+
+// ================= 3 · SYNTHESIS =================
+function renderSynth(){
+  const el = $('v-synthesis'), pub = S.interviews.filter(i => i.published), TARGET = 3;
+  const rows = M.personas.map(p => { const mine = pub.filter(i => i.persona === p.iri); return { p, g: mine.filter(i => i.channel === 'guided').length, x: mine.filter(i => i.channel === 'ingested').length, codes: mine.reduce((a, i) => a + i.codes.length, 0) }; });
+  const max = Math.max(TARGET + 1, ...rows.map(r => r.g + r.x));
+  const ev = {}; pub.forEach(iv => iv.codes.filter(c => c.mode === 'existing').forEach(c => { (ev[c.target] = ev[c.target] || []).push({ iv, c }); }));
+  const evRows = Object.keys(M.outcomes).concat(Object.keys(M.jobs)).map(k => ({ k, list: ev[k] || [] })).sort((a, b) => b.list.length - a.list.length);
+  const cands = newCandidates();
+  // cluster near-duplicate candidates across interviews
+  cands.forEach(x => { x.similar = cands.filter(y => y !== x && y.c.type === x.c.type && dice(contentTokens(x.stmt), contentTokens(y.stmt)) >= .5).map(y => y.iv.id); });
+  el.innerHTML = `
+  <div class="section"><div class="section-head"><h2>Coverage by persona</h2><span class="count">${pub.length} interviews</span><span class="def">Aim for ${TARGET} interviews per persona before fielding the Job Study survey. Ingested interviews count the same as guided ones once a steward has committed them.</span></div>
+    <div class="panel"><div class="pb cov"><div class="legend"><span style="--c:var(--human)">Guided capture</span><span style="--c:var(--machine)">Ingested through inbound services</span><span style="--c:var(--ink)">Target</span></div>
+      ${rows.map(r => `<div class="covrow"><span><span class="tag" style="margin-right:6px">${r.p.id}</span>${esc(r.p.label)}</span><div class="covbar" role="img" aria-label="${r.g} guided, ${r.x} ingested of ${TARGET}"><i class="g" style="width:${r.g / max * 100}%"></i><i class="x" style="width:${r.x / max * 100}%"></i><span class="tgt" style="left:${TARGET / max * 100}%"></span></div><span class="mono small">${r.g + r.x}/${TARGET} · ${r.codes} codes</span></div>`).join('')}</div></div></div>
+  <div class="section"><div class="section-head"><h2>Evidence for the benchmark</h2><span class="count">${evRows.filter(r => r.list.length).length} of ${evRows.length} items supported</span><span class="def">Existing jobs and outcomes that interviews support, most-quoted first, split by channel. Items with no evidence after a full round are candidates to drop from the next survey wave.</span></div>
+    <div class="panel"><div class="scroll"><table class="t"><thead><tr><th>Item</th><th>Statement</th><th class="num">Guided</th><th class="num">Ingested</th><th class="num">Interviews</th><th>Sample quote</th></tr></thead><tbody>
+      ${evRows.map(r => { const g = r.list.filter(x => x.iv.channel === 'guided').length, x = r.list.length - g;
+        return `<tr><td class="mono">${itemId(r.k)}</td><td style="min-width:240px">${esc(itemStmt(r.k))}</td><td class="num">${g || '·'}</td><td class="num">${x || '·'}</td><td class="num">${new Set(r.list.map(y => y.iv.id)).size || '<span class="badge plain">none</span>'}</td><td>${r.list.length ? `<div class="quote">“${esc(r.list[0].c.excerpt)}”</div>` : ''}</td></tr>`; }).join('')}
+    </tbody></table></div></div></div>
+  <div class="section"><div class="section-head"><h2>Candidates from interviews</h2><span class="count">${cands.length}</span><span class="def">New jobs, steps and outcomes from both channels. Similar statements from other interviews are listed so the steward can merge them. Validated outcomes go to the next survey wave.</span></div>
+    <div class="panel"><div class="ph"><span class="note">Status decisions are written to c360:graph/evidence-decisions.</span><button class="btn" id="exp" type="button">Copy validated outcomes as survey CSV</button></div>
+    <div class="scroll"><table class="t"><thead><tr><th>Type</th><th>Statement</th><th>Job</th><th>From</th><th>Similar in</th><th>Status</th><th></th></tr></thead><tbody>
+      ${cands.length ? cands.map(x => { const s = S.decisions[x.iri] || 'candidate';
+        return `<tr><td>${TYPES[x.c.type].label}</td><td style="min-width:240px">${esc(x.stmt)}</td><td>${x.c.job && jobOf(x.c.job) ? jobOf(x.c.job).id : '—'}</td><td><span class="badge ${x.iv.channel === 'guided' ? 'human' : 'machine'}">${x.iv.channel}</span> <span class="mono note">${esc(x.iv.id)}</span></td>
+          <td class="mono note">${x.similar.length ? esc(x.similar.join(', ')) : '—'}</td><td><span class="badge ${s === 'validated' ? 'good' : s === 'retired' ? 'plain' : 'amber'}">${s}</span></td>
+          <td style="white-space:nowrap">${s !== 'validated' ? `<button class="btn sm" data-dec="validated" data-iri="${esc(x.iri)}" type="button">Validate</button>` : ''} ${s !== 'retired' ? `<button class="btn sm" data-dec="retired" data-iri="${esc(x.iri)}" type="button">Retire</button>` : ''}</td></tr>`; }).join('')
+        : '<tr><td colspan="7" class="empty">No candidates yet.</td></tr>'}
+    </tbody></table></div></div></div>`;
+  el.querySelectorAll('[data-dec]').forEach(b => b.onclick = () => { S.decisions[b.dataset.iri] = b.dataset.dec; save(); renderSynth(); });
+  $('exp').onclick = () => {
+    const v = cands.filter(x => x.c.type === 'outcome' && S.decisions[x.iri] === 'validated');
+    if (!v.length) { toast('Validate at least one outcome first.'); return; }
+    const q = s => `"${String(s == null ? '' : s).replace(/"/g, '""')}"`;
+    const rows = [['Outcome IRI','Desired outcome','Job','Universal step','Theme','Importance item','Satisfaction item','Source channel']].concat(v.map(x => { const js = jobOf(x.c.job) ? jobOf(x.c.job).stmt : ''; return [x.iri, x.stmt, js, stepLabel(x.c.step), M.themes[x.c.theme] || '', js ? `When you ${lc(js)}, how important is it to ${lc(x.stmt)}?` : '', `How satisfied are you with your current ability to ${lc(x.stmt)}?`, x.iv.channel]; }));
+    copyText(rows.map(r => r.map(q).join(',')).join('\n'), 'Survey CSV');
+  };
+}
+
+// ================= 4 · METHOD =================
+function renderMethod(){
+  $('v-method').innerHTML = `
+  <div class="section"><div class="section-head"><h2>Where this sits in the loop</h2></div>
+    <div class="loop"><span class="here">Appreciative Inquiry (VOC)</span><i>→</i><span>Persona Models</span><i>→</i><span>Job Study survey</span><i>→</i><span>Outcome Review</span><i>→</i><span>Outcome Playbook</span><i>→</i><span>Requirements gateway</span><i>→</i><span>Demand planning</span><i>→</i><span>Re-measure</span><i>↺</i></div></div>
+  <div class="section"><div class="section-head"><h2>Two ways in, one contract</h2><span class="def">Whatever the channel, the graph receives the same shapes, so Persona Models, the survey generator and synthesis never need to know how an interview arrived.</span></div>
+    <div class="paths">
+      <div class="path" style="--c:var(--human)"><h3>Guided capture</h3><ol><li>Interviewer picks persona, focus job and affirmative topic.</li><li>The 4-D prompts adapt to the focus job.</li><li>Notes are taken by phase; passages are coded live.</li><li>Outcomes are built in survey format with a live importance item.</li><li>Publish writes the named graph through the service.</li></ol></div>
+      <div class="contract"><b>Same output</b><span class="mono" style="font-size:11px">ai:persona-interview<br>ai:interview-note<br>ai:interview-excerpt<br>ai:isEvidenceFor<br>jtbd:* candidates<br>evid:candidate</span></div>
+      <div class="path" style="--c:var(--machine)"><h3>Inbound semantic services</h3><ol><li>Register source with lineage and consent; fingerprint it.</li><li>Normalize speakers and segments; redact personal data.</li><li>Classify each turn to Discover, Dream, Design or Destiny from the question asked.</li><li>Extract candidate codes; resolve them against core vocabulary and the separate alternate-label graphs.</li><li>Validate naming, outcome-format, consent and residue rules.</li><li>Steward accepts, re-points or rejects; approves customer terms.</li><li>Commit writes interview, provenance and alternate-label graphs.</li></ol></div>
+    </div></div>
+  <div class="section"><div class="section-head"><h2>Inbound service contract</h2></div>
+    <div class="panel"><div class="scroll"><table class="t"><thead><tr><th>Stage</th><th>Service (illustrative)</th><th>Produces</th><th>Governance control</th></tr></thead><tbody>
+      ${[['Register','POST /skl/inbound/v1/sources','ingest:interview-source with system, channel, consent','GOV-01 consent required to commit; GOV-02 persona required'],
+         ['Acquire','(same call)','Fingerprint, lineage','Re-runs of the same fingerprint replace, never duplicate'],
+         ['Normalize','POST …/sources/{id}/normalize','Segments with role, timestamp; pseudonymized speakers','Interviewer turns are kept for phase context, never coded'],
+         ['Redact','(same call)','Text with PERSON, ORGANIZATION, EMAIL, PHONE, LOCATION tokens','PII-01 residue check blocks commit'],
+         ['Classify','POST /skl/processing/v1/classify','ai:hasInquiryPhase per segment','Phase follows the interviewer question; steward can correct'],
+         ['Extract','POST /skl/processing/v1/extract','Candidate codes with rule, segment, confidence','Rule pack here; an LLM extractor plugs in behind the same output'],
+         ['Resolve','POST /skl/processing/v1/resolve','Evidence link or new candidate, with score','Alternate labels read from their own graphs, never merged into core'],
+         ['Validate','POST /skl/processing/v1/validate','Errors and warnings','NAM-03 no acronyms in preferred labels; JTBD-02 solution-free; ODI-01 outcome format'],
+         ['Review','Ops review screen (this tab)','Accepted / rejected decisions, steward identity','Every decision audited; nothing commits while items are open'],
+         ['Commit','PUT /skl/inbound/v1/interviews/{id}','Interview graph, run provenance, customer alternate labels','Only the service account writes; the graph store is not reachable directly']
+        ].map(r => `<tr>${r.map((c, i) => `<td${i === 1 ? ' class="mono" style="font-size:12px"' : ''}>${esc(c)}</td>`).join('')}</tr>`).join('')}
+    </tbody></table></div></div></div>
+  <div class="guide">
+    <div class="panel"><div class="ph"><h3>Method</h3></div><div class="pb">
+      <p class="small"><b>Appreciative inquiry</b> (Cooperrider and Whitney) asks people about the work when it goes well. <b>Discover</b> peak experiences and what made them possible, <b>Dream</b> what the work would be like if it always went that way, <b>Design</b> the steps and conditions that would make it real, and <b>Destiny</b> what must be true, and how they would measure it.</p>
+      <p class="small"><b>Jobs to be done</b> (Christensen) treats the customer as hiring a product to make progress. Peak-experience stories surface the functional, emotional and social dimensions together.</p>
+      <p class="small"><b>Desired outcomes</b> (Outcome-Driven Innovation) are written as direction + metric + object of control + clarifier and placed on the universal steps Define, Locate, Prepare, Confirm, Execute, Monitor, Modify, Conclude. That is the format the Job Study survey rates.</p>
+      <p class="small"><b>Why the 4-D frame helps ingestion.</b> Interviews run with this guide carry their own structure: the question tells the classifier the phase, and the phase tells the extractor what to expect (feelings in Discover, steps in Design, measures in Destiny). Interviews run without it still ingest, with lower confidence and more steward work.</p>
+    </div></div>
+    <div class="panel"><div class="ph"><h3>Coding rules (both channels)</h3></div><div class="pb"><ol>
+      <li>Code the participant's words, not a summary. Excerpts keep the original wording after redaction.</li>
+      <li>Link to an existing job, step or outcome when one fits. Create a candidate only when nothing does.</li>
+      <li>State jobs without naming a solution.</li>
+      <li>Emotional jobs start with <i>Feel</i> or <i>Avoid feeling</i>; social jobs with <i>Be seen as</i>.</li>
+      <li>Never record a participant's name or employer. Record consent before publishing or committing.</li>
+      <li>Spell out acronyms in preferred labels; customer shorthand becomes an alternate label in the customer graph.</li>
+      <li>Machine-extracted codes are candidates until a steward accepts them; the steward and confidence travel with the evidence.</li>
+    </ol></div></div>
+  </div>
+  <div class="section" style="margin-top:22px"><div class="panel"><div class="ph"><h3>Sample data</h3><button class="btn sm" id="reset" type="button">Reset sample data</button></div><div class="pb small muted">All personas, jobs, outcomes, participants and companies on this page are invented for illustration. Changes stay in this browser only.</div></div></div>`;
+  $('reset').onclick = () => { S = fresh(); ALT_GRAPHS.customer.labels.length = 0; S.runs[S.src] = runPipeline(S.sources[0], M, []); save(); renderAll(); toast('Sample data restored'); };
+}
+
+// ---------------- tabs ----------------
+const VIEWS = ['capture','ingest','synthesis','method'];
+function activate(v){
+  if (!VIEWS.includes(v)) v = 'capture';
+  VIEWS.forEach(k => { $('tab-' + k).setAttribute('aria-selected', String(k === v)); $('v-' + k).hidden = k !== v; });
+  if (location.hash !== '#' + v) try { history.replaceState(null, '', '#' + v); } catch(e){}
+  S.view = v; renderView();
+}
+function renderView(){ if (S.view === 'ingest') renderIngest(); else if (S.view === 'synthesis') renderSynth(); else if (S.view === 'method') renderMethod(); else { renderList(); renderEditor(); } }
+function renderAll(){ renderStats(); renderList(); renderView(); }
+document.querySelectorAll('.tabbtn').forEach(b => b.onclick = () => activate(b.dataset.view));
+window.addEventListener('hashchange', () => activate(location.hash.slice(1)));
+$('new-iv').onclick = newInterview;
+$('iv-q').oninput = e => { S.q = e.target.value; renderList(); };
+// restore customer alt labels approved earlier, and open in a working state: first source already run
+Object.values(S.runs).forEach(r => (r.terms || []).filter(t => t.status === 'approved').forEach(t => ALT_GRAPHS.customer.labels.push([t.term.toLowerCase(), t.canon])));
+if (!S.runs['SRC-VOC-031']) S.runs['SRC-VOC-031'] = runPipeline(S.sources[0], M, knownSteps());
+renderStats();
+activate(location.hash.slice(1) || 'capture');
+})();
+</script>
+</body></html>
