@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Persona Capture · Inbound Semantic Services Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1020;--panel:#101a2e;--panel2:#15213a;--line:#233152;--line2:#2e3f66;
+  --text:#e7edf8;--muted:#8d9cba;--dim:#5e6d8c;
+  --core:#60a5fa;--persona:#2dd4bf;--cross:#a78bfa;--suggest:#f5b942;--unmapped:#f472b6;
+  --red:#f87171;--green:#4ade80;--amber:#fbbf24;--blue:#60a5fa;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 'IBM Plex Sans',system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;gap:24px;align-items:center;justify-content:space-between;padding:18px 24px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#2dd4bf,#3b82f6);display:grid;place-items:center;font-weight:700;color:#06121f;font-size:18px}
+h1{font-size:18px;margin:0;font-weight:600;letter-spacing:.2px}
+header p{margin:2px 0 0;color:var(--muted);font-size:12.5px;max-width:720px}
+.metrics{display:flex;gap:8px;flex-wrap:wrap}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 12px;min-width:86px}
+.metric b{display:block;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.metric span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.arch{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 24px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.arch .node{border:1px solid var(--line2);background:var(--panel);border-radius:999px;padding:3px 10px;color:var(--text)}
+.arch .node.hl{border-color:var(--persona);color:var(--persona)}
+.arch .node.lock{border-style:dashed;color:var(--amber);border-color:#6b5a26}
+.arch .arr{color:var(--dim)}
+nav.tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav.tabs button{background:none;border:none;border-bottom:2px solid transparent;padding:11px 14px;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:500}
+nav.tabs button.active{color:var(--text);border-bottom-color:var(--persona)}
+.badge{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--red);color:#1a0a0a;font-size:11px;font-weight:700;margin-left:6px;text-align:center}
+.badge.zero{background:var(--line2);color:var(--muted)}
+main{padding:18px 24px 40px;max-width:1500px;margin:0 auto}
+.tab{display:none}.tab.active{display:block}
+.grid2{display:grid;grid-template-columns:minmax(340px,430px) 1fr;gap:16px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gridHalf{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:1050px){.grid2,.grid3,.gridHalf{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel h3{font-size:14px;margin:14px 0 8px;font-weight:600}
+label.f{display:block;font-size:11.5px;color:var(--muted);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+select,input[type=text],input[type=number],textarea{width:100%;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;outline:none}
+select:focus,input:focus,textarea:focus{border-color:var(--persona)}
+textarea{min-height:170px;resize:vertical;font-size:13.5px}
+.personas{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pbtn{border:1px solid var(--line2);background:var(--panel2);border-radius:10px;padding:8px 4px;cursor:pointer;text-align:center;font-size:11.5px;line-height:1.2}
+.pbtn .dot{width:10px;height:10px;border-radius:50%;display:block;margin:0 auto 5px}
+.pbtn.active{border-color:var(--pc);box-shadow:inset 0 0 0 1px var(--pc);background:#182640}
+.mods{display:flex;gap:6px;flex-wrap:wrap}
+.mbtn{border:1px solid var(--line2);background:var(--panel2);border-radius:999px;padding:5px 11px;cursor:pointer;font-size:12.5px}
+.mbtn.active{border-color:var(--persona);color:var(--persona)}
+.btn{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:linear-gradient(135deg,#14b8a6,#3b82f6);border:none;color:#04121c;font-weight:600}
+.btn.sm{padding:4px 10px;font-size:12px;border-radius:7px}
+.btn.ok{border-color:#1f6b45;color:var(--green)}
+.btn.no{border-color:#7a2d2d;color:var(--red)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.muted{color:var(--muted)}.dim{color:var(--dim)}
+.small{font-size:12px}
+.mono{font-family:var(--mono);font-size:12px}
+.formgrid{display:grid;grid-template-columns:1fr 1.4fr 26px;gap:6px;align-items:center}
+.formgrid input{padding:6px 8px;font-size:13px}
+.formgrid .lbl{font-weight:500}
+.x{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px}
+.toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:13px}
+.toggle input{display:none}
+.toggle .sw{width:34px;height:19px;border-radius:999px;background:var(--line2);position:relative;transition:.2s;flex:none}
+.toggle .sw:after{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:#cbd5e1;top:2px;left:2px;transition:.2s}
+.toggle input:checked+.sw{background:#0f766e}
+.toggle input:checked+.sw:after{left:17px;background:#5eead4}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--dim);display:inline-block}
+.live-dot.on{background:var(--red);box-shadow:0 0 0 0 rgba(248,113,113,.7);animation:pulse 1.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(248,113,113,0)}100%{box-shadow:0 0 0 0 rgba(248,113,113,0)}}
+/* stepper */
+.stepper{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:12px}
+.step{border:1px solid var(--line);border-radius:8px;padding:6px 6px;text-align:center;font-size:11px;color:var(--dim);background:var(--panel2);transition:.25s}
+.step b{display:block;font-size:11.5px;font-weight:600}
+.step.done{color:var(--text);border-color:#1d5f58;background:#0f2a2c}
+.step.done b{color:var(--persona)}
+.step.warn{border-color:#6b5a26;background:#2a2410}.step.warn b{color:var(--amber)}
+.step.stop{border-color:#7a2d2d;background:#2a1414}.step.stop b{color:var(--red)}
+.step.active{border-color:var(--blue);color:var(--text)}
+@media(max-width:800px){.stepper{grid-template-columns:repeat(4,1fr)}}
+.stage{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--panel2);overflow:hidden;opacity:.35;transition:opacity .3s}
+.stage.shown{opacity:1}
+.stage summary{list-style:none;display:flex;gap:10px;align-items:center;padding:9px 12px;cursor:pointer}
+.stage summary::-webkit-details-marker{display:none}
+.stage .num{width:22px;height:22px;border-radius:6px;background:var(--line);display:grid;place-items:center;font-size:11px;font-weight:600;flex:none}
+.stage.shown .num{background:#134e4a;color:#5eead4}
+.stage .nm{font-weight:600}
+.stage .sum{color:var(--muted);font-size:12.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage .ms{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.stage .body{padding:4px 14px 14px;border-top:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:6px 8px;border-bottom:1px solid #1b2742;vertical-align:top}
+tr.click{cursor:pointer}tr.click:hover td{background:#16223b}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:12.5px;margin-top:8px}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);border-radius:999px;padding:1px 9px;font-size:11.5px;margin:2px 3px 2px 0;white-space:nowrap}
+.chip.core{border-color:#2b4f80;color:var(--core)}
+.chip.persona{border-color:#17605a;color:var(--persona)}
+.chip.cross{border-color:#4d3f80;color:var(--cross)}
+.chip.suggested{border-color:#6b5a26;color:var(--suggest)}
+.chip.unmapped{border-color:#7a2d5c;color:var(--unmapped)}
+.chip.high,.chip.hold,.chip.restricted,.chip.HELD,.chip.rejected{border-color:#7a2d2d;color:var(--red)}
+.chip.medium,.chip.flag,.chip.confidential,.chip.review,.chip.provisional{border-color:#6b5a26;color:var(--amber)}
+.chip.low,.chip.redact,.chip.internal{border-color:#2b4f80;color:var(--blue)}
+.chip.info,.chip.notify,.chip.public,.chip.discard,.chip.retired{border-color:var(--line2);color:var(--muted)}
+.chip.ok,.chip.auto,.chip.approved,.chip.PUBLISHED,.chip.RELEASED{border-color:#1f6b45;color:var(--green)}
+.pchip{display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.pchip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.bar{height:7px;background:var(--line);border-radius:999px;overflow:hidden;flex:1}
+.bar>div{height:100%;background:linear-gradient(90deg,#14b8a6,#3b82f6);border-radius:999px}
+.barrow{display:flex;align-items:center;gap:10px;font-size:12.5px;margin:5px 0}
+.barrow span:first-child{width:150px}
+.barrow span:last-child{width:42px;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.annot{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;white-space:pre-wrap;font-size:14px;line-height:1.9}
+.annot .t{border-radius:4px;padding:1px 3px;cursor:help;border-bottom:2px solid}
+.t.core{background:rgba(96,165,250,.12);border-color:var(--core)}
+.t.persona{background:rgba(45,212,191,.13);border-color:var(--persona)}
+.t.cross{background:rgba(167,139,250,.14);border-color:var(--cross)}
+.t.suggested{background:rgba(245,185,66,.13);border-color:var(--suggest)}
+.t.unmapped{background:rgba(244,114,182,.14);border-color:var(--unmapped);border-bottom-style:dashed}
+.t.comp{background:rgba(148,163,184,.12);border-color:#94a3b8}
+.t.pii{background:#000;color:#f87171;border-color:var(--red);font-family:var(--mono);font-size:12px}
+.t.gov{text-decoration:underline wavy var(--red);text-underline-offset:4px;border-bottom:none}
+.t.changed{background:rgba(45,212,191,.16);border-color:var(--persona)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border-bottom:2px solid}
+.disp{font-size:15px;font-weight:600;padding:8px 12px;border-radius:10px;display:inline-block;margin:6px 0}
+.disp.PUBLISHED{background:#0f2a1d;color:var(--green);border:1px solid #1f6b45}
+.disp.HELD{background:#2a1414;color:var(--red);border:1px solid #7a2d2d}
+.route{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:6px 0;display:flex;gap:10px;align-items:center;font-size:12.5px;background:#0e1729}
+.qcard{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--panel2)}
+.qcard.content{border-left-color:var(--red)}
+.qcard.done{opacity:.55;border-left-color:var(--line2)}
+.qcard h4{margin:0 0 4px;font-size:14.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.quote{border-left:2px solid var(--line2);padding:4px 10px;color:var(--muted);font-size:12.5px;margin:8px 0;white-space:pre-wrap}
+pre.code{background:#070c18;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;max-height:520px;font-family:var(--mono);font-size:11.5px;line-height:1.55;color:#cbd5e1;margin:0;white-space:pre}
+.tk-k{color:#7dd3fc}.tk-s{color:#a7f3d0}.tk-p{color:#c4b5fd}.tk-c{color:#64748b}
+.filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filter button{border:1px solid var(--line2);background:var(--panel2);border-radius:999px;padding:4px 11px;cursor:pointer;font-size:12px}
+.filter button.active{border-color:var(--persona);color:var(--persona)}
+.empty{color:var(--dim);text-align:center;padding:26px;font-size:13px}
+.note{font-size:12px;color:var(--muted);background:#0e1729;border:1px dashed var(--line2);border-radius:8px;padding:8px 10px;margin-top:10px}
+.slider{display:flex;align-items:center;gap:10px}
+.slider input{flex:1;accent-color:#14b8a6}
+.slider output{font-family:var(--mono);width:40px;text-align:right}
+.matrix td{font-size:12px}
+.toast{position:fixed;bottom:18px;right:18px;background:#0f2a2c;border:1px solid #1d5f58;color:#ccfbf1;padding:10px 14px;border-radius:10px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;max-width:380px;z-index:9}
+.toast.show{opacity:1;transform:none}
+footer{color:var(--dim);font-size:11.5px;text-align:center;padding:10px 24px 30px}
+.flash{animation:flash 1s}
+@keyframes flash{from{background:#173a3a}to{background:transparent}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">◆</div>
+    <div>
+      <h1>Persona Capture · Real-time Inbound Semantic Services</h1>
+      <p>Dynamic governance for content captured from personas across the company. Each persona's terms and phrases go into its own vocabulary extension, separate from the core, so Outbound Semantic Services can serve them to downstream consumers.</p>
+    </div>
+  </div>
+  <div class="metrics" id="metrics"></div>
+</header>
+<div class="arch">
+  <span class="node">Documents · Texts · Social · Voice memos · Forms</span><span class="arr">→</span>
+  <span class="node hl">Inbound Semantic Services</span><span class="arr">→</span>
+  <span class="node">Identify · Profile · Classify · Govern · Map · Extend · Route</span><span class="arr">→</span>
+  <span class="node lock">SKL graph store (never exposed)</span><span class="arr">→</span>
+  <span class="node hl">Outbound Semantic Services</span><span class="arr">→</span>
+  <span class="node">Sales Ops · Account Reps · Support · Advisors · SMEs · Analytics</span>
+</div>
+<nav class="tabs" id="tabs">
+  <button data-tab="capture" class="active">① Capture &amp; Inbound pipeline</button>
+  <button data-tab="review">② Review routing <span class="badge zero" id="qbadge">0</span></button>
+  <button data-tab="vocab">③ Persona vocabulary extensions</button>
+  <button data-tab="outbound">④ Outbound semantic services</button>
+  <button data-tab="governance">⑤ Dynamic governance policies</button>
+  <button data-tab="audit">⑥ Audit &amp; triples</button>
+</nav>
+<main>
+<!-- CAPTURE -->
+<section class="tab active" id="tab-capture">
+  <div class="grid2">
+    <div>
+      <div class="panel">
+        <h2>Capture console <span class="row small" style="text-transform:none;letter-spacing:0"><span class="live-dot" id="liveDot"></span><label class="toggle"><input type="checkbox" id="liveToggle"><span class="sw"></span>Live stream</label></span></h2>
+        <label class="f">Persona (who is capturing)</label>
+        <div class="personas" id="personaBtns"></div>
+        <div class="small muted" id="personaJob" style="margin-top:6px"></div>
+        <label class="f">Modality</label>
+        <div class="mods" id="modBtns"></div>
+        <label class="f">Sample capture</label>
+        <select id="presetSel"></select>
+        <div class="small muted" style="margin-top:6px">Source system: <b id="srcSys" class="mono"></b></div>
+        <div id="freeInput">
+          <label class="f" id="textLabel">Content</label>
+          <textarea id="contentText" spellcheck="false"></textarea>
+          <div class="row small muted" style="margin-top:6px">
+            <label class="btn sm" style="cursor:pointer">Load .txt / .md<input type="file" id="fileIn" accept=".txt,.md,.csv,.text" style="display:none"></label>
+            <span>or drop a text file on the box</span>
+          </div>
+        </div>
+        <div id="formInput" style="display:none">
+          <label class="f">Screen fields (label → value). Field labels are captured as persona terms.</label>
+          <div class="formgrid" id="formGrid"></div>
+          <button class="btn sm" id="addField" style="margin-top:8px">+ Field</button>
+        </div>
+        <div id="asrBox" style="display:none">
+          <label class="f">Speech-to-text confidence (simulated)</label>
+          <div class="slider"><input type="range" id="asr" min="0.5" max="1" step="0.01" value="0.9"><output id="asrOut">0.90</output></div>
+          <div class="small dim">The demo takes the transcript as input. In production, the voice adapter calls speech-to-text, and its confidence lowers the confidence of every term mapping.</div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn primary" id="runBtn">Run inbound services ▸</button>
+          <button class="btn" id="resetBtn" title="Reset all demo state">Reset demo</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Inbound pipeline trace <span class="mono small" id="traceId" style="text-transform:none;letter-spacing:0"></span></h2>
+        <div class="stepper" id="stepper"></div>
+        <div id="stages"><div class="empty">Choose a persona and modality, pick a sample (or write your own), then run the inbound services.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Annotated capture: persona terms, mappings &amp; governance <span class="small muted" id="annotMeta" style="text-transform:none;letter-spacing:0"></span></h2>
+    <div class="annot" id="annot"><span class="dim">No capture yet.</span></div>
+    <div class="legend">
+      <span><i style="background:rgba(45,212,191,.13);border-color:var(--persona)"></i>Persona extension label</span>
+      <span><i style="background:rgba(96,165,250,.12);border-color:var(--core)"></i>Core vocabulary</span>
+      <span><i style="background:rgba(167,139,250,.14);border-color:var(--cross)"></i>Borrowed from another persona</span>
+      <span><i style="background:rgba(245,185,66,.13);border-color:var(--suggest)"></i>New phrase, suggested mapping</span>
+      <span><i style="background:rgba(244,114,182,.14);border-color:var(--unmapped)"></i>Unmapped term (needs concept)</span>
+      <span><i style="background:rgba(148,163,184,.12);border-color:#94a3b8"></i>Competitor</span>
+      <span><i style="background:#000;border-color:var(--red)"></i>PII redacted</span>
+      <span><i style="border:none;text-decoration:underline wavy var(--red)"></i>Governance trigger</span>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Real-time capture stream <span class="small muted" style="text-transform:none;letter-spacing:0">Click a row to reopen its trace</span></h2>
+    <div id="streamTable"><div class="empty">Nothing processed yet.</div></div>
+  </div>
+</section>
+
+<!-- REVIEW -->
+<section class="tab" id="tab-review">
+  <div class="panel">
+    <h2>Dynamic review routing</h2>
+    <div class="small muted" style="margin-bottom:12px">Items are routed by policy, persona, modality and confidence. <b>Content holds</b> go to Privacy, Compliance or Legal. <b>Label candidates</b> go to the capturing persona's vocabulary steward. Stewards can approve, remap to a different core concept, or reject. Every decision is logged as a change record.</div>
+    <div class="filter" id="qfilter"></div>
+    <div id="queue"></div>
+  </div>
+</section>
+
+<!-- VOCAB -->
+<section class="tab" id="tab-vocab">
+  <div class="gridHalf">
+    <div class="panel">
+      <h2>Persona vocabulary extension graphs</h2>
+      <div class="filter" id="vfilter"></div>
+      <div id="vocabTable"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Design: alternate labels kept separate from the core</h2>
+        <div class="small" style="line-height:1.6">
+          <p style="margin-top:0">The <b>core vocabulary</b> (<span id="coreCount"></span> concepts in this demo) is read-only to inbound services. Each persona's terms and phrases are kept as <span class="mono">skosxl:Label</span> resources in that persona's own named graph, <span class="mono">g:ext/&lt;persona&gt;</span>. Each label points to its core concept and carries status, confidence, provenance and usage.</p>
+          <p>This keeps core and domain ontologies from becoming overloaded with labels, which protects performance and keeps complexity down. It also lets each persona's extension be piloted, governed and scaled on its own.</p>
+          <dl class="kv"><dt>approved</dt><dd><span class="chip approved">approved</span> Steward-verified; Outbound always serves it</dd>
+          <dt>provisional</dt><dd><span class="chip provisional">provisional</span> Auto-accepted above the threshold; Outbound serves it only if the consumer opts in</dd>
+          <dt>retired / rejected</dt><dd><span class="chip retired">retired</span> Kept for audit and blocked from re-suggestion</dd></dl>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Steward data-entry screen</h2>
+        <div class="small muted">Operations staff maintain extensions only through this provisioned UI, never by writing to the graph directly. Every change is logged and audited.</div>
+        <label class="f">Persona</label><select id="addPersona"></select>
+        <label class="f">Term or phrase (literal form)</label><input type="text" id="addLit" placeholder="e.g. book of business">
+        <label class="f">Core concept</label><select id="addConcept"></select>
+        <div class="row" style="margin-top:10px"><button class="btn primary" id="addLabelBtn">Add approved label</button><span class="small muted" id="addMsg"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTBOUND -->
+<section class="tab" id="tab-outbound">
+  <div class="gridHalf">
+    <div class="panel">
+      <h2>Outbound · resolve a term for a consumer persona</h2>
+      <label class="f">Consumer persona</label><select id="obPersona"></select>
+      <label class="f">Term or phrase as the requester says it</label>
+      <input type="text" id="obTerm" value="WSE count">
+      <div class="row small" style="margin-top:6px" id="obChips"></div>
+      <div class="row" style="margin-top:10px;gap:16px">
+        <label class="toggle"><input type="checkbox" id="obProv" checked><span class="sw"></span>Include provisional labels</label>
+        <label class="toggle"><input type="checkbox" id="obCross" checked><span class="sw"></span>Cross-persona lookup</label>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn primary" id="obGo">Call outbound /resolve</button></div>
+      <div id="obCard" style="margin-top:12px"></div>
+      <h3>Service response</h3>
+      <pre class="code" id="obJson">—</pre>
+    </div>
+    <div class="panel">
+      <h2>Outbound · render captured content in another persona's language</h2>
+      <div class="small muted">The same captured knowledge, shown in each consumer's own vocabulary. Mapped terms are swapped for the target persona's labels, or for the core preferred label when the persona has none. PII stays redacted.</div>
+      <label class="f">Captured content</label><select id="rdCap"></select>
+      <label class="f">Render for persona</label><select id="rdPersona"></select>
+      <div class="annot" id="rdOut" style="margin-top:12px"><span class="dim">Process a capture first.</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Concept × persona label matrix <span class="small muted" style="text-transform:none;letter-spacing:0">What each consumer sees for the same concept</span></h2>
+    <div id="matrix"></div>
+  </div>
+</section>
+
+<!-- GOVERNANCE -->
+<section class="tab" id="tab-governance">
+  <div class="gridHalf">
+    <div class="panel">
+      <h2>Thresholds &amp; operating mode</h2>
+      <label class="f">Auto-accept threshold for new persona labels</label>
+      <div class="slider"><input type="range" id="sAuto" min="0.6" max="1" step="0.01"><output id="sAutoOut"></output></div>
+      <label class="f">Review minimum (below this, the term is logged and discarded)</label>
+      <div class="slider"><input type="range" id="sRev" min="0.2" max="0.8" step="0.01"><output id="sRevOut"></output></div>
+      <label class="f">Voice transcript QA threshold</label>
+      <div class="slider"><input type="range" id="sAsr" min="0.5" max="0.99" step="0.01"><output id="sAsrOut"></output></div>
+      <div style="display:grid;gap:10px;margin-top:16px">
+        <label class="toggle"><input type="checkbox" id="sPilot"><span class="sw"></span><span><b>Pilot mode</b>: a steward approves every new label (no auto-accept)</span></label>
+        <label class="toggle"><input type="checkbox" id="sSocial"><span class="sw"></span><span><b>Public-channel strictness</b>: social media raises the auto-accept bar by 0.05</span></label>
+        <label class="toggle"><input type="checkbox" id="sClaims"><span class="sw"></span><span><b>Strict claims</b>: hold, rather than flag, unapproved commitments on every channel</span></label>
+        <label class="toggle"><input type="checkbox" id="sUnmapped"><span class="sw"></span><span><b>Route unmapped terms</b> (unknown acronyms) to stewards for concept assignment</span></label>
+      </div>
+      <div class="note">Policy changes take effect on the next capture, with no redeploy. Each change is written to the audit log and as a change-record triple, so governance is itself governed.</div>
+    </div>
+    <div class="panel">
+      <h2>Policy catalog (dynamic by persona &amp; modality)</h2>
+      <div id="policyTable"></div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIT -->
+<section class="tab" id="tab-audit">
+  <div class="gridHalf">
+    <div class="panel">
+      <h2>Audit log</h2>
+      <div id="auditTable" style="max-height:640px;overflow:auto"></div>
+    </div>
+    <div class="panel">
+      <h2>Named-graph output (TriG) <button class="btn sm" id="copyTrig">Copy</button></h2>
+      <select id="trigSel"></select>
+      <div style="height:10px"></div>
+      <pre class="code" id="trigOut"></pre>
+      <div class="note">The SKL graph is written only by Inbound services and read only through Outbound services. Change records carry a release stage (dev → test → stage → prod) so knowledge-layer changes can be promoted through the release pipeline.</div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>Demo runs entirely in your browser. State resets when the page reloads. Concepts, policies, SLAs and retention periods are illustrative.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================== DATA ============================== */
+const CATS={
+  sales:{label:'Sales & Growth',ret:'Sales record: 5 yrs'},
+  client:{label:'Client Relationship',ret:'Client record: 7 yrs after CSA ends'},
+  payroll:{label:'Payroll & Tax',ret:'Payroll / tax record: 7 yrs'},
+  benefits:{label:'Benefits',ret:'Benefits record: 6 yrs'},
+  compliance:{label:'HR Compliance',ret:'HR compliance record: 7 yrs'},
+  risk:{label:'Risk & Insurance',ret:'Risk / insurance record: 10 yrs'},
+  service:{label:'Service Operations',ret:'Service interaction: 3 yrs'},
+  lifecycle:{label:'Employee Lifecycle',ret:'Employee file: 7 yrs after separation'}
+};
+const CORE_RAW=[
+['SalesOpportunity','Sales Opportunity','sales',['opportunity'],'A qualified chance to sell PEO services to a prospect.'],
+['SalesPipeline','Sales Pipeline','sales',['pipeline'],'The set of open opportunities by stage.'],
+['Prospect','Prospect','sales',['prospective client','sales lead'],'An organization evaluating PEO services that is not yet a client.'],
+['ProposalQuote','Proposal Quote','sales',['quote','proposal'],'A priced offer of services presented to a prospect or client.'],
+['AdministrativeFee','Administrative Fee','sales',['admin fee','service fee'],'The PEO service fee, per employee or as a percent of payroll.'],
+['ClientCompany','Client Company','client',['client','worksite employer'],'An organization under a client service agreement with the PEO.'],
+['ClientServiceAgreement','Client Service Agreement','client',['CSA','service agreement'],'The contract establishing co-employment and service terms.'],
+['ContractRenewal','Contract Renewal','client',['renewal'],'Annual re-pricing and continuation of a client service agreement.'],
+['ClientAttrition','Client Attrition','client',['churn','client loss'],'A client ending, or at risk of ending, its agreement.'],
+['WorksiteEmployee','Worksite Employee','lifecycle',['WSE','co-employed employee'],'An employee of a client company who is co-employed by the PEO.'],
+['CoEmployment','Co-Employment','compliance',['co-employment relationship'],'Shared employer responsibilities between the PEO and the client.'],
+['Payroll','Payroll','payroll',['pay run','paycheck'],'Calculation and payment of wages and withholding.'],
+['DirectDeposit','Direct Deposit','payroll',['ACH deposit'],'Electronic deposit of net pay to an employee account.'],
+['FormW2','Form W-2','payroll',['W-2','W2'],'Annual wage and tax statement issued to employees.'],
+['StateUnemploymentTax','State Unemployment Tax','payroll',['SUTA','SUI'],'Employer-paid state unemployment insurance tax.'],
+['BenefitsEnrollment','Benefits Enrollment','benefits',['enrollment'],'Election of benefit plans by an eligible employee.'],
+['OpenEnrollment','Open Enrollment','benefits',['open enrollment period'],'The annual window for changing benefit elections.'],
+['HealthPlan','Health Plan','benefits',['medical plan','health insurance'],'Group medical coverage offered to worksite employees.'],
+['RetirementPlan','401(k) Retirement Plan','benefits',['401(k)','401k'],'Employer-sponsored defined-contribution retirement plan.'],
+['PaidTimeOff','Paid Time Off','benefits',['PTO','vacation time'],'Paid leave accrued or granted to employees.'],
+['FamilyMedicalLeave','FMLA Leave','compliance',['FMLA','leave of absence'],'Job-protected leave under the Family and Medical Leave Act.'],
+['WorkersCompensation','Workers’ Compensation','risk',["workers' comp",'workers comp','work comp'],'Insurance for work-related injury and illness.'],
+['ExperienceModifier','Experience Modification Rate','risk',['EMR','mod rate'],'Workers’ comp pricing factor based on claims history.'],
+['EmploymentPracticesLiability','Employment Practices Liability Insurance','risk',['EPLI'],'Coverage for employment-related claims.'],
+['EmployeeSeparation','Employee Separation','lifecycle',['termination','separation of employment'],'The end of employment, voluntary or involuntary.'],
+['EmployeeOnboarding','Employee Onboarding','lifecycle',['onboarding','new hire'],'Hiring paperwork, setup and orientation of a new employee.'],
+['FormI9','Form I-9','compliance',['I-9','I9'],'Employment eligibility verification form.'],
+['OvertimeFLSA','FLSA Overtime & Exemption','compliance',['FLSA','overtime'],'Wage-and-hour rules on overtime and exempt classification.'],
+['EmployeeHandbook','Employee Handbook','compliance',['handbook'],'The client’s published workplace policies.'],
+['RemoteWorkPolicy','Remote Work Policy','compliance',['telework policy'],'Policy governing work performed off-site.'],
+['ServiceCase','Service Case','service',['service request','support case'],'A logged request or issue handled by the service center.'],
+['PortalAccess','Employee Portal Access','service',['portal','login'],'Employee and client access to self-service systems.'],
+['HRAdvisoryConsultation','HR Advisory Consultation','service',['HR consultation','advisory session'],'Guidance from an HR specialist to a client.'],
+['ACAEmployerMandate','ACA Employer Mandate','compliance',['ACA','employer mandate'],'Affordable Care Act coverage and reporting requirements.']
+];
+const CORE=CORE_RAW.map(([id,pref,cat,alt,def])=>({id,pref,cat,alt,def}));
+const C=Object.fromEntries(CORE.map(c=>[c.id,c]));
+
+const PERSONAS=[
+ {id:'sales-ops',name:'Sales Operations',short:'Sales Ops',color:'#60a5fa',job:'Forecast pipeline, price proposals, report bookings',defCat:'sales',
+  src:{document:'SharePoint · Deal Desk',text:'Teams chat',social:'LinkedIn',voice:'Mobile voice memo',form:'CRM · Opportunity screen'}},
+ {id:'account-rep',name:'Account Representatives',short:'Account Reps',color:'#2dd4bf',job:'Retain and grow client accounts through renewal',defCat:'client',
+  src:{document:'Account plan workspace',text:'Teams chat',social:'LinkedIn',voice:'Mobile voice memo',form:'CRM · Renewal screen'}},
+ {id:'support',name:'Customer Support',short:'Support',color:'#fbbf24',job:'Resolve employee and client cases',defCat:'service',
+  src:{document:'Knowledge article draft',text:'Service chat',social:'Social listening (X / Facebook)',voice:'Contact-center voicemail',form:'Case intake screen'}},
+ {id:'advisor',name:'Business Advisors',short:'Advisors',color:'#a78bfa',job:'Advise clients on HR practice and compliance',defCat:'compliance',
+  src:{document:'Advisory guidance note',text:'Teams chat',social:'LinkedIn',voice:'Mobile voice memo',form:'Advisory engagement screen'}},
+ {id:'sme',name:'Business SMEs',short:'SMEs',color:'#f472b6',job:'Own domain rules: tax, risk, benefits',defCat:'risk',
+  src:{document:'Rate & rule bulletin',text:'Teams chat',social:'LinkedIn',voice:'Mobile voice memo',form:'Underwriting screen'}}
+];
+const PER=Object.fromEntries(PERSONAS.map(p=>[p.id,p]));
+PERSONAS.forEach(p=>p.steward=p.short+' vocabulary steward');
+const MODS={document:{name:'Document',icon:'📄'},text:{name:'Text / chat',icon:'💬'},social:{name:'Social media',icon:'📣'},voice:{name:'Voice memo',icon:'🎙'},form:{name:'Form (screen)',icon:'🧾'}};
+
+const SEED_EXT={
+ 'sales-ops':[['opp','SalesOpportunity'],['the funnel','SalesPipeline'],['bundled rate','AdministrativeFee'],['admin %','AdministrativeFee'],['WSE count','WorksiteEmployee'],['logo','ClientCompany'],['net new','Prospect']],
+ 'account-rep':[['head count','WorksiteEmployee'],['at-risk','ClientAttrition'],['renewal bump','ContractRenewal'],['worksite','ClientCompany'],['site visit','HRAdvisoryConsultation']],
+ 'support':[['ticket','ServiceCase'],['paycheck problem','Payroll'],['DD','DirectDeposit'],['locked out','PortalAccess'],['W2 issue','FormW2'],['PTO balance','PaidTimeOff']],
+ 'advisor':[['separation','EmployeeSeparation'],['let go','EmployeeSeparation'],['handbook policy','EmployeeHandbook'],['new hire paperwork','EmployeeOnboarding'],['exempt status','OvertimeFLSA']],
+ 'sme':[['comp mod','ExperienceModifier'],['SUI rate','StateUnemploymentTax'],['EPL','EmploymentPracticesLiability'],['ALE','ACAEmployerMandate'],['WC claim','WorkersCompensation']]
+};
+/* Simulated semantic suggester (stands in for embedding / ML similarity) */
+const SUGGEST=[
+ ['rate bump','ContractRenewal',0.78],['price shock','ContractRenewal',0.66],['flight risk','ClientAttrition',0.82],['churned','ClientAttrition',0.9],
+ ['net-new logo','Prospect',0.88],['new logo','ClientCompany',0.86],['warm lead','Prospect',0.86],['pay stub','Payroll',0.91],['paystub','Payroll',0.91],
+ ['missed paycheck','Payroll',0.87],["can't log in",'PortalAccess',0.9],['password reset','PortalAccess',0.84],['progressive discipline','EmployeeSeparation',0.64],
+ ['maternity leave','FamilyMedicalLeave',0.8],['x-mod','ExperienceModifier',0.93],['comp claim','WorkersCompensation',0.89],['benefits window','OpenEnrollment',0.83],
+ ['OE season','OpenEnrollment',0.9],['HSA','HealthPlan',0.62],['QBR','HRAdvisoryConsultation',0.58],['white glove onboarding','EmployeeOnboarding',0.74],
+ ['1099 contractor','WorksiteEmployee',0.55,'Conflict: 1099 contractors are excluded from Worksite Employee'],['headcount','WorksiteEmployee',0.92],
+ ['eligibility','BenefitsEnrollment',0.7],['layoff','EmployeeSeparation',0.76],['RIF','EmployeeSeparation',0.81],['underwriting review','ExperienceModifier',0.6],
+ ['benefits deduction','BenefitsEnrollment',0.72],['payroll funding','Payroll',0.74]
+];
+const COMPETITORS=['ADP','TriNet','Justworks','Paychex','Rippling','Gusto','Oasis','Vensure'];
+const STOP_ACR=new Set(['I','A','HR','PEO','CEO','CFO','COO','CIO','USA','US','OK','AM','PM','Q1','Q2','Q3','Q4','TX','IL','CA','NY','FL','FYI','ASAP','ID','IT','EOD','ROI','KPI','LLC','INC','THE','SSN','DOB','ET','CT','PT','MT']);
+
+const PRESETS=[
+ {id:'p1',persona:'sales-ops',modality:'text',title:'Deal update: Acme Logistics',
+  text:"Heads up: the Acme Logistics opp moved to proposal stage. WSE count is 142 and the bundled rate came in at 3.1%. They're also talking to TriNet. I told the CFO we guarantee 20% savings on health plan costs if they sign before OE season. Net-new logo for the funnel this quarter."},
+ {id:'p2',persona:'sales-ops',modality:'form',title:'CRM Opportunity screen: Brightline Dental',
+  fields:[['Opportunity Name','Brightline Dental'],['Stage','Proposal sent'],['Headcount','38'],['Current Provider','Paychex'],['Admin %','2.8'],['Next Step','QBR with owner on 12/04'],['Notes','Owner wants an x-mod review before the renewal; worried about a rate bump.']]},
+ {id:'p3',persona:'sales-ops',modality:'social',title:'LinkedIn post draft',
+  text:"Excited to welcome three new logos this month! Our clients save up to 30% on benefits costs, guaranteed. Ask me how a PEO simplifies payroll, workers comp and open enrollment. #PEO #HRTech"},
+ {id:'p4',persona:'account-rep',modality:'voice',title:'Site visit memo: Riverbend Foods',asr:0.78,
+  text:"Just left the Riverbend Foods site visit. They're a flight risk. The rate bump at renewal was a price shock and the CFO mentioned Justworks twice. Head count dropped to 61 after a layoff in October. I need to set up a QBR and loop in an advisor on the separations. Call me back at 312-555-0198."},
+ {id:'p5',persona:'account-rep',modality:'form',title:'CRM Renewal screen: Lakeshore Labs',
+  fields:[['Client','Lakeshore Labs'],['Renewal Date','2027-01-01'],['Head count','214'],['Renewal bump','4.5%'],['Risk','at-risk, comparing ADP'],['CSA term','12 months'],['Notes','Wants HSA added to the health plan and an EPLI quote.']]},
+ {id:'p13',persona:'account-rep',modality:'document',title:'Account plan: Acme Logistics',
+  text:"Account plan for Acme Logistics: 142 worksite employees across 3 states. Renewal in March; at-risk indicators include late payroll funding and two open service requests.\n\nPlan: quarterly advisory session, benefits window prep, and a 401(k) match review. Competitive pressure from Rippling."},
+ {id:'p6',persona:'support',modality:'text',title:'Service chat: payroll issue',
+  text:"Employee: I can't log in to the portal and my paycheck problem from last week still isn't fixed. My DD never hit. SSN is 123-45-6789 if you need it.\nAgent: Opened ticket, sent a password reset, and escalated the W2 issue to payroll."},
+ {id:'p7',persona:'support',modality:'social',title:'Public post picked up by social listening',
+  text:"@PEOHelpDesk worst experience ever. Missed paycheck two weeks running and nobody answers the phone. Telling my boss to switch us to ADP. #payroll #fail"},
+ {id:'p12',persona:'support',modality:'voice',title:'Voicemail: PTO question',asr:0.71,
+  text:"Hi, this is a voicemail for the service center. My PTO balance looks wrong after open enrollment and my benefits deduction doubled. Reach me at jane.doe@example.com. Thanks."},
+ {id:'p8',persona:'advisor',modality:'document',title:'Guidance note: Northwind Design',
+  text:"Guidance for Northwind Design: before any separation, document progressive discipline and confirm exempt status under the FLSA.\n\nOne employee requested maternity leave; she disclosed a high-risk pregnancy, so coordinate FMLA eligibility with the leave of absence team. Update the handbook policy on remote work.\n\nOn the warehouse lead: you should fire him today, it's legal in Texas."},
+ {id:'p9',persona:'advisor',modality:'voice',title:'Field note: Cedar Peaks Manufacturing',asr:0.93,
+  text:"Note for file: Cedar Peaks Manufacturing onboarding. New hire paperwork is incomplete; three I-9 forms are missing section 2. The telework policy in the handbook needs a refresh. Recommend a white glove onboarding session and an HR consultation next week."},
+ {id:'p10',persona:'sme',modality:'document',title:'2027 rate notice summary',
+  text:"2027 SUI rate notices arrived: the Texas SUTA rate is up 0.4%. Client comp mod sits at 1.12, and any x-mod above 1.0 triggers underwriting review. EPL limits are unchanged.\n\nClients crossing 50 FTEs need an ALE determination and ACA reporting. Confirm the WC claim backlog is cleared."},
+ {id:'p11',persona:'sme',modality:'form',title:'Underwriting screen: Summit Partners',
+  fields:[['Client','Summit Partners'],['EMR','0.94'],['Class Code','8810'],['Comp claim count (3 yrs)','2'],['SUI state','IL'],['Notes','1099 contractor population of 12 should be excluded from WSE counts; verify COBRA notices.']]}
+];
+
+const POLICY_DEFS=[
+ {id:'PII',name:'PII detection & redaction',route:'Privacy Office',dyn:'SSN / DOB: hold (high). Email / phone: auto-redact on internal channels; hold on public social.'},
+ {id:'PHI',name:'Health information (HIPAA-sensitive)',route:'Privacy Office',dyn:'Always hold (high); sensitivity becomes Restricted.'},
+ {id:'CLAIM',name:'Unapproved commitments / savings claims',route:'Compliance · Sales & Marketing Claims',dyn:'Social: hold. Other channels: flag, non-blocking (or hold under Strict claims).'},
+ {id:'LEGAL',name:'Legal-advice language',route:'Legal',dyn:'Hold (medium) on every channel; most common from Advisor captures.'},
+ {id:'COMP',name:'Competitor mention',route:'Competitive Intelligence',dyn:'Notify and tag; never blocks.'},
+ {id:'BRAND',name:'Negative public sentiment',route:'Corporate Communications',dyn:'Social only: flag at high priority when sentiment ≤ −0.3.'},
+ {id:'ASR',name:'Low transcription confidence',route:'Transcript QA',dyn:'Voice only: flag below the QA threshold; ASR confidence also lowers every mapping confidence.'},
+ {id:'DUP',name:'Duplicate capture',route:'Inbound service',dyn:'Flag and link to the original capture.'},
+ {id:'NAME',name:'Label naming standards (Semantic Governance Standards)',route:'Persona vocabulary steward',dyn:'Candidate labels that break naming rules are sent to review, never auto-accepted.'}
+];
+
+/* ============================== STATE ============================== */
+let state;
+function initState(){
+  state={ext:{},captures:[],queue:[],audit:[],changes:[],hashes:new Map(),rejected:new Set(),seq:0,lseq:0,qseq:0,
+    settings:{autoAccept:0.85,reviewMin:0.5,asrMin:0.8,socialStrict:true,pilot:false,unmappedToSteward:true,strictClaims:false},
+    policies:Object.fromEntries(POLICY_DEFS.map(p=>[p.id,true]))};
+  PERSONAS.forEach(p=>state.ext[p.id]=(SEED_EXT[p.id]||[]).map(([lit,c])=>newLabel(p.id,lit,c,'approved','seed',null,1)));
+  audit('system','Initialize','SKL',`Loaded ${CORE.length} core concepts and ${Object.values(state.ext).flat().length} seeded persona labels across ${PERSONAS.length} extension graphs`);
+}
+function newLabel(pid,lit,concept,status,source,capId,conf){
+  return {lid:'L-'+String(++state.lseq).padStart(4,'0'),persona:pid,literal:lit,concept,status,source,capId,conf,uses:0,created:new Date().toISOString()};
+}
+function audit(actor,action,obj,detail){state.audit.unshift({t:new Date(),actor,action,obj,detail});}
+function change(op,subject,graph,detail,actor){state.changes.unshift({id:'chg-'+String(state.changes.length+1).padStart(4,'0'),t:new Date().toISOString(),op,subject,graph,detail,actor:actor||'InboundSemanticService',stage:'dev'});}
+
+/* ============================== UTIL ============================== */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const isAcr=s=>/^[A-Z0-9%()\-]+$/.test(s)&&/[A-Z]/.test(s)&&s.length<=6;
+const fms=x=>x<0.01?'<0.01 ms':x.toFixed(2)+' ms';
+const pname=id=>PER[id]?PER[id].short:id;
+const fmtT=d=>d.toTimeString().slice(0,8);
+function fnv(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');}
+const norm=s=>s.replace(/[‘’]/g,"'").replace(/[“”]/g,'"');
+
+/* ============================== MATCHING ============================== */
+function buildEntries(pid){
+  const E=[];
+  CORE.forEach(c=>{E.push({lit:c.pref,concept:c.id,type:'core',conf:1,via:'core prefLabel'});c.alt.forEach(a=>E.push({lit:a,concept:c.id,type:'core',conf:1,via:'core altLabel'}));});
+  const live=l=>l.status==='approved'||l.status==='provisional';
+  Object.keys(state.ext).forEach(p=>state.ext[p].filter(live).forEach(l=>{
+    if(p===pid)E.push({lit:l.literal,concept:l.concept,type:'persona',conf:l.status==='approved'?0.98:0.9,via:`${pname(p)} extension (${l.status})`,label:l});
+    else E.push({lit:l.literal,concept:l.concept,type:'cross',conf:l.status==='approved'?0.8:0.7,via:`borrowed from ${pname(p)} extension`,fromPersona:p});
+  }));
+  SUGGEST.forEach(s=>E.push({lit:s[0],concept:s[1],type:'suggested',conf:s[2],via:'semantic suggester',note:s[3]}));
+  return E;
+}
+function findHits(text,entries){
+  const hits=[];
+  entries.forEach(e=>{
+    const cs=isAcr(e.lit);
+    const re=new RegExp('(?<![A-Za-z0-9])'+reEsc(e.lit)+'(?:s|es)?(?![A-Za-z0-9])',cs?'g':'gi');
+    let m;while((m=re.exec(text))){hits.push({...e,start:m.index,end:m.index+m[0].length,text:m[0]});}
+  });
+  const pri={persona:5,core:4,cross:3,suggested:2};
+  hits.sort((a,b)=>(b.end-b.start)-(a.end-a.start)||pri[b.type]-pri[a.type]||a.start-b.start);
+  const out=[];
+  hits.forEach(h=>{if(out.some(t=>h.start<t.end&&h.end>t.start))return;out.push(h);});
+  return out.sort((a,b)=>a.start-b.start);
+}
+function findPII(text){
+  const R=[['SSN',/\b\d{3}-\d{2}-\d{4}\b/g],['Phone',/\(?\b\d{3}\)?[-.\s]\d{3}[-.]\d{4}\b/g],['Email',/[\w.+-]+@[\w-]+\.[\w.]+\w/g],['DOB',/\b(?:DOB|date of birth)\b[:\s]*[\d\/\-]+/gi]];
+  const out=[];R.forEach(([k,re])=>{let m;while((m=re.exec(text))){if(!out.some(o=>m.index<o.end&&m.index+m[0].length>o.start))out.push({kind:k,start:m.index,end:m.index+m[0].length,text:m[0]});}});
+  return out.sort((a,b)=>a.start-b.start);
+}
+function findCompetitors(text){
+  const out=[];COMPETITORS.forEach(c=>{const re=new RegExp('(?<![A-Za-z0-9])'+reEsc(c)+'(?![A-Za-z0-9])','g');let m;while((m=re.exec(text)))out.push({start:m.index,end:m.index+m[0].length,text:m[0]});});
+  return out;
+}
+function findUnknownAcr(text,taken,allLits){
+  const re=/(?<![#@A-Za-z0-9])([A-Z][A-Z0-9]{1,5})(s?)(?![A-Za-z0-9])/g;const out=[];const seen=new Set();let m;
+  while((m=re.exec(text))){
+    const tok=m[1],s=m.index,e=s+m[0].length;
+    if(STOP_ACR.has(tok)||/^\d/.test(tok)||seen.has(tok))continue;
+    if(taken.some(t=>s<t.end&&e>t.start))continue;
+    if(allLits.has(tok.toLowerCase()))continue;
+    if(COMPETITORS.includes(tok))continue;
+    seen.add(tok);out.push({start:s,end:e,text:m[0],literal:tok});
+  }
+  return out;
+}
+function findGovSpans(text){
+  const R=[['PHI',/\b(?:pregnan\w*|diagnos\w*|cancer|surgery|medical condition|high-risk|disabilit\w*|chemo\w*|mental health)\b/gi],
+   ['CLAIM',/\b(?:guarantee[sd]?|we promise|promised|will save you|save (?:you )?up to \d+\s?%|\d+\s?% savings)/gi],
+   ['LEGAL',/\b(?:you should (?:fire|terminate)\b[^.]*|it'?s legal|legal advice|can'?t sue)/gi]];
+  const out=[];R.forEach(([k,re])=>{let m;while((m=re.exec(text)))out.push({kind:k,start:m.index,end:m.index+m[0].length,text:m[0]});});
+  return out;
+}
+
+/* ============================== PROFILING ============================== */
+const POS=['excited','great','thanks','welcome','happy','love','smooth','resolved','simplif','save','glad'];
+const NEG=['worst','wrong','missed','never','risk','shock','frustrat','dropped','problem','issue',"can't",'incomplete','layoff','fail','late','doubled','nobody','backlog','worried','pressure','isn\'t'];
+function syl(w){w=w.toLowerCase().replace(/[^a-z]/g,'');if(!w)return 0;if(w.length<=3)return 1;w=w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/,'').replace(/^y/,'');const m=w.match(/[aeiouy]{1,2}/g);return m?m.length:1;}
+function profile(text){
+  const words=text.match(/[A-Za-z0-9'%$.\-()]+/g)||[];const wc=words.length||1;
+  const sentences=Math.max(1,(text.match(/[.!?]+(\s|$)/g)||[]).length);
+  const sy=words.reduce((a,w)=>a+syl(w),0);
+  const grade=Math.max(0,0.39*(wc/sentences)+11.8*(sy/wc)-15.59);
+  const low=text.toLowerCase();let p=0,n=0;
+  POS.forEach(w=>{p+=(low.split(w).length-1);});NEG.forEach(w=>{n+=(low.split(w).length-1);});
+  const sentiment=(p-n)/Math.max(1,p+n);
+  const grab=re=>[...new Set((text.match(re)||[]).map(s=>s.trim()))];
+  const entities={
+    organizations:grab(/\b(?:[A-Z][a-z]+\s){1,2}(?:Logistics|Foods|Dental|Design|Manufacturing|Labs|Partners|Group|Health|Corp|Inc)\b/g),
+    money:grab(/\$\s?\d[\d,]*(?:\.\d+)?\s?[kKM]?/g),
+    percents:grab(/\d+(?:\.\d+)?\s?%/g),
+    dates:grab(/\b(?:Q[1-4]|20\d\d(?:-\d\d-\d\d)?|\d{1,2}\/\d{1,2}|(?:January|February|March|April|May|June|July|August|September|October|November|December)|last week|next week|this month|this quarter|today|tomorrow)\b/gi),
+    counts:grab(/\b\d{1,5}(?=\s*(?:employees|worksite employees|WSEs?|FTEs?|people|staff))|(?:head ?count|WSE count|headcount)\D{0,12}\d{1,5}/gi)
+  };
+  return {words:wc,sentences,grade:+grade.toFixed(1),sentiment:+sentiment.toFixed(2),pos:p,neg:n,entities};
+}
+function detectIntent(text,mod){
+  const low=text.toLowerCase();
+  const cues={Complaint:['worst','not fixed',"isn't fixed",'never','wrong','missed','fail','nobody'],
+    'Commitment / offer':['guarantee','we will','promise','proposal','quote','save up to'],
+    Guidance:['should','recommend','before any','document ','confirm','coordinate','update the'],
+    Inquiry:['?','can you','how do','looks wrong'],
+    'Field note':['note for file','just left','heads up','update','arrived','account plan'],
+    Announcement:['excited','welcome','announc']};
+  let best='Field note',bs=0;const sc={};
+  Object.entries(cues).forEach(([k,arr])=>{const s=arr.reduce((a,c)=>a+(low.split(c).length-1),0);sc[k]=s;if(s>bs){bs=s;best=k;}});
+  if(mod==='form')best=bs>0&&best!=='Field note'?best:'Structured record';
+  return best;
+}
+function detectLang(text){const low=' '+text.toLowerCase()+' ';const en=[' the ',' and ',' to ',' of ',' is ',' a ',' on ',' for '].reduce((a,w)=>a+(low.split(w).length-1),0);const es=[' el ',' la ',' de ',' que ',' y ',' los '].reduce((a,w)=>a+(low.split(w).length-1),0);return es>en?{code:'es',conf:0.8}:{code:'en',conf:Math.min(0.99,0.85+en*0.01)};}
+
+/* ============================== GOVERNANCE ============================== */
+function govern(ctx){
+  const {text,mod,pii,comps,prof,dupOf,asr,hits,cls}=ctx;const pol=state.policies;const S=state.settings;const F=[];
+  const gs=findGovSpans(text);
+  if(pol.PII&&pii.length){
+    const hard=pii.some(p=>p.kind==='SSN'||p.kind==='DOB');const pub=mod==='social';
+    F.push({pid:'PII',sev:hard?'high':'medium',action:(hard||pub)?'hold':'redact',route:'Privacy Office',detail:`${[...new Set(pii.map(p=>p.kind))].join(', ')} detected and redacted in the stored copy`+(pub?'; public channel':'')});
+  }
+  const phi=gs.filter(g=>g.kind==='PHI');
+  if(pol.PHI&&phi.length)F.push({pid:'PHI',sev:'high',action:'hold',route:'Privacy Office',detail:`Health information: "${phi.map(g=>g.text).join('", "')}"`});
+  const cl=gs.filter(g=>g.kind==='CLAIM');
+  if(pol.CLAIM&&cl.length){const h=mod==='social'||S.strictClaims;F.push({pid:'CLAIM',sev:'medium',action:h?'hold':'flag',route:'Compliance · Sales & Marketing Claims',detail:`Unapproved commitment: "${cl.map(g=>g.text).join('", "')}"`+(mod==='social'?' (public channel, so held)':'')});}
+  const lg=gs.filter(g=>g.kind==='LEGAL');
+  if(pol.LEGAL&&lg.length)F.push({pid:'LEGAL',sev:'medium',action:'hold',route:'Legal',detail:`Legal-advice language: "${lg.map(g=>g.text).join('", "')}"`});
+  if(pol.COMP&&comps.length)F.push({pid:'COMP',sev:'info',action:'notify',route:'Competitive Intelligence',detail:`Competitor mentioned: ${[...new Set(comps.map(c=>c.text))].join(', ')}`});
+  if(pol.BRAND&&mod==='social'&&prof.sentiment<=-0.3)F.push({pid:'BRAND',sev:'medium',action:'flag',route:'Corporate Communications',detail:`Negative public sentiment (${prof.sentiment}), priority response`});
+  if(pol.ASR&&mod==='voice'&&asr<S.asrMin)F.push({pid:'ASR',sev:'low',action:'flag',route:'Transcript QA',detail:`ASR confidence ${asr.toFixed(2)} is below the ${S.asrMin.toFixed(2)} threshold`});
+  if(pol.DUP&&dupOf)F.push({pid:'DUP',sev:'info',action:'flag',route:'Inbound service',detail:`Same content hash as ${dupOf}; linked to the original`});
+  const hold=F.some(f=>f.action==='hold');
+  const restricted=pii.some(p=>p.kind==='SSN'||p.kind==='DOB')||F.some(f=>f.pid==='PHI');
+  const pricing=hits.some(h=>['AdministrativeFee','ProposalQuote','ContractRenewal'].includes(h.concept))&&prof.entities.percents.length;
+  const confidential=pii.length||F.some(f=>f.pid==='LEGAL')||pricing;
+  const sensitivity=restricted?'restricted':confidential?'confidential':(mod==='social'?'public':'internal');
+  return {findings:F,disposition:hold?'HELD':'PUBLISHED',sensitivity,retention:CATS[cls.primary].ret,govSpans:gs};
+}
+function nameCheck(lit){
+  const issues=[];
+  if(lit.length<2||lit.length>60)issues.push('length 2–60');
+  if(/^[^\w]|[^\w%)]$/.test(lit))issues.push('leading/trailing punctuation');
+  if(/^\d+$/.test(lit))issues.push('numeric only');
+  if(/@|\d{3}-\d{2}-\d{4}/.test(lit))issues.push('contains PII');
+  return issues;
+}
+
+/* ============================== PIPELINE ============================== */
+const STAGES=['Capture','Identify','Profile','Classify','Govern','Map','Extend','Route & Publish'];
+function runInbound(input){
+  const T=[];let t=performance.now();const lap=()=>{const n=performance.now();T.push(n-t);t=n;};
+  const P=PER[input.persona];const mod=input.modality;
+  // 1 CAPTURE
+  let text,adapter;
+  if(mod==='form'){const f=input.fields.filter(x=>(x[0]||'').trim()||(x[1]||'').trim());text=f.map(x=>`${x[0].trim()}: ${x[1].trim()}`).join('\n');adapter=`Screen adapter serialized ${f.length} field/value pairs; field labels are evaluated as persona terms`;}
+  else{text=input.text.trim();adapter={document:`Document adapter segmented ${text.split(/\n\s*\n/).length} paragraph(s)`,text:`Message adapter normalized ${text.split(/\n/).length} line(s) / turn(s)`,social:`Social adapter extracted ${(text.match(/#\w+/g)||[]).length} hashtag(s) and ${(text.match(/@\w+/g)||[]).length} mention(s)`,voice:`Voice adapter accepted the transcript (ASR confidence ${input.asr.toFixed(2)})`}[mod];}
+  text=norm(text);
+  if(!text)return null;
+  lap();
+  // 2 IDENTIFY
+  const seq=++state.seq;const now=new Date();
+  const id=`cap-${now.toISOString().slice(0,10).replace(/-/g,'')}-${String(seq).padStart(4,'0')}`;
+  const hash=fnv(text.toLowerCase().replace(/\s+/g,' '));
+  const dupOf=state.hashes.get(hash)||null;if(!dupOf)state.hashes.set(hash,id);
+  const lang=detectLang(text);
+  lap();
+  // 3 PROFILE (incl. term extraction)
+  const entries=buildEntries(input.persona);
+  const allLits=new Set(entries.map(e=>e.lit.toLowerCase()));
+  const pii=findPII(text);
+  const comps=findCompetitors(text);
+  let hits=findHits(text,entries).filter(h=>!pii.some(p=>h.start<p.end&&h.end>p.start)&&!comps.some(c=>h.start<c.end&&h.end>c.start));
+  const unk=findUnknownAcr(text,[...hits,...comps,...pii],allLits);
+  const prof=profile(text);prof.entities.competitors=[...new Set(comps.map(c=>c.text))];
+  lap();
+  // 4 CLASSIFY
+  const score={};Object.keys(CATS).forEach(k=>score[k]=0.05);score[P.defCat]+=0.5;
+  hits.forEach(h=>{if(h.concept)score[C[h.concept].cat]+=h.conf;});
+  const tot=Object.values(score).reduce((a,b)=>a+b,0);
+  const ranked=Object.entries(score).map(([k,v])=>[k,v/tot]).sort((a,b)=>b[1]-a[1]);
+  const cls={primary:ranked[0][0],ranked,intent:detectIntent(text,mod)};
+  lap();
+  // 5 GOVERN
+  const gov=govern({text,mod,pii,comps,prof,dupOf,asr:input.asr,hits,cls});
+  lap();
+  // 6 MAP
+  const asrF=mod==='voice'?input.asr:1;
+  const mappings=hits.map(h=>({phrase:h.text,type:h.type,concept:h.concept,conf:+(h.conf*(h.type==='core'?1:asrF)).toFixed(2),via:h.via}));
+  lap();
+  // 7 EXTEND (persona vocabulary extension candidates)
+  const S=state.settings;const Ta=+(S.autoAccept+((mod==='social'&&S.socialStrict)?0.05:0)).toFixed(2);const Tr=S.reviewMin;
+  const cands=[];const seen=new Set();
+  hits.filter(h=>h.type==='cross'||h.type==='suggested').forEach(h=>{
+    let lit=/[A-Z]{2,}/.test(h.text)?h.text:h.text.toLowerCase();
+    const k=lit.toLowerCase();if(seen.has(k))return;seen.add(k);
+    cands.push({literal:lit,concept:h.concept,type:h.type,conf:h.conf,eff:+(h.conf*asrF).toFixed(2),note:h.note,via:h.via});
+  });
+  unk.forEach(u=>{if(seen.has(u.literal.toLowerCase()))return;seen.add(u.literal.toLowerCase());cands.push({literal:u.literal,concept:null,type:'unmapped',conf:0.3,eff:+(0.3*asrF).toFixed(2),via:'unknown acronym detector'});});
+  cands.forEach(c=>{
+    const issues=state.policies.NAME?nameCheck(c.literal):[];
+    if(state.rejected.has(input.persona+'|'+c.literal.toLowerCase())){c.decision='discard';c.reason='Previously rejected by a steward';return;}
+    if(c.type==='unmapped'){if(S.unmappedToSteward){c.decision='review';c.reason='Unmapped term: needs a concept assignment';}else{c.decision='discard';c.reason='Unmapped term logged; routing is off';}return;}
+    if(S.pilot){c.decision='review';c.reason='Pilot mode: a steward approves every new label';return;}
+    if(c.note){c.decision='review';c.reason=c.note;return;}
+    if(issues.length){c.decision='review';c.reason='Naming standard: '+issues.join(', ');return;}
+    if(c.eff>=Ta){
+      if(gov.disposition==='HELD'){c.decision='review';c.reason=`Meets the ${Ta} threshold, but the source content is on hold, so the label is deferred`;}
+      else{c.decision='auto';c.reason=`Confidence ≥ ${Ta}`+(Ta>S.autoAccept?' (raised for public channel)':'');}
+    }else if(c.eff>=Tr){c.decision='review';c.reason=`Confidence between ${Tr} and ${Ta}`+(c.type==='cross'?`; ${c.via}`:'');}
+    else{c.decision='discard';c.reason=`Confidence below the ${Tr} review minimum`;}
+  });
+  lap();
+  // 8 ROUTE & PUBLISH (commit)
+  const rec={id,seq,t:now,persona:input.persona,modality:mod,source:P.src[mod],adapter,text,hash,dupOf,lang,asr:mod==='voice'?input.asr:null,
+    prof,cls,gov,hits,pii,comps,unk,mappings,cands,Ta,Tr,routes:[],timings:T,presetTitle:input.title||'Custom capture'};
+  // usage evidence on persona labels
+  hits.filter(h=>h.type==='persona'&&h.label).forEach(h=>h.label.uses++);
+  // labels
+  cands.forEach(c=>{
+    if(c.decision==='auto'){const l=newLabel(rec.persona,c.literal,c.concept,'provisional','capture',rec.id,c.eff);state.ext[rec.persona].push(l);c.lid=l.lid;
+      change('addLabel',l.lid,'g:ext/'+rec.persona,`"${c.literal}" → core:${c.concept} (provisional, ${c.eff})`);
+      audit('InboundSemanticService','Auto-accept label',l.lid,`${pname(rec.persona)}: "${c.literal}" → ${C[c.concept].pref} @ ${c.eff}`);}
+    else if(c.decision==='review'){const q=enqueueLabel(c,rec);c.qid=q.qid;}
+    else audit('InboundSemanticService','Discard term',rec.id,`"${c.literal}": ${c.reason}`);
+  });
+  // content
+  const holds=gov.findings.filter(f=>f.action==='hold');
+  if(holds.length){
+    const sevRank={high:3,medium:2,low:1,info:0};const top=holds.slice().sort((a,b)=>sevRank[b.sev]-sevRank[a.sev])[0];
+    const q={qid:'RV-'+String(++state.qseq).padStart(4,'0'),kind:'content',status:'pending',capId:rec.id,persona:rec.persona,route:top.route,
+      also:[...new Set(holds.map(h=>h.route))].filter(r=>r!==top.route),findings:holds,priority:top.sev==='high'?'P1':'P2',sla:top.sev==='high'?'4 business hours':'1 business day',created:new Date()};
+    state.queue.unshift(q);rec.routes.push({kind:'hold',route:top.route,qid:q.qid,sla:q.sla,priority:q.priority,also:q.also});
+    audit('InboundSemanticService','Hold content',rec.id,`Routed to ${top.route}`+(q.also.length?` (+ ${q.also.join(', ')})`:''));
+  }
+  gov.findings.filter(f=>f.action!=='hold').forEach(f=>{rec.routes.push({kind:f.action,route:f.route,detail:f.detail});audit('InboundSemanticService',f.action==='notify'?'Notify':f.action==='redact'?'Redact':'Flag',rec.id,`${f.route}: ${f.detail}`);});
+  const labelReviews=cands.filter(c=>c.decision==='review');
+  if(labelReviews.length)rec.routes.push({kind:'steward',route:P.steward,detail:`${labelReviews.length} label candidate(s): ${labelReviews.map(c=>'"'+c.literal+'"').join(', ')}`});
+  change(gov.disposition==='HELD'?'quarantineCapture':'publishCapture',rec.id,'g:cap/'+rec.id,`${MODS[mod].name} from ${pname(rec.persona)}; ${CATS[cls.primary].label}; ${gov.sensitivity}`);
+  audit('InboundSemanticService',gov.disposition==='HELD'?'Quarantine capture':'Publish capture',rec.id,`${pname(rec.persona)} · ${MODS[mod].name} · ${CATS[cls.primary].label} · ${gov.sensitivity}`);
+  state.captures.unshift(rec);
+  lap();
+  return rec;
+}
+function enqueueLabel(c,rec){
+  const ex=state.queue.find(q=>q.kind==='label'&&q.status==='pending'&&q.persona===rec.persona&&q.literal.toLowerCase()===c.literal.toLowerCase());
+  if(ex){ex.evidence++;ex.caps.push(rec.id);ex.conf=Math.max(ex.conf,c.eff);return ex;}
+  const q={qid:'RV-'+String(++state.qseq).padStart(4,'0'),kind:'label',status:'pending',persona:rec.persona,literal:c.literal,concept:c.concept,conf:c.eff,reason:c.reason,
+    route:PER[rec.persona].steward,caps:[rec.id],evidence:1,matchType:c.type,note:c.note,created:new Date(),priority:'P3',sla:'3 business days',ctx:snippet(rec.text,c.literal)};
+  state.queue.unshift(q);
+  audit('InboundSemanticService','Route label for review',q.qid,`${pname(rec.persona)}: "${c.literal}" → ${q.route}`);
+  return q;
+}
+function snippet(text,lit){const i=text.toLowerCase().indexOf(lit.toLowerCase());if(i<0)return text.slice(0,140);const s=Math.max(0,i-60),e=Math.min(text.length,i+lit.length+60);return (s>0?'…':'')+text.slice(s,e)+(e<text.length?'…':'');}
+
+/* ============================== OUTBOUND ============================== */
+function displayLabelFor(pid,concept,inclProv){
+  const ls=state.ext[pid].filter(l=>l.concept===concept&&(l.status==='approved'||(inclProv&&l.status==='provisional')));
+  ls.sort((a,b)=>(a.status==='approved'?0:1)-(b.status==='approved'?0:1)||b.uses-a.uses);
+  return ls[0]||null;
+}
+function resolveTerm(phrase,consumer,inclProv,cross){
+  const q=norm(phrase).trim().toLowerCase();const ok=l=>l.status==='approved'||(inclProv&&l.status==='provisional');
+  let match=null;
+  const own=state.ext[consumer].find(l=>ok(l)&&l.literal.toLowerCase()===q);
+  if(own)match={concept:own.concept,via:'consumer persona extension',label:own};
+  if(!match){const c=CORE.find(c=>c.pref.toLowerCase()===q||c.alt.some(a=>a.toLowerCase()===q));if(c)match={concept:c.id,via:'core vocabulary'};}
+  if(!match&&cross){for(const p of Object.keys(state.ext)){if(p===consumer)continue;const l=state.ext[p].find(l=>ok(l)&&l.literal.toLowerCase()===q);if(l){match={concept:l.concept,via:`${PER[p].name} extension (cross-persona)`,label:l};break;}}}
+  const req={persona:consumer,term:phrase,includeProvisional:inclProv,crossPersona:cross};
+  const resp={service:'outbound.semantic.v1/resolve',requestId:'req-'+fnv(phrase+Date.now()).slice(0,6),request:req};
+  if(!match){
+    const sugg=[];Object.entries(state.ext).forEach(([p,ls])=>ls.filter(ok).forEach(l=>{if(l.literal.toLowerCase().includes(q)||q.includes(l.literal.toLowerCase()))sugg.push(`${l.literal} (${pname(p)})`);}));
+    CORE.forEach(c=>{if(c.pref.toLowerCase().includes(q))sugg.push(c.pref+' (core)');});
+    resp.result=null;resp.didYouMean=[...new Set(sugg)].slice(0,6);
+    resp.note=(!cross&&sugg.length)?'Term exists only in another persona extension; cross-persona lookup is off.':'No governed label matches. The term can be submitted through Inbound for stewardship.';
+  }else{
+    const c=C[match.concept];const disp=displayLabelFor(consumer,c.id,inclProv);
+    const others={};if(cross)PERSONAS.forEach(p=>{if(p.id===consumer)return;const ls=state.ext[p.id].filter(l=>l.concept===c.id&&ok(l)).map(l=>l.literal+(l.status==='provisional'?' (provisional)':''));if(ls.length)others[p.id]=ls;});
+    resp.result={concept:'core:'+c.id,prefLabel:c.pref,definition:c.def,classification:'tax:'+CATS[c.cat].label.replace(/\W+/g,''),
+      matchedVia:match.via+(match.label?` · ${match.label.lid} (${match.label.status})`:''),
+      displayLabel:disp?disp.literal:c.pref,displayLabelSource:disp?`${pname(consumer)} extension (${disp.status})`:'core prefLabel (consumer has no alternate label)',
+      consumerLabels:state.ext[consumer].filter(l=>l.concept===c.id&&ok(l)).map(l=>({literal:l.literal,status:l.status,lid:l.lid})),
+      coreAltLabels:c.alt,otherPersonaLabels:cross?others:'withheld (cross-persona off)'};
+  }
+  resp.governance={graphAccess:'mediated by Outbound Semantic Service; the SKL graph is never exposed',labelStatusesServed:inclProv?['approved','provisional']:['approved'],entitlement:`persona:${consumer}`,auditLogged:true};
+  audit('OutboundSemanticService','Resolve',resp.requestId,`${pname(consumer)} asked "${phrase}" → ${resp.result?resp.result.prefLabel:'no match'}`);
+  return resp;
+}
+
+/* ============================== TRIG ============================== */
+const PFX=`@prefix skl:     <https://skl.example.org/def/> .
+@prefix core:    <https://skl.example.org/core/> .
+@prefix tax:     <https://skl.example.org/taxonomy/> .
+@prefix persona: <https://skl.example.org/persona/> .
+@prefix lbl:     <https://skl.example.org/label/> .
+@prefix cap:     <https://skl.example.org/capture/> .
+@prefix pol:     <https://skl.example.org/policy/> .
+@prefix chg:     <https://skl.example.org/change/> .
+@prefix g:       <https://skl.example.org/graph/> .
+@prefix skosxl:  <http://www.w3.org/2008/05/skos-xl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+`;
+const lit=s=>'"'+String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n')+'"';
+const cname=s=>s.replace(/[^A-Za-z0-9]/g,'');
+function redact(text,pii){let out='',i=0;pii.forEach(p=>{out+=text.slice(i,p.start)+`[${p.kind}-REDACTED]`;i=p.end;});return out+text.slice(i);}
+function trigCapture(r){
+  const concepts=[...new Set(r.hits.map(h=>h.concept).filter(Boolean))];
+  let s=`${PFX}\nGRAPH g:cap\\/${r.id} {\n  cap:${r.id} a skl:CapturedContent ;\n    skl:capturedBy persona:${r.persona} ;\n    skl:modality skl:${cname(MODS[r.modality].name)} ;\n    skl:sourceSystem ${lit(r.source)} ;\n    skl:contentHash ${lit('fnv1a:'+r.hash)} ;\n    skl:language ${lit(r.lang.code)} ;\n    prov:generatedAtTime ${lit(r.t.toISOString())}^^xsd:dateTime ;\n    skl:primaryClassification tax:${cname(CATS[r.cls.primary].label)} ;\n    skl:intent ${lit(r.cls.intent)} ;\n    skl:sensitivity skl:${r.gov.sensitivity[0].toUpperCase()+r.gov.sensitivity.slice(1)} ;\n    skl:retentionClass ${lit(r.gov.retention)} ;\n    skl:governanceStatus skl:${r.gov.disposition==='HELD'?'Held':'Published'} ;\n    skl:storedText ${lit(redact(r.text,r.pii))}`;
+  if(r.dupOf)s+=` ;\n    skl:duplicateOf cap:${r.dupOf}`;
+  if(concepts.length)s+=` ;\n    skl:mentions ${concepts.map(c=>'core:'+c).join(', ')}`;
+  r.gov.findings.forEach(f=>{s+=` ;\n    skl:policyFinding [ skl:policy pol:${f.pid} ; skl:severity ${lit(f.sev)} ; skl:action ${lit(f.action)} ; skl:routedTo ${lit(f.route)} ]`;});
+  s+=' .\n';
+  r.mappings.forEach((m,i)=>{if(!m.concept)return;s+=`  cap:${r.id}\\/m${i+1} a skl:TermMapping ; skl:inCapture cap:${r.id} ; skl:surfaceForm ${lit(m.phrase)} ; skl:mapsTo core:${m.concept} ; skl:matchType ${lit(m.type)} ; skl:confidence ${m.conf} .\n`;});
+  return s+'}\n';
+}
+function trigExt(pid){
+  let s=`${PFX}\n# Persona extension graph: alternate labels kept separate from the core\nGRAPH g:ext\\/${pid} {\n  g:ext\\/${pid} skl:extends g:core ; skl:forPersona persona:${pid} .\n`;
+  state.ext[pid].forEach(l=>{s+=`  lbl:${l.lid} a skosxl:Label ;\n    skosxl:literalForm ${lit(l.literal)}@en ;\n    skl:altLabelOf core:${l.concept} ;\n    skl:persona persona:${pid} ;\n    skl:labelStatus skl:${l.status[0].toUpperCase()+l.status.slice(1)} ;\n    skl:confidence ${l.conf} ;\n    skl:usageCount ${l.uses}${l.capId?` ;\n    prov:wasDerivedFrom cap:${l.capId}`:''} ;\n    prov:generatedAtTime ${lit(l.created)}^^xsd:dateTime .\n`;});
+  return s+'}\n';
+}
+function trigChanges(){
+  let s=`${PFX}\nGRAPH g:changes {\n`;
+  state.changes.slice(0,60).forEach(c=>{s+=`  chg:${c.id} a skl:ChangeRecord ;\n    skl:operation ${lit(c.op)} ;\n    skl:subject ${lit(c.subject)} ;\n    skl:targetGraph ${c.graph.replace('/','\\/')} ;\n    skl:detail ${lit(c.detail)} ;\n    prov:wasAssociatedWith ${lit(c.actor)} ;\n    prov:atTime ${lit(c.t)}^^xsd:dateTime ;\n    skl:releaseStage ${lit(c.stage)} .\n`;});
+  return s+'}\n';
+}
+function hl(s){return esc(s).replace(/(#[^\n]*)/g,'<span class="tk-c">$1</span>').replace(/(&quot;(?:[^&]|&(?!quot;))*?&quot;)/g,'<span class="tk-s">$1</span>').replace(/\b(GRAPH|@prefix|a)\b/g,'<span class="tk-k">$1</span>').replace(/\b((?:skl|core|lbl|cap|g|skosxl|prov|persona|tax|pol|chg|xsd):[\w\\\/-]+)/g,'<span class="tk-p">$1</span>');}
+
+/* ============================== UI STATE ============================== */
+const ui={persona:'sales-ops',modality:'text',preset:null,fields:[],current:null,qfilter:'all',vfilter:'all',animating:false,live:null};
+const $=s=>document.querySelector(s);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2600);}
+
+function renderPersonaBtns(){
+  $('#personaBtns').innerHTML=PERSONAS.map(p=>`<button class="pbtn ${p.id===ui.persona?'active':''}" style="--pc:${p.color}" data-p="${p.id}"><span class="dot" style="background:${p.color}"></span>${esc(p.short)}</button>`).join('');
+  $('#personaJob').innerHTML=`<b>${esc(PER[ui.persona].name)}</b>: ${esc(PER[ui.persona].job)} · extension graph <span class="mono">g:ext/${ui.persona}</span>`;
+}
+function renderModBtns(){$('#modBtns').innerHTML=Object.entries(MODS).map(([k,m])=>`<button class="mbtn ${k===ui.modality?'active':''}" data-m="${k}">${m.icon} ${m.name}</button>`).join('');}
+function renderPresets(){
+  const list=PRESETS.filter(p=>p.persona===ui.persona);
+  const sel=$('#presetSel');
+  sel.innerHTML=list.map(p=>`<option value="${p.id}" ${ui.preset===p.id?'selected':''}>${MODS[p.modality].icon} ${esc(p.title)}</option>`).join('')+'<option value="">✎ Custom (write your own)</option>';
+  if(ui.preset===null)sel.value='';
+}
+function applyPreset(id){
+  ui.preset=id||null;const p=PRESETS.find(x=>x.id===id);
+  if(p){ui.modality=p.modality;if(p.fields)ui.fields=p.fields.map(f=>f.slice());else $('#contentText').value=p.text;if(p.asr){$('#asr').value=p.asr;$('#asrOut').textContent=(+p.asr).toFixed(2);}}
+  renderModBtns();renderInputs();
+}
+function renderInputs(){
+  const m=ui.modality;
+  $('#freeInput').style.display=m==='form'?'none':'block';$('#formInput').style.display=m==='form'?'block':'none';$('#asrBox').style.display=m==='voice'?'block':'none';
+  $('#textLabel').textContent={document:'Document text',text:'Message / chat thread',social:'Social post',voice:'Voice memo transcript (ASR output)'}[m]||'Content';
+  $('#srcSys').textContent=PER[ui.persona].src[m];
+  if(m==='form'){
+    if(!ui.fields.length)ui.fields=[['Client',''],['Notes','']];
+    $('#formGrid').innerHTML=ui.fields.map((f,i)=>`<input class="lbl" data-i="${i}" data-k="0" value="${esc(f[0])}"><input data-i="${i}" data-k="1" value="${esc(f[1])}"><button class="x" data-del="${i}" title="Remove">×</button>`).join('');
+  }
+}
+function currentInput(){return {persona:ui.persona,modality:ui.modality,text:$('#contentText').value,fields:ui.fields,asr:+$('#asr').value,title:(PRESETS.find(p=>p.id===ui.preset)||{}).title};}
+
+/* -------- trace rendering -------- */
+function stageView(r){
+  const P=PER[r.persona];const pc=c=>`<span class="chip ${c}">${esc(c)}</span>`;
+  const ent=Object.entries(r.prof.entities).filter(([k,v])=>v.length).map(([k,v])=>`<div><span class="muted small">${k}:</span> ${v.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`).join('')||'<span class="dim">none</span>';
+  const types=['persona','core','cross','suggested'];const tc={};types.forEach(t=>tc[t]=r.hits.filter(h=>h.type===t).length);
+  const sentW=Math.round((r.prof.sentiment+1)*50);
+  const holds=r.gov.findings.filter(f=>f.action==='hold').length;
+  const auto=r.cands.filter(c=>c.decision==='auto').length,rev=r.cands.filter(c=>c.decision==='review').length,dis=r.cands.filter(c=>c.decision==='discard').length;
+  const v=[];
+  v.push({sum:`${MODS[r.modality].icon} ${MODS[r.modality].name} from ${P.short} via ${r.source}`,state:'done',html:`<dl class="kv"><dt>Persona</dt><dd><span class="pchip"><i style="background:${P.color}"></i>${esc(P.name)}</span>: ${esc(P.job)}</dd><dt>Modality</dt><dd>${MODS[r.modality].icon} ${MODS[r.modality].name}</dd><dt>Source system</dt><dd>${esc(r.source)}</dd><dt>Adapter</dt><dd>${esc(r.adapter)}</dd><dt>Payload</dt><dd>${r.text.length} chars</dd>${r.asr!=null?`<dt>ASR confidence</dt><dd>${r.asr.toFixed(2)}, applied as a factor on every non-core mapping</dd>`:''}</dl>`});
+  v.push({sum:`${r.id} · ${r.lang.code} · hash ${r.hash}${r.dupOf?' · DUPLICATE':''}`,state:r.dupOf?'warn':'done',html:`<dl class="kv"><dt>Capture ID</dt><dd class="mono">${r.id}</dd><dt>Content hash</dt><dd class="mono">fnv1a:${r.hash}</dd><dt>Duplicate check</dt><dd>${r.dupOf?`<span class="chip medium">duplicate of ${r.dupOf}</span>`:'<span class="chip ok">unique</span>'}</dd><dt>Language</dt><dd>${r.lang.code} (${r.lang.conf.toFixed(2)})</dd><dt>Captured at</dt><dd>${r.t.toISOString()}</dd><dt>Identity binding</dt><dd><span class="mono">persona:${r.persona}</span>; persona-scoped entitlements (fine-grained, beyond ACLs)</dd></dl>`});
+  v.push({sum:`${r.prof.words} words · grade ${r.prof.grade} · sentiment ${r.prof.sentiment} · ${r.hits.length+r.unk.length} terms`,state:'done',html:`<dl class="kv"><dt>Size</dt><dd>${r.prof.words} words, ${r.prof.sentences} sentence(s)</dd><dt>Reading grade</dt><dd>${r.prof.grade} (Flesch–Kincaid)</dd><dt>Sentiment</dt><dd><div class="barrow" style="margin:0"><div class="bar"><div style="width:${sentW}%;background:${r.prof.sentiment<-0.2?'#f87171':r.prof.sentiment>0.2?'#4ade80':'#94a3b8'}"></div></div><span class="mono small">${r.prof.sentiment}</span></div></dd><dt>Terms extracted</dt><dd>${types.map(t=>`<span class="chip ${t}">${t} ${tc[t]}</span>`).join('')}<span class="chip unmapped">unmapped ${r.unk.length}</span>${r.pii.length?`<span class="chip high">PII ${r.pii.length}</span>`:''}</dd><dt>Entities</dt><dd>${ent}</dd></dl>`});
+  v.push({sum:`${CATS[r.cls.primary].label} (${Math.round(r.cls.ranked[0][1]*100)}%) · ${r.cls.intent}`,state:'done',html:`<div style="margin-top:8px">${r.cls.ranked.slice(0,4).map(([k,p])=>`<div class="barrow"><span>${CATS[k].label}</span><div class="bar"><div style="width:${Math.round(p*100)}%"></div></div><span>${Math.round(p*100)}%</span></div>`).join('')}</div><dl class="kv"><dt>Intent</dt><dd><span class="chip">${esc(r.cls.intent)}</span></dd><dt>Content type</dt><dd>${MODS[r.modality].name} · ${esc(r.cls.intent)}</dd><dt>Taxonomy node</dt><dd class="mono">tax:${cname(CATS[r.cls.primary].label)}</dd><dt>Persona prior</dt><dd>${P.short} → ${CATS[P.defCat].label}</dd></dl>`});
+  v.push({sum:`${r.gov.findings.length} finding(s) · ${r.gov.sensitivity} · ${r.gov.disposition==='HELD'?'HOLD':'clear to publish'}`,state:holds?'stop':r.gov.findings.length?'warn':'done',html:`${r.gov.findings.length?`<table style="margin-top:8px"><tr><th>Policy</th><th>Severity</th><th>Action</th><th>Detail</th></tr>${r.gov.findings.map(f=>`<tr><td class="mono">${f.pid}</td><td>${pc(f.sev)}</td><td>${pc(f.action)}</td><td>${esc(f.detail)}</td></tr>`).join('')}</table>`:'<div class="small muted" style="margin-top:8px">No policy findings.</div>'}<dl class="kv"><dt>Sensitivity</dt><dd>${pc(r.gov.sensitivity)}</dd><dt>Retention class</dt><dd>${esc(r.gov.retention)}</dd><dt>Dynamic context</dt><dd>modality=${r.modality}, persona=${r.persona}${r.modality==='social'?', public channel (stricter rules)':''}${r.asr!=null?`, ASR=${r.asr.toFixed(2)}`:''}</dd></dl>`});
+  v.push({sum:`${r.mappings.length} mapping(s) to ${new Set(r.mappings.map(m=>m.concept)).size} core concept(s)`,state:'done',html:r.mappings.length?`<table style="margin-top:8px"><tr><th>Surface form</th><th>Match</th><th>Core concept</th><th>Conf.</th><th>Via</th></tr>${r.mappings.map(m=>`<tr><td><b>${esc(m.phrase)}</b></td><td>${pc(m.type)}</td><td>${esc(C[m.concept].pref)} <span class="mono dim">core:${m.concept}</span></td><td class="mono">${m.conf.toFixed(2)}</td><td class="small muted">${esc(m.via)}</td></tr>`).join('')}</table>`:'<div class="small muted">No mappings.</div>'});
+  v.push({sum:`${auto} auto-accepted · ${rev} to steward · ${dis} discarded`,state:rev?'warn':'done',html:`${r.cands.length?`<table style="margin-top:8px"><tr><th>Persona term</th><th>Proposed concept</th><th>Eff. conf.</th><th>Decision</th><th>Reason</th></tr>${r.cands.map(c=>`<tr><td><b>${esc(c.literal)}</b> <span class="chip ${c.type}">${c.type}</span></td><td>${c.concept?esc(C[c.concept].pref):'<span class="dim">none</span>'}</td><td class="mono">${c.eff.toFixed(2)}</td><td>${pc(c.decision)}${c.lid?` <span class="mono dim">${c.lid}</span>`:''}${c.qid?` <span class="mono dim">${c.qid}</span>`:''}</td><td class="small">${esc(c.reason)}</td></tr>`).join('')}</table>`:'<div class="small muted" style="margin-top:8px">No new persona terms. All terms matched existing persona or core labels.</div>'}<div class="note">Thresholds for this capture: auto-accept ≥ <b>${r.Ta}</b>, review ≥ <b>${r.Tr}</b>. New labels go to <span class="mono">g:ext/${r.persona}</span> as <span class="mono">skosxl:Label</span> resources. The core vocabulary is never modified.</div>`});
+  v.push({sum:r.gov.disposition==='HELD'?`HELD → ${r.routes.find(x=>x.kind==='hold').route}`:`Published to SKL · ${r.routes.length} route(s)`,state:holds?'stop':'done',html:`<div class="disp ${r.gov.disposition}">${r.gov.disposition==='HELD'?'⏸ Content held (quarantined) pending review':'✓ Published to SKL via Inbound Semantic Services'}</div>${r.routes.map(x=>`<div class="route">${pc(x.kind==='hold'?'hold':x.kind==='steward'?'review':x.kind)}<div style="flex:1"><b>${esc(x.route)}</b>${x.qid?` · <span class="mono">${x.qid}</span> · ${x.priority} · SLA ${x.sla}${x.also&&x.also.length?` · also ${esc(x.also.join(', '))}`:''}`:''}${x.detail?`<div class="small muted">${esc(x.detail)}</div>`:''}</div></div>`).join('')}<dl class="kv"><dt>Graph write</dt><dd class="mono">g:cap/${r.id}${r.cands.some(c=>c.decision==='auto')?` + g:ext/${r.persona}`:''} + g:changes</dd><dt>Outbound availability</dt><dd>${r.gov.disposition==='HELD'?'Withheld until released':'Concepts and persona labels are available to Outbound now'}</dd></dl>`});
+  return v;
+}
+function renderTrace(r,animate){
+  $('#traceId').textContent=r?`${r.id}: ${r.presetTitle}`:'';
+  if(!r){$('#stepper').innerHTML='';return;}
+  const views=stageView(r);
+  $('#stepper').innerHTML=STAGES.map((s,i)=>`<div class="step" id="st${i}"><b>${s}</b><span class="mono">${r.timings[i]!=null?fms(r.timings[i]):''}</span></div>`).join('');
+  $('#stages').innerHTML=views.map((v,i)=>`<details class="stage" id="sg${i}" ${i>=4?'open':''}><summary><span class="num">${i+1}</span><span class="nm">${STAGES[i]}</span><span class="sum">${esc(v.sum)}</span><span class="ms">${fms(r.timings[i])}</span></summary><div class="body">${v.html}</div></details>`).join('');
+  const show=i=>{const st=$('#st'+i);if(!st)return;st.classList.add(views[i].state==='stop'?'stop':views[i].state==='warn'?'warn':'done');$('#sg'+i).classList.add('shown');};
+  if(animate){ui.animating=true;views.forEach((_,i)=>setTimeout(()=>{show(i);if(i===views.length-1)ui.animating=false;},140*(i+1)));}
+  else views.forEach((_,i)=>show(i));
+}
+function annotate(r,targetPersona){
+  const spans=[];
+  r.pii.forEach(p=>spans.push({...p,cls:'pii',tip:`${p.kind} redacted (Privacy policy)`,txt:`[${p.kind}]`}));
+  r.comps.forEach(c=>spans.push({...c,cls:'comp',tip:'Competitor: tagged for Competitive Intelligence'}));
+  r.hits.forEach(h=>{
+    if(targetPersona){
+      const d=displayLabelFor(targetPersona,h.concept,true);const newT=d?d.literal:C[h.concept].pref;const changed=newT.toLowerCase()!==h.text.toLowerCase();
+      spans.push({...h,cls:changed?'changed':'core',txt:newT,tip:`${C[h.concept].pref} (core:${h.concept}). Originally "${h.text}" from ${pname(r.persona)}${d?`; ${pname(targetPersona)} label ${d.lid} (${d.status})`:'; no persona label, so the core prefLabel is shown'}`});
+    }else spans.push({...h,cls:h.type,tip:`${C[h.concept].pref} (core:${h.concept}) · ${h.type} · conf ${h.conf} · ${h.via}${h.note?' · '+h.note:''}`});
+  });
+  if(!targetPersona)r.unk.forEach(u=>spans.push({...u,cls:'unmapped',tip:'Unmapped acronym: routed to steward for concept assignment'}));
+  spans.sort((a,b)=>a.start-b.start);
+  const gs=targetPersona?[]:r.gov.govSpans;
+  let out='',i=0;
+  const pushPlain=(s,e)=>{let seg='';let j=s;gs.filter(g=>g.end>s&&g.start<e).sort((a,b)=>a.start-b.start).forEach(g=>{const gs0=Math.max(g.start,j),ge=Math.min(g.end,e);if(gs0>j)seg+=esc(r.text.slice(j,gs0));seg+=`<span class="t gov" title="${esc(g.kind)} policy trigger">${esc(r.text.slice(gs0,ge))}</span>`;j=ge;});seg+=esc(r.text.slice(j,e));return seg;};
+  spans.forEach(s=>{if(s.start<i)return;out+=pushPlain(i,s.start);out+=`<span class="t ${s.cls}" title="${esc(s.tip)}">${esc(s.txt!=null?s.txt:r.text.slice(s.start,s.end))}</span>`;i=s.end;});
+  out+=pushPlain(i,r.text.length);
+  return out;
+}
+function renderAnnot(r){
+  $('#annot').innerHTML=r?annotate(r):'<span class="dim">No capture yet.</span>';
+  $('#annotMeta').textContent=r?`${pname(r.persona)} · ${MODS[r.modality].name} · hover a term for detail`:'';
+}
+function renderStream(){
+  if(!state.captures.length){$('#streamTable').innerHTML='<div class="empty">Nothing processed yet.</div>';return;}
+  $('#streamTable').innerHTML=`<table><tr><th>Time</th><th>Capture</th><th>Persona</th><th>Modality</th><th>Classification</th><th>Sensitivity</th><th>Disposition</th><th>Labels (auto / review)</th></tr>${state.captures.slice(0,40).map((r,i)=>`<tr class="click ${i===0?'flash':''}" data-cap="${r.id}"><td class="mono">${fmtT(r.t)}</td><td class="mono">${r.id}<div class="small muted" style="font-family:inherit">${esc(r.presetTitle)}</div></td><td><span class="pchip"><i style="background:${PER[r.persona].color}"></i>${pname(r.persona)}</span></td><td>${MODS[r.modality].icon} ${MODS[r.modality].name}</td><td>${CATS[r.cls.primary].label}</td><td><span class="chip ${r.gov.sensitivity}">${r.gov.sensitivity}</span></td><td><span class="chip ${r.gov.disposition}">${r.gov.disposition}</span></td><td class="mono">${r.cands.filter(c=>c.decision==='auto').length} / ${r.cands.filter(c=>c.decision==='review').length}</td></tr>`).join('')}</table>`;
+}
+function renderMetrics(){
+  const q=state.queue.filter(x=>x.status==='pending').length;
+  const labels=Object.values(state.ext).flat().filter(l=>l.status==='approved'||l.status==='provisional').length;
+  const m=[['Captures',state.captures.length],['Published',state.captures.filter(r=>r.gov.disposition!=='HELD').length],['Held',state.captures.filter(r=>r.gov.disposition==='HELD').length],['Auto labels',Object.values(state.ext).flat().filter(l=>l.source==='capture').length],['In review',q],['Persona labels',labels]];
+  $('#metrics').innerHTML=m.map(([k,v])=>`<div class="metric"><b>${v}</b><span>${k}</span></div>`).join('');
+  const b=$('#qbadge');b.textContent=q;b.classList.toggle('zero',!q);
+}
+
+/* -------- review -------- */
+function renderQueue(){
+  const routes=['all','label','Privacy Office','Compliance · Sales & Marketing Claims','Legal','done'];
+  const names={all:'All pending',label:'Label stewardship','Privacy Office':'Privacy','Compliance · Sales & Marketing Claims':'Compliance',Legal:'Legal',done:'Resolved'};
+  $('#qfilter').innerHTML=routes.map(r=>{const n=r==='all'?state.queue.filter(q=>q.status==='pending').length:r==='done'?state.queue.filter(q=>q.status!=='pending').length:r==='label'?state.queue.filter(q=>q.status==='pending'&&q.kind==='label').length:state.queue.filter(q=>q.status==='pending'&&q.kind==='content'&&(q.route===r||q.also.includes(r))).length;return `<button data-qf="${esc(r)}" class="${ui.qfilter===r?'active':''}">${names[r]} (${n})</button>`;}).join('');
+  let items=state.queue.filter(q=>ui.qfilter==='done'?q.status!=='pending':q.status==='pending');
+  if(ui.qfilter==='label')items=items.filter(q=>q.kind==='label');
+  else if(!['all','done'].includes(ui.qfilter))items=items.filter(q=>q.kind==='content'&&(q.route===ui.qfilter||q.also.includes(ui.qfilter)));
+  if(!items.length){$('#queue').innerHTML='<div class="empty">Nothing here. Process some captures (try the Support chat, the Advisor guidance note, or the Live stream).</div>';return;}
+  const opts=sel=>`<option value="">Choose a core concept…</option>`+CORE.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.pref)}</option>`).join('');
+  $('#queue').innerHTML=items.map(q=>{
+    const P=PER[q.persona];const done=q.status!=='pending';
+    if(q.kind==='label')return `<div class="qcard ${done?'done':''}"><h4><span class="mono dim">${q.qid}</span> Label candidate “${esc(q.literal)}” <span class="pchip"><i style="background:${P.color}"></i>${P.short}</span><span class="chip ${q.matchType}">${q.matchType}</span><span class="chip review">${q.priority} · SLA ${q.sla}</span>${done?`<span class="chip ${q.status}">${q.status}</span>`:''}</h4>
+      <div class="small muted">Routed to <b>${esc(q.route)}</b> · ${esc(q.reason)} · confidence ${q.conf.toFixed(2)} · seen in ${q.evidence} capture(s): ${q.caps.map(c=>`<span class="mono">${c}</span>`).join(', ')}</div>
+      <div class="quote">${esc(q.ctx)}</div>
+      ${done?`<div class="small">${esc(q.resolution||'')}</div>`:`<div class="row"><span class="small muted">Map to</span><select data-remap="${q.qid}" style="max-width:300px">${opts(q.concept)}</select><span class="spacer"></span><button class="btn sm ok" data-approve="${q.qid}">Approve → g:ext/${q.persona}</button><button class="btn sm no" data-reject="${q.qid}">Reject</button></div>`}</div>`;
+    const r=state.captures.find(c=>c.id===q.capId);
+    return `<div class="qcard content ${done?'done':''}"><h4><span class="mono dim">${q.qid}</span> Content hold · <span class="mono">${q.capId}</span> <span class="pchip"><i style="background:${P.color}"></i>${P.short}</span> ${r?`<span class="chip">${MODS[r.modality].icon} ${MODS[r.modality].name}</span>`:''}<span class="chip high">${q.priority} · SLA ${q.sla}</span>${done?`<span class="chip ${q.status}">${q.status}</span>`:''}</h4>
+      <div class="small muted">Routed to <b>${esc(q.route)}</b>${q.also.length?` · also notified: ${esc(q.also.join(', '))}`:''}</div>
+      <div style="margin:6px 0">${q.findings.map(f=>`<div class="small">• <span class="chip ${f.sev}">${f.pid}</span> ${esc(f.detail)}</div>`).join('')}</div>
+      ${r?`<div class="quote">${esc(redact(r.text,r.pii))}</div>`:''}
+      ${done?`<div class="small">${esc(q.resolution||'')}</div>`:`<div class="row"><span class="spacer"></span><button class="btn sm ok" data-release="${q.qid}">Release redacted copy to SKL</button><button class="btn sm" data-restrict="${q.qid}">Release as Restricted</button><button class="btn sm no" data-purge="${q.qid}">Reject &amp; purge</button></div>`}</div>`;
+  }).join('');
+}
+function approveLabel(qid){
+  const q=state.queue.find(x=>x.qid===qid);const sel=document.querySelector(`[data-remap="${qid}"]`);const concept=sel?sel.value:q.concept;
+  if(!concept){toast('Choose a core concept before approving.');return;}
+  const remapped=concept!==q.concept;
+  let l=state.ext[q.persona].find(x=>x.literal.toLowerCase()===q.literal.toLowerCase()&&x.status!=='rejected');
+  if(l){l.status='approved';l.concept=concept;}else{l=newLabel(q.persona,q.literal,concept,'approved','capture',q.caps[0],Math.max(q.conf,0.95));state.ext[q.persona].push(l);}
+  q.status='approved';q.resolution=`Approved by ${PER[q.persona].steward} as ${l.lid} → ${C[concept].pref}${remapped?' (remapped)':''}`;
+  change(remapped?'remapApproveLabel':'approveLabel',l.lid,'g:ext/'+q.persona,`"${q.literal}" → core:${concept}`,PER[q.persona].steward);
+  audit(PER[q.persona].steward,remapped?'Remap & approve label':'Approve label',l.lid,`"${q.literal}" → ${C[concept].pref}`);
+  toast(`“${q.literal}” added to ${PER[q.persona].short} extension → ${C[concept].pref}`);refreshAll();
+}
+function rejectLabel(qid){
+  const q=state.queue.find(x=>x.qid===qid);q.status='rejected';q.resolution=`Rejected by ${PER[q.persona].steward}; blocked from re-suggestion`;
+  state.rejected.add(q.persona+'|'+q.literal.toLowerCase());
+  change('rejectLabel',q.literal,'g:ext/'+q.persona,`"${q.literal}" rejected`,PER[q.persona].steward);
+  audit(PER[q.persona].steward,'Reject label',q.qid,`"${q.literal}"`);refreshAll();
+}
+function resolveContent(qid,how){
+  const q=state.queue.find(x=>x.qid===qid);const r=state.captures.find(c=>c.id===q.capId);
+  const map={release:['approved','RELEASED','Released redacted copy to SKL'],restrict:['approved','RELEASED','Released with Restricted sensitivity'],purge:['rejected','PURGED','Rejected and purged; only the hash and audit trail are kept']};
+  const [st,disp,msg]=map[how];q.status=st;q.resolution=`${msg} (by ${q.route})`;
+  if(r){r.gov.disposition=disp==='PURGED'?'HELD':disp;if(how==='restrict')r.gov.sensitivity='restricted';if(how==='purge'){r.gov.disposition='PURGED';}}
+  change(how==='purge'?'purgeCapture':'releaseCapture',q.capId,'g:cap/'+q.capId,msg,q.route);
+  audit(q.route,how==='purge'?'Purge capture':'Release capture',q.capId,msg);refreshAll();
+}
+
+/* -------- vocab -------- */
+function renderVocab(){
+  $('#coreCount').textContent=CORE.length;
+  $('#vfilter').innerHTML=['all',...PERSONAS.map(p=>p.id)].map(p=>`<button data-vf="${p}" class="${ui.vfilter===p?'active':''}">${p==='all'?'All personas':PER[p].short} (${(p==='all'?Object.values(state.ext).flat():state.ext[p]).length})</button>`).join('');
+  const ls=(ui.vfilter==='all'?Object.values(state.ext).flat():state.ext[ui.vfilter]).slice().sort((a,b)=>(b.created>a.created?1:-1));
+  $('#vocabTable').innerHTML=`<table><tr><th>Label</th><th>Persona graph</th><th>→ Core concept</th><th>Status</th><th>Source</th><th>Conf.</th><th>Uses</th><th></th></tr>${ls.map(l=>`<tr><td><b>${esc(l.literal)}</b><div class="mono dim">${l.lid}</div></td><td><span class="pchip"><i style="background:${PER[l.persona].color}"></i><span class="mono small">g:ext/${l.persona}</span></span></td><td>${esc(C[l.concept].pref)}</td><td><span class="chip ${l.status}">${l.status}</span></td><td class="small">${l.source}${l.capId?`<div class="mono dim">${l.capId}</div>`:''}</td><td class="mono">${(+l.conf).toFixed(2)}</td><td class="mono">${l.uses}</td><td>${l.status==='provisional'?`<button class="btn sm ok" data-vapprove="${l.lid}">Approve</button> `:''}${l.status==='approved'||l.status==='provisional'?`<button class="btn sm" data-vretire="${l.lid}">Retire</button>`:''}</td></tr>`).join('')}</table>`;
+}
+function findLabel(lid){return Object.values(state.ext).flat().find(l=>l.lid===lid);}
+
+/* -------- outbound -------- */
+function renderOutbound(){
+  const o=$('#obPersona');if(!o.options.length)o.innerHTML=PERSONAS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');if(!o.value)o.value='support';
+  const rp=$('#rdPersona');if(!rp.options.length)rp.innerHTML=PERSONAS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const examples=['WSE count','head count','opp','comp mod','DD','the funnel','x-mod','flight risk','Worksite Employee'];
+  $('#obChips').innerHTML='<span class="muted">Try:</span>'+examples.map(e=>`<button class="btn sm" data-ex="${esc(e)}">${esc(e)}</button>`).join('');
+  const rc=$('#rdCap');const cur=rc.value;
+  const caps=state.captures.filter(r=>r.gov.disposition!=='PURGED');
+  rc.innerHTML=caps.length?caps.map(r=>`<option value="${r.id}">${r.id} · ${pname(r.persona)} · ${esc(r.presetTitle)}${r.gov.disposition==='HELD'?' (held)':''}</option>`).join(''):'<option value="">No captures yet</option>';
+  if(cur&&caps.some(r=>r.id===cur))rc.value=cur;
+  renderRender();renderMatrix();
+}
+function renderRender(){
+  const r=state.captures.find(c=>c.id===$('#rdCap').value);const tp=$('#rdPersona').value||'support';
+  if(!r){$('#rdOut').innerHTML='<span class="dim">Process a capture first.</span>';return;}
+  if(r.gov.disposition==='HELD'){$('#rdOut').innerHTML=`<span class="chip high">withheld</span> <span class="muted">${r.id} is on hold for review. Outbound serves it only after it is released.</span>`;return;}
+  $('#rdOut').innerHTML=`<div class="small muted" style="margin-bottom:6px;white-space:normal">Captured by <b>${pname(r.persona)}</b> → rendered for <b>${pname(tp)}</b>. Highlighted terms were swapped into ${pname(tp)}'s vocabulary.</div>`+annotate(r,tp);
+}
+function renderMatrix(){
+  const live=l=>l.status==='approved'||l.status==='provisional';
+  const concepts=CORE.filter(c=>PERSONAS.some(p=>state.ext[p.id].some(l=>l.concept===c.id&&live(l))));
+  $('#matrix').innerHTML=`<div style="overflow:auto"><table class="matrix"><tr><th>Core concept (prefLabel)</th>${PERSONAS.map(p=>`<th><span class="pchip"><i style="background:${p.color}"></i>${p.short}</span></th>`).join('')}</tr>${concepts.map(c=>`<tr><td><b>${esc(c.pref)}</b><div class="mono dim">core:${c.id}</div></td>${PERSONAS.map(p=>`<td>${state.ext[p.id].filter(l=>l.concept===c.id&&live(l)).map(l=>`<span class="chip ${l.status==='approved'?'persona':'provisional'}">${esc(l.literal)}</span>`).join('')||'<span class="dim small">← prefLabel</span>'}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+function doResolve(){
+  const resp=resolveTerm($('#obTerm').value,$('#obPersona').value,$('#obProv').checked,$('#obCross').checked);
+  $('#obJson').innerHTML=esc(JSON.stringify(resp,null,2)).replace(/(&quot;[\w]+&quot;):/g,'<span class="tk-k">$1</span>:');
+  const r=resp.result;
+  $('#obCard').innerHTML=r?`<div class="route" style="display:block"><div class="small muted">Concept</div><div style="font-size:17px;font-weight:600">${esc(r.prefLabel)} <span class="mono dim small">${r.concept}</span></div><div class="small muted" style="margin:4px 0">${esc(r.definition)}</div><div class="small">Shown to <b>${pname(resp.request.persona)}</b> as <span class="chip persona">${esc(r.displayLabel)}</span> <span class="muted">(${esc(r.displayLabelSource)})</span></div><div class="small muted">Matched via ${esc(r.matchedVia)}</div></div>`:`<div class="route" style="display:block"><span class="chip high">no governed match</span> <span class="small muted">${esc(resp.note)}</span>${resp.didYouMean.length?`<div class="small" style="margin-top:6px">Did you mean: ${resp.didYouMean.map(d=>`<span class="chip">${esc(d)}</span>`).join('')}</div>`:''}</div>`;
+  renderAuditIfVisible();
+}
+
+/* -------- governance -------- */
+function renderGov(){
+  const S=state.settings;
+  $('#sAuto').value=S.autoAccept;$('#sAutoOut').textContent=S.autoAccept.toFixed(2);
+  $('#sRev').value=S.reviewMin;$('#sRevOut').textContent=S.reviewMin.toFixed(2);
+  $('#sAsr').value=S.asrMin;$('#sAsrOut').textContent=S.asrMin.toFixed(2);
+  $('#sPilot').checked=S.pilot;$('#sSocial').checked=S.socialStrict;$('#sClaims').checked=S.strictClaims;$('#sUnmapped').checked=S.unmappedToSteward;
+  $('#policyTable').innerHTML=`<table><tr><th>On</th><th>Policy</th><th>Routes to</th><th>Dynamic behavior</th></tr>${POLICY_DEFS.map(p=>`<tr><td><label class="toggle"><input type="checkbox" data-pol="${p.id}" ${state.policies[p.id]?'checked':''}><span class="sw"></span></label></td><td><b>${esc(p.name)}</b><div class="mono dim">pol:${p.id}</div></td><td class="small">${esc(p.route)}</td><td class="small muted">${esc(p.dyn)}</td></tr>`).join('')}</table>`;
+}
+function setSetting(k,v,label){
+  const old=state.settings[k];if(old===v)return;state.settings[k]=v;
+  change('updatePolicySetting',k,'g:governance',`${k}: ${old} → ${v}`,'Governance admin');
+  audit('Governance admin','Policy change',k,`${label||k}: ${old} → ${v}`);renderMetrics();
+}
+
+/* -------- audit -------- */
+function renderAudit(){
+  $('#auditTable').innerHTML=`<table><tr><th>Time</th><th>Actor</th><th>Action</th><th>Object</th><th>Detail</th></tr>${state.audit.slice(0,250).map(a=>`<tr><td class="mono">${fmtT(a.t)}</td><td class="small">${esc(a.actor)}</td><td>${esc(a.action)}</td><td class="mono">${esc(a.obj)}</td><td class="small muted">${esc(a.detail)}</td></tr>`).join('')}</table>`;
+  const sel=$('#trigSel');const cur=sel.value;
+  sel.innerHTML=[...state.captures.slice(0,30).map(r=>`<option value="cap:${r.id}">Capture graph · ${r.id} (${pname(r.persona)})</option>`),...PERSONAS.map(p=>`<option value="ext:${p.id}">Persona extension graph · g:ext/${p.id}</option>`),'<option value="chg">Change records · g:changes</option>'].join('');
+  if(cur&&[...sel.options].some(o=>o.value===cur))sel.value=cur;
+  renderTrig();
+}
+function trigText(){const v=$('#trigSel').value||'ext:sales-ops';if(v==='chg')return trigChanges();if(v.startsWith('ext:'))return trigExt(v.slice(4));const r=state.captures.find(c=>c.id===v.slice(4));return r?trigCapture(r):'';}
+function renderTrig(){$('#trigOut').innerHTML=hl(trigText());}
+function renderAuditIfVisible(){if($('#tab-audit').classList.contains('active'))renderAudit();}
+
+/* ============================== WIRING ============================== */
+function refreshAll(){renderMetrics();renderStream();renderQueue();renderVocab();renderOutbound();renderAuditIfVisible();}
+function run(input,animate){
+  const r=runInbound(input);if(!r){toast('Nothing to capture: add some content first.');return null;}
+  ui.current=r;renderTrace(r,animate);renderAnnot(r);refreshAll();
+  if(!animate){$$('.stage').forEach(s=>s.classList.add('shown'));}
+  return r;
+}
+const $$=s=>[...document.querySelectorAll(s)];
+function showTab(t){if(!document.getElementById('tab-'+t))t='capture';$$('nav.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));$$('.tab').forEach(s=>s.classList.toggle('active',s.id==='tab-'+t));if(t==='audit')renderAudit();if(t==='outbound')renderOutbound();if(t==='governance')renderGov();}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,tr.click');if(!t)return;
+  if(t.dataset.tab){showTab(t.dataset.tab);try{history.replaceState(null,'','#'+t.dataset.tab);}catch(_){location.hash=t.dataset.tab;}return;}
+  if(t.dataset.p){ui.persona=t.dataset.p;const first=PRESETS.find(p=>p.persona===ui.persona);renderPersonaBtns();renderPresets();applyPreset(first?first.id:null);$('#presetSel').value=first?first.id:'';return;}
+  if(t.dataset.m){ui.modality=t.dataset.m;ui.preset=null;$('#presetSel').value='';if(ui.modality!=='form')$('#contentText').value='';else ui.fields=[['Client',''],['Notes','']];renderModBtns();renderInputs();return;}
+  if(t.dataset.del!=null){ui.fields.splice(+t.dataset.del,1);renderInputs();return;}
+  if(t.dataset.cap){const r=state.captures.find(c=>c.id===t.dataset.cap);if(r){ui.current=r;renderTrace(r,false);renderAnnot(r);window.scrollTo({top:0,behavior:'smooth'});}return;}
+  if(t.dataset.qf){ui.qfilter=t.dataset.qf;renderQueue();return;}
+  if(t.dataset.approve){approveLabel(t.dataset.approve);return;}
+  if(t.dataset.reject){rejectLabel(t.dataset.reject);return;}
+  if(t.dataset.release){resolveContent(t.dataset.release,'release');return;}
+  if(t.dataset.restrict){resolveContent(t.dataset.restrict,'restrict');return;}
+  if(t.dataset.purge){resolveContent(t.dataset.purge,'purge');return;}
+  if(t.dataset.vf){ui.vfilter=t.dataset.vf;renderVocab();return;}
+  if(t.dataset.vapprove){const l=findLabel(t.dataset.vapprove);l.status='approved';change('approveLabel',l.lid,'g:ext/'+l.persona,`"${l.literal}" promoted from provisional`,PER[l.persona].steward);audit(PER[l.persona].steward,'Approve provisional label',l.lid,`"${l.literal}"`);refreshAll();return;}
+  if(t.dataset.vretire){const l=findLabel(t.dataset.vretire);l.status='retired';state.rejected.add(l.persona+'|'+l.literal.toLowerCase());change('retireLabel',l.lid,'g:ext/'+l.persona,`"${l.literal}" retired`,PER[l.persona].steward);audit(PER[l.persona].steward,'Retire label',l.lid,`"${l.literal}"`);refreshAll();return;}
+  if(t.dataset.ex){$('#obTerm').value=t.dataset.ex;doResolve();return;}
+});
+$('#presetSel').addEventListener('change',e=>applyPreset(e.target.value));
+$('#formGrid').addEventListener('input',e=>{const i=e.target.dataset.i;if(i!=null)ui.fields[+i][+e.target.dataset.k]=e.target.value;});
+$('#addField').onclick=()=>{ui.fields.push(['','']);renderInputs();};
+$('#asr').oninput=e=>$('#asrOut').textContent=(+e.target.value).toFixed(2);
+$('#runBtn').onclick=()=>run(currentInput(),true);
+$('#resetBtn').onclick=()=>{stopLive();initState();ui.current=null;$('#stages').innerHTML='<div class="empty">Demo reset. Choose a persona and run a capture.</div>';$('#stepper').innerHTML='';$('#traceId').textContent='';renderAnnot(null);refreshAll();renderGov();toast('Demo state reset');};
+$('#contentText').addEventListener('input',()=>{if(ui.preset){ui.preset=null;$('#presetSel').value='';}});
+function loadFile(f){if(!f)return;const rd=new FileReader();rd.onload=()=>{ui.modality='document';ui.preset=null;renderModBtns();renderInputs();$('#contentText').value=String(rd.result).slice(0,20000);$('#presetSel').value='';toast(`Loaded ${f.name} as a document capture`);};rd.readAsText(f);}
+$('#fileIn').onchange=e=>loadFile(e.target.files[0]);
+$('#contentText').addEventListener('dragover',e=>e.preventDefault());
+$('#contentText').addEventListener('drop',e=>{e.preventDefault();loadFile(e.dataTransfer.files[0]);});
+// live stream
+let liveN=0;
+function stopLive(){if(ui.live){clearInterval(ui.live);ui.live=null;}$('#liveToggle').checked=false;$('#liveDot').classList.remove('on');}
+$('#liveToggle').onchange=e=>{
+  if(e.target.checked){$('#liveDot').classList.add('on');
+    const tick=()=>{const p=PRESETS[Math.floor(Math.random()*PRESETS.length)];liveN++;
+      const input={persona:p.persona,modality:p.modality,text:p.text?p.text+` (ref ${1000+liveN})`:'',fields:p.fields?p.fields.map(f=>f.slice()).concat([['Ref',String(1000+liveN)]]):[],asr:p.asr||0.9,title:'⚡ '+p.title};
+      run(input,!ui.animating);};
+    tick();ui.live=setInterval(tick,3200);toast('Live stream on: captures arrive from random personas and channels');}
+  else stopLive();
+};
+// steward add
+$('#addPersona').innerHTML=PERSONAS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+$('#addConcept').innerHTML=CORE.map(c=>`<option value="${c.id}">${esc(c.pref)}</option>`).join('');
+$('#addLabelBtn').onclick=()=>{
+  const pid=$('#addPersona').value,litv=$('#addLit').value.trim(),c=$('#addConcept').value;const issues=nameCheck(litv);
+  if(!litv||issues.length){$('#addMsg').textContent='Blocked by naming standards: '+(issues.join(', ')||'empty');return;}
+  if(state.ext[pid].some(l=>l.literal.toLowerCase()===litv.toLowerCase()&&l.status!=='retired')){$('#addMsg').textContent='Label already exists in this persona graph.';return;}
+  const l=newLabel(pid,litv,c,'approved','steward',null,1);state.ext[pid].push(l);
+  change('addLabel',l.lid,'g:ext/'+pid,`"${litv}" → core:${c} (steward entry)`,PER[pid].steward);audit(PER[pid].steward,'Add label (data-entry screen)',l.lid,`"${litv}" → ${C[c].pref}`);
+  $('#addMsg').textContent=`Added ${l.lid}`;$('#addLit').value='';refreshAll();
+};
+// outbound
+$('#obGo').onclick=doResolve;$('#obTerm').addEventListener('keydown',e=>{if(e.key==='Enter')doResolve();});
+$('#rdCap').onchange=renderRender;$('#rdPersona').onchange=renderRender;
+// governance
+const bindSlider=(id,k,label)=>{$(id).oninput=e=>{$(id+'Out').textContent=(+e.target.value).toFixed(2);};$(id).onchange=e=>setSetting(k,+(+e.target.value).toFixed(2),label);};
+bindSlider('#sAuto','autoAccept','Auto-accept threshold');bindSlider('#sRev','reviewMin','Review minimum');bindSlider('#sAsr','asrMin','ASR QA threshold');
+$('#sPilot').onchange=e=>setSetting('pilot',e.target.checked,'Pilot mode');
+$('#sSocial').onchange=e=>setSetting('socialStrict',e.target.checked,'Public-channel strictness');
+$('#sClaims').onchange=e=>setSetting('strictClaims',e.target.checked,'Strict claims');
+$('#sUnmapped').onchange=e=>setSetting('unmappedToSteward',e.target.checked,'Route unmapped terms');
+$('#policyTable').addEventListener('change',e=>{const id=e.target.dataset.pol;if(!id)return;state.policies[id]=e.target.checked;change('togglePolicy','pol:'+id,'g:governance',`${id} ${e.target.checked?'enabled':'disabled'}`,'Governance admin');audit('Governance admin','Policy toggle','pol:'+id,e.target.checked?'enabled':'disabled');});
+// audit
+$('#trigSel').onchange=renderTrig;
+$('#copyTrig').onclick=async()=>{try{await navigator.clipboard.writeText(trigText());toast('TriG copied');}catch(_){toast('Clipboard is blocked here. Select the text and copy it manually.');}};
+window.addEventListener('hashchange',()=>showTab(location.hash.slice(1)));
+
+/* ============================== BOOT ============================== */
+initState();
+renderPersonaBtns();renderModBtns();renderPresets();applyPreset('p1');$('#presetSel').value='p1';
+refreshAll();renderGov();
+if(location.hash)showTab(location.hash.slice(1));
+</script>
+</body>
+</html>
